@@ -47,16 +47,17 @@
 
 		<intercept-url pattern="/Dashboard.xhtml"
 			access="isAuthenticated()" />
-		<intercept-url
-			pattern="/simulacao/simularOperacao.xhtml" access="isAuthenticated()" />
 
 		<intercept-url pattern="/operacoes/**"
 			access="isAuthenticated()" />
 
 		<intercept-url pattern="/cadastros/**"
 			access="isAuthenticated()" />
-
-		<intercept-url pattern="/lancamentos/**"
+			
+		<intercept-url pattern="/pesquisas/**"
+			access="isAuthenticated()" />
+			
+		<intercept-url pattern="/relatorios/**"
 			access="isAuthenticated()" />
 
 		<intercept-url pattern="/403.xhtml"
