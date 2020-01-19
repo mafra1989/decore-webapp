@@ -1,0 +1,243 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	template="/WEB-INF/template.xhtml">
+
+	<ui:define name="title">Consultar Estoque</ui:define>
+
+	<f:metadata>
+		<f:viewAction action="#{estoqueBean.inicializar}" />
+	</f:metadata>
+
+	<ui:define name="content">
+
+		<style>
+@media ( min-width :220px) {
+
+	.categoria-field {
+		width: 100%;
+		height: 32px;
+	}
+	.ui-slider .ui-slider-handle {
+		width: 1.7em;
+		height: 1.7em;
+	}
+	.ui-slider-horizontal {
+		height: 1.2em !important;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 28px !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+		width: 50% !important;
+		float: left !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-6 {
+		width: 50% !important;
+		float: left !important;
+	}
+	.qty-parcelas.ui-panelgrid .ui-panelgrid-cell:nth-child(1) {
+		margin-top: 10px !important;
+	}
+	.percentual-juros.ui-panelgrid .ui-panelgrid-cell:nth-child(1) {
+		margin-top: 8px !important;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+		.ui-datatable tfoot th {
+		font-size: 13px;
+	}
+	body .btn-new.ui-button {
+		color: #676363;
+		background-color: #f9f9f9;
+		border: 1px solid #8a8585;
+	}
+	.swal2-popup {
+		width: 28em;
+		max-width: 100%;
+		padding: 0 0 0.4em 0;
+		font-size: 0.75rem;
+	}
+	.swal2-popup #swal2-content {
+		font-weight: 400;
+	}
+}
+
+@media ( min-width :460px) {
+	.ui-slider .ui-slider-handle {
+		width: 1.7em;
+		height: 1.7em;
+	}
+	.ui-slider-horizontal {
+		height: 1.2em;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 27px !important;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+		.ui-datatable tfoot th {
+		font-size: 14px;
+	}
+
+}
+
+@media ( min-width :640px) {
+	.categoria-field {
+		width: 60% !important;
+	}
+	.ui-slider-handle {
+		width: 1.2em !important;
+		height: 1.2em !important;
+	}
+	.ui-slider-horizontal {
+		height: 0.8em !important;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 27px !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+		width: 33.33333% !important;
+		float: none;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-6 {
+		width: auto !important;
+		float: none;
+	}
+}
+</style>
+
+		<div class="page-header">
+			<h1>Consultar Estoque</h1>
+		</div>
+
+		<p:growl id="msg" closable="true" life="500" showSummary="false"
+			showDetail="true" style="text-align: center" />
+
+
+
+		<h:form id="form" prependId="false">
+
+			<p:focus for="descricao" />
+
+			<p:toolbar id="toolbar">
+				<f:facet name="left">
+					<p:commandButton icon="fa fa-fw fa-search" value="Pesquisar"
+						id="pesquisar-button" update="panel-table produtosTable"
+						style="margin-left: 3px;font-weight:bold" process="form"
+						action="#{estoqueBean.pesquisar}" 
+						onstart="PF('downloadLoading').show();"
+						oncomplete="PF('downloadLoading').hide();"></p:commandButton>
+				</f:facet>
+
+			</p:toolbar>
+
+			<div class="ui-g-12 ui-lg-12">
+
+				<p:panel class="card card-w-title ui-fluid itens-add"
+					style="padding-bottom: 0px !important; margin-top:10px">
+
+					<p:panelGrid columns="2" id="painel" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-4">
+
+						<p:outputLabel value="Código ou Descrição" for="descricao" />
+						<p:inputText id="descricao" style="text-transform: uppercase"
+							value="#{estoqueBean.filter.descricao}" />
+
+
+						<p:outputLabel value="Categoria" for="categoria" />
+						<p:selectOneMenu id="categoria" styleClass="categoria-field" 
+							value="#{estoqueBean.filter.categoriaProduto}">
+							<f:selectItem itemLabel="Selecione" itemValue="" />
+							<f:selectItems value="#{estoqueBean.todasCategoriasProdutos}"
+								var="categoria" itemLabel="#{categoria.nome}"
+								itemValue="#{categoria}"></f:selectItems>
+						</p:selectOneMenu>
+					</p:panelGrid>
+
+				</p:panel>
+
+				<p:panel class="card card-w-title ui-fluid itens-add"
+					id="panel-table"
+					style="padding-bottom: 0px !important;margin-top:-10px">
+
+					<h3 style="font-weight: bold">Resultado da consulta</h3>
+					
+					<p:outputLabel value="Total: #{estoqueBean.estoqueTotal}" style="float:left;margin-top:-10px;margin-bottom:5px; font-weight:bold;margin-left:8px;color:#5b5656" />
+
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-12">
+
+						<p:dataTable id="produtosTable" paginatorAlwaysVisible="false"
+							value="#{estoqueBean.produtosFiltrados}" var="produto"
+							emptyMessage="Nenhum resultado encontrado." rows="10"
+							reflow="true" paginator="true" paginatorPosition="bottom"
+							rowKey="#{produto.id}"
+							selection="#{estoqueBean.produtoSelecionado}"
+							selectionMode="single">
+
+							<p:ajax process="@this" event="rowSelect" update="menu-item"/>
+								<p:ajax process="@this" event="rowUnselect" update="menu-item" />
+
+							<p:column headerText="Cód." width="10%">
+								<h:outputText value="#{produto.codigo}" />
+							</p:column>
+
+							<p:column headerText="Desc." width="30%">
+								<h:outputText value="#{produto.descricao}" />
+							</p:column>
+
+							<p:column headerText="Qtd." width="10%">
+								<h:outputText value="#{produto.quantidadeAtual}" />
+							</p:column>
+
+							<p:column headerText="Categoria" width="15%">
+								<h:outputText value="#{produto.categoriaProduto.nome}" />
+							</p:column>
+
+						</p:dataTable>
+
+						<p:contextMenu id="menu-item" for="produtosTable">
+							<p:menuitem value="Deletar Produto" id="btn-remove"
+								update="produtosTable" process="@this produtosTable"
+								onstart="start();" rendered="false" oncomplete="stop();"
+								icon="fa fa-fw fa-trash" />
+
+							<p:menuitem value="Visualizar Produto" id="btn-visualizar"
+								outcome="/cadastros/CadastroProdutos.xhtml"
+								process="@this produtosTable" icon="fa fa-fw fa-eye"
+								disabled="#{produtosFiltradosSize eq 0}">
+
+								<f:param name="id" value="#{estoqueBean.produtoSelecionado.id}" />
+							</p:menuitem>
+						</p:contextMenu>
+					</p:panelGrid>
+				</p:panel>
+
+			</div>
+
+		</h:form>
+
+
+		<p:dialog id="downloadLoading" showHeader="false" modal="true"
+			widgetVar="downloadLoading" header="Status" draggable="false"
+			closable="false" resizable="false">
+			<p:graphicImage name="images/loadingbar.gif"
+				library="manhattan-layout" width="50" />
+		</p:dialog>
+
+		<script type="text/javascript">
+			function start() {
+				PF('downloadLoading').show();
+			}
+
+			function stop() {
+				PF('downloadLoading').hide();
+			}
+		</script>
+
+	</ui:define>
+
+</ui:composition>

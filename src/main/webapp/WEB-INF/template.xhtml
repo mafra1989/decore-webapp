@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" lang="en">
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	<title><ui:insert name="title">PrimeFaces Manhattan</ui:insert></title>
+	<h:outputScript name="js/nanoscroller.js" library="manhattan-layout" />
+	<h:outputScript name="js/layout.js" library="manhattan-layout" />
+
+	<h:outputScript target="body" library="same" name="javascripts/app.js" />
+
+	<h:outputScript target="body" library="manhattan-layout"
+		name="js/sweetalert2.min.js" />
+		
+	<script type="text/javascript">
+				$(document).ready(function() {											
+					var PROJECT = "/decore-webapp/";
+					var path = window.location.pathname;  
+
+					if (path === PROJECT + "Dashboard.xhtml" || path === PROJECT) {						
+						//$.removeCookie('manhattan_expandeditems', {path: '/'});
+						$(".pm_Dashboard").click();
+					}
+				});				
+			</script>
+
+	<ui:insert name="head" />
+</h:head>
+
+<h:body>
+	<div class="layout-wrapper layout-wrapper-static layout-wrapper-static-restore">
+		<ui:include src="sidebar.xhtml" />
+
+		<div class="layout-main">
+			<ui:include src="topbar.xhtml" />
+
+			<div class="layout-content">
+				<ui:insert name="content" />
+			</div>
+
+			<!-- <ui:include src="./footer.xhtml" />  -->
+
+			<!-- <div class="layout-main-mask"></div> -->
+		</div>
+
+		<!-- <ui:include src="./rightpanel.xhtml" /> -->
+	</div>
+
+	<p:growl id="msg-password" closable="true" life="3000"
+		showSummary="false" showDetail="true" style="text-align: center" />
+
+	<p:dialog header="Trocar senha" widgetVar="passwordDialog"
+		id="password-dialog" resizable="false" modal="true"
+		closeOnEscape="true" responsive="true" width="250px"
+		style="margin-top: 10px">
+
+		<p:defaultCommand target=":form-password:salvar-button"
+			scope="password-dialog" />
+
+		<h:form id="form-password">
+
+			<div class="ui-fluid">
+				<p:panelGrid id="painel-dialog" columns="1" layout="grid"
+					style="margin-top: 10px; margin-bottom: 10px"
+					styleClass="panelgrid-noborder">
+
+					<p:outputLabel value="Senha atual" for="atual" />
+					<p:password id="atual" value="#{alterarSenhaBean.senhaAtual}"
+						redisplay="true" />
+
+					<p:outputLabel value="Nova senha" for="nova" />
+					<p:password id="nova" value="#{alterarSenhaBean.novaSenha}"
+						redisplay="true" />
+
+					<p:outputLabel value="Confirmação" for="confirme" />
+					<p:password id="confirme" value="#{alterarSenhaBean.confirmacao}"
+						redisplay="true" />
+
+					<div
+						style="width: 80%; margin-left: 10%; margin-top: 7px; margin-bottom: 10px; border-top: 1px solid #ccc"></div>
+
+					<p:commandButton value="Save" id="salvar-button"
+						action="#{alterarSenhaBean.alterarSenha(seguranca.usuarioLogado.usuario)}"
+						icon="fa fa-fw fa-save" process="form-password"
+						update="painel-dialog, msg-password"
+						oncomplete="if (!args.validationFailed) PF('passwordDialog').hide()">
+					</p:commandButton>
+				</p:panelGrid>
+			</div>
+		</h:form>
+	</p:dialog>
+	
+	<p:ajaxStatus rendered="false"
+		style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+		<f:facet name="start">
+			<i class="fa fa-circle-o-notch fa-spin ajax-loader"
+				aria-hidden="true"></i>
+		</f:facet>
+
+		<f:facet name="complete">
+			<h:outputText value="" />
+		</f:facet>
+	</p:ajaxStatus>
+
+	<h:outputStylesheet name="css/nanoscroller.css"
+		library="manhattan-layout" />
+	<h:outputStylesheet name="css/animate.css" library="manhattan-layout" />
+	<h:outputStylesheet name="css/layout-blue.css"
+		library="manhattan-layout" />
+	<h:outputStylesheet name="css/app.css" library="manhattan-layout" />
+
+	<h:outputStylesheet name="css/sweetalert2.min.css"
+		library="manhattan-layout" />
+</h:body>
+
+</html>

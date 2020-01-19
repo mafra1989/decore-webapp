@@ -1,0 +1,96 @@
+/* BASE */
+body {
+	margin: 0;
+	font-size: 13px;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+h1, h2 {
+	font-family: inherit;
+	font-weight: 500;
+	line-height: 1.1;
+	color: inherit
+}
+
+h1 {
+	font-size: 20px
+}
+
+h2 {
+	font-size: 15px
+}
+
+h2 small {
+	font-weight: 400;
+	line-height: 1;
+	font-size: 80%;
+	color: #777
+}
+
+ul li a {
+	heigth: 50px;
+}
+
+/* TABVIEW */
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected a {
+	color: #555;
+}
+
+@media ( max-width : 640px) {
+	.ui-tabs.ui-tabs-top>.ui-tabs-nav li {
+		width: 100%;
+	}
+}
+
+/* PANELGRID */
+.ui-panelgrid.panelgrid-noborder .ui-grid-responsive {
+	border: none;
+}
+
+@media ( max-width : 640px) {
+	.ui-panelgrid.panelgrid-noborder .ui-grid-responsive .ui-grid-row {
+		border: none;
+	}
+}
+
+/* DASHBOARD */
+.page-header {
+	margin: 36px 0 10px;
+	border-bottom: 1px solid #eee;
+	padding-bottom: 0;
+	background-color: #fafbfd;
+}
+
+.page-header h1 {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	margin: 0;
+	height: 60px;
+	color: #333
+}
+
+.aw-box {
+	padding: 20px;
+	margin-bottom: 15px;
+	border: 1px solid #eee;
+	border-bottom: 3px solid #1e94d2
+}
+
+.aw-box__icon {
+	color: #1e94d2;
+	float: left;
+}
+
+.aw-box__value {
+	font-size: 1.69em;
+	font-weight: 300;
+	text-align: right
+}
+
+.aw-box__title {
+	display: block;
+	font-size: 1em;
+	font-weight: 600;
+	text-align: right
+}

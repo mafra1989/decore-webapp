@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+        </f:facet>
+        <title>SMT Service - 404</title>
+    </h:head>
+
+    <h:body styleClass="exception-body notfound">
+        <div class="particle elem1 anim-delay1"></div>
+        <div class="particle elem2 anim-delay5"></div>
+        <div class="particle elem3 anim-delay3"></div>
+        <div class="particle elem4 anim-delay8"></div>
+        <div class="particle elem5 anim-delay9"></div>
+        <div class="particle elem6 anim-delay2"></div>
+        <div class="particle elem7 anim-delay4"></div>
+        
+        <div class="ui-g">
+            <div class="ui-g-12 logo-container">
+                <p:graphicImage name="images/logo-manhattan.png" library="manhattan-layout" />
+            </div>
+        </div>
+        <div class="exception-panel">       	
+            <div class="exception-panel-content">
+                <h1 class="title">403</h1>
+                <h2>Acesso negado</h2>
+                
+                <p>Desculpe, você não está autorizado a acessar a página que solicitou.
+				Se você acha que isso é um engano, entre em contato com a gente.</p>
+            </div>
+            
+            <div class="exception-panel-footer">
+                <p:button value="Voltar para onde estava" href="javascript:history.back()" />
+            </div>
+        </div>
+        
+        <h:outputStylesheet name="css/layout-blue.css" library="manhattan-layout" />
+        <h:outputStylesheet name="css/app.css" library="manhattan-layout" />
+    </h:body>
+
+</html>

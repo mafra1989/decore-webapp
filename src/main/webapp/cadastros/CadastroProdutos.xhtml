@@ -1,0 +1,397 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	template="/WEB-INF/template.xhtml">
+
+	<ui:define name="title">#{cadastroProdutoBean.produto.id != null ? 'Informações do Produto' : 'Cadastro Produto'}</ui:define>
+
+	<f:metadata>
+		<f:viewAction action="#{cadastroProdutoBean.inicializar}" />
+
+		<f:viewParam name="id" value="#{cadastroProdutoBean.produto.id}" />
+		<f:viewAction action="#{cadastroProdutoBean.buscar}"
+			if="#{param.id ne null}" />
+	</f:metadata>
+
+	<ui:define name="content">
+
+		<style>
+@media ( min-width :220px) {
+	.ui-fileupload-simple {
+		display: block;
+	}
+	.ui-blockui-content {
+		padding: 0.25em;
+	}
+	.ui-slider .ui-slider-handle {
+		width: 1.7em;
+		height: 1.7em;
+	}
+	.ui-slider-horizontal {
+		height: 1.2em !important;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 28px !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+		width: 50% !important;
+		float: left !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-6 {
+		width: 50% !important;
+		float: left !important;
+	}
+	.qty-parcelas.ui-panelgrid .ui-panelgrid-cell:nth-child(1) {
+		margin-top: 10px !important;
+	}
+	.percentual-juros.ui-panelgrid .ui-panelgrid-cell:nth-child(1) {
+		margin-top: 8px !important;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+		.ui-datatable tfoot th {
+		font-size: 13px;
+	}
+	body .btn-new.ui-button {
+		color: #676363;
+		background-color: #f9f9f9;
+		border: 1px solid #8a8585;
+	}
+	.swal2-popup {
+		width: 28em;
+		max-width: 100%;
+		padding: 0 0 0.4em 0;
+		font-size: 0.75rem;
+	}
+	.swal2-popup #swal2-content {
+		font-weight: 400;
+	}
+	body #cliente-dialog.ui-dialog .ui-dialog-content {
+		background-color: #ffffff;
+		padding: 10px 0px 0px 0px;
+	}
+	body .ui-datatable .ui-paginator {
+		padding: 2px 0px !important;
+	}
+	#cliente-dialog.ui-dialog {
+		margin-top: -1550px !important;
+	}
+	body .panel-save .ui-button {
+		width: 100%;
+	}
+}
+
+@media ( min-width :460px) {
+	.ui-slider .ui-slider-handle {
+		width: 1.7em;
+		height: 1.7em;
+	}
+	.ui-slider-horizontal {
+		height: 1.2em;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 27px !important;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+		.ui-datatable tfoot th {
+		font-size: 14px;
+	}
+}
+
+@media ( min-width :640px) {
+	.ui-slider-handle {
+		width: 1.2em !important;
+		height: 1.2em !important;
+	}
+	.ui-slider-horizontal {
+		height: 0.8em !important;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 27px !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+		width: 33.33333% !important;
+		float: none;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-6 {
+		width: auto !important;
+		float: none;
+	}
+	body .panel-save .ui-button {
+		width: 64% !important;
+	}
+}
+</style>
+
+		<div class="page-header">
+			<h1>#{cadastroProdutoBean.produto.id != null ? 'Informações do
+				Produto' : 'Cadastro Produto'}</h1>
+		</div>
+
+		<p:growl id="msg" closable="true" life="500" showSummary="false"
+			showDetail="true" style="text-align: center" />
+
+		<div class="ui-g-12 ui-lg-12" style="padding-bottom: 20px;">
+
+			<h:form id="form" enctype="multipart/form-data">
+
+				<p:panel style="margin-top: -8px;">
+					<p:defaultCommand target="btn-calcular" />
+					<p:focus for="codigo" />
+
+					<p:panel class="card card-w-title ui-fluid"
+						style="padding-bottom: 0px !important">
+
+						<h3 style="font-weight: bold">Dados do Produto</h3>
+
+						<p:commandButton styleClass="btn-new" icon="fa fa-fw fa-user"
+							title="Buscar cliente" oncomplete="PF('cliente-dialog').show()"
+							process="@this" rendered="false"
+							style="position: relative; float: right; margin-top: -45px; margin-right: 8px; width: 40px" />
+
+						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-2, ui-grid-col-2">
+
+							<p:outputLabel value="Código" for="codigo" />
+							<p:inputText id="codigo" autocomplete="off"
+								value="#{cadastroProdutoBean.produto.codigo}" />
+						</p:panelGrid>
+
+						<p:panelGrid columns="4" layout="grid" style="margin-bottom: 5px"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-2, ui-grid-col-2, ui-grid-col-2, ui-grid-col-3">
+
+							<p:outputLabel value="Nome" for="nome" />
+							<p:inputText id="nome" autocomplete="off"
+								value="#{cadastroProdutoBean.produto.nome}" />
+
+							<p:outputLabel value="Descrição" for="descricao" />
+							<p:inputText id="descricao" autocomplete="off"
+								value="#{cadastroProdutoBean.produto.descricao}" />
+						</p:panelGrid>
+
+						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-2, ui-grid-col-2">
+
+							<p:outputLabel value="Preço de venda" for="preco" />
+							<p:inputNumber id="preco" autocomplete="off"
+								value="#{cadastroProdutoBean.produto.precoVenda}" />
+						</p:panelGrid>
+
+						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+							styleClass="panelgrid-noborder disabled disabled"
+							rendered="#{cadastroProdutoBean.produto.id != null}"
+							columnClasses="ui-grid-col-2, ui-grid-col-2">
+
+							<p:outputLabel value="Quantidade atual" for="qtdAtual" />
+							<p:inputNumber id="qtdAtual" decimalPlaces="0" readonly="true"
+								value="#{cadastroProdutoBean.produto.quantidadeAtual}" />
+						</p:panelGrid>
+
+						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-2, ui-grid-col-2">
+
+							<p:outputLabel value="Categoria" for="categoria" />
+							<p:selectOneMenu id="categoria"
+								value="#{cadastroProdutoBean.produto.categoriaProduto}"
+								placeholder="selecione">
+
+								<f:selectItem itemLabel="Selecione" />
+
+								<f:selectItems
+									value="#{cadastroProdutoBean.todasCategoriasProdutos}"
+									var="categoria" itemLabel="#{categoria.nome}"
+									itemValue="#{categoria}" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+
+						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-2, ui-grid-col-2">
+
+							<p:outputLabel value="Fornecedor" for="fornecedor" />
+							<p:selectOneMenu id="fornecedor"
+								value="#{cadastroProdutoBean.produto.fornecedor}"
+								placeholder="selecione">
+
+								<f:selectItem itemLabel="Selecione" />
+
+								<f:selectItems value="#{cadastroProdutoBean.todosFornecedores}"
+									var="fornecedor" itemLabel="#{fornecedor.nome}"
+									itemValue="#{fornecedor}" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+
+
+						<p:panelGrid id="panel-upload" columns="2" layout="grid"
+							style="margin-bottom: 5px"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-2, ui-grid-col-2">
+
+							<p:outputLabel value="Foto" rendered="#{cadastroProdutoBean.produto.id == null}" />
+							<p:fileUpload styleClass="btn-upload" mode="simple" auto="true"
+								value="#{cadastroProdutoBean.file}" style="font-weight:bold"
+								update="save-upload btn-preview" label="Adicionar"
+								process="@this" skinSimple="true"
+								rendered="#{cadastroProdutoBean.produto.id == null}">
+							</p:fileUpload>
+							
+							<p:outputLabel value="Foto" rendered="#{cadastroProdutoBean.produto.id != null and cadastroProdutoBean.fileContent != null}" />
+							<ui:fragment id="photo-edit" 
+								rendered="#{cadastroProdutoBean.fileContent != null and cadastroProdutoBean.produto.id != null}">
+								<img
+									src="data:image/png;base64,#{cadastroProdutoBean.imageContentsAsBase64}"
+									style="width: 100%;" />
+							</ui:fragment>
+
+						</p:panelGrid>
+
+						<p:panelGrid id="save-upload" columns="3" layout="grid"
+							style="margin-bottom: 5px" rendered="#{cadastroProdutoBean.produto.id == null}"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-2, ui-grid-col-2">
+
+							<p:outputLabel value="" />
+							<p:commandButton id="btn-preview" icon="fa fa-fw fa-cloud-upload"
+								value="Upload" action="#{cadastroProdutoBean.upload}"
+								ajax="false" update="photo msg" process="@this panel-upload"
+								style="background-color: #3e3f41; font-weight: bold; float: rifht; width: 100px;">
+							</p:commandButton>
+						</p:panelGrid>
+
+						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-2, ui-grid-col-2"
+							rendered="{cadastroProdutoBean.produto.id != null}">
+
+							<p:outputLabel value="" />
+							<ui:fragment id="photo"
+								rendered="#{cadastroProdutoBean.fileContent != null}">
+								<img
+									src="data:image/png;base64,#{cadastroProdutoBean.imageContentsAsBase64}"
+									style="width: 100%;" />
+							</ui:fragment>
+						</p:panelGrid>
+					</p:panel>
+
+					<p:panel rendered="#{cadastroProdutoBean.produto.id != null}" style="margin-bottom: 20px">
+
+						<h3 style="font-weight: bold">Informações importantes</h3>
+
+						<p:panelGrid columns="2" layout="grid"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-6, ui-grid-col-6">
+
+							<p:panel>
+
+								<p:panelGrid columns="2" layout="grid"
+									style="margin-bottom: 5px"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-6, ui-grid-col-2">
+
+									<p:outputLabel value="Estoque à vender R$" for="totalAcumulado" />
+									<p:inputNumber id="totalAcumulado" readonly="true"
+										value="#{cadastroProdutoBean.produto.totalAcumulado}" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="2" layout="grid"
+									style="margin-bottom: 5px"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-6, ui-grid-col-2">
+
+									<p:outputLabel value="Compras" style="font-weight: bold" />
+									<p:outputLabel value="" />
+									<p:outputLabel value="Quantidade de Itens Comprados"
+										for="totalComprados" />
+									<p:inputNumber id="totalComprados" readonly="true"
+										value="#{cadastroProdutoBean.produto.quantidadeItensComprados}" />
+
+									<p:outputLabel value="Valor Total de Compras"
+										for="totalCompras" />
+									<p:inputNumber id="totalCompras" readonly="true"
+										value="#{cadastroProdutoBean.produto.totalCompras}" />
+								</p:panelGrid>
+
+							</p:panel>
+
+							<p:panel>
+
+								<p:panelGrid columns="2" layout="grid"
+									style="margin-bottom: 5px"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-6, ui-grid-col-2">
+
+									<p:outputLabel value="Vendas" style="font-weight: bold" />
+									<p:outputLabel value="" />
+									<p:outputLabel value="Quantidade de Itens Vendidos"
+										for="totalVendidos" />
+									<p:inputNumber id="totalVendidos" readonly="true"
+										value="#{cadastroProdutoBean.produto.quantidadeItensVendidos}" />
+
+									<p:outputLabel value="Valor Total de Vendas" for="totalVendas" />
+									<p:inputNumber id="totalVendas" readonly="true"
+										value="#{cadastroProdutoBean.produto.totalVendas}" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="2" layout="grid"
+									style="margin-bottom: 5px"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-6, ui-grid-col-2">
+
+									<p:outputLabel value="Preço Médio de Venda"
+										for="preco-medio-venda" />
+									<p:inputNumber id="preco-medio-venda" readonly="true"
+										value="#{cadastroProdutoBean.produto.precoMedioVenda}" />
+								</p:panelGrid>
+							</p:panel>
+						</p:panelGrid>
+					</p:panel>
+
+					<p:panel rendered="#{cadastroProdutoBean.produto.id == null}">
+
+						<p:spacer />
+
+						<p:panelGrid columns="2" layout="grid" 
+							styleClass="panelgrid-noborder disabled disabled panel-save"
+							columnClasses="ui-grid-col-2, ui-grid-col-3">
+
+							<p:outputLabel />
+							<p:commandButton id="btn-calcular" value="Salvar"
+								onstart="PF('downloadLoading').show();"
+								styleClass="btn-calcular" 
+								onsuccess="PF('downloadLoading').hide();" update="msg form"
+								action="#{cadastroProdutoBean.salvar}"
+								process="@this form panel-upload" icon="fa fa-save"
+								style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;" />
+						</p:panelGrid>
+					</p:panel>
+
+				</p:panel>
+			</h:form>
+
+		</div>
+
+		<p:dialog id="downloadLoading" showHeader="false" modal="true"
+			widgetVar="downloadLoading" header="Status" draggable="false"
+			closable="false" resizable="false">
+			<p:graphicImage name="images/loadingbar.gif"
+				library="manhattan-layout" width="50" />
+		</p:dialog>
+
+		<script type="text/javascript">
+			function start() {
+				PF('downloadLoading').show();
+			}
+
+			function stop() {
+				PF('downloadLoading').hide();
+			}
+		</script>
+
+	</ui:define>
+
+</ui:composition>

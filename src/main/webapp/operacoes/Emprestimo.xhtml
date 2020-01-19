@@ -1,0 +1,398 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="title">Registrar Compra</ui:define>
+
+	<f:metadata>
+		<f:viewAction action="#{registroComprasBean.inicializar}" />
+	</f:metadata>
+
+	<ui:define name="content">
+
+		<style>
+@media ( min-width :220px) {
+	.itens-add {
+		margin-top: -15px;
+	}
+	body .ui-panel .ui-panel-content {
+		border: none;
+	}
+	.ui-blockui-content {
+		padding: 0.25em;
+	}
+	.ui-slider .ui-slider-handle {
+		width: 1.7em;
+		height: 1.7em;
+	}
+	.ui-slider-horizontal {
+		height: 1.2em !important;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 28px !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+		width: 50% !important;
+		float: left !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-6 {
+		width: 50% !important;
+		float: left !important;
+	}
+	.qty-parcelas.ui-panelgrid .ui-panelgrid-cell:nth-child(1) {
+		margin-top: 10px !important;
+	}
+	.percentual-juros.ui-panelgrid .ui-panelgrid-cell:nth-child(1) {
+		margin-top: 8px !important;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+		.ui-datatable tfoot th {
+		font-size: 13px;
+	}
+	body .btn-new.ui-button {
+		color: #676363;
+		background-color: #f9f9f9;
+		border: 1px solid #8a8585;
+	}
+	.swal2-popup {
+		width: 28em;
+		max-width: 100%;
+		padding: 0 0 0.4em 0;
+		font-size: 0.75rem;
+	}
+	.swal2-popup #swal2-content {
+		font-weight: 400;
+	}
+	body #item-dialog.ui-dialog .ui-dialog-content {
+		background-color: #ffffff;
+		padding: 10px 0px 0px 0px;
+	}
+	body .ui-datatable .ui-paginator {
+		padding: 2px 0px !important;
+	}
+	#item-dialog.ui-dialog {
+		margin-top: -1550px !important;
+	}
+}
+
+@media ( min-width :460px) {
+	.ui-slider .ui-slider-handle {
+		width: 1.7em;
+		height: 1.7em;
+	}
+	.ui-slider-horizontal {
+		height: 1.2em;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 27px !important;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+		.ui-datatable tfoot th {
+		font-size: 14px;
+	}
+}
+
+@media ( min-width :640px) {
+	.ui-slider-handle {
+		width: 1.2em !important;
+		height: 1.2em !important;
+	}
+	.ui-slider-horizontal {
+		height: 0.8em !important;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 27px !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+		width: 33.33333% !important;
+		float: none;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-6 {
+		width: auto !important;
+		float: none;
+	}
+	.itens-add {
+		margin-top: 15px;
+	}
+}
+</style>
+
+		<div class="page-header">
+			<h1>Registrar Compra</h1>
+		</div>
+
+		<p:growl id="msg" closable="true" life="2000" showSummary="false"
+			showDetail="true" style="text-align: center" />
+
+		<div class="ui-g-12 ui-lg-12">
+
+			<h:form id="form">
+
+				<p:defaultCommand target="btn-calcular" />
+
+				<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+					styleClass="panelgrid-noborder disabled disabled"
+					columnClasses="ui-grid-col-6, ui-grid-col-6">
+
+					<p:panel class="card card-w-title ui-fluid" id="panel-itens"
+						style="margin-bottom: 0px;margin-top: 10px; padding-bottom: 0px !important">
+
+						<h3 style="font-weight: bold">Dados da Compra</h3>
+
+						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-4, ui-grid-col-4">
+
+							<p:outputLabel value="Data da Compra" for="data-compra" />
+							<p:datePicker value="#{registroComprasBean.compra.dataCompra}"
+								id="data-compra" pattern="dd/MM/yyyy" locale="pt"
+								showIcon="true" />
+
+							<p:outputLabel value="Comprador" for="comprador" />
+							<p:selectOneMenu id="comprador"
+								value="#{registroComprasBean.compra.usuario}"
+								placeholder="selecione">
+
+								<f:selectItem itemLabel="Selecione" />
+
+								<f:selectItems value="#{registroComprasBean.todosUsuarios}"
+									var="vendedor" itemLabel="#{vendedor.nome}"
+									itemValue="#{vendedor}" />
+							</p:selectOneMenu>
+
+						</p:panelGrid>
+
+						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+							styleClass="panelgrid-noborder disabled disabled" rendered="false"
+							columnClasses="ui-grid-col-4, ui-grid-col-4">
+
+							<p:outputLabel value="Quantidade de itens" for="itens" />
+							<p:inputNumber id="itens" decimalPlaces="0" readonly="true"
+								placeholder="0"
+								value="#{registroComprasBean.compra.quantidadeItens}" />
+
+							<p:outputLabel value="Valor total" for="total" />
+							<p:inputNumber id="total" decimalPlaces="0" readonly="true"
+								placeholder="0" value="#{registroComprasBean.compra.valorTotal}" />
+						</p:panelGrid>
+
+
+						<h3 style="font-weight: bold">Itens da compra</h3>
+
+						<p:commandButton styleClass="btn-new" icon="fa fa-fw fa-cubes"
+							title="Buscar produto" oncomplete="PF('item-dialog').show()"
+							process="@this"
+							style="position: relative; float: right; margin-top: -38px; margin-right: 8px; width: 40px" />
+
+						<p:inputText id="id" type="hidden"
+						value="#{registroComprasBean.itemCompra.code}" required="true"
+						requiredMessage="Produto deve ser informado." />
+						
+						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-4, ui-grid-col-4">
+
+							<p:outputLabel value="Código" for="codigo" />
+							<p:inputText id="codigo"
+								value="#{registroComprasBean.itemCompra.produto.codigo}"
+								readonly="true" />
+								
+							<p:outputLabel value="Descrição" for="descricao" />
+							<p:inputText id="descricao"
+								value="#{registroComprasBean.itemCompra.produto.descricao}"
+								readonly="true" />
+								
+							<p:outputLabel value="Fornecedor" for="fornecedor" />
+							<p:inputText id="fornecedor"
+								value="#{registroComprasBean.itemCompra.produto.fornecedor.nome}"
+								readonly="true" />
+						</p:panelGrid>
+
+
+						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-4, ui-grid-col-4">
+
+							<p:outputLabel value="Valor Unitário" for="valor-unitario" />
+							<p:inputNumber id="valor-unitario" decimalPlaces="2"
+								placeholder="0"
+								value="#{registroComprasBean.itemCompra.valorUnitario}">
+								<p:ajax event="keyup" update="valor-total"></p:ajax>
+								</p:inputNumber>
+
+							<p:outputLabel value="Quantidade" for="quantidade" />
+							<p:inputNumber id="quantidade" decimalPlaces="0" placeholder="0"
+								value="#{registroComprasBean.itemCompra.quantidade}">
+								
+								<p:ajax event="keyup" update="valor-total"></p:ajax>
+								</p:inputNumber>
+
+							<p:outputLabel value="Sub-Total" for="valor-total" />
+							<p:inputNumber id="valor-total" decimalPlaces="2" readonly="true"
+								placeholder="0" value="#{registroComprasBean.itemCompra.valorUnitario * registroComprasBean.itemCompra.quantidade}" />
+						</p:panelGrid>
+
+						<p:panelGrid columns="2" layout="grid"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-4, ui-grid-col-4">
+
+							<p:outputLabel />
+							<p:commandButton id="btn-adicionar" value="Adicionar"
+								onstart="PF('downloadLoading').show();"
+								onsuccess="PF('downloadLoading').hide();"
+								update="msg codigo descricao fornecedor id valor-unitario quantidade valor-total panel-table"
+								action="#{registroComprasBean.adicionarItem}"
+								process="@this codigo valor-unitario quantidade valor-total id"
+								style="font-weight: bold;" />
+						</p:panelGrid>
+					</p:panel>
+
+
+					<p:panel class="card card-w-title ui-fluid itens-add" id="panel-table"
+						style="padding-bottom: 0px !important">
+
+						<h3 style="font-weight: bold">Itens adicionados</h3>
+
+						<p:panelGrid columns="1" layout="grid"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-12">
+
+							<p:dataTable id="itensTable" paginatorAlwaysVisible="false"
+								value="#{registroComprasBean.itensCompra}" var="item"
+								emptyMessage="Nenhum item adicionado." rows="10" reflow="true"
+								paginator="true" paginatorPosition="bottom"
+								rowKey="#{item.code}"
+								selection="#{registroComprasBean.itemSelecionado}"
+								selectionMode="single">
+
+								<p:column headerText="Cód." width="20%">
+									<h:outputText value="#{item.produto.codigo}" />
+								</p:column>
+
+								<p:column headerText="Desc." width="20%">
+									<h:outputText value="#{item.produto.descricao}" />
+								</p:column>
+
+								<p:column headerText="Val. Unit." width="20%">
+									<h:outputText value="#{item.valorUnitario}" />
+								</p:column>
+
+								<p:column headerText="Qtd" width="20%">
+									<h:outputText value="#{item.quantidade}" />
+								</p:column>
+
+								<p:column headerText="Total" width="20%">
+									<h:outputText value="#{item.total}" />
+								</p:column>
+							</p:dataTable>
+						</p:panelGrid>
+
+						<p:contextMenu id="menu-item" for="itensTable">
+							<p:menuitem value="Remover Item" id="btn-remove" update="panel-table"
+								process="@this panel-table" action="#{registroComprasBean.removeItem}"
+								onstart="start();" oncomplete="stop();" icon="fa fa-fw fa-trash"
+								disabled="#{registroComprasBean.itensCompraSize eq 0}" />
+								
+							<p:menuitem value="Editar Item" id="btn-editar" update="panel-table panel-itens"
+								process="@this panel-table" action="#{registroComprasBean.editarItem}"
+								onstart="start();" oncomplete="stop();" icon="fa fa-fw fa-edit"
+								disabled="#{registroComprasBean.itensCompraSize eq 0}" />
+						</p:contextMenu>
+
+						<div
+							style="width: 80%; margin-left: 10%; margin-top: 15px; margin-bottom: 10px; border-top: 1px solid #ccc"></div>
+
+						<p:panelGrid columns="2" layout="grid"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-4, ui-grid-col-3">
+
+							<p:commandButton id="btn-calcular" value="Finalizar Compra"
+								onstart="PF('downloadLoading').show();"
+								onsuccess="PF('downloadLoading').hide();" update="msg data-compra comprador panel-table"
+								action="#{registroComprasBean.salvar}" process="@this panel-table data-compra comprador"
+								style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;" />
+						</p:panelGrid>
+
+					</p:panel>
+
+				</p:panelGrid>
+			</h:form>
+
+		</div>
+
+		<p:dialog header="Buscar produto" widgetVar="item-dialog"
+			id="item-dialog" resizable="false" modal="true" closeOnEscape="true"
+			responsive="true" width="350px">
+
+			<h:form id="form-dialog">
+
+				<p:focus for="search" />
+
+				<div class="ui-g-12 ui-lg-12">
+					<p:panel class="card card-w-title ui-fluid"
+						style="padding-bottom: 0px;">
+
+						<p:defaultCommand target="pesquisar-button" />
+
+						<p:inputText id="search"
+							value="#{registroComprasBean.filter.descricao}"
+							placeholder="Digite o código ou descrição" style="width: 180px" />
+						<p:commandButton icon="fa fa-fw fa-search" title="Pesquisar"
+							id="pesquisar-button" update="produtosTable"
+							style="margin-left: 3px; width: 40px" process="@parent"
+							action="#{registroComprasBean.pesquisar}"
+							onstart="PF('downloadLoading').show();"
+							oncomplete="PF('downloadLoading').hide();">
+						</p:commandButton>
+
+						<p:dataTable id="produtosTable" paginatorAlwaysVisible="false"
+							value="#{registroComprasBean.produtosFiltrados}" var="produto"
+							emptyMessage="Nenhum produto encontrado." rows="2"
+							paginator="true" paginatorPosition="bottom"
+							style="margin-top: 10px">
+
+							<p:column headerText="Código" width="30%">
+								<h:outputText value="#{produto.codigo}" />
+							</p:column>
+
+							<p:column headerText="Descrição" width="60%">
+								<h:outputText value="#{produto.descricao}" />
+							</p:column>
+
+							<p:column width="20%" style="text-align: center">
+								<p:commandButton icon="fa fa-fw fa-check"
+									action="#{registroComprasBean.selecionarProduto(produto)}"
+									title="Selecionar Produto" update="id codigo descricao fornecedor valor-unitario quantidade valor-total" style="width: 100%"
+									process="@this" oncomplete="PF('item-dialog').hide();">
+								</p:commandButton>
+							</p:column>
+
+						</p:dataTable>
+					</p:panel>
+				</div>
+
+			</h:form>
+		</p:dialog>
+
+		<p:dialog id="downloadLoading" showHeader="false" modal="true"
+			widgetVar="downloadLoading" header="Status" draggable="false"
+			closable="false" resizable="false">
+			<p:graphicImage name="images/loadingbar.gif"
+				library="manhattan-layout" width="50" />
+		</p:dialog>
+
+		<script type="text/javascript">
+			function start() {
+				PF('downloadLoading').show();
+			}
+
+			function stop() {
+				PF('downloadLoading').hide();
+			}
+		</script>
+
+	</ui:define>
+
+</ui:composition>

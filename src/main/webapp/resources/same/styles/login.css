@@ -1,0 +1,103 @@
+@charset "utf-8";
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body, html {
+	width: 100%;
+	height: 100%;
+	font-family: Arial, Tahoma, sans-serif;
+	font-size: 12px;
+}
+
+body {
+	background: url(#{ resource [ 'same/images:login-same.jpg' ]})centercenter;
+-webkit-background-size
+
+
+
+
+:
+
+
+ 
+
+
+cover
+
+
+
+
+;
+-moz-background-size
+
+
+
+
+:
+
+
+ 
+
+
+cover
+
+
+
+
+;
+-o-background-size
+
+
+
+
+:
+
+
+ 
+
+
+cover
+
+
+
+
+;
+background-size
+
+
+
+
+:
+
+
+ 
+
+
+cover
+
+
+
+
+;
+}
+.login {
+	margin-top: -45px;
+}
+
+.grid-login {
+	border-radius: 8px;
+	border: 1px solid #ccc;
+	margin: 8px 0 8px 0;
+	padding: 10px
+}
+
+.ajax-status {
+	position: absolute;
+	bottom: 20px;
+	right: 23px;
+	width: 35px;
+	height: 35px
+}

@@ -1,0 +1,442 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	template="/WEB-INF/template.xhtml">
+
+	<ui:define name="title">#{simularOperacaoBean.result ? 'Resultado' : 'Simular Operação' }</ui:define>
+
+	<ui:define name="content">
+
+		<style>
+	
+@media ( min-width :220px) {
+	
+	.ui-slider .ui-slider-handle {
+		width: 1.7em;
+		height: 1.7em;
+	}
+	.ui-slider-horizontal {
+		height: 1.2em !important;
+	}
+	
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 28px !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+		width: 50% !important;
+		float: left !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-6 {
+		width: 50% !important;
+		float: left !important;
+	}
+	.qty-parcelas.ui-panelgrid .ui-panelgrid-cell:nth-child(1) {
+		margin-top: 10px !important;
+	}
+	.percentual-juros.ui-panelgrid .ui-panelgrid-cell:nth-child(1) {
+		margin-top: 8px !important;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+		.ui-datatable tfoot th {
+		font-size: 13px;
+	}
+	body .btn-new.ui-button {
+		color: #676363;
+		background-color: #f9f9f9;
+		border: 1px solid #8a8585;
+	}
+	.swal2-popup {
+		width: 28em;
+	    max-width: 100%;
+	    padding: 0 0 0.4em 0;
+	    font-size: 0.75rem;
+	}
+	.swal2-popup #swal2-content {
+	    font-weight: 400;
+	}
+	body #resultado .btn-recalcular .ui-button {
+    	width: 100% !important;
+    }
+    #resultado .ui-grid-responsive .ui-grid-col-2 {
+    	width: 33.33333% !important;
+    }
+}
+
+@media ( min-width :460px) {
+	
+	.ui-slider .ui-slider-handle {
+		width: 1.7em;
+		height: 1.7em;
+	}
+	.ui-slider-horizontal {
+		height: 1.2em;
+	}
+	
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 27px !important;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+		.ui-datatable tfoot th {
+		font-size: 14px;
+	}	
+}
+
+@media ( min-width :640px) {
+	
+	.ui-slider-handle {
+		width: 1.2em !important;
+		height: 1.2em !important;
+	}
+	.ui-slider-horizontal {
+		height: 0.8em !important;
+	}
+	
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 27px !important;
+	}
+	
+	.result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+		width: 33.33333% !important;
+		float: none;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-6 {
+		width: auto !important;
+		float: none;
+	}
+	
+	.ui-datatable-tablewrapper {
+	    width: 100% !important;
+	}
+	body #resultado .btn-recalcular .ui-button {
+    	width: 100% !important;
+    }
+	
+}
+@media ( min-width :960px) {
+	.ui-datatable-tablewrapper {
+	    width: 50% !important;
+	}
+	body #resultado .btn-recalcular .ui-button {
+    	width: 50% !important;
+    }
+    .result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+    	width: 16.33333% !important;
+    }
+    #resultado .ui-grid-responsive .ui-grid-col-2 {
+    	width:  16.33333% !important;
+    }
+}
+</style>
+
+		<div class="page-header">
+			<h1>#{simularOperacaoBean.result ? 'Resultado' : 'Simular
+				Operação' }</h1>
+		</div>
+
+		<p:growl id="msg" closable="true" life="500" showSummary="false"
+			showDetail="true" style="text-align: center" />
+
+		<div class="ui-g-12 ui-lg-12">
+		
+		<p:focus for="simulacao:nome" />
+
+			<h:form id="simulacao">
+
+				<p:defaultCommand target="btn-calcular" />
+
+				<p:panel class="card card-w-title ui-fluid"
+					rendered="#{simularOperacaoBean.result ? 'false' : 'true' }"
+					style="margin-top: -10px; padding-bottom: 0px !important">
+
+					<h3 style="font-weight: bold">Dados do Solicitante</h3>
+
+					<p:commandButton styleClass="btn-new"
+						icon="fa fa-fw fa-file-text-o" title="Nova simulação"
+						onclick="PrimeFaces.monitorDownload(start, stop);"
+						action="#{simularOperacaoBean.novaSimulacao}" process="@this"
+						style="position: relative; float: right; margin-top: -45px; margin-right: 8px; width: 40px" />
+
+					<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3">
+
+						<p:outputLabel value="Nome" for="nome" />
+						<p:inputText id="nome"
+							value="#{simularOperacaoBean.simulacao.nome}" />
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-2">
+
+						<p:outputLabel value="CPF" for="cpf" />
+						<p:inputMask id="cpf" value="#{simularOperacaoBean.simulacao.cpf}"
+							mask="999.999.999-99" />
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-2">
+
+						<p:outputLabel value="Contato" for="contato" />
+						<p:inputMask id="contato"
+							value="#{simularOperacaoBean.simulacao.contato}"
+							mask="(99) 9-9999-9999" />
+
+					</p:panelGrid>
+
+					<p:spacer />
+
+					<h3 style="font-weight: bold">Dados do Empréstimo</h3>
+
+					<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3">
+
+						<p:outputLabel value="Data do empréstimo" for="data-emprestimo" />
+						<p:calendar id="data-emprestimo"
+							value="#{simularOperacaoBean.simulacao.dataEmprestimo}"
+							showOn="button" pattern="dd/MM/yyyy" locale="pt" />
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3">
+
+						<p:outputLabel value="Valor do empréstimo" for="valor-emprestimo" />
+						<p:inputNumber id="valor-emprestimo" decimalSeparator=","
+							thousandSeparator="."
+							value="#{simularOperacaoBean.simulacao.valorEmprestimo}"
+							decimalPlaces="2" />
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" layout="grid" style="margin-bottom: 10px"
+						styleClass="panelgrid-noborder disabled disabled qty-parcelas"
+						columnClasses="ui-grid-col-2, ui-grid-col-3">
+
+						<p:outputLabel value="Quantidade de parcelas" />
+						<p:panel style="text-align: center">
+							<h:outputText id="parcelas"
+								value="#{simularOperacaoBean.simulacao.quantidadeParcelas}"
+								style="font-weight: bold; font-size: 18px" />
+							<h:inputHidden id="qty-parcelas"
+								value="#{simularOperacaoBean.simulacao.quantidadeParcelas}" />
+							<p:slider for="qty-parcelas" display="parcelas"
+								displayTemplate="{value}" minValue="1" maxValue="20" />
+						</p:panel>
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" layout="grid" style="margin-bottom: 10px"
+						styleClass="panelgrid-noborder disabled disabled percentual-juros"
+						columnClasses="ui-grid-col-2, ui-grid-col-3">
+
+						<p:outputLabel value="Percentual de juros (%)" />
+						<p:panel style="text-align: center">
+							<h:outputText id="percentual"
+								value="%#{simularOperacaoBean.simulacao.percentualJuros}"
+								style="font-weight: bold; font-size: 18px" />
+							<h:inputHidden id="percentual-juros"
+								value="#{simularOperacaoBean.simulacao.percentualJuros}" />
+							<p:slider for="percentual-juros" display="percentual"
+								displayTemplate="%{value}" minValue="1" maxValue="30" />
+						</p:panel>
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3">
+
+						<p:outputLabel value="Valor da 1ª Parcela" for="primeira-parcela" />
+						<p:inputNumber id="primeira-parcela" decimalSeparator=","
+							thousandSeparator="."
+							value="#{simularOperacaoBean.simulacao.primeiraParcela}"
+							decimalPlaces="2" />
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3">
+
+						<p:outputLabel value="Vencimento" for="vencimento" />
+						<p:calendar id="vencimento" locale="pt"
+							value="#{simularOperacaoBean.simulacao.dataVencimento}"
+							showOn="button" pattern="dd/MM/yyyy" />
+					</p:panelGrid>
+
+					<p:spacer />
+
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3">
+
+						<p:outputLabel />
+						<p:commandButton id="btn-calcular" value="Calcular"
+							oncomplete="if (!args.validationFailed) PrimeFaces.monitorDownload(start, stop);"
+							update="msg simulacao" action="#{simularOperacaoBean.calcular}"
+							process="@this simulacao"
+							style="font-weight: bold; margin-bottom: 10px" />
+					</p:panelGrid>
+
+				</p:panel>
+			</h:form>
+
+			<h:form id="resultado" rendered="#{simularOperacaoBean.result ? 'true' : 'false' }">
+
+				<p:defaultCommand target="btn-recalcular" />
+
+				<p:panel class="card card-w-title ui-fluid" styleClass="result"
+					style="margin-top: -10px; padding-bottom: 0px !important">
+
+					<h3 style="font-weight: bold">Dados do Solicitante</h3>
+
+					<p:commandButton styleClass="btn-new"
+						icon="fa fa-fw fa-file-text-o" title="Nova simulação"
+						onclick="PrimeFaces.monitorDownload(start, stop);"
+						action="#{simularOperacaoBean.novaSimulacao}" process="@this"
+						style="position: relative; float: right; margin-top: -45px; margin-right: 8px; width: 40px" />
+
+					<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+						styleClass="panelgrid-noborder disabled disabled apply-result"
+						columnClasses="ui-grid-col-4, ui-grid-col-6">
+
+						<p:outputLabel value="Nome:" />
+						<p:outputLabel value="#{simularOperacaoBean.simulacao.nome}"
+							style="font-weight: bold" />
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+						styleClass="panelgrid-noborder disabled disabled apply-result"
+						columnClasses="ui-grid-col-4, ui-grid-col-6">
+
+						<p:outputLabel value="CPF:" />
+						<p:outputLabel value="#{simularOperacaoBean.simulacao.cpf}"
+							style="font-weight: bold" />
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled apply-result"
+						columnClasses="ui-grid-col-4, ui-grid-col-6">
+
+						<p:outputLabel value="Contato:" />
+						<p:outputLabel value="#{simularOperacaoBean.simulacao.contato}"
+							style="font-weight: bold" />
+
+					</p:panelGrid>
+
+					<p:spacer />
+
+					<h3 style="font-weight: bold">Dados do Empréstimo</h3>
+
+					<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+						styleClass="panelgrid-noborder disabled disabled apply-result"
+						columnClasses="ui-grid-col-4, ui-grid-col-6">
+
+						<p:outputLabel value="Data do empréstimo:" />
+						<p:outputLabel
+							value="#{simularOperacaoBean.simulacao.dataEmprestimo}"
+							style="font-weight: bold">
+							<f:convertDateTime pattern="dd/MM/yyyy" timeZone="GMT-4" />
+						</p:outputLabel>
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+						styleClass="panelgrid-noborder disabled disabled apply-result"
+						columnClasses="ui-grid-col-4, ui-grid-col-6">
+
+						<p:outputLabel value="Valor do empréstimo:" />
+						<p:outputLabel 
+							value="R$ #{simularOperacaoBean.valorEmprestado}"
+							style="font-weight: bold">
+							<f:convertNumber type="currency" />
+						</p:outputLabel>
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" layout="grid" style="margin-bottom: 10px"
+						styleClass="panelgrid-noborder disabled disabled apply-result"
+						columnClasses="ui-grid-col-4, ui-grid-col-6">
+
+						<p:outputLabel value="Quantidade de parcelas:" />
+						<p:outputLabel
+							value="#{simularOperacaoBean.simulacao.quantidadeParcelas}"
+							style="font-weight: bold"/>
+							
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-6, ui-grid-col-3">
+
+						<p:outputLabel />
+						<p:dataTable id="tblParcelas" var="parcela"
+							value="#{simularOperacaoBean.parcelas}" style="margin-top: 20px"
+							emptyMessage="No records found." rows="2000">
+
+							<p:column headerText="Data" style="text-align: center">
+								<h:outputText value="#{parcela.parcela}"/>
+							</p:column>
+
+							<p:column headerText="Valor" style="text-align: center">
+								<h:outputText value="R$ #{parcela.valorParcela}">
+									<f:convertNumber pattern="###,##0" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Vencimento" style="text-align: center">
+								<h:outputText value="#{parcela.vencimentoParcela}">
+									<f:convertDateTime pattern="dd/MM/yyyy" timeZone="GMT-4" />
+								</h:outputText>
+							</p:column>
+						</p:dataTable>
+					</p:panelGrid>
+
+
+
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled btn-recalcular"
+						columnClasses="ui-grid-col-2, ui-grid-col-6, ui-grid-col-3">
+
+						<p:outputLabel />
+						<p:commandButton id="btn-recalcular" value="Recalcular"
+							onclick="PrimeFaces.monitorDownload(start, stop);"
+							process="@this" action="#{simularOperacaoBean.recalcular}"
+							style="font-weight: bold; margin-top: 30px; margin-bottom: 15px" />
+					</p:panelGrid>
+
+				</p:panel>
+
+				<script type="text/javascript">
+					$(document).ready(function() {
+						swal({
+							position : 'center',
+							type : 'success',
+							text : 'Simulação realizada com sucesso.',
+							title : 'Concluído!',
+							showConfirmButton : true,
+						})
+					});
+				</script>
+			</h:form>
+		</div>
+
+		<p:dialog id="downloadLoading" showHeader="false" modal="true"
+			widgetVar="downloadLoading" header="Status" draggable="false"
+			closable="false" resizable="false">
+			<p:graphicImage name="images/loadingbar.gif"
+				library="manhattan-layout" width="50" />
+		</p:dialog>
+
+		<script type="text/javascript">
+			function start() {
+				PF('downloadLoading').show();
+			}
+
+			function stop() {
+				PF('downloadLoading').hide();
+			}
+		</script>
+
+	</ui:define>
+
+</ui:composition>
