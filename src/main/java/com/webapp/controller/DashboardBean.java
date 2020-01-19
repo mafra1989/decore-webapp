@@ -4,8 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -31,7 +30,7 @@ import com.webapp.repository.Produtos;
 import com.webapp.repository.Vendas;
 
 @Named
-@RequestScoped
+@ViewScoped
 public class DashboardBean implements Serializable {
      
 	private static final long serialVersionUID = 1L;
@@ -60,7 +59,6 @@ public class DashboardBean implements Serializable {
     private DonutChartModel donutModel;
      
  
-    @PostConstruct
     public void init() {
         createPieModel();
         createPolarAreaModel();
