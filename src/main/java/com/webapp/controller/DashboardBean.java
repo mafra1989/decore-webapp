@@ -322,6 +322,9 @@ public class DashboardBean implements Serializable {
 
      
     public PieChartModel getPieModel() {
+    	if(pieModel == null) {
+    		return pieModel = new PieChartModel();
+    	}
         return pieModel;
     }
  
@@ -330,6 +333,9 @@ public class DashboardBean implements Serializable {
     }
  
     public PolarAreaChartModel getPolarAreaModel() {
+    	if(polarAreaModel == null) {
+    		return polarAreaModel = new PolarAreaChartModel();
+    	}
         return polarAreaModel;
     }
  
@@ -338,6 +344,9 @@ public class DashboardBean implements Serializable {
     }
  
     public BarChartModel getBarModel() {
+    	if(barModel == null) {
+    		return barModel = new BarChartModel();
+    	}
         return barModel;
     }
  
@@ -346,6 +355,9 @@ public class DashboardBean implements Serializable {
     }
  
     public BarChartModel getMixedModel() {
+    	if(mixedModel == null) {
+    		mixedModel = new BarChartModel();
+    	}
         return mixedModel;
     }
  
@@ -354,6 +366,9 @@ public class DashboardBean implements Serializable {
     }
  
     public DonutChartModel getDonutModel() {
+    	if(donutModel == null) {
+    		return donutModel = new DonutChartModel();
+    	}
         return donutModel;
     }
  
