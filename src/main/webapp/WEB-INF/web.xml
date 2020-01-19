@@ -23,7 +23,7 @@
 
 
 	<welcome-file-list>
-		<welcome-file>Dashboard.xhtml</welcome-file>
+		<welcome-file>relatorios/Lucros.xhtml</welcome-file>
 	</welcome-file-list>
 
 	<resource-env-ref>
