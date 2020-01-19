@@ -11,7 +11,6 @@ import javax.persistence.TypedQuery;
 import org.apache.commons.lang3.StringUtils;
 
 import com.webapp.model.CategoriaProduto;
-import com.webapp.model.Emprestimo;
 import com.webapp.model.Produto;
 import com.webapp.repository.filter.ProdutoFilter;
 import com.webapp.util.jpa.Transacional;
@@ -80,20 +79,6 @@ public class Produtos implements Serializable {
 		return typedQuery.getResultList();
 
 	}
-
-	public List<Emprestimo> porCliente(Long id) {
-
-		TypedQuery<Emprestimo> typedQuery;
-
-		typedQuery = manager
-				.createQuery("select e from Emprestimo e join fetch e.cliente c where c.id = :id order by e.id",
-						Emprestimo.class)
-				.setParameter("id", id);
-
-		return typedQuery.getResultList();
-
-	}
-	
 	
 	
 	public Number totalAVender() {		
