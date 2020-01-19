@@ -5,6 +5,10 @@
 	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
 
 	<ui:define name="title">Dashboard</ui:define>
+	
+	<f:metadata>
+		<f:viewAction action="#{dashboardBean.init}" />
+	</f:metadata>
 
 	<ui:define name="head">
 		
