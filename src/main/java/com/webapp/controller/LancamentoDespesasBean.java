@@ -84,7 +84,7 @@ public class LancamentoDespesasBean implements Serializable {
 		despesas.save(despesa);
 		
 		PrimeFaces.current().executeScript(
-				"swal({ type: 'success', title: 'Conclu�do!', text: 'Despesa registrada com sucesso!' });");
+				"swal({ type: 'success', title: 'Concluído!', text: 'Despesa registrada com sucesso!' });");
 		
 		despesa = new Lancamento();
 

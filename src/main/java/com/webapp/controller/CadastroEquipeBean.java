@@ -81,7 +81,7 @@ public class CadastroEquipeBean implements Serializable {
 			listarTodos();
 
 			PrimeFaces.current().executeScript(
-					"PF('downloadLoading').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Membro de equipe salvo com sucesso!' });");
+					"PF('downloadLoading').hide(); swal({ type: 'success', title: 'ConcluÃ­do!', text: 'Membro de equipe salvo com sucesso!' });");
 
 
 		} catch (Exception e) {
@@ -99,7 +99,7 @@ public class CadastroEquipeBean implements Serializable {
 		pesquisar();
 
 		PrimeFaces.current().executeScript(
-				"swal({ type: 'success', title: 'Concluído!', text: 'Membro de equipe excluído com sucesso!' });");
+				"swal({ type: 'success', title: 'Concluï¿½do!', text: 'Membro de equipe excluï¿½do com sucesso!' });");
 
 	}
 

@@ -55,7 +55,7 @@ public class CadastroDestinoLancamentoBean implements Serializable {
 		listarTodos();
 
 		PrimeFaces.current().executeScript(
-				"PF('downloadLoading').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Destino de Lançamento salvo com sucesso!' });");
+				"PF('downloadLoading').hide(); swal({ type: 'success', title: 'ConcluÃ­do!', text: 'Destino de LanÃ§amento salvo com sucesso!' });");
 	}
 
 	public void excluir() {
@@ -67,7 +67,7 @@ public class CadastroDestinoLancamentoBean implements Serializable {
 		pesquisar();
 
 		PrimeFaces.current().executeScript(
-				"swal({ type: 'success', title: 'Concluído!', text: 'Destino de Lançamento excluído com sucesso!' });");
+				"swal({ type: 'success', title: 'Concluï¿½do!', text: 'Destino de LanÃ§amento excluÃ­do com sucesso!' });");
 
 	}
 

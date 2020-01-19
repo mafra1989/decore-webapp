@@ -116,7 +116,7 @@ public class CadastroProdutoBean implements Serializable {
 			file = null;
 			
 			PrimeFaces.current().executeScript(
-					"swal({ type: 'success', title: 'Concluído!', text: 'Produto cadastrado com sucesso!' });");			
+					"swal({ type: 'success', title: 'ConcluÃ­do!', text: 'Produto cadastrado com sucesso!' });");			
 	
 		} else {
 /*			
