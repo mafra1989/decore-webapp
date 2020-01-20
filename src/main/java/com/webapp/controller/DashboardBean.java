@@ -61,12 +61,12 @@ public class DashboardBean implements Serializable {
      
  
     @PostConstruct
-    public void init() {/*
-        createPieModel();
+    public void init() {
+        //createPieModel();
         createPolarAreaModel();
-        createBarModel();
-        createMixedModel();
-        createDonutModel();*/
+        //createBarModel();
+        //createMixedModel();
+        //createDonutModel();
     }
      
     private void createPieModel() {
