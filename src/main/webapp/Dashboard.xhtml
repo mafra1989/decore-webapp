@@ -184,13 +184,13 @@
 			
 <div class="ui-g-12 dashboard-top">
 				<div class="ui-g-12 ui-lg-6 ui-xl-6">
-					<p:barChart model="#{dashboardBean.barModel}"
+					<p:barChart model="#{dashboardBean.barModel}" rendered="false"
 						style="width: 100%; height: 250px;" />
 
 				</div>
 
 				<div class="ui-g-12 ui-lg-6 ui-xl-6">
-					<p:barChart model="#{dashboardBean.mixedModel}"
+					<p:barChart model="#{dashboardBean.mixedModel}" rendered="false"
 						style="width: 100%; height: 220px;" />
 				</div>
 </div>
@@ -202,12 +202,12 @@
 				</div>
 
 				<div class="ui-g-12 ui-lg-4 ui-xl-4">
-					<p:polarAreaChart model="#{dashboardBean.polarAreaModel}"
+					<p:polarAreaChart model="#{dashboardBean.polarAreaModel}" rendered="false"
 						style="width: 100%; height: 230px;" />
 				</div>
 
 				<div class="ui-g-12 ui-lg-4 ui-xl-4">
-					<p:pieChart model="#{dashboardBean.pieModel}"
+					<p:pieChart model="#{dashboardBean.pieModel}" rendered="false"
 						style="width: 100%; height: 230px;" />
 				</div>
 			</div>
