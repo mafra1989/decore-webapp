@@ -24,7 +24,6 @@ import org.primefaces.model.charts.pie.PieChartModel;
 import org.primefaces.model.charts.polar.PolarAreaChartDataSet;
 import org.primefaces.model.charts.polar.PolarAreaChartModel;
 
-import com.webapp.model.CategoriaLancamento;
 import com.webapp.repository.Compras;
 import com.webapp.repository.Lancamentos;
 import com.webapp.repository.Produtos;
@@ -62,7 +61,7 @@ public class DashboardBean implements Serializable {
  
     @PostConstruct
     public void init() {
-        //createPieModel();
+        createPieModel();
         createPolarAreaModel();
         createBarModel();
         createMixedModel();
@@ -94,7 +93,7 @@ public class DashboardBean implements Serializable {
         data.addChartDataSet(dataSet);
         List<String> labels = new ArrayList<>();
         for (Object[] object : despesasTemp) {
-        	labels.add(((CategoriaLancamento) object[0]).getNome());
+        	labels.add((String) object[0]);
 		}
         data.setLabels(labels);
                  
