@@ -117,7 +117,7 @@ public class Lancamentos implements Serializable {
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalDespesasPorCategoriaMesAtual() {
 		Calendar calendar = Calendar.getInstance();
-		String jpql = "SELECT i.categoriaLancamento, sum(i.valor) FROM Lancamento i WHERE i.origemLancamento = :origem and i.mes = :mesAtual GROUP BY i.categoriaLancamento order by sum(i.valor) desc";
+		String jpql = "SELECT c.nome, sum(i.valor) FROM Lancamento i join i.categoriaLancamento c WHERE i.origemLancamento = :origem and i.mes = :mesAtual GROUP BY c.nome order by sum(i.valor) desc";
 		Query q = manager.createQuery(jpql).setParameter("origem", OrigemLancamento.DEBITO)
 				.setParameter("mesAtual", Long.parseLong(String.valueOf(calendar.get(Calendar.MONTH) + 1)))
 				.setMaxResults(5);
