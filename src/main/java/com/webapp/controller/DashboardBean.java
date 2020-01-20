@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.faces.view.ViewScoped;
+import javax.faces.bean.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -31,7 +31,7 @@ import com.webapp.repository.Produtos;
 import com.webapp.repository.Vendas;
 
 @Named
-@ViewScoped
+@RequestScoped
 public class DashboardBean implements Serializable {
      
 	private static final long serialVersionUID = 1L;
