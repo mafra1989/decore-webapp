@@ -66,7 +66,7 @@ public class DashboardBean implements Serializable {
         createPolarAreaModel();
         //createBarModel();
         //createMixedModel();
-        //createDonutModel();
+        createDonutModel();
     }
      
     private void createPieModel() {
