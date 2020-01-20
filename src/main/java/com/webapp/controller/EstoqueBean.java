@@ -1,6 +1,7 @@
 package com.webapp.controller;
 
 import java.io.Serializable;
+import java.util.Base64;
 import java.util.List;
 
 import javax.faces.view.ViewScoped;
@@ -36,6 +37,8 @@ public class EstoqueBean implements Serializable {
 	private ProdutoFilter filter = new ProdutoFilter();
 	
 	private String estoqueTotal = "0";
+	
+	private byte[] fileContent;
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -53,6 +56,14 @@ public class EstoqueBean implements Serializable {
 		}
 		
 		estoqueTotal = String.valueOf(value);
+	}
+	
+	public void prepareFoto() {
+		fileContent = produtoSelecionado.getFoto();
+	}
+	
+	public String getImageContentsAsBase64() {
+	    return Base64.getEncoder().encodeToString(fileContent);
 	}
 	
 	private void todasCategoriasProdutos() {
@@ -85,6 +96,10 @@ public class EstoqueBean implements Serializable {
 
 	public String getEstoqueTotal() {
 		return estoqueTotal;
+	}
+
+	public byte[] getFileContent() {
+		return fileContent;
 	}
 
 }
