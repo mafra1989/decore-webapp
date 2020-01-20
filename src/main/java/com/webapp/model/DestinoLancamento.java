@@ -23,7 +23,7 @@ public class DestinoLancamento implements Serializable {
 	private String descricao;
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue//(strategy = GenerationType.IDENTITY)
 	public Long getId() {
 		return id;
 	}

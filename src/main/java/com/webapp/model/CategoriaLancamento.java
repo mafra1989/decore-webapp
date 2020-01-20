@@ -23,7 +23,7 @@ public class CategoriaLancamento implements Serializable {
 	private String nome;
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue//(strategy = GenerationType.IDENTITY)
 	public Long getId() {
 		return id;
 	}

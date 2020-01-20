@@ -122,9 +122,6 @@ public class Lancamentos implements Serializable {
 				.setParameter("mesAtual", Long.parseLong(String.valueOf(calendar.get(Calendar.MONTH) + 1)))
 				.setMaxResults(5);
 		List<Object[]> result = q.getResultList();
-		for (Object[] object : result) {
-			System.out.println(((CategoriaLancamento) object[0]).getNome() + " - " + object[1]);
-		}
 
 		return result;
 	}
@@ -183,13 +180,8 @@ public class Lancamentos implements Serializable {
 					object[1] = "0" + object[1];
 				}
 
-				System.out.println(object[0] + "/" + object[1] + "/" + object[2] + " - " + object[3]);
 			}
-		} else {
-			for (Object[] object : result) {
-				System.out.println(object[0] + " - " + object[1]);
-			}
-		}
+		} 
 
 		return result;
 	}

@@ -1,31 +1,17 @@
 package com.webapp.repository;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.apache.commons.lang3.time.DateUtils;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.transform.Transformers;
-import org.hibernate.type.StandardBasicTypes;
-import org.hibernate.type.Type;
-
 import com.webapp.model.CategoriaProduto;
 import com.webapp.model.Produto;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
-import com.webapp.model.vo.DataValor;
 import com.webapp.util.jpa.Transacional;
 
 public class Vendas implements Serializable {
@@ -81,7 +67,6 @@ public class Vendas implements Serializable {
 		String jpql = "SELECT sum(i.valorTotal) FROM Venda i WHERE i.nomeDia = :nomeDia";
 		Query q = manager.createQuery(jpql).setParameter("nomeDia", nomeDia);
 		
-		System.out.println(q.getSingleResult());
 		Number count = (Number) q.getSingleResult();
 		
 		if(count == null) {
@@ -98,9 +83,6 @@ public class Vendas implements Serializable {
 		String jpql = "SELECT p.categoriaProduto.nome, SUM(i.total) FROM ItemVenda i JOIN i.produto p GROUP BY p.categoriaProduto.nome ORDER BY p.categoriaProduto.nome ASC";
 		Query q = manager.createQuery(jpql);
 		List<Object[]> result = q.getResultList();
-		for (Object[] object : result) {
-			System.out.println(object[0] + " - " + object[1]);
-		}
 		
 		return result;
 	}
@@ -112,9 +94,6 @@ public class Vendas implements Serializable {
 		String jpql = "SELECT p.categoriaProduto.nome, sum(p.quantidadeAtual * p.precoVenda) FROM Produto p group by p.categoriaProduto.nome order by p.categoriaProduto.nome asc";
 		Query q = manager.createQuery(jpql);
 		List<Object[]> result = q.getResultList();
-		for (Object[] object : result) {
-			System.out.println(object[0] + " - " + object[1]);
-		}
 		
 		return result;
 	}
@@ -177,12 +156,6 @@ public class Vendas implements Serializable {
 				if((long)object[1] < 10) {
 					object[1] = "0" + object[1];
 				}
-				
-				System.out.println(object[0] + "/" + object[1] + "/" + object[2] + " - " + object[3]);
-			}
-		} else {
-			for (Object[] object : result) {			
-				System.out.println(object[0] + " - " + object[1]);
 			}
 		}
 		
@@ -375,67 +348,6 @@ public class Vendas implements Serializable {
 	}
 	
 
-	private Map<Date, BigDecimal> criarMapaVazio(Integer numeroDeDias,
-			Calendar dataInicial) {
-		dataInicial = (Calendar) dataInicial.clone();
-		Map<Date, BigDecimal> mapaInicial = new TreeMap<>();
-
-		for (int i = 0; i <= numeroDeDias; i++) {
-			mapaInicial.put(dataInicial.getTime(), BigDecimal.ZERO);
-			dataInicial.add(Calendar.DAY_OF_MONTH, 1);
-		}
-
-		return mapaInicial;
-	}
-	
-	
-	@SuppressWarnings({ "unchecked", "deprecation" })
-	public Map<Date, BigDecimal> valoresTotaisPorData() {
-		Session session = manager.unwrap(Session.class);
-
-		Integer numeroDeDias = 4;
-		Calendar dataInicial = Calendar.getInstance();
-		Calendar dataFinal = Calendar.getInstance();
-
-		dataInicial = DateUtils.truncate(dataInicial, Calendar.DAY_OF_MONTH);
-		dataFinal = DateUtils.truncate(dataFinal, Calendar.DAY_OF_MONTH);		
-		
-		dataInicial.add(Calendar.DAY_OF_MONTH, numeroDeDias * -1);		
-		dataFinal.add(Calendar.DAY_OF_MONTH, 1);
-		
-		Map<Date, BigDecimal> resultado = criarMapaVazio(numeroDeDias,
-				dataInicial);
-
-		Criteria criteria = session.createCriteria(Vendas.class);
-
-		// select date(movimentacao_data_saida) as data, sum(quantidade) as
-		// quantidade
-		// from movimentacao where
-		// movimentacao_data_saida >= :dataInicial and
-		// movimentacao_data_saida <= :dataFinal
-		// group by date(movimentacao_data_saida)
-
-		criteria.setProjection(
-				Projections
-						.projectionList()
-						.add(Projections.sqlGroupProjection(
-								"date(dataVenda) as data",
-								"date(dataVenda)",
-								new String[] { "data" },
-								new Type[] { StandardBasicTypes.DATE }))
-						.add(Projections.sum("quantidade").as("valor")))
-				.add(Restrictions.ge("dataVenda", dataInicial.getTime()))
-				.add(Restrictions.le("dataVenda", dataFinal.getTime()));
-
-		List<DataValor> valoresPorData = criteria.setResultTransformer(
-				Transformers.aliasToBean(DataValor.class)).list();
-
-		for (DataValor dataValor : valoresPorData) {
-			resultado.put(dataValor.getData(), dataValor.getValor());
-		}
-
-		return resultado;
-	}
 	
 	
 	@SuppressWarnings("unchecked")
@@ -494,14 +406,8 @@ public class Vendas implements Serializable {
 				if((long)object[1] < 10) {
 					object[1] = "0" + object[1];
 				}
-				
-				System.out.println(object[0] + "/" + object[1] + "/" + object[2] + " - " + object[3]);
 			}
-		} else {
-			for (Object[] object : result) {			
-				System.out.println(object[0] + " - " + object[1]);
-			}
-		}
+		} 
 		
 		return result;
 	}

@@ -130,7 +130,7 @@ public class Compras implements Serializable {
 		}
 
 		if (produto != null && produto.getId() != null) {
-			condition += "AND i.produto.id = :id "; System.out.println(produto.getId());
+			condition += "AND i.produto.id = :id ";
 		}
 
 		if (chartCondition != false) {
