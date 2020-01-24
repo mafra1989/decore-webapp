@@ -67,7 +67,11 @@ public class Seguranca {
 	}
 	
 	public byte[] getFileContent() {
-		fileContent = getUsuarioLogado().getUsuario().getFoto();
+		
+		if(getUsuarioLogado().getUsuario().getFoto() != null) {
+			fileContent = getUsuarioLogado().getUsuario().getFoto();
+		}
+		
 		return fileContent;
 	}
 	
