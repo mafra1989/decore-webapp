@@ -204,7 +204,7 @@
 							columnClasses="ui-grid-col-4, ui-grid-col-6">
 
 							<p:outputLabel value="Descrição" for="descricaoLancamento" />
-							<p:inputText id="descricaoLancamento"
+							<p:inputText id="descricaoLancamento" autocomplete="off"
 								value="#{lancamentoDespesasBean.despesa.descricao}" />
 
 						</p:panelGrid>
@@ -214,7 +214,7 @@
 							columnClasses="ui-grid-col-4, ui-grid-col-3">
 
 							<p:outputLabel value="Valor Total" for="valor" />
-							<p:inputNumber id="valor" decimalPlaces="2"
+							<p:inputNumber id="valor" decimalPlaces="2" autocomplete="off"
 								value="#{lancamentoDespesasBean.despesa.valor}" />
 
 						</p:panelGrid>
