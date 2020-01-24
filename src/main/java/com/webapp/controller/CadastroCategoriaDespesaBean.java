@@ -10,6 +10,7 @@ import javax.inject.Named;
 import org.primefaces.PrimeFaces;
 
 import com.webapp.model.CategoriaLancamento;
+import com.webapp.model.OrigemLancamento;
 import com.webapp.repository.CategoriasLancamentos;
 import com.webapp.repository.filter.CategoriaLancamentoFilter;
 import com.webapp.util.jsf.FacesUtil;
@@ -55,7 +56,7 @@ public class CadastroCategoriaDespesaBean implements Serializable {
 		listarTodos();
 
 		PrimeFaces.current().executeScript(
-				"PF('downloadLoading').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Categoria de despesa salva com sucesso!' });");
+				"PF('downloadLoading').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Categoria de lançamento salva com sucesso!' });");
 	}
 
 	public void excluir() {
@@ -67,7 +68,7 @@ public class CadastroCategoriaDespesaBean implements Serializable {
 		pesquisar();
 
 		PrimeFaces.current().executeScript(
-				"swal({ type: 'success', title: 'Concluído!', text: Categoria de despesa excluída com sucesso!' });");
+				"swal({ type: 'success', title: 'Concluído!', text: Categoria de lançamento excluída com sucesso!' });");
 
 	}
 
@@ -106,6 +107,10 @@ public class CadastroCategoriaDespesaBean implements Serializable {
 
 	public void setCategoriaDespesa(CategoriaLancamento categoriaDespesa) {
 		this.categoriaDespesa = categoriaDespesa;
+	}
+	
+	public OrigemLancamento[] getOrigensLancamentos() {
+		return OrigemLancamento.values();
 	}
 
 }

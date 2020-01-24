@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<f:metadata>
+	<f:viewParam name="dummy" />
+	<f:event listener="#{loginBean.preRender}" type="preRenderView" />
+</f:metadata>
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	<title>Login</title>
+
+</h:head>
+<style>
+@media ( min-width :220px) {
+	.login-body .logo {
+		margin-top: 80px;
+	}
+	.login-panel {
+		margin-top: -25px !important;
+	}
+	.username {
+		margin-top: -25px !important;
+	}
+}
+
+
+@media ( min-width :460px) {
+	.login-body .logo {
+		margin-top: 100px;
+	}
+	.login-panel {
+		margin-top: -240px !important;
+	}
+	.username {
+		margin-top: -15px !important;
+	}
+	
+	.login-body .login-panel .ui-g-12.container {
+	    margin-top: 100px;
+	}
+
+}
+
+@media (max-width: 640px) {
+	.login-body .login-panel {
+	    top: 160px;
+	    bottom: 160px;
+	}
+}
+</style>
+
+<h:body styleClass="login-body">
+
+	<p:growl id="msgs" closable="true" life="3000" showDetail="true" />
+
+	<h:form id="form" prependId="false">
+		<p:focus for="j_username" />
+		<div class="ui-g">
+			<div class="ui-g-12" style="text-align: center">
+				<p:graphicImage library="manhattan-layout" name="images/smart-banking" height="30"
+					 styleClass="logo" />
+			</div>
+		</div>
+		<div class="login-panel ui-fluid">
+			<div class="ui-g">
+				<div class="ui-g-6 left-side">				
+					<p:graphicImage style="width: 100%;height: 100%;"
+						name="images/login/login-photo.png"
+						library="manhattan-layout" styleClass="login-image" />
+				</div>
+				<div class="ui-g-6 ui-sm-12">
+					<div class="ui-g-12 container">
+						<h3>Bem vindo!</h3>
+						<h2>Acesso ao Sistema</h2>
+					</div>
+					<div class="ui-g-12 username">
+						<p:outputLabel for="j_username" value="Usuário" />
+						<div class="input-wrapper">
+							<p:inputText id="j_username" placeholder="Usuário"
+								autocomplete="off" />
+							<i class="fa fa-user" />
+						</div>
+					</div>
+					<div class="ui-g-12">
+						<p:outputLabel for="j_password" value="Senha" />
+						<div class="input-wrapper">
+							<p:password id="j_password" placeholder="Senha" feedback="false" />
+							<i class="fa fa-lock" />
+						</div>
+					</div>
+					<div class="ui-g-12 button-container">
+						<p:commandButton id="loginBtn" value="Acessar"
+							action="#{loginBean.acessar}" styleClass="green-btn raised-btn"
+							ajax="false">
+							<p:ajax onstart="PF('downloadLoading').show()" />
+						</p:commandButton>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<p:dialog id="downloadLoading" showHeader="false" modal="true"
+			widgetVar="downloadLoading" header="Status" draggable="false"
+			closable="false" resizable="false">
+			<p:graphicImage name="images/loadingbar.gif"
+				library="manhattan-layout" width="50" />
+		</p:dialog>
+
+	</h:form>
+
+	<h:outputStylesheet name="css/layout-blue.css"
+		library="manhattan-layout" />
+	<h:outputStylesheet name="css/app.css" library="manhattan-layout" />
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$.removeCookie('manhattan_expandeditems', {
+				path : '/'
+			});
+		});
+	</script>
+
+</h:body>
+
+</html>

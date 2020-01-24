@@ -138,9 +138,8 @@
 
 				<p:panel style="margin-top: -8px;">
 					<p:defaultCommand target="btn-calcular" />
-					<p:focus for="codigo" />
 
-					<p:panel class="card card-w-title ui-fluid"
+					<p:panel class="card card-w-title ui-fluid" id="panel-cadastro"
 						style="padding-bottom: 0px !important">
 
 						<h3 style="font-weight: bold">Dados do Produto</h3>
@@ -172,13 +171,37 @@
 								value="#{cadastroProdutoBean.produto.descricao}" />
 						</p:panelGrid>
 
+						<p:panelGrid columns="4" layout="grid" style="margin-bottom: 5px"
+							styleClass="panelgrid-noborder disabled disabled"
+							id="margem-lucro"
+							columnClasses="ui-grid-col-2, ui-grid-col-2, ui-grid-col-2, ui-grid-col-3">
+
+							<p:outputLabel value="Percentual de lucro (%)" />
+							<p:panel style="text-align: center">
+								<h:outputText id="percentual"
+									value="%#{cadastroProdutoBean.produto.margemLucro}"
+									style="font-weight: bold; font-size: 18px" />
+								<h:inputHidden id="percentual-juros"
+									value="#{cadastroProdutoBean.produto.margemLucro}" />
+								<p:slider for="percentual-juros" display="percentual"
+									displayTemplate="%{value}" minValue="1" maxValue="50">
+
+									<p:ajax event="slideEnd" update="a-vender totalAcumulado"
+										listener="#{cadastroProdutoBean.calculaAvender}"
+										process="@this margem-lucro" />
+								</p:slider>
+							</p:panel>
+
+						</p:panelGrid>
+
 						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-2, ui-grid-col-2">
 
-							<p:outputLabel value="Preço de venda" for="preco" />
-							<p:inputNumber id="preco" autocomplete="off"
-								value="#{cadastroProdutoBean.produto.precoVenda}" />
+							<p:outputLabel value="Locação" for="locacao" />
+							<p:inputText id="locacao" autocomplete="off"
+								value="#{cadastroProdutoBean.produto.locacao}" />
+
 						</p:panelGrid>
 
 						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
@@ -232,53 +255,49 @@
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-2, ui-grid-col-2">
 
-							<p:outputLabel value="Foto" rendered="#{cadastroProdutoBean.produto.id == null}" />
-							<p:fileUpload styleClass="btn-upload" mode="simple" auto="true"
-								value="#{cadastroProdutoBean.file}" style="font-weight:bold"
-								update="save-upload btn-preview" label="Adicionar"
-								process="@this" skinSimple="true"
-								rendered="#{cadastroProdutoBean.produto.id == null}">
-							</p:fileUpload>
-							
-							<p:outputLabel value="Foto" rendered="#{cadastroProdutoBean.produto.id != null and cadastroProdutoBean.fileContent != null}" />
-							<ui:fragment id="photo-edit" 
-								rendered="#{cadastroProdutoBean.fileContent != null and cadastroProdutoBean.produto.id != null}">
-								<img
-									src="data:image/png;base64,#{cadastroProdutoBean.imageContentsAsBase64}"
-									style="width: 100%;" />
-							</ui:fragment>
+							<p:outputLabel value="Foto" />												
+							<p:commandButton  value="Adicionar" styleClass="btn-upload"
+								oncomplete="PF('anexo-dialog').show();"
+								onsuccess="PF('downloadLoading').hide();" update="anexo-dialog"
+								icon="fa fa-plus"
+								style="font-weight:bold" />
 
-						</p:panelGrid>
-
-						<p:panelGrid id="save-upload" columns="3" layout="grid"
-							style="margin-bottom: 5px" rendered="#{cadastroProdutoBean.produto.id == null}"
-							styleClass="panelgrid-noborder disabled disabled"
-							columnClasses="ui-grid-col-2, ui-grid-col-2">
-
-							<p:outputLabel value="" />
-							<p:commandButton id="btn-preview" icon="fa fa-fw fa-cloud-upload"
-								value="Upload" action="#{cadastroProdutoBean.upload}"
-								ajax="false" update="photo msg" process="@this panel-upload"
-								style="background-color: #3e3f41; font-weight: bold; float: rifht; width: 100px;">
-							</p:commandButton>
-						</p:panelGrid>
-
-						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
-							styleClass="panelgrid-noborder disabled disabled"
-							columnClasses="ui-grid-col-2, ui-grid-col-2"
-							rendered="{cadastroProdutoBean.produto.id != null}">
-
-							<p:outputLabel value="" />
-							<ui:fragment id="photo"
+							<p:outputLabel value=""
+								rendered="#{cadastroProdutoBean.fileContent != null}" />
+							<ui:fragment id="photo-edit"
 								rendered="#{cadastroProdutoBean.fileContent != null}">
 								<img
 									src="data:image/png;base64,#{cadastroProdutoBean.imageContentsAsBase64}"
 									style="width: 100%;" />
 							</ui:fragment>
+
 						</p:panelGrid>
+
 					</p:panel>
 
-					<p:panel rendered="#{cadastroProdutoBean.produto.id != null}" style="margin-bottom: 20px">
+					<p:panel>
+
+						<p:spacer />
+
+						<p:panelGrid columns="2" layout="grid"
+							styleClass="panelgrid-noborder disabled disabled panel-save"
+							columnClasses="ui-grid-col-2, ui-grid-col-3">
+
+							<p:outputLabel />
+							<p:commandButton id="btn-calcular" value="Salvar"
+								onstart="PF('downloadLoading').show();"
+								styleClass="btn-calcular"
+								onsuccess="PF('downloadLoading').hide();" update="msg panel-cadastro"
+								action="#{cadastroProdutoBean.salvar}"
+								process="@this form panel-upload" icon="fa fa-save"
+								style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;" />
+						</p:panelGrid>
+					</p:panel>
+					
+					<p:spacer />
+
+					<p:panel rendered="#{cadastroProdutoBean.produto.id != null}"
+						style="margin-bottom: 20px">	
 
 						<h3 style="font-weight: bold">Informações importantes</h3>
 
@@ -289,7 +308,7 @@
 							<p:panel>
 
 								<p:panelGrid columns="2" layout="grid"
-									style="margin-bottom: 5px"
+									style="margin-bottom: 5px" id="a-vender"
 									styleClass="panelgrid-noborder disabled disabled"
 									columnClasses="ui-grid-col-6, ui-grid-col-2">
 
@@ -351,29 +370,45 @@
 						</p:panelGrid>
 					</p:panel>
 
-					<p:panel rendered="#{cadastroProdutoBean.produto.id == null}">
-
-						<p:spacer />
-
-						<p:panelGrid columns="2" layout="grid" 
-							styleClass="panelgrid-noborder disabled disabled panel-save"
-							columnClasses="ui-grid-col-2, ui-grid-col-3">
-
-							<p:outputLabel />
-							<p:commandButton id="btn-calcular" value="Salvar"
-								onstart="PF('downloadLoading').show();"
-								styleClass="btn-calcular" 
-								onsuccess="PF('downloadLoading').hide();" update="msg form"
-								action="#{cadastroProdutoBean.salvar}"
-								process="@this form panel-upload" icon="fa fa-save"
-								style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;" />
-						</p:panelGrid>
-					</p:panel>
-
 				</p:panel>
 			</h:form>
 
 		</div>
+		
+		<p:dialog header="Adicionar foto" widgetVar="anexo-dialog"
+			id="anexo-dialog" resizable="false" modal="true" closeOnEscape="true"
+			responsive="true" width="350px">
+
+			<h:form id="form-anexo" enctype="multipart/form-data">
+
+				<p:fileUpload styleClass="btn-upload" sizeLimit="60000"
+							value="#{cadastroProdutoBean.file}" 
+							label="Anexar" process="@this" style="margin-left:8px;margin-top:5px"
+							mode="simple" skinSimple="true">
+						</p:fileUpload>
+						
+				<div class="ui-g-12 ui-lg-12">
+				
+					<p:panel class="card card-w-title ui-fluid"
+						style="padding-bottom: 0px;margin-bottom: 0px;">
+
+						<p:commandButton icon="fa fa-fw fa-cloud-upload" value="Upload" 
+							action="#{cadastroProdutoBean.upload}"  ajax="false" process="@this"
+							onclick="PrimeFaces.monitorDownload(start, stop);"
+							update="form:panel-upload" style="background-color: #3e3f41; font-weight: bold; float: rifht; width: 140px">
+
+						</p:commandButton>
+						
+						<p:commandButton icon="fa fa-fw fa-close" value="Fechar"
+							onclick="PF('anexo-dialog').hide();"
+							style="background-color: #b33620; font-weight: bold; float: left; width: 140px">
+
+						</p:commandButton>
+					</p:panel>
+				</div>
+
+			</h:form>
+		</p:dialog>
 
 		<p:dialog id="downloadLoading" showHeader="false" modal="true"
 			widgetVar="downloadLoading" header="Status" draggable="false"

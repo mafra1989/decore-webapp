@@ -134,7 +134,11 @@ public class RegistroComprasBean implements Serializable {
 			itemCompra.setQuantidadeDisponivel(itemCompra.getQuantidade());
 			itemCompra.setCompra(compra);
 			itensCompra.add(itemCompra); 		
-			itemCompra = new ItemCompra();	
+			
+			compra.setValorTotal(BigDecimal.valueOf(compra.getValorTotal().doubleValue() + itemCompra.getTotal().doubleValue()));
+			
+			itemCompra = new ItemCompra();
+			
 		} else {
 			PrimeFaces.current().executeScript(
 					"swal({ type: 'error', title: 'Erro!', text: 'Produto já foi adicionado!' });");
@@ -144,7 +148,8 @@ public class RegistroComprasBean implements Serializable {
 
 	public void removeItem() {
 
-		itensCompra.remove(itemSelecionado);
+		compra.setValorTotal(BigDecimal.valueOf(compra.getValorTotal().doubleValue() - itemSelecionado.getTotal().doubleValue()));
+		itensCompra.remove(itemSelecionado);		
 		itemSelecionado = null;
 
 	}
@@ -152,6 +157,7 @@ public class RegistroComprasBean implements Serializable {
 	public void editarItem() {
 
 		itemCompra = itemSelecionado;
+		compra.setValorTotal(BigDecimal.valueOf(compra.getValorTotal().doubleValue() - itemSelecionado.getTotal().doubleValue()));
 		itensCompra.remove(itemSelecionado);
 		itemSelecionado = null;
 

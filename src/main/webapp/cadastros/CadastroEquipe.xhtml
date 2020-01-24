@@ -16,7 +16,7 @@
 		<style>
 @media ( min-width :220px) {
 	body .ui-toolbar {
-	    padding: 5px 5px;
+		padding: 5px 5px;
 	}
 	.ui-slider .ui-slider-handle {
 		width: 1.7em;
@@ -62,9 +62,18 @@
 	}
 	body .btn-anexo.ui-button {
 		background-color: #515452;
+	    float: right;
+	    width: 38px;
+	    font-weight: bold;
 	}
 	.btn-upload .ui-button {
-		width: unset !important;		
+		width: unset !important;
+	}
+	#form-dialog .ui-panelgrid .ui-panelgrid-cell {
+		padding: 4px 0px;
+	}
+	#form-dialog .ui-fluid .ui-button {
+		width: auto;
 	}
 }
 
@@ -123,13 +132,11 @@
 				onstart="PF('downloadLoading').show();"
 				oncomplete="PF('downloadLoading').hide();" />
 
-			<p:focus for="search" />
-
 			<p:toolbar id="toolbar">
 				<f:facet name="left">
 					<p:commandButton value="Novo" icon="fa fa-fw fa-file-text-o"
 						action="#{cadastroEquipeBean.prepararNovoCadastro}"
-						process="@this" update="usuario-dialog" 
+						process="@this" update="usuario-dialog"
 						oncomplete="PF('usuario-dialog').show()">
 
 						<p:resetInput target="usuario-dialog" />
@@ -172,6 +179,14 @@
 						style="margin-left: 3px; width: 40px" process="@parent"
 						action="#{cadastroEquipeBean.pesquisar}">
 					</p:commandButton>
+					
+					<p:commandButton icon="fa fa-fw fa-file-archive-o" 
+						styleClass="btn-anexo" id="foto" title="Adicionar foto"
+						action="#{cadastroClienteBean.prepararEditarCadastro}"
+						process="@this" update="anexo-dialog"
+						oncomplete="PF('anexo-dialog').show()"
+						disabled="#{cadastroEquipeBean.membroSelecionado == null}">
+					</p:commandButton>
 
 					<p:dataTable id="equipeTable" reflow="true"
 						paginatorAlwaysVisible="false"
@@ -181,43 +196,77 @@
 						selection="#{cadastroEquipeBean.membroSelecionado}"
 						rowKey="#{membro.id}" style="margin-top: 10px">
 
-						<p:ajax event="rowSelect" update="form:toolbar" />
-						<p:ajax event="rowUnselect" update="form:toolbar" />
+						<p:ajax event="rowSelect" update="form:toolbar form:foto form:menu-item" />
+						<p:ajax event="rowUnselect" update="form:toolbar form:foto form:menu-item" />
 
 						<p:column headerText="Nome">
 							<h:outputText value="#{membro.nome}" />
-						</p:column>	
-						
+						</p:column>
+
 						<p:column headerText="Função">
 							<h:outputText value="#{membro.funcao}" />
-						</p:column>			
-						
+						</p:column>
+
 						<p:column headerText="Contato">
 							<h:outputText value="#{membro.contato}" />
 						</p:column>
-						
+
 						<p:column headerText="Login">
 							<h:outputText value="#{membro.login}" />
 						</p:column>
-						
+
 						<p:column headerText="Nível de acesso">
 							<h:outputText value="#{cadastroEquipeBean.getGrupo(membro)}" />
 						</p:column>
-						
+
 					</p:dataTable>
 				</p:panel>
+				
+				<p:contextMenu id="menu-item" for="equipeTable">
+						<p:menuitem value="Visualizar Foto" id="btn-visualizar"
+							actionListener="#{cadastroEquipeBean.prepareFoto}" update="foto-dialog"
+							process="@this equipeTable" icon="fa fa-fw fa-file-archive-o"
+							oncomplete="PF('foto-dialog').show()">
+						</p:menuitem>
+					</p:contextMenu>
 			</div>
 
 		</h:form>
 
 
+		<p:dialog header="Foto Dialog" widgetVar="foto-dialog"
+			id="foto-dialog" resizable="false" modal="true"
+			closeOnEscape="true" responsive="true" position="center"
+			styleClass="fotoDialog">
 
+			<h:form id="form-dialogFoto">
+
+				<div class="ui-fluid" style="margin-top:10px;text-align:center">
+					<ui:fragment id="photo"
+						rendered="#{cadastroEquipeBean.fileContent != null}">
+						<img 
+							src="data:image/png;base64,#{cadastroEquipeBean.imageContentsAsBase64}"
+							style="width: 200px;height: 200px;" />
+					</ui:fragment>
+
+					<div
+						style="width: 80%;margin:auto;border-top: 1px solid #ccc;margin-top:10px;margin-bottom:10px"></div>
+					
+					<p:commandButton icon="fa fa-fw fa-close" style="margin-bottom: 5px;font-weight: bold;width: 120px;background:#cc3131f0;"
+						value="Fechar" 
+						oncomplete="PF('foto-dialog').hide();">
+					</p:commandButton>
+				</div>
+			</h:form>
+		</p:dialog>
+		
 
 		<p:dialog
 			header="#{cadastroEquipeBean.usuario.id == null ? 'Novo Membro da equipe' : 'Editar Membro da equipe'}"
-			widgetVar="usuario-dialog" id="usuario-dialog" resizable="true" position="bottom"
-			modal="true" closeOnEscape="true" responsive="true" width="250px"
-			style="margin-bottom: 25px">
+			widgetVar="usuario-dialog" id="usuario-dialog" resizable="true" 
+			position="center" modal="true" closeOnEscape="true" responsive="true"
+			onHide="PF('wizard').loadStep(PF('wizard').cfg.steps[0], true);"
+			width="250px">
 
 			<h:form id="form-dialog">
 
@@ -227,93 +276,128 @@
 					<div class="card card-w-title ui-fluid"
 						style="padding: 0px 5px 0px 5px; padding-bottom: 0px !important">
 
-						<p:panelGrid columns="1" layout="grid"
-							style="margin-top: 15px; margin-bottom: 5px"
-							styleClass="panelgrid-noborder disabled disabled">
+						<p:wizard backLabel="voltar" nextLabel="avançar"
+							showStepStatus="false" widgetVar="wizard">
+							<p:tab title="Info" id="tab0">
 
-							<p:outputLabel value="Nome" for="nome" />
-							<p:inputText id="nome"
-								value="#{cadastroEquipeBean.usuario.nome}" />
-						</p:panelGrid>
-						
-						<p:panelGrid columns="1" layout="grid"
-							style="margin-top: 15px; margin-bottom: 5px"
-							styleClass="panelgrid-noborder disabled disabled">
+								<p:panelGrid columns="1" layout="grid"
+									style="margin-top: 15px; margin-bottom: 0px"
+									styleClass="panelgrid-noborder disabled disabled">
 
-							<p:outputLabel value="Função" for="funcao" />
-							<p:inputText id="funcao"
-								value="#{cadastroEquipeBean.usuario.funcao}" />
-						</p:panelGrid>
+									<p:outputLabel value="Nome" for="nome" />
+									<p:inputText id="nome"
+										value="#{cadastroEquipeBean.usuario.nome}" />
 
-						<p:panelGrid columns="1" layout="grid"
-							styleClass="panelgrid-noborder disabled disabled">
+									<p:outputLabel value="Função" for="funcao" />
+									<p:inputText id="funcao"
+										value="#{cadastroEquipeBean.usuario.funcao}" />
+										
+									<p:outputLabel value="CPF" for="cpf" />
+									<p:inputMask id="cpf" style="margin-bottom: 5px"
+										value="#{cadastroEquipeBean.usuario.cpf}"
+										mask="999.999.999-99" />
 
-							<p:outputLabel value="Contato" for="contato" />
-							<p:inputMask id="contato"
-								value="#{cadastroEquipeBean.usuario.contato}"
-								mask="(99) 9-9999-9999" />
+									<p:outputLabel value="Contato" for="contato" />
+									<p:inputMask id="contato" style="margin-bottom: 5px"
+										value="#{cadastroEquipeBean.usuario.contato}"
+										mask="(99) 9-9999-9999" />
 
-						</p:panelGrid>
-					
-						
-						<p:panelGrid columns="1" layout="grid"
-							style="margin-top: 15px; margin-bottom: 5px"
-							styleClass="panelgrid-noborder disabled disabled">
+								</p:panelGrid>
+							</p:tab>
 
-							<p:outputLabel value="Login" for="login" />
-							<p:inputText id="login"
-								value="#{cadastroEquipeBean.usuario.login}">
+							<p:tab title="acesso" id="tab1">
+								<p:panelGrid columns="1" layout="grid"
+									style="margin-top: 15px; margin-bottom: 5px"
+									styleClass="panelgrid-noborder disabled disabled">
+
+									<p:outputLabel value="Login" for="login" />
+									<p:inputText id="login" required="true" requiredMessage="Login deve ser informada."
+										value="#{cadastroEquipeBean.usuario.login}">
+
+										<p:ajax event="keyup" update="senha" process="@this" />
+									</p:inputText>
+
+									<p:outputLabel value="Senha" for="senha" />
+									<p:password id="senha" 
+										required="true"
+										requiredMessage="Senha deve ser informada." redisplay="true"
+										value="#{cadastroEquipeBean.usuario.senha}">
+
+										<p:ajax event="keyup" process="@this" />
+									</p:password>
+
+									<p:outputLabel value="Nível de acesso" for="nivel" />
+									<p:selectOneMenu id="nivel" value="#{cadastroEquipeBean.grupo}" style="margin-bottom: 5px"
+										placeholder="selecione" required="true" requiredMessage="Nível de acesso deve ser informada.">
+
+										<f:selectItem itemLabel="Selecione" />
+
+										<f:selectItems value="#{cadastroEquipeBean.todosGrupos}"
+											var="grupo" itemLabel="#{grupo.descricao}"
+											itemValue="#{grupo}" />
+									</p:selectOneMenu>
+								</p:panelGrid>
 								
-								<p:ajax event="keyup" update="senha" process="@this" />
-							</p:inputText>
-						</p:panelGrid>
-
-						<p:panelGrid columns="1" layout="grid"
-							styleClass="panelgrid-noborder disabled disabled">
-
-							<p:outputLabel value="Senha" for="senha" />
-							<p:password id="senha" required="#{not empty cadastroEquipeBean.usuario.login}"
-								requiredMessage="Senha deve ser informada." redisplay="true"
-								value="#{cadastroEquipeBean.usuario.senha}">
-								
-								<p:ajax event="keyup" process="@this" />
-								</p:password>
-
-						</p:panelGrid>	
-						
-						<p:panelGrid columns="1" layout="grid"
-							styleClass="panelgrid-noborder disabled disabled">
-							
-						<p:outputLabel value="Nível de acesso" for="nivel" />
-							<p:selectOneMenu id="nivel" value="#{cadastroEquipeBean.grupo}"
-							required="true" requiredMessage="Nível de acesso deve ser informado."
-								placeholder="selecione">
-
-								<f:selectItem itemLabel="Selecione" />
-
-								<f:selectItems
-									value="#{cadastroEquipeBean.todosGrupos}"
-									var="grupo" itemLabel="#{grupo.nome}"
-									itemValue="#{grupo}" />
-							</p:selectOneMenu>
-							</p:panelGrid>											
-						
-						<p:panelGrid columns="1" layout="grid"
-							styleClass="panelgrid-noborder disabled disabled">
-
-							<p:outputLabel />
-							<p:commandButton id="btn-salvar" value="Salvar"
-								widgetVar="btn-save"
-								onstart="PF('downloadLoading').show(); PF('btn-save').disable();"
-								onsuccess="PF('downloadLoading').hide(); PF('btn-save').enable();"
-								oncomplete="if (!args.validationFailed) PF('usuario-dialog').hide();"
-								update="msg form-dialog form"
-								action="#{cadastroEquipeBean.salvar}"
-								process="@this form-dialog" style="font-weight: bold" />
-						</p:panelGrid>
-
+								<div
+							style="width: 80%; margin-top: 32px;margin-left: 20px;margin-bottom: 38px; border-top: 1px solid #ccc"></div>
+							</p:tab>
+							</p:wizard>
 					</div>
+
+					
 				</div>
+
+
+				<p:panelGrid columns="1" layout="grid"
+					styleClass="panelgrid-noborder disabled disabled">
+
+					<p:outputLabel />
+					<p:commandButton id="btn-salvar" value="Salvar"
+						widgetVar="btn-save" icon="fa fa-fw fa-save"
+						onstart="PF('downloadLoading').show(); PF('btn-save').disable();"
+						onsuccess="PF('downloadLoading').hide(); PF('btn-save').enable();"
+						oncomplete="if (!args.validationFailed) PF('usuario-dialog').hide();"
+						update="msg form-dialog form" 
+						action="#{cadastroEquipeBean.salvar}" process="@this form-dialog tab1"
+						style="font-weight: bold;width:100%" />
+				</p:panelGrid>
+
+
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog header="Adicionar foto" widgetVar="anexo-dialog"
+			id="anexo-dialog" resizable="false" modal="true" closeOnEscape="true"
+			responsive="true" width="350px">
+
+			<h:form id="form-anexo" enctype="multipart/form-data">
+
+				<p:fileUpload styleClass="btn-upload" sizeLimit="60000"
+							value="#{cadastroEquipeBean.file}" 
+							label="Anexar" process="@this" style="margin-left:8px;margin-top:5px"
+							mode="simple" skinSimple="true">
+						</p:fileUpload>
+						
+				<div class="ui-g-12 ui-lg-12">
+				
+					<p:panel class="card card-w-title ui-fluid"
+						style="padding-bottom: 0px;margin-bottom: 0px;">
+
+						<p:commandButton icon="fa fa-fw fa-cloud-upload" value="Upload" 
+							action="#{cadastroEquipeBean.upload}"  ajax="false" process="@this"
+							onclick="PrimeFaces.monitorDownload(start, stop);"
+							update="form:panel-upload" style="background-color: #3e3f41; font-weight: bold; float: rifht; width: 140px">
+
+						</p:commandButton>
+						
+						<p:commandButton icon="fa fa-fw fa-close" value="Fechar"
+							onclick="PF('anexo-dialog').hide();"
+							style="background-color: #b33620; font-weight: bold; float: left; width: 140px">
+
+						</p:commandButton>
+					</p:panel>
+				</div>
+
 			</h:form>
 		</p:dialog>
 

@@ -7,7 +7,6 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -36,6 +35,18 @@ public class Venda implements Serializable {
 	@Column(nullable = false)
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
 	private BigDecimal valorTotal = BigDecimal.ZERO;
+	
+	@Column
+	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	private BigDecimal lucro;
+	
+	@Column
+	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	private BigDecimal percentualLucro;
+	
+	@Column
+	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	private BigDecimal valorCompra;
 
 	@NotNull
 	@ManyToOne
@@ -46,6 +57,11 @@ public class Venda implements Serializable {
 	@ManyToOne
 	@JoinColumn
 	private Usuario usuario;
+	
+	@NotNull
+	@ManyToOne
+	@JoinColumn
+	private Bairro bairro;
 
 	/* Campos para relat�rio */
 	@Column(nullable = false)
@@ -92,7 +108,31 @@ public class Venda implements Serializable {
 	}
 
 	public void setValorTotal(BigDecimal valorTotal) {
-		this.valorTotal = valorTotal;
+		this.valorTotal = valorTotal.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+	}
+
+	public BigDecimal getLucro() {
+		return lucro;
+	}
+
+	public void setLucro(BigDecimal lucro) {
+		this.lucro = lucro.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+	}
+
+	public BigDecimal getPercentualLucro() {
+		return percentualLucro;
+	}
+
+	public void setPercentualLucro(BigDecimal percentualLucro) {
+		this.percentualLucro = percentualLucro.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+	}
+
+	public BigDecimal getValorCompra() {
+		return valorCompra;
+	}
+
+	public void setValorCompra(BigDecimal valorCompra) {
+		this.valorCompra = valorCompra.setScale(2, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public TipoVenda getTipoVenda() {
@@ -149,6 +189,14 @@ public class Venda implements Serializable {
 
 	public void setAno(Long ano) {
 		this.ano = ano;
+	}
+
+	public Bairro getBairro() {
+		return bairro;
+	}
+
+	public void setBairro(Bairro bairro) {
+		this.bairro = bairro;
 	}
 
 	@Override

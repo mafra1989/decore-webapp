@@ -15,12 +15,14 @@ import javax.validation.constraints.NotNull;
 
 import org.primefaces.PrimeFaces;
 
+import com.webapp.model.Bairro;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.Produto;
 import com.webapp.model.TipoVenda;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
+import com.webapp.repository.Bairros;
 import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
 import com.webapp.repository.Produtos;
@@ -43,6 +45,9 @@ public class RegistroVendasBean implements Serializable {
 	private Usuarios usuarios;
 	
 	@Inject
+	private Bairros bairros;
+	
+	@Inject
 	private Produtos produtos;
 	
 	@Inject
@@ -58,6 +63,8 @@ public class RegistroVendasBean implements Serializable {
 	private ItensCompras itensCompras;
 
 	private List<Usuario> todosUsuarios;
+	
+	private List<Bairro> todosBairros;
 	
 	private List<TipoVenda> todosTiposVendas;
 	
@@ -84,6 +91,7 @@ public class RegistroVendasBean implements Serializable {
 		if (FacesUtil.isNotPostback()) {
 			todosUsuarios = usuarios.todos();
 			todosTiposVendas = tiposVendas.todos();
+			todosBairros = bairros.todos();
 		}
 	}
 	
@@ -98,6 +106,9 @@ public class RegistroVendasBean implements Serializable {
 			
 			Long totalDeItens = 0L;
 			double valorTotal = 0;
+			double lucro = 0;
+			double percentualLucro = 0;
+			double valorCompra = 0;
 			
 			Calendar calendario = Calendar.getInstance();	
 			Calendar calendarioTemp = Calendar.getInstance();
@@ -126,6 +137,10 @@ public class RegistroVendasBean implements Serializable {
 				
 				totalDeItens += itemVenda.getQuantidade();
 				valorTotal += itemVenda.getTotal().doubleValue();
+				valorCompra += itemVenda.getValorCompra().doubleValue();
+				
+				lucro += itemVenda.getLucro().doubleValue();
+				percentualLucro += itemVenda.getPercentualLucro().doubleValue();
 				
 				List<ItemCompra> itensCompraTemp = itensCompras.porCompra(itemVenda.getProduto());
 				for (ItemCompra itemCompraTemp : itensCompraTemp) {
@@ -139,8 +154,12 @@ public class RegistroVendasBean implements Serializable {
 				}			
 			}
 			
+			
+			venda.setValorCompra(BigDecimal.valueOf(valorCompra));
 			venda.setValorTotal(BigDecimal.valueOf(valorTotal));
 			venda.setQuantidadeItens(totalDeItens);
+			venda.setLucro(BigDecimal.valueOf(lucro));
+			venda.setPercentualLucro(BigDecimal.valueOf(percentualLucro / itensVenda.size()));
 			venda = vendas.save(venda);
 			
 
@@ -216,10 +235,21 @@ public class RegistroVendasBean implements Serializable {
 		System.out.println("itemCompra.getQuantidadeDisponivel(): " + itemCompra.getQuantidadeDisponivel());
 		
 		if(itemVenda.getQuantidade() <= itemCompra.getQuantidadeDisponivel()) {
-			if(itemVenda.getValorUnitario().doubleValue() > itemCompra.getValorUnitario().doubleValue()) {
+			if(itemVenda.getValorUnitario().doubleValue() >= itemCompra.getValorUnitario().doubleValue()) {
 				itemVenda.setTotal(BigDecimal.valueOf(itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().longValue()));
 				itemVenda.setVenda(venda);
 				itemVenda.setCompra(itemCompra.getCompra());
+				
+				/* Calculo do Lucro em valor e percentual */
+				itemVenda.setLucro(BigDecimal.valueOf((itemVenda.getQuantidade().doubleValue() * itemVenda.getValorUnitario().doubleValue()) - (itemVenda.getQuantidade().doubleValue() * itemCompra.getValorUnitario().doubleValue())));
+				itemVenda.setPercentualLucro(BigDecimal.valueOf((itemVenda.getLucro().doubleValue() / (itemVenda.getQuantidade().doubleValue() * itemCompra.getValorUnitario().doubleValue())) * 100));
+				itemVenda.setValorCompra(BigDecimal.valueOf(itemVenda.getQuantidade().doubleValue() * itemCompra.getValorUnitario().doubleValue()));
+				
+				System.out.println(itemVenda.getLucro());
+				System.out.println(itemVenda.getPercentualLucro());
+				
+				venda.setValorTotal(BigDecimal.valueOf(venda.getValorTotal().doubleValue() + itemVenda.getTotal().doubleValue()));
+				
 				itensVenda.add(itemVenda); 		
 				itemVenda = new ItemVenda();
 				
@@ -240,6 +270,7 @@ public class RegistroVendasBean implements Serializable {
 		itensCompra = new ArrayList<ItemCompra>();
 		List<ItemCompra> itensCompraTemp = itensCompras.porCompra(itemSelecionado.getProduto());
 		
+		venda.setValorTotal(BigDecimal.valueOf(venda.getValorTotal().doubleValue() - itemSelecionado.getTotal().doubleValue()));
 		itensVenda.remove(itemSelecionado);
 		itemSelecionado = null;
 		
@@ -285,6 +316,7 @@ public class RegistroVendasBean implements Serializable {
 	public void editarItem() {
 
 		itemVenda = itemSelecionado;
+		venda.setValorTotal(BigDecimal.valueOf(venda.getValorTotal().doubleValue() - itemSelecionado.getTotal().doubleValue()));
 		itensVenda.remove(itemSelecionado);
 		itemSelecionado = null;
 		
@@ -326,6 +358,10 @@ public class RegistroVendasBean implements Serializable {
 
 	public List<Usuario> getTodosUsuarios() {
 		return todosUsuarios;
+	}
+	
+	public List<Bairro> getTodosBairros() {
+		return todosBairros;
 	}
 
 	public List<ItemVenda> getItensVenda() {

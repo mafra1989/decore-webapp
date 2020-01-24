@@ -146,8 +146,9 @@
 							columnClasses="ui-grid-col-4, ui-grid-col-4">
 
 							<p:outputLabel value="Data da Venda" for="data-venda" />
-							<p:datePicker value="#{registroVendasBean.venda.dataVenda}" readonlyInput="true"
-								id="data-venda" pattern="dd/MM/yyyy" locale="pt" showIcon="true" />
+							<p:datePicker value="#{registroVendasBean.venda.dataVenda}"
+								readonlyInput="true" id="data-venda" pattern="dd/MM/yyyy"
+								locale="pt" showIcon="true" />
 
 							<p:outputLabel value="Tipo de Venda" for="tipo-venda" />
 							<p:selectOneMenu id="tipo-venda"
@@ -159,6 +160,17 @@
 								<f:selectItems value="#{registroVendasBean.todosTiposVendas}"
 									var="tipoVenda" itemLabel="#{tipoVenda.descricao}"
 									itemValue="#{tipoVenda}" />
+							</p:selectOneMenu>
+
+							<p:outputLabel value="Bairro" for="bairro" />
+							<p:selectOneMenu id="bairro"
+								value="#{registroVendasBean.venda.bairro}"
+								placeholder="selecione">
+
+								<f:selectItem itemLabel="Selecione" />
+
+								<f:selectItems value="#{registroVendasBean.todosBairros}"
+									var="bairro" itemLabel="#{bairro.nome}" itemValue="#{bairro}" />
 							</p:selectOneMenu>
 
 							<p:outputLabel value="Vendedor" for="vendedor" />
@@ -247,7 +259,7 @@
 
 							<p:outputLabel value="Valor Unitário" for="valor-unitario" />
 							<p:inputNumber id="valor-unitario" decimalPlaces="2"
-								placeholder="0" 
+								placeholder="0"
 								value="#{registroVendasBean.itemVenda.valorUnitario}">
 								<p:ajax event="keyup" update="valor-total"></p:ajax>
 							</p:inputNumber>
@@ -273,7 +285,7 @@
 							<p:commandButton id="btn-adicionar" value="Adicionar"
 								onstart="PF('downloadLoading').show();"
 								onsuccess="PF('downloadLoading').hide();" icon="fa fa-plus"
-								update="msg codigo descricao fornecedor id valor-unitario quantidade valor-total panel-table lote "
+								update="msg codigo descricao fornecedor total-venda id valor-unitario quantidade valor-total panel-table lote "
 								action="#{registroVendasBean.adicionarItem}"
 								process="@this codigo valor-unitario quantidade valor-total id form:lote"
 								style="font-weight: bold;" />
@@ -289,6 +301,17 @@
 						<p:panelGrid columns="1" layout="grid"
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-12">
+
+							<p:panelGrid columns="2" style="margin-top:-15px;"
+							styleClass="panelgrid-noborder disabled disabled">
+								<p:outputLabel value="Total: "/>
+								<p:outputLabel id="total-venda"
+									value="#{registroVendasBean.venda.valorTotal}"
+									style="margin-bottom:5px; font-weight:bold;margin-left:8px;color:#5b5656">
+	
+									<f:convertNumber type="currency" />
+								</p:outputLabel>
+							</p:panelGrid>
 
 							<p:dataTable id="itensTable" paginatorAlwaysVisible="false"
 								value="#{registroVendasBean.itensVenda}" var="item"
@@ -307,7 +330,9 @@
 								</p:column>
 
 								<p:column headerText="Val. Unit." width="20%">
-									<h:outputText value="#{item.valorUnitario}" />
+									<h:outputText value="#{item.valorUnitario}">
+										<f:convertNumber type="currency" />
+									</h:outputText>
 								</p:column>
 
 								<p:column headerText="Qtd." width="20%">
@@ -319,19 +344,32 @@
 										<f:convertNumber type="currency" />
 									</h:outputText>
 								</p:column>
+
+								<p:column headerText="Lucro" width="20%">
+									<h:outputText value="#{item.lucro}">
+										<f:convertNumber type="currency" />
+									</h:outputText>
+								</p:column>
+
+								<p:column headerText="Perc." width="20%">
+									<h:outputText value="#{item.percentualLucro}%">
+										<f:convertNumber pattern="#0.00" />
+									</h:outputText>
+
+								</p:column>
 							</p:dataTable>
 						</p:panelGrid>
 
 						<p:contextMenu id="menu-item" for="itensTable">
 							<p:menuitem value="Remover Item" id="btn-remove"
-								update="panel-table form:lote"
+								update="panel-table form:lote form:total-venda"
 								process="@this panel-table"
 								action="#{registroVendasBean.removeItem}" onstart="start();"
 								oncomplete="stop();" icon="fa fa-fw fa-trash"
 								disabled="#{registroVendasBean.itensVendaSize eq 0}" />
 
 							<p:menuitem value="Editar Item" id="btn-editar"
-								update="panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote "
+								update="panel-table form:id form:codigo form:total-venda form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote "
 								process="@this panel-table"
 								action="#{registroVendasBean.editarItem}" onstart="start();"
 								oncomplete="stop();" icon="fa fa-fw fa-edit"
@@ -348,9 +386,9 @@
 							<p:commandButton id="btn-calcular" value="Finalizar Venda"
 								onstart="PF('downloadLoading').show();" icon="fa fa-save"
 								onsuccess="PF('downloadLoading').hide();"
-								update="msg data-venda tipo-venda vendedor panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total"
+								update="msg data-venda tipo-venda vendedor bairro panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total"
 								action="#{registroVendasBean.salvar}"
-								process="@this panel-table data-venda vendedor tipo-venda"
+								process="@this panel-table data-venda vendedor bairro tipo-venda"
 								style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;" />
 						</p:panelGrid>
 
@@ -366,8 +404,6 @@
 			responsive="true" width="350px">
 
 			<h:form id="form-dialog">
-
-				<p:focus for="search" />
 
 				<div class="ui-g-12 ui-lg-12">
 					<p:panel class="card card-w-title ui-fluid"

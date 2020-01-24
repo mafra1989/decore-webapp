@@ -68,7 +68,7 @@ public class ItemCompra implements Serializable {
 	}
 
 	public void setValorUnitario(BigDecimal valorUnitario) {
-		this.valorUnitario = valorUnitario;
+		this.valorUnitario = valorUnitario.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
 	}
 
 	public Long getQuantidade() {
@@ -84,7 +84,7 @@ public class ItemCompra implements Serializable {
 	}
 
 	public void setTotal(BigDecimal total) {
-		this.total = total;
+		this.total = total.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
 	}
 
 	public Long getQuantidadeDisponivel() {

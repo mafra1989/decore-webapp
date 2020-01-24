@@ -1,14 +1,23 @@
 package com.webapp.controller;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
+import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseId;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang3.StringUtils;
 import org.primefaces.PrimeFaces;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.webapp.model.Grupo;
@@ -43,6 +52,10 @@ public class CadastroEquipeBean implements Serializable {
 	private Usuario membroSelecionado;
 
 	private UsuarioFilter filtro = new UsuarioFilter();
+	
+	private UploadedFile file;
+	
+	private byte[] fileContent;
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -59,20 +72,61 @@ public class CadastroEquipeBean implements Serializable {
 		usuario = membroSelecionado;
 		usuario.setSenha("");
 		Usuario usuarioTemp = usuarios.porId(usuario.getId());
-		grupo = usuarioTemp.getGrupos().get(0);
+		
+		try {
+			grupo = usuarioTemp.getGrupos().get(0);
+			
+		} catch(IndexOutOfBoundsException e) {
+			grupo = null;
+		}
+		
+		todosGrupos = grupos.todos();
+		
 	}
 
 	public void salvar() {
 
 		try {
-			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-			String hashedPassword = passwordEncoder.encode(usuario.getSenha());
+			
+			if(usuario != null && usuario.getLogin() != null && usuario.getSenha() != null && grupo != null && grupo.getId() != null) {
+				
+				if(StringUtils.isNotBlank(usuario.getLogin()) && StringUtils.isNotBlank(usuario.getSenha())) {
 
-			usuario.setSenha(hashedPassword);
+					BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+					String hashedPassword = passwordEncoder.encode(usuario.getSenha());
 
-			List<Grupo> listaDeGrupos = new ArrayList<Grupo>();
-			listaDeGrupos.add(grupo);
-			usuario.setGrupos(listaDeGrupos);
+					usuario.setSenha(hashedPassword);
+					
+					List<Grupo> listaDeGrupos = new ArrayList<Grupo>();
+					listaDeGrupos.add(grupo);
+					usuario.setGrupos(listaDeGrupos);					
+
+				} else {
+					
+					if(usuario.getId() == null) {
+						usuario.setLogin(null);
+						usuario.setSenha(null);
+						usuario.setGrupos(null);
+					} else {
+						Usuario usuarioTemp = usuarios.porId(usuario.getId());
+						usuario.setLogin(usuarioTemp.getLogin());
+						usuario.setSenha(usuarioTemp.getSenha());					
+						usuario.setGrupos(usuarioTemp.getGrupos());
+					}
+				}
+			} else {
+				
+				if(usuario != null && usuario.getId() == null) {
+					usuario.setLogin(null);
+					usuario.setSenha(null);
+					usuario.setGrupos(null);
+				} else {
+					Usuario usuarioTemp = usuarios.porId(usuario.getId());
+					usuario.setLogin(usuarioTemp.getLogin());
+					usuario.setSenha(usuarioTemp.getSenha());					
+					usuario.setGrupos(usuarioTemp.getGrupos());
+				}
+			}
 
 			usuarios.save(usuario);
 
@@ -81,10 +135,11 @@ public class CadastroEquipeBean implements Serializable {
 			listarTodos();
 
 			PrimeFaces.current().executeScript(
-					"PF('downloadLoading').hide(); swal({ type: 'success', title: 'ConcluÃ­do!', text: 'Membro de equipe salvo com sucesso!' });");
+					"PF('downloadLoading').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Membro de equipe salvo com sucesso!' });");
 
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			FacesUtil.addErrorMessage("Erro ao cadastrar membro da equipe!");
 		}
 
@@ -154,13 +209,71 @@ public class CadastroEquipeBean implements Serializable {
 	}
 	
 	public String getGrupo(Usuario usuario) {
-		usuario = usuarios.porLogin(usuario.getLogin());
 
-		if (usuario.getGrupos().size() != 0) {
-			return usuario.getGrupos().get(0).getNome();
+		if(usuario.getLogin() != null) {
+			usuario = usuarios.porLogin(usuario.getLogin());
+	
+			if(usuario != null) {
+				if (usuario.getGrupos() != null && usuario.getGrupos().size() != 0) {
+					return usuario.getGrupos().get(0).getDescricao();
+				}
+			}
+
 		}
 
 		return "";
+	}
+	
+	
+	public String getImageContentsAsBase64() {
+	    return Base64.getEncoder().encodeToString(fileContent);
+	}
+		
+	public StreamedContent getImage() throws IOException {
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
+            // So, we're rendering the view. Return a stub StreamedContent so that it will generate right URL.
+            return new DefaultStreamedContent();
+        }
+        else {
+            // So, browser is requesting the image. Return a real StreamedContent with the image bytes.
+            //String id = context.getExternalContext().getRequestParameterMap().get("id");
+            //Image image = service.find(Long.valueOf(id));
+            return new DefaultStreamedContent(new ByteArrayInputStream(fileContent));
+        }
+    }
+	
+	public void upload() {
+		if(file != null && file.getFileName() != null) {
+			fileContent = file.getContents();
+			
+			membroSelecionado.setFoto(fileContent);
+			usuarios.save(membroSelecionado);
+			
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'success', title: 'Concluído!', text: 'Foto adicionada com sucesso!' });");
+			
+		} else {
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'error', title: 'Erro!', text: 'Selecione uma imagem com até 60KB!' });");
+		}
+	}
+
+	public byte[] getFileContent() {
+		return fileContent;
+	}
+
+	public UploadedFile getFile() {
+		return file;
+	}
+
+	public void setFile(UploadedFile file) {
+		this.file = file;
+	}
+	
+	public void prepareFoto() {
+		fileContent = membroSelecionado.getFoto();
 	}
 
 }

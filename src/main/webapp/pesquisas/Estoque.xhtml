@@ -122,8 +122,6 @@
 
 		<h:form id="form" prependId="false">
 
-			<p:focus for="descricao" />
-
 			<p:toolbar id="toolbar">
 				<f:facet name="left">
 					<p:commandButton icon="fa fa-fw fa-search" value="Pesquisar"
@@ -192,8 +190,8 @@
 							selection="#{estoqueBean.produtoSelecionado}"
 							selectionMode="single">
 
-							<p:ajax process="@this" event="rowSelect" update="foto-button" />
-							<p:ajax process="@this" event="rowUnselect" update="foto-button" />
+							<p:ajax process="@this produtosTable" event="rowSelect" update="foto-button menu-item" />
+							<p:ajax process="@this produtosTable" event="rowUnselect" update="foto-button menu-item" />
 
 							<p:column headerText="Cód." width="10%">
 								<h:outputText value="#{produto.codigo}" />

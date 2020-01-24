@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -37,6 +36,18 @@ public class ItemVenda implements Serializable {
 	@Column(nullable = false)
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
 	private BigDecimal total;
+	
+	@Column
+	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	private BigDecimal lucro;
+	
+	@Column
+	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	private BigDecimal percentualLucro;
+	
+	@Column
+	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	private BigDecimal valorCompra;
 
 	@ManyToOne
 	@JoinColumn
@@ -69,7 +80,7 @@ public class ItemVenda implements Serializable {
 	}
 
 	public void setValorUnitario(BigDecimal valorUnitario) {
-		this.valorUnitario = valorUnitario;
+		this.valorUnitario = valorUnitario.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
 	}
 
 	public Long getQuantidade() {
@@ -85,7 +96,31 @@ public class ItemVenda implements Serializable {
 	}
 
 	public void setTotal(BigDecimal total) {
-		this.total = total;
+		this.total = total.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
+	}
+
+	public BigDecimal getLucro() {
+		return lucro;
+	}
+
+	public void setLucro(BigDecimal lucro) {
+		this.lucro = lucro.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
+	}
+
+	public BigDecimal getPercentualLucro() {
+		return percentualLucro;
+	}
+
+	public void setPercentualLucro(BigDecimal percentualLucro) {
+		this.percentualLucro = percentualLucro.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+	}
+
+	public BigDecimal getValorCompra() {
+		return valorCompra;
+	}
+
+	public void setValorCompra(BigDecimal valorCompra) {
+		this.valorCompra = valorCompra.setScale(2, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public Produto getProduto() {

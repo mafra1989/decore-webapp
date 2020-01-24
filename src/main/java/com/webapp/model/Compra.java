@@ -88,7 +88,7 @@ public class Compra implements Serializable {
 	}
 
 	public void setValorTotal(BigDecimal valorTotal) {
-		this.valorTotal = valorTotal;
+		this.valorTotal = valorTotal.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
 	}
 
 	public Usuario getUsuario() {

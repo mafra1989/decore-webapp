@@ -113,7 +113,7 @@ public class Lancamento implements Serializable {
 	}
 
 	public void setValor(BigDecimal valor) {
-		this.valor = valor;
+		this.valor = valor.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
 	}
 
 	public OrigemLancamento getOrigemLancamento() {

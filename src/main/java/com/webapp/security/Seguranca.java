@@ -1,5 +1,7 @@
 package com.webapp.security;
 
+import java.util.Base64;
+
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import javax.faces.context.ExternalContext;
@@ -16,13 +18,15 @@ public class Seguranca {
 	@Inject
 	private ExternalContext externalContext;
 	
+	private byte[] fileContent;
+	
 	public String getNomeUsuario() {
 		String nome = null;
 		
 		UsuarioSistema usuarioLogado = getUsuarioLogado();
 		
 		if (usuarioLogado != null) {
-			nome = usuarioLogado.getUsuario().getNome();
+			nome = usuarioLogado.getUsuario().getNome();			
 		}
 		
 		return nome;
@@ -54,6 +58,17 @@ public class Seguranca {
 	/* COMPARATION BOM vs BOM */
 	public boolean acessoBOMvsBOM() {
 		return externalContext.isUserInRole("ADMINISTRADORES") || externalContext.isUserInRole("USUARIOS");
+	}
+	
+	
+	
+	public String getImageContentsAsBase64() {
+	    return Base64.getEncoder().encodeToString(fileContent);
+	}
+	
+	public byte[] getFileContent() {
+		fileContent = getUsuarioLogado().getUsuario().getFoto();
+		return fileContent;
 	}
 	
 	

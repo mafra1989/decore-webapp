@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +24,26 @@ public class Produtos implements Serializable {
 
 	public Produto porId(Long id) {
 		return this.manager.find(Produto.class, id);
+	}
+	
+	public Produto porCodigo(String codigo) {
+		try {
+			return this.manager
+					.createQuery("from Produto e where e.codigo = :codigo", Produto.class)
+					.setParameter("codigo", codigo).getSingleResult();
+		} catch(NoResultException e) {
+			return null;
+		}
+	}
+	
+	public Produto porCodigoCadastrado(Produto produto) {
+		try {
+			return this.manager
+					.createQuery("from Produto e where e.codigo = :codigo and e.id != :id", Produto.class)
+					.setParameter("codigo", produto.getCodigo()).setParameter("id", produto.getId()).getSingleResult();
+		} catch(NoResultException e) {
+			return null;
+		}
 	}
 
 	@Transacional
@@ -81,10 +101,10 @@ public class Produtos implements Serializable {
 	}
 	
 	
-	public Number totalAVender() {		
-		String jpql = "SELECT sum(i.precoVenda * i.quantidadeAtual) FROM Produto i";
-		Query q = manager.createQuery(jpql);
-		Number count = (Number) q.getSingleResult();
+	public Number totalAVender() {
+		Number count = (Number) this.manager
+				.createQuery("SELECT sum(e.valorUnitario * e.quantidadeDisponivel) * (1 + (e.produto.margemLucro/100)) from ItemCompra e where e.quantidadeDisponivel > 0")
+				.getSingleResult();
 		
 		if(count == null) {
 			count = 0;

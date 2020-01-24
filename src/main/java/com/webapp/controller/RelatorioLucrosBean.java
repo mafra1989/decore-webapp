@@ -20,6 +20,7 @@ import org.primefaces.model.charts.bar.BarChartModel;
 import org.primefaces.model.charts.bar.BarChartOptions;
 import org.primefaces.model.charts.donut.DonutChartDataSet;
 import org.primefaces.model.charts.donut.DonutChartModel;
+import org.primefaces.model.charts.line.LineChartDataSet;
 
 import com.webapp.model.CategoriaProduto;
 import com.webapp.model.Produto;
@@ -296,17 +297,26 @@ public class RelatorioLucrosBean implements Serializable {
 
 		List<Object[]> result = vendas.totalLucrosPorData(calendarStart, calendarStop, categoriaPorDia, produto01,
 				true);
+		
+		
+		LineChartDataSet dataSet2 = new LineChartDataSet();
+        List<Number> values2 = new ArrayList<>();
+
+	
 		for (Object[] object : result) {
 			Double totalDeVendas = ((Number) object[3]).doubleValue();
+			Double totalCompras = ((Number) object[4]).doubleValue();			
 
 			Double totalDeReceitas = 0D;
 			Double totalDeDespesas = 0D;
-			Double totalDeCompras = compras
+			
+			/*Double totalDeCompras = compras
 					.totalComprasPorData(Long.parseLong(object[0].toString()), Long.parseLong(object[1].toString()),
 							Long.parseLong(object[2].toString()), categoriaPorDia, produto01, true)
-					.doubleValue();
+					.doubleValue();*/
 
 			if (categoriaPorDia == null || categoriaPorDia.getId() == null) {
+				
 				totalDeReceitas = lancamentos
 						.totalDeReceitasPorDia(Long.parseLong(object[0].toString()),
 								Long.parseLong(object[1].toString()), Long.parseLong(object[2].toString()))
@@ -315,10 +325,14 @@ public class RelatorioLucrosBean implements Serializable {
 						.totalDespesasPorData(Long.parseLong(object[0].toString()),
 								Long.parseLong(object[1].toString()), Long.parseLong(object[2].toString()))
 						.doubleValue();
-				values.add(((totalDeVendas + totalDeReceitas) - (totalDeCompras + totalDeDespesas)) / totalDeVendas
-						+ totalDeReceitas);
+				
+				values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
+				
+				values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas)) * 100);			
+				
 			} else {
-				values.add(totalDeVendas - totalDeCompras);
+				values.add(totalDeVendas/* - totalDeCompras*/);
+				values2.add((totalDeVendas / totalCompras) * 100);
 			}
 
 			System.out.println(object[3]);
@@ -328,16 +342,14 @@ public class RelatorioLucrosBean implements Serializable {
 		dataSet.setLabel("Valor Total");
 		dataSet.setBorderColor("rgb(54, 162, 235)");
 		dataSet.setBackgroundColor("rgba(54, 162, 235)");
-
-		/*
-		 * LineChartDataSet dataSet2 = new LineChartDataSet(); List<Object> values2 =
-		 * new ArrayList<>(); values2.add(50); values2.add(50); values2.add(50);
-		 * values2.add(50); dataSet2.setLabel("Line Dataset"); dataSet2.setFill(false);
-		 * dataSet2.setBorderColor("rgb(54, 162, 235)");
-		 */
+		
+		dataSet2.setData(values2);
+        dataSet2.setLabel("Percentual");
+        dataSet2.setFill(false);
+        dataSet2.setBorderColor("rgba(255, 159, 64");
 
 		data.addChartDataSet(dataSet);
-		// data.addChartDataSet(dataSet2);
+		data.addChartDataSet(dataSet2);
 
 		List<String> labels = new ArrayList<>();
 		for (Object[] object : result) {
@@ -370,19 +382,27 @@ public class RelatorioLucrosBean implements Serializable {
 		BarChartDataSet dataSet = new BarChartDataSet();
 		List<Number> values = new ArrayList<>();
 
-		List<Object[]> result = vendas.totalVendasPorSemana(ano01, semana01, semana02, categoriaPorSemana, produto02,
+		List<Object[]> result = vendas.totalLucrosPorSemana(ano01, semana01, semana02, categoriaPorSemana, produto02,
 				true);
+		
+		LineChartDataSet dataSet2 = new LineChartDataSet();
+        List<Number> values2 = new ArrayList<>();
+        
 		for (Object[] object : result) {
 			
 			Double totalDeVendas = ((Number) object[2]).doubleValue();
+			Double totalCompras = ((Number) object[3]).doubleValue();
 
 			Double totalDeReceitas = 0D;
 			Double totalDeDespesas = 0D;
+			
+			/*
 			Double totalDeCompras = compras
 					.totalComprasPorSemana(Long.parseLong(object[0].toString()), Long.parseLong(object[1].toString()), categoriaPorSemana, produto02, true)
-					.doubleValue();
+					.doubleValue();*/
 
 			if (categoriaPorSemana == null || categoriaPorSemana.getId() == null) {
+				
 				totalDeReceitas = lancamentos
 						.totalDeReceitasPorSemana(Long.parseLong(object[0].toString()), Long.parseLong(object[1].toString()))
 						.doubleValue();
@@ -390,10 +410,14 @@ public class RelatorioLucrosBean implements Serializable {
 						.totalDespesasPorSemana(Long.parseLong(object[0].toString()),
 								Long.parseLong(object[1].toString()))
 						.doubleValue();
-				values.add(((totalDeVendas + totalDeReceitas) - (totalDeCompras + totalDeDespesas)) / totalDeVendas
-						+ totalDeReceitas);
+				
+				values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
+				
+				values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas)) * 100);
 			} else {
-				values.add(totalDeVendas - totalDeCompras);
+				
+				values.add(totalDeVendas/* - totalDeCompras*/);
+				values2.add((totalDeVendas / totalCompras) * 100);
 			}
 		}
 
@@ -402,15 +426,13 @@ public class RelatorioLucrosBean implements Serializable {
 		dataSet.setBorderColor("rgb(54, 162, 235)");
 		dataSet.setBackgroundColor("rgba(54, 162, 235)");
 
-		/*
-		 * LineChartDataSet dataSet2 = new LineChartDataSet(); List<Object> values2 =
-		 * new ArrayList<>(); values2.add(50); values2.add(50); values2.add(50);
-		 * values2.add(50); dataSet2.setLabel("Line Dataset"); dataSet2.setFill(false);
-		 * dataSet2.setBorderColor("rgb(54, 162, 235)");
-		 */
+		dataSet2.setData(values2);
+        dataSet2.setLabel("Percentual");
+        dataSet2.setFill(false);
+        dataSet2.setBorderColor("rgba(255, 159, 64");
 
 		data.addChartDataSet(dataSet);
-		// data.addChartDataSet(dataSet2);
+		data.addChartDataSet(dataSet2);
 
 		List<String> labels = new ArrayList<>();
 		for (Object[] object : result) {
@@ -514,24 +536,30 @@ public class RelatorioLucrosBean implements Serializable {
 
 		List<Object[]> result = new ArrayList<>(); 
 		if(lucroPorLote != true) {
-			result = vendas.totalVendasPorMes(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes,
+			result = vendas.totalLucrosPorMes(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes,
 				produto03, true);
 		} else {
-			result = vendas.totalVendasPorLote(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes,
+			result = vendas.totalLucrosPorLote(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes,
 					produto03, true);
 		}
 		
+		LineChartDataSet dataSet2 = new LineChartDataSet();
+        List<Number> values2 = new ArrayList<>();
+		
 		for (Object[] object : result) {
-
+			
 			Double totalDeVendas = ((Number) object[2]).doubleValue();
+			Double totalCompras = ((Number) object[3]).doubleValue();
 
 			Double totalDeReceitas = 0D;
 			Double totalDeDespesas = 0D;
-			Double totalDeCompras = compras
+
+			/*Double totalDeCompras = compras
 					.totalComprasPorMes(Long.parseLong(object[0].toString()), Long.parseLong(object[1].toString()), categoriaPorMes, produto03, true)
-					.doubleValue();
+					.doubleValue();*/
 
 			if (categoriaPorMes == null || categoriaPorMes.getId() == null) {
+				
 				totalDeReceitas = lancamentos
 						.totalDeReceitasPorMes(Long.parseLong(object[0].toString()), Long.parseLong(object[1].toString()))
 						.doubleValue();
@@ -539,10 +567,14 @@ public class RelatorioLucrosBean implements Serializable {
 						.totalDespesasPorMes(Long.parseLong(object[0].toString()),
 								Long.parseLong(object[1].toString()))
 						.doubleValue();
-				values.add(((totalDeVendas + totalDeReceitas) - (totalDeCompras + totalDeDespesas)) / totalDeVendas
-						+ totalDeReceitas);
+				
+				values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
+				
+				values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas)) * 100);
 			} else {
-				values.add(totalDeVendas - totalDeCompras);
+				
+				values.add(totalDeVendas/* - totalDeCompras*/);
+				values2.add((totalDeVendas / totalCompras) * 100);
 			}
 		}
 
@@ -551,22 +583,20 @@ public class RelatorioLucrosBean implements Serializable {
 		dataSet.setBorderColor("rgb(54, 162, 235)");
 		dataSet.setBackgroundColor("rgba(54, 162, 235)");
 
-		/*
-		 * LineChartDataSet dataSet2 = new LineChartDataSet(); List<Object> values2 =
-		 * new ArrayList<>(); values2.add(50); values2.add(50); values2.add(50);
-		 * values2.add(50); dataSet2.setLabel("Line Dataset"); dataSet2.setFill(false);
-		 * dataSet2.setBorderColor("rgb(54, 162, 235)");
-		 */
+		dataSet2.setData(values2);
+        dataSet2.setLabel("Percentual");
+        dataSet2.setFill(false);
+        dataSet2.setBorderColor("rgba(255, 159, 64");
 
 		data.addChartDataSet(dataSet);
-		// data.addChartDataSet(dataSet2);
+		data.addChartDataSet(dataSet2);
 
 		List<String> labels = new ArrayList<>();
 		for (Object[] object : result) {
 			if(lucroPorLote != true) {
 				labels.add(nameMes(((Long) object[0]).intValue()));
 			} else {
-				labels.add(nameMes(((Long) object[3]).intValue()));
+				labels.add(nameMes(((Long) object[4]).intValue()));
 			}
 		}
 
@@ -596,28 +626,39 @@ public class RelatorioLucrosBean implements Serializable {
 		BarChartDataSet dataSet = new BarChartDataSet();
 		List<Number> values = new ArrayList<>();
 
-		List<Object[]> result = vendas.totalVendasPorAno(ano03, ano04, categoriaPorAno, produto04, true);
+		List<Object[]> result = vendas.totalLucrosPorAno(ano03, ano04, categoriaPorAno, produto04, true);
+		
+		LineChartDataSet dataSet2 = new LineChartDataSet();
+        List<Number> values2 = new ArrayList<>();
+        
 		for (Object[] object : result) {
 			
 			Double totalDeVendas = ((Number) object[1]).doubleValue();
+			Double totalCompras = ((Number) object[2]).doubleValue();
 
 			Double totalDeReceitas = 0D;
 			Double totalDeDespesas = 0D;
-			Double totalDeCompras = compras
+			
+			/*Double totalDeCompras = compras
 					.totalComprasPorAno(Long.parseLong(object[0].toString()), categoriaPorAno, produto04, true)
-					.doubleValue();
+					.doubleValue();*/
 
 			if (categoriaPorAno == null || categoriaPorAno.getId() == null) {
+				
 				totalDeReceitas = lancamentos
 						.totalDeReceitasPorAno(Long.parseLong(object[0].toString()))
 						.doubleValue();
 				totalDeDespesas = lancamentos
 						.totalDespesasPorAno(Long.parseLong(object[0].toString()))
 						.doubleValue();
-				values.add(((totalDeVendas + totalDeReceitas) - (totalDeCompras + totalDeDespesas)) / totalDeVendas
-						+ totalDeReceitas);
+				
+				values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
+				
+				values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas)) * 100);
 			} else {
-				values.add(totalDeVendas - totalDeCompras);
+				
+				values.add(totalDeVendas/* - totalDeCompras*/);
+				values2.add((totalDeVendas / totalCompras) * 100);
 			}
 		}
 
@@ -626,15 +667,13 @@ public class RelatorioLucrosBean implements Serializable {
 		dataSet.setBorderColor("rgb(54, 162, 235)");
 		dataSet.setBackgroundColor("rgba(54, 162, 235)");
 
-		/*
-		 * LineChartDataSet dataSet2 = new LineChartDataSet(); List<Object> values2 =
-		 * new ArrayList<>(); values2.add(50); values2.add(50); values2.add(50);
-		 * values2.add(50); dataSet2.setLabel("Line Dataset"); dataSet2.setFill(false);
-		 * dataSet2.setBorderColor("rgb(54, 162, 235)");
-		 */
+		dataSet2.setData(values2);
+        dataSet2.setLabel("Percentual");
+        dataSet2.setFill(false);
+        dataSet2.setBorderColor("rgba(255, 159, 64");
 
 		data.addChartDataSet(dataSet);
-		// data.addChartDataSet(dataSet2);
+		data.addChartDataSet(dataSet2);
 
 		List<String> labels = new ArrayList<>();
 		for (Object[] object : result) {
@@ -672,7 +711,7 @@ public class RelatorioLucrosBean implements Serializable {
 		Calendar calendarStop = Calendar.getInstance();
 		calendarStop.setTime(dateStop);
 
-		List<Object[]> result = vendas.totalVendasPorData(calendarStart, calendarStop, categoriaPorDia, produto01,
+		List<Object[]> result = vendas.totalLucrosPorData(calendarStart, calendarStop, categoriaPorDia, produto01,
 				false);
 
 		createDonutModel(result);
@@ -680,7 +719,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 	public void prepareDonutModelPorSemana() {
 
-		List<Object[]> result = vendas.totalVendasPorSemana(ano01, semana01, semana02, categoriaPorSemana, produto02,
+		List<Object[]> result = vendas.totalLucrosPorSemana(ano01, semana01, semana02, categoriaPorSemana, produto02,
 				false);
 
 		createDonutModel(result);
@@ -688,7 +727,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 	public void prepareDonutModelPorMes() {
 
-		List<Object[]> result = vendas.totalVendasPorMes(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes,
+		List<Object[]> result = vendas.totalLucrosPorMes(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes,
 				produto03, false);
 
 		createDonutModel(result);
@@ -696,7 +735,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 	public void prepareDonutModelPorAno() {
 
-		List<Object[]> result = vendas.totalVendasPorAno(ano03, ano04, categoriaPorAno, produto04, false);
+		List<Object[]> result = vendas.totalLucrosPorAno(ano03, ano04, categoriaPorAno, produto04, false);
 
 		createDonutModel(result);
 	}
@@ -709,7 +748,7 @@ public class RelatorioLucrosBean implements Serializable {
 		List<Number> values = new ArrayList<>();
 
 		for (Object[] object : result) {
-			values.add((Number) object[1]);
+			values.add((Number) object[3]);
 		}
 
 		dataSet.setData(values);

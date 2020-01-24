@@ -20,110 +20,192 @@
 	</f:facet>
 	<title>Login</title>
 
-</h:head>
-<style>
+	<!--===============================================================================================-->
+	<h:outputStylesheet rel="icon" type="image/png"
+		name="images/icons/favicon.ico" library="login" />
+	<!--===============================================================================================-->
+	<h:outputStylesheet name="vendor/bootstrap/css/bootstrap.min.css"
+		library="login" />
+	<!--===============================================================================================-->
+	<h:outputStylesheet
+		name="fonts/font-awesome-4.7.0/css/font-awesome.min.css"
+		library="login" />
+	<!--===============================================================================================-->
+	<h:outputStylesheet
+		name="fonts/Linearicons-Free-v1.0.0/icon-font.min.css" library="login" />
+	<!--===============================================================================================-->
+	<h:outputStylesheet name="vendor/animate/animate.css" library="login" />
+	<!--===============================================================================================-->
+	<h:outputStylesheet name="vendor/css-hamburgers/hamburgers.min.css"
+		library="login" />
+	<!--===============================================================================================-->
+	<h:outputStylesheet name="vendor/animsition/css/animsition.min.css"
+		library="login" />
+	<!--===============================================================================================-->
+	<h:outputStylesheet name="vendor/select2/select2.min.css"
+		library="login" />
+	<!--===============================================================================================-->
+	<h:outputStylesheet name="vendor/daterangepicker/daterangepicker.css"
+		library="login" />
+	<!--===============================================================================================-->
+	<h:outputStylesheet name="css/util.css" library="login" />
+	<h:outputStylesheet name="css/main.css" library="login" />
+	<!--===============================================================================================-->
+
+	<style type="text/css">
+.wrap-login100 {
+	width: 580px !important;
+}
+
+.login100-form-title {
+	padding: 0px !important;
+}
+
+.alert-validate::before {
+	font-family: cursive !important;
+}
+
+body .ui-inputfield {
+	border: none;
+}
+
+body .ui-inputfield.ui-state-hover:not(.ui-state-error){
+border:none;
+}
+body .ui-inputfield.ui-state-focus:not(.ui-state-error){
+	border: none;
+	box-shadow:none;
+}
+
+.ui-growl-message p {
+	font-family: cursive !important;
+}
+body .ui-panel .ui-panel-content {
+    padding: 0px;
+}
+
+
 @media ( min-width :220px) {
-	.login-body .logo {
-		margin-top: 80px;
-	}
-	.login-panel {
-		margin-top: -25px !important;
-	}
-	.username {
-		margin-top: -25px !important;
-	}
-	.login-body .login-panel {
-	    margin-top: -40px !important;
+	.input100 {
+		margin-top: 5px;
 	}
 }
-
-
 @media ( min-width :460px) {
-	.login-body .logo {
-		margin-top: 100px;
+	.input100 {
+		margin-top: 13px;
 	}
-	.login-panel {
-		margin-top: -240px !important;
-	}
-	.username {
-		margin-top: -15px !important;
-	}
-	
-	.login-body .login-panel .ui-g-12.container {
-	    margin-top: 100px;
-	}
-	
-	.login-body .login-panel {
-	    margin-top: -260px !important;
-	}
-
 }
-
 </style>
+</h:head>
 
-<h:body styleClass="login-body">
 
-	<p:growl id="msgs" closable="true" life="3000" showDetail="true" />
+<h:body>
 
-	<h:form id="form" prependId="false">
-		<p:focus for="j_username" />
-		<div class="ui-g">
-			<div class="ui-g-12" style="text-align: center">
-				<p:graphicImage name="images/smart-banking" height="30"
-					library="manhattan-layout" styleClass="logo" rendered="false" />
-			</div>
-		</div>
-		<div class="login-panel ui-fluid">
-			<div class="ui-g">
-				<div class="ui-g-6 left-side">				
-					<p:graphicImage style="width: 100%;height: 100%;"
-						name="images/login/login-photo.png"
-						library="manhattan-layout" styleClass="login-image" />
+	<div class="limiter">
+		<div class="container-login100"
+			style="background: #464a4e7a !important;">
+			<div class="wrap-login100">
+				<div class="login100-form-title">
+					<p:graphicImage library="login" name="images/bg-01.jpg"
+						style="width: inherit;max-height: 140px;" />	
 				</div>
-				<div class="ui-g-6 ui-sm-12">
-					<div class="ui-g-12 container">
-						<h3>Bem vindo!</h3>
-						<h2>Acesso ao Sistema</h2>
+				
+				<p:panel id="progressPanel" 
+						widgetVar="progressPanel" visible="false"
+						style="border:none; background-color:transparent; border:none; padding-bottom:1px;width: 100%;float: right;position: absolute;"
+						closable="true" toggleable="true">
+						<p:progressBar style="height:4px;" mode="indeterminate" animationDuration="3" interval="3" />
+					</p:panel>
+
+				<h:form id="form" prependId="false"
+					styleClass="login100-form validate-form">
+					
+					<p:growl id="msgs" closable="true" life="3000" showDetail="true"
+		style="font-family: cursive !important;" />
+
+					<div class="wrap-input100 validate-input m-b-26 input100" 
+						data-validate="Username is required">
+						<span style="font-family: cursive !important;"
+							class="label-input100">Username</span>
+						<p:inputText id="j_username" placeholder="Enter username" 
+							name="username" styleClass="input100" autocomplete="off"
+							style="font-family: cursive !important;" />
+						<span class="focus-input100"></span>
 					</div>
-					<div class="ui-g-12 username">
-						<p:outputLabel for="j_username" value="Usuário" />
-						<div class="input-wrapper">
-							<p:inputText id="j_username" placeholder="Usuário"
-								autocomplete="off" />
-							<i class="fa fa-user" />
+
+					<div class="wrap-input100 validate-input m-b-18"
+						data-validate="Password is required">
+						<span style="font-family: cursive !important;"
+							class="label-input100">Password</span>
+						<p:password style="font-family: cursive !important;"
+							id="j_password" name="pass" styleClass="input100"
+							placeholder="Enter password" feedback="false"></p:password>
+						<span class="focus-input100"></span>
+					</div>
+
+					<div class="flex-sb-m w-full p-b-30">
+						<div class="contact100-form-checkbox">
+							<input class="input-checkbox100" id="ckb1" type="checkbox"
+								name="remember-me" /> <label class="label-checkbox100"
+								for="ckb1" style="font-family: cursive !important;">
+								Remember me </label>
 						</div>
+
+
 					</div>
-					<div class="ui-g-12">
-						<p:outputLabel for="j_password" value="Senha" />
-						<div class="input-wrapper">
-							<p:password id="j_password" placeholder="Senha" feedback="false" />
-							<i class="fa fa-lock" />
-						</div>
-					</div>
-					<div class="ui-g-12 button-container">
-						<p:commandButton id="loginBtn" value="Acessar"
-							action="#{loginBean.acessar}" styleClass="green-btn raised-btn"
+
+					<div class="container-login100-form-btn">
+						<p:commandButton value="Login" id="loginBtn"
+							style="font-family: cursive !important;background: #a0800a;border-radius: 30px;"
+							action="#{loginBean.acessar}" styleClass="login100-form-btn"
 							ajax="false">
-							<p:ajax onstart="PF('downloadLoading').show()" />
+
+							<p:ajax 
+								onstart="PF('progressPanel').show(); PF('loginBtn').disable();"
+								oncomplete="PF('progressPanel').close(); PF('loginBtn').enable();" />
 						</p:commandButton>
+						
 					</div>
-				</div>
+
+
+					<p:dialog id="downloadLoading" showHeader="false" modal="true"
+						position="center" widgetVar="downloadLoading" header="Status"
+						draggable="false" closable="false" resizable="false">
+						<p:graphicImage name="images/loadingbar.gif"
+							library="manhattan-layout" width="50" />
+					</p:dialog>
+
+
+				</h:form>
+
 			</div>
 		</div>
+	</div>
 
-
-		<p:dialog id="downloadLoading" showHeader="false" modal="true"
-			widgetVar="downloadLoading" header="Status" draggable="false"
-			closable="false" resizable="false">
-			<p:graphicImage name="images/loadingbar.gif"
-				library="manhattan-layout" width="50" />
-		</p:dialog>
-
-	</h:form>
-
-	<h:outputStylesheet name="css/layout-blue.css"
-		library="manhattan-layout" />
-	<h:outputStylesheet name="css/app.css" library="manhattan-layout" />
+	<!--===============================================================================================-->
+	<h:outputScript target="body" library="login"
+		name="vendor/jquery/jquery-3.2.1.min.js" />
+	<!--===============================================================================================-->
+	<h:outputScript target="body" library="login"
+		name="vendor/animsition/js/animsition.min.js" />
+	<!--===============================================================================================-->
+	<h:outputScript target="body" library="login"
+		name="vendor/bootstrap/js/popper.js" />
+	<h:outputScript target="body" library="login"
+		name="vendor/bootstrap/js/bootstrap.min.js" />
+	<!--===============================================================================================-->
+	<h:outputScript target="body" library="login"
+		name="vendor/select2/select2.min.js" />
+	<!--===============================================================================================-->
+	<h:outputScript target="body" library="login"
+		name="vendor/daterangepicker/moment.min.js" />
+	<h:outputScript target="body" library="login"
+		name="vendor/daterangepicker/daterangepicker.js" />
+	<!--===============================================================================================-->
+	<h:outputScript target="body" library="login"
+		name="vendor/countdowntime/countdowntime.js" />
+	<!--===============================================================================================-->
+	<h:outputScript target="body" library="login" name="js/main.js" />
 
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -131,8 +213,16 @@
 				path : '/'
 			});
 		});
+
+		function start() {
+			PF('downloadLoading').show();
+		}
+
+		function stop() {
+			PF('downloadLoading').hide();
+		}
 	</script>
 
-</h:body>
 
+</h:body>
 </html>

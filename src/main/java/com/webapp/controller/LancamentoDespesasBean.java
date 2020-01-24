@@ -53,11 +53,13 @@ public class LancamentoDespesasBean implements Serializable {
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {			
 			todosDestinosLancamentos = destinosLancamentos.todos();
-			todosTiposDespesas = tiposDespesas.todos();
-			todasCategoriasDespesas = categoriasDespesas.todos();
 		}
 	}
 	
+	public void changeLancamentos() {
+		todosTiposDespesas = tiposDespesas.porOrigem(despesa.getOrigemLancamento());
+		todasCategoriasDespesas = categoriasDespesas.porOrigem(despesa.getOrigemLancamento());
+	}
 
 	public void salvar() {
 		

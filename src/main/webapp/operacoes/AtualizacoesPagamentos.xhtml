@@ -1,0 +1,760 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	template="/WEB-INF/template.xhtml">
+
+	<ui:define name="title">Empréstimos</ui:define>
+
+	<f:metadata>
+		<f:viewAction action="#{pesquisaEmprestimosBean.inicializar}" />
+	</f:metadata>
+
+	<ui:define name="content">
+
+		<style>
+@media ( min-width :220px) {
+	.ui-slider .ui-slider-handle {
+		width: 1.7em;
+		height: 1.7em;
+	}
+	.ui-slider-horizontal {
+		height: 1.2em !important;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 28px !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+		width: 50% !important;
+		float: left !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-6 {
+		width: 50% !important;
+		float: left !important;
+	}
+	.qty-parcelas.ui-panelgrid .ui-panelgrid-cell:nth-child(1) {
+		margin-top: 10px !important;
+	}
+	.percentual-juros.ui-panelgrid .ui-panelgrid-cell:nth-child(1) {
+		margin-top: 8px !important;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+		.ui-datatable tfoot th {
+		font-size: 13px;
+	}
+	body .btn-new.ui-button {
+		color: #676363;
+		background-color: #f9f9f9;
+		border: 1px solid #8a8585;
+	}
+	.swal2-popup {
+		width: 28em;
+		max-width: 100%;
+		padding: 0 0 0.4em 0;
+		font-size: 0.75rem;
+	}
+	.swal2-popup #swal2-content {
+		font-weight: 400;
+	}
+	body .ui-wizard .ui-wizard-step-titles .ui-wizard-step-title.ui-state-highlight
+		{
+		font-size: 12px;
+		font-weight: bold;
+	}
+	body .ui-wizard .ui-wizard-step-titles .ui-wizard-step-title {
+		font-size: 12px;
+		font-weight: bold;
+	}
+	.ui-helper-reset {
+		border-bottom: 1px solid #cececed4 !important;
+	}
+	body .ui-wizard .ui-wizard-step-titles .ui-wizard-step-title {
+		margin: 1px;
+		padding: 6px 5px;
+	}
+	body .ui-wizard .ui-wizard-step-titles .ui-wizard-step-title.ui-state-highlight
+		{
+		border-color: #0b59af;
+		background-color: #0b59af;
+	}
+	body #cliente-dialog .ui-panel .ui-panel-content, #pagamento-dialog .ui-panel .ui-panel-content
+		{
+		margin-top: -4px;
+		border: 1px solid #DCE1E7;
+		padding: 10px 0px;
+	}
+	body .ui-wizard .ui-wizard-step-titles .ui-wizard-step-title {
+		background-color: #ffffff;
+		border: 1px solid #147df0;
+		border-right: 1px solid #147df0;
+		color: #504d4df7;
+	}
+	#cliente-dialog .ui-grid-responsive .ui-grid-col-2, #pagamento-dialog .ui-grid-responsive .ui-grid-col-2
+		{
+		width: 30% !important;
+		float: left;
+	}
+	#cliente-dialog .ui-grid-responsive .ui-grid-col-10, #pagamento-dialog .ui-grid-responsive .ui-grid-col-10
+		{
+		width: 70% !important;
+		float: right;
+	}
+	#cliente-dialog .ui-grid-responsive .ui-grid-col-3 {
+		width: 50% !important;
+		float: left;
+	}
+	#cliente-dialog .ui-grid-responsive .ui-grid-col-9 {
+		width: 50% !important;
+		float: right;
+	}
+	.ui-wizard {
+		margin-top: 8px;
+	}
+	body #cliente-dialog .ui-button, #pagamento-dialog .ui-button {
+		margin-bottom: 2px;
+		margin-top: 5px;
+	}
+	body #cliente-dialog .ui-datatable thead th {
+		padding: 2px 0px;
+	}
+	body #cliente-dialog .ui-datatable thead th, #cliente-dialog .ui-datatable tbody td
+		{
+		font-size: 0.9em;
+		font-weight: normal;
+	}
+	body #cliente-dialog .ui-datatable .ui-datatable-data>tr td {
+		padding: 2px 10px;
+	}
+	.valorPagar .ui-widget-content .ui-inputfield {
+		width: 93% !important;
+	}
+	.fechado {
+		border-radius: 100%;
+		display: inline-block;
+		border: 7px solid #1a820dc9;
+		background: #1a820dc9;
+	}
+	.aberto {
+		border-radius: 100%;
+		display: inline-block;
+		border: 7px solid #caba08fa;
+		background: #aeb906f2;
+	}
+	.vencido {
+		border-radius: 100%;
+		display: inline-block;
+		border: 7px solid #c50f0fa3;
+		border: 7px solid #c50f0f69;
+		background: #c50f0f8c;
+	}
+	.coluna-aberto {
+		text-align: left !important;
+	}
+	body .ui-datatable .ui-datatable-data>tr.ui-state-highlight {
+		background-color: #ff0054;
+		border-color: #ff0054;
+	}
+	body .ui-datatable .ui-datatable-data>tr.ui-state-highlight.ui-state-hover
+		{
+		background-color: #ff0054;
+		border-color: #ff0054;
+	}
+	/*
+	body .valorPagar .ui-inputfield {
+		width: 92%;
+	}*/
+	.ui-grid-responsive .ui-grid-col-3 {
+		width: 32% !important;
+		float: left;
+	}
+	.ui-grid-responsive .ui-grid-col-5 {
+		width: 68% !important;
+		float: right;
+	}
+	#pagamento-dialog .dataVencimento .ui-grid-responsive .ui-grid-col-2 {
+		margin-top: 8px;
+	}
+	#pagamento-dialog .dataVencimento .ui-grid-responsive .ui-grid-col-3 {
+		margin-top: 8px;
+	}
+	#pagamento-dialog .dataPagamento .ui-grid-responsive .ui-grid-col-2 {
+		margin-bottom: 10px;
+	}
+	body #pagamento-dialog .ui-state-disabled {
+		opacity: .9;
+	}
+	body #cliente-dialog .ui-datatable .ui-datatable-data>tr td {
+		padding: 0px;
+	}
+	.ui-widget-header .ui-inputfield, .ui-widget-content .ui-inputfield {
+		width: 75%;
+	}
+}
+
+@media ( min-width :460px) {
+	.ui-slider .ui-slider-handle {
+		width: 1.7em;
+		height: 1.7em;
+	}
+	.ui-slider-horizontal {
+		height: 1.2em;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 27px !important;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+		.ui-datatable tfoot th {
+		font-size: 14px;
+	}
+}
+
+@media ( min-width :640px) {
+	.ui-slider-handle {
+		width: 1.2em !important;
+		height: 1.2em !important;
+	}
+	.ui-slider-horizontal {
+		height: 0.8em !important;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 27px !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+		width: 33.33333% !important;
+		float: none;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-6 {
+		width: auto !important;
+		float: none;
+	}
+	.coluna-aberto {
+		text-align: center !important;
+	}
+}
+</style>
+
+		<div class="page-header">
+			<h1>Empréstimos</h1>
+		</div>
+
+		<p:growl id="msg" closable="true" life="500" showSummary="false"
+			showDetail="true" style="text-align: center" />
+
+
+
+		<h:form id="form">
+
+			<p:remoteCommand name="setarItemID" process="@this emprestimosTable"
+				update="form" action="#{pesquisaEmprestimosBean.excluir}"
+				onstart="PF('downloadLoading').show();"
+				oncomplete="PF('downloadLoading').hide();" />
+
+			<p:focus for="search" />
+
+			<p:toolbar id="toolbar">
+				<f:facet name="left">
+					<p:button value="Novo" icon="fa fa-fw fa-file-text-o"
+						outcome="/operacoes/Emprestimo.xhtml" />
+
+					<p:separator />
+					<p:spacer />
+					<p:spacer />
+
+					<p:button id="btn" icon="fa fa-fw fa-pencil" value="Editar"
+						outcome="/operacoes/Emprestimo.xhtml"
+						disabled="#{pesquisaEmprestimosBean.emprestimoSelecionado.id == null}">
+						<f:param name="id"
+							value="#{pesquisaEmprestimosBean.emprestimoSelecionado.id}" />
+					</p:button>
+
+				</f:facet>
+
+				<f:facet name="right">
+					<p:commandButton icon="fa fa-fw fa-info-circle" value="INFO"
+						process="@this" oncomplete="PF('cliente-dialog').show();"
+						update="cliente-dialog"
+						action="#{pesquisaEmprestimosBean.prepararInfo}"
+						style="font-size: 11px; font-weight: bold; height: 30px; float: left"
+						disabled="#{pesquisaEmprestimosBean.emprestimoSelecionado.id == null}">
+
+						<p:resetInput target="cliente-dialog" />
+					</p:commandButton>
+
+					<p:separator />
+					<p:spacer />
+					<p:spacer />
+
+					<p:commandButton icon="fa fa-fw fa-trash" value="Excluir"
+						process="@this"
+						onclick="deleteItem(#{pesquisaEmprestimosBean.emprestimoSelecionado.id});"
+						disabled="#{pesquisaEmprestimosBean.emprestimoSelecionado.id == null}" />
+				</f:facet>
+			</p:toolbar>
+
+
+			<div class="ui-g-12 ui-lg-6">
+				<p:panel class="card card-w-title ui-fluid"
+					style="padding-bottom: 0px;">
+
+					<p:defaultCommand target="pesquisar-button" />
+
+					<p:inputText id="search"
+						value="#{pesquisaEmprestimosBean.filtro.nome}"
+						placeholder="Digite nome do cliente" style="width: 180px" />
+					<p:commandButton icon="fa fa-fw fa-search" title="Pesquisar"
+						id="pesquisar-button" update="emprestimosTable toolbar pay-button"
+						style="margin-left: 3px; width: 40px" process="@parent"
+						action="#{pesquisaEmprestimosBean.pesquisar}">
+					</p:commandButton>
+
+					<p:commandButton icon="fa fa-fw fa-money" value="Pagar"
+						id="pay-button"
+						action="#{pesquisaEmprestimosBean.prepararPagamento}"
+						process="@this"
+						style="float:right; margin-left: 3px; width: 75px; font-weight: bold; font-size: 12px; height: 30px; background: #089a29c7;"
+						oncomplete="PF('pagamento-dialog').show();"
+						update="pagamento-dialog"
+						disabled="#{pesquisaEmprestimosBean.emprestimoSelecionado.id == null or pesquisaEmprestimosBean.emprestimoSelecionado.total le 0}">
+
+						<p:resetInput target="pagamento-dialog" />
+					</p:commandButton>
+
+					<p:dataTable id="emprestimosTable" reflow="true"
+						paginatorAlwaysVisible="false"
+						value="#{pesquisaEmprestimosBean.listaEmprestimos}"
+						var="emprestimo" emptyMessage="Nenhum cliente encontrado."
+						rows="10" paginator="true" paginatorPosition="bottom"
+						selectionMode="single"
+						selection="#{pesquisaEmprestimosBean.emprestimoSelecionado}"
+						rowKey="#{emprestimo.id}" style="margin-top: 10px">
+
+						<p:ajax event="rowSelect" update="form:toolbar form:pay-button" />
+						<p:ajax event="rowUnselect" update="form:toolbar form:pay-button" />
+
+						<p:column headerText="Contrato">
+							<h:outputText value="#{emprestimo.contrato}" />
+						</p:column>
+
+						<p:column headerText="Cliente">
+							<h:outputText value="#{emprestimo.cliente.nome}" />
+						</p:column>
+
+						<p:column headerText="Total">
+							<h:outputText value="R$ #{emprestimo.totalTemp}" />
+						</p:column>
+
+						<p:column headerText="Vencimento">
+							<h:outputText value="#{emprestimo.proximoVencimento}">
+								<f:convertDateTime pattern="dd/MM/yyyy" timeZone="GMT-4" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Status" styleClass="coluna-aberto">
+							<h:outputText styleClass="aberto"
+								rendered="#{emprestimo.statusEmprestimo eq 'ABERTO'}" />
+
+							<h:outputText styleClass="fechado"
+								rendered="#{emprestimo.statusEmprestimo eq 'FECHADO'}" />
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</div>
+
+		</h:form>
+
+
+
+
+		<p:dialog header="INFO" widgetVar="cliente-dialog" id="cliente-dialog"
+			onHide="PF('wiz').loadStep(PF('wiz').cfg.steps[0], true);"
+			resizable="false" modal="true" closeOnEscape="true" responsive="true"
+			width="350px" style="margin-top: 10px">
+
+			<h:form>
+				<p:wizard backLabel="voltar" nextLabel="avançar" widgetVar="wiz">
+					<p:tab title="Cliente">
+						<p:panel>
+							<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+								styleClass="panelgrid-noborder disabled disabled apply-result"
+								columnClasses="ui-grid-col-2, ui-grid-col-10">
+
+								<p:outputLabel value="Nome:" />
+								<p:outputLabel
+									value="#{pesquisaEmprestimosBean.emprestimoSelecionado.cliente.nome}"
+									style="font-weight: bold" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+								styleClass="panelgrid-noborder disabled disabled apply-result"
+								columnClasses="ui-grid-col-2, ui-grid-col-10">
+
+								<p:outputLabel value="CPF:" />
+								<p:outputLabel
+									value="#{pesquisaEmprestimosBean.emprestimoSelecionado.cliente.cpf}"
+									style="font-weight: bold" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+								styleClass="panelgrid-noborder disabled disabled apply-result"
+								columnClasses="ui-grid-col-2, ui-grid-col-10">
+
+								<p:outputLabel value="Contato:" />
+								<p:outputLabel
+									value="#{pesquisaEmprestimosBean.emprestimoSelecionado.cliente.contato}"
+									style="font-weight: bold" />
+
+							</p:panelGrid>
+						</p:panel>
+					</p:tab>
+
+					<p:tab title="Empréstimo">
+						<p:panel>
+							<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+								styleClass="panelgrid-noborder disabled disabled apply-result"
+								columnClasses="ui-grid-col-3, ui-grid-col-9">
+
+								<p:outputLabel value="Contrato:" />
+								<p:outputLabel
+									value="#{pesquisaEmprestimosBean.emprestimoSelecionado.contrato}"
+									style="font-weight: bold" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+								styleClass="panelgrid-noborder disabled disabled apply-result"
+								columnClasses="ui-grid-col-3, ui-grid-col-9">
+
+								<p:outputLabel value="Data do empréstimo:" />
+								<p:outputLabel
+									value="#{pesquisaEmprestimosBean.emprestimoSelecionado.dataEmprestimo}"
+									style="font-weight: bold">
+									<f:convertDateTime pattern="dd/MM/yyyy" timeZone="GMT-4" />
+								</p:outputLabel>
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+								styleClass="panelgrid-noborder disabled disabled apply-result"
+								columnClasses="ui-grid-col-3, ui-grid-col-9">
+
+								<p:outputLabel value="Valor do empréstimo:" />
+								<p:outputLabel
+									value="R$ #{pesquisaEmprestimosBean.valorEmprestado}"
+									style="font-weight: bold">
+									<f:convertNumber type="currency" />
+								</p:outputLabel>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+								styleClass="panelgrid-noborder disabled disabled apply-result"
+								columnClasses="ui-grid-col-3, ui-grid-col-9">
+
+								<p:outputLabel value="Percentual de juros:" />
+								<p:outputLabel
+									value="% #{pesquisaEmprestimosBean.emprestimoSelecionado.percentualJuros}"
+									style="font-weight: bold" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+								styleClass="panelgrid-noborder disabled disabled apply-result"
+								columnClasses="ui-grid-col-3, ui-grid-col-9">
+
+								<p:outputLabel value="Data do 1º vencimento:" />
+								<p:outputLabel
+									value="#{pesquisaEmprestimosBean.emprestimoSelecionado.dataVencimento}"
+									style="font-weight: bold">
+									<f:convertDateTime pattern="dd/MM/yyyy" timeZone="GMT-4" />
+								</p:outputLabel>
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+								styleClass="panelgrid-noborder disabled disabled apply-result"
+								columnClasses="ui-grid-col-3, ui-grid-col-9">
+
+								<p:outputLabel value="Status:" />
+								<p:outputLabel
+									value="#{pesquisaEmprestimosBean.emprestimoSelecionado.statusEmprestimo}"
+									style="font-weight: bold" />
+							</p:panelGrid>
+						</p:panel>
+					</p:tab>
+
+					<p:tab title="Juros">
+						<p:panel>
+							<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+								styleClass="panelgrid-noborder disabled disabled apply-result"
+								columnClasses="ui-grid-col-3, ui-grid-col-9">
+
+								<p:outputLabel value="Valor total pago:" />
+								<p:outputLabel
+									value="R$ #{pesquisaEmprestimosBean.valorTotalPago}"
+									style="font-weight: bold" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+								styleClass="panelgrid-noborder disabled disabled apply-result"
+								columnClasses="ui-grid-col-3, ui-grid-col-9">
+
+								<p:outputLabel value="Saldo devedor inicial:" />
+								<p:outputLabel
+									value="R$ #{pesquisaEmprestimosBean.saldoDevedorInicial}"
+									style="font-weight: bold" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+								styleClass="panelgrid-noborder disabled disabled apply-result"
+								columnClasses="ui-grid-col-3, ui-grid-col-9">
+
+								<p:outputLabel value="Valor juros inicial:" />
+								<p:outputLabel
+									value="R$ #{pesquisaEmprestimosBean.valorJurosInicial}"
+									style="font-weight: bold" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+								styleClass="panelgrid-noborder disabled disabled apply-result"
+								columnClasses="ui-grid-col-3, ui-grid-col-9">
+
+								<p:outputLabel value="Valor juros final:" />
+								<p:outputLabel
+									value="R$ #{pesquisaEmprestimosBean.valorJurosFinal}"
+									style="font-weight: bold" />
+							</p:panelGrid>
+						</p:panel>
+					</p:tab>
+
+					<p:tab title="Pagamentos">
+						<p:panel>
+							<p:dataTable id="pagamentosTable" paginatorAlwaysVisible="false"
+								value="#{pesquisaEmprestimosBean.listaParcelas}" var="parcela"
+								emptyMessage="Nenhum pagamento encontrado." rows="10"
+								paginator="true" paginatorPosition="bottom"
+								style="width: 95%; margin: auto">
+
+								<p:column headerText="Data" style="text-align:center">
+									<h:outputText value="#{parcela.dataPagamento}">
+										<f:convertDateTime pattern="dd/MM/yyyy" timeZone="GMT-4" />
+									</h:outputText>
+								</p:column>
+
+								<p:column headerText="Valor pago" style="text-align:center">
+									<h:outputText value="R$ #{parcela.valorPagoTemp}" />
+								</p:column>
+
+								<p:column headerText="Desconto" style="text-align:center">
+									<h:outputText value="R$ #{parcela.descontoTemp}" />
+								</p:column>
+
+								<p:column headerText="Restante" style="text-align:center">
+									<h:outputText value="R$ #{parcela.valorRestanteTemp}" />
+								</p:column>
+							</p:dataTable>
+						</p:panel>
+					</p:tab>
+
+					<p:tab title="Pendente"
+						rendered="#{not(pesquisaEmprestimosBean.emprestimoSelecionado.total le 0)}">
+						<p:panel>
+							<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+								styleClass="panelgrid-noborder disabled disabled apply-result"
+								columnClasses="ui-grid-col-3, ui-grid-col-9">
+
+								<p:outputLabel value="Próximo pagamento"
+									style="font-weight: bold; font-size: 14px" />
+								<p:outputLabel />
+
+								<p:outputLabel value="Date de vencimento:" />
+								<p:outputLabel
+									value="#{pesquisaEmprestimosBean.emprestimoSelecionado.proximoVencimento}"
+									style="font-weight: bold">
+									<f:convertDateTime pattern="dd/MM/yyyy" timeZone="GMT-4" />
+								</p:outputLabel>
+
+								<p:outputLabel value="Débito:" />
+								<p:outputLabel value="R$ #{pesquisaEmprestimosBean.debito}"
+									style="font-weight: bold">
+								</p:outputLabel>
+
+								<p:outputLabel value="Juros:" />
+								<p:outputLabel value="R$ #{pesquisaEmprestimosBean.juros}"
+									style="font-weight: bold">
+								</p:outputLabel>
+
+								<p:outputLabel value="Total:" />
+								<p:outputLabel value="R$ #{pesquisaEmprestimosBean.total}"
+									style="font-weight: bold">
+								</p:outputLabel>
+							</p:panelGrid>
+						</p:panel>
+					</p:tab>
+				</p:wizard>
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog header="Pagar empréstimo" widgetVar="pagamento-dialog"
+			id="pagamento-dialog" resizable="false" modal="true"
+			closeOnEscape="true" responsive="true" width="345px"
+			style="margin-top: 10px">
+
+			<h:form id="form-pagamento">
+
+
+				<p:wizard backLabel="voltar" nextLabel="avançar" widgetVar="wizard"
+					flowListener="#{pesquisaEmprestimosBean.calculaPagamento}">
+					<p:tab title="Pagamento" id="tab0">
+
+						<p:growl closable="true" life="500" showSummary="false"
+							showDetail="true" style="text-align: center" />
+
+						<p:focus for="valor" />
+
+						<p:panel>
+							<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+								styleClass="panelgrid-noborder disabled disabled apply-result dataVencimento"
+								columnClasses="ui-grid-col-2, ui-grid-col-10">
+
+								<p:outputLabel value="Vencimento" for="vencimento" />
+								<p:calendar id="vencimento" style="width: 75% !important;"
+									value="#{pesquisaEmprestimosBean.emprestimoSelecionado.proximoVencimento}"
+									showOn="button" locale="pt" pattern="dd/MM/yyyy"
+									disabled="true" />
+							</p:panelGrid>
+
+
+							<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+								styleClass="panelgrid-noborder disabled disabled apply-result dataPagamento"
+								columnClasses="ui-grid-col-2, ui-grid-col-10">
+
+								<p:outputLabel value="Data Pagamento" for="dataPagamento" />
+								<p:calendar id="dataPagamento"
+									value="#{pesquisaEmprestimosBean.parcela.dataPagamento}"
+									showOn="button" locale="pt" pattern="dd/MM/yyyy" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+								styleClass="panelgrid-noborder disabled disabled apply-result"
+								columnClasses="ui-grid-col-2, ui-grid-col-10">
+
+								<p:outputLabel value="Total" for="total" />
+								<p:inputNumber id="total" decimalSeparator=","
+									thousandSeparator="." readonly="true"
+									value="#{pesquisaEmprestimosBean.emprestimoSelecionado.total}"
+									decimalPlaces="2" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+								styleClass="panelgrid-noborder disabled disabled apply-result"
+								columnClasses="ui-grid-col-2, ui-grid-col-10">
+
+								<p:outputLabel value="Valor a pagar" for="valor" />
+								<p:inputNumber id="valor" decimalSeparator=","
+									thousandSeparator="." styleClass="valorPagar"
+									value="#{pesquisaEmprestimosBean.valorPago}" decimalPlaces="2" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+								styleClass="panelgrid-noborder disabled disabled apply-result"
+								columnClasses="ui-grid-col-2, ui-grid-col-10">
+
+								<p:outputLabel value="Desconto" for="desconto" />
+								<p:inputNumber id="desconto" decimalSeparator=","
+									thousandSeparator="."
+									value="#{pesquisaEmprestimosBean.desconto}" decimalPlaces="2" />
+							</p:panelGrid>
+						</p:panel>
+					</p:tab>
+
+					<p:tab title="Próximo vencimento">
+						<p:panel>
+							<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+								styleClass="panelgrid-noborder disabled disabled apply-result dataVencimento"
+								columnClasses="ui-grid-col-3, ui-grid-col-5">
+
+								<p:outputLabel value="Vencimento" for="proximo-vencimento" />
+								<p:calendar id="proximo-vencimento"
+									value="#{pesquisaEmprestimosBean.emprestimoSelecionado.proximoVencimentoTemp}"
+									showOn="button" locale="pt" pattern="dd/MM/yyyy"
+									disabled="true" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+								styleClass="panelgrid-noborder disabled disabled apply-result"
+								columnClasses="ui-grid-col-3, ui-grid-col-5">
+
+								<p:outputLabel value="Débito" for="debito" />
+								<p:inputText id="debito" readonly="true"
+									value="#{pesquisaEmprestimosBean.debitoRestante}" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+								styleClass="panelgrid-noborder disabled disabled apply-result"
+								columnClasses="ui-grid-col-3, ui-grid-col-5">
+
+								<p:outputLabel value="Juros" for="juros" />
+								<p:inputText id="juros" readonly="true"
+									value="#{pesquisaEmprestimosBean.jurosDaParcela}" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+								styleClass="panelgrid-noborder disabled disabled apply-result"
+								columnClasses="ui-grid-col-3, ui-grid-col-5">
+
+								<p:outputLabel value="Desconto" for="desconto_" />
+								<p:inputNumber id="desconto_" decimalSeparator=","
+									thousandSeparator="." readonly="true"
+									value="#{pesquisaEmprestimosBean.desconto eq '' ? '0' : pesquisaEmprestimosBean.desconto}"
+									decimalPlaces="2" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+								styleClass="panelgrid-noborder disabled disabled apply-result"
+								columnClasses="ui-grid-col-3, ui-grid-col-5">
+
+								<p:outputLabel value="Valor restante" for="restante" />
+								<p:inputText id="restante" readonly="true"
+									value="#{pesquisaEmprestimosBean.valorRestante}" />
+							</p:panelGrid>
+
+							<p:panelGrid columns="3" layout="grid"
+								styleClass="panelgrid-noborder disabled disabled apply-result"
+								columnClasses="ui-grid-col-2, ui-grid-col-2, ui-grid-col-2">
+
+								<p:outputLabel />
+								<p:outputLabel />
+								<p:commandButton icon="fa fa-fw fa-save"
+									style="float: right;position: relative;margin-right: 8px;font-weight: bold;font-size: 13px;background-color: #089a29c7;"
+									value="Confirmar"
+									action="#{pesquisaEmprestimosBean.confirmarPagamento}"
+									update="form" oncomplete="PF('pagamento-dialog').hide();">
+
+									<p:resetInput target="pagamento-dialog" />
+								</p:commandButton>
+							</p:panelGrid>
+						</p:panel>
+					</p:tab>
+				</p:wizard>
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog id="downloadLoading" showHeader="false" modal="true"
+			widgetVar="downloadLoading" header="Status" draggable="false"
+			closable="false" resizable="false">
+			<p:graphicImage name="images/loadingbar.gif"
+				library="manhattan-layout" width="50" />
+		</p:dialog>
+
+		<script type="text/javascript">
+			function start() {
+				PF('downloadLoading').show();
+			}
+
+			function stop() {
+				PF('downloadLoading').hide();
+			}
+		</script>
+
+	</ui:define>
+
+</ui:composition>

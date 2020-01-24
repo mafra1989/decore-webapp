@@ -88,7 +88,8 @@ public class CadastroProdutoBean implements Serializable {
 			System.out.println(totalItensVendidos);
 		}
 		
-		produto.setTotalAcumulado(BigDecimal.valueOf(produto.getQuantidadeAtual() * produto.getPrecoVenda().doubleValue()));
+		produto.setTotalAcumulado(BigDecimal.valueOf(itensCompras.aVender(produto).doubleValue() * (1 + (produto.getMargemLucro().doubleValue()/100))));
+		//produto.setTotalAcumulado(BigDecimal.valueOf(produto.getQuantidadeAtual() * produto.getLocalizacao().doubleValue()));
 		
 		if(totalItensVendidos > 0) {
 			produto.setPrecoMedioVenda(BigDecimal.valueOf(produto.getTotalVendas().doubleValue() / BigDecimal.valueOf(totalItensVendidos).intValue()));
@@ -101,37 +102,50 @@ public class CadastroProdutoBean implements Serializable {
 		produto.setQuantidadeItensVendidos(totalItensVendidos);
 	}
 	
+	public void calculaAvender() {
+		produto.setTotalAcumulado(BigDecimal.valueOf(itensCompras.aVender(produto).doubleValue() * (1 + (produto.getMargemLucro().doubleValue()/100))));
+		System.out.println(produto.getTotalAcumulado());
+	}
+	
 	public void salvar() {
 
 		if(fileContent != null) {
 			produto.setFoto(fileContent);
 		}
 
-		if (produto.getId() == null) {			
-
-			produto = produtos.save(produto);
+		if (produto.getId() == null) {
 			
-			produto = new Produto();
-			fileContent = null;
-			file = null;
+			Produto produtoTemp = produtos.porCodigo(produto.getCodigo());
 			
-			PrimeFaces.current().executeScript(
-					"swal({ type: 'success', title: 'ConcluÃ­do!', text: 'Produto cadastrado com sucesso!' });");			
+			if(produtoTemp == null) {
+				
+				produto = produtos.save(produto);
+				
+				produto = new Produto();
+				fileContent = null;
+				file = null;
+				
+				PrimeFaces.current().executeScript(
+						"swal({ type: 'success', title: 'Concluído!', text: 'Produto cadastrado com sucesso!' });");			
+			} else {
+				
+				PrimeFaces.current().executeScript(
+						"swal({ type: 'error', title: 'Erro!', text: 'Já existe um produto com o código informado!' });");	
+			}
+						
 	
 		} else {
-/*			
-			List<Parcela> todasParcelas = parcelas.todasParcelas(emprestimo.getId());
-
-			if (todasParcelas.size() > 0) {
+			
+			Produto produtoTemp = produtos.porCodigoCadastrado(produto);
+			if(produtoTemp == null) {
+				produto = produtos.save(produto);			
 				PrimeFaces.current().executeScript(
-						"swal({ type: 'error', title: 'Erro!', text: 'JÃ¡ existem parcelas lanÃ§adas para esse contrato.' });");
+						"swal({ type: 'success', title: 'Concluído!', text: 'Produto cadastrado com sucesso!' });");
 				
 			} else {
-				emprestimo = emprestimos.save(emprestimo);
 				PrimeFaces.current().executeScript(
-						"swal({ type: 'success', title: 'ConcluÃ­do!', text: 'EmprÃ©stimo atualizado com sucesso!' });");
-			}
-*/			
+						"swal({ type: 'error', title: 'Erro!', text: 'Já existe um produto com o código informado!' });");	
+			}		
 		}
 
 	}
@@ -192,12 +206,13 @@ public class CadastroProdutoBean implements Serializable {
 			fileContent = file.getContents();						
 			
 		} else {
-			FacesUtil.addErrorMessage("Selecione uma imagem!");
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'error', title: 'Erro!', text: 'Selecione uma imagem com até 60KB!' });");
 		}
 	}
 
 	public byte[] getFileContent() {
 		return fileContent;
 	}
-	
+		
 }

@@ -147,8 +147,8 @@
 
 							<p:outputLabel value="Data da Compra" for="data-compra" />
 							<p:datePicker value="#{registroComprasBean.compra.dataCompra}"
-								id="data-compra" pattern="dd/MM/yyyy" locale="pt"  readonlyInput="true"
-								showIcon="true" />
+								id="data-compra" pattern="dd/MM/yyyy" locale="pt"
+								readonlyInput="true" showIcon="true" />
 
 							<p:outputLabel value="Comprador" for="comprador" />
 							<p:selectOneMenu id="comprador"
@@ -165,8 +165,8 @@
 						</p:panelGrid>
 
 						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
-							styleClass="panelgrid-noborder disabled disabled" rendered="false"
-							columnClasses="ui-grid-col-4, ui-grid-col-4">
+							styleClass="panelgrid-noborder disabled disabled"
+							rendered="false" columnClasses="ui-grid-col-4, ui-grid-col-4">
 
 							<p:outputLabel value="Quantidade de itens" for="itens" />
 							<p:inputNumber id="itens" decimalPlaces="0" readonly="true"
@@ -187,9 +187,9 @@
 							style="position: relative; float: right; margin-top: -38px; margin-right: 8px; width: 40px" />
 
 						<p:inputText id="id" type="hidden"
-						value="#{registroComprasBean.itemCompra.code}" required="true"
-						requiredMessage="Produto deve ser informado." />
-						
+							value="#{registroComprasBean.itemCompra.code}" required="true"
+							requiredMessage="Produto deve ser informado." />
+
 						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-4, ui-grid-col-4">
@@ -198,12 +198,12 @@
 							<p:inputText id="codigo"
 								value="#{registroComprasBean.itemCompra.produto.codigo}"
 								readonly="true" />
-								
+
 							<p:outputLabel value="Descrição" for="descricao" />
 							<p:inputText id="descricao"
 								value="#{registroComprasBean.itemCompra.produto.descricao}"
 								readonly="true" />
-								
+
 							<p:outputLabel value="Fornecedor" for="fornecedor" />
 							<p:inputText id="fornecedor"
 								value="#{registroComprasBean.itemCompra.produto.fornecedor.nome}"
@@ -220,18 +220,19 @@
 								placeholder="0"
 								value="#{registroComprasBean.itemCompra.valorUnitario}">
 								<p:ajax event="keyup" update="valor-total"></p:ajax>
-								</p:inputNumber>
+							</p:inputNumber>
 
 							<p:outputLabel value="Quantidade" for="quantidade" />
 							<p:inputNumber id="quantidade" decimalPlaces="0" placeholder="0"
 								value="#{registroComprasBean.itemCompra.quantidade}">
-								
+
 								<p:ajax event="keyup" update="valor-total"></p:ajax>
-								</p:inputNumber>
+							</p:inputNumber>
 
 							<p:outputLabel value="Sub-Total" for="valor-total" />
 							<p:inputNumber id="valor-total" decimalPlaces="2" readonly="true"
-								placeholder="0" value="#{registroComprasBean.itemCompra.valorUnitario * registroComprasBean.itemCompra.quantidade}" />
+								placeholder="0"
+								value="#{registroComprasBean.itemCompra.valorUnitario * registroComprasBean.itemCompra.quantidade}" />
 						</p:panelGrid>
 
 						<p:panelGrid columns="2" layout="grid"
@@ -242,7 +243,7 @@
 							<p:commandButton id="btn-adicionar" value="Adicionar"
 								onstart="PF('downloadLoading').show();" icon="fa fa-plus"
 								onsuccess="PF('downloadLoading').hide();"
-								update="msg codigo descricao fornecedor id valor-unitario quantidade valor-total panel-table"
+								update="msg codigo descricao fornecedor total-compra id valor-unitario quantidade valor-total panel-table"
 								action="#{registroComprasBean.adicionarItem}"
 								process="@this codigo valor-unitario quantidade valor-total id"
 								style="font-weight: bold;" />
@@ -250,14 +251,25 @@
 					</p:panel>
 
 
-					<p:panel class="card card-w-title ui-fluid itens-add" id="panel-table"
-						style="padding-bottom: 0px !important">
+					<p:panel class="card card-w-title ui-fluid itens-add"
+						id="panel-table" style="padding-bottom: 0px !important">
 
 						<h3 style="font-weight: bold">Itens adicionados</h3>
 
 						<p:panelGrid columns="1" layout="grid"
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-12">
+
+							<p:panelGrid columns="2" style="margin-top:-15px;"
+							styleClass="panelgrid-noborder disabled disabled">
+								<p:outputLabel value="Total: "/>
+								<p:outputLabel id="total-compra"
+									value="#{registroComprasBean.compra.valorTotal}"
+									style="margin-bottom:5px; font-weight:bold;margin-left:8px;color:#5b5656">
+	
+									<f:convertNumber type="currency" />
+								</p:outputLabel>
+							</p:panelGrid>
 
 							<p:dataTable id="itensTable" paginatorAlwaysVisible="false"
 								value="#{registroComprasBean.itensCompra}" var="item"
@@ -276,7 +288,9 @@
 								</p:column>
 
 								<p:column headerText="Val. Unit." width="20%">
-									<h:outputText value="#{item.valorUnitario}" />
+									<h:outputText value="#{item.valorUnitario}">
+										<f:convertNumber type="currency" />
+									</h:outputText>
 								</p:column>
 
 								<p:column headerText="Qtd" width="20%">
@@ -292,14 +306,17 @@
 						</p:panelGrid>
 
 						<p:contextMenu id="menu-item" for="itensTable">
-							<p:menuitem value="Remover Item" id="btn-remove" update="panel-table"
-								process="@this panel-table" action="#{registroComprasBean.removeItem}"
-								onstart="start();" oncomplete="stop();" icon="fa fa-fw fa-trash"
+							<p:menuitem value="Remover Item" id="btn-remove"
+								update="panel-table total-compra" process="@this panel-table"
+								action="#{registroComprasBean.removeItem}" onstart="start();"
+								oncomplete="stop();" icon="fa fa-fw fa-trash"
 								disabled="#{registroComprasBean.itensCompraSize eq 0}" />
-								
-							<p:menuitem value="Editar Item" id="btn-editar" update="panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total"
-								process="@this panel-table" action="#{registroComprasBean.editarItem}"
-								onstart="start();" oncomplete="stop();" icon="fa fa-fw fa-edit"
+
+							<p:menuitem value="Editar Item" id="btn-editar"
+								update="panel-table form:total-compra form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total"
+								process="@this panel-table"
+								action="#{registroComprasBean.editarItem}" onstart="start();"
+								oncomplete="stop();" icon="fa fa-fw fa-edit"
 								disabled="#{registroComprasBean.itensCompraSize eq 0}" />
 						</p:contextMenu>
 
@@ -312,8 +329,10 @@
 
 							<p:commandButton id="btn-calcular" value="Finalizar Compra"
 								onstart="PF('downloadLoading').show();" icon="fa fa-save"
-								onsuccess="PF('downloadLoading').hide();" update="msg data-compra comprador panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total"
-								action="#{registroComprasBean.salvar}" process="@this panel-table data-compra comprador"
+								onsuccess="PF('downloadLoading').hide();"
+								update="msg data-compra comprador panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total"
+								action="#{registroComprasBean.salvar}"
+								process="@this panel-table data-compra comprador"
 								style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;" />
 						</p:panelGrid>
 
@@ -329,8 +348,6 @@
 			responsive="true" width="350px">
 
 			<h:form id="form-dialog">
-
-				<p:focus for="search" />
 
 				<div class="ui-g-12 ui-lg-12">
 					<p:panel class="card card-w-title ui-fluid"
@@ -366,8 +383,10 @@
 							<p:column width="20%" style="text-align: center">
 								<p:commandButton icon="fa fa-fw fa-check"
 									action="#{registroComprasBean.selecionarProduto(produto)}"
-									title="Selecionar Produto" update="form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total" style="width: 100%"
-									process="@this" oncomplete="PF('item-dialog').hide();">
+									title="Selecionar Produto"
+									update="form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total"
+									style="width: 100%" process="@this"
+									oncomplete="PF('item-dialog').hide();">
 								</p:commandButton>
 							</p:column>
 

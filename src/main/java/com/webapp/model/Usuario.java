@@ -4,11 +4,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -33,10 +34,12 @@ public class Usuario implements Serializable {
 	@Column
 	private String funcao;
 	
+	@NotBlank
+	@Column
+	private String cpf;
+	
 	private String contato;
 
-	@Lob
-	@Column
 	private byte[] foto;
 
 	private String login;
@@ -71,6 +74,14 @@ public class Usuario implements Serializable {
 		this.funcao = funcao;
 	}
 
+	public String getCpf() {
+		return cpf;
+	}
+
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
+
 	@Column(length = 20)
 	public String getContato() {
 		return contato;
@@ -80,6 +91,8 @@ public class Usuario implements Serializable {
 		this.contato = telefone;
 	}
 
+	@Lob @Basic(fetch = FetchType.LAZY)
+	@Column(length=100000)
 	public byte[] getFoto() {
 		return foto;
 	}
@@ -106,7 +119,7 @@ public class Usuario implements Serializable {
 		this.senha = senha;
 	}
 
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.REFRESH)
 	@JoinTable(name = "usuario_grupo", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "grupo_id"))
 	public List<Grupo> getGrupos() {
 		return grupos;

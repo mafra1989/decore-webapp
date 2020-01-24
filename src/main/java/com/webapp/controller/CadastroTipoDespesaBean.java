@@ -9,6 +9,7 @@ import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
 
+import com.webapp.model.OrigemLancamento;
 import com.webapp.model.TipoLancamento;
 import com.webapp.repository.TiposDespesas;
 import com.webapp.repository.filter.TipoLancamentoFilter;
@@ -55,7 +56,7 @@ public class CadastroTipoDespesaBean implements Serializable {
 		listarTodos();
 
 		PrimeFaces.current().executeScript(
-				"PF('downloadLoading').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Tipo de despesa salvo com sucesso!' });");
+				"PF('downloadLoading').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Tipo de lançamento salvo com sucesso!' });");
 	}
 
 	public void excluir() {
@@ -67,7 +68,7 @@ public class CadastroTipoDespesaBean implements Serializable {
 		pesquisar();
 
 		PrimeFaces.current().executeScript(
-				"swal({ type: 'success', title: 'Concluído!', text: 'Tipo de despesa excluído com sucesso!' });");
+				"swal({ type: 'success', title: 'Concluído!', text: 'Tipo de lançamento excluído com sucesso!' });");
 
 	}
 
@@ -108,4 +109,7 @@ public class CadastroTipoDespesaBean implements Serializable {
 		this.tipoDespesa = tipoDespesa;
 	}
 
+	public OrigemLancamento[] getOrigensLancamentos() {
+		return OrigemLancamento.values();
+	}
 }

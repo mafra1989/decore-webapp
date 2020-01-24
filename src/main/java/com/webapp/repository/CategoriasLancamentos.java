@@ -7,6 +7,8 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 import com.webapp.model.CategoriaLancamento;
+import com.webapp.model.OrigemLancamento;
+import com.webapp.model.TipoLancamento;
 import com.webapp.repository.filter.CategoriaLancamentoFilter;
 import com.webapp.util.jpa.Transacional;
 
@@ -36,6 +38,10 @@ public class CategoriasLancamentos implements Serializable {
 
 	public List<CategoriaLancamento> todos() {
 		return this.manager.createQuery("from CategoriaLancamento order by nome", CategoriaLancamento.class).getResultList();
+	}
+	
+	public List<CategoriaLancamento> porOrigem(OrigemLancamento origem) {
+		return this.manager.createQuery("from CategoriaLancamento c where c.origem = :origem order by c.nome", CategoriaLancamento.class).setParameter("origem", origem).getResultList();
 	}
 
 	public List<CategoriaLancamento> filtrados(CategoriaLancamentoFilter filter) {

@@ -123,8 +123,6 @@
 				onstart="PF('downloadLoading').show();"
 				oncomplete="PF('downloadLoading').hide();" />
 
-			<p:focus for="search" />
-
 			<p:toolbar id="toolbar">
 				<f:facet name="left">
 					<p:commandButton value="Novo" icon="fa fa-fw fa-file-text-o"
@@ -176,7 +174,7 @@
 					<p:dataTable id="tipoDespesaTable" reflow="true"
 						paginatorAlwaysVisible="false"
 						value="#{cadastroCategoriaDespesaBean.todasCategoriasDespesas}" var="categoriaDespesa"
-						emptyMessage="Nenhum categoria de despesa encontrada." rows="10"
+						emptyMessage="Nenhuma categoria de lançamento encontrada." rows="10"
 						paginator="true" paginatorPosition="bottom" selectionMode="single"
 						selection="#{cadastroCategoriaDespesaBean.categoriaDespesaSelecionada}"
 						rowKey="#{categoriaDespesa.id}" style="margin-top: 10px">
@@ -186,6 +184,10 @@
 
 						<p:column headerText="Descrição">
 							<h:outputText value="#{categoriaDespesa.nome}" />
+						</p:column>
+						
+						<p:column headerText="Origem">
+							<h:outputText value="#{categoriaDespesa.origem.descricao}" />
 						</p:column>
 
 					</p:dataTable>
@@ -216,11 +218,18 @@
 							styleClass="panelgrid-noborder disabled disabled">
 
 							<p:outputLabel value="Nome" for="nome" />
-							<p:inputText id="nome"
-								value="#{cadastroCategoriaDespesaBean.categoriaDespesa.nome}" />
+							<p:inputText id="nome" autocomplete="off"
+								value="#{cadastroCategoriaDespesaBean.categoriaDespesa.nome}" />					
+								
+							<p:outputLabel value="Origem" for="origem" />
+							<p:selectOneRadio id="origem" unselectable="true" value="#{cadastroCategoriaDespesaBean.categoriaDespesa.origem}">
+								<f:selectItems
+									value="#{cadastroCategoriaDespesaBean.origensLancamentos}"
+									var="origemLancamento"
+									itemLabel="#{origemLancamento.descricao}"
+									itemValue="#{origemLancamento}" />
+							</p:selectOneRadio>
 						</p:panelGrid>
-
-						<p:spacer />
 
 						<p:panelGrid columns="1" layout="grid"
 							styleClass="panelgrid-noborder disabled disabled">

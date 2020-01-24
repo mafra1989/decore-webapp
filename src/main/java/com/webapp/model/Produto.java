@@ -3,10 +3,11 @@ package com.webapp.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -40,19 +41,22 @@ public class Produto implements Serializable {
 	@Column(nullable = false, length = 120)
 	private String descricao;
 
-	@NotNull
-	@Column(nullable = false)
-	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
-	private BigDecimal precoVenda;
+	@Column
+	private String locacao;
 
 	@Lob
+	@Basic(fetch = FetchType.LAZY)
 	@Column
 	private byte[] foto;
 
 	@Column
 	private Long quantidadeAtual = 0L;
-
+	
 	@Column
+	@Digits(integer = 10 /* precision */, fraction = 0 /* scale */)
+	private BigDecimal margemLucro = BigDecimal.valueOf(20);
+
+	@Transient
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
 	private BigDecimal totalAcumulado = BigDecimal.ZERO;
 
@@ -106,12 +110,12 @@ public class Produto implements Serializable {
 		this.descricao = descricao;
 	}
 
-	public BigDecimal getPrecoVenda() {
-		return precoVenda;
+	public String getLocacao() {
+		return locacao;
 	}
 
-	public void setPrecoVenda(BigDecimal precoVenda) {
-		this.precoVenda = precoVenda;
+	public void setLocacao(String locacao) {
+		this.locacao = locacao;
 	}
 
 	public byte[] getFoto() {
@@ -130,12 +134,20 @@ public class Produto implements Serializable {
 		this.quantidadeAtual = quantidadeAtual;
 	}
 
+	public BigDecimal getMargemLucro() {
+		return margemLucro;
+	}
+
+	public void setMargemLucro(BigDecimal margemLucro) {
+		this.margemLucro = margemLucro.setScale(0, BigDecimal.ROUND_HALF_EVEN);;
+	}
+
 	public BigDecimal getTotalAcumulado() {
 		return totalAcumulado;
 	}
 
 	public void setTotalAcumulado(BigDecimal totalAcumulado) {
-		this.totalAcumulado = totalAcumulado;
+		this.totalAcumulado = totalAcumulado.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
 	}
 
 	public BigDecimal getTotalCompras() {
@@ -143,7 +155,7 @@ public class Produto implements Serializable {
 	}
 
 	public void setTotalCompras(BigDecimal totalCompras) {
-		this.totalCompras = totalCompras;
+		this.totalCompras = totalCompras.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
 	}
 
 	public BigDecimal getTotalVendas() {
@@ -151,7 +163,7 @@ public class Produto implements Serializable {
 	}
 
 	public void setTotalVendas(BigDecimal totalVendas) {
-		this.totalVendas = totalVendas;
+		this.totalVendas = totalVendas.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
 	}
 
 	public CategoriaProduto getCategoriaProduto() {

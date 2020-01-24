@@ -4,7 +4,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
 
-	<ui:define name="title">Lançamento de Despesas</ui:define>
+	<ui:define name="title">Registrar Lançamentos</ui:define>
 
 	<f:metadata>
 		<f:viewAction action="#{lancamentoDespesasBean.inicializar}" />
@@ -120,7 +120,7 @@
 </style>
 
 		<div class="page-header">
-			<h1>Lançamento de Despesas</h1>
+			<h1>Registrar Lançamentos</h1>
 		</div>
 
 		<p:growl id="msg" closable="true" life="2000" showSummary="false"
@@ -148,7 +148,30 @@
 								value="#{lancamentoDespesasBean.despesa.dataLancamento}"
 								id="data-venda" pattern="dd/MM/yyyy" locale="pt" showIcon="true" />
 
-							<p:outputLabel value="Tipo de Despesa" for="tipo-despesa" />
+						</p:panelGrid>
+
+						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-4, ui-grid-col-6">
+
+							<p:outputLabel value="Origem" for="origem" />
+							<p:selectOneRadio id="origem" unselectable="true"
+								value="#{lancamentoDespesasBean.despesa.origemLancamento}">
+								
+								<p:ajax event="change" listener="#{lancamentoDespesasBean.changeLancamentos}" process="@this" update="tipo-despesa categoria" />
+								<f:selectItems
+									value="#{lancamentoDespesasBean.origensLancamentos}"
+									var="origemLancamento"
+									itemLabel="#{origemLancamento.descricao}"
+									itemValue="#{origemLancamento}" />
+							</p:selectOneRadio>
+
+						</p:panelGrid>
+
+						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-4, ui-grid-col-4">
+							<p:outputLabel value="Tipo de Lançamento" for="tipo-despesa" />
 							<p:selectOneMenu id="tipo-despesa"
 								value="#{lancamentoDespesasBean.despesa.tipoLancamento}"
 								placeholder="selecione">
@@ -191,7 +214,7 @@
 							columnClasses="ui-grid-col-4, ui-grid-col-3">
 
 							<p:outputLabel value="Valor Total" for="valor" />
-							<p:inputNumber id="valor" decimalPlaces="2" 
+							<p:inputNumber id="valor" decimalPlaces="2"
 								value="#{lancamentoDespesasBean.despesa.valor}" />
 
 						</p:panelGrid>
@@ -214,14 +237,6 @@
 									itemValue="#{categoriaLancamento}" />
 							</p:selectOneMenu>
 
-							<p:outputLabel value="Origem" for="origem" />
-							<p:selectOneRadio id="origem" unselectable="true" value="#{lancamentoDespesasBean.despesa.origemLancamento}">
-								<f:selectItems
-									value="#{lancamentoDespesasBean.origensLancamentos}"
-									var="origemLancamento"
-									itemLabel="#{origemLancamento.descricao}"
-									itemValue="#{origemLancamento}" />
-							</p:selectOneRadio>
 						</p:panelGrid>
 
 
@@ -243,10 +258,8 @@
 							<p:outputLabel value="" />
 							<p:commandButton id="btn-calcular" value="Salvar"
 								onstart="PF('downloadLoading').show();" icon="fa fa-save"
-								onsuccess="PF('downloadLoading').hide();"
-								update="msg form"
-								action="#{lancamentoDespesasBean.salvar}"
-								process="@this form"
+								onsuccess="PF('downloadLoading').hide();" update="msg form"
+								action="#{lancamentoDespesasBean.salvar}" process="@this form"
 								style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;" />
 						</p:panelGrid>
 

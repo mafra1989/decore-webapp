@@ -18,7 +18,7 @@
 				this.cfg.config.options = {
 					legend : {
 						display : true,
-					},
+					},					
 
 					title : {
 						display : false,
@@ -55,6 +55,20 @@
 					legend : {
 						display : true,
 					},
+					
+					scales: {
+				         xAxes: [{
+				            display: true,
+				         }],
+				         yAxes: [{
+				            display: true,
+				            scaleLabel: {
+				               display: true,
+				               labelString: 'Your Y Axis',
+				               fontSize: 13,
+				            }
+				         }]
+				      },
 
 					tooltips : {
 						callbacks : {
@@ -62,7 +76,11 @@
 							label : function(tooltipItem, data) {
 								var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
 
-								return numberToReal(amount);
+								if(tooltipItem.datasetIndex == 0) {
+									return "R$ " + numberToReal(amount);
+								} else {
+									return numberToReal(amount) + "%";
+								}
 							}
 						}
 					},
@@ -109,10 +127,14 @@
 					tooltips : {
 						callbacks : {
 
-							label : function(tooltipItem, data) {
+							label : function(tooltipItem, data) { 
 								var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-
-								return numberToReal(amount);
+								if(tooltipItem.datasetIndex == 0) {
+									return "R$ " + numberToReal(amount);
+								} else {
+									return numberToReal(amount) + "%";
+								}
+								
 							}
 						}
 					},
@@ -121,7 +143,7 @@
 
 			function numberToReal(numero) {
 				var numero = numero.toFixed(2).split('.');
-				numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
+				numero[0] = numero[0].split(/(?=(?:...)*$)/).join('.');
 				return numero.join(',');
 			}
 		</script>

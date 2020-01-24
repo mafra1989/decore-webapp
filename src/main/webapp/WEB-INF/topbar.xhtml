@@ -34,8 +34,19 @@ body #pecaDialog .ui-datatable .ui-datatable-data>tr td {
 
 		<div class="layout-topbar-menu-wrapper">
 			<ul class="topbar-menu animated">
-				<li class="profile-item"><a href="#"> <p:graphicImage
-							name="images/user-icon.png" library="manhattan-layout" /> <span
+				<li class="profile-item"><a href="#">  
+				
+    				<ui:fragment id="photo"
+						rendered="#{seguranca.fileContent != null}">
+						<img 
+							src="data:image/png;base64,#{seguranca.imageContentsAsBase64}"
+							style="width: 40px;height: 40px;border-radius: 100px;" />
+					</ui:fragment>
+				
+						<p:graphicImage rendered="false"
+							name="images/user-icon.png" library="manhattan-layout" /> 
+							
+							<span
 						class="topbar-item-name profile-name">
 							Olá #{seguranca.nomeUsuario}!</span>
 				</a>
@@ -59,10 +70,13 @@ body #pecaDialog .ui-datatable .ui-datatable-data>tr td {
 
 				
 			</ul>
-
-			<a href="#" class="topbar-menu-btn"> <p:graphicImage
-					name="images/user-icon.png" library="manhattan-layout" />
-			</a>
+			
+			<ui:fragment id="photo-mobile"
+						rendered="#{seguranca.fileContent != null}">
+						<img class="topbar-menu-btn"
+							src="data:image/png;base64,#{seguranca.imageContentsAsBase64}"
+							style="width: 40px;height: 40px;border-radius: 100px;" />
+					</ui:fragment>
 		</div>
 	</div>
 
