@@ -10,8 +10,12 @@ import javax.inject.Named;
 import org.primefaces.PrimeFaces;
 
 import com.webapp.model.CategoriaLancamento;
+import com.webapp.model.DestinoLancamento;
 import com.webapp.model.OrigemLancamento;
+import com.webapp.model.TipoLancamento;
 import com.webapp.repository.CategoriasLancamentos;
+import com.webapp.repository.DestinosLancamentos;
+import com.webapp.repository.TiposDespesas;
 import com.webapp.repository.filter.CategoriaLancamentoFilter;
 import com.webapp.util.jsf.FacesUtil;
 
@@ -23,6 +27,16 @@ public class CadastroCategoriaDespesaBean implements Serializable {
 
 	@Inject
 	private CategoriasLancamentos categoriasDespesas;
+	
+	@Inject
+	private TiposDespesas tiposLancamentos;
+
+	private List<TipoLancamento> todosTiposLancamentos;
+	
+	@Inject
+	private DestinosLancamentos destinosLancamentos;
+
+	private List<DestinoLancamento> todosDestinosLancamentos;
 
 	@Inject
 	private CategoriaLancamento categoriaDespesa;
@@ -79,6 +93,8 @@ public class CadastroCategoriaDespesaBean implements Serializable {
 
 	private void listarTodos() {
 		todasCategoriasDespesas = categoriasDespesas.todos();
+		todosDestinosLancamentos = destinosLancamentos.todos();
+		todosTiposLancamentos = tiposLancamentos.todos();
 	}
 
 	public List<CategoriaLancamento> getTodasCategoriasDespesas() {
@@ -111,6 +127,14 @@ public class CadastroCategoriaDespesaBean implements Serializable {
 	
 	public OrigemLancamento[] getOrigensLancamentos() {
 		return OrigemLancamento.values();
+	}
+
+	public List<DestinoLancamento> getTodosDestinosLancamentos() {
+		return todosDestinosLancamentos;
+	}
+
+	public List<TipoLancamento> getTodosTiposLancamentos() {
+		return todosTiposLancamentos;
 	}
 
 }

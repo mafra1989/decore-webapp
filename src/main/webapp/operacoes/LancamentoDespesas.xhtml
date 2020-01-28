@@ -75,6 +75,9 @@
 	#item-dialog.ui-dialog {
 		margin-top: -1550px !important;
 	}
+	body .ui-state-disabled {
+   	 	opacity: .8;
+    }
 }
 
 @media ( min-width :460px) {
@@ -149,59 +152,32 @@
 								id="data-venda" pattern="dd/MM/yyyy" locale="pt" showIcon="true" />
 
 						</p:panelGrid>
-
+						
 						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-4, ui-grid-col-6">
 
-							<p:outputLabel value="Origem" for="origem" />
-							<p:selectOneRadio id="origem" unselectable="true"
-								value="#{lancamentoDespesasBean.despesa.origemLancamento}">
+							<p:outputLabel value="Categoria" for="categoria" />
+							<p:selectOneMenu id="categoria" required="true" requiredMessage="Categoria deve ser informado."
+								value="#{lancamentoDespesasBean.categoriaLancamento}"
+								placeholder="selecione">
+
+								<f:selectItem itemLabel="Selecione" />
 								
-								<p:ajax event="change" listener="#{lancamentoDespesasBean.changeLancamentos}" process="@this" update="tipo-despesa categoria" />
+								<p:ajax event="change" listener="#{lancamentoDespesasBean.changeCategoria}" update="@this origem tipo-despesa destino" process="@this" />
+
 								<f:selectItems
-									value="#{lancamentoDespesasBean.origensLancamentos}"
-									var="origemLancamento"
-									itemLabel="#{origemLancamento.descricao}"
-									itemValue="#{origemLancamento}" />
-							</p:selectOneRadio>
+									value="#{lancamentoDespesasBean.todasCategoriasDespesas}"
+									var="categoriaLancamento"
+									itemLabel="#{categoriaLancamento.nome}"
+									itemValue="#{categoriaLancamento}" />
+							</p:selectOneMenu>
 
 						</p:panelGrid>
 
 						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
 							styleClass="panelgrid-noborder disabled disabled"
-							columnClasses="ui-grid-col-4, ui-grid-col-4">
-							<p:outputLabel value="Tipo de Lançamento" for="tipo-despesa" />
-							<p:selectOneMenu id="tipo-despesa"
-								value="#{lancamentoDespesasBean.despesa.tipoLancamento}"
-								placeholder="selecione">
-
-								<f:selectItem itemLabel="Selecione" />
-
-								<f:selectItems
-									value="#{lancamentoDespesasBean.todosTiposDespesas}"
-									var="tipoDespesa" itemLabel="#{tipoDespesa.descricao}"
-									itemValue="#{tipoDespesa}" />
-							</p:selectOneMenu>
-
-							<p:outputLabel value="Destino do Lançamento" for="destino" />
-							<p:selectOneMenu id="destino"
-								value="#{lancamentoDespesasBean.despesa.destinoLancamento}"
-								placeholder="selecione">
-
-								<f:selectItem itemLabel="Selecione" />
-
-								<f:selectItems
-									value="#{lancamentoDespesasBean.todosDestinosLancamentos}"
-									var="destinoLanamento"
-									itemLabel="#{destinoLanamento.descricao}"
-									itemValue="#{destinoLanamento}" />
-							</p:selectOneMenu>
-						</p:panelGrid>
-
-						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
-							styleClass="panelgrid-noborder disabled disabled"
-							columnClasses="ui-grid-col-4, ui-grid-col-6">
+							columnClasses="ui-grid-col-4, ui-grid-col-8">
 
 							<p:outputLabel value="Descrição" for="descricaoLancamento" />
 							<p:inputText id="descricaoLancamento" autocomplete="off"
@@ -218,27 +194,37 @@
 								value="#{lancamentoDespesasBean.despesa.valor}" />
 
 						</p:panelGrid>
-
+						
 						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-4, ui-grid-col-6">
 
-							<p:outputLabel value="Categoria" for="categoria" />
-							<p:selectOneMenu id="categoria"
-								value="#{lancamentoDespesasBean.despesa.categoriaLancamento}"
-								placeholder="selecione">
-
-								<f:selectItem itemLabel="Selecione" />
-
+							<p:outputLabel value="Origem" for="origem" />
+							<p:selectOneRadio id="origem" unselectable="true" disabled="true"
+								value="#{lancamentoDespesasBean.despesa.categoriaLancamento.tipoLancamento.origem}">
+								
 								<f:selectItems
-									value="#{lancamentoDespesasBean.todasCategoriasDespesas}"
-									var="categoriaLancamento"
-									itemLabel="#{categoriaLancamento.nome}"
-									itemValue="#{categoriaLancamento}" />
-							</p:selectOneMenu>
+									value="#{lancamentoDespesasBean.origensLancamentos}"
+									var="origemLancamento"
+									itemLabel="#{origemLancamento.descricao}"
+									itemValue="#{origemLancamento}" />
+							</p:selectOneRadio>
 
 						</p:panelGrid>
 
+						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-4, ui-grid-col-6">
+							
+							<p:outputLabel value="Tipo de Lançamento" for="tipo-despesa" />
+							<p:inputText id="tipo-despesa" autocomplete="off" readonly="true"
+								value="#{lancamentoDespesasBean.despesa.categoriaLancamento.tipoLancamento.descricao}" />
+
+							<p:outputLabel value="Destino do Lançamento" for="destino" />
+							<p:inputText id="destino" autocomplete="off" readonly="true"
+								value="#{lancamentoDespesasBean.despesa.categoriaLancamento.destinoLancamento.descricao}" />
+								
+						</p:panelGrid>
 
 						<p:panelGrid columns="1" layout="grid"
 							styleClass="panelgrid-noborder disabled disabled"

@@ -102,10 +102,18 @@ public class Produtos implements Serializable {
 	
 	
 	public Number totalAVender() {
-		Number count = (Number) this.manager
-				.createQuery("SELECT sum(e.valorUnitario * e.quantidadeDisponivel) * (1 + (e.produto.margemLucro/100)) from ItemCompra e where e.quantidadeDisponivel > 0")
-				.getSingleResult();
+
+                Number count = 0;
 		
+                try {
+		    count = (Number) this.manager
+				.createQuery("SELECT sum((e.valorUnitario * e.quantidadeDisponivel) * (1 + (e.produto.margemLucro/100))) from ItemCompra e where e.quantidadeDisponivel > 0")
+				.getSingleResult();
+
+		} catch(NoResultException e) {
+			
+		}
+                
 		if(count == null) {
 			count = 0;
 		}

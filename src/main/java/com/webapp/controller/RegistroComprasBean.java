@@ -67,6 +67,15 @@ public class RegistroComprasBean implements Serializable {
 		produtosFiltrados = produtos.filtrados(filter);
 		System.out.println(produtosFiltrados.size());
 	}
+	
+	public void buscar() {
+		compra = compras.porId(compra.getId());
+		itensCompra = itensCompras.porCompra(compra);
+		
+		for (ItemCompra itemCompra : itensCompra) {
+			itemCompra.setCode(itemCompra.getProduto().getCodigo());
+		}
+	}
 
 	public void salvar() {
 		
@@ -82,6 +91,21 @@ public class RegistroComprasBean implements Serializable {
 			calendarioTemp.set(Calendar.MINUTE, calendario.get(Calendar.MINUTE));
 			calendarioTemp.set(Calendar.SECOND, calendario.get(Calendar.SECOND));
 			compra.setDataCompra(calendarioTemp.getTime());
+			
+			boolean edit = false;
+			if(compra.getId() != null) {
+				edit = true;
+				
+				List<ItemCompra> itemCompraTemp = itensCompras.porCompra(compra);
+				
+				for (ItemCompra itemCompra : itemCompraTemp) {
+					Produto produto = produtos.porId(itemCompra.getProduto().getId());
+					produto.setQuantidadeAtual(produto.getQuantidadeAtual() - itemCompra.getQuantidade());
+					produtos.save(produto);
+					
+					itensCompras.remove(itemCompra);
+				}
+			}
 			
 			compra.setDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_MONTH))));
 			compra.setNomeDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_WEEK))));
@@ -106,13 +130,20 @@ public class RegistroComprasBean implements Serializable {
 			compra.setQuantidadeItens(totalDeItens);
 			compra = compras.save(compra);
 			
-			PrimeFaces.current().executeScript(
-					"swal({ type: 'success', title: 'Concluído!', text: 'Compra registrada com sucesso!' });");
 			
-			compra = new Compra();
-			itensCompra = new ArrayList<ItemCompra>();
-			itemCompra = new ItemCompra();
-			itemSelecionado = null;
+			if(!edit) {
+				PrimeFaces.current().executeScript(
+						"swal({ type: 'success', title: 'Concluído!', text: 'Compra registrada com sucesso!' });");
+				
+				compra = new Compra();
+				itensCompra = new ArrayList<ItemCompra>();
+				itemCompra = new ItemCompra();
+				itemSelecionado = null;
+				
+			} else {
+				PrimeFaces.current().executeScript(
+						"swal({ type: 'success', title: 'Concluído!', text: 'Compra salva com sucesso!' });");
+			}
 
 		} else {
 			PrimeFaces.current().executeScript(
@@ -147,7 +178,7 @@ public class RegistroComprasBean implements Serializable {
 	}
 
 	public void removeItem() {
-
+		
 		compra.setValorTotal(BigDecimal.valueOf(compra.getValorTotal().doubleValue() - itemSelecionado.getTotal().doubleValue()));
 		itensCompra.remove(itemSelecionado);		
 		itemSelecionado = null;
@@ -155,7 +186,7 @@ public class RegistroComprasBean implements Serializable {
 	}
 	
 	public void editarItem() {
-
+		
 		itemCompra = itemSelecionado;
 		compra.setValorTotal(BigDecimal.valueOf(compra.getValorTotal().doubleValue() - itemSelecionado.getTotal().doubleValue()));
 		itensCompra.remove(itemSelecionado);

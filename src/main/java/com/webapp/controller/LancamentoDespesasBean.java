@@ -16,9 +16,7 @@ import com.webapp.model.Lancamento;
 import com.webapp.model.OrigemLancamento;
 import com.webapp.model.TipoLancamento;
 import com.webapp.repository.CategoriasLancamentos;
-import com.webapp.repository.DestinosLancamentos;
 import com.webapp.repository.Lancamentos;
-import com.webapp.repository.TiposDespesas;
 import com.webapp.util.jsf.FacesUtil;
 
 @Named
@@ -34,13 +32,7 @@ public class LancamentoDespesasBean implements Serializable {
 	private Lancamentos despesas;
 	
 	@Inject
-	private DestinosLancamentos destinosLancamentos;
-	
-	@Inject
 	private CategoriasLancamentos categoriasDespesas;
-	
-	@Inject
-	private TiposDespesas tiposDespesas;
 	
 	private List<DestinoLancamento> todosDestinosLancamentos;
 	
@@ -48,17 +40,22 @@ public class LancamentoDespesasBean implements Serializable {
 	
 	private List<CategoriaLancamento> todasCategoriasDespesas;
 	
-
+	@Inject
+	private CategoriaLancamento categoriaLancamento;
+	
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {			
-			todosDestinosLancamentos = destinosLancamentos.todos();
+			todasCategoriasDespesas = categoriasDespesas.todos();
 		}
 	}
 	
-	public void changeLancamentos() {
-		todosTiposDespesas = tiposDespesas.porOrigem(despesa.getOrigemLancamento());
-		todasCategoriasDespesas = categoriasDespesas.porOrigem(despesa.getOrigemLancamento());
+	public void changeCategoria() { 
+		if(categoriaLancamento == null) {
+			despesa.setCategoriaLancamento(new CategoriaLancamento());
+		} else {
+			despesa.setCategoriaLancamento(categoriaLancamento);
+		}
 	}
 
 	public void salvar() {
@@ -66,8 +63,6 @@ public class LancamentoDespesasBean implements Serializable {
 		if(despesa.getId() == null) {
 			//despesa.setDataLancamento(new Date());
 		}
-		
-		System.out.println(despesa.getOrigemLancamento() + " TEste");
 		
 		Calendar calendario = Calendar.getInstance();	
 		Calendar calendarioTemp = Calendar.getInstance();
@@ -89,6 +84,7 @@ public class LancamentoDespesasBean implements Serializable {
 				"swal({ type: 'success', title: 'Concluído!', text: 'Lançamento registrado com sucesso!' });");
 		
 		despesa = new Lancamento();
+		categoriaLancamento = new CategoriaLancamento();
 
 	}
 	
@@ -115,5 +111,13 @@ public class LancamentoDespesasBean implements Serializable {
 	
 	public OrigemLancamento[] getOrigensLancamentos() {
 		return OrigemLancamento.values();
+	}
+
+	public CategoriaLancamento getCategoriaLancamento() {
+		return categoriaLancamento;
+	}
+
+	public void setCategoriaLancamento(CategoriaLancamento categoriaLancamento) {
+		this.categoriaLancamento = categoriaLancamento;
 	}
 }

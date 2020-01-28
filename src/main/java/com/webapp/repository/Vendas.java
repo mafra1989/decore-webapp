@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import com.webapp.model.CategoriaProduto;
@@ -52,8 +53,15 @@ public class Vendas implements Serializable {
 	public Number totalVendas() {		
 		String jpql = "SELECT sum(i.valorTotal) FROM Venda i";
 		Query q = manager.createQuery(jpql);
-		Number count = (Number) q.getSingleResult();
 		
+                Number count = 0;
+		try {
+		    count = (Number) q.getSingleResult();
+			
+		} catch(NoResultException e) {
+			
+		}
+
 		if(count == null) {
 			count = 0;
 		}

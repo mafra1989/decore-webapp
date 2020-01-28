@@ -62,7 +62,7 @@
 }
 
 .alert-validate::before {
-	font-family: cursive !important;
+	font-family: verdana !important;
 }
 
 body .ui-inputfield {
@@ -78,7 +78,7 @@ body .ui-inputfield.ui-state-focus:not(.ui-state-error){
 }
 
 .ui-growl-message p {
-	font-family: cursive !important;
+	font-family: verdana !important;
 }
 body .ui-panel .ui-panel-content {
     padding: 0px;
@@ -88,11 +88,49 @@ body .ui-panel .ui-panel-content {
 @media ( min-width :220px) {
 	.input100 {
 		margin-top: 5px;
+		padding: 0px;
+	}
+	.wrap-login100 {
+	    border-radius: 0px;
+	}
+	.login100-form {
+	    padding: 16px 35px 22px 35px;
+	}
+	.m-b-26 {
+	    margin-bottom: 15px;
+	}
+	input.input100 {
+	    height: 38px;
+	}
+	.container-login100 {
+		font-family: verdana;
+		font-weight: bold;
+	}
+	.limiter {
+	    height: 100%;
+	}
+	.container-login100 {
+    	height: 100%;
+    }
+    .wrap-login100 {
+	    margin-top: -250px;
 	}
 }
 @media ( min-width :460px) {
 	.input100 {
 		margin-top: 13px;
+	}
+	.wrap-login100 {
+	    margin-top: 0px;
+	}
+	.login100-form {
+	    padding: 25px 100px 50px 150px;
+	}
+	img {
+		max-height: 120px;
+	}
+	.wrap-login100 {
+	    border-radius: 10px;
 	}
 }
 </style>
@@ -107,7 +145,7 @@ body .ui-panel .ui-panel-content {
 			<div class="wrap-login100">
 				<div class="login100-form-title">
 					<p:graphicImage library="login" name="images/bg-01.jpg"
-						style="width: inherit;max-height: 140px;" />	
+						style="width: inherit;" />	
 				</div>
 				
 				<p:panel id="progressPanel" 
@@ -121,42 +159,30 @@ body .ui-panel .ui-panel-content {
 					styleClass="login100-form validate-form">
 					
 					<p:growl id="msgs" closable="true" life="3000" showDetail="true"
-		style="font-family: cursive !important;" />
+		style="font-family: verdana;" />
 
 					<div class="wrap-input100 validate-input m-b-26 input100" 
 						data-validate="Username is required">
-						<span style="font-family: cursive !important;"
+						<span
 							class="label-input100">Username</span>
-						<p:inputText id="j_username" placeholder="Enter username" 
-							name="username" styleClass="input100" autocomplete="off"
-							style="font-family: cursive !important;" />
+						<p:inputText id="j_username" placeholder="Enter username" style="font-family: verdana;"
+							name="username" styleClass="input100" autocomplete="off" />
 						<span class="focus-input100"></span>
 					</div>
 
 					<div class="wrap-input100 validate-input m-b-18"
 						data-validate="Password is required">
-						<span style="font-family: cursive !important;"
+						<span 
 							class="label-input100">Password</span>
-						<p:password style="font-family: cursive !important;"
+						<p:password style="font-family: verdana;"	
 							id="j_password" name="pass" styleClass="input100"
 							placeholder="Enter password" feedback="false"></p:password>
 						<span class="focus-input100"></span>
 					</div>
 
-					<div class="flex-sb-m w-full p-b-30">
-						<div class="contact100-form-checkbox">
-							<input class="input-checkbox100" id="ckb1" type="checkbox"
-								name="remember-me" /> <label class="label-checkbox100"
-								for="ckb1" style="font-family: cursive !important;">
-								Remember me </label>
-						</div>
-
-
-					</div>
-
 					<div class="container-login100-form-btn">
 						<p:commandButton value="Login" id="loginBtn"
-							style="font-family: cursive !important;background: #a0800a;border-radius: 30px;"
+							style="background: #a0800a;border-radius: 30px;"
 							action="#{loginBean.acessar}" styleClass="login100-form-btn"
 							ajax="false">
 

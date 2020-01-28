@@ -5,10 +5,10 @@
 	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
 	template="/WEB-INF/template.xhtml">
 
-	<ui:define name="title">Consultar Compras</ui:define>
+	<ui:define name="title">Consultar Estoque</ui:define>
 
 	<f:metadata>
-		<f:viewAction action="#{consultaComprasBean.inicializar}" />
+		<f:viewAction action="#{estoqueBean.inicializar}" />
 	</f:metadata>
 
 	<ui:define name="content">
@@ -112,7 +112,7 @@
 </style>
 
 		<div class="page-header">
-			<h1>Consultar Compras</h1>
+			<h1>Consultar Estoque</h1>
 		</div>
 
 		<p:growl id="msg" closable="true" life="500" showSummary="false"
@@ -122,12 +122,14 @@
 
 		<h:form id="form" prependId="false">
 
+			<p:focus for="descricao" />
+
 			<p:toolbar id="toolbar">
 				<f:facet name="left">
 					<p:commandButton icon="fa fa-fw fa-search" value="Pesquisar"
-						id="pesquisar-button" update="panel-table comprasTable"
+						id="pesquisar-button" update="panel-table produtosTable"
 						style="margin-left: 3px;font-weight:bold" process="form"
-						action="#{consultaComprasBean.pesquisar}"
+						action="#{estoqueBean.pesquisar}"
 						onstart="PF('downloadLoading').show();"
 						oncomplete="PF('downloadLoading').hide();"></p:commandButton>
 				</f:facet>
@@ -139,34 +141,23 @@
 				<p:panel class="card card-w-title ui-fluid itens-add"
 					style="padding-bottom: 0px !important; margin-top:10px">
 
-					<p:panelGrid columns="4" id="painel" layout="grid"
+					<p:panelGrid columns="2" id="painel" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
-						columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-1, ui-grid-col-2">
+						columnClasses="ui-grid-col-2, ui-grid-col-4">
 
-						<p:outputLabel value="Data da compra" for="data01" />
-						<p:datePicker id="data01" value="#{consultaComprasBean.dateStart}" readonlyInput="true"
-							pattern="dd/MM/yyyy" locale="pt" showIcon="true">
-						</p:datePicker>
-
-
-						<p:outputLabel value="até" id="data02" />
-						<p:datePicker id="data-02" value="#{consultaComprasBean.dateStop}" readonlyInput="true"
-							styleClass="dateStop" pattern="dd/MM/yyyy" locale="pt"
-							showIcon="true">
-						</p:datePicker>
+						<p:outputLabel value="Código ou Descrição" for="descricao" />
+						<p:inputText id="descricao" style="text-transform: uppercase"
+							value="#{estoqueBean.filter.descricao}" />
 
 
-						<p:outputLabel value="Comprador" for="comprador" />
-						<p:selectOneMenu id="comprador"
-								value="#{consultaComprasBean.usuario}"
-								placeholder="selecione">
-
-								<f:selectItem itemLabel="Selecione" />
-
-								<f:selectItems value="#{consultaComprasBean.todosUsuarios}"
-									var="comprador" itemLabel="#{comprador.nome}"
-									itemValue="#{comprador}" />
-							</p:selectOneMenu>
+						<p:outputLabel value="Categoria" for="categoria" />
+						<p:selectOneMenu id="categoria" styleClass="categoria-field"
+							value="#{estoqueBean.filter.categoriaProduto}">
+							<f:selectItem itemLabel="Selecione" itemValue="" />
+							<f:selectItems value="#{estoqueBean.todasCategoriasProdutos}"
+								var="categoria" itemLabel="#{categoria.nome}"
+								itemValue="#{categoria}"></f:selectItems>
+						</p:selectOneMenu>
 					</p:panelGrid>
 
 				</p:panel>
@@ -177,56 +168,64 @@
 
 					<h3 style="font-weight: bold">Resultado da consulta</h3>
 
+					<p:outputLabel value="Total: #{estoqueBean.estoqueTotal}"
+						style="float:left;margin-top:-10px;margin-bottom:5px; font-weight:bold;margin-left:8px;color:#5b5656" />
+
+					<p:commandButton icon="fa fa-fw fa-image" value="Ver foto"
+						id="foto-button" update="produto-dialog"
+						actionListener="#{estoqueBean.prepareFoto}"
+						style="margin-right:10px;font-weight:bold; float:right;width:85px;margin-top: -16px;"
+						process="form" action="#{estoqueBean.pesquisar}"
+						disabled="#{estoqueBean.produtoSelecionado.id == null}"
+						onstart="PF('downloadLoading').show();"
+						oncomplete="PF('downloadLoading').hide();PF('produto-dialog').show();"></p:commandButton>
+
 					<p:panelGrid columns="1" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-12">
 
-						<p:dataTable id="comprasTable" paginatorAlwaysVisible="false"
-							value="#{consultaComprasBean.comprasFiltradas}" var="compra"
+						<p:dataTable id="produtosTable" paginatorAlwaysVisible="false"
+							value="#{estoqueBean.produtosFiltrados}" var="produto"
 							emptyMessage="Nenhum resultado encontrado." rows="10"
 							reflow="true" paginator="true" paginatorPosition="bottom"
-							rowKey="#{compra.id}"
-							selection="#{consultaComprasBean.compraSelecionada}"
+							rowKey="#{produto.id}"
+							selection="#{estoqueBean.produtoSelecionado}"
 							selectionMode="single">
 
-							<p:ajax process="@this" event="rowSelect" update="menu-item" />
-							<p:ajax process="@this" event="rowUnselect" update="menu-item" />
+							<p:ajax process="@this" event="rowSelect" update="foto-button" />
+							<p:ajax process="@this" event="rowUnselect" update="foto-button" />
 
-							<p:column headerText="Data da compra" width="10%">
-								<h:outputText value="#{compra.dataCompra}">
-									<f:convertDateTime pattern="dd/MM/yyyy" timeZone="GMT-4" />
-								</h:outputText>
+							<p:column headerText="Cód." width="10%">
+								<h:outputText value="#{produto.codigo}" />
 							</p:column>
 
-							<p:column headerText="Comprador" width="30%">
-								<h:outputText value="#{compra.usuario.nome}" />
+							<p:column headerText="Desc." width="30%">
+								<h:outputText value="#{produto.descricao}" />
 							</p:column>
 
-							<p:column headerText="Qtd. Itens" width="10%">
-								<h:outputText value="#{compra.quantidadeItens}" />
+							<p:column headerText="Qtd." width="10%">
+								<h:outputText value="#{produto.quantidadeAtual}" />
 							</p:column>
 
-							<p:column headerText="Valor Total" width="15%">
-								<h:outputText value="#{compra.valorTotal}">
-									<f:convertNumber type="currency" />
-								</h:outputText>
+							<p:column headerText="Categoria" width="15%">
+								<h:outputText value="#{produto.categoriaProduto.nome}" />
 							</p:column>
 
 						</p:dataTable>
 					</p:panelGrid>
 
-					<p:contextMenu id="menu-item" for="comprasTable">
-						<p:menuitem value="Deletar Compra" id="btn-remove"
+					<p:contextMenu id="menu-item" for="produtosTable">
+						<p:menuitem value="Deletar Produto" id="btn-remove"
 							update="panel-table" process="@this panel-table"
 							onstart="start();" rendered="false" oncomplete="stop();"
 							icon="fa fa-fw fa-trash" />
 
-						<p:menuitem value="Visualizar Compra" id="btn-visualizar"
-							outcome="/operacoes/RegistroCompras.xhtml"
-							process="@this comprasTable" icon="fa fa-fw fa-eye"
-							disabled="#{comprasFiltradasSize eq 0}">
+						<p:menuitem value="Visualizar Produto" id="btn-visualizar"
+							outcome="/cadastros/CadastroProdutos.xhtml"
+							process="@this produtosTable" icon="fa fa-fw fa-eye"
+							disabled="#{produtosFiltradosSize eq 0}">
 
-							<f:param name="id" value="#{consultaComprasBean.compraSelecionada.id}" />
+							<f:param name="id" value="#{estoqueBean.produtoSelecionado.id}" />
 						</p:menuitem>
 					</p:contextMenu>
 				</p:panel>
@@ -234,6 +233,40 @@
 			</div>
 
 		</h:form>
+
+
+		<p:dialog header="Foto Dialog" widgetVar="produto-dialog"
+			id="produto-dialog" resizable="false" modal="true"
+			closeOnEscape="true" responsive="true" position="center"
+			styleClass="fotoDialog">
+
+			<h:form id="form-dialog">
+
+				<div class="ui-fluid" style="margin-top:10px;text-align:center">
+					<ui:fragment id="photo"
+						rendered="#{estoqueBean.fileContent != null}">
+						<img 
+							src="data:image/png;base64,#{estoqueBean.imageContentsAsBase64}"
+							style="width: 200px;height: 200px;" />
+					</ui:fragment>
+
+					<div
+						style="width: 80%;margin:auto;border-top: 1px solid #ccc;margin-top:10px;margin-bottom:10px"></div>
+
+					<p:button icon="fa fa-fw fa-edit" style="margin-bottom:5px;font-weight:bold"
+						value="Mais informações" id="foto-button" outcome="/cadastros/CadastroProdutos.xhtml"
+						onclick="PF('downloadLoading').show();">
+						
+						<f:param name="id" value="#{estoqueBean.produtoSelecionado.id}" />	
+					</p:button>
+					
+					<p:commandButton icon="fa fa-fw fa-close" style="margin-bottom: 5px;font-weight: bold;width: 120px;background:#cc3131f0;"
+						value="Fechar" 
+						oncomplete="PF('produto-dialog').hide();">
+					</p:commandButton>
+				</div>
+			</h:form>
+		</p:dialog>
 
 
 

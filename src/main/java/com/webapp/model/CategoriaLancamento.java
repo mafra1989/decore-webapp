@@ -4,10 +4,10 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -24,10 +24,9 @@ public class CategoriaLancamento implements Serializable {
 	@NotBlank
 	private String nome;
 	
-	@NotNull
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false, length = 10)
-	private OrigemLancamento origem;
+	private TipoLancamento tipoLancamento = new TipoLancamento();
+	
+	private DestinoLancamento destinoLancamento = new DestinoLancamento();
 	
 	@Id
 	@GeneratedValue//(strategy = GenerationType.IDENTITY)
@@ -48,12 +47,26 @@ public class CategoriaLancamento implements Serializable {
 		this.nome = nome;
 	}
 
-	public OrigemLancamento getOrigem() {
-		return origem;
+	@NotNull
+	@ManyToOne
+	@JoinColumn
+	public TipoLancamento getTipoLancamento() {
+		return tipoLancamento;
 	}
 
-	public void setOrigem(OrigemLancamento origem) {
-		this.origem = origem;
+	public void setTipoLancamento(TipoLancamento tipoLancamento) {
+		this.tipoLancamento = tipoLancamento;
+	}
+
+	@NotNull
+	@ManyToOne
+	@JoinColumn
+	public DestinoLancamento getDestinoLancamento() {
+		return destinoLancamento;
+	}
+
+	public void setDestinoLancamento(DestinoLancamento destinoLancamento) {
+		this.destinoLancamento = destinoLancamento;
 	}
 
 	@Override

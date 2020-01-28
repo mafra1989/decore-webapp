@@ -7,6 +7,8 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 import com.webapp.model.Bairro;
+import com.webapp.model.DestinoLancamento;
+import com.webapp.repository.filter.BairroFilter;
 import com.webapp.util.jpa.Transacional;
 
 public class Bairros implements Serializable {
@@ -35,6 +37,11 @@ public class Bairros implements Serializable {
 	
 	public List<Bairro> todos() {
 		return this.manager.createQuery("from Bairro order by nome", Bairro.class).getResultList();
+	}
+	
+	public List<Bairro> filtrados(BairroFilter filter) {
+		return this.manager.createQuery("from Bairro i where i.nome like :nome order by nome", Bairro.class)
+				.setParameter("nome", "%" + filter.getNome() + "%").getResultList();
 	}
 	
 }

@@ -6,10 +6,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -43,24 +40,9 @@ public class Lancamento implements Serializable {
 	private BigDecimal valor;
 
 	@NotNull
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false, length = 10)
-	private OrigemLancamento origemLancamento;
-
-	@NotNull
 	@ManyToOne
 	@JoinColumn
-	private DestinoLancamento destinoLancamento;
-
-	@NotNull
-	@ManyToOne
-	@JoinColumn
-	private TipoLancamento tipoLancamento;
-
-	@NotNull
-	@ManyToOne
-	@JoinColumn
-	private CategoriaLancamento categoriaLancamento;
+	private CategoriaLancamento categoriaLancamento = new CategoriaLancamento();
 
 	/*
 	 * @ManyToOne
@@ -114,30 +96,6 @@ public class Lancamento implements Serializable {
 
 	public void setValor(BigDecimal valor) {
 		this.valor = valor.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
-	}
-
-	public OrigemLancamento getOrigemLancamento() {
-		return origemLancamento;
-	}
-
-	public void setOrigemLancamento(OrigemLancamento origemLancamento) {
-		this.origemLancamento = origemLancamento;
-	}
-
-	public DestinoLancamento getDestinoLancamento() {
-		return destinoLancamento;
-	}
-
-	public void setDestinoLancamento(DestinoLancamento destino) {
-		this.destinoLancamento = destino;
-	}
-
-	public TipoLancamento getTipoLancamento() {
-		return tipoLancamento;
-	}
-
-	public void setTipoLancamento(TipoLancamento tipoLancamento) {
-		this.tipoLancamento = tipoLancamento;
 	}
 
 	public CategoriaLancamento getCategoriaLancamento() {

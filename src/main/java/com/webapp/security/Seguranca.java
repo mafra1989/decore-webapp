@@ -26,8 +26,12 @@ public class Seguranca {
 		UsuarioSistema usuarioLogado = getUsuarioLogado();
 		
 		if (usuarioLogado != null) {
-			nome = usuarioLogado.getUsuario().getNome();			
-		}
+			nome = usuarioLogado.getUsuario().getNome();	
+                        
+                      /*  if(usuarioLogado.getUsuario().getFoto() != null) {
+			   fileContent = getUsuarioLogado().getUsuario().getFoto();
+		        }*/
+                }
 		
 		return nome;
 	}
@@ -47,19 +51,25 @@ public class Seguranca {
 		return usuario;
 	}
 	
-	/* MENU SEARCH */
+
 	
-	/* PART LIST */
-	public boolean acessoPartList() {
-		System.out.println(externalContext.isUserInRole("ADMINISTRADORES"));
-		return externalContext.isUserInRole("ADMINISTRADORES");
+	
+	public boolean acessoAdministrador() {
+		System.out.println(externalContext.isUserInRole("ADMINISTRADOR"));
+		return externalContext.isUserInRole("ADMINISTRADOR");
 	}
 
-	/* COMPARATION BOM vs BOM */
-	public boolean acessoBOMvsBOM() {
-		return externalContext.isUserInRole("ADMINISTRADORES") || externalContext.isUserInRole("USUARIOS");
+	public boolean acessoUsuarioAvancado() {
+		System.out.println(externalContext.isUserInRole("USUARIO_AVANCADO"));
+		return externalContext.isUserInRole("USUARIO_AVANCADO");
 	}
 	
+	public boolean acessoUsuarioComum() {
+		System.out.println(externalContext.isUserInRole("USUARIO_COMUM"));
+		return externalContext.isUserInRole("USUARIO_COMUM");
+	}
+	
+
 	
 	
 	public String getImageContentsAsBase64() {

@@ -74,7 +74,7 @@ public class CadastroProdutoBean implements Serializable {
 		fileContent = produto.getFoto();
 		
 		Long totalItensComprados = 0L;
-		List<ItemCompra> itensCompra = itensCompras.porCompra(produto);
+		List<ItemCompra> itensCompra = itensCompras.porProduto(produto);
 		for (ItemCompra itemCompra : itensCompra) {
 			produto.setTotalCompras(BigDecimal.valueOf(produto.getTotalCompras().doubleValue() + (itemCompra.getValorUnitario().doubleValue() * itemCompra.getQuantidade())));
 			totalItensComprados += itemCompra.getQuantidade();
@@ -126,11 +126,11 @@ public class CadastroProdutoBean implements Serializable {
 				file = null;
 				
 				PrimeFaces.current().executeScript(
-						"swal({ type: 'success', title: 'Concluído!', text: 'Produto cadastrado com sucesso!' });");			
+						"swal({ type: 'success', title: 'Concluï¿½do!', text: 'Produto cadastrado com sucesso!' });");			
 			} else {
 				
 				PrimeFaces.current().executeScript(
-						"swal({ type: 'error', title: 'Erro!', text: 'Já existe um produto com o código informado!' });");	
+						"swal({ type: 'error', title: 'Erro!', text: 'Jï¿½ existe um produto com o cï¿½digo informado!' });");	
 			}
 						
 	
@@ -140,11 +140,11 @@ public class CadastroProdutoBean implements Serializable {
 			if(produtoTemp == null) {
 				produto = produtos.save(produto);			
 				PrimeFaces.current().executeScript(
-						"swal({ type: 'success', title: 'Concluído!', text: 'Produto cadastrado com sucesso!' });");
+						"swal({ type: 'success', title: 'Concluï¿½do!', text: 'Produto cadastrado com sucesso!' });");
 				
 			} else {
 				PrimeFaces.current().executeScript(
-						"swal({ type: 'error', title: 'Erro!', text: 'Já existe um produto com o código informado!' });");	
+						"swal({ type: 'error', title: 'Erro!', text: 'Jï¿½ existe um produto com o cï¿½digo informado!' });");	
 			}		
 		}
 
@@ -207,7 +207,7 @@ public class CadastroProdutoBean implements Serializable {
 			
 		} else {
 			PrimeFaces.current().executeScript(
-					"swal({ type: 'error', title: 'Erro!', text: 'Selecione uma imagem com até 60KB!' });");
+					"swal({ type: 'error', title: 'Erro!', text: 'Selecione uma imagem com atï¿½ 60KB!' });");
 		}
 	}
 

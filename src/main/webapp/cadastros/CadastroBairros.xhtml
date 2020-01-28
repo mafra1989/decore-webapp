@@ -5,10 +5,10 @@
 	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
 	template="/WEB-INF/template.xhtml">
 
-	<ui:define name="title">Cadastro Categoria de Lançamento</ui:define>
+	<ui:define name="title">Cadastro de Bairro</ui:define>
 
 	<f:metadata>
-		<f:viewAction action="#{cadastroCategoriaDespesaBean.inicializar}" />
+		<f:viewAction action="#{cadastroBairroBean.inicializar}" />
 	</f:metadata>
 
 	<ui:define name="content">
@@ -108,7 +108,7 @@
 </style>
 
 		<div class="page-header">
-			<h1>Cadastro Categoria de Lançamento</h1>
+			<h1>Cadastro de Bairro</h1>
 		</div>
 
 		<p:growl id="msg" closable="true" life="500" showSummary="false"
@@ -118,19 +118,19 @@
 
 		<h:form id="form">
 
-			<p:remoteCommand name="setarItemID" process="@this tipoDespesaTable"
-				update="form" action="#{cadastroCategoriaDespesaBean.excluir}"
+			<p:remoteCommand name="setarItemID" process="@this bairroTable"
+				update="form" action="#{cadastroBairroBean.excluir}"
 				onstart="PF('downloadLoading').show();"
 				oncomplete="PF('downloadLoading').hide();" />
 
 			<p:toolbar id="toolbar">
 				<f:facet name="left">
 					<p:commandButton value="Novo" icon="fa fa-fw fa-file-text-o"
-						action="#{cadastroCategoriaDespesaBean.prepararNovoCadastro}"
-						process="@this" update="tipoDespesa-dialog" 
-						oncomplete="PF('tipoDespesa-dialog').show()">
+						action="#{cadastroBairroBean.prepararNovoCadastro}"
+						process="@this" update="bairro-dialog" 
+						oncomplete="PF('bairro-dialog').show()">
 
-						<p:resetInput target="tipoDespesa-dialog" />
+						<p:resetInput target="bairro-dialog" />
 					</p:commandButton>
 
 					<p:separator />
@@ -138,12 +138,12 @@
 					<p:spacer />
 
 					<p:commandButton icon="fa fa-fw fa-pencil" value="Editar" id="btn"
-						action="#{cadastroCategoriaDespesaBean.prepararEditarCadastro}"
-						process="@this" update="tipoDespesa-dialog"
-						oncomplete="PF('tipoDespesa-dialog').show()"
-						disabled="#{cadastroCategoriaDespesaBean.categoriaDespesaSelecionada == null}">
+						action="#{cadastroBairroBean.prepararEditarCadastro}"
+						process="@this" update="bairro-dialog"
+						oncomplete="PF('bairro-dialog').show()"
+						disabled="#{cadastroBairroBean.bairroSelecionado == null}">
 
-						<p:resetInput target="tipoDespesa-dialog" />
+						<p:resetInput target="bairro-dialog" />
 					</p:commandButton>
 
 				</f:facet>
@@ -151,8 +151,8 @@
 				<f:facet name="right">
 					<p:commandButton icon="fa fa-fw fa-trash" value="Excluir"
 						process="@this"
-						onclick="deleteItem(#{cadastroCategoriaDespesaBean.categoriaDespesaSelecionada.id});"
-						disabled="#{cadastroCategoriaDespesaBean.categoriaDespesaSelecionada == null}" />
+						onclick="deleteItem(#{cadastroBairroBean.bairroSelecionado.id});"
+						disabled="#{cadastroBairroBean.bairroSelecionado == null}" />
 				</f:facet>
 			</p:toolbar>
 
@@ -163,35 +163,31 @@
 
 					<p:defaultCommand target="pesquisar-button" />
 
-					<p:inputText id="search" value="#{cadastroCategoriaDespesaBean.filtro.nome}"
+					<p:inputText id="search" value="#{cadastroBairroBean.filtro.nome}"
 						placeholder="Buscar pela descrição" style="width: 180px" />
 					<p:commandButton icon="fa fa-fw fa-search" title="Pesquisar"
-						id="pesquisar-button" update="tipoDespesaTable toolbar"
+						id="pesquisar-button" update="bairroTable toolbar"
 						style="margin-left: 3px; width: 40px" process="@parent"
-						action="#{cadastroCategoriaDespesaBean.pesquisar}">
+						action="#{cadastroBairroBean.pesquisar}">
 					</p:commandButton>
 
-					<p:dataTable id="tipoDespesaTable" reflow="true"
+					<p:dataTable id="bairroTable" reflow="true"
 						paginatorAlwaysVisible="false"
-						value="#{cadastroCategoriaDespesaBean.todasCategoriasDespesas}" var="categoriaDespesa"
-						emptyMessage="Nenhuma categoria de lançamento encontrada." rows="10"
+						value="#{cadastroBairroBean.todosBairros}" var="bairro"
+						emptyMessage="Nenhum bairro encontrado." rows="10"
 						paginator="true" paginatorPosition="bottom" selectionMode="single"
-						selection="#{cadastroCategoriaDespesaBean.categoriaDespesaSelecionada}"
-						rowKey="#{categoriaDespesa.id}" style="margin-top: 10px">
+						selection="#{cadastroBairroBean.bairroSelecionado}"
+						rowKey="#{bairro.id}" style="margin-top: 10px">
 
 						<p:ajax event="rowSelect" update="form:toolbar" />
 						<p:ajax event="rowUnselect" update="form:toolbar" />
 
 						<p:column headerText="Nome">
-							<h:outputText value="#{categoriaDespesa.nome}" />
+							<h:outputText value="#{bairro.nome}" />
 						</p:column>
 						
-						<p:column headerText="Tipo de Lançamento">
-							<h:outputText value="#{categoriaDespesa.tipoLancamento.descricao}" />
-						</p:column>
-						
-						<p:column headerText="Destino">
-							<h:outputText value="#{categoriaDespesa.destinoLancamento.descricao}" />
+						<p:column headerText="Zona">
+							<h:outputText value="#{bairro.zona.descricao}" />
 						</p:column>
 
 					</p:dataTable>
@@ -204,8 +200,8 @@
 
 
 		<p:dialog
-			header="#{cadastroCategoriaDespesaBean.categoriaDespesa.id == null ? 'Nova categoria de lançamento' : 'Editar categoria de lançamento'}"
-			widgetVar="tipoDespesa-dialog" id="tipoDespesa-dialog" resizable="false"
+			header="#{cadastroBairroBean.bairro.id == null ? 'Novo bairro' : 'Editar bairro'}"
+			widgetVar="bairro-dialog" id="bairro-dialog" resizable="false"
 			modal="true" closeOnEscape="true" responsive="true" width="250px"
 			style="margin-top: 10px">
 
@@ -222,37 +218,25 @@
 							styleClass="panelgrid-noborder disabled disabled">
 
 							<p:outputLabel value="Nome" for="nome" />
-							<p:inputText id="nome" autocomplete="off"
-								value="#{cadastroCategoriaDespesaBean.categoriaDespesa.nome}" />					
+							<p:inputText id="nome"
+								value="#{cadastroBairroBean.bairro.nome}" />
 								
-							<p:outputLabel value="Tipo de laçamento" for="tipo-lancamento" />
-							<p:selectOneMenu id="tipo-lancamento"
-								value="#{cadastroCategoriaDespesaBean.categoriaDespesa.tipoLancamento}"
+							<p:outputLabel value="Zona" for="zona" />
+							<p:selectOneMenu id="zona"
+								value="#{cadastroBairroBean.bairro.zona}"
 								placeholder="selecione">
 
 								<f:selectItem itemLabel="Selecione" />
 
 								<f:selectItems
-									value="#{cadastroCategoriaDespesaBean.todosTiposLancamentos}"
-									var="tipoLancamento"
-									itemLabel="#{tipoLancamento.descricao}"
-									itemValue="#{tipoLancamento}" />
-							</p:selectOneMenu>
-							
-							<p:outputLabel value="Destino" for="destino-lancamento" />
-							<p:selectOneMenu id="destino-lancamento"
-								value="#{cadastroCategoriaDespesaBean.categoriaDespesa.destinoLancamento}"
-								placeholder="selecione">
-
-								<f:selectItem itemLabel="Selecione" />
-
-								<f:selectItems
-									value="#{cadastroCategoriaDespesaBean.todosDestinosLancamentos}"
-									var="destinoLancamento"
-									itemLabel="#{destinoLancamento.descricao}"
-									itemValue="#{destinoLancamento}" />
+									value="#{cadastroBairroBean.zonas}"
+									var="zona"
+									itemLabel="#{zona.descricao}"
+									itemValue="#{zona}" />
 							</p:selectOneMenu>
 						</p:panelGrid>
+
+						<p:spacer />
 
 						<p:panelGrid columns="1" layout="grid"
 							styleClass="panelgrid-noborder disabled disabled">
@@ -262,9 +246,9 @@
 								widgetVar="btn-save"
 								onstart="PF('downloadLoading').show(); PF('btn-save').disable();"
 								onsuccess="PF('downloadLoading').hide(); PF('btn-save').enable();"
-								oncomplete="if (!args.validationFailed) PF('tipoDespesa-dialog').hide();"
+								oncomplete="if (!args.validationFailed) PF('bairro-dialog').hide();"
 								update="msg form-dialog form"
-								action="#{cadastroCategoriaDespesaBean.salvar}"
+								action="#{cadastroBairroBean.salvar}"
 								process="@this form-dialog" style="font-weight: bold" />
 						</p:panelGrid>
 

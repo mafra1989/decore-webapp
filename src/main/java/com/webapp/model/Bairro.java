@@ -4,9 +4,14 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "bairros")
@@ -16,7 +21,7 @@ public class Bairro implements Serializable {
 
 	private Long id;
 	private String nome;
-	private String zona;
+	private Zona zona;
 
 	@Id
 	@GeneratedValue
@@ -28,6 +33,7 @@ public class Bairro implements Serializable {
 		this.id = id;
 	}
 
+	@NotBlank
 	@Column(nullable = false, length = 40)
 	public String getNome() {
 		return nome;
@@ -37,11 +43,14 @@ public class Bairro implements Serializable {
 		this.nome = nome;
 	}
 
-	public String getZona() {
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false, length = 20)
+	public Zona getZona() {
 		return zona;
 	}
 
-	public void setZona(String zona) {
+	public void setZona(Zona zona) {
 		this.zona = zona;
 	}
 

@@ -1,6 +1,7 @@
 package com.webapp.repository;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -50,13 +51,41 @@ public class Compras implements Serializable {
 	public Number totalCompras() {
 		String jpql = "SELECT sum(i.valorTotal) FROM Compra i";
 		Query q = manager.createQuery(jpql);
-		Number count = (Number) q.getSingleResult();
 
-		if (count == null) {
+		Number count = 0;
+		try {
+		    count = (Number) q.getSingleResult();
+			
+		} catch(NoResultException e) {
+			
+		}
+
+                if (count == null) {
 			count = 0;
 		}
 
 		return count;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Compra> comprasFiltradas(Date dateStart, Date dateStop, Usuario usuario) {
+
+		String condition = "";
+		if (usuario != null && usuario.getId() != null) {
+			condition = "AND i.usuario.id = :idUsuario";
+		}
+
+		String jpql = "SELECT i FROM Compra i "
+				+ "WHERE i.dataCompra between :dateStart and :dateStop " + condition
+				+ " order by i.dataCompra desc";
+		Query q = manager.createQuery(jpql).setParameter("dateStart", dateStart)
+				.setParameter("dateStop", dateStop);
+
+		if (usuario != null && usuario.getId() != null) {
+			q.setParameter("idUsuario", usuario.getId());
+		}
+
+		return q.getResultList();
 	}
 
 	public Number totalComprasPorData(Number dia, Number mes, Number ano, CategoriaProduto categoriaProduto,

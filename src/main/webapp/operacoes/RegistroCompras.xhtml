@@ -2,12 +2,17 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui" 
+	template="/WEB-INF/template.xhtml">
 
-	<ui:define name="title">Registrar Compra</ui:define>
+	<ui:define name="title">#{registroComprasBean.compra.id == null ? 'Registrar Compra' : 'Informações da Compra'}</ui:define>
 
 	<f:metadata>
 		<f:viewAction action="#{registroComprasBean.inicializar}" />
+		
+		<f:viewParam name="id" value="#{registroComprasBean.compra.id}" />
+		<f:viewAction action="#{registroComprasBean.buscar}"
+			if="#{param.id ne null}" />
 	</f:metadata>
 
 	<ui:define name="content">
@@ -120,7 +125,7 @@
 </style>
 
 		<div class="page-header">
-			<h1>Registrar Compra</h1>
+			<h1>#{registroComprasBean.compra.id == null ? 'Registrar Compra' : 'Informações da Compra'}</h1>
 		</div>
 
 		<p:growl id="msg" closable="true" life="2000" showSummary="false"
@@ -327,7 +332,7 @@
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-4, ui-grid-col-3">
 
-							<p:commandButton id="btn-calcular" value="Finalizar Compra"
+							<p:commandButton id="btn-calcular" value="#{registroComprasBean.compra.id == null ? 'Finalizar Compra' : 'Salvar Compra'}"
 								onstart="PF('downloadLoading').show();" icon="fa fa-save"
 								onsuccess="PF('downloadLoading').hide();"
 								update="msg data-compra comprador panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total"

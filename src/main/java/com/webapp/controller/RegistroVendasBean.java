@@ -142,7 +142,7 @@ public class RegistroVendasBean implements Serializable {
 				lucro += itemVenda.getLucro().doubleValue();
 				percentualLucro += itemVenda.getPercentualLucro().doubleValue();
 				
-				List<ItemCompra> itensCompraTemp = itensCompras.porCompra(itemVenda.getProduto());
+				List<ItemCompra> itensCompraTemp = itensCompras.porProduto(itemVenda.getProduto());
 				for (ItemCompra itemCompraTemp : itensCompraTemp) {
 
 					if(itemCompraTemp.getCompra().getId() == itemVenda.getCompra().getId()) {
@@ -185,7 +185,7 @@ public class RegistroVendasBean implements Serializable {
 		System.out.println(itemVenda.getCode());
 		
 		itensCompra = new ArrayList<ItemCompra>();
-		List<ItemCompra> itensCompraTemp = itensCompras.porCompra(produto);
+		List<ItemCompra> itensCompraTemp = itensCompras.porProduto(produto);
 		for (ItemCompra itemCompraTemp : itensCompraTemp) {
 			itemCompraTemp.getCompra().setDataCompraFormatada(sdf.format(itemCompraTemp.getCompra().getDataCompra()));
 			
@@ -268,7 +268,7 @@ public class RegistroVendasBean implements Serializable {
 	public void removeItem() {
 		
 		itensCompra = new ArrayList<ItemCompra>();
-		List<ItemCompra> itensCompraTemp = itensCompras.porCompra(itemSelecionado.getProduto());
+		List<ItemCompra> itensCompraTemp = itensCompras.porProduto(itemSelecionado.getProduto());
 		
 		venda.setValorTotal(BigDecimal.valueOf(venda.getValorTotal().doubleValue() - itemSelecionado.getTotal().doubleValue()));
 		itensVenda.remove(itemSelecionado);
@@ -321,7 +321,7 @@ public class RegistroVendasBean implements Serializable {
 		itemSelecionado = null;
 		
 		itensCompra = new ArrayList<ItemCompra>();
-		List<ItemCompra> itensCompraTemp = itensCompras.porCompra(itemVenda.getProduto());
+		List<ItemCompra> itensCompraTemp = itensCompras.porProduto(itemVenda.getProduto());
 		for (ItemCompra itemCompraTemp : itensCompraTemp) {
 			itemCompraTemp.getCompra().setDataCompraFormatada(sdf.format(itemCompraTemp.getCompra().getDataCompra()));
 			

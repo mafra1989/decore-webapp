@@ -22,7 +22,7 @@ public class ItemCompra implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue//(strategy = GenerationType.IDENTITY)
+	@GeneratedValue // (strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@NotNull
@@ -37,7 +37,7 @@ public class ItemCompra implements Serializable {
 	@Column(nullable = false)
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
 	private BigDecimal total;
-	
+
 	@Column(nullable = false)
 	private Long quantidadeDisponivel;
 
@@ -46,10 +46,10 @@ public class ItemCompra implements Serializable {
 	private Produto produto;
 
 	/*
-	@ManyToOne
-	@JoinColumn
-	private Fornecedor fornecedor;
-	*/
+	 * @ManyToOne
+	 * 
+	 * @JoinColumn private Fornecedor fornecedor;
+	 */
 
 	@ManyToOne
 	@JoinColumn
@@ -68,7 +68,8 @@ public class ItemCompra implements Serializable {
 	}
 
 	public void setValorUnitario(BigDecimal valorUnitario) {
-		this.valorUnitario = valorUnitario.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
+		this.valorUnitario = valorUnitario.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+		;
 	}
 
 	public Long getQuantidade() {
@@ -84,7 +85,8 @@ public class ItemCompra implements Serializable {
 	}
 
 	public void setTotal(BigDecimal total) {
-		this.total = total.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
+		this.total = total.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+		;
 	}
 
 	public Long getQuantidadeDisponivel() {
@@ -102,15 +104,13 @@ public class ItemCompra implements Serializable {
 	public void setProduto(Produto produto) {
 		this.produto = produto;
 	}
-/*
-	public Fornecedor getFornecedor() {
-		return fornecedor;
-	}
 
-	public void setFornecedor(Fornecedor fornecedor) {
-		this.fornecedor = fornecedor;
-	}
-*/
+	/*
+	 * public Fornecedor getFornecedor() { return fornecedor; }
+	 * 
+	 * public void setFornecedor(Fornecedor fornecedor) { this.fornecedor =
+	 * fornecedor; }
+	 */
 	public Compra getCompra() {
 		return compra;
 	}
@@ -118,13 +118,12 @@ public class ItemCompra implements Serializable {
 	public void setCompra(Compra compra) {
 		this.compra = compra;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((code == null) ? 0 : code.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
 
@@ -142,15 +141,8 @@ public class ItemCompra implements Serializable {
 				return false;
 		} else if (!code.equals(other.code))
 			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
 		return true;
 	}
-
-
 
 	@Transient
 	private String code;

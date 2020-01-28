@@ -39,11 +39,18 @@ public class Lancamentos implements Serializable {
 	}
 
 	public Number totalDebitos() {
-		String jpql = "SELECT sum(i.valor) FROM Lancamento i WHERE i.origemLancamento = :origemLancamento";
+		String jpql = "SELECT sum(i.valor) FROM Lancamento i WHERE i.categoriaLancamento.tipoLancamento.origem = :origemLancamento";
 		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.DEBITO);
-		Number count = (Number) q.getSingleResult();
 
-		if (count == null) {
+		Number count = 0;
+		try {
+		    count = (Number) q.getSingleResult();
+			
+		} catch(NoResultException e) {
+			
+		}
+
+                if (count == null) {
 			count = 0;
 		}
 
@@ -51,11 +58,18 @@ public class Lancamentos implements Serializable {
 	}
 
 	public Number totalCreditos() {
-		String jpql = "SELECT sum(i.valor) FROM Lancamento i WHERE i.origemLancamento = :origemLancamento";
+		String jpql = "SELECT sum(i.valor) FROM Lancamento i WHERE i.categoriaLancamento.tipoLancamento.origem = :origemLancamento";
 		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.CREDITO);
-		Number count = (Number) q.getSingleResult();
 
-		if (count == null) {
+		Number count = 0;
+		try {
+		    count = (Number) q.getSingleResult();
+			
+		} catch(NoResultException e) {
+			
+		}
+
+                if (count == null) {
 			count = 0;
 		}
 
@@ -63,7 +77,7 @@ public class Lancamentos implements Serializable {
 	}
 
 	public Number totalDeReceitasPorDia(Long dia, Long mes, Long ano) {
-		String jpql = "SELECT sum(i.valor) FROM Lancamento i WHERE i.origemLancamento = :origemLancamento AND i.dia = :dia AND i.mes = :mes AND i.ano = :ano AND UPPER(i.tipoLancamento.descricao) = 'OUTRAS RECEITAS'";
+		String jpql = "SELECT sum(i.valor) FROM Lancamento i WHERE i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.dia = :dia AND i.mes = :mes AND i.ano = :ano AND UPPER(i.categoriaLancamento.tipoLancamento.descricao) = 'RECEITAS'";
 		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.CREDITO)
 				.setParameter("dia", dia).setParameter("mes", mes).setParameter("ano", ano);
 		Number count = (Number) q.getSingleResult();
@@ -76,7 +90,7 @@ public class Lancamentos implements Serializable {
 	}
 
 	public Number totalDeReceitasPorSemana(Long semana, Long ano) {
-		String jpql = "SELECT sum(i.valor) FROM Lancamento i WHERE i.origemLancamento = :origemLancamento AND i.semana = :semana AND i.ano = :ano AND UPPER(i.tipoLancamento.descricao) = 'OUTRAS RECEITAS'";
+		String jpql = "SELECT sum(i.valor) FROM Lancamento i WHERE i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.semana = :semana AND i.ano = :ano AND UPPER(i.categoriaLancamento.tipoLancamento.descricao) = 'RECEITAS'";
 		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.CREDITO)
 				.setParameter("semana", semana).setParameter("ano", ano);
 		Number count = (Number) q.getSingleResult();
@@ -89,7 +103,7 @@ public class Lancamentos implements Serializable {
 	}
 	
 	public Number totalDeReceitasPorAno(Long ano) {
-		String jpql = "SELECT sum(i.valor) FROM Lancamento i WHERE i.origemLancamento = :origemLancamento AND i.ano = :ano AND UPPER(i.tipoLancamento.descricao) = 'OUTRAS RECEITAS'";
+		String jpql = "SELECT sum(i.valor) FROM Lancamento i WHERE i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.ano = :ano AND UPPER(i.categoriaLancamento.tipoLancamento.descricao) = 'RECEITAS'";
 		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.CREDITO)
 				.setParameter("ano", ano);
 		Number count = (Number) q.getSingleResult();
@@ -102,7 +116,7 @@ public class Lancamentos implements Serializable {
 	}
 	
 	public Number totalDeReceitasPorMes(Long mes, Long ano) {
-		String jpql = "SELECT sum(i.valor) FROM Lancamento i WHERE i.origemLancamento = :origemLancamento AND i.mes = :mes AND i.ano = :ano AND UPPER(i.tipoLancamento.descricao) = 'OUTRAS RECEITAS'";
+		String jpql = "SELECT sum(i.valor) FROM Lancamento i WHERE i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.mes = :mes AND i.ano = :ano AND UPPER(i.categoriaLancamento.tipoLancamento.descricao) = 'RECEITAS'";
 		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.CREDITO)
 				.setParameter("mes", mes).setParameter("ano", ano);
 		Number count = (Number) q.getSingleResult();
@@ -117,7 +131,7 @@ public class Lancamentos implements Serializable {
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalDespesasPorCategoriaMesAtual() {
 		Calendar calendar = Calendar.getInstance();
-		String jpql = "SELECT c.nome, sum(i.valor) FROM Lancamento i join i.categoriaLancamento c WHERE i.origemLancamento = :origem and i.mes = :mesAtual GROUP BY c.nome order by sum(i.valor) desc";
+		String jpql = "SELECT c.nome, sum(i.valor) FROM Lancamento i join i.categoriaLancamento c WHERE i.categoriaLancamento.tipoLancamento.origem = :origem and i.mes = :mesAtual GROUP BY c.nome order by sum(i.valor) desc";
 		Query q = manager.createQuery(jpql).setParameter("origem", OrigemLancamento.DEBITO)
 				.setParameter("mesAtual", Long.parseLong(String.valueOf(calendar.get(Calendar.MONTH) + 1)))
 				.setMaxResults(5);
@@ -145,15 +159,15 @@ public class Lancamentos implements Serializable {
 			groupBy_Condition = "i.dia, i.mes, i.ano ";
 			orderBy_Condition = "i.dia asc, i.mes asc, i.ano asc";
 		} else {
-			select_Condition = "i.tipoLancamento.descricao, ";
-			sum_Condition = "count(i.tipoLancamento.descricao)";
-			groupBy_Condition = "i.tipoLancamento.descricao ";
-			orderBy_Condition = "count(i.tipoLancamento.descricao) asc";
+			select_Condition = "i.categoriaLancamento.tipoLancamento.descricao, ";
+			sum_Condition = "count(i.categoriaLancamento.tipoLancamento.descricao)";
+			groupBy_Condition = "i.categoriaLancamento.tipoLancamento.descricao ";
+			orderBy_Condition = "count(i.categoriaLancamento.tipoLancamento.descricao) asc";
 		}
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Lancamento i "
 				+ "WHERE i.dia BETWEEN :diaInicio AND :diaFim " + "AND i.mes BETWEEN :mesInicio AND :mesFim "
-				+ "AND i.ano BETWEEN :anoInicio AND :anoFim " + "AND i.origemLancamento = :origemLancamento "
+				+ "AND i.ano BETWEEN :anoInicio AND :anoFim " + "AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento "
 				+ condition + "group by " + groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql)
 				.setParameter("diaInicio", Long.parseLong(String.valueOf(calendarStart.get(Calendar.DAY_OF_MONTH))))
@@ -205,15 +219,15 @@ public class Lancamentos implements Serializable {
 			groupBy_Condition = "i.semana, i.ano";
 			orderBy_Condition = "i.semana asc, i.ano asc";
 		} else {
-			select_Condition = "i.tipoLancamento.descricao, ";
-			sum_Condition = "count(i.tipoLancamento.descricao)";
-			groupBy_Condition = "i.tipoLancamento.descricao ";
-			orderBy_Condition = "count(i.tipoLancamento.descricao) asc";
+			select_Condition = "i.categoriaLancamento.tipoLancamento.descricao, ";
+			sum_Condition = "count(i.categoriaLancamento.tipoLancamento.descricao)";
+			groupBy_Condition = "i.categoriaLancamento.tipoLancamento.descricao ";
+			orderBy_Condition = "count(i.categoriaLancamento.tipoLancamento.descricao) asc";
 		}
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Lancamento i "
 				+ "WHERE i.semana BETWEEN :semanaInicio AND :semanaFim " + "AND i.ano = :ano "
-				+ "AND i.origemLancamento = :origemLancamento " + condition + "group by " + groupBy_Condition
+				+ "AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento " + condition + "group by " + groupBy_Condition
 				+ " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("semanaInicio", Long.parseLong(semana01.replace("W", "")))
 				.setParameter("semanaFim", Long.parseLong(semana02.replace("W", "")))
@@ -247,15 +261,15 @@ public class Lancamentos implements Serializable {
 			groupBy_Condition = "i.mes, i.ano";
 			orderBy_Condition = "i.mes asc, i.ano asc";
 		} else {
-			select_Condition = "i.tipoLancamento.descricao, ";
-			sum_Condition = "count(i.tipoLancamento.descricao)";
-			groupBy_Condition = "i.tipoLancamento.descricao ";
-			orderBy_Condition = "count(i.tipoLancamento.descricao) asc";
+			select_Condition = "i.categoriaLancamento.tipoLancamento.descricao, ";
+			sum_Condition = "count(i.categoriaLancamento.tipoLancamento.descricao)";
+			groupBy_Condition = "i.categoriaLancamento.tipoLancamento.descricao ";
+			orderBy_Condition = "count(i.categoriaLancamento.tipoLancamento.descricao) asc";
 		}
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Lancamento i "
 				+ "WHERE i.mes BETWEEN :mesInicio AND :mesFim " + "AND i.ano = :ano "
-				+ "AND i.origemLancamento = :origemLancamento " + condition + "group by " + groupBy_Condition
+				+ "AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento " + condition + "group by " + groupBy_Condition
 				+ " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("mesInicio", Long.parseLong(mes01))
 				.setParameter("mesFim", Long.parseLong(mes02)).setParameter("ano", Long.parseLong(ano))
@@ -289,14 +303,14 @@ public class Lancamentos implements Serializable {
 			groupBy_Condition = "i.ano";
 			orderBy_Condition = "i.ano asc";
 		} else {
-			select_Condition = "i.tipoLancamento.descricao, ";
-			sum_Condition = "count(i.tipoLancamento.descricao)";
-			groupBy_Condition = "i.tipoLancamento.descricao ";
-			orderBy_Condition = "count(i.tipoLancamento.descricao) asc";
+			select_Condition = "i.categoriaLancamento.tipoLancamento.descricao, ";
+			sum_Condition = "count(i.categoriaLancamento.tipoLancamento.descricao)";
+			groupBy_Condition = "i.categoriaLancamento.tipoLancamento.descricao ";
+			orderBy_Condition = "count(i.categoriaLancamento.tipoLancamento.descricao) asc";
 		}
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Lancamento i "
-				+ "WHERE i.ano BETWEEN :anoInicio AND :anoFim " + "AND i.origemLancamento = :origemLancamento "
+				+ "WHERE i.ano BETWEEN :anoInicio AND :anoFim " + "AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento "
 				+ condition + "group by " + groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("anoInicio", Long.parseLong(ano01))
 				.setParameter("anoFim", Long.parseLong(ano02))
@@ -325,7 +339,7 @@ public class Lancamentos implements Serializable {
 		orderBy_Condition = "i.dia asc, i.mes asc, i.ano asc";
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Lancamento i " + "WHERE i.dia = :dia "
-				+ "AND i.mes = :mes " + "AND i.ano = :ano " + "AND i.origemLancamento = :origemLancamento " + condition
+				+ "AND i.mes = :mes " + "AND i.ano = :ano " + "AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento " + condition
 				+ "group by " + groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("dia", Long.parseLong(String.valueOf(dia)))
 				.setParameter("mes", Long.parseLong(String.valueOf(mes)))
@@ -360,7 +374,7 @@ public class Lancamentos implements Serializable {
 		orderBy_Condition = "i.semana asc, i.ano asc";
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Lancamento i " + "WHERE "
-				+ "i.semana = :semana " + "AND i.ano = :ano " + "AND i.origemLancamento = :origemLancamento " + condition
+				+ "i.semana = :semana " + "AND i.ano = :ano " + "AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento " + condition
 				+ "group by " + groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql)
 				.setParameter("semana", Long.parseLong(String.valueOf(semana)))
@@ -395,7 +409,7 @@ public class Lancamentos implements Serializable {
 		orderBy_Condition = "i.mes asc, i.ano asc";
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Lancamento i " + "WHERE "
-				+ "i.mes = :mes " + "AND i.ano = :ano " + "AND i.origemLancamento = :origemLancamento " + condition
+				+ "i.mes = :mes " + "AND i.ano = :ano " + "AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento " + condition
 				+ "group by " + groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql)
 				.setParameter("mes", Long.parseLong(String.valueOf(mes)))
@@ -430,7 +444,7 @@ public class Lancamentos implements Serializable {
 		orderBy_Condition = "i.ano asc";
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Lancamento i " + "WHERE "
-				+ "i.ano = :ano " + "AND i.origemLancamento = :origemLancamento " + condition
+				+ "i.ano = :ano " + "AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento " + condition
 				+ "group by " + groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql)
 				.setParameter("ano", Long.parseLong(String.valueOf(ano)))
