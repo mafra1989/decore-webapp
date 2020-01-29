@@ -43,7 +43,7 @@ body #pecaDialog .ui-datatable .ui-datatable-data>tr td {
 							style="width: 40px;height: 40px;border-radius: 100px;" />
 					</ui:fragment>
 				
-						<p:graphicImage rendered="false"
+						<p:graphicImage rendered="#{seguranca.fileContent == null}" style="width: 40px;height: 40px;border-radius: 100px;"
 							name="images/user-icon.png" library="manhattan-layout" /> 
 							
 							<span
@@ -77,6 +77,10 @@ body #pecaDialog .ui-datatable .ui-datatable-data>tr td {
 							src="data:image/png;base64,#{seguranca.imageContentsAsBase64}"
 							style="width: 40px;height: 40px;border-radius: 100px;" />
 					</ui:fragment>
+			
+			<p:graphicImage rendered="#{seguranca.fileContent == null}" styleClass="topbar-menu-btn"
+					style="width: 40px;height: 40px;border-radius: 100px;"
+							name="images/user-icon.png" library="manhattan-layout" />
 		</div>
 	</div>
 

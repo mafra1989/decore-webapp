@@ -47,22 +47,23 @@
 
 		<intercept-url pattern="/Dashboard.xhtml"
 			access="isAuthenticated()" />
+			
+		<intercept-url pattern="/cadastros/**"
+			access="hasAnyRole('ADMINISTRADOR')" />
 
 		<intercept-url pattern="/operacoes/**"
-			access="isAuthenticated()" />
+			access="hasAnyRole('ADMINISTRADOR',	'USUARIO_AVANCADO', 'USUARIO_COMUM')" />
 
-		<intercept-url pattern="/cadastros/**"
-			access="isAuthenticated()" />
-			
 		<intercept-url pattern="/pesquisas/**"
-			access="isAuthenticated()" />
+			access="hasAnyRole('ADMINISTRADOR', 'USUARIO_AVANCADO', 'USUARIO_COMUM')" />
 			
 		<intercept-url pattern="/relatorios/**"
-			access="isAuthenticated()" />
+			access="hasAnyRole('ADMINISTRADOR', 'USUARIO_AVANCADO', 'USUARIO_COMUM')" />
 
 		<intercept-url pattern="/403.xhtml"
 			access="isAuthenticated()" />
-		<!-- <intercept-url pattern="/**" access="denyAll" /> -->
+			
+		<intercept-url pattern="/**" access="denyAll" />
 
 		<form-login login-page="/Login.xhtml"
 			authentication-failure-url="/Login.xhtml?invalid=true"

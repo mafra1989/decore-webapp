@@ -4,10 +4,14 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
 
-	<ui:define name="title">Registrar Venda</ui:define>
+	<ui:define name="title">#{registroVendasBean.venda.id == null ? 'Registrar Venda' : 'Informações da Venda'}</ui:define>
 
 	<f:metadata>
 		<f:viewAction action="#{registroVendasBean.inicializar}" />
+		
+		<f:viewParam name="id" value="#{registroVendasBean.venda.id}" />
+		<f:viewAction action="#{registroVendasBean.buscar}"
+			if="#{param.id ne null}" />
 	</f:metadata>
 
 	<ui:define name="content">
@@ -120,7 +124,7 @@
 </style>
 
 		<div class="page-header">
-			<h1>Registrar Venda</h1>
+			<h1>#{registroVendasBean.venda.id == null ? 'Registrar Venda' : 'Informações da Venda'}</h1>
 		</div>
 
 		<p:growl id="msg" closable="true" life="2000" showSummary="false"
@@ -383,7 +387,7 @@
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-4, ui-grid-col-3">
 
-							<p:commandButton id="btn-calcular" value="Finalizar Venda"
+							<p:commandButton id="btn-calcular" value="#{registroVendasBean.venda.id == null ? 'Finalizar Venda' : 'Salvar Venda'}"
 								onstart="PF('downloadLoading').show();" icon="fa fa-save"
 								onsuccess="PF('downloadLoading').hide();"
 								update="msg data-venda tipo-venda vendedor bairro panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total"

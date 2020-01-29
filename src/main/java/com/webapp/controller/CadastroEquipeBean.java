@@ -135,7 +135,7 @@ public class CadastroEquipeBean implements Serializable {
 			listarTodos();
 
 			PrimeFaces.current().executeScript(
-					"PF('downloadLoading').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Membro de equipe salvo com sucesso!' });");
+					"PF('downloadLoading').hide(); swal({ type: 'success', title: 'ConcluÃ­do!', text: 'Membro de equipe salvo com sucesso!' });");
 
 
 		} catch (Exception e) {
@@ -154,7 +154,7 @@ public class CadastroEquipeBean implements Serializable {
 		pesquisar();
 
 		PrimeFaces.current().executeScript(
-				"swal({ type: 'success', title: 'Concluï¿½do!', text: 'Membro de equipe excluï¿½do com sucesso!' });");
+				"swal({ type: 'success', title: 'ConcluÃ­do!', text: 'Membro de equipe excluÃ­do com sucesso!' });");
 
 	}
 
@@ -252,11 +252,11 @@ public class CadastroEquipeBean implements Serializable {
 			usuarios.save(membroSelecionado);
 			
 			PrimeFaces.current().executeScript(
-					"swal({ type: 'success', title: 'Concluído!', text: 'Foto adicionada com sucesso!' });");
+					"swal({ type: 'success', title: 'ConcluÃ­do!', text: 'Foto adicionada com sucesso!' });");
 			
 		} else {
 			PrimeFaces.current().executeScript(
-					"swal({ type: 'error', title: 'Erro!', text: 'Selecione uma imagem com até 60KB!' });");
+					"swal({ type: 'error', title: 'Erro!', text: 'Selecione uma imagem com atÃ© 60KB!' });");
 		}
 	}
 

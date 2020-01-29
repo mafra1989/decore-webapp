@@ -5,10 +5,10 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
 	<persistence-unit name="SmartBankingPU">
 		<properties>
-			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/hospedagemjsf" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/decore" />
 			<property name="javax.persistence.jdbc.user" value="root"/>
 			<property name="javax.persistence.jdbc.password" value=""/>
-		<!-- 
+	<!--	
 			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" /> 
 -->	
 			<property name="javax.persistence.schema-generation.database.action" value="drop-and-create" />
@@ -16,11 +16,12 @@
       		<property name="javax.persistence.sql-load-script-source" value="META-INF/dados2.sql"/>
 
        	 	
-			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.show_sql" value="false" />
 			<property name="hibernate.format_sql" value="false" />
-			<!--
-			<property name="hibernate.hbm2ddl.auto" value="update" /> 
-				-->	 
+		<!--	
+			<property name="hibernate.hbm2ddl.auto" value="none" /> 
+				-->	
+
 		</properties>
 	</persistence-unit>
 </persistence>

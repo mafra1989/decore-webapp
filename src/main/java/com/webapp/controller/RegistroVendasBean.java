@@ -16,6 +16,7 @@ import javax.validation.constraints.NotNull;
 import org.primefaces.PrimeFaces;
 
 import com.webapp.model.Bairro;
+import com.webapp.model.Compra;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.Produto;
@@ -99,6 +100,20 @@ public class RegistroVendasBean implements Serializable {
 		produtosFiltrados = produtos.filtrados(filter);
 		System.out.println(produtosFiltrados.size());
 	}
+	
+	
+	public void buscar() {
+		venda = vendas.porId(venda.getId());
+		itensVenda = itensVendas.porVenda(venda);
+		
+		for (ItemVenda itemVenda : itensVenda) {
+			try {
+				Thread.sleep(100);
+				itemVenda.setCode(itemVenda.getProduto().getCodigo().concat("_" + new Date().getTime()));
+			} catch (InterruptedException e) {
+			}			
+		}
+	}
 
 	public void salvar() {
 		
@@ -117,6 +132,40 @@ public class RegistroVendasBean implements Serializable {
 			calendarioTemp.set(Calendar.MINUTE, calendario.get(Calendar.MINUTE));
 			calendarioTemp.set(Calendar.SECOND, calendario.get(Calendar.SECOND));
 			venda.setDataVenda(calendarioTemp.getTime());
+			
+			boolean edit = false;
+			if(venda.getId() != null) {
+				edit = true;
+				
+				List<ItemVenda> itemVendaTemp = itensVendas.porVenda(venda);
+				
+				for (ItemVenda itemVenda : itemVendaTemp) {
+					Produto produto = produtos.porId(itemVenda.getProduto().getId());
+					produto.setQuantidadeAtual(produto.getQuantidadeAtual() + itemVenda.getQuantidade());
+					produtos.save(produto);
+					
+					itensVendas.remove(itemVenda);
+					
+				}
+				
+				
+				for (ItemVenda itemVenda : itensVenda) {
+					
+					List<ItemCompra> itensCompraTemp = itensCompras.porProduto(itemVenda.getProduto());
+					for (ItemCompra itemCompraTemp : itensCompraTemp) {
+
+						if(itemCompraTemp.getCompra().getId() == itemVenda.getCompra().getId()) {
+							if(itemCompraTemp.getProduto().getId() == itemVenda.getProduto().getId()) {
+								System.out.println(itemCompraTemp.getQuantidadeDisponivel());
+								System.out.println(itemVenda.getQuantidade());
+								itemCompraTemp.setQuantidadeDisponivel(itemCompraTemp.getQuantidadeDisponivel() + itemVenda.getQuantidade());											
+								itensCompras.save(itemCompraTemp);
+							}
+						}
+					}
+					
+				}
+			}
 			
 			venda.setDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_MONTH))));
 			venda.setNomeDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_WEEK))));
@@ -142,18 +191,23 @@ public class RegistroVendasBean implements Serializable {
 				lucro += itemVenda.getLucro().doubleValue();
 				percentualLucro += itemVenda.getPercentualLucro().doubleValue();
 				
+								
 				List<ItemCompra> itensCompraTemp = itensCompras.porProduto(itemVenda.getProduto());
 				for (ItemCompra itemCompraTemp : itensCompraTemp) {
 
 					if(itemCompraTemp.getCompra().getId() == itemVenda.getCompra().getId()) {
 						if(itemCompraTemp.getProduto().getId() == itemVenda.getProduto().getId()) {
-							itemCompraTemp.setQuantidadeDisponivel(itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());											
-							itensCompras.save(itemCompraTemp);
+							//if(itemVenda.getId() == null) {
+								System.out.println(itemVenda.getQuantidade());
+								System.out.println(itemCompraTemp.getQuantidadeDisponivel());
+								itemCompraTemp.setQuantidadeDisponivel(itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());											
+								itensCompras.save(itemCompraTemp);
+							//}
 						}
 					}	
-				}			
+				}	
 			}
-			
+	
 			
 			venda.setValorCompra(BigDecimal.valueOf(valorCompra));
 			venda.setValorTotal(BigDecimal.valueOf(valorTotal));
@@ -161,15 +215,21 @@ public class RegistroVendasBean implements Serializable {
 			venda.setLucro(BigDecimal.valueOf(lucro));
 			venda.setPercentualLucro(BigDecimal.valueOf(percentualLucro / itensVenda.size()));
 			venda = vendas.save(venda);
-			
 
-			PrimeFaces.current().executeScript(
-					"swal({ type: 'success', title: 'Concluído!', text: 'Venda registrada com sucesso!' });");
 			
-			venda = new Venda();
-			itensVenda = new ArrayList<ItemVenda>();
-			itemVenda = new ItemVenda();
-			itemSelecionado = null;
+			if(!edit) {
+				PrimeFaces.current().executeScript(
+						"swal({ type: 'success', title: 'Concluído!', text: 'Venda registrada com sucesso!' });");
+				
+				venda = new Venda();
+				itensVenda = new ArrayList<ItemVenda>();
+				itemVenda = new ItemVenda();
+				itemSelecionado = null;
+				
+			} else {
+				PrimeFaces.current().executeScript(
+						"swal({ type: 'success', title: 'Conclu�do!', text: 'Venda salva com sucesso!' });");
+			}
 
 		} else {
 			PrimeFaces.current().executeScript(
@@ -195,11 +255,14 @@ public class RegistroVendasBean implements Serializable {
 					if(itemCompraTemp.getProduto().getId() == itemVenda.getProduto().getId()) {
 						
 						produtoNaLista = true;
-						itemCompraTemp.setQuantidadeDisponivel(itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());
-											
+						if(itemVenda.getId() == null && venda.getId() == null) {											
+							itemCompraTemp.setQuantidadeDisponivel(itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());
+						} 
+									
 					}
 				}	
 			}
+			
 			
 			if(produtoNaLista != false) {
 				if(itemCompraTemp.getQuantidadeDisponivel() > 0) {
@@ -225,8 +288,9 @@ public class RegistroVendasBean implements Serializable {
 		for (ItemVenda itemVenda : itensVenda) {
 			if(itemCompra.getCompra().getId() == itemVenda.getCompra().getId()) {
 				if(itemCompra.getProduto().getId() == itemVenda.getProduto().getId()) {
-					
-					itemCompra.setQuantidadeDisponivel(itemCompra.getQuantidadeDisponivel() - itemVenda.getQuantidade());									
+					if(itemVenda.getId() == null && venda.getId() == null) {
+						itemCompra.setQuantidadeDisponivel(itemCompra.getQuantidadeDisponivel() - itemVenda.getQuantidade());	
+					}					
 				}
 			}	
 		}
@@ -250,8 +314,28 @@ public class RegistroVendasBean implements Serializable {
 				
 				venda.setValorTotal(BigDecimal.valueOf(venda.getValorTotal().doubleValue() + itemVenda.getTotal().doubleValue()));
 				
-				itensVenda.add(itemVenda); 		
-				itemVenda = new ItemVenda();
+				itensVenda.add(itemVenda);
+				
+				/**/
+				if(venda.getId() != null) {
+					itemCompra.setQuantidadeDisponivel(itemCompra.getQuantidadeDisponivel() - itemVenda.getQuantidade());
+					itensCompras.save(itemCompra);
+					
+					venda = vendas.save(venda);
+					
+					for (ItemVenda itemVenda : itensVenda) {
+						
+						itemVenda.setVenda(venda);
+						itensVendas.save(itemVenda);
+						
+						Produto produto = produtos.porId(itemVenda.getProduto().getId());
+						produto.setQuantidadeAtual(produto.getQuantidadeAtual() - itemVenda.getQuantidade());
+						produtos.save(produto);	
+					}
+				}
+				/**/
+				 		
+				itemVenda = new ItemVenda();			
 				
 				itemCompra = new ItemCompra();
 				itensCompra = new ArrayList<ItemCompra>();
@@ -267,93 +351,128 @@ public class RegistroVendasBean implements Serializable {
 
 	public void removeItem() {
 		
-		itensCompra = new ArrayList<ItemCompra>();
-		List<ItemCompra> itensCompraTemp = itensCompras.porProduto(itemSelecionado.getProduto());
-		
+		itemVenda = itemSelecionado;
 		venda.setValorTotal(BigDecimal.valueOf(venda.getValorTotal().doubleValue() - itemSelecionado.getTotal().doubleValue()));
-		itensVenda.remove(itemSelecionado);
-		itemSelecionado = null;
+		itensVenda.remove(itemSelecionado);	
 		
-		for (ItemCompra itemCompraTemp : itensCompraTemp) {
-			itemCompraTemp.getCompra().setDataCompraFormatada(sdf.format(itemCompraTemp.getCompra().getDataCompra()));
-			
-			System.out.println(itemCompraTemp.getCompra().getId());
-			boolean produtoNaLista = false;
-			for (ItemVenda itemVenda : itensVenda) {
+		
+		//if(venda.getId() == null) {
+			itensCompra = new ArrayList<ItemCompra>();
+			List<ItemCompra> itensCompraTemp = itensCompras.porProduto(itemVenda.getProduto());
+			for (ItemCompra itemCompraTemp : itensCompraTemp) {
+				itemCompraTemp.getCompra().setDataCompraFormatada(sdf.format(itemCompraTemp.getCompra().getDataCompra()));
+				
 				if(itemCompraTemp.getCompra().getId() == itemVenda.getCompra().getId()) {
 					if(itemCompraTemp.getProduto().getId() == itemVenda.getProduto().getId()) {
+						itemCompra = itemCompraTemp;
 						
-						produtoNaLista = true;
-						itemCompraTemp.setQuantidadeDisponivel(itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());
-											
+						if(venda.getId() != null) {
+							itemCompra.setQuantidadeDisponivel(itemCompra.getQuantidadeDisponivel() + itemSelecionado.getQuantidade());
+							itensCompras.save(itemCompra);
+						}
 					}
-				}	
-			}
-			
-			if(produtoNaLista != false) {
-				if(itemCompraTemp.getQuantidadeDisponivel() > 0) {
+				}
+				
+				boolean produtoNaLista = false;
+				for (ItemVenda itemVenda : itensVenda) {
+					if(itemCompraTemp.getCompra().getId() == itemVenda.getCompra().getId()) {
+						if(itemCompraTemp.getProduto().getId() == itemVenda.getProduto().getId()) {
+							
+							produtoNaLista = true;
+							
+							if(itemVenda.getId() == null) {
+								itemCompraTemp.setQuantidadeDisponivel(itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());
+							}
+												
+						}
+					}	
+				}
+				
+				if(produtoNaLista != false) {
+					if(itemCompraTemp.getQuantidadeDisponivel() > 0) {
+						itensCompra.add(itemCompraTemp);
+					}
+				}
+				
+				if(produtoNaLista != true) {
 					itensCompra.add(itemCompraTemp);
 				}
 			}
+		//} else {
 			
-			if(produtoNaLista != true) {
-				itensCompra.add(itemCompraTemp);
-			}
+		//}
 			
-			if(itemCompra != null && itemCompra.getCompra() != null) {
-				if(itemCompraTemp.getCompra().getId() == itemCompra.getCompra().getId()) {
-					if(itemCompraTemp.getProduto().getId() == itemCompra.getProduto().getId()) {
-						itemCompra = itemCompraTemp;
-					}
-				}
-			}
+		if(venda.getId() != null) {
+			itemVenda = new ItemVenda();
+			itensVendas.remove(itemSelecionado);	
+			vendas.save(venda);
 		}
 		
-		
-
+		itemSelecionado = null;
 	}
 	
 	public void editarItem() {
 
 		itemVenda = itemSelecionado;
 		venda.setValorTotal(BigDecimal.valueOf(venda.getValorTotal().doubleValue() - itemSelecionado.getTotal().doubleValue()));
-		itensVenda.remove(itemSelecionado);
-		itemSelecionado = null;
+		itensVenda.remove(itemSelecionado);	
 		
-		itensCompra = new ArrayList<ItemCompra>();
-		List<ItemCompra> itensCompraTemp = itensCompras.porProduto(itemVenda.getProduto());
-		for (ItemCompra itemCompraTemp : itensCompraTemp) {
-			itemCompraTemp.getCompra().setDataCompraFormatada(sdf.format(itemCompraTemp.getCompra().getDataCompra()));
-			
-			if(itemCompraTemp.getCompra().getId() == itemVenda.getCompra().getId()) {
-				if(itemCompraTemp.getProduto().getId() == itemVenda.getProduto().getId()) {
-					itemCompra = itemCompraTemp;
-				}
-			}
-			
-			boolean produtoNaLista = false;
-			for (ItemVenda itemVenda : itensVenda) {
+		
+		//if(venda.getId() == null) {
+			itensCompra = new ArrayList<ItemCompra>();
+			List<ItemCompra> itensCompraTemp = itensCompras.porProduto(itemVenda.getProduto());
+			for (ItemCompra itemCompraTemp : itensCompraTemp) {
+				itemCompraTemp.getCompra().setDataCompraFormatada(sdf.format(itemCompraTemp.getCompra().getDataCompra()));
+				
 				if(itemCompraTemp.getCompra().getId() == itemVenda.getCompra().getId()) {
 					if(itemCompraTemp.getProduto().getId() == itemVenda.getProduto().getId()) {
+						itemCompra = itemCompraTemp;
 						
-						produtoNaLista = true;
-						itemCompraTemp.setQuantidadeDisponivel(itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());
-											
+						if(venda.getId() != null) {
+							itemCompra.setQuantidadeDisponivel(itemCompra.getQuantidadeDisponivel() + itemSelecionado.getQuantidade());
+							itensCompras.save(itemCompra);
+						}
 					}
-				}	
-			}
-			
-			if(produtoNaLista != false) {
-				if(itemCompraTemp.getQuantidadeDisponivel() > 0) {
+				}
+				
+				boolean produtoNaLista = false;
+				for (ItemVenda itemVenda : itensVenda) {
+					if(itemCompraTemp.getCompra().getId() == itemVenda.getCompra().getId()) {
+						if(itemCompraTemp.getProduto().getId() == itemVenda.getProduto().getId()) {
+							
+							produtoNaLista = true;
+							
+							if(itemVenda.getId() == null) {
+								itemCompraTemp.setQuantidadeDisponivel(itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());
+							}
+												
+						}
+					}	
+				}
+				
+				if(produtoNaLista != false) {
+					if(itemCompraTemp.getQuantidadeDisponivel() > 0) {
+						itensCompra.add(itemCompraTemp);
+					}
+				}
+				
+				if(produtoNaLista != true) {
 					itensCompra.add(itemCompraTemp);
 				}
 			}
+		//} else {
 			
-			if(produtoNaLista != true) {
-				itensCompra.add(itemCompraTemp);
-			}
+		//}
+			
+		if(venda.getId() != null) {
+			selecionarProduto(itemSelecionado.getProduto());
+			itemVenda = itemSelecionado;
+			itensVendas.remove(itemSelecionado);	
+			vendas.save(venda);
 		}
-
+		
+		itemSelecionado = null;
+		
 	}
 
 	public List<Usuario> getTodosUsuarios() {

@@ -2,6 +2,7 @@ package com.webapp.repository;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -36,6 +37,32 @@ public class Lancamentos implements Serializable {
 		despesaTemp = this.manager.merge(despesa);
 
 		this.manager.remove(despesaTemp);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Lancamento> lancamentosFiltrados(Date dateStart, Date dateStop, OrigemLancamento origemLancamento) {
+
+		String condition = "";
+		/*
+		if (usuario != null && usuario.getId() != null) {
+			condition = "AND i.usuario.id = :idUsuario";
+		}*/
+		
+		if (origemLancamento != null) {
+			condition = "AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento";
+		}
+
+		String jpql = "SELECT i FROM Lancamento i "
+				+ "WHERE i.dataLancamento between :dateStart and :dateStop " + condition
+				+ " order by i.dataLancamento desc";
+		Query q = manager.createQuery(jpql).setParameter("dateStart", dateStart)
+				.setParameter("dateStop", dateStop);
+
+		if (origemLancamento != null) {
+			q.setParameter("origemLancamento", origemLancamento);
+		}
+
+		return q.getResultList();
 	}
 
 	public Number totalDebitos() {

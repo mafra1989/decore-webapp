@@ -28,9 +28,9 @@ public class Seguranca {
 		if (usuarioLogado != null) {
 			nome = usuarioLogado.getUsuario().getNome();	
                         
-                      /*  if(usuarioLogado.getUsuario().getFoto() != null) {
+                        if(usuarioLogado.getUsuario().getFoto() != null) {
 			   fileContent = getUsuarioLogado().getUsuario().getFoto();
-		        }*/
+		        }
                 }
 		
 		return nome;

@@ -2,6 +2,7 @@ package com.webapp.repository;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -47,6 +48,28 @@ public class Vendas implements Serializable {
 		return this.manager
 				.createQuery("from Venda e where e.usuario.nome = :nome order by id", Venda.class)
 				.setParameter("nome", usuario.getNome()).getResultList();
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public List<Venda> vendasFiltradas(Date dateStart, Date dateStop, Usuario usuario) {
+
+		String condition = "";
+		if (usuario != null && usuario.getId() != null) {
+			condition = "AND i.usuario.id = :idUsuario";
+		}
+
+		String jpql = "SELECT i FROM Venda i "
+				+ "WHERE i.dataVenda between :dateStart and :dateStop " + condition
+				+ " order by i.dataVenda desc";
+		Query q = manager.createQuery(jpql).setParameter("dateStart", dateStart)
+				.setParameter("dateStop", dateStop);
+
+		if (usuario != null && usuario.getId() != null) {
+			q.setParameter("idUsuario", usuario.getId());
+		}
+
+		return q.getResultList();
 	}
 	
 	

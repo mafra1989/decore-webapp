@@ -12,6 +12,7 @@ import org.primefaces.PrimeFaces;
 
 import com.webapp.model.CategoriaLancamento;
 import com.webapp.model.DestinoLancamento;
+import com.webapp.model.ItemCompra;
 import com.webapp.model.Lancamento;
 import com.webapp.model.OrigemLancamento;
 import com.webapp.model.TipoLancamento;
@@ -50,6 +51,11 @@ public class LancamentoDespesasBean implements Serializable {
 		}
 	}
 	
+	public void buscar() {
+		despesa = despesas.porId(despesa.getId());
+		categoriaLancamento = despesa.getCategoriaLancamento();
+	}
+	
 	public void changeCategoria() { 
 		if(categoriaLancamento == null) {
 			despesa.setCategoriaLancamento(new CategoriaLancamento());
@@ -80,11 +86,18 @@ public class LancamentoDespesasBean implements Serializable {
 		
 		despesas.save(despesa);
 		
-		PrimeFaces.current().executeScript(
-				"swal({ type: 'success', title: 'Concluído!', text: 'Lançamento registrado com sucesso!' });");
-		
-		despesa = new Lancamento();
-		categoriaLancamento = new CategoriaLancamento();
+		if(despesa.getId() == null) {
+
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'success', title: 'Concluído!', text: 'Lançamento registrado com sucesso!' });");
+			
+			despesa = new Lancamento();
+			categoriaLancamento = new CategoriaLancamento();
+		} else {
+			
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'success', title: 'Concluído!', text: 'Lançamento salvo com sucesso!' });");
+		}
 
 	}
 	
