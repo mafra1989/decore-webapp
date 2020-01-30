@@ -413,7 +413,8 @@ public class Vendas implements Serializable {
 			select_Condition = "p.dia, p.mes, p.ano, ";
 			sum_Condition = "sum(i.lucro), sum(i.valorCompra)";
 			groupBy_Condition = "p.dia, p.mes, p.ano ";
-			orderBy_Condition = "p.dia asc, p.mes asc, p.ano asc";
+			orderBy_Condition = "p.dataVenda asc";
+			//orderBy_Condition = "p.dia asc, p.mes asc, p.ano asc";
 		} else {
 			select_Condition = "i.produto.nome, ";
 			sum_Condition = "sum(i.lucro), sum(i.valorCompra), sum(i.quantidade)";
@@ -422,17 +423,23 @@ public class Vendas implements Serializable {
 		}
 		
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.dia BETWEEN :diaInicio AND :diaFim "
+				+ "WHERE p.dataVenda BETWEEN :dataInicio AND :dataFim "
+				/*+ "WHERE p.dia BETWEEN :diaInicio AND :diaFim "
 				+ "AND p.mes BETWEEN :mesInicio AND :mesFim "
-				+ "AND p.ano BETWEEN :anoInicio AND :anoFim "
+				+ "AND p.ano BETWEEN :anoInicio AND :anoFim "*/
 				+ condition
 				+ "group by " + groupBy_Condition + " order by " + orderBy_Condition;
-		Query q = manager.createQuery(jpql).setParameter("diaInicio", Long.parseLong(String.valueOf(calendarStart.get(Calendar.DAY_OF_MONTH))))
+		Query q = manager.createQuery(jpql)
+				.setParameter("dataInicio", calendarStart.getTime())
+				.setParameter("dataFim", calendarStop.getTime());
+				
+				/*
+				.setParameter("diaInicio", Long.parseLong(String.valueOf(calendarStart.get(Calendar.DAY_OF_MONTH))))
 				.setParameter("diaFim", Long.parseLong(String.valueOf(calendarStop.get(Calendar.DAY_OF_MONTH))))
 				.setParameter("mesInicio", Long.parseLong(String.valueOf(calendarStart.get(Calendar.MONTH) + 1)))
 				.setParameter("mesFim", Long.parseLong(String.valueOf(calendarStop.get(Calendar.MONTH) + 1)))
 				.setParameter("anoInicio", Long.parseLong(String.valueOf(calendarStart.get(Calendar.YEAR))))
-				.setParameter("anoFim", Long.parseLong(String.valueOf(calendarStop.get(Calendar.YEAR))));
+				.setParameter("anoFim", Long.parseLong(String.valueOf(calendarStop.get(Calendar.YEAR))));*/
 		
 		if(categoriaProduto != null && categoriaProduto.getId() != null) {
 			q.setParameter("categoriaProduto", categoriaProduto.getNome());

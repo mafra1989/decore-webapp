@@ -177,7 +177,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 		meses.add("Janeiro");
 		meses.add("Fevereiro");
-		meses.add("MarÃ§o");
+		meses.add("Março");
 		meses.add("Abril");
 		meses.add("Maio");
 		meses.add("Junho");
@@ -336,20 +336,22 @@ public class RelatorioLucrosBean implements Serializable {
 
 		dataSet.setData(values);
 		dataSet.setLabel("Valor Total");
+		dataSet.setYaxisID("left-y-axis");
 		dataSet.setBorderColor("rgb(54, 162, 235)");
 		dataSet.setBackgroundColor("rgba(54, 162, 235)");
 		
 		dataSet2.setData(values2);
         dataSet2.setLabel("Percentual");
-        dataSet2.setFill(false);
+        dataSet2.setYaxisID("right-y-axis");
+        //dataSet2.setFill(false);
         dataSet2.setBorderColor("rgba(255, 159, 64");
-
-		data.addChartDataSet(dataSet);
+	
 		data.addChartDataSet(dataSet2);
+		data.addChartDataSet(dataSet);
 
 		List<String> labels = new ArrayList<>();
 		for (Object[] object : result) {
-			labels.add(object[0] + "/" + object[1] + "/" + object[2]);
+			labels.add(object[0] + "/" + object[1]/* + "/" + object[2]*/);
 		}
 
 		data.setLabels(labels);
@@ -359,13 +361,29 @@ public class RelatorioLucrosBean implements Serializable {
 		// Options
 		BarChartOptions options = new BarChartOptions();
 		CartesianScales cScales = new CartesianScales();
+		
 		CartesianLinearAxes linearAxes = new CartesianLinearAxes();
+        linearAxes.setId("left-y-axis");
+        linearAxes.setPosition("left");
+        
+        CartesianLinearAxes linearAxes2 = new CartesianLinearAxes();
+        linearAxes2.setId("right-y-axis");
+        linearAxes2.setPosition("right");		
+		
+		
 		CartesianLinearTicks ticks = new CartesianLinearTicks();
 		ticks.setBeginAtZero(true);
 		linearAxes.setTicks(ticks);
+		
+		CartesianLinearTicks ticks2 = new CartesianLinearTicks();
+		ticks2.setBeginAtZero(true);
+		linearAxes2.setTicks(ticks2);
+		
 
 		cScales.addYAxesData(linearAxes);
+        cScales.addYAxesData(linearAxes2);
 		options.setScales(cScales);
+		
 		mixedModelPorDia.setOptions(options);
 
 		mixedModelPorDia.setExtender("percentExtender2");
@@ -419,16 +437,18 @@ public class RelatorioLucrosBean implements Serializable {
 
 		dataSet.setData(values);
 		dataSet.setLabel("Valor Total");
+		dataSet.setYaxisID("left-y-axis");
 		dataSet.setBorderColor("rgb(54, 162, 235)");
 		dataSet.setBackgroundColor("rgba(54, 162, 235)");
-
+		
 		dataSet2.setData(values2);
         dataSet2.setLabel("Percentual");
-        dataSet2.setFill(false);
+        dataSet2.setYaxisID("right-y-axis");
+        //dataSet2.setFill(false);
         dataSet2.setBorderColor("rgba(255, 159, 64");
-
-		data.addChartDataSet(dataSet);
+	
 		data.addChartDataSet(dataSet2);
+		data.addChartDataSet(dataSet);
 
 		List<String> labels = new ArrayList<>();
 		for (Object[] object : result) {
@@ -447,13 +467,29 @@ public class RelatorioLucrosBean implements Serializable {
 		// Options
 		BarChartOptions options = new BarChartOptions();
 		CartesianScales cScales = new CartesianScales();
+		
 		CartesianLinearAxes linearAxes = new CartesianLinearAxes();
+        linearAxes.setId("left-y-axis");
+        linearAxes.setPosition("left");
+        
+        CartesianLinearAxes linearAxes2 = new CartesianLinearAxes();
+        linearAxes2.setId("right-y-axis");
+        linearAxes2.setPosition("right");		
+		
+		
 		CartesianLinearTicks ticks = new CartesianLinearTicks();
 		ticks.setBeginAtZero(true);
 		linearAxes.setTicks(ticks);
+		
+		CartesianLinearTicks ticks2 = new CartesianLinearTicks();
+		ticks2.setBeginAtZero(true);
+		linearAxes2.setTicks(ticks2);
+		
 
 		cScales.addYAxesData(linearAxes);
+        cScales.addYAxesData(linearAxes2);
 		options.setScales(cScales);
+		
 		mixedModelPorSemana.setOptions(options);
 
 		mixedModelPorSemana.setExtender("percentExtender2");
@@ -467,7 +503,7 @@ public class RelatorioLucrosBean implements Serializable {
 		case 2:
 			return "Fevereiro";
 		case 3:
-			return "MarÃ§o";
+			return "Março";
 		case 4:
 			return "Abril";
 		case 5:
@@ -498,7 +534,7 @@ public class RelatorioLucrosBean implements Serializable {
 			return "01";
 		case "Fevereiro":
 			return "02";
-		case "MarÃ§o":
+		case "Março":
 			return "03";
 		case "Abril":
 			return "04";
@@ -576,16 +612,18 @@ public class RelatorioLucrosBean implements Serializable {
 
 		dataSet.setData(values);
 		dataSet.setLabel("Valor Total");
+		dataSet.setYaxisID("left-y-axis");
 		dataSet.setBorderColor("rgb(54, 162, 235)");
 		dataSet.setBackgroundColor("rgba(54, 162, 235)");
-
+		
 		dataSet2.setData(values2);
         dataSet2.setLabel("Percentual");
-        dataSet2.setFill(false);
+        dataSet2.setYaxisID("right-y-axis");
+        //dataSet2.setFill(false);
         dataSet2.setBorderColor("rgba(255, 159, 64");
-
-		data.addChartDataSet(dataSet);
+	
 		data.addChartDataSet(dataSet2);
+		data.addChartDataSet(dataSet);
 
 		List<String> labels = new ArrayList<>();
 		for (Object[] object : result) {
@@ -603,13 +641,29 @@ public class RelatorioLucrosBean implements Serializable {
 		// Options
 		BarChartOptions options = new BarChartOptions();
 		CartesianScales cScales = new CartesianScales();
+		
 		CartesianLinearAxes linearAxes = new CartesianLinearAxes();
+        linearAxes.setId("left-y-axis");
+        linearAxes.setPosition("left");
+        
+        CartesianLinearAxes linearAxes2 = new CartesianLinearAxes();
+        linearAxes2.setId("right-y-axis");
+        linearAxes2.setPosition("right");		
+		
+		
 		CartesianLinearTicks ticks = new CartesianLinearTicks();
 		ticks.setBeginAtZero(true);
 		linearAxes.setTicks(ticks);
+		
+		CartesianLinearTicks ticks2 = new CartesianLinearTicks();
+		ticks2.setBeginAtZero(true);
+		linearAxes2.setTicks(ticks2);
+		
 
 		cScales.addYAxesData(linearAxes);
+        cScales.addYAxesData(linearAxes2);
 		options.setScales(cScales);
+		
 		mixedModelPorMes.setOptions(options);
 
 		mixedModelPorMes.setExtender("percentExtender2");
@@ -660,16 +714,18 @@ public class RelatorioLucrosBean implements Serializable {
 
 		dataSet.setData(values);
 		dataSet.setLabel("Valor Total");
+		dataSet.setYaxisID("left-y-axis");
 		dataSet.setBorderColor("rgb(54, 162, 235)");
 		dataSet.setBackgroundColor("rgba(54, 162, 235)");
-
+		
 		dataSet2.setData(values2);
         dataSet2.setLabel("Percentual");
-        dataSet2.setFill(false);
+        dataSet2.setYaxisID("right-y-axis");
+        //dataSet2.setFill(false);
         dataSet2.setBorderColor("rgba(255, 159, 64");
-
-		data.addChartDataSet(dataSet);
+	
 		data.addChartDataSet(dataSet2);
+		data.addChartDataSet(dataSet);
 
 		List<String> labels = new ArrayList<>();
 		for (Object[] object : result) {
@@ -683,16 +739,32 @@ public class RelatorioLucrosBean implements Serializable {
 		// Options
 		BarChartOptions options = new BarChartOptions();
 		CartesianScales cScales = new CartesianScales();
+		
 		CartesianLinearAxes linearAxes = new CartesianLinearAxes();
+        linearAxes.setId("left-y-axis");
+        linearAxes.setPosition("left");
+        
+        CartesianLinearAxes linearAxes2 = new CartesianLinearAxes();
+        linearAxes2.setId("right-y-axis");
+        linearAxes2.setPosition("right");		
+		
+		
 		CartesianLinearTicks ticks = new CartesianLinearTicks();
 		ticks.setBeginAtZero(true);
 		linearAxes.setTicks(ticks);
+		
+		CartesianLinearTicks ticks2 = new CartesianLinearTicks();
+		ticks2.setBeginAtZero(true);
+		linearAxes2.setTicks(ticks2);
+		
 
 		cScales.addYAxesData(linearAxes);
+        cScales.addYAxesData(linearAxes2);
 		options.setScales(cScales);
+		
 		mixedModelPorAno.setOptions(options);
 
-		mixedModelPorAno.setExtender("percentExtender4");
+		mixedModelPorAno.setExtender("percentExtender2");
 	}
 	
 	public void prepareLucroPorLote() { 

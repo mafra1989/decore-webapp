@@ -215,6 +215,14 @@ public class Produto implements Serializable {
 	
 	@Transient
 	private Long quantidadeItensVendidos = 0L;
+	
+	@Transient
+	private String percentualVenda = "0";
+	
+	@Transient
+	private Long quantidadePedido = 0L;
+	
+	
 
 	public BigDecimal getPrecoMedioVenda() {
 		return precoMedioVenda;
@@ -238,6 +246,22 @@ public class Produto implements Serializable {
 
 	public void setQuantidadeItensVendidos(Long quantidadeItensVendidos) {
 		this.quantidadeItensVendidos = quantidadeItensVendidos;
+	}
+
+	public String getPercentualVenda() {
+		return percentualVenda;
+	}
+
+	public void setPercentualVenda(String percentualVenda) {
+		this.percentualVenda = percentualVenda;
+	}
+
+	public Long getQuantidadePedido() {
+		return quantidadePedido;
+	}
+
+	public void setQuantidadePedido(Long quantidadePedido) {
+		this.quantidadePedido = quantidadePedido;
 	}
 
 }

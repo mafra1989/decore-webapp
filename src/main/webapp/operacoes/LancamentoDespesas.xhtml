@@ -247,7 +247,7 @@
 							columnClasses="ui-grid-col-4, ui-grid-col-3">
 
 							<p:outputLabel value="" />
-							<p:commandButton id="btn-calcular" value="Salvar"
+							<p:commandButton id="btn-calcular" value="Salvar" disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
 								onstart="PF('downloadLoading').show();" icon="fa fa-save"
 								onsuccess="PF('downloadLoading').hide();" update="msg form"
 								action="#{lancamentoDespesasBean.salvar}" process="@this form"

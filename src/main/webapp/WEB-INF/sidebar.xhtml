@@ -39,13 +39,9 @@
 					<h:form id="menuform">
 						<pm:menu id="pm_menu">
 							<p:menuitem id="pm_Dashboard" styleClass="pm_Dashboard"
-								value="Dashboard" icon="fa fa-home" outcome="/Dashboard.xhtml" />
+								value="Dashboard" icon="fa fa-home" outcome="/Dashboard.xhtml" rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()}" />
 
-							<p:menuitem id="pm_simulacao" styleClass="pm_simulacao"
-								value="Simular Operação" icon="fa fa-calculator"
-								outcome="/simulacao/SimularOperacao.xhtml" rendered="false" />
-
-							<p:submenu id="pm_consulta" label="Consultar" icon="fa fa-search">
+							<p:submenu id="pm_consulta" label="Consultar" icon="fa fa-search" rendered="#{seguranca.acessoAdministrador()  or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()}">
 
 								<p:menuitem id="pm_estoque" value="Estoque" icon="fa fa-cubes"
 									outcome="/pesquisas/Estoque.xhtml" />
@@ -61,7 +57,7 @@
 
 							</p:submenu>
 
-							<p:submenu id="pm_cadastro" label="Cadastro"
+							<p:submenu id="pm_cadastro" label="Cadastro" rendered="#{seguranca.acessoAdministrador()}"
 								icon="fa fa-database">
 
 								<p:menuitem id="pm_produto" value="Produto" icon="fa fa-cubes"
@@ -102,7 +98,7 @@
 								</p:submenu>
 							</p:submenu>
 
-							<p:submenu id="pm_operacoes" styleClass="pm_operacoes"
+							<p:submenu id="pm_operacoes" styleClass="pm_operacoes" rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado()}"
 								label="Operações" icon="fa fa-cogs">
 
 								<p:menuitem id="pm_emprestimo" styleClass="pm_emprestimo"
@@ -118,7 +114,7 @@
 									outcome="/operacoes/LancamentoDespesas.xhtml" />
 							</p:submenu>
 
-							<p:submenu id="pm_relatorio" styleClass="pm_relatorio"
+							<p:submenu id="pm_relatorio" styleClass="pm_relatorio" rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()}"
 								label="Relatórios" icon="fa fa-line-chart">
 	
 								<p:menuitem id="pm_despesas_total" styleClass="pm_despesas_total"

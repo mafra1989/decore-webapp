@@ -24,6 +24,7 @@ import org.primefaces.model.charts.pie.PieChartModel;
 import org.primefaces.model.charts.polar.PolarAreaChartDataSet;
 import org.primefaces.model.charts.polar.PolarAreaChartModel;
 
+import com.webapp.model.FluxoDeCaixa;
 import com.webapp.repository.Compras;
 import com.webapp.repository.Lancamentos;
 import com.webapp.repository.Produtos;
@@ -57,6 +58,8 @@ public class DashboardBean implements Serializable {
     private BarChartModel mixedModel;
      
     private DonutChartModel donutModel;
+    
+    private List<FluxoDeCaixa> tabela = new ArrayList<FluxoDeCaixa>();
      
  
     @PostConstruct
@@ -158,7 +161,42 @@ public class DashboardBean implements Serializable {
         values.add(totalDebitos);//Despesas
         values.add(produtos.totalAVender());//Ã€ Vender
         barDataSet.setData(values);
-         
+        
+        
+        
+        tabela = new ArrayList<FluxoDeCaixa>();
+        FluxoDeCaixa fluxoDeCaixa = new FluxoDeCaixa();
+        fluxoDeCaixa.setItem("Caixa");
+        fluxoDeCaixa.setValue((totalVendas.doubleValue() + totalCreditos.doubleValue()) - (totalCompras.doubleValue() + totalDebitos.doubleValue()));
+        tabela.add(fluxoDeCaixa);
+        
+        fluxoDeCaixa = new FluxoDeCaixa();
+        fluxoDeCaixa.setItem("Vendas");
+        fluxoDeCaixa.setValue(totalVendas.doubleValue());
+        tabela.add(fluxoDeCaixa);
+        
+        fluxoDeCaixa = new FluxoDeCaixa();
+        fluxoDeCaixa.setItem("Receitas");
+        fluxoDeCaixa.setValue(totalCreditos.doubleValue());
+        tabela.add(fluxoDeCaixa);
+        
+        fluxoDeCaixa = new FluxoDeCaixa();
+        fluxoDeCaixa.setItem("Compras");
+        fluxoDeCaixa.setValue(totalCompras.doubleValue());
+        tabela.add(fluxoDeCaixa);
+        
+        fluxoDeCaixa = new FluxoDeCaixa();
+        fluxoDeCaixa.setItem("Despesas");
+        fluxoDeCaixa.setValue(totalDebitos.doubleValue());
+        tabela.add(fluxoDeCaixa);
+        
+        fluxoDeCaixa = new FluxoDeCaixa();
+        fluxoDeCaixa.setItem("À Vender");
+        fluxoDeCaixa.setValue(produtos.totalAVender().doubleValue());
+        tabela.add(fluxoDeCaixa);
+               
+        
+        
         List<String> bgColor = new ArrayList<>();
         bgColor.add("rgba(255, 99, 132, 0.2)");
         bgColor.add("rgba(255, 159, 64, 0.2)");
@@ -183,10 +221,10 @@ public class DashboardBean implements Serializable {
         List<String> labels = new ArrayList<>();
         labels.add("Caixa");
         labels.add("Vendas");
-        labels.add("Outras Receitas");
+        labels.add("Receitas");
         labels.add("Compras");
         labels.add("Despesas");
-        labels.add("Ã€ Vender");
+        labels.add("À Vender");
         data.setLabels(labels);
         barModel.setData(data);
          
@@ -374,5 +412,9 @@ public class DashboardBean implements Serializable {
     public void setDonutModel(DonutChartModel donutModel) {
         this.donutModel = donutModel;
     }
+
+	public List<FluxoDeCaixa> getTabela() {
+		return tabela;
+	}
     
 }

@@ -16,7 +16,9 @@
 		<style>
 @media ( min-width :220px) {
 	.fotoDialog {
-		max-height: 380px !important;width: 240px !important;margin-top: -50px;
+		max-height: 380px !important;
+		width: 240px !important;
+		margin-top: -50px;
 	}
 	.categoria-field {
 		width: 100%;
@@ -64,6 +66,9 @@
 	.swal2-popup #swal2-content {
 		font-weight: 400;
 	}
+	.qty-field .ui-inputfield {
+		width: 63px !important;
+	}
 }
 
 @media ( min-width :460px) {
@@ -106,7 +111,9 @@
 		float: none;
 	}
 	.fotoDialog {
-		max-height: 500px !important;width: 240px !important;margin-top: -50px;
+		max-height: 500px !important;
+		width: 240px !important;
+		margin-top: -50px;
 	}
 }
 </style>
@@ -125,7 +132,7 @@
 			<p:toolbar id="toolbar">
 				<f:facet name="left">
 					<p:commandButton icon="fa fa-fw fa-search" value="Pesquisar"
-						id="pesquisar-button" update="panel-table produtosTable"
+						id="pesquisar-button" update="panel-table produtosTable form"
 						style="margin-left: 3px;font-weight:bold" process="form"
 						action="#{estoqueBean.pesquisar}"
 						onstart="PF('downloadLoading').show();"
@@ -156,6 +163,38 @@
 								var="categoria" itemLabel="#{categoria.nome}"
 								itemValue="#{categoria}"></f:selectItems>
 						</p:selectOneMenu>
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-1">
+
+						<p:outputLabel value="Pedido" />
+						<p:inputSwitch offLabel="Não" onLabel="Sim"
+							value="#{estoqueBean.pedido}">
+							<p:ajax event="change" process="@this" update="qty btn-qty" onstart="PF('downloadLoading').show();"
+						oncomplete="PF('downloadLoading').hide();" />
+						</p:inputSwitch>
+					</p:panelGrid>
+
+					<p:panelGrid columns="3" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-1">
+
+						<p:outputLabel value="QTY" for="qty" />
+						<p:inputNumber id="qty" styleClass="qty-field" decimalPlaces="0"
+							value="#{estoqueBean.quantidadePedido}" placeholder="0" autocomplete="off"
+							disabled="#{not estoqueBean.pedido}">
+						</p:inputNumber>
+
+						<p:commandButton icon="fa fa-fw fa-search" update="produtosTable"
+							disabled="#{not estoqueBean.pedido}" id="btn-qty" rendered="false"
+							style="margin-left: -20px;font-weight:bold; float:left; width: 38px" process="form"
+							action="#{estoqueBean.pesquisar}"
+							onstart="PF('downloadLoading').show();"
+							oncomplete="PF('downloadLoading').hide();"></p:commandButton>
+
 					</p:panelGrid>
 
 				</p:panel>
@@ -190,19 +229,31 @@
 							selection="#{estoqueBean.produtoSelecionado}"
 							selectionMode="single">
 
-							<p:ajax process="@this produtosTable" event="rowSelect" update="foto-button menu-item" />
-							<p:ajax process="@this produtosTable" event="rowUnselect" update="foto-button menu-item" />
+							<p:ajax process="@this produtosTable" event="rowSelect"
+								update="foto-button menu-item" />
+							<p:ajax process="@this produtosTable" event="rowUnselect"
+								update="foto-button menu-item" />
 
 							<p:column headerText="Cód." width="10%">
 								<h:outputText value="#{produto.codigo}" />
 							</p:column>
 
-							<p:column headerText="Desc." width="30%">
+							<p:column headerText="Desc." width="25%">
 								<h:outputText value="#{produto.descricao}" />
 							</p:column>
 
-							<p:column headerText="Qtd." width="10%">
+							<p:column headerText="Qtd. Atual" width="15%">
 								<h:outputText value="#{produto.quantidadeAtual}" />
+							</p:column>
+
+							<p:column headerText="Perc. Venda" width="15%"
+								visible="#{estoqueBean.pedido}">
+								<h:outputText value="#{produto.percentualVenda}"/>
+							</p:column>
+
+							<p:column headerText="Qtd. Pedido" width="15%"
+								visible="#{estoqueBean.pedido}">
+								<h:outputText value="#{produto.quantidadePedido}" />
 							</p:column>
 
 							<p:column headerText="Categoria" width="15%">
@@ -240,27 +291,29 @@
 
 			<h:form id="form-dialog">
 
-				<div class="ui-fluid" style="margin-top:10px;text-align:center">
+				<div class="ui-fluid" style="margin-top: 10px; text-align: center">
 					<ui:fragment id="photo"
 						rendered="#{estoqueBean.fileContent != null}">
-						<img 
+						<img
 							src="data:image/png;base64,#{estoqueBean.imageContentsAsBase64}"
-							style="width: 200px;height: 200px;" />
+							style="width: 200px; height: 200px;" />
 					</ui:fragment>
 
 					<div
-						style="width: 80%;margin:auto;border-top: 1px solid #ccc;margin-top:10px;margin-bottom:10px"></div>
+						style="width: 80%; margin: auto; border-top: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px"></div>
 
-					<p:button icon="fa fa-fw fa-edit" style="margin-bottom:5px;font-weight:bold"
-						value="Mais informações" id="foto-button" outcome="/cadastros/CadastroProdutos.xhtml"
+					<p:button icon="fa fa-fw fa-edit"
+						style="margin-bottom:5px;font-weight:bold"
+						value="Mais informações" id="foto-button"
+						outcome="/cadastros/CadastroProdutos.xhtml"
 						onclick="PF('downloadLoading').show();">
-						
-						<f:param name="id" value="#{estoqueBean.produtoSelecionado.id}" />	
+
+						<f:param name="id" value="#{estoqueBean.produtoSelecionado.id}" />
 					</p:button>
-					
-					<p:commandButton icon="fa fa-fw fa-close" style="margin-bottom: 5px;font-weight: bold;width: 120px;background:#cc3131f0;"
-						value="Fechar" 
-						oncomplete="PF('produto-dialog').hide();">
+
+					<p:commandButton icon="fa fa-fw fa-close"
+						style="margin-bottom: 5px;font-weight: bold;width: 120px;background:#cc3131f0;"
+						value="Fechar" oncomplete="PF('produto-dialog').hide();">
 					</p:commandButton>
 				</div>
 			</h:form>

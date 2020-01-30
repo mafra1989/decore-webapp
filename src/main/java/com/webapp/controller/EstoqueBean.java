@@ -1,6 +1,8 @@
 package com.webapp.controller;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Base64;
 import java.util.List;
 
@@ -9,8 +11,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.webapp.model.CategoriaProduto;
+import com.webapp.model.ItemVenda;
 import com.webapp.model.Produto;
 import com.webapp.repository.CategoriasProdutos;
+import com.webapp.repository.ItensVendas;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.filter.ProdutoFilter;
 import com.webapp.util.jsf.FacesUtil;
@@ -32,6 +36,9 @@ public class EstoqueBean implements Serializable {
 	private Produtos produtos;
 	
 	@Inject
+	private ItensVendas itensVendas;
+	
+	@Inject
 	private Produto produtoSelecionado;
 	
 	private ProdutoFilter filter = new ProdutoFilter();
@@ -39,6 +46,12 @@ public class EstoqueBean implements Serializable {
 	private String estoqueTotal = "0";
 	
 	private byte[] fileContent;
+	
+	private boolean pedido;
+	
+	private Long quantidadePedido;
+	
+	private NumberFormat nf = new DecimalFormat("###,##0.00");
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -56,7 +69,48 @@ public class EstoqueBean implements Serializable {
 		}
 		
 		estoqueTotal = String.valueOf(value);
+		
+		produtoSelecionado = null;
+		
+		if(pedido) {
+			
+			Long totalItensVendidos = 0L;
+			for (Produto produto : produtosFiltrados) {
+								
+				List<ItemVenda> itensVenda = itensVendas.porProduto(produto);
+				for (ItemVenda itemVenda : itensVenda) {
+					totalItensVendidos += itemVenda.getQuantidade();
+				}
+			}
+			
+			for (Produto produto : produtosFiltrados) {
+				
+				Long totalItemVendido = 0L;
+				
+				List<ItemVenda> itensVenda = itensVendas.porProduto(produto);
+				for (ItemVenda itemVenda : itensVenda) {
+					totalItemVendido += itemVenda.getQuantidade();
+				}
+				
+				if(totalItemVendido > 0) {
+					
+					produto.setPercentualVenda(nf.format((totalItemVendido * 100) / totalItensVendidos.doubleValue()) + "%");
+				} else {
+					produto.setPercentualVenda(nf.format(0D) + "%");
+				}			
+				
+				if(quantidadePedido == null) {
+					produto.setQuantidadePedido((long) ((totalItemVendido * 100) / totalItensVendidos.doubleValue()) * 0);
+				} else {
+					produto.setQuantidadePedido((long) (((totalItemVendido * 100) / totalItensVendidos.doubleValue()) * quantidadePedido)/100);
+				}
+			}
+			
+		} else {
+			quantidadePedido = null;
+		}
 	}
+	
 	
 	public void prepareFoto() {
 		fileContent = produtoSelecionado.getFoto();
@@ -101,5 +155,23 @@ public class EstoqueBean implements Serializable {
 	public byte[] getFileContent() {
 		return fileContent;
 	}
+
+	public boolean isPedido() {
+		return pedido;
+	}
+
+	public void setPedido(boolean pedido) {
+		this.pedido = pedido;
+	}
+
+	public Long getQuantidadePedido() {
+		return quantidadePedido;
+	}
+
+	public void setQuantidadePedido(Long quantidadePedido) {
+		this.quantidadePedido = quantidadePedido;
+	}
+
+
 
 }

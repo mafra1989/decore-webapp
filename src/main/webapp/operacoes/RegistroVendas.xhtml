@@ -210,7 +210,7 @@
 
 						<p:commandButton styleClass="btn-new" icon="fa fa-fw fa-cubes"
 							title="Buscar produto" oncomplete="PF('item-dialog').show()"
-							process="@this"
+							process="@this" disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
 							style="position: relative; float: right; margin-top: -38px; margin-right: 8px; width: 40px" />
 
 						<p:inputText id="id" type="hidden"
@@ -287,7 +287,7 @@
 
 							<p:outputLabel />
 							<p:commandButton id="btn-adicionar" value="Adicionar"
-								onstart="PF('downloadLoading').show();"
+								onstart="PF('downloadLoading').show();" disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
 								onsuccess="PF('downloadLoading').hide();" icon="fa fa-plus"
 								update="msg codigo descricao fornecedor total-venda id valor-unitario quantidade valor-total panel-table lote "
 								action="#{registroVendasBean.adicionarItem}"
@@ -389,7 +389,7 @@
 
 							<p:commandButton id="btn-calcular" value="#{registroVendasBean.venda.id == null ? 'Finalizar Venda' : 'Salvar Venda'}"
 								onstart="PF('downloadLoading').show();" icon="fa fa-save"
-								onsuccess="PF('downloadLoading').hide();"
+								onsuccess="PF('downloadLoading').hide();" disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
 								update="msg data-venda tipo-venda vendedor bairro panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total"
 								action="#{registroVendasBean.salvar}"
 								process="@this panel-table data-venda vendedor bairro tipo-venda"

@@ -184,7 +184,7 @@
 								<h:inputHidden id="percentual-juros"
 									value="#{cadastroProdutoBean.produto.margemLucro}" />
 								<p:slider for="percentual-juros" display="percentual"
-									displayTemplate="%{value}" minValue="1" maxValue="50">
+									displayTemplate="%{value}" minValue="1" maxValue="300">
 
 									<p:ajax event="slideEnd" update="a-vender totalAcumulado"
 										listener="#{cadastroProdutoBean.calculaAvender}"
@@ -257,7 +257,7 @@
 
 							<p:outputLabel value="Foto" />												
 							<p:commandButton  value="Adicionar" styleClass="btn-upload"
-								oncomplete="PF('anexo-dialog').show();"
+								oncomplete="PF('anexo-dialog').show();" disabled="#{not seguranca.acessoAdministrador()}"
 								onsuccess="PF('downloadLoading').hide();" update="anexo-dialog"
 								icon="fa fa-plus"
 								style="font-weight:bold" />
@@ -285,7 +285,7 @@
 
 							<p:outputLabel />
 							<p:commandButton id="btn-calcular" value="Salvar"
-								onstart="PF('downloadLoading').show();"
+								onstart="PF('downloadLoading').show();" disabled="#{not seguranca.acessoAdministrador()}"
 								styleClass="btn-calcular"
 								onsuccess="PF('downloadLoading').hide();" update="msg panel-cadastro"
 								action="#{cadastroProdutoBean.salvar}"

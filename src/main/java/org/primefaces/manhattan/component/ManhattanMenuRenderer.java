@@ -1,30 +1,36 @@
 package org.primefaces.manhattan.component;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
+
 import org.primefaces.component.api.AjaxSource;
 import org.primefaces.component.api.UIOutcomeTarget;
 import org.primefaces.component.menu.AbstractMenu;
 import org.primefaces.component.menu.BaseMenuRenderer;
 import org.primefaces.component.menuitem.UIMenuItem;
 import org.primefaces.component.submenu.UISubmenu;
+import org.primefaces.expression.SearchExpressionFacade;
 import org.primefaces.model.menu.MenuElement;
 import org.primefaces.model.menu.MenuItem;
 import org.primefaces.model.menu.Separator;
 import org.primefaces.model.menu.Submenu;
-import org.primefaces.util.ComponentUtils;
+import org.primefaces.util.AjaxRequestBuilder;
+import org.primefaces.util.ComponentTraversalUtils;
 import org.primefaces.util.WidgetBuilder;
 
 public class ManhattanMenuRenderer extends BaseMenuRenderer {
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     protected void encodeMarkup(FacesContext context, AbstractMenu abstractMenu) throws IOException {
         ManhattanMenu menu = (ManhattanMenu) abstractMenu;
         ResponseWriter writer = context.getResponseWriter();
@@ -100,7 +106,8 @@ public class ManhattanMenuRenderer extends BaseMenuRenderer {
         }
     }
     
-    protected void encodeSubmenu(FacesContext context, AbstractMenu menu, Submenu submenu) throws IOException{
+    @SuppressWarnings("unchecked")
+	protected void encodeSubmenu(FacesContext context, AbstractMenu menu, Submenu submenu) throws IOException{
 		ResponseWriter writer = context.getResponseWriter();
         String icon = submenu.getIcon();
         String label = submenu.getLabel();
@@ -185,7 +192,8 @@ public class ManhattanMenuRenderer extends BaseMenuRenderer {
         writer.endElement("li");
     }
     
-    @Override
+    @SuppressWarnings("unused")
+	@Override
     protected void encodeMenuItem(FacesContext context, AbstractMenu menu, MenuItem menuitem) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         String title = menuitem.getTitle();
@@ -219,7 +227,7 @@ public class ManhattanMenuRenderer extends BaseMenuRenderer {
             else {
                 writer.writeAttribute("href", "#", null);
 
-                UIComponent form = ComponentUtils.findParentForm(context, menu);
+                UIComponent form = ComponentTraversalUtils.closestForm(context, menu);
                 if(form == null) {
                     throw new FacesException("MenuItem must be inside a form element");
                 }
@@ -235,13 +243,13 @@ public class ManhattanMenuRenderer extends BaseMenuRenderer {
                     idParams.add(menuitem.getId());
                     params.put(menuClientId + "_menuid", idParams);
 
-                    //command = menuitem.isAjax() ? buildAjaxRequest(context, menu, (AjaxSource) menuitem, form, params) : buildNonAjaxRequest(context, menu, form, menuClientId, params, true);
+                    command = menuitem.isAjax() ? createAjaxRequest(context, menu, (AjaxSource) menuitem, form, params) : buildNonAjaxRequest(context, menu, form, menuClientId, params, true);
                 } 
                 else {
-                    //command = menuitem.isAjax() ? buildAjaxRequest(context, (AjaxSource) menuitem, form) : buildNonAjaxRequest(context, ((UIComponent) menuitem), form, ((UIComponent) menuitem).getClientId(context), true);
+                    command = menuitem.isAjax() ? createAjaxRequest(context, (AjaxSource) menuitem, form) : buildNonAjaxRequest(context, ((UIComponent) menuitem), form, ((UIComponent) menuitem).getClientId(context), true);
                 }
 
-                //onclick = (onclick == null) ? command : onclick + ";" + command;
+                onclick = (onclick == null) ? command : onclick + ";" + command;
             }
 
             if(onclick != null) {
@@ -280,4 +288,100 @@ public class ManhattanMenuRenderer extends BaseMenuRenderer {
         wb.init("Manhattan", menu.resolveWidgetVar(), clientId).finish();
     }
     
+    @SuppressWarnings("deprecation")
+	protected String createAjaxRequest(FacesContext context, AjaxSource source, UIComponent form) {
+        UIComponent component = (UIComponent) source;
+        String clientId = component.getClientId(context);
+        
+        AjaxRequestBuilder builder = getAjaxRequestBuilder();
+
+        builder.init()
+                .source(clientId)
+                .form(SearchExpressionFacade.resolveClientId(context, component, source.getForm()))
+                .process(component, source.getProcess())
+                .update(component, source.getUpdate())
+                .async(source.isAsync())
+                .global(source.isGlobal())
+                .delay(source.getDelay())
+                .timeout(source.getTimeout())
+                .partialSubmit(source.isPartialSubmit(), source.isPartialSubmitSet(), source.getPartialSubmitFilter())
+                .resetValues(source.isResetValues(), source.isResetValuesSet())
+                .ignoreAutoUpdate(source.isIgnoreAutoUpdate())
+                .onstart(source.getOnstart())
+                .onerror(source.getOnerror())
+                .onsuccess(source.getOnsuccess())
+                .oncomplete(source.getOncomplete())
+                .params(component);
+
+        if (form != null) {
+            builder.form(form.getClientId(context));
+        }
+
+        builder.preventDefault();
+
+        return builder.build();
+    }
+    
+    @SuppressWarnings("deprecation")
+	protected String createAjaxRequest(FacesContext context, AbstractMenu menu, AjaxSource source, UIComponent form,
+            Map<String, List<String>> params) {
+        
+        String clientId = menu.getClientId(context);
+
+        AjaxRequestBuilder builder = getAjaxRequestBuilder();
+
+        builder.init()
+                .source(clientId)
+                .process(menu, source.getProcess())
+                .update(menu, source.getUpdate())
+                .async(source.isAsync())
+                .global(source.isGlobal())
+                .delay(source.getDelay())
+                .timeout(source.getTimeout())
+                .partialSubmit(source.isPartialSubmit(), source.isPartialSubmitSet(), source.getPartialSubmitFilter())
+                .resetValues(source.isResetValues(), source.isResetValuesSet())
+                .ignoreAutoUpdate(source.isIgnoreAutoUpdate())
+                .onstart(source.getOnstart())
+                .onerror(source.getOnerror())
+                .onsuccess(source.getOnsuccess())
+                .oncomplete(source.getOncomplete())
+                .params(params);
+
+        if (form != null) {
+            builder.form(form.getClientId(context));
+        }
+
+        builder.preventDefault();
+
+        return builder.build();
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	protected AjaxRequestBuilder getAjaxRequestBuilder() {
+        Class rootContext;
+        Object requestContextInstance;
+        AjaxRequestBuilder builder;
+
+        try {
+            rootContext = Class.forName("org.primefaces.context.PrimeRequestContext");
+        } catch (ClassNotFoundException ex) {
+            try {
+                rootContext = Class.forName("org.primefaces.context.RequestContext");
+            } catch (ClassNotFoundException ex1) {
+                throw new RuntimeException(ex1);
+            }
+        }
+
+        try {
+            Method method = rootContext.getMethod("getCurrentInstance");
+            requestContextInstance = method.invoke(null);
+
+            method = requestContextInstance.getClass().getMethod("getAjaxRequestBuilder");
+            builder = (AjaxRequestBuilder) method.invoke(requestContextInstance);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+
+        return builder;
+    }
 }
