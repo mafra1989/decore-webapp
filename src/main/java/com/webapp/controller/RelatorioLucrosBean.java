@@ -162,7 +162,7 @@ public class RelatorioLucrosBean implements Serializable {
 		calendar.add(Calendar.DAY_OF_MONTH, -5);
 		dateStart = calendar.getTime();
 
-		createMixedModelPorDia();
+		//createMixedModelPorDia();
 
 		for (int i = 2019; i <= calendar.get(Calendar.YEAR); i++) {
 			anos.add(String.valueOf(i));
@@ -177,7 +177,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 		meses.add("Janeiro");
 		meses.add("Fevereiro");
-		meses.add("Março");
+		meses.add("MarÃ§o");
 		meses.add("Abril");
 		meses.add("Maio");
 		meses.add("Junho");
@@ -188,7 +188,7 @@ public class RelatorioLucrosBean implements Serializable {
 		meses.add("Novembro");
 		meses.add("Dezembro");
 
-		createMixedModelPorSemana();
+		//createMixedModelPorSemana();
 
 		ano02 = String.valueOf(calendarTemp.get(Calendar.YEAR));
 
@@ -201,7 +201,7 @@ public class RelatorioLucrosBean implements Serializable {
 			mes02 = nameMes(mes);
 		}
 
-		createMixedModelPorMes();
+		//createMixedModelPorMes();
 
 		createDonutModel(new ArrayList<Object[]>());
 
@@ -209,7 +209,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 		ano04 = String.valueOf(calendarTemp.get(Calendar.YEAR));
 
-		createMixedModelPorAno();
+		//createMixedModelPorAno();
 	}
 
 	private void listarTodasCategoriasProdutos() {
@@ -503,7 +503,7 @@ public class RelatorioLucrosBean implements Serializable {
 		case 2:
 			return "Fevereiro";
 		case 3:
-			return "Março";
+			return "MarÃ§o";
 		case 4:
 			return "Abril";
 		case 5:
@@ -534,7 +534,7 @@ public class RelatorioLucrosBean implements Serializable {
 			return "01";
 		case "Fevereiro":
 			return "02";
-		case "Março":
+		case "MarÃ§o":
 			return "03";
 		case "Abril":
 			return "04";
