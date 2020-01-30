@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 import com.webapp.model.Bairro;
-import com.webapp.model.DestinoLancamento;
 import com.webapp.repository.filter.BairroFilter;
 import com.webapp.util.jpa.Transacional;
 

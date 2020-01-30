@@ -8,7 +8,6 @@ import javax.persistence.EntityManager;
 
 import com.webapp.model.CategoriaLancamento;
 import com.webapp.model.OrigemLancamento;
-import com.webapp.model.TipoLancamento;
 import com.webapp.repository.filter.CategoriaLancamentoFilter;
 import com.webapp.util.jpa.Transacional;
 

@@ -1,6 +1,7 @@
 package com.webapp.repository;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -60,10 +61,17 @@ public class Produtos implements Serializable {
 	}
 	
 
-	public List<Produto> porCategoria(CategoriaProduto categoriaProduto) {
+	public List<Produto> porCategoria_(CategoriaProduto categoriaProduto) {
 		return this.manager
 				.createQuery("from Produto e where e.categoriaProduto.nome = :nome order by e.categoriaProduto.nome asc", Produto.class)
 				.setParameter("nome", categoriaProduto.getNome()).getResultList();
+	}
+	
+	
+	public List<Produto> porCategoria(String[] categorias) {
+		return this.manager
+				.createQuery("from Produto e where e.categoriaProduto.nome in (:categorias) order by e.categoriaProduto.nome asc", Produto.class)
+				.setParameter("categorias", Arrays.asList(categorias)).getResultList();
 	}
 
 

@@ -1,6 +1,7 @@
 package com.webapp.repository;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -122,7 +123,7 @@ public class Vendas implements Serializable {
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalParaVendasPorCategoria() {		
 		
-		String jpql = "SELECT p.categoriaProduto.nome, sum(p.quantidadeAtual * p.margemLucro) FROM Produto p group by p.categoriaProduto.nome order by p.categoriaProduto.nome asc";
+		String jpql = "SELECT i.produto.categoriaProduto.nome, sum(i.quantidadeDisponivel * i.valorUnitario * (1+(i.produto.margemLucro/100))) from ItemCompra i group by i.produto.categoriaProduto.nome order by i.produto.categoriaProduto.nome asc";
 		Query q = manager.createQuery(jpql);
 		List<Object[]> result = q.getResultList();
 		
@@ -131,15 +132,23 @@ public class Vendas implements Serializable {
 		
 	
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalVendasPorData(Calendar calendarStart, Calendar calendarStop, CategoriaProduto categoriaProduto, Produto produto, boolean chartCondition) {		
+	public List<Object[]> totalVendasPorData(Calendar calendarStart, Calendar calendarStop, CategoriaProduto categoriaProduto, String[] categorias, Produto produto, Usuario usuario, boolean chartCondition) {		
 		
 		String condition = ""; String select_Condition = ""; String sum_Condition = ""; String groupBy_Condition = ""; String orderBy_Condition = ""; 
 		if(categoriaProduto != null && categoriaProduto.getId() != null) {
 			condition = "AND i.produto.categoriaProduto.nome = :categoriaProduto ";
 		}
 		
+		if(categorias != null && categorias.length > 0) {
+			condition = "AND i.produto.categoriaProduto.nome in (:categorias) ";
+		}
+		
 		if(produto != null && produto.getId() != null) {
 			condition += "AND i.produto.id = :id ";
+		}
+		
+		if(usuario != null && usuario.getId() != null) {
+			condition += "AND p.usuario.id = :userID ";
 		}
 		
 		if(chartCondition != false) {
@@ -172,8 +181,16 @@ public class Vendas implements Serializable {
 			q.setParameter("categoriaProduto", categoriaProduto.getNome());
 		}
 		
+		if(categorias != null && categorias.length > 0) {
+			q.setParameter("categorias", Arrays.asList(categorias));
+		}
+		
 		if(produto != null && produto.getId() != null) {
 			q.setParameter("id", produto.getId());
+		}
+		
+		if(usuario != null && usuario.getId() != null) {
+			q.setParameter("userID", usuario.getId());
 		}
 		
 		List<Object[]> result = q.getResultList();
@@ -194,15 +211,23 @@ public class Vendas implements Serializable {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalVendasPorSemana(String ano, String semana01, String semana02, CategoriaProduto categoriaProduto, Produto produto, boolean chartCondition) {		
+	public List<Object[]> totalVendasPorSemana(String ano, String semana01, String semana02, CategoriaProduto categoriaProduto, String[] categorias, Produto produto, Usuario usuario, boolean chartCondition) {		
 		
 		String condition = ""; String select_Condition = ""; String sum_Condition = ""; String groupBy_Condition = ""; String orderBy_Condition = "";
 		if(categoriaProduto != null && categoriaProduto.getId() != null) {
 			condition = "AND i.produto.categoriaProduto.nome = :categoriaProduto ";
 		}
 		
+		if(categorias != null && categorias.length > 0) {
+			condition = "AND i.produto.categoriaProduto.nome in (:categorias) ";
+		}
+		
 		if(produto != null && produto.getId() != null) {
 			condition += "AND i.produto.id = :id ";
+		}
+		
+		if(usuario != null && usuario.getId() != null) {
+			condition += "AND p.usuario.id = :userID ";
 		}
 		
 		if(chartCondition != false) {
@@ -230,8 +255,16 @@ public class Vendas implements Serializable {
 			q.setParameter("categoriaProduto", categoriaProduto.getNome());
 		}
 		
+		if(categorias != null && categorias.length > 0) {
+			q.setParameter("categorias", Arrays.asList(categorias));
+		}
+		
 		if(produto != null && produto.getId() != null) {
 			q.setParameter("id", produto.getId());
+		}
+		
+		if(usuario != null && usuario.getId() != null) {
+			q.setParameter("userID", usuario.getId());
 		}
 		
 		List<Object[]> result = q.getResultList();
@@ -241,15 +274,23 @@ public class Vendas implements Serializable {
 	
 	
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalVendasPorMes(String ano, String mes01, String mes02, CategoriaProduto categoriaProduto, Produto produto, boolean chartCondition) {		
+	public List<Object[]> totalVendasPorMes(String ano, String mes01, String mes02, CategoriaProduto categoriaProduto, String[] categorias, Produto produto, Usuario usuario, boolean chartCondition) {		
 		
 		String condition = ""; String select_Condition = ""; String sum_Condition = ""; String groupBy_Condition = ""; String orderBy_Condition = "";
 		if(categoriaProduto != null && categoriaProduto.getId() != null) {
 			condition = "AND i.produto.categoriaProduto.nome = :categoriaProduto ";
 		}
 		
+		if(categorias != null && categorias.length > 0) {
+			condition = "AND i.produto.categoriaProduto.nome in (:categorias) ";
+		}
+		
 		if(produto != null && produto.getId() != null) {
 			condition += "AND i.produto.id = :id ";
+		}
+		
+		if(usuario != null && usuario.getId() != null) {
+			condition += "AND p.usuario.id = :userID ";
 		}
 		
 		if(chartCondition != false) {
@@ -277,8 +318,16 @@ public class Vendas implements Serializable {
 			q.setParameter("categoriaProduto", categoriaProduto.getNome());
 		}
 		
+		if(categorias != null && categorias.length > 0) {
+			q.setParameter("categorias", Arrays.asList(categorias));
+		}
+		
 		if(produto != null && produto.getId() != null) {
 			q.setParameter("id", produto.getId());
+		}
+		
+		if(usuario != null && usuario.getId() != null) {
+			q.setParameter("userID", usuario.getId());
 		}
 		
 		List<Object[]> result = q.getResultList();
@@ -287,15 +336,23 @@ public class Vendas implements Serializable {
 	}	
 	
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalVendasPorAno(String ano01, String ano02, CategoriaProduto categoriaProduto, Produto produto, boolean chartCondition) {		
+	public List<Object[]> totalVendasPorAno(String ano01, String ano02, CategoriaProduto categoriaProduto, String[] categorias, Produto produto, Usuario usuario, boolean chartCondition) {		
 		
 		String condition = ""; String select_Condition = ""; String sum_Condition = ""; String groupBy_Condition = ""; String orderBy_Condition = "";
 		if(categoriaProduto != null && categoriaProduto.getId() != null) {
 			condition = "AND i.produto.categoriaProduto.nome = :categoriaProduto ";
 		}
 		
+		if(categorias != null && categorias.length > 0) {
+			condition = "AND i.produto.categoriaProduto.nome in (:categorias) ";
+		}
+		
 		if(produto != null && produto.getId() != null) {
 			condition += "AND i.produto.id = :id ";
+		}
+		
+		if(usuario != null && usuario.getId() != null) {
+			condition += "AND p.usuario.id = :userID ";
 		}
 		
 		if(chartCondition != false) {
@@ -321,8 +378,16 @@ public class Vendas implements Serializable {
 			q.setParameter("categoriaProduto", categoriaProduto.getNome());
 		}
 		
+		if(categorias != null && categorias.length > 0) {
+			q.setParameter("categorias", Arrays.asList(categorias));
+		}
+		
 		if(produto != null && produto.getId() != null) {
 			q.setParameter("id", produto.getId());
+		}
+		
+		if(usuario != null && usuario.getId() != null) {
+			q.setParameter("userID", usuario.getId());
 		}
 		
 		List<Object[]> result = q.getResultList();

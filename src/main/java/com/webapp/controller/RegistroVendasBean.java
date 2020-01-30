@@ -16,7 +16,6 @@ import javax.validation.constraints.NotNull;
 import org.primefaces.PrimeFaces;
 
 import com.webapp.model.Bairro;
-import com.webapp.model.Compra;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.Produto;
@@ -228,7 +227,7 @@ public class RegistroVendasBean implements Serializable {
 				
 			} else {
 				PrimeFaces.current().executeScript(
-						"swal({ type: 'success', title: 'Conclu�do!', text: 'Venda salva com sucesso!' });");
+						"swal({ type: 'success', title: 'Conclu�do!', text: 'Venda atualizada com sucesso!' });");
 			}
 
 		} else {

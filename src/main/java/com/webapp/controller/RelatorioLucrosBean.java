@@ -25,7 +25,6 @@ import org.primefaces.model.charts.line.LineChartDataSet;
 import com.webapp.model.CategoriaProduto;
 import com.webapp.model.Produto;
 import com.webapp.repository.CategoriasProdutos;
-import com.webapp.repository.Compras;
 import com.webapp.repository.Lancamentos;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.Vendas;
@@ -38,9 +37,6 @@ public class RelatorioLucrosBean implements Serializable {
 
 	@Inject
 	private Vendas vendas;
-
-	@Inject
-	private Compras compras;
 
 	@Inject
 	private Produtos produtos;
@@ -224,7 +220,7 @@ public class RelatorioLucrosBean implements Serializable {
 		produtosPorDia = new ArrayList<Produto>();
 		produto01 = null;
 		if (categoriaPorDia != null) {
-			produtosPorDia = produtos.porCategoria(categoriaPorDia);
+			produtosPorDia = produtos.porCategoria_(categoriaPorDia);
 		}
 
 		createMixedModelPorDia();
@@ -239,7 +235,7 @@ public class RelatorioLucrosBean implements Serializable {
 		produtosPorSemana = new ArrayList<Produto>();
 		produto02 = null;
 		if (categoriaPorSemana != null) {
-			produtosPorSemana = produtos.porCategoria(categoriaPorSemana);
+			produtosPorSemana = produtos.porCategoria_(categoriaPorSemana);
 		}
 
 		createMixedModelPorSemana();
@@ -254,7 +250,7 @@ public class RelatorioLucrosBean implements Serializable {
 		produtosPorMes = new ArrayList<Produto>();
 		produto03 = null;
 		if (categoriaPorMes != null) {
-			produtosPorMes = produtos.porCategoria(categoriaPorMes);
+			produtosPorMes = produtos.porCategoria_(categoriaPorMes);
 		} else {
 			lucroPorLote = false;
 		}
@@ -271,7 +267,7 @@ public class RelatorioLucrosBean implements Serializable {
 		produtosPorAno = new ArrayList<Produto>();
 		produto04 = null;
 		if (categoriaPorAno != null) {
-			produtosPorAno = produtos.porCategoria(categoriaPorAno);
+			produtosPorAno = produtos.porCategoria_(categoriaPorAno);
 		}
 
 		createMixedModelPorAno();

@@ -13,7 +13,6 @@ import com.webapp.model.Lancamento;
 import com.webapp.model.OrigemLancamento;
 import com.webapp.model.Usuario;
 import com.webapp.repository.Lancamentos;
-import com.webapp.repository.Usuarios;
 import com.webapp.util.jsf.FacesUtil;
 
 @Named
@@ -26,9 +25,6 @@ public class ConsultaLancamentosBean implements Serializable {
 	private List<Lancamento> lancamentosFiltrados;
 	
 	private List<Usuario> todosUsuarios;
-	
-	@Inject
-	private Usuarios usuarios;
 	
 	@Inject
 	private Usuario usuario;

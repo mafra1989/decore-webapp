@@ -12,7 +12,6 @@ import org.primefaces.PrimeFaces;
 
 import com.webapp.model.CategoriaLancamento;
 import com.webapp.model.DestinoLancamento;
-import com.webapp.model.ItemCompra;
 import com.webapp.model.Lancamento;
 import com.webapp.model.OrigemLancamento;
 import com.webapp.model.TipoLancamento;
@@ -96,7 +95,7 @@ public class LancamentoDespesasBean implements Serializable {
 		} else {
 			
 			PrimeFaces.current().executeScript(
-					"swal({ type: 'success', title: 'Concluído!', text: 'Lançamento salvo com sucesso!' });");
+					"swal({ type: 'success', title: 'Concluído!', text: 'Lançamento atualizado com sucesso!' });");
 		}
 
 	}

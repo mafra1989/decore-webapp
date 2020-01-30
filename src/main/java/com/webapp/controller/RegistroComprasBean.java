@@ -142,7 +142,7 @@ public class RegistroComprasBean implements Serializable {
 				
 			} else {
 				PrimeFaces.current().executeScript(
-						"swal({ type: 'success', title: 'Concluído!', text: 'Compra salva com sucesso!' });");
+						"swal({ type: 'success', title: 'Concluído!', text: 'Compra atualizada com sucesso!' });");
 			}
 
 		} else {

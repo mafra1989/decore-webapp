@@ -23,8 +23,10 @@ import org.primefaces.model.charts.donut.DonutChartModel;
 
 import com.webapp.model.CategoriaProduto;
 import com.webapp.model.Produto;
+import com.webapp.model.Usuario;
 import com.webapp.repository.CategoriasProdutos;
 import com.webapp.repository.Produtos;
+import com.webapp.repository.Usuarios;
 import com.webapp.repository.Vendas;
 
 @Named
@@ -38,6 +40,9 @@ public class RelatorioVendasBean implements Serializable {
 
 	@Inject
 	private Produtos produtos;
+	
+	@Inject
+	private Usuarios usuarios;
 
 	private BarChartModel mixedModel;
 
@@ -50,12 +55,34 @@ public class RelatorioVendasBean implements Serializable {
 	private BarChartModel mixedModelPorAno;
 
 	private List<CategoriaProduto> todasCategoriasProduto;
+	
+	private List<Usuario> todosVendedores;
+	
+	@Inject
+	private Usuario usuarioPorDia;
+	
+	@Inject
+	private Usuario usuarioPorSemana;
+	
+	@Inject
+	private Usuario usuarioPorMes;
+	
+	@Inject
+	private Usuario usuarioPorAno;
 
 	@Inject
 	private CategoriasProdutos categoriasProdutos;
 
 	@Inject
 	private CategoriaProduto categoriaPorDia;
+	
+	private String[] categoriasPorDia;
+	
+	private String[] categoriasPorSemana;
+	
+	private String[] categoriasPorMes;
+	
+	private String[] categoriasPorAno;
 
 	@Inject
 	private CategoriaProduto categoriaPorSemana;
@@ -117,6 +144,8 @@ public class RelatorioVendasBean implements Serializable {
 	@PostConstruct
 	public void init() {
 		listarTodasCategoriasProdutos();
+		
+		todosVendedores = usuarios.todos();
 
 		Calendar calendar = Calendar.getInstance();
 		Calendar calendarTemp = Calendar.getInstance();
@@ -208,12 +237,17 @@ public class RelatorioVendasBean implements Serializable {
 	private void listarTodasCategoriasProdutos() {
 		todasCategoriasProduto = categoriasProdutos.todos();
 	}
+	
+	public void changeVendedorPorDia() {
+
+		createMixedModelPorDia();
+	}
 
 	public void changeCategoriaPorDia() {
 		produtosPorDia = new ArrayList<Produto>();
 		produto01 = null;
-		if (categoriaPorDia != null) {
-			produtosPorDia = produtos.porCategoria(categoriaPorDia);
+		if (categoriasPorDia != null && categoriasPorDia.length > 0) {
+			produtosPorDia = produtos.porCategoria(categoriasPorDia);
 		}
 
 		createMixedModelPorDia();
@@ -227,9 +261,10 @@ public class RelatorioVendasBean implements Serializable {
 	public void changeCategoriaPorSemana() {
 		produtosPorSemana = new ArrayList<Produto>();
 		produto02 = null;
-		if (categoriaPorSemana != null) {
-			produtosPorSemana = produtos.porCategoria(categoriaPorSemana);
+		if (categoriasPorSemana != null && categoriasPorSemana.length > 0) {
+			produtosPorSemana = produtos.porCategoria(categoriasPorSemana);
 		}
+
 
 		createMixedModelPorSemana();
 	}
@@ -238,12 +273,17 @@ public class RelatorioVendasBean implements Serializable {
 
 		createMixedModelPorSemana();
 	}
+	
+	public void changeVendedorPorSemana() {
+
+		createMixedModelPorSemana();
+	}
 
 	public void changeCategoriaPorMes() {
 		produtosPorMes = new ArrayList<Produto>();
 		produto03 = null;
-		if (categoriaPorMes != null) {
-			produtosPorMes = produtos.porCategoria(categoriaPorMes);
+		if (categoriasPorMes != null && categoriasPorMes.length > 0) {
+			produtosPorMes = produtos.porCategoria(categoriasPorMes);
 		}
 
 		createMixedModelPorMes();
@@ -254,18 +294,28 @@ public class RelatorioVendasBean implements Serializable {
 		createMixedModelPorMes();
 	}
 	
+	public void changeVendedorPorMes() {
+
+		createMixedModelPorMes();
+	}
+	
 	
 	public void changeCategoriaPorAno() {
 		produtosPorAno = new ArrayList<Produto>();
 		produto04 = null;
-		if (categoriaPorAno != null) {
-			produtosPorAno = produtos.porCategoria(categoriaPorAno);
+		if (categoriasPorAno != null && categoriasPorAno.length > 0) {
+			produtosPorAno = produtos.porCategoria(categoriasPorAno);
 		}
 
 		createMixedModelPorAno();
 	}
 
 	public void changeProdutoPorAno() {
+
+		createMixedModelPorAno();
+	}
+	
+	public void changeVendedorPorAno() {
 
 		createMixedModelPorAno();
 	}
@@ -284,7 +334,7 @@ public class RelatorioVendasBean implements Serializable {
 		Calendar calendarStop = Calendar.getInstance();
 		calendarStop.setTime(dateStop);
 
-		List<Object[]> result = vendas.totalVendasPorData(calendarStart, calendarStop, categoriaPorDia, produto01,
+		List<Object[]> result = vendas.totalVendasPorData(calendarStart, calendarStop, categoriaPorDia, categoriasPorDia, produto01, usuarioPorDia,
 				true);
 		for (Object[] object : result) {
 			values.add((Number) object[3]);
@@ -337,7 +387,7 @@ public class RelatorioVendasBean implements Serializable {
 		BarChartDataSet dataSet = new BarChartDataSet();
 		List<Number> values = new ArrayList<>();
 
-		List<Object[]> result = vendas.totalVendasPorSemana(ano01, semana01, semana02, categoriaPorSemana, produto02, true);
+		List<Object[]> result = vendas.totalVendasPorSemana(ano01, semana01, semana02, categoriaPorSemana, categoriasPorSemana, produto02, usuarioPorSemana, true);
 		for (Object[] object : result) {
 			values.add((Number) object[2]);
 			System.out.println(object[2]);
@@ -458,8 +508,8 @@ public class RelatorioVendasBean implements Serializable {
 		BarChartDataSet dataSet = new BarChartDataSet();
 		List<Number> values = new ArrayList<>();
 
-		List<Object[]> result = vendas.totalVendasPorMes(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes,
-				produto03, true);
+		List<Object[]> result = vendas.totalVendasPorMes(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes, categoriasPorMes,
+				produto03, usuarioPorMes, true);
 		for (Object[] object : result) {
 			values.add((Number) object[2]);
 			System.out.println(object[2]);
@@ -512,7 +562,7 @@ public class RelatorioVendasBean implements Serializable {
 		BarChartDataSet dataSet = new BarChartDataSet();
 		List<Number> values = new ArrayList<>();
 
-		List<Object[]> result = vendas.totalVendasPorAno(ano03, ano04, categoriaPorAno, produto04, true);
+		List<Object[]> result = vendas.totalVendasPorAno(ano03, ano04, categoriaPorAno, categoriasPorAno, produto04, usuarioPorAno, true);
 		for (Object[] object : result) {
 			values.add((Number) object[1]);
 			System.out.println(object[1]);
@@ -565,7 +615,7 @@ public class RelatorioVendasBean implements Serializable {
 		Calendar calendarStop = Calendar.getInstance();
 		calendarStop.setTime(dateStop);
 
-		List<Object[]> result = vendas.totalVendasPorData(calendarStart, calendarStop, categoriaPorDia, produto01,
+		List<Object[]> result = vendas.totalVendasPorData(calendarStart, calendarStop, categoriaPorDia, categoriasPorDia, produto01, usuarioPorDia,
 				false);
 
 		createDonutModel(result);
@@ -573,22 +623,22 @@ public class RelatorioVendasBean implements Serializable {
 
 	public void prepareDonutModelPorSemana() {
 
-		List<Object[]> result = vendas.totalVendasPorSemana(ano01, semana01, semana02, categoriaPorSemana, produto02, false);
+		List<Object[]> result = vendas.totalVendasPorSemana(ano01, semana01, semana02, categoriaPorSemana, categoriasPorSemana, produto02, usuarioPorSemana, false);
 
 		createDonutModel(result);
 	}
 	
 	public void prepareDonutModelPorMes() {
 
-		List<Object[]> result = vendas.totalVendasPorMes(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes,
-				produto03, false);
+		List<Object[]> result = vendas.totalVendasPorMes(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes, categoriasPorMes,
+				produto03, usuarioPorMes, false);
 
 		createDonutModel(result);
 	}
 	
 	public void prepareDonutModelPorAno() {
 
-		List<Object[]> result = vendas.totalVendasPorAno(ano03, ano04, categoriaPorAno, produto04, false);
+		List<Object[]> result = vendas.totalVendasPorAno(ano03, ano04, categoriaPorAno, categoriasPorAno, produto04, usuarioPorAno, false);
 
 		createDonutModel(result);
 	}
@@ -834,5 +884,73 @@ public class RelatorioVendasBean implements Serializable {
 
 	public void setDonutModel(DonutChartModel donutModel) {
 		this.donutModel = donutModel;
+	}
+
+	public Usuario getUsuarioPorDia() {
+		return usuarioPorDia;
+	}
+
+	public void setUsuarioPorDia(Usuario usuarioPorDia) {
+		this.usuarioPorDia = usuarioPorDia;
+	}
+
+	public Usuario getUsuarioPorSemana() {
+		return usuarioPorSemana;
+	}
+
+	public void setUsuarioPorSemana(Usuario usuarioPorSemana) {
+		this.usuarioPorSemana = usuarioPorSemana;
+	}
+
+	public Usuario getUsuarioPorMes() {
+		return usuarioPorMes;
+	}
+
+	public void setUsuarioPorMes(Usuario usuarioPorMes) {
+		this.usuarioPorMes = usuarioPorMes;
+	}
+
+	public Usuario getUsuarioPorAno() {
+		return usuarioPorAno;
+	}
+
+	public void setUsuarioPorAno(Usuario usuarioPorAno) {
+		this.usuarioPorAno = usuarioPorAno;
+	}
+
+	public List<Usuario> getTodosVendedores() {
+		return todosVendedores;
+	}
+
+	public String[] getCategoriasPorDia() {
+		return categoriasPorDia;
+	}
+
+	public void setCategoriasPorDia(String[] categoriasPorDia) {
+		this.categoriasPorDia = categoriasPorDia;
+	}
+
+	public String[] getCategoriasPorSemana() {
+		return categoriasPorSemana;
+	}
+
+	public void setCategoriasPorSemana(String[] categoriasPorSemana) {
+		this.categoriasPorSemana = categoriasPorSemana;
+	}
+
+	public String[] getCategoriasPorMes() {
+		return categoriasPorMes;
+	}
+
+	public void setCategoriasPorMes(String[] categoriasPorMes) {
+		this.categoriasPorMes = categoriasPorMes;
+	}
+
+	public String[] getCategoriasPorAno() {
+		return categoriasPorAno;
+	}
+
+	public void setCategoriasPorAno(String[] categoriasPorAno) {
+		this.categoriasPorAno = categoriasPorAno;
 	}
 }

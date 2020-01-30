@@ -73,20 +73,25 @@ public class CadastroProdutoBean implements Serializable {
 		produto = produtos.porId(produto.getId());
 		fileContent = produto.getFoto();
 		
+		Double quantidadeItensComprados = 0D;
 		Long totalItensComprados = 0L;
 		List<ItemCompra> itensCompra = itensCompras.porProduto(produto);
 		for (ItemCompra itemCompra : itensCompra) {
-			produto.setTotalCompras(BigDecimal.valueOf(produto.getTotalCompras().doubleValue() + (itemCompra.getValorUnitario().doubleValue() * itemCompra.getQuantidade())));
+			quantidadeItensComprados += itemCompra.getValorUnitario().doubleValue() * itemCompra.getQuantidade();
 			totalItensComprados += itemCompra.getQuantidade();
 		}
+		
+		produto.setTotalCompras(BigDecimal.valueOf(quantidadeItensComprados));
 			
 		Long totalItensVendidos = 0L;
+		Double quantidadeItensVendidos = 0D;
 		List<ItemVenda> itensVenda = itensVendas.porProduto(produto);
 		for (ItemVenda itemVenda : itensVenda) {
-			produto.setTotalVendas(BigDecimal.valueOf(produto.getTotalVendas().doubleValue() + (itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade())));
+			quantidadeItensVendidos += itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade();
 			totalItensVendidos += itemVenda.getQuantidade();
-			System.out.println(totalItensVendidos);
 		}
+		
+		produto.setTotalVendas(BigDecimal.valueOf(quantidadeItensVendidos));
 		
 		produto.setTotalAcumulado(BigDecimal.valueOf(itensCompras.aVender(produto).doubleValue() * (1 + (produto.getMargemLucro().doubleValue()/100))));
 		//produto.setTotalAcumulado(BigDecimal.valueOf(produto.getQuantidadeAtual() * produto.getLocalizacao().doubleValue()));
@@ -140,7 +145,7 @@ public class CadastroProdutoBean implements Serializable {
 			if(produtoTemp == null) {
 				produto = produtos.save(produto);			
 				PrimeFaces.current().executeScript(
-						"swal({ type: 'success', title: 'Concluído!', text: 'Produto cadastrado com sucesso!' });");
+						"swal({ type: 'success', title: 'Concluído!', text: 'Produto atualizado com sucesso!' });");
 				
 			} else {
 				PrimeFaces.current().executeScript(

@@ -313,7 +313,7 @@
 									columnClasses="ui-grid-col-6, ui-grid-col-2">
 
 									<p:outputLabel value="Estoque à vender R$" for="totalAcumulado" />
-									<p:inputNumber id="totalAcumulado" readonly="true"
+									<p:inputNumber id="totalAcumulado" readonly="true" symbol="R$ "
 										value="#{cadastroProdutoBean.produto.totalAcumulado}" />
 								</p:panelGrid>
 
@@ -326,12 +326,12 @@
 									<p:outputLabel value="" />
 									<p:outputLabel value="Quantidade de Itens Comprados"
 										for="totalComprados" />
-									<p:inputNumber id="totalComprados" readonly="true"
+									<p:inputNumber id="totalComprados" readonly="true" decimalPlaces="0"
 										value="#{cadastroProdutoBean.produto.quantidadeItensComprados}" />
 
 									<p:outputLabel value="Valor Total de Compras"
 										for="totalCompras" />
-									<p:inputNumber id="totalCompras" readonly="true"
+									<p:inputNumber id="totalCompras" readonly="true" symbol="R$ "
 										value="#{cadastroProdutoBean.produto.totalCompras}" />
 								</p:panelGrid>
 
@@ -348,11 +348,11 @@
 									<p:outputLabel value="" />
 									<p:outputLabel value="Quantidade de Itens Vendidos"
 										for="totalVendidos" />
-									<p:inputNumber id="totalVendidos" readonly="true"
+									<p:inputNumber id="totalVendidos" readonly="true" decimalPlaces="0"
 										value="#{cadastroProdutoBean.produto.quantidadeItensVendidos}" />
 
 									<p:outputLabel value="Valor Total de Vendas" for="totalVendas" />
-									<p:inputNumber id="totalVendas" readonly="true"
+									<p:inputNumber id="totalVendas" readonly="true" symbol="R$ "
 										value="#{cadastroProdutoBean.produto.totalVendas}" />
 								</p:panelGrid>
 
@@ -363,7 +363,7 @@
 
 									<p:outputLabel value="Preço Médio de Venda"
 										for="preco-medio-venda" />
-									<p:inputNumber id="preco-medio-venda" readonly="true"
+									<p:inputNumber id="preco-medio-venda" readonly="true" symbol="R$ "
 										value="#{cadastroProdutoBean.produto.precoMedioVenda}" />
 								</p:panelGrid>
 							</p:panel>

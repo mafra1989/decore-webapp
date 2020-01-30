@@ -241,12 +241,16 @@
 						
 						<p:outputLabel value="Vendedor" for="vendedor1" />
 						<p:selectOneMenu id="vendedor1"
-								value="#{consultaVendasBean.usuario}"
+								value="#{relatorioVendasBean.usuarioPorDia}"
 								placeholder="selecione">
 
 								<f:selectItem itemLabel="Selecione" />
+								
+								<p:ajax event="change"
+								listener="#{relatorioVendasBean.changeVendedorPorDia}"
+								process="@this" update="produto1 barChart-vendasPorDia" />
 
-								<f:selectItems value="#{consultaVendasBean.todosUsuarios}"
+								<f:selectItems value="#{relatorioVendasBean.todosVendedores}"
 									var="vendedor" itemLabel="#{vendedor.nome}"
 									itemValue="#{vendedor}" />
 							</p:selectOneMenu>
@@ -257,19 +261,18 @@
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-5">	
 						
-						<p:outputLabel value="Categoria" for="categoria1" />
-						<p:selectOneMenu id="categoria1" styleClass="categoria"
-							value="#{relatorioVendasBean.categoriaPorDia}">
-							<f:selectItem itemLabel="Selecione" itemValue="" />
+						<p:outputLabel value="Categoria"  />
+						<p:selectCheckboxMenu styleClass="categoria" label="Selecione"   
+							value="#{relatorioVendasBean.categoriasPorDia}">
 
 							<p:ajax event="change"
 								listener="#{relatorioVendasBean.changeCategoriaPorDia}"
 								process="@this painel" update="produto1 barChart-vendasPorDia" />
-							<f:selectItems
+							<f:selectItems 
 								value="#{relatorioVendasBean.todasCategoriasProduto}"
 								var="categoria" itemLabel="#{categoria.nome}"
-								itemValue="#{categoria}"></f:selectItems>
-						</p:selectOneMenu>
+								itemValue="#{categoria.nome}"></f:selectItems>
+						</p:selectCheckboxMenu>
 
 						<p:outputLabel value="Produto" for="produto1" />
 						<p:selectOneMenu id="produto1" style="width: 100%"
@@ -346,12 +349,16 @@
 
 						<p:outputLabel value="Vendedor" for="vendedor2" />
 						<p:selectOneMenu id="vendedor2"
-								value="#{consultaVendasBean.usuario}"
+								value="#{relatorioVendasBean.usuarioPorSemana}"
 								placeholder="selecione">
 
 								<f:selectItem itemLabel="Selecione" />
+								
+								<p:ajax event="change"
+								listener="#{relatorioVendasBean.changeVendedorPorSemana}"
+								process="@this" update="produto2 barChart-vendasPorSemana" />
 
-								<f:selectItems value="#{consultaVendasBean.todosUsuarios}"
+								<f:selectItems value="#{relatorioVendasBean.todosVendedores}"
 									var="vendedor" itemLabel="#{vendedor.nome}"
 									itemValue="#{vendedor}" />
 							</p:selectOneMenu>
@@ -362,11 +369,9 @@
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-5">
 						
-						<p:outputLabel value="Categoria" for="categoria2" />
-						<p:selectOneMenu id="categoria2" style="width: 100%"
-							value="#{relatorioVendasBean.categoriaPorSemana}">
-
-							<f:selectItem itemLabel="Selecione" itemValue="" />
+						<p:outputLabel value="Categoria" />
+						<p:selectCheckboxMenu style="width: 100%"  label="Selecione"
+							value="#{relatorioVendasBean.categoriasPorSemana}">
 
 							<p:ajax event="change"
 								listener="#{relatorioVendasBean.changeCategoriaPorSemana}"
@@ -375,8 +380,8 @@
 							<f:selectItems
 								value="#{relatorioVendasBean.todasCategoriasProduto}"
 								var="categoria" itemLabel="#{categoria.nome}"
-								itemValue="#{categoria}"></f:selectItems>
-						</p:selectOneMenu>
+								itemValue="#{categoria.nome}"></f:selectItems>
+						</p:selectCheckboxMenu>
 
 						<p:outputLabel value="Produto" for="produto2" />
 						<p:selectOneMenu id="produto2" style="width: 100%"
@@ -465,12 +470,16 @@
 
 						<p:outputLabel value="Vendedor" for="vendedor3" />
 						<p:selectOneMenu id="vendedor3"
-								value="#{consultaVendasBean.usuario}"
+								value="#{relatorioVendasBean.usuarioPorMes}"
 								placeholder="selecione">
 
 								<f:selectItem itemLabel="Selecione" />
+								
+								<p:ajax event="change"
+								listener="#{relatorioVendasBean.changeVendedorPorMes}"
+								process="@this" update="produto3 barChart-vendasPorMes" />
 
-								<f:selectItems value="#{consultaVendasBean.todosUsuarios}"
+								<f:selectItems value="#{relatorioVendasBean.todosVendedores}"
 									var="vendedor" itemLabel="#{vendedor.nome}"
 									itemValue="#{vendedor}" />
 							</p:selectOneMenu>
@@ -482,9 +491,9 @@
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-5">
 						
-						<p:outputLabel value="Categoria" for="categoria3" />
-						<p:selectOneMenu id="categoria3" style="width: 100%"
-							value="#{relatorioVendasBean.categoriaPorMes}">
+						<p:outputLabel value="Categoria" />
+						<p:selectCheckboxMenu style="width: 100%"  label="Selecione"
+							value="#{relatorioVendasBean.categoriasPorMes}">
 
 							<f:selectItem itemLabel="Selecione" itemValue="" />
 
@@ -495,8 +504,8 @@
 							<f:selectItems
 								value="#{relatorioVendasBean.todasCategoriasProduto}"
 								var="categoria" itemLabel="#{categoria.nome}"
-								itemValue="#{categoria}"></f:selectItems>
-						</p:selectOneMenu>
+								itemValue="#{categoria.nome}"></f:selectItems>
+						</p:selectCheckboxMenu>
 
 						<p:outputLabel value="Produto" for="produto3" />
 						<p:selectOneMenu id="produto3" style="width: 100%"
@@ -555,12 +564,16 @@
 
 						<p:outputLabel value="Vendedor" for="vendedor4" />
 						<p:selectOneMenu id="vendedor4"
-								value="#{consultaVendasBean.usuario}"
+								value="#{relatorioVendasBean.usuarioPorAno}"
 								placeholder="selecione">
 
 								<f:selectItem itemLabel="Selecione" />
+								
+								<p:ajax event="change"
+								listener="#{relatorioVendasBean.changeVendedorPorAno}"
+								process="@this" update="produto4 barChart-vendasPorAno" />
 
-								<f:selectItems value="#{consultaVendasBean.todosUsuarios}"
+								<f:selectItems value="#{relatorioVendasBean.todosVendedores}"
 									var="vendedor" itemLabel="#{vendedor.nome}"
 									itemValue="#{vendedor}" />
 							</p:selectOneMenu>
@@ -571,9 +584,9 @@
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-5">
 						
-						<p:outputLabel value="Categoria" for="categoria4" />
-						<p:selectOneMenu id="categoria4" style="width: 100%"
-							value="#{relatorioVendasBean.categoriaPorAno}">
+						<p:outputLabel value="Categoria" />
+						<p:selectCheckboxMenu style="width: 100%"  label="Selecione"
+							value="#{relatorioVendasBean.categoriasPorAno}">
 							
 							<f:selectItem itemLabel="Selecione" itemValue="" />
 							
@@ -583,8 +596,8 @@
 							<f:selectItems value="#{relatorioVendasBean.todasCategoriasProduto}"
 								var="categoria"
 								itemLabel="#{categoria.nome}"
-								itemValue="#{categoria}"></f:selectItems>
-						</p:selectOneMenu>
+								itemValue="#{categoria.nome}"></f:selectItems>
+						</p:selectCheckboxMenu>
 
 						<p:outputLabel value="Produto" for="produto4" />
 						<p:selectOneMenu id="produto4" style="width: 100%"
