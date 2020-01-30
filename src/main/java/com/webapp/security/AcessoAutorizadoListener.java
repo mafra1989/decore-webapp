@@ -15,7 +15,7 @@ public class AcessoAutorizadoListener implements AuthenticationSuccessHandler {
 	public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
 			Authentication authentication) throws IOException, ServletException {
 	
-		httpServletResponse.sendRedirect("/heroku-project/Dashboard.xhtml");
+		httpServletResponse.sendRedirect("/Dashboard.xhtml");
 	}
 
 }
