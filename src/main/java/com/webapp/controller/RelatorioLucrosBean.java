@@ -210,6 +210,16 @@ public class RelatorioLucrosBean implements Serializable {
 		ano04 = String.valueOf(calendarTemp.get(Calendar.YEAR));
 
 		createMixedModelPorAno();
+		
+		
+		Calendar calendarStart = Calendar.getInstance();
+		calendarStart.setTime(dateStart);
+
+		Calendar calendarStop = Calendar.getInstance();
+		calendarStop.setTime(dateStop);
+
+		List<Object[]> result = vendas.totalLucrosPorData(calendarStart, calendarStop, categoriaPorDia, produto01,
+				true);
 	}
 
 	private void listarTodasCategoriasProdutos() {
