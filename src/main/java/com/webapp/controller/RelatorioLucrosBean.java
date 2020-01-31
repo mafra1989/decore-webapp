@@ -290,9 +290,7 @@ public class RelatorioLucrosBean implements Serializable {
 			
 		Calendar calendarStop = Calendar.getInstance();
 		calendarStop.setTime(dateStop);
-		calendarStop.set(Calendar.HOUR, 23);
-		calendarStop.set(Calendar.MINUTE, 59);
-		calendarStop.set(Calendar.SECOND, 59);
+		calendarStop.add(Calendar.DAY_OF_MONTH, 1);
 
 		List<Object[]> result = vendas.totalLucrosPorData(calendarStart, calendarStop, categoriaPorDia, produto01,
 				true);
