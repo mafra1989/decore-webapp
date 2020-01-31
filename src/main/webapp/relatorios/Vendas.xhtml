@@ -495,8 +495,6 @@
 						<p:selectCheckboxMenu style="width: 100%"  label="Selecione"
 							value="#{relatorioVendasBean.categoriasPorMes}">
 
-							<f:selectItem itemLabel="Selecione" itemValue="" />
-
 							<p:ajax event="change"
 								listener="#{relatorioVendasBean.changeCategoriaPorMes}"
 								process="@this panel-mensal"
@@ -587,8 +585,6 @@
 						<p:outputLabel value="Categoria" />
 						<p:selectCheckboxMenu style="width: 100%"  label="Selecione"
 							value="#{relatorioVendasBean.categoriasPorAno}">
-							
-							<f:selectItem itemLabel="Selecione" itemValue="" />
 							
 							<p:ajax event="change"
 								listener="#{relatorioVendasBean.changeCategoriaPorAno}"
