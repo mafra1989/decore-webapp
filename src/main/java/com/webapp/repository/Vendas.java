@@ -431,8 +431,8 @@ public class Vendas implements Serializable {
 				+ "group by " + groupBy_Condition + " order by " + orderBy_Condition;
 		
 		Query q = manager.createQuery(jpql)
-				.setParameter("dataInicio", calendarStart.getTime())//calendarStart.getTime()
-				.setParameter("dataFim", new Date());//calendarStop.getTime()
+				.setParameter("dataInicio", new Date())//calendarStart.getTime()
+				.setParameter("dataFim", calendarStop.getTime());//calendarStop.getTime()
 				/*.setParameter("diaInicio", Long.parseLong(String.valueOf(calendarStart.get(Calendar.DAY_OF_MONTH))))
 				.setParameter("diaFim", Long.parseLong(String.valueOf(calendarStop.get(Calendar.DAY_OF_MONTH))))
 				.setParameter("mesInicio", Long.parseLong(String.valueOf(calendarStart.get(Calendar.MONTH) + 1)))
