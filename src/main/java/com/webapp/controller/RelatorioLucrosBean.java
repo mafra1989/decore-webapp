@@ -284,12 +284,15 @@ public class RelatorioLucrosBean implements Serializable {
 
 		BarChartDataSet dataSet = new BarChartDataSet();
 		List<Number> values = new ArrayList<>();
-
+			
 		Calendar calendarStart = Calendar.getInstance();
 		calendarStart.setTime(dateStart);
-
+			
 		Calendar calendarStop = Calendar.getInstance();
 		calendarStop.setTime(dateStop);
+		calendarStop.set(Calendar.HOUR, 23);
+		calendarStop.set(Calendar.MINUTE, 59);
+		calendarStop.set(Calendar.SECOND, 59);
 
 		List<Object[]> result = vendas.totalLucrosPorData(calendarStart, calendarStop, categoriaPorDia, produto01,
 				true);
