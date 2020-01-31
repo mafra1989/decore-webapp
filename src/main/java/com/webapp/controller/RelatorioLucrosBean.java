@@ -162,7 +162,7 @@ public class RelatorioLucrosBean implements Serializable {
 		calendar.add(Calendar.DAY_OF_MONTH, -5);
 		dateStart = calendar.getTime();
 
-		//createMixedModelPorDia();
+		createMixedModelPorDia();
 
 		for (int i = 2019; i <= calendar.get(Calendar.YEAR); i++) {
 			anos.add(String.valueOf(i));
@@ -210,16 +210,6 @@ public class RelatorioLucrosBean implements Serializable {
 		ano04 = String.valueOf(calendarTemp.get(Calendar.YEAR));
 
 		createMixedModelPorAno();
-		
-		
-		Calendar calendarStart = Calendar.getInstance();
-		calendarStart.setTime(dateStart);
-
-		Calendar calendarStop = Calendar.getInstance();
-		calendarStop.setTime(dateStop);
-
-		List<Object[]> result = vendas.totalLucrosPorData(calendarStart, calendarStop, categoriaPorDia, produto01,
-				true);
 	}
 
 	private void listarTodasCategoriasProdutos() {
