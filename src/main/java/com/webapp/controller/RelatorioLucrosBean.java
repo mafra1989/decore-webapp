@@ -188,7 +188,7 @@ public class RelatorioLucrosBean implements Serializable {
 		meses.add("Novembro");
 		meses.add("Dezembro");
 
-		//createMixedModelPorSemana();
+		createMixedModelPorSemana();
 
 		ano02 = String.valueOf(calendarTemp.get(Calendar.YEAR));
 
@@ -201,7 +201,7 @@ public class RelatorioLucrosBean implements Serializable {
 			mes02 = nameMes(mes);
 		}
 
-		//createMixedModelPorMes();
+		createMixedModelPorMes();
 
 		createDonutModel(new ArrayList<Object[]>());
 
@@ -209,7 +209,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 		ano04 = String.valueOf(calendarTemp.get(Calendar.YEAR));
 
-		//createMixedModelPorAno();
+		createMixedModelPorAno();
 	}
 
 	private void listarTodasCategoriasProdutos() {
