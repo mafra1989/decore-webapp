@@ -424,9 +424,9 @@ public class Vendas implements Serializable {
 		
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
 				/*+ "WHERE p.dataVenda BETWEEN :dataInicio AND :dataFim "*/
-				+ "WHERE p.dia BETWEEN :diaInicio AND :diaFim "
+				+ "WHERE p.ano BETWEEN :anoInicio AND :anoFim "
 				+ "AND p.mes BETWEEN :mesInicio AND :mesFim "
-				+ "AND p.ano BETWEEN :anoInicio AND :anoFim "
+				+ "AND p.dia BETWEEN :diaInicio AND :diaFim "
 				+ condition
 				+ "group by " + groupBy_Condition + " order by " + orderBy_Condition;
 		
