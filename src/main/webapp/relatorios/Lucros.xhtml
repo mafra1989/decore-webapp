@@ -392,7 +392,7 @@
 						title="Produtos por Quantidade" oncomplete="PF('produtos-qty').show();" update="form-dialog:pieChart-vendasPorQuantidade"
 						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-top:5px;margin-right:10px" />
 										
-					<p:barChart id="barChart-lucrosPorSemana" rendered="false"
+					<p:barChart id="barChart-lucrosPorSemana" 
 						model="#{relatorioLucrosBean.mixedModelPorSemana}"
 						styleClass="barChart-02" />
 				</p:panel>
@@ -503,7 +503,7 @@
 						title="Produtos por Quantidade" oncomplete="PF('produtos-qty').show();" update="form-dialog:pieChart-vendasPorQuantidade"
 						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-top:5px;margin-right:10px" />
 				
-					<p:barChart model="#{relatorioLucrosBean.mixedModelPorMes}" rendered="false"
+					<p:barChart model="#{relatorioLucrosBean.mixedModelPorMes}" 
 						id="barChart-lucrosPorMes" styleClass="barChart-02" />
 				</p:panel>
 
@@ -578,7 +578,7 @@
 						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-right:10px" />
 				
 					<p:barChart id="barChart-lucrosPorAno" model="#{relatorioLucrosBean.mixedModelPorAno}"
-						styleClass="barChart-01" rendered="false" />
+						styleClass="barChart-01"  />
 				</p:panel>
 
 			</p:panelGrid>
