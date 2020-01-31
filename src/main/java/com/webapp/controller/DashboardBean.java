@@ -159,7 +159,7 @@ public class DashboardBean implements Serializable {
         values.add(totalCreditos);//Outras Receitas
         values.add(totalCompras);//Compras
         values.add(totalDebitos);//Despesas
-        values.add(produtos.totalAVender());//À Vender
+        values.add(produtos.totalAVender());//Ã€ Vender
         barDataSet.setData(values);
         
         
@@ -191,7 +191,7 @@ public class DashboardBean implements Serializable {
         tabela.add(fluxoDeCaixa);
         
         fluxoDeCaixa = new FluxoDeCaixa();
-        fluxoDeCaixa.setItem("� Vender");
+        fluxoDeCaixa.setItem("A Vender");
         fluxoDeCaixa.setValue(produtos.totalAVender().doubleValue());
         tabela.add(fluxoDeCaixa);
                
@@ -224,7 +224,7 @@ public class DashboardBean implements Serializable {
         labels.add("Receitas");
         labels.add("Compras");
         labels.add("Despesas");
-        labels.add("� Vender");
+        labels.add("A Vender");
         data.setLabels(labels);
         barModel.setData(data);
          
@@ -301,7 +301,7 @@ public class DashboardBean implements Serializable {
         labels.add("Qua");
         labels.add("Qui");
         labels.add("Sex");
-        labels.add("Sáb");
+        labels.add("SÃ¡b");
         data.setLabels(labels);
          
         mixedModel.setData(data);
