@@ -212,7 +212,7 @@ public class CadastroProdutoBean implements Serializable {
 			
 		} else {
 			PrimeFaces.current().executeScript(
-					"swal({ type: 'error', title: 'Erro!', text: 'Selecione uma imagem com até 60KB!' });");
+					"swal({ type: 'error', title: 'Erro!', text: 'Selecione uma imagem com até 200KB!' });");
 		}
 	}
 
