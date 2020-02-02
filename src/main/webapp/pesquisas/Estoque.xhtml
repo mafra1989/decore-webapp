@@ -229,9 +229,9 @@
 							selection="#{estoqueBean.produtoSelecionado}"
 							selectionMode="single">
 
-							<p:ajax listener="#{estoqueBean.prepareId}" process="@this produtosTable" event="rowSelect"
+							<p:ajax process="@this produtosTable" event="rowSelect"
 								update="foto-button menu-item form-dialog" />
-							<p:ajax listener="#{estoqueBean.prepareId}" process="@this produtosTable" event="rowUnselect"
+							<p:ajax process="@this produtosTable" event="rowUnselect"
 								update="foto-button menu-item form-dialog" />
 
 							<p:column headerText="Cód." width="10%">
