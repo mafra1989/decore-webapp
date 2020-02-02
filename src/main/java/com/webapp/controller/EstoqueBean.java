@@ -117,7 +117,11 @@ public class EstoqueBean implements Serializable {
 	public void prepareFoto() {
 		fileContent = produtoSelecionado.getFoto();
                 produtoId = produtoSelecionado.getId();
-	}
+	} 
+
+        public void prepareId() {
+               produtoId = produtoSelecionado.getId();
+        }
 	
 	public String getImageContentsAsBase64() {
 	    return Base64.getEncoder().encodeToString(fileContent);
