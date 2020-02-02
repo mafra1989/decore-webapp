@@ -53,6 +53,8 @@ public class EstoqueBean implements Serializable {
 	
 	private NumberFormat nf = new DecimalFormat("###,##0.00");
 
+        private Long produtoId;
+
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
 			todasCategoriasProdutos();
@@ -114,6 +116,7 @@ public class EstoqueBean implements Serializable {
 	
 	public void prepareFoto() {
 		fileContent = produtoSelecionado.getFoto();
+                produtoId = produtoSelecionado.getId();
 	}
 	
 	public String getImageContentsAsBase64() {
@@ -171,6 +174,10 @@ public class EstoqueBean implements Serializable {
 	public void setQuantidadePedido(Long quantidadePedido) {
 		this.quantidadePedido = quantidadePedido;
 	}
+
+        public Long getProdutoId() {
+              return produtoId;
+        }
 
 
 
