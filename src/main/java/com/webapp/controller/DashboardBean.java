@@ -301,7 +301,7 @@ public class DashboardBean implements Serializable {
         labels.add("Qua");
         labels.add("Qui");
         labels.add("Sex");
-        labels.add("SÃ¡b");
+        labels.add("Sáb");
         data.setLabels(labels);
          
         mixedModel.setData(data);
