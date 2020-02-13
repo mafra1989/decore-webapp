@@ -211,7 +211,7 @@
 					<p:commandButton icon="fa fa-fw fa-image" value="Visualizar"
 						id="foto-button" update="produto-dialog"
 						actionListener="#{estoqueBean.prepareFoto}"
-						style="margin-right:10px;font-weight:bold; float:right;width:85px;margin-top: -16px;"
+						style="margin-right:10px;font-weight:bold; float:right;width:100px;margin-top: -16px;"
 						process="form" action="#{estoqueBean.pesquisar}"
 						disabled="#{estoqueBean.produtoSelecionado.id == null}"
 						onstart="PF('downloadLoading').show();"
@@ -230,9 +230,9 @@
 							selectionMode="single">
 
 							<p:ajax process="@this produtosTable" event="rowSelect"
-								update="foto-button menu-item form-dialog" />
+								update="foto-button form-dialog" />
 							<p:ajax process="@this produtosTable" event="rowUnselect"
-								update="foto-button menu-item form-dialog" />
+								update="foto-button form-dialog" />
 
 							<p:column headerText="Cód." width="10%">
 								<h:outputText value="#{produto.codigo}" />
@@ -263,20 +263,6 @@
 						</p:dataTable>
 					</p:panelGrid>
 
-					<p:contextMenu id="menu-item" for="produtosTable">
-						<p:menuitem value="Deletar Produto" id="btn-remove"
-							update="panel-table" process="@this panel-table"
-							onstart="start();" rendered="false" oncomplete="stop();"
-							icon="fa fa-fw fa-trash" />
-
-						<p:menuitem value="Visualizar Produto" id="btn-visualizar"
-							outcome="/cadastros/CadastroProdutos.xhtml"
-							process="@this produtosTable" icon="fa fa-fw fa-eye"
-							disabled="#{produtosFiltradosSize eq 0}">
-
-							<f:param name="id" value="#{estoqueBean.produtoId}" />
-						</p:menuitem>
-					</p:contextMenu>
 				</p:panel>
 
 			</div>
