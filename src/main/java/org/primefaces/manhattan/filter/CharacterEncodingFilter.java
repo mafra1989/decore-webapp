@@ -34,11 +34,11 @@ public class CharacterEncodingFilter implements Filter {
 		resp.setCharacterEncoding("UTF-8");
 
 		/* PROBLEMA DE CACHE RESOLVIDO */
-		HttpServletResponse httpResponse = (HttpServletResponse) resp;
-		httpResponse.setHeader("Cache-Control", "no-cache,no-store,must-revalidate"); // HTTP
+		//HttpServletResponse httpResponse = (HttpServletResponse) resp;
+		//httpResponse.setHeader("Cache-Control", "no-cache,no-store,must-revalidate"); // HTTP
 																						// 1.1
-		httpResponse.setHeader("Pragma", "no-cache"); // HTTP 1.0
-		httpResponse.setDateHeader("Expires", 0); // Proxies
+		//httpResponse.setHeader("Pragma", "no-cache"); // HTTP 1.0
+		//httpResponse.setDateHeader("Expires", 0); // Proxies
 
 		chain.doFilter(req, resp);
 	}
