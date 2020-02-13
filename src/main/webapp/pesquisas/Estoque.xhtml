@@ -208,7 +208,7 @@
 					<p:outputLabel value="Total: #{estoqueBean.estoqueTotal}"
 						style="float:left;margin-top:-10px;margin-bottom:5px; font-weight:bold;margin-left:8px;color:#5b5656" />
 
-					<p:commandButton icon="fa fa-fw fa-image" value="Ver foto"
+					<p:commandButton icon="fa fa-fw fa-image" value="Visualizar"
 						id="foto-button" update="produto-dialog"
 						actionListener="#{estoqueBean.prepareFoto}"
 						style="margin-right:10px;font-weight:bold; float:right;width:85px;margin-top: -16px;"
@@ -223,7 +223,7 @@
 
 						<p:dataTable id="produtosTable" paginatorAlwaysVisible="false"
 							value="#{estoqueBean.produtosFiltrados}" var="produto"
-							emptyMessage="Nenhum resultado encontrado." rows="10"
+							emptyMessage="Nenhum resultado encontrado." rows="100"
 							reflow="true" paginator="true" paginatorPosition="bottom"
 							rowKey="#{produto.id}"
 							selection="#{estoqueBean.produtoSelecionado}"
@@ -303,8 +303,8 @@
 						style="width: 80%; margin: auto; border-top: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px"></div>
 
 					<p:button icon="fa fa-fw fa-edit"
-						style="margin-bottom:5px;font-weight:bold"
-						value="Mais informações" id="foto-button"
+						style="margin-bottom: 5px;font-weight: bold;float: right;width: 100px;margin-right: 5px;"
+						value="Detalhes" id="foto-button"
 						outcome="/cadastros/CadastroProdutos.xhtml"
 						onclick="PF('downloadLoading').show();">
 
@@ -312,7 +312,7 @@
 					</p:button>
 
 					<p:commandButton icon="fa fa-fw fa-close"
-						style="margin-bottom: 5px;font-weight: bold;width: 120px;background:#cc3131f0;"
+						style="margin-bottom: 5px;font-weight: bold;width: 100px;background:#e15e5ef0;"
 						value="Fechar" oncomplete="PF('produto-dialog').hide();">
 					</p:commandButton>
 				</div>
