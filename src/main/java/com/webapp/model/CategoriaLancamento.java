@@ -58,7 +58,6 @@ public class CategoriaLancamento implements Serializable {
 		this.tipoLancamento = tipoLancamento;
 	}
 
-	@NotNull
 	@ManyToOne
 	@JoinColumn
 	public DestinoLancamento getDestinoLancamento() {
