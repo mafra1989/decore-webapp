@@ -27,6 +27,7 @@ public class CategoriaLancamento implements Serializable {
 	
 	private TipoLancamento tipoLancamento = new TipoLancamento();
 	
+	@Column(nullable = true)
 	private DestinoLancamento destinoLancamento = new DestinoLancamento();
 	
 	@Id
@@ -59,7 +60,6 @@ public class CategoriaLancamento implements Serializable {
 		this.tipoLancamento = tipoLancamento;
 	}
 
-	@Null
 	@ManyToOne
 	@JoinColumn(nullable = true)
 	public DestinoLancamento getDestinoLancamento() {
