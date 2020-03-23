@@ -59,7 +59,7 @@ public class CategoriaLancamento implements Serializable {
 	}
 
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(nullable = true)
 	public DestinoLancamento getDestinoLancamento() {
 		return destinoLancamento;
 	}
