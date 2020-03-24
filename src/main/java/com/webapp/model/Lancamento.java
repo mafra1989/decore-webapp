@@ -39,7 +39,7 @@ public class Lancamento implements Serializable {
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
 	private BigDecimal valor;
 
-	//@NotNull
+	@NotNull
 	@ManyToOne
 	@JoinColumn
 	private CategoriaLancamento categoriaLancamento = new CategoriaLancamento();
