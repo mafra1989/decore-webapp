@@ -10,12 +10,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
-@Table(name = "categoria_lancamentos")
+@Table(name = "categoria_lancamentos_fix")
 public class CategoriaLancamento implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -27,7 +26,6 @@ public class CategoriaLancamento implements Serializable {
 	
 	private TipoLancamento tipoLancamento = new TipoLancamento();
 	
-	@Column(nullable = true)
 	private DestinoLancamento destinoLancamento = new DestinoLancamento();
 	
 	@Id
@@ -61,7 +59,7 @@ public class CategoriaLancamento implements Serializable {
 	}
 
 	@ManyToOne
-	@JoinColumn(nullable = true)
+	@JoinColumn
 	public DestinoLancamento getDestinoLancamento() {
 		return destinoLancamento;
 	}

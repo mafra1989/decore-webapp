@@ -1,1 +1,0 @@
-ALTER TABLE categoria_lancamentos MODIFY COLUMN destinoLancamento_id INT NULL;
