@@ -226,7 +226,7 @@
 								value="#{lancamentoDespesasBean.despesa.categoriaLancamento.tipoLancamento.descricao}" />
 
 							<p:outputLabel value="Destino do Lançamento" for="destino" />								
-							<p:selectOneMenu id="destino" value="#{lancamentoDespesasBean.despesa.destinoLancamento}" style="margin-bottom: 5px" readonly="#{lancamentoDespesasBean.despesa.categoriaLancamento != null}"
+							<p:selectOneMenu id="destino" value="#{lancamentoDespesasBean.despesa.destinoLancamento}" style="margin-bottom: 5px" readonly="#{lancamentoDespesasBean.despesa.categoriaLancamento.id != null}"
 								placeholder="selecione">
 
 								<f:selectItem itemLabel="Selecione" />
