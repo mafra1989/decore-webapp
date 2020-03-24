@@ -191,7 +191,7 @@
 						</p:column>
 						
 						<p:column headerText="Destino">
-							<h:outputText value="#{categoriaDespesa.destinoLancamento.descricao}" />
+							<h:outputText value="#{categoriaDespesa.destinoLancamento != null ? categoriaDespesa.destinoLancamento.descricao : '-'}" />
 						</p:column>
 
 					</p:dataTable>
