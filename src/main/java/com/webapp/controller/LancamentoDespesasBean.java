@@ -65,6 +65,7 @@ public class LancamentoDespesasBean implements Serializable {
 			despesa.setCategoriaLancamento(new CategoriaLancamento());
 		} else {
 			despesa.setCategoriaLancamento(categoriaLancamento);
+			despesa.setDestinoLancamento(categoriaLancamento.getDestinoLancamento());
 		}
 	}
 
