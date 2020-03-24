@@ -225,9 +225,16 @@
 							<p:inputText id="tipo-despesa" autocomplete="off" readonly="true"
 								value="#{lancamentoDespesasBean.despesa.categoriaLancamento.tipoLancamento.descricao}" />
 
-							<p:outputLabel value="Destino do Lançamento" for="destino" />
-							<p:inputText id="destino" autocomplete="off" readonly="true"
-								value="#{lancamentoDespesasBean.despesa.categoriaLancamento.destinoLancamento.descricao}" />
+							<p:outputLabel value="Destino do Lançamento" for="destino" />								
+							<p:selectOneMenu id="destino" value="#{lancamentoDespesasBean.despesa.destinoLancamento}" style="margin-bottom: 5px" readonly="#{lancamentoDespesasBean.despesa.categoriaLancamento != null}"
+								placeholder="selecione">
+
+								<f:selectItem itemLabel="Selecione" />
+
+								<f:selectItems value="#{lancamentoDespesasBean.todosDestinosLancamentos}"
+									var="destinoLancamento" itemLabel="#{destinoLancamento.descricao}"
+									itemValue="#{destinoLancamento}" />
+							</p:selectOneMenu>
 								
 						</p:panelGrid>
 

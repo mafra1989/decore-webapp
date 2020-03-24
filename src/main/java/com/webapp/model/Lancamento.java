@@ -39,10 +39,15 @@ public class Lancamento implements Serializable {
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
 	private BigDecimal valor;
 
-	@NotNull
+	//@NotNull
 	@ManyToOne
 	@JoinColumn
 	private CategoriaLancamento categoriaLancamento = new CategoriaLancamento();
+	
+	@NotNull
+	@ManyToOne
+	@JoinColumn
+	private DestinoLancamento destinoLancamento = new DestinoLancamento();
 
 	/*
 	 * @ManyToOne
@@ -111,6 +116,14 @@ public class Lancamento implements Serializable {
 	 * 
 	 * public void setUsuario(Usuario usuario) { this.usuario = usuario; }
 	 */
+
+	public DestinoLancamento getDestinoLancamento() {
+		return destinoLancamento;
+	}
+
+	public void setDestinoLancamento(DestinoLancamento destinoLancamento) {
+		this.destinoLancamento = destinoLancamento;
+	}
 
 	public Long getDia() {
 		return dia;

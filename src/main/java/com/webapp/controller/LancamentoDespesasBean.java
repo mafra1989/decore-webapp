@@ -16,6 +16,7 @@ import com.webapp.model.Lancamento;
 import com.webapp.model.OrigemLancamento;
 import com.webapp.model.TipoLancamento;
 import com.webapp.repository.CategoriasLancamentos;
+import com.webapp.repository.DestinosLancamentos;
 import com.webapp.repository.Lancamentos;
 import com.webapp.util.jsf.FacesUtil;
 
@@ -34,8 +35,6 @@ public class LancamentoDespesasBean implements Serializable {
 	@Inject
 	private CategoriasLancamentos categoriasDespesas;
 	
-	private List<DestinoLancamento> todosDestinosLancamentos;
-	
 	private List<TipoLancamento> todosTiposDespesas;
 	
 	private List<CategoriaLancamento> todasCategoriasDespesas;
@@ -43,10 +42,16 @@ public class LancamentoDespesasBean implements Serializable {
 	@Inject
 	private CategoriaLancamento categoriaLancamento;
 	
+	@Inject
+	private DestinosLancamentos destinosLancamentos;
+
+	private List<DestinoLancamento> todosDestinosLancamentos;
+	
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {			
 			todasCategoriasDespesas = categoriasDespesas.todos();
+			todosDestinosLancamentos = destinosLancamentos.todos();
 		}
 	}
 	
