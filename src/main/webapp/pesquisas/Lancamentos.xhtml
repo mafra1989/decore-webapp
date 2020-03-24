@@ -208,9 +208,13 @@
 									<f:convertNumber type="currency" />
 								</h:outputText>
 							</p:column>
+							
+							<p:column headerText="Categoria" width="20%">
+								<h:outputText value="#{lancamento.categoriaLancamento.nome}" />
+							</p:column>
 
 							<p:column headerText="Destino" width="20%">
-								<h:outputText value="#{lancamento.categoriaLancamento.destinoLancamento.descricao}" />
+								<h:outputText value="#{lancamento.destinoLancamento.descricao}" />
 							</p:column>
 
 						</p:dataTable>
