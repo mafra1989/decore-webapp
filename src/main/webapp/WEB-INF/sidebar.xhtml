@@ -130,6 +130,10 @@
 									outcome="/relatorios/Lucros.xhtml" />
 								
 							</p:submenu>
+							
+							<p:menuitem id="pm_Import" styleClass="pm_Import" rendered="#{seguranca.acessoAdministrador()}"
+									value="Importar Planilha" icon="fa fa-laptop" 
+									outcome="/importar/ImportarPlanilha.xhtml" />
 
 						</pm:menu>
 					</h:form>

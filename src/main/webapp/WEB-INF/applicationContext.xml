@@ -98,6 +98,9 @@
 		<intercept-url pattern="/relatorios/Vendas.xhtml"
 			access="hasAnyRole('ADMINISTRADOR', 'USUARIO_AVANCADO', 'USUARIO_COMUM')" />
 			
+		<intercept-url pattern="/importar/ImportarPanilha.xhtml"
+			access="hasAnyRole('ADMINISTRADOR')" />
+			
 		<!-- <intercept-url pattern="/**" access="denyAll" />  -->
 
 		<form-login login-page="/Login.xhtml" authentication-success-handler-ref="successHandler"
