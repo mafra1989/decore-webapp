@@ -178,10 +178,10 @@
 					<h3 style="font-weight: bold">Resultado da consulta</h3>
 					
 					<p:button icon="fa fa-fw fa-eye" value="Visualizar"
-						outcome="/operacoes/RegistroCompras.xhtml"
+						outcome="/operacoes/RegistroCompras.xhtml" id="btn-view"
 						style="margin-right:10px;font-weight:bold; float:right;width:100px;margin-top: -40px;"
 						process="@this comprasTable" 
-						disabled="#{consultaComprasBean.comprasFiltradasSize eq 0}"
+						disabled="#{(consultaComprasBean.comprasFiltradasSize eq 0) or consultaComprasBean.compraSelecionada.id == null}"
 						onstart="PF('downloadLoading').show();">
 
 						<f:param name="id" value="#{consultaComprasBean.compraSelecionada.id}" />
@@ -199,8 +199,8 @@
 							selection="#{consultaComprasBean.compraSelecionada}"
 							selectionMode="single">
 
-							<p:ajax process="@this" event="rowSelect" update="menu-item" />
-							<p:ajax process="@this" event="rowUnselect" update="menu-item" />
+							<p:ajax process="@this" event="rowSelect" update="menu-item btn-view" />
+							<p:ajax process="@this" event="rowUnselect" update="menu-item btn-view" />
 
 							<p:column headerText="Data da compra" width="10%">
 								<h:outputText value="#{compra.dataCompra}">
