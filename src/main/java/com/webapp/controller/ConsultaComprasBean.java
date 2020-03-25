@@ -1,6 +1,7 @@
 package com.webapp.controller;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -22,7 +23,7 @@ public class ConsultaComprasBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	
-	private List<Compra> comprasFiltradas;
+	private List<Compra> comprasFiltradas = new ArrayList<>();
 	
 	private List<Usuario> todosUsuarios;
 	
@@ -94,6 +95,10 @@ public class ConsultaComprasBean implements Serializable {
 
 	public void setComprasFiltradas(List<Compra> comprasFiltradas) {
 		this.comprasFiltradas = comprasFiltradas;
+	}
+	
+	public int getComprasFiltradasSize() {
+		return comprasFiltradas.size();
 	}
 
 	public Usuario getUsuario() {

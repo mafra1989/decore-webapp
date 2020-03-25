@@ -176,6 +176,16 @@
 					style="padding-bottom: 0px !important;margin-top:-10px">
 
 					<h3 style="font-weight: bold">Resultado da consulta</h3>
+					
+					<p:button icon="fa fa-fw fa-eye" value="Visualizar"
+						outcome="/operacoes/RegistroCompras.xhtml"
+						style="margin-right:10px;font-weight:bold; float:right;width:100px;margin-top: -40px;"
+						process="@this comprasTable" 
+						disabled="#{consultaComprasBean.comprasFiltradasSize eq 0}"
+						onstart="PF('downloadLoading').show();">
+
+						<f:param name="id" value="#{consultaComprasBean.compraSelecionada.id}" />
+					</p:button>
 
 					<p:panelGrid columns="1" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"

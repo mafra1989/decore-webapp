@@ -7,10 +7,6 @@
 
 	<ui:define name="title">Importar Planilha</ui:define>
 
-	<f:metadata>
-		<f:viewAction action="#{consultaVendasBean.inicializar}" />
-	</f:metadata>
-
 	<ui:define name="content">
 
 		<style>
@@ -127,16 +123,16 @@
 
 
 
-		<h:form id="form" prependId="false">
+		<h:form id="form" enctype="multipart/form-data">
 
 			<p:toolbar id="toolbar">
 				<f:facet name="left">
 					<p:commandButton icon="fa fa-fw fa-upload" value="Importar"
-						id="pesquisar-button" update="form"
-						style="margin-left: 3px;font-weight:bold" process="form"
-						action="#{consultaVendasBean.pesquisar}"
-						onstart="PF('downloadLoading').show();"
-						oncomplete="PF('downloadLoading').hide();"></p:commandButton>
+						id="pesquisar-button"
+						style="margin-left: 3px;font-weight:bold"
+						action="#{importarPlanilhaBean.importar}"
+						process="@this" ajax="false"
+						onclick="PrimeFaces.monitorDownload(start, stop);"></p:commandButton>
 				</f:facet>
 
 			</p:toolbar>
@@ -147,7 +143,7 @@
 					style="padding-bottom: 0px !important; margin-top:10px">
 
 					<p:fileUpload styleClass="btn-upload"
-						value="#{cadastroProdutoBean.file}" label="Anexar" process="@this"
+						value="#{importarPlanilhaBean.file}" label="Anexar" process="@this"
 						style="margin-left:8px;margin-top:5px" mode="simple"
 						skinSimple="true">
 					</p:fileUpload>
