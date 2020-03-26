@@ -88,8 +88,8 @@ public class Produtos implements Serializable {
 			}
 			
 			typedQuery = manager.createQuery(
-					"select e from Produto e where " + condition + " e.descricao like :descricao or e.codigo = :codigo order by e.codigo",
-					Produto.class).setParameter("descricao", "%" + filter.getDescricao().toLowerCase() + "%").setParameter("codigo", filter.getDescricao());
+					"select e from Produto e where " + condition + " e.descricao like :descricaoUpper or e.descricao like :descricaoLower or e.codigo = :codigo order by e.codigo",
+					Produto.class).setParameter("descricaoUpper", "%" + filter.getDescricao().toUpperCase() + "%").setParameter("descricaoLower", "%" + filter.getDescricao().toUpperCase() + "%").setParameter("codigo", filter.getDescricao());
 			
 		} else {
 			

@@ -221,9 +221,11 @@
 							selection="#{consultaComprasBean.compraSelecionada}"
 							selectionMode="single">
 
-							<p:ajax process="@this" event="rowSelect"
+							<p:ajax process="@this" event="rowSelect" onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();"
 								update="btn-view btn-trash" />
-							<p:ajax process="@this" event="rowUnselect"
+							<p:ajax process="@this" event="rowUnselect" onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();"
 								update="btn-view btn-trash" />
 
 							<p:column headerText="Data da compra" width="10%">

@@ -217,8 +217,10 @@
 							selection="#{consultaVendasBean.vendaSelecionada}"
 							selectionMode="single">
 
-							<p:ajax process="@this" event="rowSelect" update="btn-view btn-trash" />
-							<p:ajax process="@this" event="rowUnselect" update="btn-view btn-trash" />
+							<p:ajax process="@this" event="rowSelect" update="btn-view btn-trash" onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();" />
+							<p:ajax process="@this" event="rowUnselect" update="btn-view btn-trash" onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();" />
 
 							<p:column headerText="Data da venda" width="10%">
 								<h:outputText value="#{venda.dataVenda}">
