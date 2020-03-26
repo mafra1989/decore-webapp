@@ -4,7 +4,6 @@ import java.util.Base64;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
-import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -13,7 +12,7 @@ import javax.inject.Named;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 @Named
-@SessionScoped
+@RequestScoped
 public class Seguranca {
 
 	@Inject
