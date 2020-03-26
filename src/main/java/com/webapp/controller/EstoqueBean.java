@@ -63,7 +63,6 @@ public class EstoqueBean implements Serializable {
 	
 	public void pesquisar() {
 		produtosFiltrados = produtos.filtrados(filter);
-		System.out.println(produtosFiltrados.size());
 		
 		long value = 0;
 		for (Produto produto : produtosFiltrados) {
