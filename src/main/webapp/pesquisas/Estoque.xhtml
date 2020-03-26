@@ -157,7 +157,7 @@
 						columnClasses="ui-grid-col-2, ui-grid-col-4">
 
 						<p:outputLabel value="Código ou Descrição" for="descricao" />
-						<p:inputText id="descricao" style="text-transform: uppercase"
+						<p:inputText id="descricao"
 							value="#{estoqueBean.filter.descricao}" />
 
 
@@ -298,8 +298,8 @@
 						style="width: 80%; margin: auto; border-top: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px"></div>
 
 					<p:button icon="fa fa-fw fa-edit"
-						style="margin-bottom: 5px;font-weight: bold;float: right;width: 100px;margin-right: 5px;"
-						value="Detalhes" id="foto-button"
+						style="margin-bottom: 5px;font-weight: bold;float: right;width: 100px;margin-right: 5px;background:#147df0"
+						value="Detalhes" id="foto-button" 
 						outcome="/cadastros/CadastroProdutos.xhtml"
 						onclick="PF('downloadLoading').show();">
 

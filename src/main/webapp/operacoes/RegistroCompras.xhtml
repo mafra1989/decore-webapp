@@ -19,6 +19,17 @@
 
 		<style>
 @media ( min-width :220px) {
+	.btn-select.ui-button.ui-button-icon-only .ui-icon {
+	    margin-top: -8px;
+	    font-size: 18px;
+	    color: #0f5baf;
+	}
+	.produtosTable .btn-select.ui-button {
+	    height: 30px;width: 30px;background-color: transparent;border: 1px solid #0f5baf;border-radius: 50px;
+	}
+	.produtosTable .btn-select.ui-button:hover {
+	 	background-color: #e0dada;
+	}
 	.ui-datatable-scrollable-body {
 	    overflow: auto;
 	    max-height: 420px;
@@ -359,7 +370,7 @@
 
 		</div>
 
-		<p:dialog header="Buscar produto" widgetVar="item-dialog"
+		<p:dialog header="Buscar produto" widgetVar="item-dialog" 
 			id="item-dialog" resizable="false" modal="true" closeOnEscape="true"
 			responsive="true" width="350px" height="455">
 
@@ -386,8 +397,8 @@
 							scrollable="true" scrollHeight="337"
 							value="#{registroComprasBean.produtosFiltrados}" var="produto"
 							emptyMessage="Nenhum produto encontrado." 
-							paginator="false" 
-							style="margin-top: 10px">
+							paginator="false" styleClass="produtosTable"
+							style="margin-top: 10px;border: 1px solid #147df0; height: 370px;">
 
 							<p:column headerText="Código" width="30%">
 								<h:outputText value="#{produto.codigo}" />
@@ -402,7 +413,7 @@
 									action="#{registroComprasBean.selecionarProduto(produto)}"
 									title="Selecionar Produto"
 									update="form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total"
-									style="width: 100%" process="@this"
+									styleClass="btn-select" process="@this"
 									oncomplete="PF('item-dialog').hide();">
 								</p:commandButton>
 							</p:column>

@@ -89,7 +89,7 @@ public class Produtos implements Serializable {
 			
 			typedQuery = manager.createQuery(
 					"select e from Produto e where " + condition + " e.descricao like :descricao or e.codigo = :codigo order by e.codigo",
-					Produto.class).setParameter("descricao", "%" + filter.getDescricao() + "%").setParameter("codigo", filter.getDescricao());
+					Produto.class).setParameter("descricao", "%" + filter.getDescricao().toLowerCase() + "%").setParameter("codigo", filter.getDescricao());
 			
 		} else {
 			
