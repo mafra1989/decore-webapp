@@ -91,9 +91,6 @@
 	body .ui-datatable .ui-paginator {
 		padding: 2px 0px !important;
 	}
-	#item-dialog.ui-dialog {
-		margin-top: -1550px !important;
-	}
 }
 
 @media ( min-width :460px) {
@@ -425,9 +422,9 @@
 
 		</div>
 
-		<p:dialog header="Buscar produto" widgetVar="item-dialog"
+		<p:dialog header="Buscar produto" widgetVar="item-dialog"  position="top" style="margin-top: 100px"
 			id="item-dialog" resizable="false" modal="true" closeOnEscape="true"
-			responsive="true" width="350px" height="455">
+			responsive="true" width="350px">
 
 			<h:form id="form-dialog">
 
@@ -453,7 +450,7 @@
 							value="#{registroVendasBean.produtosFiltrados}" var="produto"
 							emptyMessage="Nenhum produto encontrado." 
 							paginator="false" styleClass="produtosTable" 
-							style="margin-top: 10px;border: 1px solid #147df0; height: 370px;">
+							style="margin-top: 10px;border: 1px solid #147df0;">
 
 							<p:column headerText="Código" width="30%">
 								<h:outputText value="#{produto.codigo}" />
@@ -468,8 +465,8 @@
 									action="#{registroVendasBean.selecionarProduto(produto)}"
 									title="Selecionar Produto" styleClass="btn-select"
 									update="form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote "
-									process="@this"
-									oncomplete="PF('item-dialog').hide();">
+									process="@this" onstart="PF('downloadLoading').show();"
+									oncomplete="PF('downloadLoading').hide();PF('item-dialog').hide();">
 								</p:commandButton>
 							</p:column>
 

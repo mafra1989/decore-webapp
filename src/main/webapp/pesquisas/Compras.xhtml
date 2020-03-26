@@ -202,7 +202,7 @@
 						style="margin-right:10px;font-weight:bold; float:right;width:100px;margin-top: -40px;position: relative"
 						process="@this comprasTable"
 						disabled="#{(consultaComprasBean.comprasFiltradasSize eq 0) or consultaComprasBean.compraSelecionada.id == null}"
-						onstart="PF('downloadLoading').show();">
+						onclick="PF('downloadLoading').show();">
 
 						<f:param name="id"
 							value="#{consultaComprasBean.compraSelecionada.id}" />

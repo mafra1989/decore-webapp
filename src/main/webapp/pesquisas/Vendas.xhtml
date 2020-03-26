@@ -198,7 +198,7 @@
 						style="margin-right:10px;font-weight:bold; float:right;width:100px;margin-top: -40px;position: relative"
 						process="@this vendasTable"
 						disabled="#{(consultaVendasBean.vendasFiltradasSize eq 0) or consultaVendasBean.vendaSelecionada.id == null}"
-						onstart="PF('downloadLoading').show();">
+						onclick="PF('downloadLoading').show();">
 
 						<f:param name="id"
 							value="#{consultaVendasBean.vendaSelecionada.id}" />
