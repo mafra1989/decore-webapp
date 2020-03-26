@@ -314,7 +314,9 @@
 
 					<p:commandButton icon="fa fa-fw fa-close"
 						style="margin-bottom: 5px;font-weight: bold;width: 100px;background:#e15e5ef0;"
-						value="Fechar" oncomplete="PF('produto-dialog').hide();">
+						value="Fechar" 
+						onstart="PF('downloadLoading').show();"
+						oncomplete="PF('downloadLoading').hide();PF('produto-dialog').hide();">
 					</p:commandButton>
 				</div>
 			</h:form>
