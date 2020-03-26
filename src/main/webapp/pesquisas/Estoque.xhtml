@@ -16,7 +16,7 @@
 		<style>
 @media ( min-width :220px) {
 	.ui-datatable tbody td {
-	    height: auto !important;
+		height: auto !important;
 	}
 	.fotoDialog {
 		max-height: 380px !important;
@@ -119,7 +119,7 @@
 		margin-top: -50px;
 	}
 	.ui-datatable tbody td {
-	    height: 28px !important;
+		height: 28px !important;
 	}
 }
 </style>
@@ -179,8 +179,9 @@
 						<p:outputLabel value="Pedido" />
 						<p:inputSwitch offLabel="Não" onLabel="Sim"
 							value="#{estoqueBean.pedido}">
-							<p:ajax event="change" process="@this" update="qty btn-qty" onstart="PF('downloadLoading').show();"
-						oncomplete="PF('downloadLoading').hide();" />
+							<p:ajax event="change" process="@this" update="qty btn-qty"
+								onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();" />
 						</p:inputSwitch>
 					</p:panelGrid>
 
@@ -190,14 +191,15 @@
 
 						<p:outputLabel value="QTY" for="qty" />
 						<p:inputNumber id="qty" styleClass="qty-field" decimalPlaces="0"
-							value="#{estoqueBean.quantidadePedido}" placeholder="0" autocomplete="off"
-							disabled="#{not estoqueBean.pedido}">
+							value="#{estoqueBean.quantidadePedido}" placeholder="0"
+							autocomplete="off" disabled="#{not estoqueBean.pedido}">
 						</p:inputNumber>
 
 						<p:commandButton icon="fa fa-fw fa-search" update="produtosTable"
-							disabled="#{not estoqueBean.pedido}" id="btn-qty" rendered="false"
-							style="margin-left: -20px;font-weight:bold; float:left; width: 38px" process="form"
-							action="#{estoqueBean.pesquisar}"
+							disabled="#{not estoqueBean.pedido}" id="btn-qty"
+							rendered="false"
+							style="margin-left: -20px;font-weight:bold; float:left; width: 38px"
+							process="form" action="#{estoqueBean.pesquisar}"
 							onstart="PF('downloadLoading').show();"
 							oncomplete="PF('downloadLoading').hide();"></p:commandButton>
 
@@ -211,13 +213,10 @@
 
 					<h3 style="font-weight: bold">Resultado da consulta</h3>
 
-					<p:outputLabel value="Total: #{estoqueBean.estoqueTotal}"
-						style="float:left;margin-top:-10px;margin-bottom:5px; font-weight:bold;margin-left:8px;color:#5b5656" />
-
 					<p:commandButton icon="fa fa-fw fa-image" value="Visualizar"
 						id="foto-button" update="produto-dialog"
 						actionListener="#{estoqueBean.prepareFoto}"
-						style="margin-right:10px;font-weight:bold; float:right;width:100px;margin-top: -16px;"
+						style="margin-right:10px;font-weight:bold; float:right;width:100px;margin-top: -40px;"
 						process="form" action="#{estoqueBean.pesquisar}"
 						disabled="#{estoqueBean.produtoSelecionado.id == null}"
 						onstart="PF('downloadLoading').show();"
@@ -228,9 +227,10 @@
 						columnClasses="ui-grid-col-12">
 
 						<p:dataTable id="produtosTable" paginatorAlwaysVisible="false"
+							scrollable="true" scrollHeight="470"
 							value="#{estoqueBean.produtosFiltrados}" var="produto"
-							emptyMessage="Nenhum resultado encontrado." rows="100"
-							reflow="true" paginator="true" paginatorPosition="bottom"
+							emptyMessage="Nenhum resultado encontrado." 
+							reflow="true" paginator="false" 
 							rowKey="#{produto.id}"
 							selection="#{estoqueBean.produtoSelecionado}"
 							selectionMode="single">
@@ -254,7 +254,7 @@
 
 							<p:column headerText="Perc. Venda" width="15%"
 								visible="#{estoqueBean.pedido}">
-								<h:outputText value="#{produto.percentualVenda}"/>
+								<h:outputText value="#{produto.percentualVenda}" />
 							</p:column>
 
 							<p:column headerText="Qtd. Pedido" width="15%"
@@ -267,6 +267,9 @@
 							</p:column>
 
 						</p:dataTable>
+
+						<p:outputLabel value="Estoque total: #{estoqueBean.estoqueTotal}"
+							style="float:left;margin-top:10px;margin-bottom:5px;margin-left:-10px;font-size: 13px;font-family: inherit;" />
 					</p:panelGrid>
 
 				</p:panel>

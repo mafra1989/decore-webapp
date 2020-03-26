@@ -2,6 +2,8 @@ package com.webapp.controller;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,49 +45,51 @@ public class RegistroVendasBean implements Serializable {
 
 	@Inject
 	private Usuarios usuarios;
-	
+
 	@Inject
 	private Bairros bairros;
-	
+
 	@Inject
 	private Produtos produtos;
-	
+
 	@Inject
 	private TiposVendas tiposVendas;
-	
+
 	@Inject
 	private Vendas vendas;
-	
+
 	@Inject
 	private ItensVendas itensVendas;
-	
+
 	@Inject
 	private ItensCompras itensCompras;
 
 	private List<Usuario> todosUsuarios;
-	
+
 	private List<Bairro> todosBairros;
-	
+
 	private List<TipoVenda> todosTiposVendas;
-	
+
 	private List<Produto> produtosFiltrados;
-	
+
 	@Inject
 	private ItemVenda itemVenda;
-	
+
 	@NotNull
 	@Inject
 	private ItemCompra itemCompra;
 
 	private List<ItemVenda> itensVenda = new ArrayList<ItemVenda>();
-	
+
 	private List<ItemCompra> itensCompra = new ArrayList<ItemCompra>();
-	
+
 	private ProdutoFilter filter = new ProdutoFilter();
-	
+
 	private ItemVenda itemSelecionado;
-	
+
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+	private NumberFormat nf = new DecimalFormat("###,##0.00");
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -94,120 +98,118 @@ public class RegistroVendasBean implements Serializable {
 			todosBairros = bairros.todos();
 		}
 	}
-	
+
 	public void pesquisar() {
 		produtosFiltrados = produtos.filtrados(filter);
 		System.out.println(produtosFiltrados.size());
 	}
-	
-	
+
 	public void buscar() {
 		venda = vendas.porId(venda.getId());
 		itensVenda = itensVendas.porVenda(venda);
-		
+
 		for (ItemVenda itemVenda : itensVenda) {
 			try {
 				Thread.sleep(100);
 				itemVenda.setCode(itemVenda.getProduto().getCodigo().concat("_" + new Date().getTime()));
 			} catch (InterruptedException e) {
-			}			
+			}
 		}
 	}
 
 	public void salvar() {
-		
-		if(itensVenda.size() > 0) {
-			
+
+		if (itensVenda.size() > 0) {
+
 			Long totalDeItens = 0L;
 			double valorTotal = 0;
 			double lucro = 0;
 			double percentualLucro = 0;
 			double valorCompra = 0;
-			
-			Calendar calendario = Calendar.getInstance();	
+
+			Calendar calendario = Calendar.getInstance();
 			Calendar calendarioTemp = Calendar.getInstance();
 			calendarioTemp.setTime(venda.getDataVenda());
 			calendarioTemp.set(Calendar.HOUR, calendario.get(Calendar.HOUR));
 			calendarioTemp.set(Calendar.MINUTE, calendario.get(Calendar.MINUTE));
 			calendarioTemp.set(Calendar.SECOND, calendario.get(Calendar.SECOND));
 			venda.setDataVenda(calendarioTemp.getTime());
-			
+
 			boolean edit = false;
-			if(venda.getId() != null) {
+			if (venda.getId() != null) {
 				edit = true;
-				
+
 				List<ItemVenda> itemVendaTemp = itensVendas.porVenda(venda);
-				
+
 				for (ItemVenda itemVenda : itemVendaTemp) {
 					Produto produto = produtos.porId(itemVenda.getProduto().getId());
 					produto.setQuantidadeAtual(produto.getQuantidadeAtual() + itemVenda.getQuantidade());
 					produtos.save(produto);
-					
+
 					itensVendas.remove(itemVenda);
-					
+
 				}
-				
-				
+
 				for (ItemVenda itemVenda : itensVenda) {
-					
+
 					List<ItemCompra> itensCompraTemp = itensCompras.porProduto(itemVenda.getProduto());
 					for (ItemCompra itemCompraTemp : itensCompraTemp) {
 
-						if(itemCompraTemp.getCompra().getId() == itemVenda.getCompra().getId()) {
-							if(itemCompraTemp.getProduto().getId() == itemVenda.getProduto().getId()) {
+						if (itemCompraTemp.getCompra().getId() == itemVenda.getCompra().getId()) {
+							if (itemCompraTemp.getProduto().getId() == itemVenda.getProduto().getId()) {
 								System.out.println(itemCompraTemp.getQuantidadeDisponivel());
 								System.out.println(itemVenda.getQuantidade());
-								itemCompraTemp.setQuantidadeDisponivel(itemCompraTemp.getQuantidadeDisponivel() + itemVenda.getQuantidade());											
+								itemCompraTemp.setQuantidadeDisponivel(
+										itemCompraTemp.getQuantidadeDisponivel() + itemVenda.getQuantidade());
 								itensCompras.save(itemCompraTemp);
 							}
 						}
 					}
-					
+
 				}
 			}
-			
+
 			venda.setDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_MONTH))));
 			venda.setNomeDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_WEEK))));
 			venda.setSemana(Long.valueOf((calendarioTemp.get(Calendar.WEEK_OF_YEAR))));
 			venda.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
 			venda.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
-			
+
 			venda = vendas.save(venda);
-			
+
 			for (ItemVenda itemVenda : itensVenda) {
-				
+
 				itemVenda.setVenda(venda);
 				itensVendas.save(itemVenda);
-				
+
 				Produto produto = produtos.porId(itemVenda.getProduto().getId());
 				produto.setQuantidadeAtual(produto.getQuantidadeAtual() - itemVenda.getQuantidade());
 				produtos.save(produto);
-				
+
 				totalDeItens += itemVenda.getQuantidade();
 				valorTotal += itemVenda.getTotal().doubleValue();
 				valorCompra += itemVenda.getValorCompra().doubleValue();
-				
+
 				lucro += itemVenda.getLucro().doubleValue();
 				percentualLucro += itemVenda.getPercentualLucro().doubleValue();
-				
-								
+
 				List<ItemCompra> itensCompraTemp = itensCompras.porProduto(itemVenda.getProduto());
 				for (ItemCompra itemCompraTemp : itensCompraTemp) {
 
-					if(itemCompraTemp.getCompra().getId() == itemVenda.getCompra().getId()) {
-						if(itemCompraTemp.getProduto().getId() == itemVenda.getProduto().getId()) {
-							//if(itemVenda.getId() == null) {
-								System.out.println(itemVenda.getQuantidade());
-								System.out.println(itemCompraTemp.getQuantidadeDisponivel());
-								itemCompraTemp.setQuantidadeDisponivel(itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());											
-								itensCompras.save(itemCompraTemp);
-							//}
+					if (itemCompraTemp.getCompra().getId() == itemVenda.getCompra().getId()) {
+						if (itemCompraTemp.getProduto().getId() == itemVenda.getProduto().getId()) {
+							// if(itemVenda.getId() == null) {
+							System.out.println(itemVenda.getQuantidade());
+							System.out.println(itemCompraTemp.getQuantidadeDisponivel());
+							itemCompraTemp.setQuantidadeDisponivel(
+									itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());
+							itensCompras.save(itemCompraTemp);
+							// }
 						}
-					}	
-				}	
+					}
+				}
 			}
-	
-			
+
 			venda.setValorCompra(BigDecimal.valueOf(valorCompra));
 			venda.setValorTotal(BigDecimal.valueOf(valorTotal));
 			venda.setQuantidadeItens(totalDeItens);
@@ -215,16 +217,18 @@ public class RegistroVendasBean implements Serializable {
 			venda.setPercentualLucro(BigDecimal.valueOf(percentualLucro / itensVenda.size()));
 			venda = vendas.save(venda);
 
-			
-			if(!edit) {
+			if (!edit) {
 				PrimeFaces.current().executeScript(
 						"swal({ type: 'success', title: 'Concluído!', text: 'Venda registrada com sucesso!' });");
-				
+
 				venda = new Venda();
 				itensVenda = new ArrayList<ItemVenda>();
 				itemVenda = new ItemVenda();
 				itemSelecionado = null;
 				
+				itensCompra = new ArrayList<>();
+				itemCompra = new ItemCompra();
+
 			} else {
 				PrimeFaces.current().executeScript(
 						"swal({ type: 'success', title: 'Conclu�do!', text: 'Venda atualizada com sucesso!' });");
@@ -236,248 +240,326 @@ public class RegistroVendasBean implements Serializable {
 		}
 
 	}
-	
+
 	public void selecionarProduto(Produto produto) {
 		itemVenda = new ItemVenda();
 		itemVenda.setProduto(produto);
 		itemVenda.setCode(produto.getCodigo().concat("_" + new Date().getTime()));
 		System.out.println(itemVenda.getCode());
-		
+
 		itensCompra = new ArrayList<ItemCompra>();
 		List<ItemCompra> itensCompraTemp = itensCompras.porProduto(produto);
+
 		for (ItemCompra itemCompraTemp : itensCompraTemp) {
 			itemCompraTemp.getCompra().setDataCompraFormatada(sdf.format(itemCompraTemp.getCompra().getDataCompra()));
-			
+
 			boolean produtoNaLista = false;
 			for (ItemVenda itemVenda : itensVenda) {
-				if(itemCompraTemp.getCompra().getId() == itemVenda.getCompra().getId()) {
-					if(itemCompraTemp.getProduto().getId() == itemVenda.getProduto().getId()) {
-						
+				if (itemCompraTemp.getCompra().getId() == itemVenda.getCompra().getId()) {
+					if (itemCompraTemp.getProduto().getId() == itemVenda.getProduto().getId()) {
+
 						produtoNaLista = true;
-						if(itemVenda.getId() == null && venda.getId() == null) {											
-							itemCompraTemp.setQuantidadeDisponivel(itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());
-						} 
-									
+						if (itemVenda.getId() == null && venda.getId() == null) {
+							itemCompraTemp.setQuantidadeDisponivel(
+									itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());
+						}
+
 					}
-				}	
+				}
 			}
-			
-			
-			if(produtoNaLista != false) {
-				if(itemCompraTemp.getQuantidadeDisponivel() > 0) {
+
+			if (produtoNaLista != false) {
+				if (itemCompraTemp.getQuantidadeDisponivel() > 0) {
 					itensCompra.add(itemCompraTemp);
 				}
 			}
-			
-			if(produtoNaLista != true) {
-				if(itemCompraTemp.getQuantidadeDisponivel() > 0) {
+
+			if (produtoNaLista != true) {
+				if (itemCompraTemp.getQuantidadeDisponivel() > 0) {
 					itensCompra.add(itemCompraTemp);
 				}
 			}
 		}
-		
-		if(itensCompra.size() == 0) {
+
+		if (itensCompra.size() == 0) {
 			PrimeFaces.current().executeScript(
 					"swal({ type: 'warning', title: 'Atenção!', text: 'Não existe quantidade disponível!' });");
+		} else {
+
+			itensCompraTemp = new ArrayList<>();
+			for (int i = itensCompra.size() - 1; i >= 0; i--) {
+				itensCompra.get(i).setValorUnitarioFormatado(
+						"R$ " + nf.format(itensCompra.get(i).getValorUnitario().doubleValue()));
+				itensCompraTemp.add(itensCompra.get(i));
+			}
+
+			itensCompra = new ArrayList<>();
+			itensCompra.addAll(itensCompraTemp);
 		}
 	}
 
 	public void adicionarItem() {
-		
-		for (ItemVenda itemVenda : itensVenda) {
-			if(itemCompra.getCompra().getId() == itemVenda.getCompra().getId()) {
-				if(itemCompra.getProduto().getId() == itemVenda.getProduto().getId()) {
-					if(itemVenda.getId() == null && venda.getId() == null) {
-						itemCompra.setQuantidadeDisponivel(itemCompra.getQuantidadeDisponivel() - itemVenda.getQuantidade());	
-					}					
-				}
-			}	
-		}
-		
-		System.out.println("itemVenda.getQuantidade(): " + itemVenda.getQuantidade());
-		System.out.println("itemCompra.getQuantidadeDisponivel(): " + itemCompra.getQuantidadeDisponivel());
-		
-		if(itemVenda.getQuantidade() <= itemCompra.getQuantidadeDisponivel()) {
-			if(itemVenda.getValorUnitario().doubleValue() >= itemCompra.getValorUnitario().doubleValue()) {
-				itemVenda.setTotal(BigDecimal.valueOf(itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().longValue()));
-				itemVenda.setVenda(venda);
-				itemVenda.setCompra(itemCompra.getCompra());
-				
-				/* Calculo do Lucro em valor e percentual */
-				itemVenda.setLucro(BigDecimal.valueOf((itemVenda.getQuantidade().doubleValue() * itemVenda.getValorUnitario().doubleValue()) - (itemVenda.getQuantidade().doubleValue() * itemCompra.getValorUnitario().doubleValue())));
-				itemVenda.setPercentualLucro(BigDecimal.valueOf((itemVenda.getLucro().doubleValue() / (itemVenda.getQuantidade().doubleValue() * itemCompra.getValorUnitario().doubleValue())) * 100));
-				itemVenda.setValorCompra(BigDecimal.valueOf(itemVenda.getQuantidade().doubleValue() * itemCompra.getValorUnitario().doubleValue()));
-				
-				System.out.println(itemVenda.getLucro());
-				System.out.println(itemVenda.getPercentualLucro());
-				
-				venda.setValorTotal(BigDecimal.valueOf(venda.getValorTotal().doubleValue() + itemVenda.getTotal().doubleValue()));
-				
-				itensVenda.add(itemVenda);
-				
-				/**/
-				if(venda.getId() != null) {
-					itemCompra.setQuantidadeDisponivel(itemCompra.getQuantidadeDisponivel() - itemVenda.getQuantidade());
-					itensCompras.save(itemCompra);
-					
-					venda = vendas.save(venda);
-					
-					for (ItemVenda itemVenda : itensVenda) {
-						
-						itemVenda.setVenda(venda);
-						itensVendas.save(itemVenda);
-						
-						Produto produto = produtos.porId(itemVenda.getProduto().getId());
-						produto.setQuantidadeAtual(produto.getQuantidadeAtual() - itemVenda.getQuantidade());
-						produtos.save(produto);	
+
+		if (venda.getId() == null) {
+
+			for (ItemVenda itemVenda : itensVenda) {
+				if (itemCompra.getCompra().getId() == itemVenda.getCompra().getId()) {
+					if (itemCompra.getProduto().getId() == itemVenda.getProduto().getId()) {
+						if (itemVenda.getId() == null && venda.getId() == null) {
+							itemCompra.setQuantidadeDisponivel(
+									itemCompra.getQuantidadeDisponivel() - itemVenda.getQuantidade());
+						}
 					}
 				}
-				/**/
-				 		
-				itemVenda = new ItemVenda();			
-				
-				itemCompra = new ItemCompra();
-				itensCompra = new ArrayList<ItemCompra>();
+			}
+
+			System.out.println("itemVenda.getQuantidade(): " + itemVenda.getQuantidade());
+			System.out.println("itemCompra.getQuantidadeDisponivel(): " + itemCompra.getQuantidadeDisponivel());
+
+			if (itemVenda.getQuantidade() <= itemCompra.getQuantidadeDisponivel()) {
+				if (itemVenda.getValorUnitario().doubleValue() >= itemCompra.getValorUnitario().doubleValue()) {
+					itemVenda.setTotal(BigDecimal.valueOf(
+							itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().longValue()));
+					itemVenda.setVenda(venda);
+					itemVenda.setCompra(itemCompra.getCompra());
+
+					/* Calculo do Lucro em valor e percentual */
+					itemVenda.setLucro(BigDecimal.valueOf((itemVenda.getQuantidade().doubleValue()
+							* itemVenda.getValorUnitario().doubleValue())
+							- (itemVenda.getQuantidade().doubleValue() * itemCompra.getValorUnitario().doubleValue())));
+					itemVenda.setPercentualLucro(BigDecimal.valueOf((itemVenda.getLucro().doubleValue()
+							/ (itemVenda.getQuantidade().doubleValue() * itemCompra.getValorUnitario().doubleValue()))
+							* 100));
+					itemVenda.setValorCompra(BigDecimal.valueOf(
+							itemVenda.getQuantidade().doubleValue() * itemCompra.getValorUnitario().doubleValue()));
+
+					System.out.println(itemVenda.getLucro());
+					System.out.println(itemVenda.getPercentualLucro());
+
+					venda.setValorTotal(BigDecimal
+							.valueOf(venda.getValorTotal().doubleValue() + itemVenda.getTotal().doubleValue()));
+
+					itensVenda.add(itemVenda);
+
+					/**/
+					if (venda.getId() != null) {
+						itemCompra.setQuantidadeDisponivel(
+								itemCompra.getQuantidadeDisponivel() - itemVenda.getQuantidade());
+						itensCompras.save(itemCompra);
+
+						venda = vendas.save(venda);
+
+						for (ItemVenda itemVenda : itensVenda) {
+
+							itemVenda.setVenda(venda);
+							itensVendas.save(itemVenda);
+
+							Produto produto = produtos.porId(itemVenda.getProduto().getId());
+							produto.setQuantidadeAtual(produto.getQuantidadeAtual() - itemVenda.getQuantidade());
+							produtos.save(produto);
+						}
+					}
+					/**/
+
+					itemVenda = new ItemVenda();
+
+					itemCompra = new ItemCompra();
+					itensCompra = new ArrayList<ItemCompra>();
+				} else {
+					PrimeFaces.current().executeScript(
+							"swal({ type: 'error', title: 'Erro!', text: 'Valor unitário menor que o valor de compra!' });");
+				}
 			} else {
 				PrimeFaces.current().executeScript(
-						"swal({ type: 'error', title: 'Erro!', text: 'Valor unitário menor que o valor de compra!' });");
+						"swal({ type: 'error', title: 'Erro!', text: 'Quantidade maior que a disponível!' });");
 			}
+
 		} else {
 			PrimeFaces.current().executeScript(
-					"swal({ type: 'error', title: 'Erro!', text: 'Quantidade maior que a disponível!' });");
+					"swal({ type: 'error', title: 'Erro!', text: 'Não é possível adicionar itens à esta venda!' });");
 		}
 	}
 
 	public void removeItem() {
-		
-		itemVenda = itemSelecionado;
-		venda.setValorTotal(BigDecimal.valueOf(venda.getValorTotal().doubleValue() - itemSelecionado.getTotal().doubleValue()));
-		itensVenda.remove(itemSelecionado);	
-		
-		
-		//if(venda.getId() == null) {
+
+		if (venda.getId() == null) {
+			
+			itemVenda = itemSelecionado;
+			venda.setValorTotal(
+					BigDecimal.valueOf(venda.getValorTotal().doubleValue() - itemSelecionado.getTotal().doubleValue()));
+			itensVenda.remove(itemSelecionado);
+
+			// if(venda.getId() == null) {
 			itensCompra = new ArrayList<ItemCompra>();
 			List<ItemCompra> itensCompraTemp = itensCompras.porProduto(itemVenda.getProduto());
 			for (ItemCompra itemCompraTemp : itensCompraTemp) {
-				itemCompraTemp.getCompra().setDataCompraFormatada(sdf.format(itemCompraTemp.getCompra().getDataCompra()));
-				
-				if(itemCompraTemp.getCompra().getId() == itemVenda.getCompra().getId()) {
-					if(itemCompraTemp.getProduto().getId() == itemVenda.getProduto().getId()) {
+				itemCompraTemp.getCompra()
+						.setDataCompraFormatada(sdf.format(itemCompraTemp.getCompra().getDataCompra()));
+
+				if (itemCompraTemp.getCompra().getId() == itemVenda.getCompra().getId()) {
+					if (itemCompraTemp.getProduto().getId() == itemVenda.getProduto().getId()) {
 						itemCompra = itemCompraTemp;
-						
-						if(venda.getId() != null) {
-							itemCompra.setQuantidadeDisponivel(itemCompra.getQuantidadeDisponivel() + itemSelecionado.getQuantidade());
+
+						if (venda.getId() != null) {
+							itemCompra.setQuantidadeDisponivel(
+									itemCompra.getQuantidadeDisponivel() + itemSelecionado.getQuantidade());
 							itensCompras.save(itemCompra);
 						}
 					}
 				}
-				
+
 				boolean produtoNaLista = false;
 				for (ItemVenda itemVenda : itensVenda) {
-					if(itemCompraTemp.getCompra().getId() == itemVenda.getCompra().getId()) {
-						if(itemCompraTemp.getProduto().getId() == itemVenda.getProduto().getId()) {
-							
+					if (itemCompraTemp.getCompra().getId() == itemVenda.getCompra().getId()) {
+						if (itemCompraTemp.getProduto().getId() == itemVenda.getProduto().getId()) {
+
 							produtoNaLista = true;
-							
-							if(itemVenda.getId() == null) {
-								itemCompraTemp.setQuantidadeDisponivel(itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());
+
+							if (itemVenda.getId() == null) {
+								itemCompraTemp.setQuantidadeDisponivel(
+										itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());
 							}
-												
+
 						}
-					}	
+					}
 				}
-				
-				if(produtoNaLista != false) {
-					if(itemCompraTemp.getQuantidadeDisponivel() > 0) {
+
+				if (produtoNaLista != false) {
+					if (itemCompraTemp.getQuantidadeDisponivel() > 0) {
 						itensCompra.add(itemCompraTemp);
 					}
 				}
-				
-				if(produtoNaLista != true) {
-					itensCompra.add(itemCompraTemp);
+
+				if (produtoNaLista != true) {
+					if (itemCompraTemp.getQuantidadeDisponivel() > 0) {
+						itensCompra.add(itemCompraTemp);
+					}
 				}
 			}
-		//} else {
+			// } else {
+
+			// }
+
+			if (venda.getId() != null) {
+				itemVenda = new ItemVenda();
+				itensVendas.remove(itemSelecionado);
+				vendas.save(venda);
+			}
+
+			itemSelecionado = null;
 			
-		//}
 			
-		if(venda.getId() != null) {
+			/*itensCompraTemp = new ArrayList<>();
+			for (int i = itensCompra.size() - 1; i >= 0; i--) {
+				itensCompra.get(i).setValorUnitarioFormatado(
+						"R$ " + nf.format(itensCompra.get(i).getValorUnitario().doubleValue()));
+				itensCompraTemp.add(itensCompra.get(i));
+			}*/
+
+			itensCompra = new ArrayList<>();
+			//itensCompra.addAll(itensCompraTemp);
+			
 			itemVenda = new ItemVenda();
-			itensVendas.remove(itemSelecionado);	
-			vendas.save(venda);
+			itemCompra = new ItemCompra();
+			
+
+		} else {
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'error', title: 'Erro!', text: 'Não é possível remover os itens desta venda!' });");
 		}
-		
-		itemSelecionado = null;
 	}
-	
+
 	public void editarItem() {
 
-		itemVenda = itemSelecionado;
-		venda.setValorTotal(BigDecimal.valueOf(venda.getValorTotal().doubleValue() - itemSelecionado.getTotal().doubleValue()));
-		itensVenda.remove(itemSelecionado);	
-		
-		
-		//if(venda.getId() == null) {
+		if (venda.getId() == null) {
+
+			itemVenda = itemSelecionado;
+			venda.setValorTotal(
+					BigDecimal.valueOf(venda.getValorTotal().doubleValue() - itemSelecionado.getTotal().doubleValue()));
+			itensVenda.remove(itemSelecionado);
+
+			// if(venda.getId() == null) {
 			itensCompra = new ArrayList<ItemCompra>();
 			List<ItemCompra> itensCompraTemp = itensCompras.porProduto(itemVenda.getProduto());
 			for (ItemCompra itemCompraTemp : itensCompraTemp) {
-				itemCompraTemp.getCompra().setDataCompraFormatada(sdf.format(itemCompraTemp.getCompra().getDataCompra()));
-				
-				if(itemCompraTemp.getCompra().getId() == itemVenda.getCompra().getId()) {
-					if(itemCompraTemp.getProduto().getId() == itemVenda.getProduto().getId()) {
+				itemCompraTemp.getCompra()
+						.setDataCompraFormatada(sdf.format(itemCompraTemp.getCompra().getDataCompra()));
+
+				if (itemCompraTemp.getCompra().getId() == itemVenda.getCompra().getId()) {
+					if (itemCompraTemp.getProduto().getId() == itemVenda.getProduto().getId()) {
 						itemCompra = itemCompraTemp;
-						
-						if(venda.getId() != null) {
-							itemCompra.setQuantidadeDisponivel(itemCompra.getQuantidadeDisponivel() + itemSelecionado.getQuantidade());
+
+						if (venda.getId() != null) {
+							itemCompra.setQuantidadeDisponivel(
+									itemCompra.getQuantidadeDisponivel() + itemSelecionado.getQuantidade());
 							itensCompras.save(itemCompra);
 						}
 					}
 				}
-				
+
 				boolean produtoNaLista = false;
 				for (ItemVenda itemVenda : itensVenda) {
-					if(itemCompraTemp.getCompra().getId() == itemVenda.getCompra().getId()) {
-						if(itemCompraTemp.getProduto().getId() == itemVenda.getProduto().getId()) {
-							
+					if (itemCompraTemp.getCompra().getId() == itemVenda.getCompra().getId()) {
+						if (itemCompraTemp.getProduto().getId() == itemVenda.getProduto().getId()) {
+
 							produtoNaLista = true;
-							
-							if(itemVenda.getId() == null) {
-								itemCompraTemp.setQuantidadeDisponivel(itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());
+
+							if (itemVenda.getId() == null) {
+								itemCompraTemp.setQuantidadeDisponivel(
+										itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());
 							}
-												
+
 						}
-					}	
+					}
 				}
-				
-				if(produtoNaLista != false) {
-					if(itemCompraTemp.getQuantidadeDisponivel() > 0) {
+
+				if (produtoNaLista != false) {
+					if (itemCompraTemp.getQuantidadeDisponivel() > 0) {
 						itensCompra.add(itemCompraTemp);
 					}
 				}
-				
-				if(produtoNaLista != true) {
-					itensCompra.add(itemCompraTemp);
+
+				if (produtoNaLista != true) {
+					if (itemCompraTemp.getQuantidadeDisponivel() > 0) {
+						itensCompra.add(itemCompraTemp);
+					}
 				}
 			}
-		//} else {
+			// } else {
+
+			// }
+
+			if (venda.getId() != null) {
+				selecionarProduto(itemSelecionado.getProduto());
+				itemVenda = itemSelecionado;
+				itensVendas.remove(itemSelecionado);
+				vendas.save(venda);
+			}
+
+			itemSelecionado = null;
 			
-		//}
 			
-		if(venda.getId() != null) {
-			selecionarProduto(itemSelecionado.getProduto());
-			itemVenda = itemSelecionado;
-			itensVendas.remove(itemSelecionado);	
-			vendas.save(venda);
+			itensCompraTemp = new ArrayList<>();
+			for (int i = itensCompra.size() - 1; i >= 0; i--) {
+				itensCompra.get(i).setValorUnitarioFormatado(
+						"R$ " + nf.format(itensCompra.get(i).getValorUnitario().doubleValue()));
+				itensCompraTemp.add(itensCompra.get(i));
+			}
+
+			itensCompra = new ArrayList<>();
+			itensCompra.addAll(itensCompraTemp);
+
+		} else {
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'error', title: 'Erro!', text: 'Não é possível editar os itens desta venda!' });");
 		}
-		
-		itemSelecionado = null;
-		
+
 	}
 
 	public List<Usuario> getTodosUsuarios() {
 		return todosUsuarios;
 	}
-	
+
 	public List<Bairro> getTodosBairros() {
 		return todosBairros;
 	}
@@ -537,7 +619,7 @@ public class RegistroVendasBean implements Serializable {
 	public int getItensVendaSize() {
 		return itensVenda.size();
 	}
-	
+
 	public int getItensCompraSize() {
 		return itensCompra.size();
 	}

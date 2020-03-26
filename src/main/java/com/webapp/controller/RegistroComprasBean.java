@@ -14,10 +14,12 @@ import org.primefaces.PrimeFaces;
 
 import com.webapp.model.Compra;
 import com.webapp.model.ItemCompra;
+import com.webapp.model.ItemVenda;
 import com.webapp.model.Produto;
 import com.webapp.model.Usuario;
 import com.webapp.repository.Compras;
 import com.webapp.repository.ItensCompras;
+import com.webapp.repository.ItensVendas;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.Usuarios;
 import com.webapp.repository.filter.ProdutoFilter;
@@ -56,6 +58,9 @@ public class RegistroComprasBean implements Serializable {
 	private ProdutoFilter filter = new ProdutoFilter();
 	
 	private ItemCompra itemSelecionado;
+	
+	@Inject
+	private ItensVendas itensVendas;
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -178,19 +183,31 @@ public class RegistroComprasBean implements Serializable {
 	}
 
 	public void removeItem() {
+		List<ItemVenda> itensVenda = itensVendas.porCompra(compra, itemSelecionado);
 		
-		compra.setValorTotal(BigDecimal.valueOf(compra.getValorTotal().doubleValue() - itemSelecionado.getTotal().doubleValue()));
-		itensCompra.remove(itemSelecionado);		
-		itemSelecionado = null;
+		if(itensVenda.size() == 0) {		
+			compra.setValorTotal(BigDecimal.valueOf(compra.getValorTotal().doubleValue() - itemSelecionado.getTotal().doubleValue()));
+			itensCompra.remove(itemSelecionado);		
+			itemSelecionado = null;
+		} else {
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'error', title: 'Erro!', text: 'Este item já está vinculado a uma ou mais vendas!' });");
+		}
 
 	}
 	
 	public void editarItem() {
+		List<ItemVenda> itensVenda = itensVendas.porCompra(compra, itemSelecionado);
 		
-		itemCompra = itemSelecionado;
-		compra.setValorTotal(BigDecimal.valueOf(compra.getValorTotal().doubleValue() - itemSelecionado.getTotal().doubleValue()));
-		itensCompra.remove(itemSelecionado);
-		itemSelecionado = null;
+		if(itensVenda.size() == 0) {		
+			itemCompra = itemSelecionado;
+			compra.setValorTotal(BigDecimal.valueOf(compra.getValorTotal().doubleValue() - itemSelecionado.getTotal().doubleValue()));
+			itensCompra.remove(itemSelecionado);
+			itemSelecionado = null;
+		} else {
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'error', title: 'Erro!', text: 'Este item já está vinculado a uma ou mais vendas!' });");
+		}
 
 	}
 

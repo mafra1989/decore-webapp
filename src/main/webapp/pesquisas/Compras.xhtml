@@ -15,8 +15,14 @@
 
 		<style>
 @media ( min-width :220px) {
+	.panel-total.ui-panel .ui-panel-content {
+	    border: none;
+	    padding: 0px;
+	}
 	.fotoDialog {
-		max-height: 380px !important;width: 240px !important;margin-top: -50px;
+		max-height: 380px !important;
+		width: 240px !important;
+		margin-top: -50px;
 	}
 	.categoria-field {
 		width: 100%;
@@ -106,7 +112,9 @@
 		float: none;
 	}
 	.fotoDialog {
-		max-height: 500px !important;width: 240px !important;margin-top: -50px;
+		max-height: 500px !important;
+		width: 240px !important;
+		margin-top: -50px;
 	}
 }
 </style>
@@ -121,6 +129,11 @@
 
 
 		<h:form id="form" prependId="false">
+
+			<p:remoteCommand name="setarItemID" process="@this comprasTable"
+				update="form" action="#{consultaComprasBean.excluir}"
+				onstart="PF('downloadLoading').show();"
+				oncomplete="PF('downloadLoading').hide();" />
 
 			<p:toolbar id="toolbar">
 				<f:facet name="left">
@@ -144,29 +157,29 @@
 						columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-1, ui-grid-col-2">
 
 						<p:outputLabel value="Data da compra" for="data01" />
-						<p:datePicker id="data01" value="#{consultaComprasBean.dateStart}" readonlyInput="true"
-							pattern="dd/MM/yyyy" locale="pt" showIcon="true">
+						<p:datePicker id="data01" value="#{consultaComprasBean.dateStart}"
+							readonlyInput="true" pattern="dd/MM/yyyy" locale="pt"
+							showIcon="true">
 						</p:datePicker>
 
 
 						<p:outputLabel value="até" id="data02" />
-						<p:datePicker id="data-02" value="#{consultaComprasBean.dateStop}" readonlyInput="true"
-							styleClass="dateStop" pattern="dd/MM/yyyy" locale="pt"
-							showIcon="true">
+						<p:datePicker id="data-02" value="#{consultaComprasBean.dateStop}"
+							readonlyInput="true" styleClass="dateStop" pattern="dd/MM/yyyy"
+							locale="pt" showIcon="true">
 						</p:datePicker>
 
 
 						<p:outputLabel value="Comprador" for="comprador" />
 						<p:selectOneMenu id="comprador"
-								value="#{consultaComprasBean.usuario}"
-								placeholder="selecione">
+							value="#{consultaComprasBean.usuario}" placeholder="selecione">
 
-								<f:selectItem itemLabel="Selecione" />
+							<f:selectItem itemLabel="Selecione" />
 
-								<f:selectItems value="#{consultaComprasBean.todosUsuarios}"
-									var="comprador" itemLabel="#{comprador.nome}"
-									itemValue="#{comprador}" />
-							</p:selectOneMenu>
+							<f:selectItems value="#{consultaComprasBean.todosUsuarios}"
+								var="comprador" itemLabel="#{comprador.nome}"
+								itemValue="#{comprador}" />
+						</p:selectOneMenu>
 					</p:panelGrid>
 
 				</p:panel>
@@ -176,15 +189,23 @@
 					style="padding-bottom: 0px !important;margin-top:-10px">
 
 					<h3 style="font-weight: bold">Resultado da consulta</h3>
-					
+
+					<p:commandButton icon="fa fa-fw fa-trash" id="btn-trash"
+						title="Excluir"
+						style="margin-right:113px;font-weight:bold; background: #fd6161; float:right;width:38px;margin-top: -40px;position: relative"
+						process="@this"
+						onclick="deleteItem(#{consultaComprasBean.compraSelecionada.id});"
+						disabled="#{(consultaComprasBean.comprasFiltradasSize eq 0) or consultaComprasBean.compraSelecionada.id == null}" />
+
 					<p:button icon="fa fa-fw fa-eye" value="Visualizar"
 						outcome="/operacoes/RegistroCompras.xhtml" id="btn-view"
-						style="margin-right:10px;font-weight:bold; float:right;width:100px;margin-top: -40px;"
-						process="@this comprasTable" 
+						style="margin-right:10px;font-weight:bold; float:right;width:100px;margin-top: -40px;position: relative"
+						process="@this comprasTable"
 						disabled="#{(consultaComprasBean.comprasFiltradasSize eq 0) or consultaComprasBean.compraSelecionada.id == null}"
 						onstart="PF('downloadLoading').show();">
 
-						<f:param name="id" value="#{consultaComprasBean.compraSelecionada.id}" />
+						<f:param name="id"
+							value="#{consultaComprasBean.compraSelecionada.id}" />
 					</p:button>
 
 					<p:panelGrid columns="1" layout="grid"
@@ -192,15 +213,18 @@
 						columnClasses="ui-grid-col-12">
 
 						<p:dataTable id="comprasTable" paginatorAlwaysVisible="false"
+							scrollable="true" scrollHeight="455"
 							value="#{consultaComprasBean.comprasFiltradas}" var="compra"
-							emptyMessage="Nenhum resultado encontrado." rows="10"
-							reflow="true" paginator="true" paginatorPosition="bottom"
+							emptyMessage="Nenhum resultado encontrado." 
+							reflow="true" paginator="false" 
 							rowKey="#{compra.id}"
 							selection="#{consultaComprasBean.compraSelecionada}"
 							selectionMode="single">
 
-							<p:ajax process="@this" event="rowSelect" update="menu-item btn-view" />
-							<p:ajax process="@this" event="rowUnselect" update="menu-item btn-view" />
+							<p:ajax process="@this" event="rowSelect"
+								update="btn-view btn-trash" />
+							<p:ajax process="@this" event="rowUnselect"
+								update="btn-view btn-trash" />
 
 							<p:column headerText="Data da compra" width="10%">
 								<h:outputText value="#{compra.dataCompra}">
@@ -223,22 +247,19 @@
 							</p:column>
 
 						</p:dataTable>
+
+						<p:panel styleClass="panelgrid-noborder disabled disabled panel-total">
+
+							<p:outputLabel value="Total de Compras: R$ #{consultaComprasBean.totalCompras}"
+								style="float:left;margin-top:10px;margin-bottom:5px;margin-left:-10px;font-size: 13px;font-family: inherit;" />
+
+							<p:outputLabel value="Total de Itens: #{consultaComprasBean.totalItens}"
+								style="float:right;margin-top:10px;margin-bottom:5px;margin-right:0px;font-size: 13px;font-family: inherit;" />
+
+						</p:panel>
+
 					</p:panelGrid>
 
-					<p:contextMenu id="menu-item" for="comprasTable">
-						<p:menuitem value="Deletar Compra" id="btn-remove"
-							update="panel-table" process="@this panel-table"
-							onstart="start();" rendered="false" oncomplete="stop();"
-							icon="fa fa-fw fa-trash" />
-
-						<p:menuitem value="Visualizar Compra" id="btn-visualizar"
-							outcome="/operacoes/RegistroCompras.xhtml"
-							process="@this comprasTable" icon="fa fa-fw fa-eye"
-							disabled="#{comprasFiltradasSize eq 0}">
-
-							<f:param name="id" value="#{consultaComprasBean.compraSelecionada.id}" />
-						</p:menuitem>
-					</p:contextMenu>
 				</p:panel>
 
 			</div>

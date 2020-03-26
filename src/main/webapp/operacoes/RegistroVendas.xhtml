@@ -18,6 +18,10 @@
 
 		<style>
 @media ( min-width :220px) {
+	.ui-datatable-scrollable-body {
+	    overflow: auto;
+	    max-height: 395px;
+	}
 	.itens-add {
 		margin-top: -15px;
 	}
@@ -119,6 +123,12 @@
 	}
 	.itens-add {
 		margin-top: 15px;
+	}
+}
+@media ( min-width :641px) {
+	.ui-datatable-scrollable-body {
+	    overflow: auto;
+	    max-height: 365px;
 	}
 }
 </style>
@@ -237,7 +247,7 @@
 								readonly="true" />
 						</p:panelGrid>
 
-						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+						<p:panelGrid id="panel-lote" columns="2" layout="grid" style="margin-bottom: 5px"
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-4, ui-grid-col-6">
 
@@ -251,7 +261,7 @@
 
 								<f:selectItems value="#{registroVendasBean.itensCompra}"
 									var="itemCompra"
-									itemLabel="#{itemCompra.quantidadeDisponivel ge 2 ? ''.concat(itemCompra.quantidadeDisponivel).concat(' Itens | Compra: ').concat(itemCompra.compra.dataCompraFormatada).concat(' | ').concat(itemCompra.valorUnitario) : ''.concat(itemCompra.quantidadeDisponivel).concat(' Item | Compra: ').concat(itemCompra.compra.dataCompraFormatada).concat(' | ').concat(itemCompra.valorUnitario) }"
+									itemLabel="#{itemCompra.quantidadeDisponivel ge 2 ? ''.concat(itemCompra.quantidadeDisponivel).concat(' Itens | Compra: ').concat(itemCompra.compra.dataCompraFormatada).concat(' | ').concat(itemCompra.valorUnitarioFormatado) : ''.concat(itemCompra.quantidadeDisponivel).concat(' Item | Compra: ').concat(itemCompra.compra.dataCompraFormatada).concat(' | ').concat(itemCompra.valorUnitarioFormatado) }"
 									itemValue="#{itemCompra}" />
 							</p:selectOneMenu>
 						</p:panelGrid>
@@ -291,7 +301,7 @@
 								onsuccess="PF('downloadLoading').hide();" icon="fa fa-plus"
 								update="msg codigo descricao fornecedor total-venda id valor-unitario quantidade valor-total panel-table lote "
 								action="#{registroVendasBean.adicionarItem}"
-								process="@this codigo valor-unitario quantidade valor-total id form:lote"
+								process="@this codigo valor-unitario quantidade valor-total id lote"
 								style="font-weight: bold;" />
 						</p:panelGrid>
 					</p:panel>
@@ -318,9 +328,10 @@
 							</p:panelGrid>
 
 							<p:dataTable id="itensTable" paginatorAlwaysVisible="false"
+								scrollable="true" 
 								value="#{registroVendasBean.itensVenda}" var="item"
-								emptyMessage="Nenhum item adicionado." rows="10" reflow="true"
-								paginator="true" paginatorPosition="bottom"
+								emptyMessage="Nenhum item adicionado."  reflow="true"
+								paginator="false"
 								rowKey="#{item.code}"
 								selection="#{registroVendasBean.itemSelecionado}"
 								selectionMode="single">
@@ -366,13 +377,13 @@
 
 						<p:contextMenu id="menu-item" for="itensTable">
 							<p:menuitem value="Remover Item" id="btn-remove"
-								update="panel-table form:lote form:total-venda"
+								update="panel-table  form:id form:codigo form:descricao form:fornecedor form:lote form:total-venda"
 								process="@this panel-table"
 								action="#{registroVendasBean.removeItem}" onstart="start();"
 								oncomplete="stop();" icon="fa fa-fw fa-trash"
 								disabled="#{registroVendasBean.itensVendaSize eq 0}" />
 
-							<p:menuitem value="Editar Item" id="btn-editar"
+							<p:menuitem value="Editar Item" id="btn-editar" rendered="false"
 								update="panel-table form:id form:codigo form:total-venda form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote "
 								process="@this panel-table"
 								action="#{registroVendasBean.editarItem}" onstart="start();"
@@ -390,7 +401,7 @@
 							<p:commandButton id="btn-calcular" value="#{registroVendasBean.venda.id == null ? 'Finalizar Venda' : 'Salvar Venda'}"
 								onstart="PF('downloadLoading').show();" icon="fa fa-save"
 								onsuccess="PF('downloadLoading').hide();" disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
-								update="msg data-venda tipo-venda vendedor bairro panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total"
+								update="msg data-venda tipo-venda vendedor bairro panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote"
 								action="#{registroVendasBean.salvar}"
 								process="@this panel-table data-venda vendedor bairro tipo-venda"
 								style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;" />
@@ -405,7 +416,7 @@
 
 		<p:dialog header="Buscar produto" widgetVar="item-dialog"
 			id="item-dialog" resizable="false" modal="true" closeOnEscape="true"
-			responsive="true" width="350px">
+			responsive="true" width="350px" height="455">
 
 			<h:form id="form-dialog">
 
@@ -427,9 +438,10 @@
 						</p:commandButton>
 
 						<p:dataTable id="produtosTable" paginatorAlwaysVisible="false"
+							scrollable="true" scrollHeight="337"
 							value="#{registroVendasBean.produtosFiltrados}" var="produto"
-							emptyMessage="Nenhum produto encontrado." rows="2"
-							paginator="true" paginatorPosition="bottom"
+							emptyMessage="Nenhum produto encontrado." 
+							paginator="false" 
 							style="margin-top: 10px">
 
 							<p:column headerText="Código" width="30%">

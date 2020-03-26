@@ -15,6 +15,10 @@
 
 		<style>
 @media ( min-width :220px) {
+	.panel-total.ui-panel .ui-panel-content {
+	    border: none;
+	    padding: 0px;
+	}
 	.fotoDialog {
 		max-height: 380px !important;width: 240px !important;margin-top: -50px;
 	}
@@ -121,6 +125,11 @@
 
 
 		<h:form id="form" prependId="false">
+		
+			<p:remoteCommand name="setarItemID" process="@this vendasTable"
+				update="form" action="#{consultaVendasBean.excluir}"
+				onstart="PF('downloadLoading').show();"
+				oncomplete="PF('downloadLoading').hide();" />
 
 			<p:toolbar id="toolbar">
 				<f:facet name="left">
@@ -176,21 +185,40 @@
 					style="padding-bottom: 0px !important;margin-top:-10px">
 
 					<h3 style="font-weight: bold">Resultado da consulta</h3>
+					
+					<p:commandButton icon="fa fa-fw fa-trash" id="btn-trash"
+						title="Excluir"
+						style="margin-right:113px;font-weight:bold; background: #fd6161; float:right;width:38px;margin-top: -40px;position: relative"
+						process="@this"
+						onclick="deleteItem(#{consultaVendasBean.vendaSelecionada.id});"
+						disabled="#{(consultaVendasBean.vendasFiltradasSize eq 0) or consultaVendasBean.vendaSelecionada.id == null}" />
+
+					<p:button icon="fa fa-fw fa-eye" value="Visualizar"
+						outcome="/operacoes/RegistroVendas.xhtml" id="btn-view"
+						style="margin-right:10px;font-weight:bold; float:right;width:100px;margin-top: -40px;position: relative"
+						process="@this vendasTable"
+						disabled="#{(consultaVendasBean.vendasFiltradasSize eq 0) or consultaVendasBean.vendaSelecionada.id == null}"
+						onstart="PF('downloadLoading').show();">
+
+						<f:param name="id"
+							value="#{consultaVendasBean.vendaSelecionada.id}" />
+					</p:button>
 
 					<p:panelGrid columns="1" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-12">
 
 						<p:dataTable id="vendasTable" paginatorAlwaysVisible="false"
+							scrollable="true" scrollHeight="500"
 							value="#{consultaVendasBean.vendasFiltradas}" var="venda"
-							emptyMessage="Nenhum resultado encontrado." rows="10"
-							reflow="true" paginator="true" paginatorPosition="bottom"
+							emptyMessage="Nenhum resultado encontrado." 
+							reflow="true" paginator="false" 
 							rowKey="#{venda.id}"
 							selection="#{consultaVendasBean.vendaSelecionada}"
 							selectionMode="single">
 
-							<p:ajax process="@this" event="rowSelect" update="menu-item" />
-							<p:ajax process="@this" event="rowUnselect" update="menu-item" />
+							<p:ajax process="@this" event="rowSelect" update="btn-view btn-trash" />
+							<p:ajax process="@this" event="rowUnselect" update="btn-view btn-trash" />
 
 							<p:column headerText="Data da venda" width="10%">
 								<h:outputText value="#{venda.dataVenda}">
@@ -221,22 +249,18 @@
 							</p:column>
 
 						</p:dataTable>
+						
+						<p:panel styleClass="panelgrid-noborder disabled disabled panel-total">
+
+							<p:outputLabel value="Total de Vendas: R$ #{consultaVendasBean.totalVendas}"
+								style="float:left;margin-top:10px;margin-bottom:5px;margin-left:-10px;font-size: 13px;font-family: inherit;" />
+
+							<p:outputLabel value="Total de Itens: #{consultaVendasBean.totalItens}"
+								style="float:right;margin-top:10px;margin-bottom:5px;margin-right:0px;font-size: 13px;font-family: inherit;" />
+
+						</p:panel>
 					</p:panelGrid>
-
-					<p:contextMenu id="menu-item" for="vendasTable">
-						<p:menuitem value="Deletar Venda" id="btn-remove"
-							update="panel-table" process="@this panel-table"
-							onstart="start();" rendered="false" oncomplete="stop();"
-							icon="fa fa-fw fa-trash" />
-
-						<p:menuitem value="Visualizar Venda" id="btn-visualizar"
-							outcome="/operacoes/RegistroVendas.xhtml"
-							process="@this vendasTable" icon="fa fa-fw fa-eye"
-							disabled="#{comprasFiltradasSize eq 0}">
-
-							<f:param name="id" value="#{consultaVendasBean.vendaSelecionada.id}" />
-						</p:menuitem>
-					</p:contextMenu>
+					
 				</p:panel>
 
 			</div>

@@ -145,6 +145,9 @@ public class ItemCompra implements Serializable {
 
 	@Transient
 	private String code;
+	
+	@Transient
+	private String valorUnitarioFormatado;
 
 	public String getCode() {
 		return code;
@@ -152,6 +155,14 @@ public class ItemCompra implements Serializable {
 
 	public void setCode(String code) {
 		this.code = code;
+	}
+
+	public String getValorUnitarioFormatado() {
+		return valorUnitarioFormatado;
+	}
+
+	public void setValorUnitarioFormatado(String valorUnitarioFormatado) {
+		this.valorUnitarioFormatado = valorUnitarioFormatado;
 	}
 
 }
