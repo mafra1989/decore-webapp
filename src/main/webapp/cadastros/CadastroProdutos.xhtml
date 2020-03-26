@@ -267,7 +267,9 @@
 
 							<p:outputLabel value="Foto" />												
 							<p:commandButton  value="Adicionar" styleClass="btn-upload"
-								oncomplete="PF('anexo-dialog').show();" disabled="#{not seguranca.acessoAdministrador()}"
+								onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();PF('anexo-dialog').show();" 
+								disabled="#{not seguranca.acessoAdministrador()}"
 								onsuccess="PF('downloadLoading').hide();" update="anexo-dialog"
 								icon="fa fa-plus"
 								style="font-weight:bold" />

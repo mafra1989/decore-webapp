@@ -81,12 +81,12 @@ public class Produtos implements Serializable {
 		
 		String condition = "";
 		
+		if(filter.getCategoriaProduto() != null) {
+			condition = "AND e.categoriaProduto.id = :id";
+		}
+		
 		if (StringUtils.isNotBlank(filter.getDescricao())) {
-			
-			if(filter.getCategoriaProduto() != null) {
-				condition = "AND e.categoriaProduto.id = :id";
-			}
-			
+
 			typedQuery = manager.createQuery(
 					"select e from Produto e where " + condition + " e.nome like :nomeUpper or e.nome like :nomeLower or e.descricao like :descricaoUpper or e.descricao like :descricaoLower or e.codigo = :codigoUpper or e.codigo = :codigoLower order by e.codigo",
 					Produto.class)
@@ -99,11 +99,8 @@ public class Produtos implements Serializable {
 			
 		} else {
 			
-			if(filter.getCategoriaProduto() != null) {
-				condition = "WHERE e.categoriaProduto.id = :id";
-			}
-			
 			typedQuery = manager.createQuery("select e from Produto e " + condition, Produto.class);
+
 		}
 		
 		if(filter.getCategoriaProduto() != null) {

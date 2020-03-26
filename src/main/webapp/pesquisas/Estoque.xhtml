@@ -238,6 +238,7 @@
 							<p:ajax process="@this produtosTable" event="rowSelect"
 								update="foto-button form-dialog" onstart="PF('downloadLoading').show();"
 								oncomplete="PF('downloadLoading').hide();" />
+								
 							<p:ajax process="@this produtosTable" event="rowUnselect" onstart="PF('downloadLoading').show();"
 								oncomplete="PF('downloadLoading').hide();" update="foto-button form-dialog" />
 
