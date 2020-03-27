@@ -248,15 +248,18 @@
 						columnClasses="ui-grid-col-12">
 
 						<p:dataTable id="lancamentosTable" paginatorAlwaysVisible="false"
+							scrollable="true" scrollHeight="505"
 							value="#{consultaLancamentosBean.lancamentosFiltrados}"
 							var="lancamento" emptyMessage="Nenhum resultado encontrado."
-							rows="10" reflow="true" paginator="true"
-							paginatorPosition="bottom" rowKey="#{lancamento.id}"
+							reflow="true" paginator="false"
+							rowKey="#{lancamento.id}"
 							selection="#{consultaLancamentosBean.lancamentoSelecionado}"
 							selectionMode="single">
 
-							<p:ajax process="@this" event="rowSelect" update="btn-trash btn-view" />
-							<p:ajax process="@this" event="rowUnselect" update="btn-trash btn-view" />
+							<p:ajax process="@this" event="rowSelect" update="btn-trash btn-view" onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();" />
+							<p:ajax process="@this" event="rowUnselect" update="btn-trash btn-view" onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();" />
 
 							<p:column headerText="Data do Lançamento" width="20%">
 								<h:outputText value="#{lancamento.dataLancamento}">
