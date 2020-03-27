@@ -14,13 +14,30 @@
 	</properties>
 
 	<dependencies>
-	
+
 		<!-- Dependency by Project Manhattan -->
 		<dependency>
-            <groupId>org.primefaces</groupId>
-            <artifactId>primefaces</artifactId>
-            <version>7.0</version>
-        </dependency>
+			<groupId>org.primefaces</groupId>
+			<artifactId>primefaces</artifactId>
+			<version>7.0</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.7</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.7</version>
+			<scope>compile</scope>
+		</dependency>
+
 
 
 		<!-- Implementacao do Bean Validation -->
@@ -54,13 +71,13 @@
 			<artifactId>log4j-api</artifactId>
 			<version>2.7</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 			<version>2.7</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-jcl</artifactId>
@@ -89,28 +106,28 @@
 			<artifactId>spring-security-core</artifactId>
 			<version>3.2.3.RELEASE</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-web</artifactId>
 			<version>3.2.3.RELEASE</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
 			<version>3.2.3.RELEASE</version>
 		</dependency>
-		
+
 		<dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>3.2.3.RELEASE</version>
-        </dependency>
-        
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>3.2.3.RELEASE</version>
+		</dependency>
 
 
-		<!-- Dependency by Project Master -->		
+
+		<!-- Dependency by Project Master -->
 		<dependency>
 			<groupId>org.jboss.weld.servlet</groupId>
 			<artifactId>weld-servlet</artifactId>
@@ -174,16 +191,16 @@
 			<artifactId>junit</artifactId>
 			<version>3.8.1</version>
 			<scope>test</scope>
-		</dependency>		
+		</dependency>
 	</dependencies>
-	
+
 	<repositories>
-        <repository>
-            <id>prime-repo</id>
-            <name>PrimeFaces Maven Repository</name>
-            <url>http://repository.primefaces.org</url>
-        </repository>
-    </repositories>
+		<repository>
+			<id>prime-repo</id>
+			<name>PrimeFaces Maven Repository</name>
+			<url>http://repository.primefaces.org</url>
+		</repository>
+	</repositories>
 
 	<build>
 		<plugins>

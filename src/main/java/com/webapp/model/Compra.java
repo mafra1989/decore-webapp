@@ -3,6 +3,7 @@ package com.webapp.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -165,6 +166,9 @@ public class Compra implements Serializable {
 
 	@Transient
 	private String dataCompraFormatada;
+	
+	@Transient
+	private List<ItemCompra> itensCompra;
 
 	public String getDataCompraFormatada() {
 		return dataCompraFormatada;
@@ -172,6 +176,14 @@ public class Compra implements Serializable {
 
 	public void setDataCompraFormatada(String dataCompraFormatada) {
 		this.dataCompraFormatada = dataCompraFormatada;
+	}
+
+	public List<ItemCompra> getItensCompra() {
+		return itensCompra;
+	}
+
+	public void setItensCompra(List<ItemCompra> itensCompra) {
+		this.itensCompra = itensCompra;
 	}
 
 }

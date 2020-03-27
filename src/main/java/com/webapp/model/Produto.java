@@ -222,6 +222,9 @@ public class Produto implements Serializable {
 	@Transient
 	private Long quantidadePedido = 0L;
 	
+	@Transient
+	private String codeTemp;
+	
 	
 
 	public BigDecimal getPrecoMedioVenda() {
@@ -262,6 +265,14 @@ public class Produto implements Serializable {
 
 	public void setQuantidadePedido(Long quantidadePedido) {
 		this.quantidadePedido = quantidadePedido;
+	}
+
+	public String getCodeTemp() {
+		return codeTemp;
+	}
+
+	public void setCodeTemp(String codeTemp) {
+		this.codeTemp = codeTemp;
 	}
 
 }
