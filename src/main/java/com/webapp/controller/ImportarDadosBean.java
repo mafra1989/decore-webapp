@@ -145,13 +145,14 @@ public class ImportarDadosBean implements Serializable {
 									* Double.parseDouble(row.getCell(5).toString())));
 							
 							System.out.println(row.getCell(2).toString());
-							Produto produto = produtosRepository.porCodigo(row.getCell(2).toString());
+							String codigo = ((long) Double.parseDouble(row.getCell(2).toString())) + "";
+							Produto produto = produtosRepository.porCodigo(codigo);
 							
 							if(produto != null) {
 								itemCompra.setProduto(produto);	
 							} else {
 								produto = new Produto();
-								produto.setCodeTemp(((long) Double.parseDouble(row.getCell(2).toString())) + "");
+								produto.setCodeTemp(codigo);
 								itemCompra.setProduto(produto);
 							}
 
