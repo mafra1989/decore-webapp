@@ -15,8 +15,14 @@
 
 		<style>
 @media ( min-width :220px) {
+	.panel-total.ui-panel .ui-panel-content {
+	    border: none;
+	    padding: 0px;
+	}
 	.fotoDialog {
-		max-height: 380px !important;width: 240px !important;margin-top: -50px;
+		max-height: 380px !important;
+		width: 240px !important;
+		margin-top: -50px;
 	}
 	.categoria-field {
 		width: 100%;
@@ -106,7 +112,9 @@
 		float: none;
 	}
 	.fotoDialog {
-		max-height: 500px !important;width: 240px !important;margin-top: -50px;
+		max-height: 500px !important;
+		width: 240px !important;
+		margin-top: -50px;
 	}
 }
 </style>
@@ -119,14 +127,18 @@
 			showDetail="true" style="text-align: center" />
 
 
-
 		<h:form id="form" prependId="false">
+		
+			<p:remoteCommand name="setarItemID" process="@this lancamentosTable"
+				update="form" action="#{consultaLancamentosBean.excluir}"
+				onstart="PF('downloadLoading').show();"
+				oncomplete="PF('downloadLoading').hide();" />
 
 			<p:toolbar id="toolbar">
 				<f:facet name="left">
 					<p:commandButton icon="fa fa-fw fa-search" value="Pesquisar"
 						id="pesquisar-button" update="panel-table lancamentosTable"
-						style="margin-left: 3px;font-weight:bold" process="form"
+						style="margin-left: 3px;font-weight:bold" process="form destino"
 						action="#{consultaLancamentosBean.pesquisar}"
 						onstart="PF('downloadLoading').show();"
 						oncomplete="PF('downloadLoading').hide();"></p:commandButton>
@@ -144,26 +156,65 @@
 						columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-1, ui-grid-col-2">
 
 						<p:outputLabel value="Data do lançamento" for="data01" />
-						<p:datePicker id="data01" value="#{consultaLancamentosBean.dateStart}" readonlyInput="true"
+						<p:datePicker id="data01"
+							value="#{consultaLancamentosBean.dateStart}" readonlyInput="true"
 							pattern="dd/MM/yyyy" locale="pt" showIcon="true">
 						</p:datePicker>
 
 
 						<p:outputLabel value="até" id="data02" />
-						<p:datePicker id="data-02" value="#{consultaLancamentosBean.dateStop}" readonlyInput="true"
+						<p:datePicker id="data-02"
+							value="#{consultaLancamentosBean.dateStop}" readonlyInput="true"
 							styleClass="dateStop" pattern="dd/MM/yyyy" locale="pt"
 							showIcon="true">
 						</p:datePicker>
 
 
 						<p:outputLabel value="Origem do Lançamento" />
-							<p:selectOneRadio  unselectable="true" value="#{consultaLancamentosBean.origemLancamento}">
-								<f:selectItems
-									value="#{consultaLancamentosBean.origensLancamentos}"
-									var="origemLancamento"
-									itemLabel="#{origemLancamento.descricao}"
-									itemValue="#{origemLancamento}" />
-							</p:selectOneRadio>
+						<p:selectManyCheckbox unselectable="true"
+							value="#{consultaLancamentosBean.origemLancamento}">
+							<f:selectItems
+								value="#{consultaLancamentosBean.origensLancamentos}"
+								var="origemLancamento" itemLabel="#{origemLancamento.descricao}"
+								itemValue="#{origemLancamento}" />
+						</p:selectManyCheckbox>	
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3">
+	
+						<p:outputLabel value="Categoria" for="categoria" />
+						<p:selectOneMenu id="categoria"
+							value="#{consultaLancamentosBean.categoriaLancamento}"
+							placeholder="selecione">
+
+							<f:selectItem itemLabel="Selecione" />
+
+							<p:ajax event="change"
+								listener="#{consultaLancamentosBean.changeCategoria}"
+								update="@this destino" />
+
+							<f:selectItems
+								value="#{consultaLancamentosBean.todasCategoriasDespesas}"
+								var="categoriaLancamento"
+								itemLabel="#{categoriaLancamento.nome}"
+								itemValue="#{categoriaLancamento}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Destino do Lançamento" for="destino" />
+						<p:selectOneMenu id="destino"
+							value="#{consultaLancamentosBean.destinoLancamento}"
+							style="margin-bottom: 5px">
+
+							<f:selectItem itemLabel="Selecione" />
+
+							<f:selectItems
+								value="#{consultaLancamentosBean.todosDestinosLancamentos}"
+								var="destinoLancamento"
+								itemLabel="#{destinoLancamento.descricao}"
+								itemValue="#{destinoLancamento}" />
+						</p:selectOneMenu>
 					</p:panelGrid>
 
 				</p:panel>
@@ -173,21 +224,39 @@
 					style="padding-bottom: 0px !important;margin-top:-10px">
 
 					<h3 style="font-weight: bold">Resultado da consulta</h3>
+					
+					<p:commandButton icon="fa fa-fw fa-trash" id="btn-trash"
+						title="Excluir"
+						style="margin-right:113px;font-weight:bold; background: #fd6161; float:right;width:38px;margin-top: -40px;position: relative"
+						process="@this"
+						onclick="deleteItem(#{consultaLancamentosBean.lancamentoSelecionado.id});"
+						disabled="#{(consultaLancamentosBean.lancamentosFiltradosSize eq 0) or consultaLancamentosBean.lancamentoSelecionado.id == null}" />
+
+					<p:button icon="fa fa-fw fa-eye" value="Visualizar"
+						outcome="/operacoes/LancamentoDespesas.xhtml" id="btn-view"
+						style="margin-right:10px;font-weight:bold; float:right;width:100px;margin-top: -40px;position: relative"
+						process="@this lancamentosTable"
+						disabled="#{(consultaLancamentosBean.lancamentosFiltradosSize eq 0) or consultaLancamentosBean.lancamentoSelecionado.id == null}"
+						onclick="PF('downloadLoading').show();">
+
+						<f:param name="id"
+							value="#{consultaLancamentosBean.lancamentoSelecionado.id}" />
+					</p:button>
 
 					<p:panelGrid columns="1" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-12">
 
 						<p:dataTable id="lancamentosTable" paginatorAlwaysVisible="false"
-							value="#{consultaLancamentosBean.lancamentosFiltrados}" var="lancamento"
-							emptyMessage="Nenhum resultado encontrado." rows="10"
-							reflow="true" paginator="true" paginatorPosition="bottom"
-							rowKey="#{lancamento.id}"
+							value="#{consultaLancamentosBean.lancamentosFiltrados}"
+							var="lancamento" emptyMessage="Nenhum resultado encontrado."
+							rows="10" reflow="true" paginator="true"
+							paginatorPosition="bottom" rowKey="#{lancamento.id}"
 							selection="#{consultaLancamentosBean.lancamentoSelecionado}"
 							selectionMode="single">
 
-							<p:ajax process="@this" event="rowSelect" update="menu-item" />
-							<p:ajax process="@this" event="rowUnselect" update="menu-item" />
+							<p:ajax process="@this" event="rowSelect" update="btn-trash btn-view" />
+							<p:ajax process="@this" event="rowUnselect" update="btn-trash btn-view" />
 
 							<p:column headerText="Data do Lançamento" width="20%">
 								<h:outputText value="#{lancamento.dataLancamento}">
@@ -196,19 +265,20 @@
 							</p:column>
 
 							<p:column headerText="Origem" width="20%">
-								<h:outputText value="#{lancamento.categoriaLancamento.tipoLancamento.origem.descricao}" />
+								<h:outputText
+									value="#{lancamento.categoriaLancamento.tipoLancamento.origem.descricao}" />
 							</p:column>
-							
+
 							<p:column headerText="Descrição" width="30%">
 								<h:outputText value="#{lancamento.descricao}" />
 							</p:column>
-							
+
 							<p:column headerText="Valor Total" width="20%">
 								<h:outputText value="#{lancamento.valor}">
 									<f:convertNumber type="currency" />
 								</h:outputText>
 							</p:column>
-							
+
 							<p:column headerText="Categoria" width="20%">
 								<h:outputText value="#{lancamento.categoriaLancamento.nome}" />
 							</p:column>
@@ -218,22 +288,15 @@
 							</p:column>
 
 						</p:dataTable>
+						
+						<p:panel styleClass="panelgrid-noborder disabled disabled panel-total">
+
+							<p:outputLabel value="Total de Lançamentos: R$ #{consultaLancamentosBean.totalLancamentos}"
+								style="float:left;margin-top:10px;margin-bottom:5px;margin-left:-10px;font-size: 13px;font-family: inherit;" />
+
+						</p:panel>
 					</p:panelGrid>
 
-					<p:contextMenu id="menu-item" for="lancamentosTable">
-						<p:menuitem value="Deletar Compra" id="btn-remove"
-							update="panel-table" process="@this panel-table"
-							onstart="start();" rendered="false" oncomplete="stop();"
-							icon="fa fa-fw fa-trash" />
-
-						<p:menuitem value="Visualizar Lançamento" id="btn-visualizar"
-							outcome="/operacoes/LancamentoDespesas.xhtml"
-							process="@this lancamentosTable" icon="fa fa-fw fa-eye"
-							disabled="#{comprasFiltradasSize eq 0}">
-
-							<f:param name="id" value="#{consultaLancamentosBean.lancamentoSelecionado.id}" />
-						</p:menuitem>
-					</p:contextMenu>
 				</p:panel>
 
 			</div>

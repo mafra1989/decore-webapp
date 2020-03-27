@@ -1,6 +1,7 @@
 package com.webapp.repository;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -11,6 +12,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import com.webapp.model.CategoriaLancamento;
+import com.webapp.model.DestinoLancamento;
 import com.webapp.model.Lancamento;
 import com.webapp.model.OrigemLancamento;
 import com.webapp.util.jpa.Transacional;
@@ -40,26 +42,45 @@ public class Lancamentos implements Serializable {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Lancamento> lancamentosFiltrados(Date dateStart, Date dateStop, OrigemLancamento origemLancamento) {
+	public List<Lancamento> lancamentosFiltrados(Date dateStart, Date dateStop, OrigemLancamento[] origemLancamento, CategoriaLancamento categoriaLancamento, DestinoLancamento destinoLancamento) {
 
-		String condition = "";
+		String conditionOrigem = ""; String conditionCategoria = ""; String conditionDestino = "";
 		/*
 		if (usuario != null && usuario.getId() != null) {
 			condition = "AND i.usuario.id = :idUsuario";
 		}*/
 		
-		if (origemLancamento != null) {
-			condition = "AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento";
+		if (origemLancamento.length > 0) {
+			conditionOrigem = "AND i.categoriaLancamento.tipoLancamento.origem in (:origemLancamento) ";
+		}
+		
+		if (categoriaLancamento != null) {
+			conditionCategoria = "AND i.categoriaLancamento.id = :categoriaLancamento ";
+		}
+		
+		if (destinoLancamento != null && destinoLancamento.getId() != null) {
+			conditionDestino = "AND i.destinoLancamento.id = :destinoLancamento ";
 		}
 
 		String jpql = "SELECT i FROM Lancamento i "
-				+ "WHERE i.dataLancamento between :dateStart and :dateStop " + condition
-				+ " order by i.dataLancamento desc";
+				+ "WHERE i.dataLancamento between :dateStart and :dateStop " + conditionOrigem + conditionCategoria + conditionDestino
+				+ "order by i.dataLancamento desc";
+		
+		System.out.println(jpql);
+		
 		Query q = manager.createQuery(jpql).setParameter("dateStart", dateStart)
 				.setParameter("dateStop", dateStop);
 
-		if (origemLancamento != null) {
-			q.setParameter("origemLancamento", origemLancamento);
+		if (origemLancamento.length > 0) {
+			q.setParameter("origemLancamento", Arrays.asList(origemLancamento));
+		}
+		
+		if (categoriaLancamento != null) {
+			q.setParameter("categoriaLancamento", categoriaLancamento.getId());
+		}
+		
+		if (destinoLancamento != null && destinoLancamento.getId() != null) {
+			q.setParameter("destinoLancamento", destinoLancamento.getId());
 		}
 
 		return q.getResultList();

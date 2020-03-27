@@ -12,7 +12,7 @@ import com.webapp.util.jsf.FacesUtil;
 
 @Named
 @ViewScoped
-public class ImportarPlanilhaBean implements Serializable {
+public class ImportarDadosBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -35,19 +35,19 @@ public class ImportarPlanilhaBean implements Serializable {
     }
 	
 	public void importar() {
-		System.out.println("File: " + file);
+
 		if(file != null && file.getFileName() != null) {
 			fileContent = file.getContents();
 			
 			PrimeFaces.current().executeScript(
-					"swal({ type: 'success', title: 'Concluído!', text: 'Planilha importada com sucesso!' });");
+					"swal({ type: 'success', title: 'Concluído!', text: 'Dados importados com sucesso!' });");
 			
 			fileContent = null;
 			
 		} else {
 			
 			PrimeFaces.current().executeScript(
-					"swal({ type: 'error', title: 'Erro!', text: 'Nenhuma planilha anexada!' });");
+					"swal({ type: 'error', title: 'Erro!', text: 'Selecione um arquivo válido!' });");
 		}
 		
 		System.out.println(fileContent);

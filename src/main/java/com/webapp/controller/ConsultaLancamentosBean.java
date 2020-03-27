@@ -1,6 +1,9 @@
 package com.webapp.controller;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -9,9 +12,15 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.primefaces.PrimeFaces;
+
+import com.webapp.model.CategoriaLancamento;
+import com.webapp.model.DestinoLancamento;
 import com.webapp.model.Lancamento;
 import com.webapp.model.OrigemLancamento;
 import com.webapp.model.Usuario;
+import com.webapp.repository.CategoriasLancamentos;
+import com.webapp.repository.DestinosLancamentos;
 import com.webapp.repository.Lancamentos;
 import com.webapp.util.jsf.FacesUtil;
 
@@ -21,8 +30,10 @@ public class ConsultaLancamentosBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	@Inject
+	private Lancamento lancamento;
 	
-	private List<Lancamento> lancamentosFiltrados;
+	private List<Lancamento> lancamentosFiltrados = new ArrayList<>();
 	
 	private List<Usuario> todosUsuarios;
 	
@@ -39,12 +50,36 @@ public class ConsultaLancamentosBean implements Serializable {
 	
 	private Date dateStop = new Date();
 	
-	private OrigemLancamento origemLancamento;
+	private OrigemLancamento[] origemLancamento;
+	
+	
+	@Inject
+	private CategoriasLancamentos categoriasDespesas;
+	
+	private List<CategoriaLancamento> todasCategoriasDespesas;
+	
+	@Inject
+	private DestinosLancamentos destinosLancamentos;
+
+	private List<DestinoLancamento> todosDestinosLancamentos;
+	
+	@Inject
+	private CategoriaLancamento categoriaLancamento;
+	
+	@Inject
+	private DestinoLancamento destinoLancamento;
+	
+	
+	private NumberFormat nf = new DecimalFormat("###,##0.00");
+	
+	private String totalLancamentos = "0,00";
 	
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {	
 			//todosUsuarios = usuarios.todos();
+			todasCategoriasDespesas = categoriasDespesas.todos();
+			todosDestinosLancamentos = destinosLancamentos.todos();
 		}
 	}
 	
@@ -55,7 +90,33 @@ public class ConsultaLancamentosBean implements Serializable {
 		calendarioTemp.set(Calendar.MINUTE, 59);
 		calendarioTemp.set(Calendar.SECOND, 59);
 		
-		lancamentosFiltrados = lancamentos.lancamentosFiltrados(dateStart, calendarioTemp.getTime(), origemLancamento);
+		lancamentosFiltrados = new ArrayList<>();
+		lancamentosFiltrados = lancamentos.lancamentosFiltrados(dateStart, calendarioTemp.getTime(), origemLancamento, categoriaLancamento, destinoLancamento);
+		
+		double totalLancamentosTemp = 0;
+		for (Lancamento lancamento : lancamentosFiltrados) {
+			totalLancamentosTemp += lancamento.getValor().doubleValue();
+		}
+		
+		totalLancamentos = nf.format(totalLancamentosTemp);
+	}
+	
+	public void changeCategoria() { 
+		if(categoriaLancamento == null) {
+			destinoLancamento = null;
+		} else {
+			destinoLancamento = categoriaLancamento.getDestinoLancamento();
+		}
+	}
+	
+	public void excluir() { 	
+		
+		lancamentos.remove(lancamentoSelecionado);
+		
+		lancamentoSelecionado = null;
+		pesquisar();
+		PrimeFaces.current().executeScript(
+				"swal({ type: 'success', title: 'Concluído!', text: 'Lançamento excluído com sucesso!' });");	
 	}
 	
 	public List<Usuario> getTodosUsuarios() {
@@ -94,6 +155,10 @@ public class ConsultaLancamentosBean implements Serializable {
 	public void setLancamentosFiltrados(List<Lancamento> comprasFiltradas) {
 		this.lancamentosFiltrados = comprasFiltradas;
 	}
+	
+	public int getLancamentosFiltradosSize() {
+		return lancamentosFiltrados.size();
+	}
 
 	public Usuario getUsuario() {
 		return usuario;
@@ -107,12 +172,48 @@ public class ConsultaLancamentosBean implements Serializable {
 		return OrigemLancamento.values();
 	}
 
-	public OrigemLancamento getOrigemLancamento() {
+	public OrigemLancamento[] getOrigemLancamento() {
 		return origemLancamento;
 	}
 
-	public void setOrigemLancamento(OrigemLancamento origemLancamento) {
+	public void setOrigemLancamento(OrigemLancamento[] origemLancamento) {
 		this.origemLancamento = origemLancamento;
+	}
+
+	public List<CategoriaLancamento> getTodasCategoriasDespesas() {
+		return todasCategoriasDespesas;
+	}
+
+	public List<DestinoLancamento> getTodosDestinosLancamentos() {
+		return todosDestinosLancamentos;
+	}
+
+	public CategoriaLancamento getCategoriaLancamento() {
+		return categoriaLancamento;
+	}
+
+	public void setCategoriaLancamento(CategoriaLancamento categoriaLancamento) {
+		this.categoriaLancamento = categoriaLancamento;
+	}
+
+	public Lancamento getLancamento() {
+		return lancamento;
+	}
+
+	public void setLancamento(Lancamento lancamento) {
+		this.lancamento = lancamento;
+	}
+
+	public DestinoLancamento getDestinoLancamento() {
+		return destinoLancamento;
+	}
+
+	public void setDestinoLancamento(DestinoLancamento destinoLancamento) {
+		this.destinoLancamento = destinoLancamento;
+	}
+
+	public String getTotalLancamentos() {
+		return totalLancamentos;
 	}
 
 }
