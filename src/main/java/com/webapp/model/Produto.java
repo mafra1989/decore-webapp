@@ -49,6 +49,7 @@ public class Produto implements Serializable {
 	@Column
 	private byte[] foto;
 
+	@NotNull
 	@Column
 	private Long quantidadeAtual = 0L;
 	
