@@ -194,8 +194,7 @@
 						title="Excluir"
 						style="margin-right:113px;font-weight:bold; background: #fd6161; float:right;width:38px;margin-top: -40px;position: relative"
 						process="@this"
-						onclick="deleteItem(#{consultaComprasBean.compraSelecionada.id});"
-						disabled="#{(consultaComprasBean.comprasFiltradasSize eq 0) or consultaComprasBean.compraSelecionada.id == null}" />
+						onclick="deleteItem(#{consultaComprasBean.compraSelecionada.id});" />
 
 					<p:button icon="fa fa-fw fa-eye" value="Visualizar"
 						outcome="/operacoes/RegistroCompras.xhtml" id="btn-view"

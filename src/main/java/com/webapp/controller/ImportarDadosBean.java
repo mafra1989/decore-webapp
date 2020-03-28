@@ -151,8 +151,9 @@ public class ImportarDadosBean implements Serializable {
 							if(produto != null) {
 								itemCompra.setProduto(produto);	
 							} else {
-								produto = new Produto();
-								produto.setCodeTemp(codigo);
+								//produto = new Produto();
+								//produto.setCodeTemp(codigo);
+								produto = produtosRepository.porCodigo("0"); //Teste
 								itemCompra.setProduto(produto);
 							}
 

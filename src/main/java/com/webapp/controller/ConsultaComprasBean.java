@@ -96,7 +96,7 @@ public class ConsultaComprasBean implements Serializable {
 	}
 	
 	public void excluir() { 	
-
+		/*
 		List<ItemVenda> itensVenda = itensVendas.porCompra(compraSelecionada);
 		
 		if(itensVenda.size() == 0) {		
@@ -120,7 +120,31 @@ public class ConsultaComprasBean implements Serializable {
 		} else {
 			PrimeFaces.current().executeScript(
 					"swal({ type: 'error', title: 'Erro!', text: 'Existem itens dessa compra já vinculados a uma ou mais vendas!' });");
-		}	
+		}
+		*/
+		
+		for (Compra compra : comprasFiltradas) {
+			List<ItemVenda> itensVenda = itensVendas.porCompra(compra);
+			
+			if(itensVenda.size() == 0) {		
+		
+				List<ItemCompra> itensCompra = itensCompras.porCompra(compra);
+				for (ItemCompra itemCompra : itensCompra) {
+					Produto produto = itemCompra.getProduto();
+					produto.setQuantidadeAtual(produto.getQuantidadeAtual() - itemCompra.getQuantidade());
+					produto.setQuantidadeItensComprados(produto.getQuantidadeItensComprados() - itemCompra.getQuantidade());
+					produtos.save(produto);
+					
+					itensCompras.remove(itemCompra);
+				}	
+				
+				compras.remove(compra);
+			}
+		}
+		
+		pesquisar();
+		PrimeFaces.current().executeScript(
+				"swal({ type: 'success', title: 'Concluído!', text: 'Compras excluídas com sucesso!' });");
 	}
 	
 	public List<Usuario> getTodosUsuarios() {
