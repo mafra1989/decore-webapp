@@ -3,12 +3,14 @@ package com.webapp.controller;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -89,7 +91,11 @@ public class RegistroVendasBean implements Serializable {
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-	private NumberFormat nf = new DecimalFormat("###,##0.00");
+	private static final Locale BRAZIL = new Locale("pt", "BR");
+
+	private static final DecimalFormatSymbols REAL = new DecimalFormatSymbols(BRAZIL);
+
+	private NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
