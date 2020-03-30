@@ -282,8 +282,8 @@ public class ImportarDadosBean implements Serializable {
 
 						/* Venda */
 						/* Tipo de Venda e Bairro */
-						venda.setTipoVenda(tiposVendas.porId(3009L));//setTipoVenda(tiposVendas.porId(3575L));
-						venda.setBairro(bairros.porId(3008L));//setBairro(bairros.porId(3574L));
+						venda.setTipoVenda(tiposVendas.porId(3009L));// setTipoVenda(tiposVendas.porId(3575L));
+						venda.setBairro(bairros.porId(3008L));// setBairro(bairros.porId(3574L));
 
 						/* Venda */
 						/* Usuario */
@@ -296,22 +296,22 @@ public class ImportarDadosBean implements Serializable {
 
 					if (row.getCell(0).toString().equals(vendasNum)) {
 
-						System.out.println((long) Double.parseDouble(row.getCell(4).toString()) + " - " + Double.parseDouble(row.getCell(7).toString()));
+						System.out.println((long) Double.parseDouble(row.getCell(4).toString()) + " - "
+								+ Double.parseDouble(row.getCell(7).toString()));
 						String codigo = ((long) Double.parseDouble(row.getCell(4).toString())) + "";
-						Produto produto = produtosRepository.porCodigo(codigo);//produtosRepository.porCodigo("0");
+						Produto produto = produtosRepository.porCodigo(codigo);// produtosRepository.porCodigo("0");
 
 						Long saldo = (long) Double.parseDouble(row.getCell(7).toString());
-						
-						do {
 
-							ItemVenda itemVenda = new ItemVenda();
+						ItemVenda itemVenda = new ItemVenda();
 
-							ItemCompra itemCompraTemp = itensComprasRepository.porProdutoDisponivel(produto);
-							
-							System.out.println(produto + " - " + itemCompraTemp);
-					
-							if (itemCompraTemp != null) {
+						ItemCompra itemCompraTemp = itensComprasRepository.porProdutoDisponivel(produto);
 
+						System.out.println(produto + " - " + itemCompraTemp);
+
+						if (itemCompraTemp != null) {
+
+							do {
 								System.out.println(itemCompraTemp.getQuantidadeDisponivel() + " >= " + saldo);
 								if (itemCompraTemp.getQuantidadeDisponivel() >= saldo) {
 
@@ -356,7 +356,7 @@ public class ImportarDadosBean implements Serializable {
 									} else {
 										produto = new Produto();
 										produto.setCodeTemp(codigo);
-										//produto = produtosRepository.porCodigo("0"); // Teste
+										// produto = produtosRepository.porCodigo("0"); // Teste
 										itemVenda.setProduto(produto);
 									}
 
@@ -416,7 +416,7 @@ public class ImportarDadosBean implements Serializable {
 									} else {
 										produto = new Produto();
 										produto.setCodeTemp(codigo);
-										//produto = produtosRepository.porCodigo("0"); // Teste
+										// produto = produtosRepository.porCodigo("0"); // Teste
 										itemVenda.setProduto(produto);
 									}
 
@@ -432,9 +432,9 @@ public class ImportarDadosBean implements Serializable {
 
 								}
 
-							}
+							} while (saldo > 0);
 
-						} while (saldo > 0);
+						}
 
 					}
 				}
@@ -477,9 +477,9 @@ public class ImportarDadosBean implements Serializable {
 						Produto produto = itemVendaTemp.getProduto();
 						produto = produtosRepository.porId(produto.getId());
 						produto.setQuantidadeAtual(produto.getQuantidadeAtual() - itemVendaTemp.getQuantidade());
-						
+
 						System.out.println(produto.getCodigo() + " - " + produto.getQuantidadeAtual());
-						
+
 						produtosRepository.save(produto);
 
 						itensVendasRepository.save(itemVendaTemp);
@@ -514,24 +514,24 @@ public class ImportarDadosBean implements Serializable {
 
 			System.out.println(file.getFileName());
 			System.out.println("Opção: " + opcao);
-			
-			if(!opcao.equalsIgnoreCase("")) {
-				
-				if(opcao.equalsIgnoreCase("compras")) {
+
+			if (!opcao.equalsIgnoreCase("")) {
+
+				if (opcao.equalsIgnoreCase("compras")) {
 					importarCompras(file);
 				}
-				
-				if(opcao.equalsIgnoreCase("vendas")) {
+
+				if (opcao.equalsIgnoreCase("vendas")) {
 					importarVendas(file);
 				}
-				
-				if(opcao.equalsIgnoreCase("lançamentos")) {
-					
+
+				if (opcao.equalsIgnoreCase("lançamentos")) {
+
 				}
-				
+
 			} else {
-				PrimeFaces.current()
-				.executeScript("swal({ type: 'warning', title: 'Atenção!', text: 'Selecione uma opção antes de importar o arquivo!' });");
+				PrimeFaces.current().executeScript(
+						"swal({ type: 'warning', title: 'Atenção!', text: 'Selecione uma opção antes de importar o arquivo!' });");
 			}
 
 		} else {
