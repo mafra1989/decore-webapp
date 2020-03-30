@@ -10,7 +10,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -283,8 +282,8 @@ public class ImportarDadosBean implements Serializable {
 
 						/* Venda */
 						/* Tipo de Venda e Bairro */
-						venda.setTipoVenda(tiposVendas.porId(3575L));
-						venda.setBairro(bairros.porId(3574L));
+						venda.setTipoVenda(tiposVendas.porId(3009L));//setTipoVenda(tiposVendas.porId(3575L));
+						venda.setBairro(bairros.porId(3008L));//setBairro(bairros.porId(3574L));
 
 						/* Venda */
 						/* Usuario */
