@@ -303,15 +303,16 @@ public class ImportarDadosBean implements Serializable {
 
 						Long saldo = (long) Double.parseDouble(row.getCell(7).toString());
 
-						ItemVenda itemVenda = new ItemVenda();
+						do {
 
-						ItemCompra itemCompraTemp = itensComprasRepository.porProdutoDisponivel(produto);
+							ItemVenda itemVenda = new ItemVenda();
 
-						System.out.println(produto + " - " + itemCompraTemp);
+							ItemCompra itemCompraTemp = itensComprasRepository.porProdutoDisponivel(produto);
 
-						if (itemCompraTemp != null) {
+							System.out.println(produto + " - " + itemCompraTemp);
 
-							do {
+							if (itemCompraTemp != null) {
+
 								System.out.println(itemCompraTemp.getQuantidadeDisponivel() + " >= " + saldo);
 								if (itemCompraTemp.getQuantidadeDisponivel() >= saldo) {
 
@@ -432,9 +433,12 @@ public class ImportarDadosBean implements Serializable {
 
 								}
 
-							} while (saldo > 0);
+							} else {
+								
+								continue;
+							}
 
-						}
+						} while (saldo > 0);
 
 					}
 				}
