@@ -500,6 +500,7 @@ public class ImportarDadosBean implements Serializable {
 			}
 
 		} catch (IOException | IllegalArgumentException e) {
+			e.printStackTrace();
 			PrimeFaces.current()
 					.executeScript("swal({ type: 'error', title: 'Erro!', text: 'Selecione um arquivo válido!' });");
 		}
