@@ -51,13 +51,13 @@ public class ItensCompras implements Serializable {
 				.setParameter("id", produto.getId()).getResultList();
 	}
 	
-	@Transacional
+	
 	public ItemCompra porProdutoDisponivel(Produto produto) {
 		
 		try {
 			return this.manager
-					.createQuery("from ItemCompra e join fetch e.compra c where e.produto.id = :id and e.quantidadeDisponivel > 0 order by c.dataCompra asc", ItemCompra.class)
-					.setParameter("id", produto.getId()).setMaxResults(1).getSingleResult();
+				.createQuery("from ItemCompra e join fetch e.compra c where e.produto.id = :id and e.quantidadeDisponivel > 0 order by c.dataCompra asc", ItemCompra.class)
+				.setParameter("id", produto.getId()).setMaxResults(1).getSingleResult();
 		} catch(NoResultException e) {
 			
 		}

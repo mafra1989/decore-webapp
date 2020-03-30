@@ -299,7 +299,7 @@ public class ImportarDadosBean implements Serializable {
 
 						System.out.println(row.getCell(2).toString());
 						String codigo = ((long) Double.parseDouble(row.getCell(4).toString())) + "";
-						Produto produto = produtosRepository.porCodigo("0");
+						Produto produto = produtosRepository.porCodigo(codigo);//produtosRepository.porCodigo("0");
 
 						Long saldo = (long) Double.parseDouble(row.getCell(7).toString());
 						
@@ -351,9 +351,9 @@ public class ImportarDadosBean implements Serializable {
 									if (produto != null) {
 										itemVenda.setProduto(produto);
 									} else {
-										// produto = new Produto();
-										// produto.setCodeTemp(codigo);
-										produto = produtosRepository.porCodigo("0"); // Teste
+										produto = new Produto();
+										produto.setCodeTemp(codigo);
+										//produto = produtosRepository.porCodigo("0"); // Teste
 										itemVenda.setProduto(produto);
 									}
 
@@ -411,9 +411,9 @@ public class ImportarDadosBean implements Serializable {
 									if (produto != null) {
 										itemVenda.setProduto(produto);
 									} else {
-										// produto = new Produto();
-										// produto.setCodeTemp(codigo);
-										produto = produtosRepository.porCodigo("0"); // Teste
+										produto = new Produto();
+										produto.setCodeTemp(codigo);
+										//produto = produtosRepository.porCodigo("0"); // Teste
 										itemVenda.setProduto(produto);
 									}
 
