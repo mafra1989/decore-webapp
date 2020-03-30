@@ -240,8 +240,6 @@ public class ImportarDadosBean implements Serializable {
 		Iterator<Row> rowIterator = null;
 
 		List<Venda> vendas = new ArrayList<>();
-		
-		itensComprasRepository = new ItensCompras();
 
 		Workbook workbook;
 		try {

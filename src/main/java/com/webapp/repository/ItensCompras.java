@@ -51,7 +51,7 @@ public class ItensCompras implements Serializable {
 				.setParameter("id", produto.getId()).getResultList();
 	}
 	
-	
+	@Transacional
 	public ItemCompra porProdutoDisponivel(Produto produto) {
 		
 		try {
