@@ -240,6 +240,8 @@ public class ImportarDadosBean implements Serializable {
 		Iterator<Row> rowIterator = null;
 
 		List<Venda> vendas = new ArrayList<>();
+		
+		itensComprasRepository = new ItensCompras();
 
 		Workbook workbook;
 		try {
@@ -302,7 +304,7 @@ public class ImportarDadosBean implements Serializable {
 						Produto produto = produtosRepository.porCodigo("0");
 
 						Long saldo = (long) Double.parseDouble(row.getCell(7).toString());
-
+						
 						do {
 
 							ItemVenda itemVenda = new ItemVenda();
