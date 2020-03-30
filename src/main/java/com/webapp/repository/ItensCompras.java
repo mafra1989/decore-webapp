@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 
 import com.webapp.model.Compra;
 import com.webapp.model.ItemCompra;
@@ -48,6 +49,20 @@ public class ItensCompras implements Serializable {
 		return this.manager
 				.createQuery("from ItemCompra e join fetch e.compra c where e.produto.id = :id order by e.compra.dataCompra asc", ItemCompra.class)
 				.setParameter("id", produto.getId()).getResultList();
+	}
+	
+	
+	public ItemCompra porProdutoDisponivel(Produto produto) {
+		
+		try {
+			return this.manager
+					.createQuery("from ItemCompra e join fetch e.compra c where e.produto.id = :id and e.quantidadeDisponivel > 0 order by c.dataCompra asc", ItemCompra.class)
+					.setParameter("id", produto.getId()).setMaxResults(1).getSingleResult();
+		} catch(NoResultException e) {
+			
+		}
+		
+		return null;
 	}
 	
 	

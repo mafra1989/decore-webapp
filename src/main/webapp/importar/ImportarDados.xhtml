@@ -128,12 +128,22 @@
 			<p:toolbar id="toolbar">
 				<f:facet name="left">
 					<p:commandButton icon="fa fa-fw fa-upload" value="Importar"
-						id="pesquisar-button"
-						style="margin-left: 3px;font-weight:bold"
-						action="#{importarDadosBean.importar}"
-						process="@this" ajax="false"
-						onclick="PrimeFaces.monitorDownload(start, stop);"></p:commandButton>
+						id="pesquisar-button" style="margin-left: 3px;font-weight:bold"
+						action="#{importarDadosBean.importar}" process="@this"
+						ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);"></p:commandButton>
 				</f:facet>
+
+				<f:facet name="right">
+					<p:selectOneMenu id="console" value="#{importarDadosBean.opcao}"
+						style="width:125px">
+						<f:selectItem itemLabel="Selecione" itemValue="" />
+						<f:selectItem itemLabel="Compras" itemValue="Compras" />
+						<f:selectItem itemLabel="Vendas" itemValue="Vendas" />
+						<f:selectItem itemLabel="Lançamentos" itemValue="Lançamentos" />
+					</p:selectOneMenu>
+				</f:facet>
+
+
 
 			</p:toolbar>
 

@@ -3,6 +3,7 @@ package com.webapp.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
@@ -21,7 +23,7 @@ public class Venda implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue//(strategy = GenerationType.IDENTITY)
+	@GeneratedValue // (strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@NotNull
@@ -35,18 +37,18 @@ public class Venda implements Serializable {
 	@Column(nullable = false)
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
 	private BigDecimal valorTotal = BigDecimal.ZERO;
-	
+
 	@Column
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
-	private BigDecimal lucro;
-	
+	private BigDecimal lucro = BigDecimal.ZERO;;
+
 	@Column
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
-	private BigDecimal percentualLucro;
-	
+	private BigDecimal percentualLucro = BigDecimal.ZERO;;
+
 	@Column
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
-	private BigDecimal valorCompra;
+	private BigDecimal valorCompra = BigDecimal.ZERO;;
 
 	@NotNull
 	@ManyToOne
@@ -57,7 +59,7 @@ public class Venda implements Serializable {
 	@ManyToOne
 	@JoinColumn
 	private Usuario usuario;
-	
+
 	@NotNull
 	@ManyToOne
 	@JoinColumn
@@ -66,7 +68,7 @@ public class Venda implements Serializable {
 	/* Campos para relat�rio */
 	@Column(nullable = false)
 	private Long dia;
-	
+
 	@Column(nullable = false)
 	private Long nomeDia;
 
@@ -222,6 +224,17 @@ public class Venda implements Serializable {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	@Transient
+	private List<ItemVenda> itensVenda;
+
+	public List<ItemVenda> getItensVenda() {
+		return itensVenda;
+	}
+
+	public void setItensVenda(List<ItemVenda> itensVenda) {
+		this.itensVenda = itensVenda;
 	}
 
 }

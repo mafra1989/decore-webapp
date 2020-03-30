@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -31,12 +32,18 @@ import org.primefaces.model.UploadedFile;
 
 import com.webapp.model.Compra;
 import com.webapp.model.ItemCompra;
+import com.webapp.model.ItemVenda;
 import com.webapp.model.Produto;
 import com.webapp.model.Usuario;
+import com.webapp.model.Venda;
+import com.webapp.repository.Bairros;
 import com.webapp.repository.Compras;
 import com.webapp.repository.ItensCompras;
+import com.webapp.repository.ItensVendas;
 import com.webapp.repository.Produtos;
+import com.webapp.repository.TiposVendas;
 import com.webapp.repository.Usuarios;
+import com.webapp.repository.Vendas;
 import com.webapp.util.jsf.FacesUtil;
 
 @Named
@@ -44,22 +51,36 @@ import com.webapp.util.jsf.FacesUtil;
 public class ImportarDadosBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Inject
 	private Compras comprasRepository;
-	
+
+	@Inject
+	private Vendas vendasRepository;
+
 	@Inject
 	private ItensCompras itensComprasRepository;
-	
+
+	@Inject
+	private ItensVendas itensVendasRepository;
+
 	@Inject
 	private Produtos produtosRepository;
-	
+
 	@Inject
 	private Usuarios usuariosRepository;
+
+	@Inject
+	private Bairros bairros;
+
+	@Inject
+	private TiposVendas tiposVendas;
 
 	private UploadedFile file;
 
 	private byte[] fileContent;
+
+	private String opcao = "";
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -75,147 +96,440 @@ public class ImportarDadosBean implements Serializable {
 		this.file = file;
 	}
 
+	public void importarCompras(UploadedFile file) {
+
+		Compra compra = null;
+		List<ItemCompra> itens = null;
+		Iterator<Row> rowIterator = null;
+
+		List<Compra> compras = new ArrayList<>();
+
+		Workbook workbook;
+		try {
+			workbook = create(file.getInputstream());
+
+			Sheet sheet = workbook.getSheetAt(0);
+			rowIterator = sheet.iterator();
+
+			String comprasNum = "";
+			while (rowIterator.hasNext()) {
+				Row row = rowIterator.next();
+
+				if (row.getRowNum() > 0) {
+
+					if (!row.getCell(0).toString().equals(comprasNum)) {
+
+						comprasNum = row.getCell(0).toString();
+
+						compra = new Compra();
+						itens = new ArrayList<>();
+						Calendar calendar = Calendar.getInstance();
+
+						try {
+							calendar.setTime(new SimpleDateFormat("dd MMM yyyy")
+									.parse(row.getCell(1).toString().replace("-", " ")));
+							compra.setDataCompra(calendar.getTime());
+						} catch (ParseException e) {
+
+						}
+
+						System.out.println(compra.getDataCompra());
+						compra.setDia(Long.valueOf((calendar.get(Calendar.DAY_OF_MONTH))));
+						compra.setNomeDia(Long.valueOf((calendar.get(Calendar.DAY_OF_WEEK))));
+						compra.setSemana(Long.valueOf((calendar.get(Calendar.WEEK_OF_YEAR))));
+						compra.setMes(Long.valueOf((calendar.get(Calendar.MONTH))) + 1);
+						compra.setAno(Long.valueOf((calendar.get(Calendar.YEAR))));
+
+						compra.setItensCompra(itens);
+						compras.add(compra);
+					}
+
+					if (row.getCell(0).toString().equals(comprasNum)) {
+
+						compra.setQuantidadeItens(
+								(long) (compra.getQuantidadeItens() + Double.parseDouble(row.getCell(5).toString())));
+						compra.setValorTotal(BigDecimal.valueOf(
+								compra.getValorTotal().doubleValue() + (Double.parseDouble(row.getCell(4).toString())
+										* Double.parseDouble(row.getCell(5).toString()))));
+
+						ItemCompra itemCompra = new ItemCompra();
+						itemCompra.setQuantidade((long) Double.parseDouble(row.getCell(5).toString()));
+						itemCompra.setQuantidadeDisponivel(itemCompra.getQuantidade());
+						itemCompra.setValorUnitario(BigDecimal.valueOf(Double.parseDouble(row.getCell(4).toString())));
+						itemCompra.setTotal(BigDecimal.valueOf(Double.parseDouble(row.getCell(4).toString())
+								* Double.parseDouble(row.getCell(5).toString())));
+
+						System.out.println(row.getCell(2).toString());
+						String codigo = ((long) Double.parseDouble(row.getCell(2).toString())) + "";
+						Produto produto = produtosRepository.porCodigo(codigo);
+
+						if (produto != null) {
+							itemCompra.setProduto(produto);
+						} else {
+							// produto = new Produto();
+							// produto.setCodeTemp(codigo);
+							produto = produtosRepository.porCodigo("0"); // Teste
+							itemCompra.setProduto(produto);
+						}
+
+						itens.add(itemCompra);
+						System.out.println(itemCompra.getValorUnitario() + " - " + itemCompra.getQuantidade());
+					}
+				}
+			}
+
+			List<String> codigos = new ArrayList<>();
+
+			boolean produtoNaoEncontrado = false;
+			for (Compra compraTemp : compras) {
+				for (ItemCompra itemCompraTemp : compraTemp.getItensCompra()) {
+					if (itemCompraTemp.getProduto().getId() == null) {
+						produtoNaoEncontrado = true;
+						codigos.add(itemCompraTemp.getProduto().getCodeTemp());
+					}
+				}
+			}
+
+			if (produtoNaoEncontrado != true) {
+
+				for (Compra compraTemp : compras) {
+					System.out.println("Quant. Itens: " + compraTemp.getQuantidadeItens() + " - Valor Total: "
+							+ compraTemp.getValorTotal() + " _ " + compraTemp.getItensCompra().size());
+
+					List<ItemCompra> itensTemp = new ArrayList<>();
+					itensTemp.addAll(compraTemp.getItensCompra());
+
+					Usuario usuario = usuariosRepository.porId(1L);
+					compraTemp.setUsuario(usuario);
+					compraTemp = comprasRepository.save(compraTemp);
+
+					for (ItemCompra itemCompraTemp : itensTemp) {
+						itemCompraTemp.setCompra(compraTemp);
+
+						Produto produto = itemCompraTemp.getProduto();
+						produto.setQuantidadeAtual(produto.getQuantidadeAtual() + itemCompraTemp.getQuantidade());
+						produtosRepository.save(produto);
+
+						itensComprasRepository.save(itemCompraTemp);
+					}
+
+				}
+
+				System.out.println("Total de Compras: " + compras.size());
+
+				PrimeFaces.current().executeScript(
+						"swal({ type: 'success', title: 'Concluído!', text: 'Dados importados com sucesso!' });");
+			} else {
+				PrimeFaces.current().executeScript(
+						"swal({ type: 'error', title: 'Erro!', text: 'Produtos não encontrados! Verifique os códigos: "
+								+ Arrays.asList(codigos) + " ' });");
+			}
+
+		} catch (IOException | IllegalArgumentException e) {
+			PrimeFaces.current()
+					.executeScript("swal({ type: 'error', title: 'Erro!', text: 'Selecione um arquivo válido!' });");
+		}
+
+		fileContent = null;
+	}
+
+	public void importarVendas(UploadedFile file) {
+
+		Venda venda = null;
+		List<ItemVenda> itens = null;
+		Iterator<Row> rowIterator = null;
+
+		List<Venda> vendas = new ArrayList<>();
+
+		Workbook workbook;
+		try {
+			workbook = create(file.getInputstream());
+
+			Sheet sheet = workbook.getSheetAt(0);
+			rowIterator = sheet.iterator();
+
+			String vendasNum = "";
+			while (rowIterator.hasNext()) {
+				Row row = rowIterator.next();
+
+				if (row.getRowNum() > 0) {
+
+					if (!row.getCell(0).toString().equals(vendasNum)) {
+
+						vendasNum = row.getCell(0).toString();
+
+						venda = new Venda();
+						itens = new ArrayList<>();
+						Calendar calendar = Calendar.getInstance();
+
+						/* Venda */
+						/* Data da Venda */
+						try {
+							calendar.setTime(new SimpleDateFormat("dd MMM yyyy")
+									.parse(row.getCell(1).toString().replace("-", " ")));
+							venda.setDataVenda(calendar.getTime());
+						} catch (ParseException e) {
+
+						}
+
+						/* Venda */
+						/* Dia, Nome do dia, Semana, Mês e Ano */
+						System.out.println(venda.getDataVenda());
+						venda.setDia(Long.valueOf((calendar.get(Calendar.DAY_OF_MONTH))));
+						venda.setNomeDia(Long.valueOf((calendar.get(Calendar.DAY_OF_WEEK))));
+						venda.setSemana(Long.valueOf((calendar.get(Calendar.WEEK_OF_YEAR))));
+						venda.setMes(Long.valueOf((calendar.get(Calendar.MONTH))) + 1);
+						venda.setAno(Long.valueOf((calendar.get(Calendar.YEAR))));
+
+						/* Venda */
+						/* Tipo de Venda e Bairro */
+						venda.setTipoVenda(tiposVendas.porId(3575L));
+						venda.setBairro(bairros.porId(3574L));
+
+						/* Venda */
+						/* Usuario */
+						Usuario usuario = usuariosRepository.porId(1L);
+						venda.setUsuario(usuario);
+
+						venda.setItensVenda(itens);
+						vendas.add(venda);
+					}
+
+					if (row.getCell(0).toString().equals(vendasNum)) {
+
+						System.out.println(row.getCell(2).toString());
+						String codigo = ((long) Double.parseDouble(row.getCell(4).toString())) + "";
+						Produto produto = produtosRepository.porCodigo("0");
+
+						Long saldo = (long) Double.parseDouble(row.getCell(7).toString());
+
+						do {
+
+							ItemVenda itemVenda = new ItemVenda();
+
+							ItemCompra itemCompraTemp = itensComprasRepository.porProdutoDisponivel(produto);
+							if (itemCompraTemp != null) {
+
+								if (itemCompraTemp.getQuantidadeDisponivel() >= saldo) {
+
+									/* Item */
+									/* Quantidade, ValorUnitario e Total */
+									itemVenda.setQuantidade(saldo);
+									itemVenda.setValorUnitario(
+											BigDecimal.valueOf(Double.parseDouble(row.getCell(6).toString())));
+									itemVenda.setTotal(
+											BigDecimal.valueOf(itemVenda.getValorUnitario().doubleValue() * saldo));
+
+									/* Item */
+									/* Lucro, PercentualLucro, ValorCompra e Compra */
+									itemVenda.setLucro(
+											BigDecimal.valueOf((saldo * itemVenda.getValorUnitario().doubleValue())
+													- (saldo * itemCompraTemp.getValorUnitario().doubleValue())));
+									itemVenda.setPercentualLucro(BigDecimal.valueOf((itemVenda.getLucro().doubleValue()
+											/ (saldo * itemCompraTemp.getValorUnitario().doubleValue())) * 100));
+									itemVenda.setValorCompra(BigDecimal
+											.valueOf(saldo * itemCompraTemp.getValorUnitario().doubleValue()));
+
+									itemVenda.setCompra(itemCompraTemp.getCompra());
+
+									/* Venda */
+									/* Total de Itens e Valor Total */
+									venda.setQuantidadeItens(venda.getQuantidadeItens() + itemVenda.getQuantidade());
+									venda.setValorTotal(BigDecimal.valueOf(
+											venda.getValorTotal().doubleValue() + itemVenda.getTotal().doubleValue()));
+
+									/* Lucro, PercentualLucro e ValorCompra */
+									venda.setLucro(BigDecimal.valueOf(
+											venda.getLucro().doubleValue() + itemVenda.getLucro().doubleValue()));
+									venda.setPercentualLucro(BigDecimal.valueOf(venda.getPercentualLucro().doubleValue()
+											+ itemVenda.getLucro().doubleValue()));
+									venda.setValorCompra(BigDecimal.valueOf(venda.getValorCompra().doubleValue()
+											+ itemVenda.getValorCompra().doubleValue()));
+
+									/* Item */
+									/* Produto */
+									if (produto != null) {
+										itemVenda.setProduto(produto);
+									} else {
+										// produto = new Produto();
+										// produto.setCodeTemp(codigo);
+										produto = produtosRepository.porCodigo("0"); // Teste
+										itemVenda.setProduto(produto);
+									}
+
+									itens.add(itemVenda);
+									System.out
+											.println(itemVenda.getValorUnitario() + " - " + itemVenda.getQuantidade());
+
+									saldo -= itemCompraTemp.getQuantidadeDisponivel();
+
+									itemCompraTemp.setQuantidadeDisponivel(
+											itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());
+									itensComprasRepository.save(itemCompraTemp);
+
+								} else {
+
+									/* Item */
+									/* Quantidade, ValorUnitario e Total */
+									itemVenda.setQuantidade(itemCompraTemp.getQuantidadeDisponivel());
+									itemVenda.setValorUnitario(
+											BigDecimal.valueOf(Double.parseDouble(row.getCell(6).toString())));
+									itemVenda.setTotal(BigDecimal.valueOf(itemVenda.getValorUnitario().doubleValue()
+											* itemCompraTemp.getQuantidadeDisponivel()));
+
+									/* Item */
+									/* Lucro, PercentualLucro, ValorCompra e Compra */
+									itemVenda.setLucro(BigDecimal.valueOf((itemCompraTemp.getQuantidadeDisponivel()
+											* itemVenda.getValorUnitario().doubleValue())
+											- (itemCompraTemp.getQuantidadeDisponivel()
+													* itemCompraTemp.getValorUnitario().doubleValue())));
+									itemVenda.setPercentualLucro(BigDecimal.valueOf((itemVenda.getLucro().doubleValue()
+											/ (itemCompraTemp.getQuantidadeDisponivel()
+													* itemCompraTemp.getValorUnitario().doubleValue()))
+											* 100));
+									itemVenda.setValorCompra(BigDecimal.valueOf(itemCompraTemp.getQuantidadeDisponivel()
+											* itemCompraTemp.getValorUnitario().doubleValue()));
+
+									itemVenda.setCompra(itemCompraTemp.getCompra());
+
+									/* Venda */
+									/* Total de Itens e Valor Total */
+									venda.setQuantidadeItens(venda.getQuantidadeItens() + itemVenda.getQuantidade());
+									venda.setValorTotal(BigDecimal.valueOf(
+											venda.getValorTotal().doubleValue() + itemVenda.getTotal().doubleValue()));
+
+									/* Lucro, PercentualLucro e ValorCompra */
+									venda.setLucro(BigDecimal.valueOf(
+											venda.getLucro().doubleValue() + itemVenda.getLucro().doubleValue()));
+									venda.setPercentualLucro(BigDecimal.valueOf(venda.getPercentualLucro().doubleValue()
+											+ itemVenda.getLucro().doubleValue()));
+									venda.setValorCompra(BigDecimal.valueOf(venda.getValorCompra().doubleValue()
+											+ itemVenda.getValorCompra().doubleValue()));
+
+									/* Item */
+									/* Produto */
+									if (produto != null) {
+										itemVenda.setProduto(produto);
+									} else {
+										// produto = new Produto();
+										// produto.setCodeTemp(codigo);
+										produto = produtosRepository.porCodigo("0"); // Teste
+										itemVenda.setProduto(produto);
+									}
+
+									itens.add(itemVenda);
+									System.out
+											.println(itemVenda.getValorUnitario() + " - " + itemVenda.getQuantidade());
+
+									saldo -= itemCompraTemp.getQuantidadeDisponivel();
+
+									itemCompraTemp.setQuantidadeDisponivel(
+											itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());
+									itensComprasRepository.save(itemCompraTemp);
+
+								}
+
+							}
+
+						} while (saldo > 0);
+
+					}
+				}
+			}
+
+			List<String> codigos = new ArrayList<>();
+
+			boolean produtoNaoEncontrado = false;
+			for (Venda vendaTemp : vendas) {
+				for (ItemVenda itemVendaTemp : vendaTemp.getItensVenda()) {
+					if (itemVendaTemp.getProduto().getId() == null) {
+						produtoNaoEncontrado = true;
+						codigos.add(itemVendaTemp.getProduto().getCodeTemp());
+					}
+				}
+			}
+
+			if (produtoNaoEncontrado != true) {
+
+				Long quantidade = 0L;
+				Double valorTotal = 0D;
+
+				for (Venda vendaTemp : vendas) {
+					System.out.println("Quant. Itens: " + vendaTemp.getQuantidadeItens() + " - Valor Total: "
+							+ vendaTemp.getValorTotal() + " _ " + vendaTemp.getItensVenda().size());
+
+					List<ItemVenda> itensTemp = new ArrayList<>();
+					itensTemp.addAll(vendaTemp.getItensVenda());
+
+					vendaTemp = vendasRepository.save(vendaTemp);
+
+					for (ItemVenda itemVendaTemp : itensTemp) {
+						/* Item */
+						/* Venda */
+						itemVendaTemp.setVenda(vendaTemp);
+
+						quantidade += itemVendaTemp.getQuantidade();
+						valorTotal += itemVendaTemp.getTotal().doubleValue();
+
+						Produto produto = itemVendaTemp.getProduto();
+						produto = produtosRepository.porId(produto.getId());
+						produto.setQuantidadeAtual(produto.getQuantidadeAtual() - itemVendaTemp.getQuantidade());
+						
+						System.out.println(produto.getCodigo() + " - " + produto.getQuantidadeAtual());
+						
+						produtosRepository.save(produto);
+
+						itensVendasRepository.save(itemVendaTemp);
+					}
+
+				}
+
+				System.out.println("Total de Vendas: " + vendas.size());
+				System.out.println("Quantidade: " + quantidade);
+				System.out.println("Valor Total: " + valorTotal);
+
+				PrimeFaces.current().executeScript(
+						"swal({ type: 'success', title: 'Concluído!', text: 'Dados importados com sucesso!' });");
+			} else {
+				PrimeFaces.current().executeScript(
+						"swal({ type: 'error', title: 'Erro!', text: 'Produtos não encontrados! Verifique os códigos: "
+								+ Arrays.asList(codigos) + " ' });");
+			}
+
+		} catch (IOException | IllegalArgumentException e) {
+			PrimeFaces.current()
+					.executeScript("swal({ type: 'error', title: 'Erro!', text: 'Selecione um arquivo válido!' });");
+		}
+
+		fileContent = null;
+	}
+
 	public void importar() {
 
 		if (file != null && file.getFileName() != null) {
 			fileContent = file.getContents();
 
 			System.out.println(file.getFileName());
-
-			Compra compra = null;
-			List<ItemCompra> itens = null;
-			Iterator<Row> rowIterator = null;
-
-			List<Compra> compras = new ArrayList<>();
-
-			Workbook workbook;
-			try {
-				workbook = create(file.getInputstream());
-
-				Sheet sheet = workbook.getSheetAt(0);
-				rowIterator = sheet.iterator();
-
-				String comprasNum = "";
-				while (rowIterator.hasNext()) {
-					Row row = rowIterator.next();
-
-					if (row.getRowNum() > 0) {
-
-						if (!row.getCell(0).toString().equals(comprasNum)) {
-
-							comprasNum = row.getCell(0).toString();
-
-							compra = new Compra();
-							itens = new ArrayList<>();
-							Calendar calendar = Calendar.getInstance();
-
-							try {
-								calendar.setTime(new SimpleDateFormat("dd MMM yyyy")
-										.parse(row.getCell(1).toString().replace("-", " ")));
-								compra.setDataCompra(calendar.getTime());
-							} catch (ParseException e) {
-
-							}
-
-							System.out.println(compra.getDataCompra());
-							compra.setDia(Long.valueOf((calendar.get(Calendar.DAY_OF_MONTH))));
-							compra.setNomeDia(Long.valueOf((calendar.get(Calendar.DAY_OF_WEEK))));
-							compra.setSemana(Long.valueOf((calendar.get(Calendar.WEEK_OF_YEAR))));
-							compra.setMes(Long.valueOf((calendar.get(Calendar.MONTH))) + 1);
-							compra.setAno(Long.valueOf((calendar.get(Calendar.YEAR))));
-
-							compra.setItensCompra(itens);
-							compras.add(compra);
-						}
-
-						if (row.getCell(0).toString().equals(comprasNum)) {
-
-							compra.setQuantidadeItens((long) (compra.getQuantidadeItens()
-									+ Double.parseDouble(row.getCell(5).toString())));
-							compra.setValorTotal(BigDecimal.valueOf(compra.getValorTotal().doubleValue()
-									+ (Double.parseDouble(row.getCell(4).toString())
-											* Double.parseDouble(row.getCell(5).toString()))));
-
-							ItemCompra itemCompra = new ItemCompra();
-							itemCompra.setQuantidade((long) Double.parseDouble(row.getCell(5).toString()));
-							itemCompra.setQuantidadeDisponivel(itemCompra.getQuantidade());
-							itemCompra.setValorUnitario(
-									BigDecimal.valueOf(Double.parseDouble(row.getCell(4).toString())));
-							itemCompra.setTotal(BigDecimal.valueOf(Double.parseDouble(row.getCell(4).toString())
-									* Double.parseDouble(row.getCell(5).toString())));
-							
-							System.out.println(row.getCell(2).toString());
-							String codigo = ((long) Double.parseDouble(row.getCell(2).toString())) + "";
-							Produto produto = produtosRepository.porCodigo(codigo);
-							
-							if(produto != null) {
-								itemCompra.setProduto(produto);	
-							} else {
-								//produto = new Produto();
-								//produto.setCodeTemp(codigo);
-								produto = produtosRepository.porCodigo("0"); //Teste
-								itemCompra.setProduto(produto);
-							}
-
-							itens.add(itemCompra);
-							System.out.println(itemCompra.getValorUnitario() + " - " + itemCompra.getQuantidade());
-						}
-					}
+			System.out.println("Opção: " + opcao);
+			
+			if(!opcao.equalsIgnoreCase("")) {
+				
+				if(opcao.equalsIgnoreCase("compras")) {
+					importarCompras(file);
 				}
 				
-				List<String> codigos = new ArrayList<>();
-				
-				boolean produtoNaoEncontrado = false;
-				for (Compra compraTemp : compras) {
-					for (ItemCompra itemCompraTemp : compraTemp.getItensCompra()) {
-						if(itemCompraTemp.getProduto().getId() == null) {
-							produtoNaoEncontrado = true;
-							codigos.add(itemCompraTemp.getProduto().getCodeTemp());
-						}
-					}
+				if(opcao.equalsIgnoreCase("vendas")) {
+					importarVendas(file);
 				}
-
-				if(produtoNaoEncontrado != true) {
+				
+				if(opcao.equalsIgnoreCase("lançamentos")) {
 					
-					for (Compra compraTemp : compras) {
-						System.out.println("Quant. Itens: " + compraTemp.getQuantidadeItens() + " - Valor Total: "
-								+ compraTemp.getValorTotal() + " _ " + compraTemp.getItensCompra().size());
-						
-						List<ItemCompra> itensTemp = new ArrayList<>();
-						itensTemp.addAll(compraTemp.getItensCompra());
-						
-						Usuario usuario = usuariosRepository.porId(1L);
-						compraTemp.setUsuario(usuario);
-						compraTemp = comprasRepository.save(compraTemp);
-						
-						for (ItemCompra itemCompraTemp : itensTemp) {
-							itemCompraTemp.setCompra(compraTemp);
-							
-							Produto produto = itemCompraTemp.getProduto();
-							produto.setQuantidadeAtual(produto.getQuantidadeAtual() + itemCompraTemp.getQuantidade());
-							produtosRepository.save(produto);
-							
-							itensComprasRepository.save(itemCompraTemp);
-						}
-						
-					}
-					
-					System.out.println("Total de Compras: " + compras.size());
-
-					PrimeFaces.current().executeScript(
-							"swal({ type: 'success', title: 'Concluído!', text: 'Dados importados com sucesso!' });");
-				} else {
-					PrimeFaces.current().executeScript(
-							"swal({ type: 'error', title: 'Erro!', text: 'Produtos não encontrados! Verifique os códigos: " + Arrays.asList(codigos) + " ' });");
 				}
 				
-
-			} catch (IOException | IllegalArgumentException e) {
-				PrimeFaces.current().executeScript(
-						"swal({ type: 'error', title: 'Erro!', text: 'Selecione um arquivo válido!' });");
+			} else {
+				PrimeFaces.current()
+				.executeScript("swal({ type: 'warning', title: 'Atenção!', text: 'Selecione uma opção antes de importar o arquivo!' });");
 			}
-
-			fileContent = null;
 
 		} else {
 
@@ -244,6 +558,14 @@ public class ImportarDadosBean implements Serializable {
 			e.printStackTrace();
 		}
 		throw new IllegalArgumentException("你的excel版本目前poi解析不了");
+	}
+
+	public String getOpcao() {
+		return opcao;
+	}
+
+	public void setOpcao(String opcao) {
+		this.opcao = opcao;
 	}
 
 }

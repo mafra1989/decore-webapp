@@ -398,7 +398,7 @@
 								oncomplete="stop();" icon="fa fa-fw fa-trash"
 								disabled="#{registroVendasBean.itensVendaSize eq 0}" />
 
-							<p:menuitem value="Editar Item" id="btn-editar" rendered="false"
+							<p:menuitem value="Editar Item" id="btn-editar" 
 								update="panel-table form:id form:codigo form:total-venda form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote "
 								process="@this panel-table"
 								action="#{registroVendasBean.editarItem}" onstart="start();"
