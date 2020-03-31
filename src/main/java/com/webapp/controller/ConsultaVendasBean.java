@@ -110,6 +110,8 @@ public class ConsultaVendasBean implements Serializable {
 		
 		for (Venda venda : vendasFiltradas) {
 			
+			venda = vendas.porId(venda.getId());
+			
 			for (ItemVenda itemVenda : venda.getItensVenda()) {
 				Produto produto = itemVenda.getProduto();
 				produto = produtos.porId(produto.getId());
