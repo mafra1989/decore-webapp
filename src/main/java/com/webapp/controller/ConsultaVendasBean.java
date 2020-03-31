@@ -87,7 +87,7 @@ public class ConsultaVendasBean implements Serializable {
 	}
 
 	public void excluir() {
-/*
+
 		List<ItemVenda> itensVenda = itensVendas.porVenda(vendaSelecionada);
 		for (ItemVenda itemVenda : itensVenda) {
 			Produto produto = itemVenda.getProduto();
@@ -105,9 +105,9 @@ public class ConsultaVendasBean implements Serializable {
 		pesquisar();
 		PrimeFaces.current()
 				.executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda excluída com sucesso!' });");
-		*/
 		
 		
+		/*
 		for (Venda venda : vendasFiltradas) {
 			
 			venda = vendas.porId(venda.getId());
@@ -129,6 +129,7 @@ public class ConsultaVendasBean implements Serializable {
 		pesquisar();
 		PrimeFaces.current()
 				.executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda excluída com sucesso!' });");
+		*/
 	}
 
 	public List<Usuario> getTodosUsuarios() {
