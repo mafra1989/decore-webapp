@@ -87,7 +87,7 @@ public class ConsultaVendasBean implements Serializable {
 	}
 
 	public void excluir() {
-
+/*
 		List<ItemVenda> itensVenda = itensVendas.porVenda(vendaSelecionada);
 		for (ItemVenda itemVenda : itensVenda) {
 			Produto produto = itemVenda.getProduto();
@@ -101,6 +101,27 @@ public class ConsultaVendasBean implements Serializable {
 		vendas.remove(vendaSelecionada);
 
 		vendaSelecionada = null;
+		
+		pesquisar();
+		PrimeFaces.current()
+				.executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda excluída com sucesso!' });");
+		*/
+		
+		
+		for (Venda venda : vendasFiltradas) {
+			
+			for (ItemVenda itemVenda : venda.getItensVenda()) {
+				Produto produto = itemVenda.getProduto();
+				produto.setQuantidadeAtual(produto.getQuantidadeAtual() + itemVenda.getQuantidade());
+				produto.setQuantidadeItensVendidos(produto.getQuantidadeItensVendidos() - itemVenda.getQuantidade());
+				produtos.save(produto);
+
+				itensVendas.remove(itemVenda);
+			}
+
+			vendas.remove(vendaSelecionada);
+		}
+		
 		pesquisar();
 		PrimeFaces.current()
 				.executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda excluída com sucesso!' });");

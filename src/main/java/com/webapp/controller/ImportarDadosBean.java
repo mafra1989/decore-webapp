@@ -435,7 +435,7 @@ public class ImportarDadosBean implements Serializable {
 
 							} else {
 								
-								continue;
+								break;
 							}
 
 						} while (saldo > 0);
