@@ -110,6 +110,17 @@ public class EstoqueBean implements Serializable {
 		} else {
 			quantidadePedido = null;
 		}
+		
+		
+		if(filter.getDescricao().equalsIgnoreCase("ZerarEstoque")) {
+			
+			for (Produto produto : produtosFiltrados) {
+				produto = produtos.porId(produto.getId());
+				produto.setQuantidadeAtual(0L);
+				
+				produtos.save(produto);
+			}
+		}
 	}
 	
 	

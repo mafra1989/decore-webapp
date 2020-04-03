@@ -127,9 +127,9 @@
 
 			<p:toolbar id="toolbar">
 				<f:facet name="left">
-					<p:commandButton icon="fa fa-fw fa-upload" value="Importar"
+					<p:commandButton icon="fa fa-fw fa-upload" value="Importar" widgetVar="pesquisar-button"
 						id="pesquisar-button" style="margin-left: 3px;font-weight:bold"
-						action="#{importarDadosBean.importar}" process="@this"
+						action="#{importarDadosBean.importar}" process="@this" 
 						ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);"></p:commandButton>
 				</f:facet>
 

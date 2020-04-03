@@ -121,6 +121,8 @@ public class ImportarDadosBean implements Serializable {
 						comprasNum = row.getCell(0).toString();
 
 						compra = new Compra();
+						compra.setNumeroCompra(comprasNum);
+						
 						itens = new ArrayList<>();
 						Calendar calendar = Calendar.getInstance();
 
@@ -191,27 +193,33 @@ public class ImportarDadosBean implements Serializable {
 
 			if (produtoNaoEncontrado != true) {
 
+				
 				for (Compra compraTemp : compras) {
-					System.out.println("Quant. Itens: " + compraTemp.getQuantidadeItens() + " - Valor Total: "
-							+ compraTemp.getValorTotal() + " _ " + compraTemp.getItensCompra().size());
+					
+					Compra compraTemp_ = comprasRepository.porNumeroCompra(compraTemp.getNumeroCompra());
+					if(compraTemp_ == null) {
+						
+						System.out.println("Quant. Itens: " + compraTemp.getQuantidadeItens() + " - Valor Total: "
+								+ compraTemp.getValorTotal() + " _ " + compraTemp.getItensCompra().size());
 
-					List<ItemCompra> itensTemp = new ArrayList<>();
-					itensTemp.addAll(compraTemp.getItensCompra());
+						List<ItemCompra> itensTemp = new ArrayList<>();
+						itensTemp.addAll(compraTemp.getItensCompra());
 
-					Usuario usuario = usuariosRepository.porId(1L);
-					compraTemp.setUsuario(usuario);
-					compraTemp = comprasRepository.save(compraTemp);
+						Usuario usuario = usuariosRepository.porId(1L);
+						compraTemp.setUsuario(usuario);
+						compraTemp = comprasRepository.save(compraTemp);
 
-					for (ItemCompra itemCompraTemp : itensTemp) {
-						itemCompraTemp.setCompra(compraTemp);
+						for (ItemCompra itemCompraTemp : itensTemp) {
+							itemCompraTemp.setCompra(compraTemp);
 
-						Produto produto = itemCompraTemp.getProduto();
-						produto.setQuantidadeAtual(produto.getQuantidadeAtual() + itemCompraTemp.getQuantidade());
-						produtosRepository.save(produto);
+							Produto produto = itemCompraTemp.getProduto();
+							produto.setQuantidadeAtual(produto.getQuantidadeAtual() + itemCompraTemp.getQuantidade());
+							produtosRepository.save(produto);
 
-						itensComprasRepository.save(itemCompraTemp);
+							itensComprasRepository.save(itemCompraTemp);
+						}
 					}
-
+					
 				}
 
 				System.out.println("Total de Compras: " + compras.size());
@@ -258,6 +266,8 @@ public class ImportarDadosBean implements Serializable {
 						vendasNum = row.getCell(0).toString();
 
 						venda = new Venda();
+						venda.setNumeroVenda(vendasNum);
+						
 						itens = new ArrayList<>();
 						Calendar calendar = Calendar.getInstance();
 
@@ -462,32 +472,37 @@ public class ImportarDadosBean implements Serializable {
 				Double valorTotal = 0D;
 
 				for (Venda vendaTemp : vendas) {
-					System.out.println("Quant. Itens: " + vendaTemp.getQuantidadeItens() + " - Valor Total: "
-							+ vendaTemp.getValorTotal() + " _ " + vendaTemp.getItensVenda().size());
+					
+					Venda vendaTemp_ = vendasRepository.porNumeroVenda(vendaTemp.getNumeroVenda());
+					if(vendaTemp_ == null) {
+						
+						System.out.println("Quant. Itens: " + vendaTemp.getQuantidadeItens() + " - Valor Total: "
+								+ vendaTemp.getValorTotal() + " _ " + vendaTemp.getItensVenda().size());
 
-					List<ItemVenda> itensTemp = new ArrayList<>();
-					itensTemp.addAll(vendaTemp.getItensVenda());
+						List<ItemVenda> itensTemp = new ArrayList<>();
+						itensTemp.addAll(vendaTemp.getItensVenda());
 
-					vendaTemp = vendasRepository.save(vendaTemp);
+						vendaTemp = vendasRepository.save(vendaTemp);
 
-					for (ItemVenda itemVendaTemp : itensTemp) {
-						/* Item */
-						/* Venda */
-						itemVendaTemp.setVenda(vendaTemp);
+						for (ItemVenda itemVendaTemp : itensTemp) {
+							/* Item */
+							/* Venda */
+							itemVendaTemp.setVenda(vendaTemp);
 
-						quantidade += itemVendaTemp.getQuantidade();
-						valorTotal += itemVendaTemp.getTotal().doubleValue();
+							quantidade += itemVendaTemp.getQuantidade();
+							valorTotal += itemVendaTemp.getTotal().doubleValue();
 
-						Produto produto = itemVendaTemp.getProduto();
-						produto = produtosRepository.porId(produto.getId());
-						produto.setQuantidadeAtual(produto.getQuantidadeAtual() - itemVendaTemp.getQuantidade());
+							Produto produto = itemVendaTemp.getProduto();
+							produto = produtosRepository.porId(produto.getId());
+							produto.setQuantidadeAtual(produto.getQuantidadeAtual() - itemVendaTemp.getQuantidade());
 
-						System.out.println(produto.getCodigo() + " - " + produto.getQuantidadeAtual());
+							System.out.println(produto.getCodigo() + " - " + produto.getQuantidadeAtual());
 
-						produtosRepository.save(produto);
+							produtosRepository.save(produto);
 
-						itensVendasRepository.save(itemVendaTemp);
-					}
+							itensVendasRepository.save(itemVendaTemp);
+						}
+					}		
 
 				}
 
@@ -512,7 +527,9 @@ public class ImportarDadosBean implements Serializable {
 		fileContent = null;
 	}
 
-	public void importar() {
+	public void importar() { 
+		
+		System.out.println("Iniciando importação . . .");
 
 		if (file != null && file.getFileName() != null) {
 			fileContent = file.getContents();

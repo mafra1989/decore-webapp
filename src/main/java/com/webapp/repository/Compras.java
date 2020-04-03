@@ -25,6 +25,18 @@ public class Compras implements Serializable {
 	public Compra porId(Long id) {
 		return this.manager.find(Compra.class, id);
 	}
+	
+	public Compra porNumeroCompra(String numeroCompra) {
+		try {
+			return this.manager
+				.createQuery("from Compra e where e.numeroCompra = :numeroCompra", Compra.class)
+				.setParameter("numeroCompra", numeroCompra).getSingleResult();
+		} catch(NoResultException e) {
+			
+		}
+		
+		return null;
+	}
 
 	@Transacional
 	public Compra save(Compra compra) {

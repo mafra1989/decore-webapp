@@ -27,6 +27,18 @@ public class Vendas implements Serializable {
 	public Venda porId(Long id) {
 		return this.manager.find(Venda.class, id);
 	}
+	
+	public Venda porNumeroVenda(String numeroVenda) {
+		try {
+			return this.manager
+				.createQuery("from Venda e where e.numeroVenda = :numeroVenda", Venda.class)
+				.setParameter("numeroVenda", numeroVenda).getSingleResult();
+		} catch(NoResultException e) {
+			
+		}
+		
+		return null;
+	}
 
 	@Transacional
 	public Venda save(Venda venda) {

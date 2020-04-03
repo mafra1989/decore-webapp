@@ -29,6 +29,9 @@ public class Compra implements Serializable {
 	@NotNull
 	@Column
 	private Date dataCompra = new Date();
+	
+	@Column
+	private String numeroCompra;
 
 	@NotNull
 	@Column
@@ -73,6 +76,14 @@ public class Compra implements Serializable {
 
 	public void setDataCompra(Date dataCompra) {
 		this.dataCompra = dataCompra;
+	}
+
+	public String getNumeroCompra() {
+		return numeroCompra;
+	}
+
+	public void setNumeroCompra(String numeroCompra) {
+		this.numeroCompra = numeroCompra;
 	}
 
 	public Long getQuantidadeItens() {
