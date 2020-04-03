@@ -107,7 +107,6 @@ public class ConsultaComprasBean implements Serializable {
 				for (ItemCompra itemCompra : itensCompra) {
 					Produto produto = itemCompra.getProduto();
 					produto.setQuantidadeAtual(produto.getQuantidadeAtual() - itemCompra.getQuantidade());
-					produto.setQuantidadeItensComprados(produto.getQuantidadeItensComprados() - itemCompra.getQuantidade());
 					produtos.save(produto);
 					
 					itensCompras.remove(itemCompra);
@@ -135,7 +134,6 @@ public class ConsultaComprasBean implements Serializable {
 					for (ItemCompra itemCompra : itensCompra) {
 						Produto produto = itemCompra.getProduto();
 						produto.setQuantidadeAtual(produto.getQuantidadeAtual() - itemCompra.getQuantidade());
-						produto.setQuantidadeItensComprados(produto.getQuantidadeItensComprados() - itemCompra.getQuantidade());
 						produtos.save(produto);
 						
 						itensCompras.remove(itemCompra);

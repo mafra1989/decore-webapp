@@ -1,6 +1,7 @@
 package com.webapp.controller;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Base64;
@@ -124,6 +125,8 @@ public class EstoqueBean implements Serializable {
 			for (Produto produto : produtosFiltrados) {
 				produto = produtos.porId(produto.getId());
 				produto.setQuantidadeAtual(0L);
+				produto.setTotalCompras(BigDecimal.ZERO);
+				produto.setTotalVendas(BigDecimal.ZERO);
 				
 				produtos.save(produto);
 			}

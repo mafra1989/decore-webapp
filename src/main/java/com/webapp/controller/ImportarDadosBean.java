@@ -81,6 +81,8 @@ public class ImportarDadosBean implements Serializable {
 
 	private String opcao = "";
 
+	private boolean upload = false;
+	
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
 
@@ -529,32 +531,40 @@ public class ImportarDadosBean implements Serializable {
 
 	public void importar() { 
 		
-		System.out.println("Iniciando importação . . .");
+		System.out.println("Iniciando importação . . . upload: " + upload);
 
 		if (file != null && file.getFileName() != null) {
 			fileContent = file.getContents();
+			
+			if(upload == false) {
+				upload = true;
+				
+				System.out.println(file.getFileName());
+				System.out.println("Opção: " + opcao);
+				System.out.println("Upload: " + upload);
 
-			System.out.println(file.getFileName());
-			System.out.println("Opção: " + opcao);
+				if (!opcao.equalsIgnoreCase("")) {
 
-			if (!opcao.equalsIgnoreCase("")) {
+					if (opcao.equalsIgnoreCase("compras")) {
+						importarCompras(file);
+						upload = false;
+					}
 
-				if (opcao.equalsIgnoreCase("compras")) {
-					importarCompras(file);
+					if (opcao.equalsIgnoreCase("vendas")) {
+						importarVendas(file);
+						upload = false;
+					}
+
+					if (opcao.equalsIgnoreCase("lançamentos")) {
+
+					}
+
+				} else {
+					PrimeFaces.current().executeScript(
+							"swal({ type: 'warning', title: 'Atenção!', text: 'Selecione uma opção antes de importar o arquivo!' });");
 				}
 
-				if (opcao.equalsIgnoreCase("vendas")) {
-					importarVendas(file);
-				}
-
-				if (opcao.equalsIgnoreCase("lançamentos")) {
-
-				}
-
-			} else {
-				PrimeFaces.current().executeScript(
-						"swal({ type: 'warning', title: 'Atenção!', text: 'Selecione uma opção antes de importar o arquivo!' });");
-			}
+			}			
 
 		} else {
 
