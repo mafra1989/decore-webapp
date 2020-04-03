@@ -199,15 +199,15 @@ public class RegistroComprasBean implements Serializable {
 	public void editarItem() {
 		List<ItemVenda> itensVenda = itensVendas.porCompra(compra, itemSelecionado);
 		
-		//if(itensVenda.size() == 0) {		
+		if(itensVenda.size() == 0) {		
 			itemCompra = itemSelecionado;
 			compra.setValorTotal(BigDecimal.valueOf(compra.getValorTotal().doubleValue() - itemSelecionado.getTotal().doubleValue()));
 			itensCompra.remove(itemSelecionado);
 			itemSelecionado = null;
-		//} else {
-			//PrimeFaces.current().executeScript(
-					//"swal({ type: 'error', title: 'Erro!', text: 'Este item já está vinculado a uma ou mais vendas!' });");
-		//}
+		} else {
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'error', title: 'Erro!', text: 'Este item já está vinculado a uma ou mais vendas!' });");
+		}
 
 	}
 
