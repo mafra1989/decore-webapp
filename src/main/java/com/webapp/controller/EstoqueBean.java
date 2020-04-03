@@ -125,11 +125,11 @@ public class EstoqueBean implements Serializable {
 			for (Produto produto : produtosFiltrados) {
 				produto = produtos.porId(produto.getId());
 				produto.setQuantidadeAtual(0L);
-				produto.setTotalCompras(BigDecimal.ZERO);
-				produto.setTotalVendas(BigDecimal.ZERO);
 				
-				produtos.save(produto);
+				produto = produtos.save(produto);
 			}
+			
+			//produtosFiltrados = produtos.filtrados(filter);
 		}
 	}
 	

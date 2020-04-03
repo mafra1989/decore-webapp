@@ -478,7 +478,7 @@ public class ImportarDadosBean implements Serializable {
 					Venda vendaTemp_ = vendasRepository.porNumeroVenda(vendaTemp.getNumeroVenda());
 					if(vendaTemp_ == null) {
 						
-						System.out.println("Quant. Itens: " + vendaTemp.getQuantidadeItens() + " - Valor Total: "
+						System.out.println("Venda N.:" + vendaTemp.getNumeroVenda() + "Quant. Itens: " + vendaTemp.getQuantidadeItens() + " - Valor Total: "
 								+ vendaTemp.getValorTotal() + " _ " + vendaTemp.getItensVenda().size());
 
 						List<ItemVenda> itensTemp = new ArrayList<>();
