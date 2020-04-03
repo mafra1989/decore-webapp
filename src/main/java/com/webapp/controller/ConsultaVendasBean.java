@@ -87,49 +87,55 @@ public class ConsultaVendasBean implements Serializable {
 	}
 
 	public void excluir() {
-
-		List<ItemVenda> itensVenda = itensVendas.porVenda(vendaSelecionada);
-		for (ItemVenda itemVenda : itensVenda) {
-			Produto produto = itemVenda.getProduto();
-			produto.setQuantidadeAtual(produto.getQuantidadeAtual() + itemVenda.getQuantidade());
-			produto.setQuantidadeItensVendidos(produto.getQuantidadeItensVendidos() - itemVenda.getQuantidade());
-			produtos.save(produto);
-
-			itensVendas.remove(itemVenda);
-		}
-
-		vendas.remove(vendaSelecionada);
-
-		vendaSelecionada = null;
 		
-		pesquisar();
-		PrimeFaces.current()
-				.executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda excluída com sucesso!' });");
-		
-		
-		/*
-		for (Venda venda : vendasFiltradas) {
+		if(vendaSelecionada != null) {
 			
-			venda = vendas.porId(venda.getId());
-			
-			for (ItemVenda itemVenda : venda.getItensVenda()) {
+			List<ItemVenda> itensVenda = itensVendas.porVenda(vendaSelecionada);
+			for (ItemVenda itemVenda : itensVenda) {
 				Produto produto = itemVenda.getProduto();
-				produto = produtos.porId(produto.getId());
 				produto.setQuantidadeAtual(produto.getQuantidadeAtual() + itemVenda.getQuantidade());
 				produto.setQuantidadeItensVendidos(produto.getQuantidadeItensVendidos() - itemVenda.getQuantidade());
 				produtos.save(produto);
 
-				itemVenda = itensVendas.porId(itemVenda.getId());
 				itensVendas.remove(itemVenda);
 			}
 
-			vendas.remove(venda);
-		}
+			vendas.remove(vendaSelecionada);
+
+			vendaSelecionada = null;
+			
+			pesquisar();
+			PrimeFaces.current()
+					.executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda excluída com sucesso!' });");
+			
+			
+		} else {
+			
+			for (Venda venda : vendasFiltradas) {
+				
+				venda = vendas.porId(venda.getId());
+				
+				List<ItemVenda> itensVenda = itensVendas.porVenda(venda);
+				
+				for (ItemVenda itemVenda : itensVenda) {
+					Produto produto = itemVenda.getProduto();
+					produto = produtos.porId(produto.getId());
+					produto.setQuantidadeAtual(produto.getQuantidadeAtual() + itemVenda.getQuantidade());
+					produto.setQuantidadeItensVendidos(produto.getQuantidadeItensVendidos() - itemVenda.getQuantidade());
+					produtos.save(produto);
+
+					itensVendas.remove(itemVenda);
+				}
+
+				vendas.remove(venda);
+			}
+			
+			pesquisar();
+			PrimeFaces.current()
+					.executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda excluída com sucesso!' });");
 		
-		pesquisar();
-		PrimeFaces.current()
-				.executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda excluída com sucesso!' });");
-		*/
+		}
+
 	}
 
 	public List<Usuario> getTodosUsuarios() {
