@@ -62,7 +62,14 @@ public class EstoqueBean implements Serializable {
 	}
 	
 	public void pesquisar() {
-		produtosFiltrados = produtos.filtrados(filter);
+		
+		boolean zerarEstoque = false;
+		if(filter.getDescricao().equalsIgnoreCase("ZerarEstoque")) {
+			zerarEstoque = true;
+			filter.setDescricao("");
+		}
+		
+		produtosFiltrados = produtos.filtrados(filter);	
 		
 		long value = 0;
 		for (Produto produto : produtosFiltrados) {
@@ -112,7 +119,7 @@ public class EstoqueBean implements Serializable {
 		}
 		
 		
-		if(filter.getDescricao().equalsIgnoreCase("ZerarEstoque")) {
+		if(zerarEstoque) {
 			
 			for (Produto produto : produtosFiltrados) {
 				produto = produtos.porId(produto.getId());
