@@ -1,7 +1,6 @@
 package com.webapp.controller;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Base64;
@@ -11,10 +10,16 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.primefaces.PrimeFaces;
+
 import com.webapp.model.CategoriaProduto;
+import com.webapp.model.Compra;
+import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.Produto;
 import com.webapp.repository.CategoriasProdutos;
+import com.webapp.repository.Compras;
+import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.filter.ProdutoFilter;
@@ -54,7 +59,13 @@ public class EstoqueBean implements Serializable {
 	
 	private NumberFormat nf = new DecimalFormat("###,##0.00");
 
-        private Long produtoId;
+	private Long produtoId;
+        
+    @Inject
+	private ItensCompras itensCompras;
+	
+	@Inject
+	private Compras compras;
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -130,6 +141,25 @@ public class EstoqueBean implements Serializable {
 			}
 			
 			//produtosFiltrados = produtos.filtrados(filter);
+		}
+		
+		if(filter.getDescricao().contains("Ajuste")) {
+			String[] dados = filter.getDescricao().replace("Ajuste", "").split(",");
+			
+			Compra compra = compras.porNumeroCompra(dados[0]);
+			Produto produto = produtos.porCodigo(dados[1]);
+			
+			ItemCompra itemCompra = itensCompras.porCompra(compra, produto);
+			if(itemCompra != null) {
+				itemCompra.setQuantidadeDisponivel(Long.parseLong(dados[2]));
+				itensCompras.save(itemCompra);
+				
+				PrimeFaces.current().executeScript(
+						"swal({ type: 'success', title: 'Concluído!', text: 'Ajuste realizado com sucesso! Compra N. " 
+				+ compra.getNumeroCompra() + ", Produto: " + produto.getCodigo() + ", Quantidade Disponível: "
+								+ itemCompra.getQuantidadeDisponivel() + " ' });");
+			}
+			
 		}
 	}
 	
