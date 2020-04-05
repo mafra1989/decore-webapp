@@ -66,6 +66,8 @@ public class EstoqueBean implements Serializable {
 	
 	@Inject
 	private Compras compras;
+	
+	private boolean loop = true;
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -167,7 +169,9 @@ public class EstoqueBean implements Serializable {
 			}		
 		}	
 		
-		if(estoqueDisponivel) {
+		if(estoqueDisponivel && loop) {
+			
+			loop = false;
 			for (Produto produto : produtosFiltrados) {
 				List<ItemCompra> itensCompra = itensCompras.porProduto(produto);
 				
@@ -181,6 +185,7 @@ public class EstoqueBean implements Serializable {
 				}
 			}
 			
+			loop = true;
 			PrimeFaces.current().executeScript(
 					"swal({ type: 'success', title: 'Concluído!', text: 'Estoque Disponível ajustado com sucesso!' });");
 		}
