@@ -165,7 +165,7 @@ public class Vendas implements Serializable {
 		
 		if(chartCondition != false) {
 			select_Condition = "p.dia, p.mes, p.ano, ";
-			sum_Condition = "sum(p.valorTotal)";
+			sum_Condition = "sum(i.total)";
 			groupBy_Condition = "p.dia, p.mes, p.ano ";
 			orderBy_Condition = "p.ano asc,p.mes asc,p.dia asc ";
 		} else {
@@ -244,7 +244,7 @@ public class Vendas implements Serializable {
 		
 		if(chartCondition != false) {
 			select_Condition = "p.semana, p.ano, ";
-			sum_Condition = "sum(p.valorTotal)";
+			sum_Condition = "sum(i.total)";
 			groupBy_Condition = "p.semana, p.ano";
 			orderBy_Condition = "p.semana asc, p.ano asc";
 		} else {
@@ -307,7 +307,7 @@ public class Vendas implements Serializable {
 		
 		if(chartCondition != false) {
 			select_Condition = "p.mes, p.ano, ";
-			sum_Condition = "sum(p.valorTotal)";
+			sum_Condition = "sum(i.total)";
 			groupBy_Condition = "p.mes, p.ano";
 			orderBy_Condition = "p.mes asc, p.ano asc";
 		} else {
