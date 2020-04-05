@@ -81,6 +81,12 @@ public class EstoqueBean implements Serializable {
 			filter.setDescricao("");
 		}
 		
+		boolean estoqueDisponivel = false;
+		if(filter.getDescricao().equalsIgnoreCase("EstoqueDisponivel")) {
+			estoqueDisponivel = true;
+			filter.setDescricao("");
+		}
+		
 		produtosFiltrados = produtos.filtrados(filter);	
 		
 		long value = 0;
@@ -161,7 +167,7 @@ public class EstoqueBean implements Serializable {
 			}		
 		}	
 		
-		if(filter.getDescricao().contains("EstoqueDisponivel")) {
+		if(estoqueDisponivel) {
 			for (Produto produto : produtosFiltrados) {
 				List<ItemCompra> itensCompra = itensCompras.porProduto(produto);
 				
