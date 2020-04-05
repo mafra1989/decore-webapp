@@ -171,6 +171,8 @@ public class EstoqueBean implements Serializable {
 		
 		if(estoqueDisponivel && loop) {
 			
+			Long totalDisponivel = 0L;
+			
 			loop = false;
 			for (Produto produto : produtosFiltrados) {
 				List<ItemCompra> itensCompra = itensCompras.porProduto(produto);
@@ -179,6 +181,7 @@ public class EstoqueBean implements Serializable {
 					Number totalVendido = itensVendas.vendasPorCompra(itemCompra.getCompra(), produto);
 					itemCompra.setQuantidadeDisponivel(itemCompra.getQuantidade() - totalVendido.longValue());
 					
+					totalDisponivel += itemCompra.getQuantidadeDisponivel();
 					System.out.println("Produto: " + itemCompra.getProduto().getCodigo() + " Quantidade: " + itemCompra.getQuantidade() + " Disponível: " + itemCompra.getQuantidadeDisponivel());
 					
 					itensCompras.save(itemCompra);
@@ -186,8 +189,7 @@ public class EstoqueBean implements Serializable {
 			}
 			
 			loop = true;
-			PrimeFaces.current().executeScript(
-					"swal({ type: 'success', title: 'Concluído!', text: 'Estoque Disponível ajustado com sucesso!' });");
+			System.out.println("Total Disponível: " + totalDisponivel);
 		}
 	}
 	
