@@ -158,8 +158,23 @@ public class EstoqueBean implements Serializable {
 						"swal({ type: 'success', title: 'Concluído!', text: 'Ajuste realizado com sucesso! Compra N. " 
 				+ compra.getNumeroCompra() + ", Produto: " + produto.getCodigo() + ", Quantidade Disponível: "
 								+ itemCompra.getQuantidadeDisponivel() + " ' });");
+			}		
+		}	
+		
+		if(filter.getDescricao().contains("EstoqueDisponivel")) {
+			for (Produto produto : produtosFiltrados) {
+				List<ItemCompra> itensCompra = itensCompras.porProduto(produto);
+				
+				for (ItemCompra itemCompra : itensCompra) {
+					Number totalVendido = itensVendas.vendasPorCompra(itemCompra.getCompra(), produto);
+					itemCompra.setQuantidadeDisponivel(itemCompra.getQuantidade() - totalVendido.longValue());
+					
+					itensCompras.save(itemCompra);
+				}
 			}
 			
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'success', title: 'Concluído!', text: 'Estoque Disponível ajustado com sucesso!' });");
 		}
 	}
 	

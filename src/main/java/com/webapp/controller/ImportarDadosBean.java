@@ -201,7 +201,7 @@ public class ImportarDadosBean implements Serializable {
 					Compra compraTemp_ = comprasRepository.porNumeroCompra(compraTemp.getNumeroCompra());
 					if(compraTemp_ == null) {
 						
-						System.out.println("Quant. Itens: " + compraTemp.getQuantidadeItens() + " - Valor Total: "
+						System.out.println("Compra N.:" + compraTemp.getNumeroCompra() + " Quant. Itens: " + compraTemp.getQuantidadeItens() + " - Valor Total: "
 								+ compraTemp.getValorTotal() + " _ " + compraTemp.getItensCompra().size());
 
 						List<ItemCompra> itensTemp = new ArrayList<>();
@@ -478,7 +478,7 @@ public class ImportarDadosBean implements Serializable {
 					Venda vendaTemp_ = vendasRepository.porNumeroVenda(vendaTemp.getNumeroVenda());
 					if(vendaTemp_ == null) {
 						
-						System.out.println("Venda N.:" + vendaTemp.getNumeroVenda() + "Quant. Itens: " + vendaTemp.getQuantidadeItens() + " - Valor Total: "
+						System.out.println("Venda N.:" + vendaTemp.getNumeroVenda() + " Quant. Itens: " + vendaTemp.getQuantidadeItens() + " - Valor Total: "
 								+ vendaTemp.getValorTotal() + " _ " + vendaTemp.getItensVenda().size());
 
 						List<ItemVenda> itensTemp = new ArrayList<>();
