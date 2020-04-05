@@ -369,7 +369,7 @@ public class Vendas implements Serializable {
 		
 		if(chartCondition != false) {
 			select_Condition = "p.ano, ";
-			sum_Condition = "sum(p.valorTotal)";
+			sum_Condition = "sum(i.total)";
 			groupBy_Condition = "p.ano";
 			orderBy_Condition = "p.ano asc";
 		} else {
