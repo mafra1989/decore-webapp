@@ -156,13 +156,15 @@ public class DashboardBean implements Serializable {
         List<Number> values = new ArrayList<>();
         values.add((totalVendas.doubleValue() + totalCreditos.doubleValue()) - (totalCompras.doubleValue() + totalDebitos.doubleValue()));//Em Caixa
         values.add(totalVendas);//Vendas
-        values.add(totalCreditos);//Outras Receitas
+        values.add(totalCreditos);//Receitas
+        values.add(0);//Contas à Receber
+        
         values.add(totalCompras);//Compras
         values.add(totalDebitos);//Despesas
-        values.add(produtos.totalAVender());//Ã€ Vender
+        values.add(0);//Contas à Pagar
+        values.add(produtos.totalAVender());//À Vender
+               
         barDataSet.setData(values);
-        
-        
         
         tabela = new ArrayList<FluxoDeCaixa>();
         FluxoDeCaixa fluxoDeCaixa = new FluxoDeCaixa();
@@ -178,6 +180,11 @@ public class DashboardBean implements Serializable {
         fluxoDeCaixa = new FluxoDeCaixa();
         fluxoDeCaixa.setItem("Receitas");
         fluxoDeCaixa.setValue(totalCreditos.doubleValue());
+        tabela.add(fluxoDeCaixa); 
+        
+        fluxoDeCaixa = new FluxoDeCaixa();
+        fluxoDeCaixa.setItem("Contas à Receber");
+        fluxoDeCaixa.setValue(0D);
         tabela.add(fluxoDeCaixa);
         
         fluxoDeCaixa = new FluxoDeCaixa();
@@ -191,7 +198,12 @@ public class DashboardBean implements Serializable {
         tabela.add(fluxoDeCaixa);
         
         fluxoDeCaixa = new FluxoDeCaixa();
-        fluxoDeCaixa.setItem("A Vender");
+        fluxoDeCaixa.setItem("Contas à Pagar");
+        fluxoDeCaixa.setValue(0D);
+        tabela.add(fluxoDeCaixa);
+        
+        fluxoDeCaixa = new FluxoDeCaixa();
+        fluxoDeCaixa.setItem("À Vender");
         fluxoDeCaixa.setValue(produtos.totalAVender().doubleValue());
         tabela.add(fluxoDeCaixa);
                
@@ -222,9 +234,11 @@ public class DashboardBean implements Serializable {
         labels.add("Caixa");
         labels.add("Vendas");
         labels.add("Receitas");
+        labels.add("À Receber");
         labels.add("Compras");
         labels.add("Despesas");
-        labels.add("A Vender");
+        labels.add("À Pagar");
+        labels.add("À Vender");
         data.setLabels(labels);
         barModel.setData(data);
          

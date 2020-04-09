@@ -81,6 +81,10 @@
 								<p:menuitem id="pm_cat_lancamento" value="Tipo de Venda"
 									icon="fa fa-instagram"
 									outcome="/cadastros/CadastroTipoVenda.xhtml" />
+									
+								<p:menuitem id="pm_forma_pagamento" value="Forma de Pagamento"
+										icon="fa fa-money"
+										outcome="/cadastros/CadastroFormaPagamento.xhtml" />
 
 								<p:submenu id="pm_tipos" label="Lançamentos" icon="fa fa-copy">
 
@@ -96,6 +100,8 @@
 										icon="fa fa-inbox"
 										outcome="/cadastros/CadastroCategoriaDespesa.xhtml" />
 								</p:submenu>
+								
+								
 							</p:submenu>
 
 							<p:submenu id="pm_operacoes" styleClass="pm_operacoes" rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado()}"

@@ -169,8 +169,8 @@ public class ImportarDadosBean implements Serializable {
 						if (produto != null) {
 							itemCompra.setProduto(produto);
 						} else {
-							// produto = new Produto();
-							// produto.setCodeTemp(codigo);
+							//produto = new Produto(); // Producao
+							//produto.setCodeTemp(codigo);  // Producao
 							produto = produtosRepository.porCodigo("0"); // Teste
 							itemCompra.setProduto(produto);
 						}
@@ -294,8 +294,10 @@ public class ImportarDadosBean implements Serializable {
 
 						/* Venda */
 						/* Tipo de Venda e Bairro */
-						venda.setTipoVenda(tiposVendas.porId(3009L));// setTipoVenda(tiposVendas.porId(3575L));
-						venda.setBairro(bairros.porId(3008L));// setBairro(bairros.porId(3574L));
+						//venda.setTipoVenda(tiposVendas.porId(3009L));// Producao
+						//venda.setBairro(bairros.porId(3008L));// Producao
+						venda.setTipoVenda(tiposVendas.porId(859L)); // Teste
+						venda.setBairro(bairros.porId(860L)); // Teste
 
 						/* Venda */
 						/* Usuario */
@@ -311,8 +313,9 @@ public class ImportarDadosBean implements Serializable {
 						System.out.println((long) Double.parseDouble(row.getCell(4).toString()) + " - "
 								+ Double.parseDouble(row.getCell(7).toString()));
 						String codigo = ((long) Double.parseDouble(row.getCell(4).toString())) + "";
-						Produto produto = produtosRepository.porCodigo(codigo);// produtosRepository.porCodigo("0");
-
+						//Produto produto = produtosRepository.porCodigo(codigo);// Producao
+						Produto produto = produtosRepository.porCodigo("0");
+						
 						Long saldo = (long) Double.parseDouble(row.getCell(7).toString());
 
 						do {
@@ -367,9 +370,9 @@ public class ImportarDadosBean implements Serializable {
 									if (produto != null) {
 										itemVenda.setProduto(produto);
 									} else {
-										produto = new Produto();
-										produto.setCodeTemp(codigo);
-										// produto = produtosRepository.porCodigo("0"); // Teste
+										produto = new Produto(); //Producao
+										produto.setCodeTemp(codigo); //Producao
+										produto = produtosRepository.porCodigo("0"); // Teste
 										itemVenda.setProduto(produto);
 									}
 

@@ -180,6 +180,18 @@
 								id="data-compra" pattern="dd/MM/yyyy" locale="pt"
 								readonlyInput="true" showIcon="true" />
 
+							<p:outputLabel value="Forma de Pagamento" for="pagamento" />
+							<p:selectOneMenu id="pagamento"
+								value="#{registroComprasBean.compra.usuario}"
+								placeholder="selecione">
+
+								<f:selectItem itemLabel="Selecione" />
+
+								<f:selectItems value="#{registroComprasBean.todosUsuarios}"
+									var="vendedor" itemLabel="#{vendedor.nome}"
+									itemValue="#{vendedor}" />
+							</p:selectOneMenu>
+							
 							<p:outputLabel value="Comprador" for="comprador" />
 							<p:selectOneMenu id="comprador"
 								value="#{registroComprasBean.compra.usuario}"
