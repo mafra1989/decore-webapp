@@ -83,10 +83,10 @@ public class RegistroLancamentosBean implements Serializable {
 	private TipoPagamento tipoPagamento = TipoPagamento.AVISTA;
 
 	@NotNull
-	private Long parcelas = 2L;
+	private Long parcelas = 3L;
 
 	@NotNull
-	private Long parcelas_ = 2L;
+	private Long parcelas_ = 3L;
 
 	private PeriodoPagamento periodoPagamento = PeriodoPagamento.MESES;
 
