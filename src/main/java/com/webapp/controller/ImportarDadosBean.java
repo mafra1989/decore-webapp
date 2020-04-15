@@ -123,7 +123,7 @@ public class ImportarDadosBean implements Serializable {
 						comprasNum = row.getCell(0).toString();
 
 						compra = new Compra();
-						compra.setNumeroCompra(comprasNum);
+						compra.setNumeroCompra(Long.parseLong(comprasNum.replace(".0", "")));
 						
 						itens = new ArrayList<>();
 						Calendar calendar = Calendar.getInstance();
@@ -268,7 +268,7 @@ public class ImportarDadosBean implements Serializable {
 						vendasNum = row.getCell(0).toString();
 
 						venda = new Venda();
-						venda.setNumeroVenda(vendasNum);
+						venda.setNumeroVenda(Long.parseLong(vendasNum.replace(".0", ""))); 
 						
 						itens = new ArrayList<>();
 						Calendar calendar = Calendar.getInstance();

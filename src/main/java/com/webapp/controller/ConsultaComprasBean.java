@@ -15,11 +15,13 @@ import javax.inject.Named;
 import org.primefaces.PrimeFaces;
 
 import com.webapp.model.Compra;
+import com.webapp.model.Conta;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.Produto;
 import com.webapp.model.Usuario;
 import com.webapp.repository.Compras;
+import com.webapp.repository.Contas;
 import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
 import com.webapp.repository.Produtos;
@@ -31,129 +33,150 @@ import com.webapp.util.jsf.FacesUtil;
 public class ConsultaComprasBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
-	
+
 	private List<Compra> comprasFiltradas = new ArrayList<>();
-	
+
 	private List<Usuario> todosUsuarios;
-	
+
 	@Inject
 	private Usuarios usuarios;
-	
+
 	@Inject
 	private Usuario usuario;
-	
+
 	@Inject
 	private Compras compras;
-	
+
 	@Inject
 	private ItensVendas itensVendas;
-	
+
 	@Inject
 	private ItensCompras itensCompras;
-	
+
 	@Inject
 	private Produtos produtos;
+	
+	@Inject
+	private Contas contas;
+	
+	private Long numeroCompra;
 
-	
 	private Compra compraSelecionada;
-	
+
 	private Date dateStart = new Date();
-	
+
 	private Date dateStop = new Date();
-	
-	
+
 	private NumberFormat nf = new DecimalFormat("###,##0.00");
-	
+
 	private String totalCompras = "0,00";
-	
+
 	private Integer totalItens = 0;
-	
 
 	public void inicializar() {
-		if (FacesUtil.isNotPostback()) {	
+		if (FacesUtil.isNotPostback()) {
 			todosUsuarios = usuarios.todos();
 		}
 	}
-	
-	public void pesquisar() { 	
+
+	public void pesquisar() {
 		Calendar calendarioTemp = Calendar.getInstance();
 		calendarioTemp.setTime(dateStop);
 		calendarioTemp.set(Calendar.HOUR, 23);
 		calendarioTemp.set(Calendar.MINUTE, 59);
 		calendarioTemp.set(Calendar.SECOND, 59);
-		
-		comprasFiltradas = compras.comprasFiltradas(dateStart, calendarioTemp.getTime(), usuario);
-		
+
+		comprasFiltradas = compras.comprasFiltradas(numeroCompra, dateStart, calendarioTemp.getTime(), usuario);
+
 		double totalComprasTemp = 0;
 		totalItens = 0;
 		for (Compra compra : comprasFiltradas) {
 			totalComprasTemp += compra.getValorTotal().doubleValue();
 			totalItens += compra.getQuantidadeItens().intValue();
 		}
-		
+
 		totalCompras = nf.format(totalComprasTemp);
 	}
-	
-	public void excluir() { 	
-		
-		if(compraSelecionada != null) {
-			
+
+	public void excluir() {
+
+		if (compraSelecionada != null) {
+
 			List<ItemVenda> itensVenda = itensVendas.porCompra(compraSelecionada);
-			
-			if(itensVenda.size() == 0) {		
-		
-				List<ItemCompra> itensCompra = itensCompras.porCompra(compraSelecionada);
-				for (ItemCompra itemCompra : itensCompra) {
-					Produto produto = itemCompra.getProduto();
-					produto.setQuantidadeAtual(produto.getQuantidadeAtual() - itemCompra.getQuantidade());
-					produtos.save(produto);
+
+			if (itensVenda.size() == 0) {
+
+				boolean contasPagas = false;
+				List<Conta> contasTemp = contas.porContasPagas(compraSelecionada.getNumeroCompra(), "COMP");
+
+				if (contasTemp.size() == 0) {
+
+					contasTemp = contas.porCodigoOperacao(compraSelecionada.getNumeroCompra(), "COMP");
+					for (Conta conta : contasTemp) {
+						contas.remove(conta);
+					}
+
+				} else {
+					contasPagas = true;
+					PrimeFaces.current().executeScript(
+							"stop();swal({ type: 'error', title: 'Erro!', text: 'Existe contas à pagar já registradas para essa compra!' });");
+				}
+
+				if (contasPagas != true) {
 					
-					itensCompras.remove(itemCompra);
-				}	
+					List<ItemCompra> itensCompra = itensCompras.porCompra(compraSelecionada);
+					for (ItemCompra itemCompra : itensCompra) {
+						Produto produto = itemCompra.getProduto();
+						produto.setQuantidadeAtual(produto.getQuantidadeAtual() - itemCompra.getQuantidade());
+						produtos.save(produto);
+
+						itensCompras.remove(itemCompra);
+					}
+
+					compras.remove(compraSelecionada);
+
+					compraSelecionada = null;
+					pesquisar();
+					PrimeFaces.current().executeScript(
+							"swal({ type: 'success', title: 'Concluído!', text: 'Compra excluída com sucesso!' });");
+				}
 				
-				compras.remove(compraSelecionada);
-				
-				compraSelecionada = null;
-				pesquisar();
-				PrimeFaces.current().executeScript(
-						"swal({ type: 'success', title: 'Concluído!', text: 'Compra excluída com sucesso!' });");
 			} else {
 				PrimeFaces.current().executeScript(
 						"swal({ type: 'error', title: 'Erro!', text: 'Existem itens dessa compra já vinculados a uma ou mais vendas!' });");
 			}
-			
+
 		} else {
-			
+
 			for (Compra compra : comprasFiltradas) {
 				List<ItemVenda> itensVenda = itensVendas.porCompra(compra);
-				
-				if(itensVenda.size() == 0) {		
-			
+
+				if (itensVenda.size() == 0) {
+
 					List<ItemCompra> itensCompra = itensCompras.porCompra(compra);
 					for (ItemCompra itemCompra : itensCompra) {
 						Produto produto = itemCompra.getProduto();
 						produto.setQuantidadeAtual(produto.getQuantidadeAtual() - itemCompra.getQuantidade());
 						produtos.save(produto);
-						
+
 						itensCompras.remove(itemCompra);
-					}	
-					
+					}
+
 					compras.remove(compra);
 				}
 			}
-			
+
 			pesquisar();
 			PrimeFaces.current().executeScript(
 					"swal({ type: 'success', title: 'Concluído!', text: 'Compras excluídas com sucesso!' });");
 		}
 
 	}
-	
+
 	public List<Usuario> getTodosUsuarios() {
 		return todosUsuarios;
 	}
-	
+
 	public Date getDateStart() {
 		return dateStart;
 	}
@@ -170,7 +193,6 @@ public class ConsultaComprasBean implements Serializable {
 		this.dateStop = dateStop;
 	}
 
-
 	public Compra getCompraSelecionada() {
 		return compraSelecionada;
 	}
@@ -186,7 +208,7 @@ public class ConsultaComprasBean implements Serializable {
 	public void setComprasFiltradas(List<Compra> comprasFiltradas) {
 		this.comprasFiltradas = comprasFiltradas;
 	}
-	
+
 	public int getComprasFiltradasSize() {
 		return comprasFiltradas.size();
 	}
@@ -205,6 +227,14 @@ public class ConsultaComprasBean implements Serializable {
 
 	public Integer getTotalItens() {
 		return totalItens;
+	}
+
+	public Long getNumeroCompra() {
+		return numeroCompra;
+	}
+
+	public void setNumeroCompra(Long numeroCompra) {
+		this.numeroCompra = numeroCompra;
 	}
 
 }

@@ -5,22 +5,31 @@
 	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
 	template="/WEB-INF/template.xhtml">
 
-	<ui:define name="title">Consultar Vendas</ui:define>
+	<ui:define name="title">Consultar Contas</ui:define>
 
 	<f:metadata>
-		<f:viewAction action="#{consultaVendasBean.inicializar}" />
+		<f:viewAction action="#{consultaContasBean.inicializar}" />
 	</f:metadata>
 
 	<ui:define name="content">
 
 		<style>
 @media ( min-width :220px) {
+	.pagar {
+		margin-top: -6px;
+	}
+	.ui-datatable-reflow .ui-datatable-data td[role="gridcell"] .ui-column-title
+		{
+		float: left;
+	}
 	.panel-total.ui-panel .ui-panel-content {
-	    border: none;
-	    padding: 0px;
+		border: none;
+		padding: 0px;
 	}
 	.fotoDialog {
-		max-height: 380px !important;width: 240px !important;margin-top: -50px;
+		max-height: 380px !important;
+		width: 240px !important;
+		margin-top: -50px;
 	}
 	.categoria-field {
 		width: 100%;
@@ -88,6 +97,9 @@
 }
 
 @media ( min-width :640px) {
+	.pagar {
+		margin-top: 0px;
+	}
 	.categoria-field {
 		width: 60% !important;
 	}
@@ -110,33 +122,29 @@
 		float: none;
 	}
 	.fotoDialog {
-		max-height: 500px !important;width: 240px !important;margin-top: -50px;
+		max-height: 500px !important;
+		width: 240px !important;
+		margin-top: -50px;
 	}
 }
 </style>
 
 		<div class="page-header">
-			<h1>Consultar Vendas</h1>
+			<h1>Consultar Contas</h1>
 		</div>
 
 		<p:growl id="msg" closable="true" life="500" showSummary="false"
 			showDetail="true" style="text-align: center" />
 
 
-
 		<h:form id="form" prependId="false">
-		
-			<p:remoteCommand name="setarItemID" process="@this vendasTable"
-				update="form" action="#{consultaVendasBean.excluir}"
-				onstart="PF('downloadLoading').show();"
-				oncomplete="PF('downloadLoading').hide();" />
 
 			<p:toolbar id="toolbar">
 				<f:facet name="left">
 					<p:commandButton icon="fa fa-fw fa-search" value="Pesquisar"
-						id="pesquisar-button" update="panel-table vendasTable"
+						id="pesquisar-button" update="panel-table contasTable"
 						style="margin-left: 3px;font-weight:bold" process="form"
-						action="#{consultaVendasBean.pesquisar}"
+						action="#{consultaContasBean.pesquisar}"
 						onstart="PF('downloadLoading').show();"
 						oncomplete="PF('downloadLoading').hide();"></p:commandButton>
 				</f:facet>
@@ -147,45 +155,61 @@
 
 				<p:panel class="card card-w-title ui-fluid itens-add"
 					style="padding-bottom: 0px !important; margin-top:10px">
-					
+
 					<p:panelGrid columns="2" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-2, ui-grid-col-3">
 
-						<p:outputLabel value="Venda N." for="codigo" />
+						<p:outputLabel value="Código" for="codigo" />
 						<p:inputNumber id="codigo" decimalPlaces="0"
-							value="#{consultaVendasBean.numeroVenda}">
+							value="#{consultaContasBean.codigo}">
 						</p:inputNumber>
+
+						<p:outputLabel value="Tipo de operação" for="operacao" />
+						<p:selectOneMenu id="operacao"
+							value="#{consultaContasBean.tipoOperacao}"
+							style="margin-bottom: 5px">
+
+							<f:selectItem itemLabel="Selecione" />
+
+							<f:selectItems value="#{consultaContasBean.tiposOperacoes}"
+								var="tipoOperacao" itemLabel="#{tipoOperacao.descricao}"
+								itemValue="#{tipoOperacao}" />
+						</p:selectOneMenu>
 					</p:panelGrid>
-					
+
 					<p:panelGrid columns="4" id="painel" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-1, ui-grid-col-2">
 
-						<p:outputLabel value="Data da venda" for="data01" />
-						<p:datePicker id="data01" value="#{consultaVendasBean.dateStart}" readonlyInput="true"
-							pattern="dd/MM/yyyy" locale="pt" showIcon="true">
-						</p:datePicker>
+						<p:outputLabel value="Conta" />
+						<p:selectManyCheckbox unselectable="true"
+							value="#{consultaContasBean.origemConta}">
+							<f:selectItems value="#{consultaContasBean.origensContas}"
+								var="origemCota" itemLabel="#{origemCota.descricao}"
+								itemValue="#{origemCota}" />
+						</p:selectManyCheckbox>
+					</p:panelGrid>
 
+					<p:panelGrid columns="4" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-1, ui-grid-col-2">
 
-						<p:outputLabel value="até" id="data02" />
-						<p:datePicker id="data-02" value="#{consultaVendasBean.dateStop}" readonlyInput="true"
-							styleClass="dateStop" pattern="dd/MM/yyyy" locale="pt"
+						<p:outputLabel value="Vencimento até" for="data01" />
+						<p:datePicker id="data01" value="#{consultaContasBean.vencimento}"
+							readonlyInput="true" pattern="dd/MM/yyyy" locale="pt"
 							showIcon="true">
 						</p:datePicker>
+					</p:panelGrid>
 
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3">
 
-						<p:outputLabel value="Vendedor" for="vendedor" />
-						<p:selectOneMenu id="vendedor"
-								value="#{consultaVendasBean.usuario}"
-								placeholder="selecione">
-
-								<f:selectItem itemLabel="Selecione" />
-
-								<f:selectItems value="#{consultaVendasBean.todosUsuarios}"
-									var="vendedor" itemLabel="#{vendedor.nome}"
-									itemValue="#{vendedor}" />
-							</p:selectOneMenu>
+						<p:outputLabel value="Considerar contas pagas?" for="contasPagas" />
+						<p:inputSwitch offLabel="Não" onLabel="Sim" id="contasPagas"
+							value="#{consultaContasBean.contasPagas}">
+						</p:inputSwitch>
 					</p:panelGrid>
 
 				</p:panel>
@@ -195,87 +219,67 @@
 					style="padding-bottom: 0px !important;margin-top:-10px">
 
 					<h3 style="font-weight: bold">Resultado da consulta</h3>
-					
-					<p:commandButton icon="fa fa-fw fa-trash" id="btn-trash"
-						title="Excluir"
-						style="margin-right:113px;font-weight:bold; background: #fd6161; float:right;width:38px;margin-top: -40px;position: relative"
-						process="@this"
-						onclick="deleteItem(#{consultaVendasBean.vendaSelecionada.id});" />
-
-					<p:button icon="fa fa-fw fa-eye" value="Visualizar"
-						outcome="/operacoes/RegistroVendas.xhtml" id="btn-view"
-						style="margin-right:10px;font-weight:bold; float:right;width:100px;margin-top: -40px;position: relative"
-						process="@this vendasTable"
-						disabled="#{(consultaVendasBean.vendasFiltradasSize eq 0) or consultaVendasBean.vendaSelecionada.id == null}"
-						onclick="PF('downloadLoading').show();">
-
-						<f:param name="id"
-							value="#{consultaVendasBean.vendaSelecionada.id}" />
-					</p:button>
 
 					<p:panelGrid columns="1" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-12">
 
-						<p:dataTable id="vendasTable" paginatorAlwaysVisible="false"
-							scrollable="true" scrollHeight="500"
-							value="#{consultaVendasBean.vendasFiltradas}" var="venda"
-							emptyMessage="Nenhum resultado encontrado." 
-							reflow="true" paginator="false" 
-							rowKey="#{venda.id}"
-							selection="#{consultaVendasBean.vendaSelecionada}"
-							selectionMode="single">
+						<p:dataTable id="contasTable" paginatorAlwaysVisible="false"
+							scrollable="true" scrollHeight="505"
+							value="#{consultaContasBean.contasFiltradas}" var="conta"
+							emptyMessage="Nenhum resultado encontrado." reflow="true"
+							paginator="false">
 
-							<p:ajax process="@this" event="rowSelect" update="btn-view btn-trash" onstart="PF('downloadLoading').show();"
-								oncomplete="PF('downloadLoading').hide();" />
-							<p:ajax process="@this" event="rowUnselect" update="btn-view btn-trash" onstart="PF('downloadLoading').show();"
-								oncomplete="PF('downloadLoading').hide();" />
-								
-							<p:column headerText="N. Venda" width="10%">
-								<h:outputText value="#{venda.numeroVenda}" />
+							<p:column headerText="Código" width="20%">
+								<h:outputText value="#{conta.codigoOperacao}" />
 							</p:column>
-							
-							<p:column headerText="Data da venda" width="10%">
-								<h:outputText value="#{venda.dataVenda}">
+
+							<p:column headerText="Operação" width="20%">
+								<h:outputText
+									value="#{conta.operacao == 'LANCAMENTO' ? 'Lançamento' : (conta.operacao == 'COMPRA' ? 'Compra' : conta.operacao)}">
 									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt" />
 								</h:outputText>
 							</p:column>
-							
-							<p:column headerText="Tipo de venda" width="10%">
-								<h:outputText value="#{venda.tipoVenda.descricao}" />
-							</p:column>
-							
-							<p:column headerText="Bairro" width="10%">
-								<h:outputText value="#{venda.bairro.nome}" />
-							</p:column>
-							
-							<p:column headerText="Vendedor" width="10%">
-								<h:outputText value="#{venda.usuario.nome}" />
+
+							<p:column headerText="Parcela" width="20%">
+								<h:outputText
+									value="#{conta.parcela == 'AVISTA' ? 'À vista' : conta.parcela}" />
 							</p:column>
 
-							<p:column headerText="Qtd. Itens" width="10%">
-								<h:outputText value="#{venda.quantidadeItens}" />
-							</p:column>
-
-							<p:column headerText="Valor Total" width="15%">
-								<h:outputText value="#{venda.valorTotal}">
+							<p:column headerText="Valor" width="20%">
+								<h:outputText value="#{conta.valor}">
 									<f:convertNumber type="currency" />
 								</h:outputText>
 							</p:column>
 
+							<p:column headerText="Vencimento" width="20%">
+								<h:outputText value="#{conta.vencimento}">
+									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="PAGO" width="20%">
+								<p:inputSwitch offLabel="Não" onLabel="Sim" styleClass="pagar"
+									value="#{conta.status}">
+
+									<p:ajax process="@this"
+										listener="#{consultaContasBean.pagar(conta)}"
+										onstart="start();" oncomplete="stop();" />
+								</p:inputSwitch>
+							</p:column>
+
 						</p:dataTable>
-						
-						<p:panel styleClass="panelgrid-noborder disabled disabled panel-total">
 
-							<p:outputLabel value="Total de Vendas: R$ #{consultaVendasBean.totalVendas}"
+						<p:panel
+							styleClass="panelgrid-noborder disabled disabled panel-total">
+
+							<p:outputLabel
+								value="Total de Contas: R$ #{consultaContasBean.totalContas}"
 								style="float:left;margin-top:10px;margin-bottom:5px;margin-left:-10px;font-size: 13px;font-family: inherit;" />
-
-							<p:outputLabel value="Total de Itens: #{consultaVendasBean.totalItens}"
-								style="float:right;margin-top:10px;margin-bottom:5px;margin-right:0px;font-size: 13px;font-family: inherit;" />
 
 						</p:panel>
 					</p:panelGrid>
-					
+
 				</p:panel>
 
 			</div>

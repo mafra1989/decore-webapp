@@ -1,0 +1,910 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	template="/WEB-INF/template.xhtml">
+
+	<ui:define name="title">#{registroLancamentosBean.despesa.id == null ? ' Registrar Lançamentos' : 'Informações do Lançamento'}</ui:define>
+
+	<f:metadata>
+		<f:viewAction action="#{registroLancamentosBean.inicializar}" />
+
+		<f:viewParam name="id"
+			value="#{registroLancamentosBean.lancamento.id}" />
+		<f:viewAction action="#{registroLancamentosBean.buscar}"
+			if="#{param.id ne null}" />
+	</f:metadata>
+
+	<ui:define name="content">
+
+		<style>
+@media ( min-width :220px) {
+	body .ui-inputswitch .ui-inputswitch-on span {
+	    margin-left: -2px;
+	    width: 100% !important;
+	}
+	body .ui-inputswitch .ui-inputswitch-handle {
+		width: 30px !important;
+	}
+	.ui-inputswitch {
+		width: 65px !important;
+	}
+	.ui-inputswitch .ui-inputswitch-off span {
+		padding-left: 25px !important;
+	}
+	#confirmDialog .ui-panelgrid .ui-panelgrid-cell:nth-child(2n) {
+		text-align: end;
+	}
+	#confirmDialog .ui-datatable .ui-datatable-data>tr td.ui-editable-column input
+		{
+		text-align: right;
+	}
+	.panel-confirm.ui-panel .ui-panel-content {
+		padding: 0px !important;
+	}
+	.panel-parcelas.hide {
+		max-height: 0;
+		pointer-events: none;
+	}
+	.panel-parcelas {
+		overflow: hidden;
+		max-height: 300px;
+		transition: max-height 1s ease-in-out;
+	}
+	.panel-parcelas.ui-panel .ui-panel-content {
+		padding: 2px 0px 2px 0px !important;
+	}
+	.repetir-parcelas.hide {
+		max-height: 0;
+		pointer-events: none;
+	}
+	.repetir-parcelas {
+		overflow: hidden;
+		max-height: 300px;
+		transition: max-height 1s ease-in-out;
+		margin-top: 61px;
+	}
+	.repetir-parcelas.parcelamento {
+		margin-top: 0px !important;
+	}
+	.repetir-parcelas.ui-panel .ui-panel-content {
+		padding: 2px 0px 2px 0px !important;
+	}
+	#confirmDialog .ui-panelgrid .ui-panelgrid-cell {
+		padding: 2px 0px;
+	}
+	#confirmDialog.ui-dialog .ui-dialog-content {
+		padding: 0px 12px 0px 12px !important;
+	}
+	#confirmDialog .ui-grid-responsive .ui-grid-row {
+		display: flex;
+	}
+	.tabs.ui-state-disabled {
+		opacity: 0.2;
+	}
+	body .ui-tabs.ui-tabs-top .ui-tabs-nav, body .ui-tabs.ui-tabs-bottom .ui-tabs-nav,
+		body .ui-tabs.ui-tabs-left .ui-tabs-nav, body .ui-tabs.ui-tabs-right .ui-tabs-nav
+		{
+		background: transparent;
+		border-bottom: 1px solid #b6b7c2;
+	}
+	body .ui-tabs.ui-tabs-top .ui-tabs-nav li, body .ui-tabs.ui-tabs-bottom .ui-tabs-nav li,
+		body .ui-tabs.ui-tabs-left .ui-tabs-nav li, body .ui-tabs.ui-tabs-right .ui-tabs-nav li
+		{
+		border-right: transparent;
+	}
+	.no-select.ui-chkbox .ui-chkbox-label {
+		text-decoration: line-through !important;
+	}
+	.ui-chkbox .ui-chkbox-label {
+		color: #696a80 !important;
+	}
+	.panel-contas.ui-panel .ui-panel-content {
+		padding: 0px !important;
+	}
+	.itens-add {
+		margin-top: -15px;
+	}
+	body .ui-panel .ui-panel-content {
+		border: none;
+	}
+	.ui-blockui-content {
+		padding: 0.25em;
+	}
+	.ui-slider .ui-slider-handle {
+		width: 1.7em;
+		height: 1.7em;
+	}
+	.ui-slider-horizontal {
+		height: 1.2em !important;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 28px !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+		width: 50% !important;
+		float: left !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-6 {
+		width: 50% !important;
+		float: left !important;
+	}
+	.qty-parcelas.ui-panelgrid .ui-panelgrid-cell:nth-child(1) {
+		margin-top: 10px !important;
+	}
+	.percentual-juros.ui-panelgrid .ui-panelgrid-cell:nth-child(1) {
+		margin-top: 8px !important;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+		.ui-datatable tfoot th {
+		font-size: 13px;
+	}
+	body .btn-new.ui-button {
+		color: #676363;
+		background-color: #f9f9f9;
+		border: 1px solid #8a8585;
+	}
+	.swal2-popup {
+		width: 28em;
+		max-width: 100%;
+		padding: 0 0 0.4em 0;
+		font-size: 0.75rem;
+	}
+	.swal2-popup #swal2-content {
+		font-weight: 400;
+	}
+	body #item-dialog.ui-dialog .ui-dialog-content {
+		background-color: #ffffff;
+		padding: 10px 0px 0px 0px;
+	}
+	body .ui-datatable .ui-paginator {
+		padding: 2px 0px !important;
+	}
+	#item-dialog.ui-dialog {
+		margin-top: -1550px !important;
+	}
+	body .ui-state-disabled {
+		opacity: .8;
+	}
+}
+
+@media ( min-width :460px) {
+	.ui-slider .ui-slider-handle {
+		width: 1.7em;
+		height: 1.7em;
+	}
+	.ui-slider-horizontal {
+		height: 1.2em;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 27px !important;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+		.ui-datatable tfoot th {
+		font-size: 14px;
+	}
+}
+
+@media ( min-width :640px) {
+	.ui-slider-handle {
+		width: 1.2em !important;
+		height: 1.2em !important;
+	}
+	.ui-slider-horizontal {
+		height: 0.8em !important;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 27px !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+		width: 33.33333% !important;
+		float: none;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-6 {
+		width: auto !important;
+		float: none;
+	}
+	.itens-add {
+		margin-top: 15px;
+	}
+}
+</style>
+
+		<div class="page-header">
+			<h1>#{registroLancamentosBean.despesa.id == null ? ' Registrar
+				Lançamentos' : 'Informações do Lançamento'}</h1>
+		</div>
+
+		<p:growl id="msg" closable="true" life="2000" showSummary="false"
+			showDetail="true" style="text-align: center" />
+
+		<div class="ui-g-12 ui-lg-12">
+
+			<h:form id="form">
+
+				<p:tabView id="tabView" style="margin-bottom: 15px;"
+					activeIndex="#{registroLancamentosBean.activeIndex}">
+					<p:tab title="Despesas" titleStyleClass="tabs" id="tab-despesa"
+						disabled="#{registroLancamentosBean.receita.id != null}">
+
+						<p:panelGrid columns="2" layout="grid"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-6, ui-grid-col-6">
+
+							<p:panel class="card card-w-title ui-fluid" id="panel-despesa"
+								style="margin-bottom: 0px;margin-top: 10px; padding-bottom: 0px !important">
+
+								<p:panelGrid columns="2" layout="grid"
+									style="margin-bottom: 5px"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-4, ui-grid-col-4">
+
+									<p:outputLabel value="Lançamento N." />
+									<p:inputText
+										value="#{registroLancamentosBean.despesa.numeroLancamento}"
+										readonly="true" placeholder="Gerado automaticamente." />
+
+									<p:outputLabel value="Data" for="data-despesa" />
+									<p:datePicker
+										value="#{registroLancamentosBean.despesa.dataLancamento}"
+										id="data-despesa" pattern="dd/MM/yyyy" locale="pt"
+										showIcon="true" />
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="2" layout="grid"
+									style="margin-bottom: 5px"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-4, ui-grid-col-6">
+
+									<p:outputLabel value="Categoria" for="categoria-despesa" />
+									<p:selectOneMenu id="categoria-despesa" required="false"
+										value="#{registroLancamentosBean.categoriaLancamentoDespesa}"
+										placeholder="selecione">
+
+										<f:selectItem itemLabel="Selecione" />
+
+										<p:ajax event="change"
+											listener="#{registroLancamentosBean.changeCategoriaDespesa}"
+											update="origem tipo-despesa contas destino-despesa"
+											process="@this" />
+
+										<f:selectItems
+											value="#{registroLancamentosBean.todasCategoriasDespesas}"
+											var="categoriaLancamento"
+											itemLabel="#{categoriaLancamento.nome}"
+											itemValue="#{categoriaLancamento}" />
+									</p:selectOneMenu>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="2" layout="grid"
+									style="margin-bottom: 5px"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-4, ui-grid-col-8">
+
+									<p:outputLabel value="Descrição"
+										for="descricaoLancamento-despesa" />
+									<p:inputText id="descricaoLancamento-despesa"
+										autocomplete="off"
+										value="#{registroLancamentosBean.despesa.descricao}" />
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="2" layout="grid"
+									style="margin-bottom: 5px"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-4, ui-grid-col-3">
+
+									<p:outputLabel value="Valor Total" for="valor-despesa" />
+									<p:inputNumber id="valor-despesa" decimalPlaces="2"
+										autocomplete="off"
+										value="#{registroLancamentosBean.despesa.valor}" />
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="2" layout="grid"
+									style="margin-bottom: 5px" rendered="false"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-4, ui-grid-col-6">
+
+									<p:outputLabel value="Origem" for="origem" />
+									<p:selectOneRadio id="origem" unselectable="true"
+										disabled="true"
+										value="#{registroLancamentosBean.despesa.categoriaLancamento.tipoLancamento.origem}">
+
+										<f:selectItems
+											value="#{registroLancamentosBean.origensLancamentos}"
+											var="origemLancamento"
+											itemLabel="#{origemLancamento.descricao}"
+											itemValue="#{origemLancamento}" />
+									</p:selectOneRadio>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="2" layout="grid"
+									style="margin-bottom: 5px"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-4, ui-grid-col-6">
+
+									<p:outputLabel value="Tipo de Lançamento" for="tipo-despesa" />
+									<p:inputText id="tipo-despesa" autocomplete="off"
+										readonly="true"
+										value="#{registroLancamentosBean.despesa.categoriaLancamento.tipoLancamento.descricao}" />
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="2" layout="grid"
+									style="margin-bottom: 5px"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-4, ui-grid-col-6">
+
+									<p:outputLabel value="Destino do Lançamento"
+										for="destino-despesa" />
+									<p:selectOneMenu id="destino-despesa"
+										value="#{registroLancamentosBean.despesa.destinoLancamento}"
+										style="margin-bottom: 5px"
+										disabled="#{(registroLancamentosBean.despesa.categoriaLancamento.id != null and registroLancamentosBean.despesa.destinoLancamento.id != null and registroLancamentosBean.despesa.id == null) or (registroLancamentosBean.despesa.categoriaLancamento.id == null and registroLancamentosBean.despesa.destinoLancamento.id == null) or (registroLancamentosBean.despesa.id != null and registroLancamentosBean.despesa.categoriaLancamento.destinoLancamento.id != null)}">
+
+										<f:selectItem itemLabel="Selecione" />
+
+										<f:selectItems
+											value="#{registroLancamentosBean.todosDestinosLancamentos}"
+											var="destinoLancamento"
+											itemLabel="#{destinoLancamento.descricao}"
+											itemValue="#{destinoLancamento}" />
+									</p:selectOneMenu>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="2" layout="grid"
+									style="margin-bottom: 5px" rendered="false"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-4, ui-grid-col-8">
+
+									<p:outputLabel value="Lançar como:" />
+
+									<p:panel id="contas" class="card card-w-title ui-fluid"
+										styleClass="panel-contas"
+										style="margin-bottom: 0px;margin-top: 0px; padding-bottom: 0px !important">
+
+										<p:selectBooleanCheckbox style="margin-right:4px"
+											styleClass="#{registroLancamentosBean.despesa.categoriaLancamento.tipoLancamento.origem == 'CREDITO' or registroLancamentosBean.despesa.categoriaLancamento.id == null ? 'no-select' : ''}"
+											value="#{registroLancamentosBean.aPagar}" itemLabel="à pagar"
+											disabled="#{registroLancamentosBean.despesa.categoriaLancamento.tipoLancamento.origem == 'CREDITO' or registroLancamentosBean.despesa.categoriaLancamento.id == null}">
+										</p:selectBooleanCheckbox>
+
+										<p:selectBooleanCheckbox
+											value="#{registroLancamentosBean.aReceber}"
+											itemLabel="à receber"
+											styleClass="#{registroLancamentosBean.despesa.categoriaLancamento.tipoLancamento.origem == 'DEBITO' or registroLancamentosBean.despesa.categoriaLancamento.id == null ? 'no-select' : ''}"
+											disabled="#{registroLancamentosBean.despesa.categoriaLancamento.tipoLancamento.origem == 'DEBITO' or registroLancamentosBean.despesa.categoriaLancamento.id == null}">
+										</p:selectBooleanCheckbox>
+
+									</p:panel>
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-10">
+
+									<div
+										style="width: 80%; margin-left: 15%; border-top: 1px solid #ccc"></div>
+
+								</p:panelGrid>
+
+
+
+								<p:panelGrid columns="2" layout="grid"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-4, ui-grid-col-3">
+
+									<p:outputLabel value="" />
+									<p:commandButton id="btn-calcular-despesa" value="Salvar"
+										disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
+										onstart="PF('downloadLoading').show();" icon="fa fa-save"
+										onsuccess="PF('downloadLoading').hide();"
+										update="msg panel-despesa confirm-dialog"
+										action="#{registroLancamentosBean.salvarDespesa}"
+										process="@this panel-despesa"
+										style="font-weight: bold; margin-bottom: 0px;background-color: #0d8819b5;" />
+								</p:panelGrid>
+							</p:panel>
+						</p:panelGrid>
+					</p:tab>
+
+					<p:tab title="Receitas" titleStyleClass="tabs" id="tab-receita"
+						disabled="#{registroLancamentosBean.despesa.id != null}">
+
+						<p:panelGrid columns="2" layout="grid"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-6, ui-grid-col-6">
+
+							<p:panel class="card card-w-title ui-fluid" id="panel-receita"
+								style="margin-bottom: 0px;margin-top: 10px; padding-bottom: 0px !important">
+
+								<p:panelGrid columns="2" layout="grid"
+									style="margin-bottom: 5px"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-4, ui-grid-col-4">
+
+									<p:outputLabel value="Lançamento N." />
+									<p:inputText
+										value="#{registroLancamentosBean.receita.numeroLancamento}"
+										readonly="true" placeholder="Gerado automaticamente." />
+
+									<p:outputLabel value="Data" for="data-receita" />
+									<p:datePicker
+										value="#{registroLancamentosBean.receita.dataLancamento}"
+										id="data-receita" pattern="dd/MM/yyyy" locale="pt"
+										showIcon="true" />
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="2" layout="grid"
+									style="margin-bottom: 5px"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-4, ui-grid-col-6">
+
+									<p:outputLabel value="Categoria" for="categoria-receita" />
+									<p:selectOneMenu id="categoria-receita" required="false"
+										value="#{registroLancamentosBean.categoriaLancamentoReceita}"
+										placeholder="selecione">
+
+										<f:selectItem itemLabel="Selecione" />
+
+										<p:ajax event="change"
+											listener="#{registroLancamentosBean.changeCategoriaReceita}"
+											update="origem tipo-receita contas destino-receita"
+											process="@this" />
+
+										<f:selectItems
+											value="#{registroLancamentosBean.todasCategoriasReceitas}"
+											var="categoriaLancamento"
+											itemLabel="#{categoriaLancamento.nome}"
+											itemValue="#{categoriaLancamento}" />
+									</p:selectOneMenu>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="2" layout="grid"
+									style="margin-bottom: 5px"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-4, ui-grid-col-8">
+
+									<p:outputLabel value="Descrição"
+										for="descricaoLancamento-receita" />
+									<p:inputText id="descricaoLancamento-receita"
+										autocomplete="off"
+										value="#{registroLancamentosBean.receita.descricao}" />
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="2" layout="grid"
+									style="margin-bottom: 5px"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-4, ui-grid-col-3">
+
+									<p:outputLabel value="Valor Total" for="valor-receita" />
+									<p:inputNumber id="valor-receita" decimalPlaces="2"
+										autocomplete="off"
+										value="#{registroLancamentosBean.receita.valor}" />
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="2" layout="grid"
+									style="margin-bottom: 5px"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-4, ui-grid-col-6">
+
+									<p:outputLabel value="Tipo de Lançamento" for="tipo-receita" />
+									<p:inputText id="tipo-receita" autocomplete="off"
+										readonly="true"
+										value="#{registroLancamentosBean.receita.categoriaLancamento.tipoLancamento.descricao}" />
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="2" layout="grid"
+									style="margin-bottom: 5px"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-4, ui-grid-col-6">
+
+									<p:outputLabel value="Destino do Lançamento"
+										for="destino-receita" />
+									<p:selectOneMenu id="destino-receita"
+										value="#{registroLancamentosBean.receita.destinoLancamento}"
+										style="margin-bottom: 5px"
+										disabled="#{(registroLancamentosBean.receita.categoriaLancamento.id != null and registroLancamentosBean.receita.destinoLancamento.id != null and registroLancamentosBean.receita.id == null) or (registroLancamentosBean.receita.categoriaLancamento.id == null and registroLancamentosBean.receita.destinoLancamento.id == null) or (registroLancamentosBean.receita.id != null and registroLancamentosBean.receita.categoriaLancamento.destinoLancamento.id != null)}">
+
+										<f:selectItem itemLabel="Selecione" />
+
+										<f:selectItems
+											value="#{registroLancamentosBean.todosDestinosLancamentos}"
+											var="destinoLancamento"
+											itemLabel="#{destinoLancamento.descricao}"
+											itemValue="#{destinoLancamento}" />
+									</p:selectOneMenu>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="1" layout="grid"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-10">
+
+									<div
+										style="width: 80%; margin-left: 15%; border-top: 1px solid #ccc"></div>
+
+								</p:panelGrid>
+
+
+
+								<p:panelGrid columns="2" layout="grid"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-4, ui-grid-col-3">
+
+									<p:outputLabel value="" />
+									<p:commandButton id="btn-calcular-receita" value="Salvar"
+										disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
+										onstart="PF('downloadLoading').show();" icon="fa fa-save"
+										onsuccess="PF('downloadLoading').hide();"
+										update="msg panel-receita confirm-dialog"
+										action="#{registroLancamentosBean.salvarReceita}"
+										process="@this panel-receita"
+										style="font-weight: bold; margin-bottom: 0px;background-color: #0d8819b5;" />
+								</p:panelGrid>
+							</p:panel>
+
+						</p:panelGrid>
+
+					</p:tab>
+				</p:tabView>
+
+			</h:form>
+		</div>
+
+
+
+		<p:dialog header="Confirmação de pagamento" widgetVar="confirmDialog"
+			position="top" style="margin-top: 100px" id="confirmDialog"
+			resizable="false" modal="true" closeOnEscape="true" responsive="true"
+			width="350px">
+
+			<h:form id="confirm-dialog" style="margin-top: 10px;">
+
+				<div class="ui-g-12 ui-lg-12">
+					<p:panel class="card card-w-title ui-fluid"
+						style="padding-bottom: 0px;margin-bottom: 0px;">
+
+						<p:panelGrid columns="2" layout="grid"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-7, ui-grid-col-5">
+
+							<p:outputLabel style="font-weight: bold"
+								value="Data do lançamento: " rendered="false" />
+							<p:outputLabel
+								value="#{registroLancamentosBean.lancamento.dataLancamento}"
+								rendered="false">
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt" />
+							</p:outputLabel>
+
+							<p:outputLabel style="font-weight: bold" value="Valor total: " />
+							<p:outputLabel
+								value="#{registroLancamentosBean.lancamento.valor}">
+								<f:convertNumber type="currency" />
+							</p:outputLabel>
+
+							<p:outputLabel
+								style="font-weight: bold;margin-top: 6px;float: left;"
+								for="formaPagamento" value="Forma de pagamento: " />
+							<p:selectOneMenu id="formaPagamento"
+								value="#{registroLancamentosBean.tipoPagamento}"
+								disabled="#{registroLancamentosBean.repetirLancamento}"
+								placeholder="selecione">
+
+								<p:ajax event="change" onstart="start();" oncomplete="stop();"
+									process="@this"
+									listener="#{registroLancamentosBean.changePagamento}"
+									update="panel-contas repetir-parcelas repetir-pagamento panel-confirm" />
+
+								<f:selectItems
+									value="#{registroLancamentosBean.tiposPagamentos}"
+									var="tipoPagamento" itemLabel="#{tipoPagamento.descricao}"
+									itemValue="#{tipoPagamento}" />
+							</p:selectOneMenu>
+
+						</p:panelGrid>
+
+						<p:panel id="panel-parcelas"
+							styleClass="panelgrid-noborder disabled disabled panel-parcelas #{registroLancamentosBean.tipoPagamento == 'PARCELADO' ? '' : 'hide'}">
+
+							<p:defaultCommand target="gerar-parcelas" scope="panel-parcelas" />
+
+							<p:panelGrid columns="2" layout="grid"
+								styleClass="panelgrid-noborder disabled disabled"
+								columnClasses="ui-grid-col-6, ui-grid-col-6">
+
+								<p:outputLabel
+									style="font-weight: bold;margin-top: 3px;float: left;"
+									value="Parcelamento: " />
+								<p:outputLabel value="" />
+
+								<p:inputNumber decimalPlaces="0" required="true"
+									requiredMessage="Quantidade de parcelas deve ser informado."
+									placeholder="Quantidade de parcelas"
+									value="#{registroLancamentosBean.parcelas}">
+								</p:inputNumber>
+
+								<p:selectOneMenu
+									value="#{registroLancamentosBean.periodoPagamento}"
+									placeholder="selecione">
+
+									<f:selectItems
+										value="#{registroLancamentosBean.periodosPagamentos}"
+										var="periodoPagamento"
+										itemLabel="#{periodoPagamento.descricao}"
+										itemValue="#{periodoPagamento}" />
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+
+
+
+							<p:panel style="text-align: center"
+								styleClass="panelgrid-noborder disabled disabled">
+
+								<p:commandButton value="Gerar parcelas" onstart="start();"
+									oncomplete="stop();" id="gerar-parcelas"
+									action="#{registroLancamentosBean.gerarParcelas}"
+									process="formaPagamento panel-parcelas"
+									update="msg contasTable panel-confirm panel-parcelas"
+									style="width: 110px; font-weight:bold"></p:commandButton>
+							</p:panel>
+
+							<p:dataTable id="contasTable" paginatorAlwaysVisible="false"
+								scrollable="true" scrollHeight="125" editable="true"
+								editMode="cell" value="#{registroLancamentosBean.todasContas}"
+								var="conta" emptyMessage="Nenhuma parcela gerada."
+								paginator="false" styleClass="produtosTable"
+								style="margin-top: 0px;border: 1px solid #147df0;">
+
+								<p:column headerText="Parcela" width="15%"
+									style="text-align: center">
+									<h:outputText value="#{conta.parcela}" />
+								</p:column>
+
+								<p:column headerText="Valor" width="20%"
+									style="text-align: center">
+
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{conta.valor}">
+												<f:convertNumber type="currency" />
+											</h:outputText>
+										</f:facet>
+										<f:facet name="input">
+											<p:inputNumber decimalPlaces="2" value="#{conta.valor}">
+												<p:ajax event="change" process="@this" />
+											</p:inputNumber>
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+
+								<p:column headerText="Vencimento" width="20%"
+									style="text-align: center">
+
+									<h:outputText value="#{conta.vencimento}">
+										<f:convertDateTime pattern="dd/MM/yyyy" locale="pt" />
+									</h:outputText>
+								</p:column>
+
+							</p:dataTable>
+						</p:panel>
+
+						<p:panel id="panel-contas"
+							styleClass="panelgrid-noborder disabled disabled panel-confirm">
+
+							<p:outputLabel id="label-cp"
+								style="font-weight: bold;margin-top: 7px;float: left;"
+								value="Conta à pagar: "
+								rendered="#{registroLancamentosBean.tipoPagamento == 'PARCELADO'}" />
+
+							<p:inputSwitch onLabel="Sim" offLabel="Não" id="input-cp"
+								style="float:right;width: 50px !important;margin-left: 5px;margin-top: 4px;"
+								value="#{registroLancamentosBean.contaAPagar}"
+								disabled="#{registroLancamentosBean.tipoPagamento == 'PARCELADO'}"
+								rendered="#{registroLancamentosBean.tipoPagamento == 'PARCELADO'}">
+
+								<p:ajax event="change" process="@this" update="@this" />
+							</p:inputSwitch>
+
+							<p:outputLabel id="label-av"
+								style="font-weight: bold;margin-top: 7px;float: left;"
+								value="PAGO: "
+								rendered="#{registroLancamentosBean.tipoPagamento == 'AVISTA'}" />
+
+							<p:inputSwitch onLabel="Sim" offLabel="Não" id="input-av"
+								style="float:right;width: 50px !important;margin-left: 5px;margin-top: 4px;"
+								value="#{registroLancamentosBean.lancamentoPago}"
+								rendered="#{registroLancamentosBean.tipoPagamento == 'AVISTA'}">
+
+								<p:ajax event="change" process="@this" update="@this" />
+							</p:inputSwitch>
+
+						</p:panel>
+
+						<p:panel style="margin-top: 25px;" id="repetir-pagamento"
+							styleClass="panelgrid-noborder disabled disabled panel-confirm">
+							<p:outputLabel
+								style="font-weight: bold;margin-top: 15px;float: left;"
+								value="Repetir lançamento: "
+								rendered="#{registroLancamentosBean.tipoPagamento == 'AVISTA'}" />
+
+							<p:selectBooleanCheckbox 
+								value="#{registroLancamentosBean.repetirLancamento}"
+								disabled="#{registroLancamentosBean.tipoPagamento == 'PARCELADO'}"
+								style="float:right;margin-top: 13px;margin-right: -72px;"
+								rendered="#{registroLancamentosBean.tipoPagamento == 'AVISTA'}">
+
+								<p:ajax process="@this" update="formaPagamento panel-confirm"
+									onstart="start();" oncomplete="stop();"
+									listener="#{registroLancamentosBean.changeRepetir}" />
+							</p:selectBooleanCheckbox>
+						</p:panel>
+
+
+						<p:panel id="repetir-parcelas"
+							styleClass="panelgrid-noborder disabled disabled repetir-parcelas #{(registroLancamentosBean.tipoPagamento == 'AVISTA' and registroLancamentosBean.repetirLancamento == false) ? 'hide' : (registroLancamentosBean.tipoPagamento == 'PARCELADO' ? 'hide' : '')}"
+							>
+
+							<p:defaultCommand target="gerar-contas" scope="repetir-parcelas" />
+
+							<p:panelGrid columns="2" layout="grid"
+								styleClass="panelgrid-noborder disabled disabled"
+								columnClasses="ui-grid-col-6, ui-grid-col-6">
+
+								<p:inputNumber decimalPlaces="0" required="true"
+									requiredMessage="Quantidade de contas deve ser informado."
+									placeholder="Quantidade de contas"
+									value="#{registroLancamentosBean.parcelas_}">
+								</p:inputNumber>
+
+								<p:selectOneMenu
+									value="#{registroLancamentosBean.periodoPagamento}"
+									placeholder="selecione">
+
+									<f:selectItems
+										value="#{registroLancamentosBean.periodosPagamentos}"
+										var="periodoPagamento"
+										itemLabel="#{periodoPagamento.descricao}"
+										itemValue="#{periodoPagamento}" />
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+
+							<p:panel style="text-align: center"
+								styleClass="panelgrid-noborder disabled disabled">
+
+								<p:commandButton value="Gerar contas" onstart="start();"
+									oncomplete="stop();" id="gerar-contas"
+									action="#{registroLancamentosBean.gerarContas}"
+									process="formaPagamento repetir-parcelas"
+									update="msg contasTable_ panel-confirm repetir-parcelas"
+									style="width: 110px; font-weight:bold"></p:commandButton>
+							</p:panel>
+
+							<p:dataTable id="contasTable_" paginatorAlwaysVisible="false"
+								scrollable="true" scrollHeight="125" editable="true"
+								editMode="cell" value="#{registroLancamentosBean.todasContas_}"
+								var="conta" emptyMessage="Nenhuma conta gerada."
+								paginator="false" styleClass="produtosTable"
+								style="margin-top: 0px;border: 1px solid #147df0;">
+
+								<p:column headerText="Conta" width="15%"
+									style="text-align: center">
+									<h:outputText value="#{conta.parcela}" />
+								</p:column>
+
+								<p:column headerText="Valor" width="20%"
+									style="text-align: center">
+
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{conta.valor}">
+												<f:convertNumber type="currency" />
+											</h:outputText>
+										</f:facet>
+										<f:facet name="input">
+											<p:inputNumber decimalPlaces="2" value="#{conta.valor}">
+												<p:ajax event="change" process="@this" />
+											</p:inputNumber>
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+
+								<p:column headerText="Vencimento" width="20%"
+									style="text-align: center">
+
+									<h:outputText value="#{conta.vencimento}">
+										<f:convertDateTime pattern="dd/MM/yyyy" locale="pt" />
+									</h:outputText>
+								</p:column>
+
+							</p:dataTable>
+
+							<p:outputLabel
+								style="font-weight: bold;margin-top: 7px;float: left;"
+								value="Conta à pagar: " />
+
+							<p:inputSwitch onLabel="Sim" offLabel="Não"
+								style="float:right;width: 50px !important;margin-left: 5px;margin-top: 4px;"
+								value="#{registroLancamentosBean.contaAPagar}" disabled="true">
+							</p:inputSwitch>
+						</p:panel>
+
+
+						<div
+							style="float: left; width: 80%; margin-left: 10%; margin-top: 15px; margin-bottom: 10px; border-top: 1px solid #ccc"></div>
+
+						<p:panel style="text-align: right; margin-top: 13px;"
+							id="panel-confirm"
+							styleClass="panelgrid-noborder disabled disabled panel-confirm">
+
+							<p:commandButton onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();PF('confirmDialog').hide();"
+								icon="fa fa-fw fa-close"
+								style="width: 100px;margin-right:2px;background: #fd6161;"
+								value="Cancelar"></p:commandButton>
+							<p:commandButton process="@this form confirm-dialog" update="msg"
+								onstart="start();"
+								oncomplete="stop();PF('confirmDialog').hide();"
+								action="#{registroLancamentosBean.confirmarLancamento}"
+								icon="fa fa-fw fa-check"
+								disabled="#{(registroLancamentosBean.todasContasSize == 0 and registroLancamentosBean.tipoPagamento == 'PARCELADO') or (registroLancamentosBean.todasContasSize_ == 0 and registroLancamentosBean.tipoPagamento == 'AVISTA' and registroLancamentosBean.repetirLancamento)}"
+								style="width: 100px;background-color: #0d8819b5;font-weight:bold"
+								value="Confirmar"></p:commandButton>
+						</p:panel>
+					</p:panel>
+				</div>
+
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog id="downloadLoading" showHeader="false" modal="true"
+			widgetVar="downloadLoading" header="Status" draggable="false"
+			closable="false" resizable="false">
+			<p:graphicImage name="images/loadingbar.gif"
+				library="manhattan-layout" width="50" />
+		</p:dialog>
+
+		<script type="text/javascript">
+			function start() {
+				PF('downloadLoading').show();
+			}
+
+			function stop() {
+				PF('downloadLoading').hide();
+			}
+
+			function ocultar() {
+				$(".panel-parcelas").addClass("hide");
+			}
+
+			function mostrar() {
+				$(".panel-parcelas").removeClass("hide");
+				$(".repetir-parcelas").addClass("parcelamento");
+			}
+
+			function ocultarRepetir() {
+				$(".repetir-parcelas").addClass("hide");
+			}
+
+			function mostrarRepetir() {
+				$(".repetir-parcelas").removeClass("hide");
+			}
+		</script>
+
+	</ui:define>
+
+</ui:composition>

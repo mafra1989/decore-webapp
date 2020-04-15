@@ -25,16 +25,15 @@ public class Compras implements Serializable {
 	public Compra porId(Long id) {
 		return this.manager.find(Compra.class, id);
 	}
-	
-	public Compra porNumeroCompra(String numeroCompra) {
+
+	public Compra porNumeroCompra(Long numeroCompra) {
 		try {
-			return this.manager
-				.createQuery("from Compra e where e.numeroCompra = :numeroCompra", Compra.class)
-				.setParameter("numeroCompra", numeroCompra).getSingleResult();
-		} catch(NoResultException e) {
-			
+			return this.manager.createQuery("from Compra e where e.numeroCompra = :numeroCompra", Compra.class)
+					.setParameter("numeroCompra", numeroCompra).getSingleResult();
+		} catch (NoResultException e) {
+
 		}
-		
+
 		return null;
 	}
 
@@ -52,7 +51,18 @@ public class Compras implements Serializable {
 	}
 
 	public List<Compra> todas() {
-		return this.manager.createQuery("from Compra order by id", Compra.class).getResultList();
+		return this.manager.createQuery("from Compra order by numeroCompra desc", Compra.class).getResultList();
+	}
+
+	public Compra ultimoNCompra() {
+
+		try {
+			return this.manager.createQuery("from Compra e order by e.numeroCompra desc", Compra.class).setMaxResults(1)
+					.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
+
 	}
 
 	public List<Compra> porComprador(Usuario usuario) {
@@ -66,35 +76,42 @@ public class Compras implements Serializable {
 
 		Number count = 0;
 		try {
-		    count = (Number) q.getSingleResult();
-			
-		} catch(NoResultException e) {
-			
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
 		}
 
-                if (count == null) {
+		if (count == null) {
 			count = 0;
 		}
 
 		return count;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public List<Compra> comprasFiltradas(Date dateStart, Date dateStop, Usuario usuario) {
+	public List<Compra> comprasFiltradas(Long numeroCompra, Date dateStart, Date dateStop, Usuario usuario) {
 
 		String condition = "";
 		if (usuario != null && usuario.getId() != null) {
-			condition = "AND i.usuario.id = :idUsuario";
+			condition = "AND i.usuario.id = :idUsuario ";
 		}
 
-		String jpql = "SELECT i FROM Compra i "
-				+ "WHERE i.dataCompra between :dateStart and :dateStop " + condition
-				+ " order by i.dataCompra desc";
-		Query q = manager.createQuery(jpql).setParameter("dateStart", dateStart)
-				.setParameter("dateStop", dateStop);
+		String conditionNumeroCompra = "";
+		if (numeroCompra != null) {
+			conditionNumeroCompra = "AND i.numeroCompra = :numeroCompra ";
+		}
+
+		String jpql = "SELECT i FROM Compra i " + "WHERE i.dataCompra between :dateStart and :dateStop " + condition
+				+ conditionNumeroCompra + " order by i.numeroCompra desc";
+		Query q = manager.createQuery(jpql).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
 
 		if (usuario != null && usuario.getId() != null) {
 			q.setParameter("idUsuario", usuario.getId());
+		}
+		
+		if (numeroCompra != null) {
+			q.setParameter("numeroCompra", numeroCompra);
 		}
 
 		return q.getResultList();
@@ -146,9 +163,9 @@ public class Compras implements Serializable {
 		Number value = 0;
 		try {
 			value = (Number) q.getSingleResult();
-			
-		} catch(NoResultException e) {
-			
+
+		} catch (NoResultException e) {
+
 		}
 
 		if (value == null) {
@@ -158,8 +175,8 @@ public class Compras implements Serializable {
 		return value;
 	}
 
-	public Number totalComprasPorMes(Number mes, Number ano, CategoriaProduto categoriaProduto,
-			Produto produto, boolean chartCondition) {
+	public Number totalComprasPorMes(Number mes, Number ano, CategoriaProduto categoriaProduto, Produto produto,
+			boolean chartCondition) {
 
 		String condition = "";
 		String select_Condition = "";
@@ -187,11 +204,10 @@ public class Compras implements Serializable {
 		}
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemCompra i join i.compra p "
-				+ "WHERE p.mes = :mes AND p.ano = :ano " + condition + "group by "
-				+ groupBy_Condition + " order by " + orderBy_Condition;
-		Query q = manager.createQuery(jpql)
-				.setParameter("mes", Long.parseLong(String.valueOf(mes)))
-				.setParameter("ano", Long.parseLong(String.valueOf(ano)));
+				+ "WHERE p.mes = :mes AND p.ano = :ano " + condition + "group by " + groupBy_Condition + " order by "
+				+ orderBy_Condition;
+		Query q = manager.createQuery(jpql).setParameter("mes", Long.parseLong(String.valueOf(mes))).setParameter("ano",
+				Long.parseLong(String.valueOf(ano)));
 
 		if (categoriaProduto != null && categoriaProduto.getId() != null) {
 			q.setParameter("categoriaProduto", categoriaProduto.getNome());
@@ -204,20 +220,20 @@ public class Compras implements Serializable {
 		Number value = 0;
 		try {
 			value = (Number) q.getSingleResult();
-			
-		}catch(NoResultException e) {
-			
+
+		} catch (NoResultException e) {
+
 		}
-		
+
 		if (value == null) {
 			value = 0;
 		}
 
 		return value;
 	}
-	
-	public Number totalComprasPorSemana(Number semana, Number ano, CategoriaProduto categoriaProduto,
-			Produto produto, boolean chartCondition) {
+
+	public Number totalComprasPorSemana(Number semana, Number ano, CategoriaProduto categoriaProduto, Produto produto,
+			boolean chartCondition) {
 
 		String condition = "";
 		String select_Condition = "";
@@ -245,10 +261,9 @@ public class Compras implements Serializable {
 		}
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemCompra i join i.compra p "
-				+ "WHERE p.semana = :semana AND p.ano = :ano " + condition + "group by "
-				+ groupBy_Condition + " order by " + orderBy_Condition;
-		Query q = manager.createQuery(jpql)
-				.setParameter("semana", Long.parseLong(String.valueOf(semana)))
+				+ "WHERE p.semana = :semana AND p.ano = :ano " + condition + "group by " + groupBy_Condition
+				+ " order by " + orderBy_Condition;
+		Query q = manager.createQuery(jpql).setParameter("semana", Long.parseLong(String.valueOf(semana)))
 				.setParameter("ano", Long.parseLong(String.valueOf(ano)));
 
 		if (categoriaProduto != null && categoriaProduto.getId() != null) {
@@ -262,9 +277,9 @@ public class Compras implements Serializable {
 		Number value = 0;
 		try {
 			value = (Number) q.getSingleResult();
-			
-		} catch(NoResultException e) {
-			
+
+		} catch (NoResultException e) {
+
 		}
 
 		if (value == null) {
@@ -273,9 +288,9 @@ public class Compras implements Serializable {
 
 		return value;
 	}
-	
-	public Number totalComprasPorAno(Number ano, CategoriaProduto categoriaProduto,
-			Produto produto, boolean chartCondition) {
+
+	public Number totalComprasPorAno(Number ano, CategoriaProduto categoriaProduto, Produto produto,
+			boolean chartCondition) {
 
 		String condition = "";
 		String select_Condition = "";
@@ -303,10 +318,9 @@ public class Compras implements Serializable {
 		}
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemCompra i join i.compra p "
-				+ "WHERE p.ano = :ano " + condition + "group by "
-				+ groupBy_Condition + " order by " + orderBy_Condition;
-		Query q = manager.createQuery(jpql)
-				.setParameter("ano", Long.parseLong(String.valueOf(ano)));
+				+ "WHERE p.ano = :ano " + condition + "group by " + groupBy_Condition + " order by "
+				+ orderBy_Condition;
+		Query q = manager.createQuery(jpql).setParameter("ano", Long.parseLong(String.valueOf(ano)));
 
 		if (categoriaProduto != null && categoriaProduto.getId() != null) {
 			q.setParameter("categoriaProduto", categoriaProduto.getNome());
@@ -319,9 +333,9 @@ public class Compras implements Serializable {
 		Number value = 0;
 		try {
 			value = (Number) q.getSingleResult();
-			
-		} catch(NoResultException e) {
-			
+
+		} catch (NoResultException e) {
+
 		}
 
 		if (value == null) {

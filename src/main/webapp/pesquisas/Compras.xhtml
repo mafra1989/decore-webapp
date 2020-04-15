@@ -16,8 +16,8 @@
 		<style>
 @media ( min-width :220px) {
 	.panel-total.ui-panel .ui-panel-content {
-	    border: none;
-	    padding: 0px;
+		border: none;
+		padding: 0px;
 	}
 	.fotoDialog {
 		max-height: 380px !important;
@@ -152,6 +152,16 @@
 				<p:panel class="card card-w-title ui-fluid itens-add"
 					style="padding-bottom: 0px !important; margin-top:10px">
 
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3">
+
+						<p:outputLabel value="Compra N." for="codigo" />
+						<p:inputNumber id="codigo" decimalPlaces="0"
+							value="#{consultaComprasBean.numeroCompra}">
+						</p:inputNumber>
+					</p:panelGrid>
+					
 					<p:panelGrid columns="4" id="painel" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-1, ui-grid-col-2">
@@ -194,7 +204,7 @@
 						title="Excluir"
 						style="margin-right:113px;font-weight:bold; background: #fd6161; float:right;width:38px;margin-top: -40px;position: relative"
 						process="@this"
-						onclick="deleteItem(#{consultaComprasBean.compraSelecionada.id});"/>
+						onclick="deleteItem(#{consultaComprasBean.compraSelecionada.id});" />
 
 					<p:button icon="fa fa-fw fa-eye" value="Visualizar"
 						outcome="/operacoes/RegistroCompras.xhtml" id="btn-view"
@@ -214,22 +224,27 @@
 						<p:dataTable id="comprasTable" paginatorAlwaysVisible="false"
 							scrollable="true" scrollHeight="455"
 							value="#{consultaComprasBean.comprasFiltradas}" var="compra"
-							emptyMessage="Nenhum resultado encontrado." 
-							reflow="true" paginator="false" 
-							rowKey="#{compra.id}"
+							emptyMessage="Nenhum resultado encontrado." reflow="true"
+							paginator="false" rowKey="#{compra.id}"
 							selection="#{consultaComprasBean.compraSelecionada}"
 							selectionMode="single">
 
-							<p:ajax process="@this" event="rowSelect" onstart="PF('downloadLoading').show();"
+							<p:ajax process="@this" event="rowSelect"
+								onstart="PF('downloadLoading').show();"
 								oncomplete="PF('downloadLoading').hide();"
 								update="btn-view btn-trash" />
-							<p:ajax process="@this" event="rowUnselect" onstart="PF('downloadLoading').show();"
+							<p:ajax process="@this" event="rowUnselect"
+								onstart="PF('downloadLoading').show();"
 								oncomplete="PF('downloadLoading').hide();"
 								update="btn-view btn-trash" />
 
+							<p:column headerText="N. Compra" width="10%">
+								<h:outputText value="#{compra.numeroCompra}" />
+							</p:column>
+
 							<p:column headerText="Data da compra" width="10%">
 								<h:outputText value="#{compra.dataCompra}">
-									<f:convertDateTime pattern="dd/MM/yyyy" timeZone="GMT-4" />
+									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt" />
 								</h:outputText>
 							</p:column>
 
@@ -249,12 +264,15 @@
 
 						</p:dataTable>
 
-						<p:panel styleClass="panelgrid-noborder disabled disabled panel-total">
+						<p:panel
+							styleClass="panelgrid-noborder disabled disabled panel-total">
 
-							<p:outputLabel value="Total de Compras: R$ #{consultaComprasBean.totalCompras}"
+							<p:outputLabel
+								value="Total de Compras: R$ #{consultaComprasBean.totalCompras}"
 								style="float:left;margin-top:10px;margin-bottom:5px;margin-left:-10px;font-size: 13px;font-family: inherit;" />
 
-							<p:outputLabel value="Total de Itens: #{consultaComprasBean.totalItens}"
+							<p:outputLabel
+								value="Total de Itens: #{consultaComprasBean.totalItens}"
 								style="float:right;margin-top:10px;margin-bottom:5px;margin-right:0px;font-size: 13px;font-family: inherit;" />
 
 						</p:panel>

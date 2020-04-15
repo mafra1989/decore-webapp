@@ -2,14 +2,14 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui" 
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
 	template="/WEB-INF/template.xhtml">
 
 	<ui:define name="title">#{registroComprasBean.compra.id == null ? 'Registrar Compra' : 'Informações da Compra'}</ui:define>
 
 	<f:metadata>
 		<f:viewAction action="#{registroComprasBean.inicializar}" />
-		
+
 		<f:viewParam name="id" value="#{registroComprasBean.compra.id}" />
 		<f:viewAction action="#{registroComprasBean.buscar}"
 			if="#{param.id ne null}" />
@@ -19,23 +19,71 @@
 
 		<style>
 @media ( min-width :220px) {
+	body .ui-inputswitch .ui-inputswitch-on span {
+	    margin-left: -2px;
+	    width: 100% !important;
+	}
+	body .ui-inputswitch .ui-inputswitch-handle {
+		width: 30px !important;
+	}
+	.ui-inputswitch {
+		width: 65px !important;
+	}
+	.ui-inputswitch .ui-inputswitch-off span {
+		padding-left: 25px !important;
+	}
+	#confirmDialog .ui-panelgrid .ui-panelgrid-cell:nth-child(2n) {
+		text-align: end;
+	}
+	#confirmDialog .ui-datatable .ui-datatable-data>tr td.ui-editable-column input
+		{
+		text-align: right;
+	}
+	.panel-confirm.ui-panel .ui-panel-content {
+		padding: 0px !important;
+	}
+	.panel-parcelas.hide {
+	  max-height: 0;
+	  pointer-events: none;
+	}
+	.panel-parcelas {
+		overflow:hidden;
+		max-height: 300px;
+		transition: max-height 1s ease-in-out;
+	}
+	.panel-parcelas.ui-panel .ui-panel-content {
+		padding: 2px 0px 2px 0px !important;
+	}
+	#confirmDialog .ui-panelgrid .ui-panelgrid-cell {
+		padding: 2px 0px;
+	}
+	#confirmDialog.ui-dialog .ui-dialog-content {
+		padding: 0px 12px 0px 12px !important;
+	}
+	#confirmDialog .ui-grid-responsive .ui-grid-row {
+		display: flex;
+	}
 	.ui-datatable tbody td {
-	    height: auto !important;
+		height: auto !important;
 	}
 	.btn-select.ui-button.ui-button-icon-only .ui-icon {
-	    margin-top: -8px;
-	    font-size: 18px;
-	    color: #0f5baf;
+		margin-top: -8px;
+		font-size: 18px;
+		color: #0f5baf;
 	}
 	.produtosTable .btn-select.ui-button {
-	    height: 30px;width: 30px;background-color: transparent;border: 1px solid #0f5baf;border-radius: 50px;
+		height: 30px;
+		width: 30px;
+		background-color: transparent;
+		border: 1px solid #0f5baf;
+		border-radius: 50px;
 	}
 	.produtosTable .btn-select.ui-button:hover {
-	 	background-color: #e0dada;
+		background-color: #e0dada;
 	}
 	.ui-datatable-scrollable-body {
-	    overflow: auto;
-	    max-height: 420px;
+		overflow: auto;
+		max-height: 420px;
 	}
 	.itens-add {
 		margin-top: -15px;
@@ -95,7 +143,6 @@
 	body .ui-datatable .ui-paginator {
 		padding: 2px 0px !important;
 	}
-
 }
 
 @media ( min-width :460px) {
@@ -141,16 +188,18 @@
 		height: 28px !important;
 	}
 }
+
 @media ( min-width :641px) {
 	.ui-datatable-scrollable-body {
-	    overflow: auto;
-	    max-height: 265px;
+		overflow: auto;
+		max-height: 265px;
 	}
 }
 </style>
 
 		<div class="page-header">
-			<h1>#{registroComprasBean.compra.id == null ? 'Registrar Compra' : 'Informações da Compra'}</h1>
+			<h1>#{registroComprasBean.compra.id == null ? 'Registrar Compra'
+				: 'Informações da Compra'}</h1>
 		</div>
 
 		<p:growl id="msg" closable="true" life="2000" showSummary="false"
@@ -175,23 +224,15 @@
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-4, ui-grid-col-4">
 
+							<p:outputLabel value="Compra N." />
+							<p:inputText value="#{registroComprasBean.compra.numeroCompra}"
+								readonly="true" placeholder="Gerado automaticamente." />
+
 							<p:outputLabel value="Data da Compra" for="data-compra" />
 							<p:datePicker value="#{registroComprasBean.compra.dataCompra}"
 								id="data-compra" pattern="dd/MM/yyyy" locale="pt"
 								readonlyInput="true" showIcon="true" />
 
-							<p:outputLabel value="Forma de Pagamento" for="pagamento" />
-							<p:selectOneMenu id="pagamento"
-								value="#{registroComprasBean.compra.usuario}"
-								placeholder="selecione">
-
-								<f:selectItem itemLabel="Selecione" />
-
-								<f:selectItems value="#{registroComprasBean.todosUsuarios}"
-									var="vendedor" itemLabel="#{vendedor.nome}"
-									itemValue="#{vendedor}" />
-							</p:selectOneMenu>
-							
 							<p:outputLabel value="Comprador" for="comprador" />
 							<p:selectOneMenu id="comprador"
 								value="#{registroComprasBean.compra.usuario}"
@@ -226,7 +267,8 @@
 						<p:commandButton styleClass="btn-new" icon="fa fa-fw fa-cubes"
 							title="Buscar produto" onstart="PF('downloadLoading').show();"
 							oncomplete="PF('downloadLoading').hide();PF('item-dialog').show()"
-							process="@this" disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
+							process="@this"
+							disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
 							style="position: relative; float: right; margin-top: -38px; margin-right: 8px; width: 40px" />
 
 						<p:inputText id="id" type="hidden"
@@ -285,7 +327,8 @@
 							<p:outputLabel />
 							<p:commandButton id="btn-adicionar" value="Adicionar"
 								onstart="PF('downloadLoading').show();" icon="fa fa-plus"
-								onsuccess="PF('downloadLoading').hide();" disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
+								onsuccess="PF('downloadLoading').hide();"
+								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
 								update="msg codigo descricao fornecedor total-compra id valor-unitario quantidade valor-total panel-table"
 								action="#{registroComprasBean.adicionarItem}"
 								process="@this codigo valor-unitario quantidade valor-total id"
@@ -304,22 +347,20 @@
 							columnClasses="ui-grid-col-12">
 
 							<p:panelGrid columns="2" style="margin-top:-15px;"
-							styleClass="panelgrid-noborder disabled disabled">
-								<p:outputLabel value="Total: "/>
+								styleClass="panelgrid-noborder disabled disabled">
+								<p:outputLabel value="Total: " />
 								<p:outputLabel id="total-compra"
 									value="#{registroComprasBean.compra.valorTotal}"
 									style="margin-bottom:5px; font-weight:bold;margin-left:8px;color:#5b5656">
-	
+
 									<f:convertNumber type="currency" />
 								</p:outputLabel>
 							</p:panelGrid>
 
 							<p:dataTable id="itensTable" paginatorAlwaysVisible="false"
-								scrollable="true" 
-								value="#{registroComprasBean.itensCompra}" var="item"
-								emptyMessage="Nenhum item adicionado." reflow="true"
-								paginator="false" 
-								rowKey="#{item.code}"
+								scrollable="true" value="#{registroComprasBean.itensCompra}"
+								var="item" emptyMessage="Nenhum item adicionado." reflow="true"
+								paginator="false" rowKey="#{item.code}"
 								selection="#{registroComprasBean.itemSelecionado}"
 								selectionMode="single">
 
@@ -371,10 +412,12 @@
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-4, ui-grid-col-3">
 
-							<p:commandButton id="btn-calcular" value="#{registroComprasBean.compra.id == null ? 'Finalizar Compra' : 'Salvar Compra'}"
+							<p:commandButton id="btn-calcular"
+								value="#{registroComprasBean.compra.id == null ? 'Finalizar Compra' : 'Salvar Compra'}"
 								onstart="PF('downloadLoading').show();" icon="fa fa-save"
-								onsuccess="PF('downloadLoading').hide();" disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
-								update="msg data-compra comprador panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total"
+								onsuccess="PF('downloadLoading').hide();"
+								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
+								update="msg confirmDialog data-compra comprador panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total"
 								action="#{registroComprasBean.salvar}"
 								process="@this panel-table data-compra comprador"
 								style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;" />
@@ -387,9 +430,10 @@
 
 		</div>
 
-		<p:dialog header="Buscar produto" widgetVar="item-dialog" position="top" style="margin-top: 100px"
-			id="item-dialog" resizable="false" modal="true" closeOnEscape="true"
-			responsive="true" width="350px">
+		<p:dialog header="Buscar produto" widgetVar="item-dialog"
+			position="top" style="margin-top: 100px" id="item-dialog"
+			resizable="false" modal="true" closeOnEscape="true" responsive="true"
+			width="350px">
 
 			<h:form id="form-dialog">
 
@@ -413,8 +457,8 @@
 						<p:dataTable id="produtosTable" paginatorAlwaysVisible="false"
 							scrollable="true" scrollHeight="337"
 							value="#{registroComprasBean.produtosFiltrados}" var="produto"
-							emptyMessage="Nenhum produto encontrado." 
-							paginator="false" styleClass="produtosTable"
+							emptyMessage="Nenhum produto encontrado." paginator="false"
+							styleClass="produtosTable"
 							style="margin-top: 10px;border: 1px solid #147df0;">
 
 							<p:column headerText="Código" width="30%">
@@ -443,6 +487,190 @@
 			</h:form>
 		</p:dialog>
 
+		<p:dialog header="Confirmação de pagamento" widgetVar="confirmDialog"
+			position="top" style="margin-top: 100px" id="confirmDialog"
+			resizable="false" modal="true" closeOnEscape="true" responsive="true"
+			width="350px">
+
+			<h:form id="confirm-dialog" style="margin-top: 10px;">
+
+				<div class="ui-g-12 ui-lg-12">
+					<p:panel class="card card-w-title ui-fluid"
+						style="padding-bottom: 0px;margin-bottom: 0px;">
+
+						<p:panelGrid columns="2" layout="grid"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-7, ui-grid-col-5">
+
+							<p:outputLabel style="font-weight: bold" value="Data da compra: "
+								rendered="false" />
+							<p:outputLabel value="#{registroComprasBean.compra.dataCompra}"
+								rendered="false">
+								<f:convertDateTime pattern="dd/MM/yyyy" locale="pt" />
+							</p:outputLabel>
+
+							<p:outputLabel style="font-weight: bold" value="Valor total: " />
+							<p:outputLabel value="#{registroComprasBean.compra.valorTotal}">
+								<f:convertNumber type="currency" />
+							</p:outputLabel>
+
+							<p:outputLabel
+								style="font-weight: bold;margin-top: 6px;float: left;"
+								for="formaPagamento" value="Forma de pagamento: " />
+							<p:selectOneMenu id="formaPagamento" 
+								value="#{registroComprasBean.tipoPagamento}"
+								placeholder="selecione">
+								
+								<p:ajax event="change" onstart="start();" oncomplete="stop();" process="@this" listener="#{registroComprasBean.changePagamento}" update="panel-contas panel-confirm" />
+
+								<f:selectItems value="#{registroComprasBean.tiposPagamentos}"
+									var="tipoPagamento" itemLabel="#{tipoPagamento.descricao}"
+									itemValue="#{tipoPagamento}" />
+							</p:selectOneMenu>
+
+						</p:panelGrid>
+
+						<p:panel id="panel-parcelas"
+							styleClass="panelgrid-noborder disabled disabled panel-parcelas #{registroComprasBean.tipoPagamento == 'PARCELADO' ? '' : 'hide'}">
+
+							<p:panelGrid columns="2" layout="grid"
+								styleClass="panelgrid-noborder disabled disabled"
+								columnClasses="ui-grid-col-6, ui-grid-col-6">
+
+								<p:outputLabel
+									style="font-weight: bold;margin-top: 3px;float: left;"
+									value="Parcelamento: " />
+								<p:outputLabel value="" />
+
+								<p:inputNumber decimalPlaces="0" required="true"
+									requiredMessage="Quantidade de Parcelas deve ser informado."
+									placeholder="Quantidade de Parcelas"
+									value="#{registroComprasBean.parcelas}">
+								</p:inputNumber>
+
+								<p:selectOneMenu value="#{registroComprasBean.periodoPagamento}"
+									placeholder="selecione">
+
+									<f:selectItems
+										value="#{registroComprasBean.periodosPagamentos}"
+										var="periodoPagamento"
+										itemLabel="#{periodoPagamento.descricao}"
+										itemValue="#{periodoPagamento}" />
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+
+
+
+							<p:panel style="text-align: center"
+								styleClass="panelgrid-noborder disabled disabled">
+
+								<p:commandButton value="Gerar parcelas" onstart="start();" oncomplete="stop();"
+									action="#{registroComprasBean.gerarParcelas}"
+									process="formaPagamento panel-parcelas" update="msg panel-parcelas panel-confirm"
+									style="width: 110px; font-weight:bold"></p:commandButton>
+							</p:panel>
+
+							<p:dataTable id="contasTable" paginatorAlwaysVisible="false"
+								scrollable="true" scrollHeight="125" editable="true"
+								editMode="cell" value="#{registroComprasBean.todasContas}"
+								var="conta" emptyMessage="Nenhuma parcela gerada."
+								paginator="false" styleClass="produtosTable"
+								style="margin-top: 0px;border: 1px solid #147df0;">
+
+								<p:column headerText="Parcela" width="15%"
+									style="text-align: center">
+									<h:outputText value="#{conta.parcela}" />
+								</p:column>
+
+								<p:column headerText="Valor" width="20%"
+									style="text-align: center">
+
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{conta.valor}">
+												<f:convertNumber type="currency" />
+											</h:outputText>
+										</f:facet>
+										<f:facet name="input">
+											<p:inputNumber decimalPlaces="2" value="#{conta.valor}">
+												<p:ajax event="change" process="@this" />
+											</p:inputNumber>
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+
+								<p:column headerText="Vencimento" width="20%"
+									style="text-align: center">
+
+									<h:outputText value="#{conta.vencimento}">
+										<f:convertDateTime pattern="dd/MM/yyyy" locale="pt" />
+									</h:outputText>
+								</p:column>
+
+							</p:dataTable>
+						</p:panel>
+						
+						
+						<p:panel id="panel-contas"
+							styleClass="panelgrid-noborder disabled disabled panel-confirm">
+
+							<p:outputLabel id="label-cp"
+								style="font-weight: bold;margin-top: 7px;float: left;"
+								value="Conta à pagar: "
+								rendered="#{registroComprasBean.tipoPagamento == 'PARCELADO'}" />
+
+							<p:inputSwitch onLabel="Sim" offLabel="Não" id="input-cp"
+								style="float:right;width: 50px !important;margin-left: 5px;margin-top: 4px;"
+								value="#{registroComprasBean.contaAPagar}"
+								disabled="#{registroComprasBean.tipoPagamento == 'PARCELADO'}"
+								rendered="#{registroComprasBean.tipoPagamento == 'PARCELADO'}">
+
+								<p:ajax event="change" process="@this" update="@this" />
+							</p:inputSwitch>
+
+							<p:outputLabel id="label-av"
+								style="font-weight: bold;margin-top: 7px;float: left;"
+								value="PAGO: "
+								rendered="#{registroComprasBean.tipoPagamento == 'AVISTA'}" />
+
+							<p:inputSwitch onLabel="Sim" offLabel="Não" id="input-av"
+								style="float:right;width: 50px !important;margin-left: 5px;margin-top: 4px;"
+								value="#{registroComprasBean.compraPaga}"
+								rendered="#{registroComprasBean.tipoPagamento == 'AVISTA'}">
+
+								<p:ajax event="change" process="@this" update="@this" />
+							</p:inputSwitch>
+
+						</p:panel>
+						
+
+						<div
+							style="float:left;width: 80%; margin-left: 10%; margin-top: 15px; margin-bottom: 10px; border-top: 1px solid #ccc"></div>
+
+						<p:panel style="text-align: right; margin-top: 13px;" id="panel-confirm"
+							styleClass="panelgrid-noborder disabled disabled panel-confirm">
+
+							<p:commandButton onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();PF('confirmDialog').hide();"
+								icon="fa fa-fw fa-close"
+								style="width: 100px;margin-right:2px;background: #fd6161;"
+								value="Cancelar"></p:commandButton>
+							<p:commandButton process="@this form confirm-dialog"
+								update="msg form:data-compra form:comprador form:panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total"
+								onstart="start();"
+								action="#{registroComprasBean.confirmarCompra}"
+								icon="fa fa-fw fa-check"
+								disabled="#{registroComprasBean.todasContasSize == 0 and registroComprasBean.tipoPagamento == 'PARCELADO'}"
+								style="width: 100px;background-color: #0d8819b5;font-weight:bold"
+								value="Confirmar"></p:commandButton>
+						</p:panel>
+					</p:panel>
+				</div>
+
+			</h:form>
+		</p:dialog>
+
 		<p:dialog id="downloadLoading" showHeader="false" modal="true"
 			widgetVar="downloadLoading" header="Status" draggable="false"
 			closable="false" resizable="false">
@@ -457,6 +685,14 @@
 
 			function stop() {
 				PF('downloadLoading').hide();
+			}
+			
+			function ocultar() {
+				$(".panel-parcelas").addClass("hide");
+			}
+
+			function mostrar() {			
+			  	$(".panel-parcelas").removeClass("hide");
 			}
 		</script>
 

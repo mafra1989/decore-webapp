@@ -243,9 +243,9 @@
 								<p:ajax listener="#{cadastroFormaPagamentoBean.pagamentoAvista}" process="@this" update="@this form-dialog" />
 							</p:inputSwitch >
 
-							<p:outputLabel value="Entrada" />		
+							<p:outputLabel value="Entrada" rendered="false" />		
 							<p:inputSwitch onLabel="Sim" offLabel="Não" style="width: 50px !important" 
-								value="#{cadastroFormaPagamentoBean.formaPagamento.entrada}"
+								value="#{cadastroFormaPagamentoBean.formaPagamento.entrada}" rendered="false"
 								disabled="#{cadastroFormaPagamentoBean.formaPagamento.avista}">
 								<p:ajax event="change" listener="#{cadastroFormaPagamentoBean.buildDescription}" process="@this" update="@this descricao" />
 							</p:inputSwitch >

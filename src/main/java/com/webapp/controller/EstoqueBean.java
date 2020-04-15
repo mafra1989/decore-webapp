@@ -154,7 +154,7 @@ public class EstoqueBean implements Serializable {
 		if(filter.getDescricao().contains("Ajuste")) {
 			String[] dados = filter.getDescricao().replace("Ajuste", "").split(",");
 			
-			Compra compra = compras.porNumeroCompra(dados[0]);
+			Compra compra = compras.porNumeroCompra(Long.parseLong(dados[0]));
 			Produto produto = produtos.porCodigo(dados[1]);
 			
 			ItemCompra itemCompra = itensCompras.porCompra(compra, produto);

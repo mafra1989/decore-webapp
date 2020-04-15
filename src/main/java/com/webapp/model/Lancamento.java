@@ -23,12 +23,15 @@ public class Lancamento implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue//(strategy = GenerationType.IDENTITY)
+	@GeneratedValue // (strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@NotNull
 	@Column
 	private Date dataLancamento = new Date();
+
+	@Column(unique = true)
+	private Long numeroLancamento;
 
 	@NotBlank
 	@Column(nullable = false, length = 120)
@@ -43,7 +46,7 @@ public class Lancamento implements Serializable {
 	@ManyToOne
 	@JoinColumn
 	private CategoriaLancamento categoriaLancamento = new CategoriaLancamento();
-	
+
 	@NotNull
 	@ManyToOne
 	@JoinColumn
@@ -58,7 +61,7 @@ public class Lancamento implements Serializable {
 	/* Campos para relat�rio */
 	@Column(nullable = false)
 	private Long dia;
-	
+
 	@Column(nullable = false)
 	private Long nomeDia;
 
@@ -87,6 +90,14 @@ public class Lancamento implements Serializable {
 		this.dataLancamento = dataLancamento;
 	}
 
+	public Long getNumeroLancamento() {
+		return numeroLancamento;
+	}
+
+	public void setNumeroLancamento(Long numeroLancamento) {
+		this.numeroLancamento = numeroLancamento;
+	}
+
 	public String getDescricao() {
 		return descricao;
 	}
@@ -100,7 +111,8 @@ public class Lancamento implements Serializable {
 	}
 
 	public void setValor(BigDecimal valor) {
-		this.valor = valor.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
+		this.valor = valor.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+		;
 	}
 
 	public CategoriaLancamento getCategoriaLancamento() {

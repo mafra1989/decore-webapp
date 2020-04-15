@@ -181,11 +181,11 @@ public class DashboardBean implements Serializable {
         fluxoDeCaixa.setItem("Receitas");
         fluxoDeCaixa.setValue(totalCreditos.doubleValue());
         tabela.add(fluxoDeCaixa); 
-        
+        /*
         fluxoDeCaixa = new FluxoDeCaixa();
         fluxoDeCaixa.setItem("Contas à Receber");
         fluxoDeCaixa.setValue(0D);
-        tabela.add(fluxoDeCaixa);
+        tabela.add(fluxoDeCaixa);*/
         
         fluxoDeCaixa = new FluxoDeCaixa();
         fluxoDeCaixa.setItem("Compras");
@@ -196,11 +196,11 @@ public class DashboardBean implements Serializable {
         fluxoDeCaixa.setItem("Despesas");
         fluxoDeCaixa.setValue(totalDebitos.doubleValue());
         tabela.add(fluxoDeCaixa);
-        
+        /*
         fluxoDeCaixa = new FluxoDeCaixa();
         fluxoDeCaixa.setItem("Contas à Pagar");
         fluxoDeCaixa.setValue(0D);
-        tabela.add(fluxoDeCaixa);
+        tabela.add(fluxoDeCaixa);*/
         
         fluxoDeCaixa = new FluxoDeCaixa();
         fluxoDeCaixa.setItem("À Vender");
@@ -234,10 +234,10 @@ public class DashboardBean implements Serializable {
         labels.add("Caixa");
         labels.add("Vendas");
         labels.add("Receitas");
-        labels.add("À Receber");
+        //labels.add("À Receber");
         labels.add("Compras");
         labels.add("Despesas");
-        labels.add("À Pagar");
+        //labels.add("À Pagar");
         labels.add("À Vender");
         data.setLabels(labels);
         barModel.setData(data);

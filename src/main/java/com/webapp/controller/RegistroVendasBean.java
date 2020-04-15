@@ -226,7 +226,7 @@ public class RegistroVendasBean implements Serializable {
 
 			if (!edit) {
 				PrimeFaces.current().executeScript(
-						"swal({ type: 'success', title: 'Concluído!', text: 'Venda registrada com sucesso!' });");
+						"swal({ type: 'success', title: 'Concluído!', text: 'Venda N." + venda.getNumeroVenda() + " registrada com sucesso!' });");
 
 				venda = new Venda();
 				itensVenda = new ArrayList<ItemVenda>();
@@ -238,7 +238,7 @@ public class RegistroVendasBean implements Serializable {
 
 			} else {
 				PrimeFaces.current().executeScript(
-						"swal({ type: 'success', title: 'Conclu�do!', text: 'Venda atualizada com sucesso!' });");
+						"swal({ type: 'success', title: 'Concluído!', text: 'Venda N." + venda.getNumeroVenda() + " atualizada com sucesso!' });");
 			}
 
 		} else {

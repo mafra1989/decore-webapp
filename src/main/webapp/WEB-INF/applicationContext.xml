@@ -73,7 +73,7 @@
 
 		<intercept-url pattern="/operacoes/Estoque.xhtml"
 			access="hasAnyRole('ADMINISTRADOR',	'USUARIO_AVANCADO', 'USUARIO_COMUM')" />
-		<intercept-url pattern="/operacoes/LancamentoDespesas.xhtml"
+		<intercept-url pattern="/operacoes/RegistroLancamentos.xhtml"
 			access="hasAnyRole('ADMINISTRADOR',	'USUARIO_AVANCADO', 'USUARIO_COMUM')" />
 		<intercept-url pattern="/operacoes/RegistroCompras.xhtml"
 			access="hasAnyRole('ADMINISTRADOR',	'USUARIO_AVANCADO', 'USUARIO_COMUM')" />

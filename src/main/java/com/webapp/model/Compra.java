@@ -17,7 +17,7 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "compras_fix")
+@Table(name = "compras_fix_v2")
 public class Compra implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -30,8 +30,8 @@ public class Compra implements Serializable {
 	@Column
 	private Date dataCompra = new Date();
 	
-	@Column
-	private String numeroCompra;
+	@Column(unique = true)
+	private Long numeroCompra;
 
 	@NotNull
 	@Column
@@ -45,6 +45,13 @@ public class Compra implements Serializable {
 	@ManyToOne
 	@JoinColumn
 	private Usuario usuario;
+	
+	/*
+	@NotNull
+	@ManyToOne
+	@JoinColumn
+	private FormaPagamento formaPagamento;
+	*/
 
 	/* Campos para relat�rio */
 	@Column(nullable = false)
@@ -78,11 +85,11 @@ public class Compra implements Serializable {
 		this.dataCompra = dataCompra;
 	}
 
-	public String getNumeroCompra() {
+	public Long getNumeroCompra() {
 		return numeroCompra;
 	}
 
-	public void setNumeroCompra(String numeroCompra) {
+	public void setNumeroCompra(Long numeroCompra) {
 		this.numeroCompra = numeroCompra;
 	}
 
@@ -109,6 +116,16 @@ public class Compra implements Serializable {
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
+
+	/*
+	public FormaPagamento getFormaPagamento() {
+		return formaPagamento;
+	}
+
+	public void setFormaPagamento(FormaPagamento formaPagamento) {
+		this.formaPagamento = formaPagamento;
+	}
+	*/
 
 	public Long getDia() {
 		return dia;

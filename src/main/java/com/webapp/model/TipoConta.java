@@ -1,12 +1,12 @@
 package com.webapp.model;
 
-public enum OrigemLancamento {
+public enum TipoConta {
 
-	DEBITO("Débito"), CREDITO("Crédito");
+	APAGAR("à pagar"), ARECEBER("à receber");
 
 	private String descricao;
 
-	OrigemLancamento(String descricao) {
+	TipoConta(String descricao) {
 		this.descricao = descricao;
 	}
 

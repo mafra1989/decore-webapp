@@ -50,6 +50,8 @@ public class ConsultaVendasBean implements Serializable {
 	private Produtos produtos;
 
 	private Venda vendaSelecionada;
+	
+	private Long numeroVenda;
 
 	private Date dateStart = new Date();
 
@@ -74,7 +76,7 @@ public class ConsultaVendasBean implements Serializable {
 		calendarioTemp.set(Calendar.MINUTE, 59);
 		calendarioTemp.set(Calendar.SECOND, 59);
 
-		vendasFiltradas = vendas.vendasFiltradas(dateStart, calendarioTemp.getTime(), usuario);
+		vendasFiltradas = vendas.vendasFiltradas(numeroVenda, dateStart, calendarioTemp.getTime(), usuario);
 
 		double totalVendasTemp = 0;
 		totalItens = 0;
@@ -190,6 +192,14 @@ public class ConsultaVendasBean implements Serializable {
 
 	public Integer getTotalItens() {
 		return totalItens;
+	}
+
+	public Long getNumeroVenda() {
+		return numeroVenda;
+	}
+
+	public void setNumeroVenda(Long numeroVenda) {
+		this.numeroVenda = numeroVenda;
 	}
 
 }

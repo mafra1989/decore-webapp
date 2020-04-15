@@ -39,25 +39,33 @@
 					<h:form id="menuform">
 						<pm:menu id="pm_menu">
 							<p:menuitem id="pm_Dashboard" styleClass="pm_Dashboard"
-								value="Dashboard" icon="fa fa-home" outcome="/Dashboard.xhtml" rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()}" />
+								value="Dashboard" icon="fa fa-home" outcome="/Dashboard.xhtml"
+								rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()}" />
 
-							<p:submenu id="pm_consulta" label="Consultar" icon="fa fa-search" rendered="#{seguranca.acessoAdministrador()  or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()}">
+							<p:submenu id="pm_consulta" label="Consultar" icon="fa fa-search"
+								rendered="#{seguranca.acessoAdministrador()  or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()}">
 
+								<p:menuitem id="pm_Contas" value="Contas à Pag/Rec"
+									icon="fa fa-retweet" outcome="/pesquisas/Contas.xhtml" />
+									
 								<p:menuitem id="pm_estoque" value="Estoque" icon="fa fa-cubes"
 									outcome="/pesquisas/Estoque.xhtml" />
-									
-								<p:menuitem id="pm_compra" value="Compras" icon="fa fa-shopping-cart"
-									outcome="/pesquisas/Compras.xhtml" />
-									
+
+								<p:menuitem id="pm_compra" value="Compras"
+									icon="fa fa-shopping-cart" outcome="/pesquisas/Compras.xhtml" />
+
 								<p:menuitem id="pm_venda" value="Vendas" icon="fa fa-dollar"
 									outcome="/pesquisas/Vendas.xhtml" />
-									
-								<p:menuitem id="pm_lancamento" value="Lançamentos" icon="fa fa-list-ol"
-									outcome="/pesquisas/Lancamentos.xhtml" />
+
+								<p:menuitem id="pm_lancamento" value="Lançamentos"
+									icon="fa fa-list-ol" outcome="/pesquisas/Lancamentos.xhtml" />
+
+
 
 							</p:submenu>
 
-							<p:submenu id="pm_cadastro" label="Cadastro" rendered="#{seguranca.acessoAdministrador()}"
+							<p:submenu id="pm_cadastro" label="Cadastro"
+								rendered="#{seguranca.acessoAdministrador()}"
 								icon="fa fa-database">
 
 								<p:menuitem id="pm_produto" value="Produto" icon="fa fa-cubes"
@@ -70,7 +78,7 @@
 								<p:menuitem id="pm_fornecedores" value="Fornecedor"
 									icon="fa fa-truck"
 									outcome="/cadastros/CadastroFornecedores.xhtml" />
-									
+
 								<p:menuitem id="pm_bairros" value="Bairro"
 									icon="fa fa-map-marker"
 									outcome="/cadastros/CadastroBairros.xhtml" />
@@ -81,10 +89,10 @@
 								<p:menuitem id="pm_cat_lancamento" value="Tipo de Venda"
 									icon="fa fa-instagram"
 									outcome="/cadastros/CadastroTipoVenda.xhtml" />
-									
+
 								<p:menuitem id="pm_forma_pagamento" value="Forma de Pagamento"
-										icon="fa fa-money"
-										outcome="/cadastros/CadastroFormaPagamento.xhtml" />
+									icon="fa fa-money" rendered="false"
+									outcome="/cadastros/CadastroFormaPagamento.xhtml" />
 
 								<p:submenu id="pm_tipos" label="Lançamentos" icon="fa fa-copy">
 
@@ -100,11 +108,12 @@
 										icon="fa fa-inbox"
 										outcome="/cadastros/CadastroCategoriaDespesa.xhtml" />
 								</p:submenu>
-								
-								
+
+
 							</p:submenu>
 
-							<p:submenu id="pm_operacoes" styleClass="pm_operacoes" rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado()}"
+							<p:submenu id="pm_operacoes" styleClass="pm_operacoes"
+								rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado()}"
 								label="Operações" icon="fa fa-cogs">
 
 								<p:menuitem id="pm_emprestimo" styleClass="pm_emprestimo"
@@ -117,29 +126,30 @@
 
 								<p:menuitem id="pm_despesa" styleClass="pm_despesa"
 									value="Registrar Lançamentos" icon="fa fa-list-ol"
-									outcome="/operacoes/LancamentoDespesas.xhtml" />
+									outcome="/operacoes/RegistroLancamentos.xhtml" />
 							</p:submenu>
 
-							<p:submenu id="pm_relatorio" styleClass="pm_relatorio" rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()}"
+							<p:submenu id="pm_relatorio" styleClass="pm_relatorio"
+								rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()}"
 								label="Relatórios" icon="fa fa-line-chart">
-	
-								<p:menuitem id="pm_despesas_total" styleClass="pm_despesas_total"
-									value="Vendas" icon="fa fa-dollar"
-									outcome="/relatorios/Vendas.xhtml" />
-									
+
+								<p:menuitem id="pm_despesas_total"
+									styleClass="pm_despesas_total" value="Vendas"
+									icon="fa fa-dollar" outcome="/relatorios/Vendas.xhtml" />
+
 								<p:menuitem id="pm_vendas_total" styleClass="pm_vendas_total"
-									value="Despesas" icon="fa fa-coffee" 
+									value="Despesas" icon="fa fa-coffee"
 									outcome="/relatorios/Despesas.xhtml" />
-									
-								<p:menuitem id="pm_lucros" styleClass="pm_lucros"
-									value="Lucros" icon="fa fa-money" 
-									outcome="/relatorios/Lucros.xhtml" />
-								
+
+								<p:menuitem id="pm_lucros" styleClass="pm_lucros" value="Lucros"
+									icon="fa fa-money" outcome="/relatorios/Lucros.xhtml" />
+
 							</p:submenu>
-							
-							<p:menuitem id="pm_Import" styleClass="pm_Import" rendered="#{seguranca.acessoAdministrador()}"
-									value="Importar Dados" icon="fa fa-laptop" 
-									outcome="/importar/ImportarDados.xhtml" />
+
+							<p:menuitem id="pm_Import" styleClass="pm_Import"
+								rendered="#{seguranca.acessoAdministrador()}"
+								value="Importar Dados" icon="fa fa-laptop"
+								outcome="/importar/ImportarDados.xhtml" />
 
 						</pm:menu>
 					</h:form>

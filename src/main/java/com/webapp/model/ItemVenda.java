@@ -15,7 +15,7 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "itens_venda_fix")
+@Table(name = "itens_venda_fix_v2")
 public class ItemVenda implements Serializable {
 
 	private static final long serialVersionUID = 1L;

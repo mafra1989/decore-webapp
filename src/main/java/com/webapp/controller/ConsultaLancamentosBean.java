@@ -15,11 +15,13 @@ import javax.inject.Named;
 import org.primefaces.PrimeFaces;
 
 import com.webapp.model.CategoriaLancamento;
+import com.webapp.model.Conta;
 import com.webapp.model.DestinoLancamento;
 import com.webapp.model.Lancamento;
 import com.webapp.model.OrigemLancamento;
 import com.webapp.model.Usuario;
 import com.webapp.repository.CategoriasLancamentos;
+import com.webapp.repository.Contas;
 import com.webapp.repository.DestinosLancamentos;
 import com.webapp.repository.Lancamentos;
 import com.webapp.util.jsf.FacesUtil;
@@ -29,100 +31,128 @@ import com.webapp.util.jsf.FacesUtil;
 public class ConsultaLancamentosBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Inject
 	private Lancamento lancamento;
-	
+
 	private List<Lancamento> lancamentosFiltrados = new ArrayList<>();
-	
+
 	private List<Usuario> todosUsuarios;
-	
+
 	@Inject
 	private Usuario usuario;
-	
+
 	@Inject
 	private Lancamentos lancamentos;
 
-	
 	private Lancamento lancamentoSelecionado;
 	
+	private Long numeroLancamento;
+
 	private Date dateStart = new Date();
-	
+
 	private Date dateStop = new Date();
-	
+
 	private OrigemLancamento[] origemLancamento;
-	
-	
+
 	@Inject
 	private CategoriasLancamentos categoriasDespesas;
-	
+
 	private List<CategoriaLancamento> todasCategoriasDespesas;
-	
+
 	@Inject
 	private DestinosLancamentos destinosLancamentos;
 
 	private List<DestinoLancamento> todosDestinosLancamentos;
-	
+
 	@Inject
 	private CategoriaLancamento categoriaLancamento;
-	
+
 	@Inject
 	private DestinoLancamento destinoLancamento;
 	
-	
+	@Inject
+	private Contas contas;
+
 	private NumberFormat nf = new DecimalFormat("###,##0.00");
-	
+
 	private String totalLancamentos = "0,00";
-	
 
 	public void inicializar() {
-		if (FacesUtil.isNotPostback()) {	
-			//todosUsuarios = usuarios.todos();
+		if (FacesUtil.isNotPostback()) {
+			// todosUsuarios = usuarios.todos();
 			todasCategoriasDespesas = categoriasDespesas.todos();
 			todosDestinosLancamentos = destinosLancamentos.todos();
 		}
 	}
-	
-	public void pesquisar() { 	
+
+	public void pesquisar() {
 		Calendar calendarioTemp = Calendar.getInstance();
 		calendarioTemp.setTime(dateStop);
 		calendarioTemp.set(Calendar.HOUR, 23);
 		calendarioTemp.set(Calendar.MINUTE, 59);
 		calendarioTemp.set(Calendar.SECOND, 59);
-		
+
 		lancamentosFiltrados = new ArrayList<>();
-		lancamentosFiltrados = lancamentos.lancamentosFiltrados(dateStart, calendarioTemp.getTime(), origemLancamento, categoriaLancamento, destinoLancamento);
-		
+		lancamentosFiltrados = lancamentos.lancamentosFiltrados(numeroLancamento, dateStart, calendarioTemp.getTime(), origemLancamento,
+				categoriaLancamento, destinoLancamento);
+
 		double totalLancamentosTemp = 0;
 		for (Lancamento lancamento : lancamentosFiltrados) {
 			totalLancamentosTemp += lancamento.getValor().doubleValue();
 		}
-		
+
 		totalLancamentos = nf.format(totalLancamentosTemp);
 	}
-	
-	public void changeCategoria() { 
-		if(categoriaLancamento == null) {
+
+	public void changeCategoria() {
+		if (categoriaLancamento == null) {
 			destinoLancamento = null;
 		} else {
 			destinoLancamento = categoriaLancamento.getDestinoLancamento();
 		}
 	}
-	
-	public void excluir() { 	
-		
-		lancamentos.remove(lancamentoSelecionado);
-		
-		lancamentoSelecionado = null;
-		pesquisar();
-		PrimeFaces.current().executeScript(
-				"swal({ type: 'success', title: 'Concluído!', text: 'Lançamento excluído com sucesso!' });");	
+
+	public void excluir() {
+
+		boolean contasPagas = false;
+		List<Conta> contasTemp = contas.porContasPagas(lancamentoSelecionado.getNumeroLancamento(), "LANC");
+
+		if (contasTemp.size() == 0) {
+
+			contasTemp = contas.porCodigoOperacao(lancamentoSelecionado.getNumeroLancamento(), "LANC");
+			for (Conta conta : contasTemp) {
+				contas.remove(conta);
+			}
+
+		} else {
+
+			String tipoConta = "";
+			if (contasTemp.get(0).getTipo().equals("DEBITO")) {
+				tipoConta = "contas à pagar";
+			} else {
+				tipoConta = "contas à receber";
+			}
+
+			contasPagas = true;
+			PrimeFaces.current().executeScript("swal({ type: 'error', title: 'Erro!', text: 'Existe " + tipoConta
+					+ " já registradas para esse lançamento!' });");
+		}
+
+		if (contasPagas != true) {
+			lancamentos.remove(lancamentoSelecionado);
+
+			lancamentoSelecionado = null;
+			pesquisar();
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'success', title: 'Concluído!', text: 'Lançamento excluído com sucesso!' });");
+		}
 	}
-	
+
 	public List<Usuario> getTodosUsuarios() {
 		return todosUsuarios;
 	}
-	
+
 	public Date getDateStart() {
 		return dateStart;
 	}
@@ -139,7 +169,6 @@ public class ConsultaLancamentosBean implements Serializable {
 		this.dateStop = dateStop;
 	}
 
-
 	public Lancamento getLancamentoSelecionado() {
 		return lancamentoSelecionado;
 	}
@@ -155,7 +184,7 @@ public class ConsultaLancamentosBean implements Serializable {
 	public void setLancamentosFiltrados(List<Lancamento> comprasFiltradas) {
 		this.lancamentosFiltrados = comprasFiltradas;
 	}
-	
+
 	public int getLancamentosFiltradosSize() {
 		return lancamentosFiltrados.size();
 	}
@@ -167,7 +196,7 @@ public class ConsultaLancamentosBean implements Serializable {
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
-	
+
 	public OrigemLancamento[] getOrigensLancamentos() {
 		return OrigemLancamento.values();
 	}
@@ -214,6 +243,14 @@ public class ConsultaLancamentosBean implements Serializable {
 
 	public String getTotalLancamentos() {
 		return totalLancamentos;
+	}
+
+	public Long getNumeroLancamento() {
+		return numeroLancamento;
+	}
+
+	public void setNumeroLancamento(Long numeroLancamento) {
+		this.numeroLancamento = numeroLancamento;
 	}
 
 }

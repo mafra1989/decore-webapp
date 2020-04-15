@@ -172,6 +172,10 @@
 						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-4, ui-grid-col-4">
+							
+							<p:outputLabel value="Venda N." />
+							<p:inputText value="#{registroVendasBean.venda.numeroVenda}"
+								readonly="true" placeholder="Gerado automaticamente." />
 
 							<p:outputLabel value="Data da Venda" for="data-venda" />
 							<p:datePicker value="#{registroVendasBean.venda.dataVenda}"

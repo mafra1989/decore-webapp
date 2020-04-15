@@ -27,18 +27,6 @@ public class Vendas implements Serializable {
 	public Venda porId(Long id) {
 		return this.manager.find(Venda.class, id);
 	}
-	
-	public Venda porNumeroVenda(String numeroVenda) {
-		try {
-			return this.manager
-				.createQuery("from Venda e where e.numeroVenda = :numeroVenda", Venda.class)
-				.setParameter("numeroVenda", numeroVenda).getSingleResult();
-		} catch(NoResultException e) {
-			
-		}
-		
-		return null;
-	}
 
 	@Transacional
 	public Venda save(Venda venda) {
@@ -54,7 +42,19 @@ public class Vendas implements Serializable {
 	}
 
 	public List<Venda> todas() {
-		return this.manager.createQuery("from Venda order by id", Venda.class).getResultList();
+		return this.manager.createQuery("from Venda order by numeroVenda desc", Venda.class).getResultList();
+	}
+	
+	public Venda porNumeroVenda(Long numeroVenda) {
+		try {
+			return this.manager
+				.createQuery("from Venda e where e.numeroVenda = :numeroVenda", Venda.class)
+				.setParameter("numeroVenda", numeroVenda).getSingleResult();
+		} catch(NoResultException e) {
+			
+		}
+		
+		return null;
 	}
 
 	public List<Venda> porVendedor(Usuario usuario) {
@@ -65,21 +65,30 @@ public class Vendas implements Serializable {
 	
 	
 	@SuppressWarnings("unchecked")
-	public List<Venda> vendasFiltradas(Date dateStart, Date dateStop, Usuario usuario) {
+	public List<Venda> vendasFiltradas(Long numeroVenda, Date dateStart, Date dateStop, Usuario usuario) {
 
 		String condition = "";
 		if (usuario != null && usuario.getId() != null) {
-			condition = "AND i.usuario.id = :idUsuario";
+			condition = "AND i.usuario.id = :idUsuario ";
+		}
+		
+		String conditionNumeroVenda = "";
+		if (numeroVenda != null) {
+			conditionNumeroVenda = "AND i.numeroVenda = :numeroVenda ";
 		}
 
 		String jpql = "SELECT i FROM Venda i "
-				+ "WHERE i.dataVenda between :dateStart and :dateStop " + condition
-				+ " order by i.dataVenda desc";
+				+ "WHERE i.dataVenda between :dateStart and :dateStop " + condition + conditionNumeroVenda
+				+ " order by i.numeroVenda desc";
 		Query q = manager.createQuery(jpql).setParameter("dateStart", dateStart)
 				.setParameter("dateStop", dateStop);
 
 		if (usuario != null && usuario.getId() != null) {
 			q.setParameter("idUsuario", usuario.getId());
+		}
+		
+		if (numeroVenda != null) {
+			q.setParameter("numeroVenda", numeroVenda);
 		}
 
 		return q.getResultList();

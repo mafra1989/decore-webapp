@@ -58,47 +58,34 @@ public class CadastroFormaPagamentoBean implements Serializable {
 	}
 
 	public void salvar() {
+		
+		FormaPagamento formaPagamentoTemp = null;
 
 		if (formaPagamento.getId() == null) {
 
 			FormaPagamentoFilter filtroTemp = new FormaPagamentoFilter();
 			filtroTemp.setDescricao(formaPagamento.getDescricao());
-			FormaPagamento formaPagamentoTemp = formasPagamentos.porDescricao(filtroTemp);
-
-			if (formaPagamentoTemp == null) {
-
-				formaPagamento.setParcelas(parcelas);
-				formaPagamento.setDias(dias);
-
-				formasPagamentos.save(formaPagamento);
-
-				PrimeFaces.current().executeScript(
-						"swal({ type: 'success', title: 'Concluído!', text: 'Forma de Pagamento salva com sucesso!' });");
-			} else {
-
-				PrimeFaces.current().executeScript(
-						"swal({ type: 'error', title: 'Erro!', text: 'Forma de Pagamento já existente!' });");
-			}
+			formaPagamentoTemp = formasPagamentos.porDescricao(filtroTemp);
 			
 		} else {
-
-			FormaPagamento formaPagamentoTemp = formasPagamentos.porDescricao(formaPagamento);
-			
-			if (formaPagamentoTemp == null) {
-
-				formaPagamento.setParcelas(parcelas);
-				formaPagamento.setDias(dias);
-
-				formasPagamentos.save(formaPagamento);
-
-				PrimeFaces.current().executeScript(
-						"swal({ type: 'success', title: 'Concluído!', text: 'Forma de Pagamento atualizada com sucesso!' });");
-			} else {
-
-				PrimeFaces.current().executeScript(
-						"swal({ type: 'error', title: 'Erro!', text: 'Forma de Pagamento já existente!' });");
-			}
+			formaPagamentoTemp = formasPagamentos.porDescricao(formaPagamento);
 		}
+
+		if (formaPagamentoTemp == null) {
+
+			formaPagamento.setParcelas(parcelas);
+			formaPagamento.setDias(dias);
+
+			formasPagamentos.save(formaPagamento);
+
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'success', title: 'Concluído!', text: 'Forma de Pagamento salva com sucesso!' });");
+		} else {
+
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'error', title: 'Erro!', text: 'Forma de Pagamento já existente!' });");
+		}
+		
 		
 		formaPagamentoSelecionado = null;
 

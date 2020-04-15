@@ -150,7 +150,17 @@
 
 				<p:panel class="card card-w-title ui-fluid itens-add"
 					style="padding-bottom: 0px !important; margin-top:10px">
+					
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3">
 
+						<p:outputLabel value="Lançamento N." for="codigo" />
+						<p:inputNumber id="codigo" decimalPlaces="0"
+							value="#{consultaLancamentosBean.numeroLancamento}">
+						</p:inputNumber>
+					</p:panelGrid>
+					
 					<p:panelGrid columns="4" id="painel" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-1, ui-grid-col-2">
@@ -233,7 +243,7 @@
 						disabled="#{(consultaLancamentosBean.lancamentosFiltradosSize eq 0) or consultaLancamentosBean.lancamentoSelecionado.id == null}" />
 
 					<p:button icon="fa fa-fw fa-eye" value="Visualizar"
-						outcome="/operacoes/LancamentoDespesas.xhtml" id="btn-view"
+						outcome="/operacoes/RegistroLancamentos.xhtml" id="btn-view"
 						style="margin-right:10px;font-weight:bold; float:right;width:100px;margin-top: -40px;position: relative"
 						process="@this lancamentosTable"
 						disabled="#{(consultaLancamentosBean.lancamentosFiltradosSize eq 0) or consultaLancamentosBean.lancamentoSelecionado.id == null}"
@@ -261,9 +271,14 @@
 							<p:ajax process="@this" event="rowUnselect" update="btn-trash btn-view" onstart="PF('downloadLoading').show();"
 								oncomplete="PF('downloadLoading').hide();" />
 
+							<p:column headerText="N. Lançamento" width="15%">
+								<h:outputText
+									value="#{lancamento.numeroLancamento}" />
+							</p:column>
+							
 							<p:column headerText="Data do Lançamento" width="20%">
 								<h:outputText value="#{lancamento.dataLancamento}">
-									<f:convertDateTime pattern="dd/MM/yyyy" timeZone="GMT-4" />
+									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt" />
 								</h:outputText>
 							</p:column>
 
