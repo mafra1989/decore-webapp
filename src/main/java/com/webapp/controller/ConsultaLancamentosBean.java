@@ -116,11 +116,11 @@ public class ConsultaLancamentosBean implements Serializable {
 	public void excluir() {
 
 		boolean contasPagas = false;
-		List<Conta> contasTemp = contas.porContasPagas(lancamentoSelecionado.getNumeroLancamento(), "LANC");
+		List<Conta> contasTemp = contas.porContasPagas(lancamentoSelecionado.getNumeroLancamento(), "LANCAMENTO");
 
 		if (contasTemp.size() == 0) {
 
-			contasTemp = contas.porCodigoOperacao(lancamentoSelecionado.getNumeroLancamento(), "LANC");
+			contasTemp = contas.porCodigoOperacao(lancamentoSelecionado.getNumeroLancamento(), "LANCAMENTO");
 			for (Conta conta : contasTemp) {
 				contas.remove(conta);
 			}
