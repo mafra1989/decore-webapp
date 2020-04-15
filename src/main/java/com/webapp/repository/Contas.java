@@ -10,12 +10,8 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import com.webapp.model.CategoriaLancamento;
 import com.webapp.model.Conta;
-import com.webapp.model.DestinoLancamento;
-import com.webapp.model.Lancamento;
 import com.webapp.model.OrigemConta;
-import com.webapp.model.OrigemLancamento;
 import com.webapp.model.TipoOperacao;
 import com.webapp.util.jpa.Transacional;
 
@@ -61,52 +57,7 @@ public class Contas implements Serializable {
 				.setParameter("codigoOperacao", codigoOperacao).setParameter("operacao", operacao).getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
-	public List<Lancamento> contasFiltradas(Date dateStart, Date dateStop, OrigemLancamento[] origemLancamento,
-			CategoriaLancamento categoriaLancamento, DestinoLancamento destinoLancamento) {
-
-		String conditionOrigem = "";
-		String conditionCategoria = "";
-		String conditionDestino = "";
-		/*
-		 * if (usuario != null && usuario.getId() != null) { condition =
-		 * "AND i.usuario.id = :idUsuario"; }
-		 */
-
-		if (origemLancamento.length > 0) {
-			conditionOrigem = "AND i.categoriaLancamento.tipoLancamento.origem in (:origemLancamento) ";
-		}
-
-		if (categoriaLancamento != null) {
-			conditionCategoria = "AND i.categoriaLancamento.id = :categoriaLancamento ";
-		}
-
-		if (destinoLancamento != null && destinoLancamento.getId() != null) {
-			conditionDestino = "AND i.destinoLancamento.id = :destinoLancamento ";
-		}
-
-		String jpql = "SELECT i FROM Lancamento i " + "WHERE i.dataLancamento between :dateStart and :dateStop "
-				+ conditionOrigem + conditionCategoria + conditionDestino + "order by i.numeroLancamento desc";
-
-		System.out.println(jpql);
-
-		Query q = manager.createQuery(jpql).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
-
-		if (origemLancamento.length > 0) {
-			q.setParameter("origemLancamento", Arrays.asList(origemLancamento));
-		}
-
-		if (categoriaLancamento != null) {
-			q.setParameter("categoriaLancamento", categoriaLancamento.getId());
-		}
-
-		if (destinoLancamento != null && destinoLancamento.getId() != null) {
-			q.setParameter("destinoLancamento", destinoLancamento.getId());
-		}
-
-		return q.getResultList();
-	}
-
+	
 	@SuppressWarnings("unchecked")
 	public List<Conta> contasFiltradas(Long codigo, TipoOperacao tipoOperacao, Calendar vencimento,
 			OrigemConta[] origemConta, Date vencimento2, boolean contasPagas) {
@@ -134,10 +85,10 @@ public class Contas implements Serializable {
 			conditionContasPagas = "AND c.status = 'N' ";
 		}
 
-		String jpql = "SELECT c FROM Conta c " + "WHERE c.vencimento <= :vencimento " + conditionCodigo
+		String jpql = "SELECT c FROM Conta c " + "WHERE c.id > 0 " + conditionCodigo
 				+ conditionTipoOperacao + conditionOrigemConta + conditionContasPagas + "order by c.vencimento ASC, c.id asc";
 
-		Query q = manager.createQuery(jpql).setParameter("vencimento", vencimento.getTime());
+		Query q = manager.createQuery(jpql);/*setParameter("vencimento", vencimento.getTime());*/
 
 		if (codigo != null) {
 			q.setParameter("codigo", codigo);
