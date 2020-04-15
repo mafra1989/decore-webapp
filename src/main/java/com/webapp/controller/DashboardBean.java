@@ -157,11 +157,11 @@ public class DashboardBean implements Serializable {
         values.add((totalVendas.doubleValue() + totalCreditos.doubleValue()) - (totalCompras.doubleValue() + totalDebitos.doubleValue()));//Em Caixa
         values.add(totalVendas);//Vendas
         values.add(totalCreditos);//Receitas
-        values.add(0);//Contas à Receber
+        //values.add(0);//Contas à Receber
         
         values.add(totalCompras);//Compras
         values.add(totalDebitos);//Despesas
-        values.add(0);//Contas à Pagar
+        //values.add(0);//Contas à Pagar
         values.add(produtos.totalAVender());//À Vender
                
         barDataSet.setData(values);
