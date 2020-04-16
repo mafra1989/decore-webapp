@@ -339,7 +339,7 @@
 
 									<p:outputLabel value="Valor Total" for="valor-despesa" />
 									<p:inputNumber id="valor-despesa" decimalPlaces="2"
-										autocomplete="off" styleClass="valor-numerico"
+										autocomplete="off" styleClass="valor-numerico" 
 										value="#{registroLancamentosBean.despesa.valor}" />
 
 								</p:panelGrid>
@@ -976,9 +976,9 @@
 			}
 
 			$(document).ready(function() {
-				$(".valor-numerico input").attr('inputmode', 'decimal');
+				//$(".valor-numerico input").attr('inputmode', 'decimal');
 				
-				$(".valor-numerico input").keypress(function(event) { alert(event);
+				/*$(".valor-numerico input").keypress(function(event) {
 					if(event.key === '.'){ 
 					  setTimeout(function() {
 						  if(!event.target.value.includes(',')) {
@@ -987,9 +987,20 @@
 					  }, 4);
 					  event.preventDefault();
 					};
-				});
+				});*/
 
 			});
+			
+			function trocarPonto(event) {
+				if(event.key === '.'){ 
+					  //setTimeout(function() {
+						  if(!event.target.value.includes(',')) {
+							  event.target.value += ',';
+						  }					    
+					  //}, 4);
+					  
+					};
+			}
 		</script>
 
 	</ui:define>
