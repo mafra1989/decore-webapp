@@ -339,7 +339,7 @@
 
 									<p:outputLabel value="Valor Total" for="valor-despesa" />
 									<p:inputNumber id="valor-despesa" decimalPlaces="2"
-										autocomplete="off"
+										autocomplete="off" styleClass="valor-numerico"
 										value="#{registroLancamentosBean.despesa.valor}" />
 
 								</p:panelGrid>
@@ -632,7 +632,8 @@
 							</p:outputLabel>
 
 							<p:outputLabel style="font-weight: bold" value="Valor total: " />
-							<p:outputLabel style="color: #0db130;font-weight: bold;font-size: 14px;"
+							<p:outputLabel
+								style="color: #0db130;font-weight: bold;font-size: 14px;"
 								value="#{registroLancamentosBean.lancamento.valor}">
 								<f:convertNumber type="currency" />
 							</p:outputLabel>
@@ -973,6 +974,22 @@
 			function mostrarFavorecido() {
 				$(".panel-favorecido").removeClass("hide");
 			}
+
+			$(document).ready(function() {
+				$(".valor-numerico input").attr('inputmode', 'decimal');
+
+				$(".valor-numerico input").keypress(function(event) {
+					if(event.key === '.'){ alert();
+					  setTimeout(function() {
+						  if(!event.target.value.includes(',')) {
+							  event.target.value += ',';
+						  }					    
+					  }, 4);
+					  event.preventDefault();
+					};
+				});
+
+			});
 		</script>
 
 	</ui:define>
