@@ -977,9 +977,9 @@
 
 			$(document).ready(function() {
 				$(".valor-numerico input").attr('inputmode', 'decimal');
-
-				$(".valor-numerico input").keypress(function(event) {
-					if(event.key === '.'){ alert();
+				
+				$(".valor-numerico input").keypress(function(event) { alert(event);
+					if(event.key === '.'){ 
 					  setTimeout(function() {
 						  if(!event.target.value.includes(',')) {
 							  event.target.value += ',';
