@@ -292,7 +292,7 @@ public class RegistroLancamentosBean implements Serializable {
 			despesa.setCategoriaLancamento(categoriaLancamentoDespesa);
 			despesa.setDestinoLancamento(categoriaLancamentoDespesa.getDestinoLancamento());
 			
-			if(categoriaLancamentoDespesa.getNome().equalsIgnoreCase("Categoria01")) {
+			if(categoriaLancamentoDespesa.getNome().equalsIgnoreCase("Décimo / Férias / Bônus / PLR")) {
 				PrimeFaces.current().executeScript("mostrarFavorecido();");
 				renderFavorecido = true;
 			} else {
