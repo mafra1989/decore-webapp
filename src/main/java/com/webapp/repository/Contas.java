@@ -43,28 +43,46 @@ public class Contas implements Serializable {
 	public List<Conta> todas() {
 		return this.manager.createQuery("from Conta order by id", Conta.class).getResultList();
 	}
-	
-	
-	public Number porContasPagas(String tipo) {
-		
-		String jpql = "SELECT sum(c.valor) FROM Conta c WHERE c.tipo = :tipo AND c.status = 'Y'";
-		Query q = manager.createQuery(jpql).setParameter("tipo", tipo);
-		
-        Number count = 0;
+
+	public Number porContasPagas(String tipo, String operacao) {
+
+		String jpql = "SELECT sum(c.valor) FROM Conta c WHERE c.tipo = :tipo AND c.operacao = :operacao AND c.status = 'Y'";
+		Query q = manager.createQuery(jpql).setParameter("tipo", tipo).setParameter("operacao", operacao);
+
+		Number count = 0;
 		try {
-		    count = (Number) q.getSingleResult();
-			
-		} catch(NoResultException e) {
-			
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
 		}
 
-		if(count == null) {
+		if (count == null) {
 			count = 0;
 		}
-		
+
 		return count;
 	}
 
+	public Number porContasPagas(String tipo) {
+
+		String jpql = "SELECT sum(c.valor) FROM Conta c WHERE c.tipo = :tipo AND c.status = 'Y'";
+		Query q = manager.createQuery(jpql).setParameter("tipo", tipo);
+
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
 
 	public List<Conta> porContasPagas(Long codigoOperacao, String operacao) {
 		return this.manager.createQuery(
@@ -80,7 +98,6 @@ public class Contas implements Serializable {
 				.setParameter("codigoOperacao", codigoOperacao).setParameter("operacao", operacao).getResultList();
 	}
 
-	
 	@SuppressWarnings("unchecked")
 	public List<Conta> contasFiltradas(Long codigo, TipoOperacao tipoOperacao, Calendar vencimento,
 			OrigemConta[] origemConta, Date vencimento2, boolean contasPagas) {
@@ -101,17 +118,17 @@ public class Contas implements Serializable {
 		if (origemConta.length > 0) {
 			conditionOrigemConta = "AND c.tipo in (:origemConta) ";
 		}
-		
-		if(contasPagas) {
+
+		if (contasPagas) {
 			conditionContasPagas = "AND (c.status = 'Y' OR c.status = 'N') ";
 		} else {
 			conditionContasPagas = "AND c.status = 'N' ";
 		}
 
-		String jpql = "SELECT c FROM Conta c " + "WHERE c.id > 0 " + conditionCodigo
-				+ conditionTipoOperacao + conditionOrigemConta + conditionContasPagas + "order by c.vencimento ASC, c.id asc";
+		String jpql = "SELECT c FROM Conta c " + "WHERE c.id > 0 " + conditionCodigo + conditionTipoOperacao
+				+ conditionOrigemConta + conditionContasPagas + "order by c.vencimento ASC, c.id asc";
 
-		Query q = manager.createQuery(jpql);/*setParameter("vencimento", vencimento.getTime());*/
+		Query q = manager.createQuery(jpql);/* setParameter("vencimento", vencimento.getTime()); */
 
 		if (codigo != null) {
 			q.setParameter("codigo", codigo);

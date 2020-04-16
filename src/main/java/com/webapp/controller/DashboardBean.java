@@ -154,6 +154,8 @@ public class DashboardBean implements Serializable {
         Number totalVendas = vendas.totalVendas();
         Number totalCompras = compras.totalCompras();
         
+        Number totalDespesasPagas = contas.porContasPagas("DEBITO", "LANCAMENTO");
+        
         Number totalDebitosPagos = contas.porContasPagas("DEBITO");
         Number totalCreditosPagos = contas.porContasPagas("CREDITO");
         
@@ -167,7 +169,7 @@ public class DashboardBean implements Serializable {
         //values.add(0);//Contas à Receber
         
         values.add(totalCompras);//Compras
-        values.add(totalDebitosPagos);//Despesas
+        values.add(totalDespesasPagas);//Despesas
         //values.add(0);//Contas à Pagar
         values.add(produtos.totalAVender());//À Vender
                
@@ -201,7 +203,7 @@ public class DashboardBean implements Serializable {
         
         fluxoDeCaixa = new FluxoDeCaixa();
         fluxoDeCaixa.setItem("Despesas");
-        fluxoDeCaixa.setValue(totalDebitosPagos.doubleValue());
+        fluxoDeCaixa.setValue(totalDespesasPagas.doubleValue());
         tabela.add(fluxoDeCaixa);
         /*
         fluxoDeCaixa = new FluxoDeCaixa();

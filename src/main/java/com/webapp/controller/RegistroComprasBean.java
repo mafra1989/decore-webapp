@@ -16,7 +16,6 @@ import org.primefaces.PrimeFaces;
 
 import com.webapp.model.Compra;
 import com.webapp.model.Conta;
-import com.webapp.model.FormaPagamento;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.PeriodoPagamento;
@@ -25,7 +24,6 @@ import com.webapp.model.TipoPagamento;
 import com.webapp.model.Usuario;
 import com.webapp.repository.Compras;
 import com.webapp.repository.Contas;
-import com.webapp.repository.FormasPagamentos;
 import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
 import com.webapp.repository.Produtos;
@@ -71,11 +69,6 @@ public class RegistroComprasBean implements Serializable {
 	private ItensVendas itensVendas;
 
 	@Inject
-	private FormasPagamentos formasPagamentos;
-
-	private List<FormaPagamento> todasFormasPagamentos;
-
-	@Inject
 	private Contas contas;
 
 	private List<Conta> todasContas = new ArrayList<>();
@@ -98,7 +91,6 @@ public class RegistroComprasBean implements Serializable {
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
 			todosUsuarios = usuarios.todos();
-			listarTodos();
 		}
 	}
 
@@ -425,10 +417,6 @@ public class RegistroComprasBean implements Serializable {
 
 	}
 
-	private void listarTodos() {
-		todasFormasPagamentos = formasPagamentos.todos();
-	}
-
 	public List<Usuario> getTodosUsuarios() {
 		return todosUsuarios;
 	}
@@ -475,10 +463,6 @@ public class RegistroComprasBean implements Serializable {
 
 	public int getItensCompraSize() {
 		return itensCompra.size();
-	}
-
-	public List<FormaPagamento> getTodasFormasPagamentos() {
-		return todasFormasPagamentos;
 	}
 
 	public List<Conta> getTodasContas() {

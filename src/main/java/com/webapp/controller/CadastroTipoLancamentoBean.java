@@ -17,7 +17,7 @@ import com.webapp.util.jsf.FacesUtil;
 
 @Named
 @ViewScoped
-public class CadastroTipoDespesaBean implements Serializable {
+public class CadastroTipoLancamentoBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

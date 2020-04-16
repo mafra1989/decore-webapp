@@ -4,7 +4,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
 
-	<ui:define name="title">Total de Despesas</ui:define>
+	<ui:define name="title">Total de Lançamentos</ui:define>
 
 	<ui:define name="head">
 
@@ -200,7 +200,7 @@
 	<ui:define name="content">
 
 		<div class="page-header">
-			<h1>Total de Despesas</h1>
+			<h1>Total de Lançamentos</h1>
 		</div>
 
 		<h:form id="form">
@@ -212,7 +212,7 @@
 				<p:panel class="ui-lg-6 ui-fluid itens-add"
 					style="padding-bottom: 0px !important; margin-top:10px;width:100%">
 
-					<h3 style="font-weight: bold; margin-top: -8px;">Despesas por
+					<h3 style="font-weight: bold; margin-top: -8px;">Lançamentos por
 						Dia</h3>
 
 					<p:panelGrid columns="4" id="painel" layout="grid"
@@ -220,54 +220,54 @@
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-1">
 
 						<p:outputLabel value="Data de início" for="data01" />
-						<p:datePicker id="data01" value="#{relatorioDespesasBean_.dateStart}" readonlyInput="true"
+						<p:datePicker id="data01" value="#{relatorioLancamentosBean.dateStart}" readonlyInput="true"
 							pattern="dd/MM/yyyy" locale="pt" showIcon="true">
 
 							<p:ajax event="dateSelect"
-								listener="#{relatorioDespesasBean_.createMixedModelPorDia}"
+								listener="#{relatorioLancamentosBean.createMixedModelPorDia}"
 								process="@this" update="barChart-despesasPorDia" />
 						</p:datePicker>
 
 
 						<p:outputLabel value="até" id="data02" />
-						<p:datePicker id="data-02" value="#{relatorioDespesasBean_.dateStop}" readonlyInput="true"
+						<p:datePicker id="data-02" value="#{relatorioLancamentosBean.dateStop}" readonlyInput="true"
 							styleClass="dateStop" pattern="dd/MM/yyyy" locale="pt"
 							showIcon="true">
 
 							<p:ajax event="dateSelect"
-								listener="#{relatorioDespesasBean_.createMixedModelPorDia}"
+								listener="#{relatorioLancamentosBean.createMixedModelPorDia}"
 								process="@this" update="barChart-despesasPorDia" />
 						</p:datePicker>
 
 
 						<p:outputLabel value="Categoria" for="categoria1" />
 						<p:selectOneMenu id="categoria1" styleClass="categoria"
-							value="#{relatorioDespesasBean_.categoriaPorDia}">
+							value="#{relatorioLancamentosBean.categoriaPorDia}">
 							<f:selectItem itemLabel="Selecione" itemValue="" />
 
 							<p:ajax event="change"
-								listener="#{relatorioDespesasBean_.changeCategoriaPorDia}"
+								listener="#{relatorioLancamentosBean.changeCategoriaPorDia}"
 								process="@this painel" update="barChart-despesasPorDia" />
 							<f:selectItems
-								value="#{relatorioDespesasBean_.todasCategoriasLancamento}"
+								value="#{relatorioLancamentosBean.todasCategoriasLancamento}"
 								var="categoria" itemLabel="#{categoria.nome}"
 								itemValue="#{categoria}"></f:selectItems>
 						</p:selectOneMenu>
 					</p:panelGrid>
 
-					<p:commandButton icon="fa fa-pie-chart" actionListener="#{relatorioDespesasBean_.prepareDonutModelPorDia}" styleClass="btn-pie"
+					<p:commandButton icon="fa fa-pie-chart" actionListener="#{relatorioLancamentosBean.prepareDonutModelPorDia}" styleClass="btn-pie"
 						title="Despesas por Quantidade" oncomplete="PF('produtos-qty').show();" update="form-dialog:pieChart-despesasPorQuantidade"
 						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-right:10px" />
 					
 					<p:barChart id="barChart-despesasPorDia"
-						model="#{relatorioDespesasBean_.mixedModelPorDia}"
+						model="#{relatorioLancamentosBean.mixedModelPorDia}"
 						styleClass="barChart-01" />
 				</p:panel>
 
 				<p:panel class="ui-lg-6  ui-fluid itens-add"
 					style="padding-bottom: 0px !important; margin-top:10px;width:100%">
 
-					<h3 style="font-weight: bold; margin-top: -8px;">Despesas por
+					<h3 style="font-weight: bold; margin-top: -8px;">Lançamentos por
 						Semana</h3>
 
 					<p:panelGrid columns="2" layout="grid"
@@ -276,12 +276,12 @@
 
 						<p:outputLabel value="Ano" for="ano" />
 						<p:selectOneMenu id="ano" styleClass="ano"
-							value="#{relatorioDespesasBean_.ano01}">
+							value="#{relatorioLancamentosBean.ano01}">
 
 							<p:ajax event="change"
-								listener="#{relatorioDespesasBean_.createMixedModelPorSemana}"
+								listener="#{relatorioLancamentosBean.createMixedModelPorSemana}"
 								process="@this" update="barChart-despesasPorSemana" />
-							<f:selectItems value="#{relatorioDespesasBean_.anos}" var="ano"
+							<f:selectItems value="#{relatorioLancamentosBean.anos}" var="ano"
 								itemLabel="#{ano}" itemValue="#{ano}"></f:selectItems>
 						</p:selectOneMenu>
 
@@ -293,50 +293,50 @@
 
 						<p:outputLabel value="Nª Semana" for="num-semana1" />
 						<p:selectOneMenu id="num-semana1" style="width: 100%"
-							value="#{relatorioDespesasBean_.semana01}">
+							value="#{relatorioLancamentosBean.semana01}">
 
 							<p:ajax event="change"
-								listener="#{relatorioDespesasBean_.createMixedModelPorSemana}"
+								listener="#{relatorioLancamentosBean.createMixedModelPorSemana}"
 								process="@this" update="barChart-despesasPorSemana" />
-							<f:selectItems value="#{relatorioDespesasBean_.semanas}"
+							<f:selectItems value="#{relatorioLancamentosBean.semanas}"
 								var="semana" itemLabel="#{semana}" itemValue="#{semana}"></f:selectItems>
 						</p:selectOneMenu>
 
 						<p:outputLabel value="Até" for="num-semana2" />
 						<p:selectOneMenu id="num-semana2" style="width: 100%"
-							value="#{relatorioDespesasBean_.semana02}">
+							value="#{relatorioLancamentosBean.semana02}">
 
 							<p:ajax event="change"
-								listener="#{relatorioDespesasBean_.createMixedModelPorSemana}"
+								listener="#{relatorioLancamentosBean.createMixedModelPorSemana}"
 								process="@this" update="barChart-despesasPorSemana" />
-							<f:selectItems value="#{relatorioDespesasBean_.semanas}"
+							<f:selectItems value="#{relatorioLancamentosBean.semanas}"
 								var="semana" itemLabel="#{semana}" itemValue="#{semana}"></f:selectItems>
 						</p:selectOneMenu>
 
 
 						<p:outputLabel value="Categoria" for="categoria2" />
 						<p:selectOneMenu id="categoria2" style="width: 100%"
-							value="#{relatorioDespesasBean_.categoriaPorSemana}">
+							value="#{relatorioLancamentosBean.categoriaPorSemana}">
 
 							<f:selectItem itemLabel="Selecione" itemValue="" />
 
 							<p:ajax event="change"
-								listener="#{relatorioDespesasBean_.changeCategoriaPorSemana}"
+								listener="#{relatorioLancamentosBean.changeCategoriaPorSemana}"
 								process="@this"
 								update="barChart-despesasPorSemana" />
 							<f:selectItems
-								value="#{relatorioDespesasBean_.todasCategoriasLancamento}"
+								value="#{relatorioLancamentosBean.todasCategoriasLancamento}"
 								var="categoria" itemLabel="#{categoria.nome}"
 								itemValue="#{categoria}"></f:selectItems>
 						</p:selectOneMenu>
 					</p:panelGrid>
 					
-					<p:commandButton icon="fa fa-pie-chart" actionListener="#{relatorioDespesasBean_.prepareDonutModelPorSemana}"
+					<p:commandButton icon="fa fa-pie-chart" actionListener="#{relatorioLancamentosBean.prepareDonutModelPorSemana}"
 						title="Despesas por Quantidade" oncomplete="PF('produtos-qty').show();" update="form-dialog:pieChart-despesasPorQuantidade"
 						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-top:5px;margin-right:10px" />
 										
 					<p:barChart id="barChart-despesasPorSemana" 
-						model="#{relatorioDespesasBean_.mixedModelPorSemana}"
+						model="#{relatorioLancamentosBean.mixedModelPorSemana}"
 						styleClass="barChart-02" />
 				</p:panel>
 
@@ -352,7 +352,7 @@
 				<p:panel class="ui-lg-6 ui-fluid itens-add"
 					style="padding-bottom: 0px !important; margin-top:10px;width:100%">
 
-					<h3 style="font-weight: bold; margin-top: -8px;">Despesas por
+					<h3 style="font-weight: bold; margin-top: -8px;">Lançamentos por
 						Mês</h3>
 
 					<p:panelGrid columns="2" layout="grid"
@@ -361,12 +361,12 @@
 
 						<p:outputLabel value="Ano" for="ano2" />
 						<p:selectOneMenu id="ano2" styleClass="ano"
-							value="#{relatorioDespesasBean_.ano02}">
+							value="#{relatorioLancamentosBean.ano02}">
 
 							<p:ajax event="change"
-								listener="#{relatorioDespesasBean_.createMixedModelPorMes}"
+								listener="#{relatorioLancamentosBean.createMixedModelPorMes}"
 								process="@this" update="barChart-despesasPorMes" />
-							<f:selectItems value="#{relatorioDespesasBean_.anos}" var="ano"
+							<f:selectItems value="#{relatorioLancamentosBean.anos}" var="ano"
 								itemLabel="#{ano}" itemValue="#{ano}"></f:selectItems>
 						</p:selectOneMenu>
 
@@ -378,58 +378,58 @@
 
 						<p:outputLabel value="Nº Mês" for="mes1" />
 						<p:selectOneMenu id="mes1" style="width: 100%"
-							value="#{relatorioDespesasBean_.mes01}">
+							value="#{relatorioLancamentosBean.mes01}">
 
 							<p:ajax event="change"
-								listener="#{relatorioDespesasBean_.createMixedModelPorMes}"
+								listener="#{relatorioLancamentosBean.createMixedModelPorMes}"
 								process="@this" update="barChart-despesasPorMes" />
-							<f:selectItems value="#{relatorioDespesasBean_.meses}" var="mes"
+							<f:selectItems value="#{relatorioLancamentosBean.meses}" var="mes"
 								itemLabel="#{mes}" itemValue="#{mes}"></f:selectItems>
 						</p:selectOneMenu>
 
 
 						<p:outputLabel value="até" for="mes2" />
 						<p:selectOneMenu id="mes2" style="width: 100%"
-							value="#{relatorioDespesasBean_.mes02}">
+							value="#{relatorioLancamentosBean.mes02}">
 
 							<p:ajax event="change"
-								listener="#{relatorioDespesasBean_.createMixedModelPorMes}"
+								listener="#{relatorioLancamentosBean.createMixedModelPorMes}"
 								process="@this" update="barChart-despesasPorMes" />
-							<f:selectItems value="#{relatorioDespesasBean_.meses}" var="mes"
+							<f:selectItems value="#{relatorioLancamentosBean.meses}" var="mes"
 								itemLabel="#{mes}" itemValue="#{mes}"></f:selectItems>
 						</p:selectOneMenu>
 
 
 						<p:outputLabel value="Categoria" for="categoria3" />
 						<p:selectOneMenu id="categoria3" style="width: 100%"
-							value="#{relatorioDespesasBean_.categoriaPorMes}">
+							value="#{relatorioLancamentosBean.categoriaPorMes}">
 
 							<f:selectItem itemLabel="Selecione" itemValue="" />
 
 							<p:ajax event="change"
-								listener="#{relatorioDespesasBean_.changeCategoriaPorMes}"
+								listener="#{relatorioLancamentosBean.changeCategoriaPorMes}"
 								process="@this"
 								update="barChart-despesasPorMes" />
 							<f:selectItems
-								value="#{relatorioDespesasBean_.todasCategoriasLancamento}"
+								value="#{relatorioLancamentosBean.todasCategoriasLancamento}"
 								var="categoria" itemLabel="#{categoria.nome}"
 								itemValue="#{categoria}"></f:selectItems>
 						</p:selectOneMenu>
 					</p:panelGrid>
 			
 
-					<p:commandButton icon="fa fa-pie-chart" actionListener="#{relatorioDespesasBean_.prepareDonutModelPorMes}"
+					<p:commandButton icon="fa fa-pie-chart" actionListener="#{relatorioLancamentosBean.prepareDonutModelPorMes}"
 						title="Despesas por Quantidade" oncomplete="PF('produtos-qty').show();" update="form-dialog:pieChart-despesasPorQuantidade"
 						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-top:5px;margin-right:10px" />
 				
-					<p:barChart model="#{relatorioDespesasBean_.mixedModelPorMes}"
+					<p:barChart model="#{relatorioLancamentosBean.mixedModelPorMes}"
 						id="barChart-despesasPorMes" styleClass="barChart-02" />
 				</p:panel>
 
 				<p:panel class="ui-lg-6  ui-fluid itens-add"
 					style="padding-bottom: 0px !important; margin-top:10px;width:100%">
 
-					<h3 style="font-weight: bold; margin-top: -8px;">Despesas por
+					<h3 style="font-weight: bold; margin-top: -8px;">Lançamentos por
 						Ano</h3>
 					
 					<p:panelGrid columns="4" id="painel3" layout="grid"
@@ -438,48 +438,48 @@
 
 						<p:outputLabel value="Ano" for="ano3" />
 						<p:selectOneMenu id="ano3" style="width: 100%"
-							value="#{relatorioDespesasBean_.ano03}">
+							value="#{relatorioLancamentosBean.ano03}">
 							
 							<p:ajax event="change"
-								listener="#{relatorioDespesasBean_.createMixedModelPorAno}"
+								listener="#{relatorioLancamentosBean.createMixedModelPorAno}"
 								process="@this" update="barChart-despesasPorAno" />
-							<f:selectItems value="#{relatorioDespesasBean_.anos}" var="ano"
+							<f:selectItems value="#{relatorioLancamentosBean.anos}" var="ano"
 								itemLabel="#{ano}" itemValue="#{ano}"></f:selectItems>
 						</p:selectOneMenu>
 
 						<p:outputLabel value="Até" for="ano4" />
 						<p:selectOneMenu id="ano4" style="width: 100%"
-							value="#{relatorioDespesasBean_.ano04}">
+							value="#{relatorioLancamentosBean.ano04}">
 							
 							<p:ajax event="change"
-								listener="#{relatorioDespesasBean_.createMixedModelPorAno}"
+								listener="#{relatorioLancamentosBean.createMixedModelPorAno}"
 								process="@this" update="barChart-despesasPorAno" />
-							<f:selectItems value="#{relatorioDespesasBean_.anos}" var="ano"
+							<f:selectItems value="#{relatorioLancamentosBean.anos}" var="ano"
 								itemLabel="#{ano}" itemValue="#{ano}"></f:selectItems>
 						</p:selectOneMenu>
 
 
 						<p:outputLabel value="Categoria" for="categoria4" />
 						<p:selectOneMenu id="categoria4" style="width: 100%"
-							value="#{relatorioDespesasBean_.categoriaPorAno}">
+							value="#{relatorioLancamentosBean.categoriaPorAno}">
 							
 							<f:selectItem itemLabel="Selecione" itemValue="" />
 							
 							<p:ajax event="change"
-								listener="#{relatorioDespesasBean_.changeCategoriaPorAno}"
+								listener="#{relatorioLancamentosBean.changeCategoriaPorAno}"
 								process="@this" update="barChart-despesasPorAno" />
-							<f:selectItems value="#{relatorioDespesasBean_.todasCategoriasLancamento}"
+							<f:selectItems value="#{relatorioLancamentosBean.todasCategoriasLancamento}"
 								var="categoria"
 								itemLabel="#{categoria.nome}"
 								itemValue="#{categoria}"></f:selectItems>
 						</p:selectOneMenu>
 					</p:panelGrid>
 
-					<p:commandButton icon="fa fa-pie-chart" actionListener="#{relatorioDespesasBean_.prepareDonutModelPorAno}" styleClass="btn-pie"
+					<p:commandButton icon="fa fa-pie-chart" actionListener="#{relatorioLancamentosBean.prepareDonutModelPorAno}" styleClass="btn-pie"
 						title="Despesas por Quantidade" oncomplete="PF('produtos-qty').show();" update="form-dialog:pieChart-despesasPorQuantidade"
 						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-right:10px" />
 				
-					<p:barChart id="barChart-despesasPorAno" model="#{relatorioDespesasBean_.mixedModelPorAno}"
+					<p:barChart id="barChart-despesasPorAno" model="#{relatorioLancamentosBean.mixedModelPorAno}"
 						styleClass="barChart-01" />
 						
 				</p:panel>
@@ -502,7 +502,7 @@
 						style="padding: 0px 5px 0px 5px; padding-bottom: 0px !important;margin-bottom: 10px;text-align: center;">
 
 						<p:donutChart id="pieChart-despesasPorQuantidade" 
-						model="#{relatorioDespesasBean_.donutModel}" style="width: 100%; height: 320px;margin-top:10px" />
+						model="#{relatorioLancamentosBean.donutModel}" style="width: 100%; height: 320px;margin-top:10px" />
 						
 						
 						<p:commandButton icon="fa fa-fw fa-close" style="margin-top: 5px;font-weight: bold;width: 120px;background: #f3f3f3f0;color: #716c6c;border: 1px solid #484545;"

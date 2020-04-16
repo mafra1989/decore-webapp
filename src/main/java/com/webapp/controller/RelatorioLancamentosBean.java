@@ -28,7 +28,7 @@ import com.webapp.repository.Lancamentos;
 
 @Named
 @ViewScoped
-public class RelatorioDespesasBean_ implements Serializable {
+public class RelatorioLancamentosBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	

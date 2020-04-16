@@ -41,13 +41,14 @@
 							<p:menuitem id="pm_Dashboard" styleClass="pm_Dashboard"
 								value="Dashboard" icon="fa fa-home" outcome="/Dashboard.xhtml"
 								rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()}" />
-						
+
 							<p:menuitem id="pm_Contas" value="Contas à Pagar / Receber"
-									icon="fa fa-folder-open-o" outcome="/Contas.xhtml" />
-									
+								icon="fa fa-folder-open-o" outcome="/Contas.xhtml" 
+								rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()}" />
+
 							<p:submenu id="pm_consulta" label="Consultar" icon="fa fa-search"
 								rendered="#{seguranca.acessoAdministrador()  or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()}">
-									
+
 								<p:menuitem id="pm_estoque" value="Estoque" icon="fa fa-cubes"
 									outcome="/consultas/Estoque.xhtml" />
 
@@ -59,8 +60,6 @@
 
 								<p:menuitem id="pm_lancamento" value="Lançamentos"
 									icon="fa fa-list-ol" outcome="/consultas/Lancamentos.xhtml" />
-
-
 
 							</p:submenu>
 
@@ -90,15 +89,11 @@
 									icon="fa fa-instagram"
 									outcome="/cadastros/CadastroTipoVenda.xhtml" />
 
-								<p:menuitem id="pm_forma_pagamento" value="Forma de Pagamento"
-									icon="fa fa-money" rendered="false"
-									outcome="/cadastros/CadastroFormaPagamento.xhtml" />
-
 								<p:submenu id="pm_tipos" label="Lançamentos" icon="fa fa-copy">
 
 									<p:menuitem id="pm_cat_produto" value="Tipo de Lançamento"
 										icon="fa fa-tags"
-										outcome="/cadastros/CadastroTipoDespesa.xhtml" />
+										outcome="/cadastros/CadastroTipoLancamento.xhtml" />
 
 									<p:menuitem id="pm_destino" value="Destino de Lançamento"
 										icon="fa fa-send-o"
@@ -106,7 +101,7 @@
 
 									<p:menuitem id="pm_tipo_venda" value="Categoria de Lançamento"
 										icon="fa fa-inbox"
-										outcome="/cadastros/CadastroCategoriaDespesa.xhtml" />
+										outcome="/cadastros/CadastroCategoriaLancamento.xhtml" />
 								</p:submenu>
 
 
@@ -133,16 +128,16 @@
 								rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()}"
 								label="Relatórios" icon="fa fa-line-chart">
 
-								<p:menuitem id="pm_despesas_total"
-									styleClass="pm_despesas_total" value="Vendas"
-									icon="fa fa-dollar" outcome="/relatorios/Vendas.xhtml" />
-
 								<p:menuitem id="pm_vendas_total" styleClass="pm_vendas_total"
-									value="Despesas" icon="fa fa-coffee"
-									outcome="/relatorios/Despesas.xhtml" />
+									value="Vendas" icon="fa fa-dollar"
+									outcome="/relatorios/Vendas.xhtml" />
 
 								<p:menuitem id="pm_lucros" styleClass="pm_lucros" value="Lucros"
 									icon="fa fa-money" outcome="/relatorios/Lucros.xhtml" />
+
+								<p:menuitem id="pm_lancamentos_total"
+									styleClass="pm_lancamentos_total" value="Lançamentos"
+									icon="fa fa-coffee" outcome="/relatorios/Lancamentos.xhtml" />
 
 							</p:submenu>
 

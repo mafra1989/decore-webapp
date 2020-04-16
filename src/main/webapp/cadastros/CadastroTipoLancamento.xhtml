@@ -5,29 +5,16 @@
 	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
 	template="/WEB-INF/template.xhtml">
 
-	<ui:define name="title">Cadastro Forma de Pagamento</ui:define>
+	<ui:define name="title">Cadastro Tipo de Lançamento</ui:define>
 
 	<f:metadata>
-		<f:viewAction action="#{cadastroFormaPagamentoBean.inicializar}" />
+		<f:viewAction action="#{cadastroTipoLancamentoBean.inicializar}" />
 	</f:metadata>
 
 	<ui:define name="content">
 
 		<style>
 @media ( min-width :220px) {
-
-	body .ui-inputswitch .ui-inputswitch-handle {
-	    width: 30px !important;
-	}
-	
-	.ui-inputswitch {
-	    width: 65px !important;
-	}
-	
-	.ui-inputswitch .ui-inputswitch-off span {
-   	 	padding-left: 25px !important;
-    }
-
 	body .ui-toolbar {
 		padding: 5px 5px;
 	}
@@ -121,7 +108,7 @@
 </style>
 
 		<div class="page-header">
-			<h1>Cadastro Forma de Pagamento</h1>
+			<h1>Cadastro Tipo de Lançamento</h1>
 		</div>
 
 		<p:growl id="msg" closable="true" life="500" showSummary="false"
@@ -131,20 +118,19 @@
 
 		<h:form id="form">
 
-			<p:remoteCommand name="setarItemID"
-				process="@this formaPagamentoTable" update="form"
-				action="#{cadastroFormaPagamentoBean.excluir}"
+			<p:remoteCommand name="setarItemID" process="@this tipoDespesaTable"
+				update="form" action="#{cadastroTipoLancamentoBean.excluir}"
 				onstart="PF('downloadLoading').show();"
 				oncomplete="PF('downloadLoading').hide();" />
 
 			<p:toolbar id="toolbar">
 				<f:facet name="left">
 					<p:commandButton value="Novo" icon="fa fa-fw fa-file-text-o"
-						action="#{cadastroFormaPagamentoBean.prepararNovoCadastro}"
-						process="@this" update="formaPagamento-dialog"
-						oncomplete="PF('formaPagamento-dialog').show()">
+						action="#{cadastroTipoLancamentoBean.prepararNovoCadastro}"
+						process="@this" update="tipoDespesa-dialog"
+						oncomplete="PF('tipoDespesa-dialog').show()">
 
-						<p:resetInput target="formaPagamento-dialog" />
+						<p:resetInput target="tipoDespesa-dialog" />
 					</p:commandButton>
 
 					<p:separator />
@@ -152,12 +138,12 @@
 					<p:spacer />
 
 					<p:commandButton icon="fa fa-fw fa-pencil" value="Editar" id="btn"
-						action="#{cadastroFormaPagamentoBean.prepararEditarCadastro}"
-						process="@this" update="formaPagamento-dialog"
-						oncomplete="PF('formaPagamento-dialog').show()"
-						disabled="#{cadastroFormaPagamentoBean.formaPagamentoSelecionado == null}">
+						action="#{cadastroTipoLancamentoBean.prepararEditarCadastro}"
+						process="@this" update="tipoDespesa-dialog"
+						oncomplete="PF('tipoDespesa-dialog').show()"
+						disabled="#{cadastroTipoLancamentoBean.tipoDespesaSelecionado == null}">
 
-						<p:resetInput target="formaPagamento-dialog" />
+						<p:resetInput target="tipoDespesa-dialog" />
 					</p:commandButton>
 
 				</f:facet>
@@ -165,8 +151,8 @@
 				<f:facet name="right">
 					<p:commandButton icon="fa fa-fw fa-trash" value="Excluir"
 						process="@this"
-						onclick="deleteItem(#{cadastroFormaPagamentoBean.formaPagamentoSelecionado.id});"
-						disabled="#{cadastroFormaPagamentoBean.formaPagamentoSelecionado == null}" />
+						onclick="deleteItem(#{cadastroTipoLancamentoBean.tipoDespesaSelecionado.id});"
+						disabled="#{cadastroTipoLancamentoBean.tipoDespesaSelecionado == null}" />
 				</f:facet>
 			</p:toolbar>
 
@@ -178,36 +164,32 @@
 					<p:defaultCommand target="pesquisar-button" />
 
 					<p:inputText id="search"
-						value="#{cadastroFormaPagamentoBean.filtro.descricao}"
+						value="#{cadastroTipoLancamentoBean.filtro.descricao}"
 						placeholder="Buscar pela descrição" style="width: 180px" />
 					<p:commandButton icon="fa fa-fw fa-search" title="Pesquisar"
-						id="pesquisar-button" update="formaPagamentoTable toolbar"
+						id="pesquisar-button" update="tipoDespesaTable toolbar"
 						style="margin-left: 3px; width: 40px" process="@parent"
-						action="#{cadastroFormaPagamentoBean.pesquisar}">
+						action="#{cadastroTipoLancamentoBean.pesquisar}">
 					</p:commandButton>
 
-					<p:dataTable id="formaPagamentoTable" reflow="true"
+					<p:dataTable id="tipoDespesaTable" reflow="true"
 						paginatorAlwaysVisible="false"
-						value="#{cadastroFormaPagamentoBean.todasFormasPagamentos}"
-						var="formaPagamento"
-						emptyMessage="Nenhuma forma de pagamento encontrada." rows="10"
+						value="#{cadastroTipoLancamentoBean.todosTiposDespesas}"
+						var="tipoDespesa"
+						emptyMessage="Nenhum tipo de lançamento encontrado." rows="10"
 						paginator="true" paginatorPosition="bottom" selectionMode="single"
-						selection="#{cadastroFormaPagamentoBean.formaPagamentoSelecionado}"
-						rowKey="#{formaPagamento.id}" style="margin-top: 10px">
+						selection="#{cadastroTipoLancamentoBean.tipoDespesaSelecionado}"
+						rowKey="#{tipoDespesa.id}" style="margin-top: 10px">
 
 						<p:ajax event="rowSelect" update="form:toolbar" />
 						<p:ajax event="rowUnselect" update="form:toolbar" />
 
 						<p:column headerText="Descrição">
-							<h:outputText value="#{formaPagamento.descricao}" />
+							<h:outputText value="#{tipoDespesa.descricao}" />
 						</p:column>
 
-						<p:column headerText="Parcelas" rendered="false">
-							<h:outputText value="#{formaPagamento.parcelas != null ? formaPagamento.parcelas : '-'}" />
-						</p:column>
-
-						<p:column headerText="Dias" rendered="false">
-							<h:outputText value="#{formaPagamento.dias != null ? formaPagamento.dias : '-'}" />
+						<p:column headerText="Origem">
+							<h:outputText value="#{tipoDespesa.origem.descricao}" />
 						</p:column>
 
 					</p:dataTable>
@@ -220,8 +202,8 @@
 
 
 		<p:dialog
-			header="#{cadastroFormaPagamentoBean.formaPagamento.id == null ? 'Nova forma de Pagamento' : 'Editar forma de Pagamento'}"
-			widgetVar="formaPagamento-dialog" id="formaPagamento-dialog"
+			header="#{cadastroTipoLancamentoBean.tipoDespesa.id == null ? 'Novo tipo de lançamento' : 'Editar tipo de lançamento'}"
+			widgetVar="tipoDespesa-dialog" id="tipoDespesa-dialog"
 			resizable="false" modal="true" closeOnEscape="true" responsive="true"
 			width="250px" style="margin-top: 10px">
 
@@ -237,45 +219,21 @@
 							style="margin-top: 15px; margin-bottom: 5px"
 							styleClass="panelgrid-noborder disabled disabled">
 
-							<p:outputLabel value="À vista" />
-							<p:inputSwitch onLabel="Sim" offLabel="Não" style="width: 50px !important" 
-								value="#{cadastroFormaPagamentoBean.formaPagamento.avista}">
-								<p:ajax listener="#{cadastroFormaPagamentoBean.pagamentoAvista}" process="@this" update="@this form-dialog" />
-							</p:inputSwitch >
-
-							<p:outputLabel value="Entrada" rendered="false" />		
-							<p:inputSwitch onLabel="Sim" offLabel="Não" style="width: 50px !important" 
-								value="#{cadastroFormaPagamentoBean.formaPagamento.entrada}" rendered="false"
-								disabled="#{cadastroFormaPagamentoBean.formaPagamento.avista}">
-								<p:ajax event="change" listener="#{cadastroFormaPagamentoBean.buildDescription}" process="@this" update="@this descricao" />
-							</p:inputSwitch >
-
-							<p:outputLabel value="N. Parcelas" for="parcela" />
-							<p:inputNumber id="parcela" decimalPlaces="0" 
-								value="#{cadastroFormaPagamentoBean.parcelas}"
-								disabled="#{cadastroFormaPagamentoBean.formaPagamento.avista}">
-								
-								<p:ajax event="keyup" listener="#{cadastroFormaPagamentoBean.buildDescription}" process="@this" update="descricao" />
-							</p:inputNumber>
-								
-
-							<p:outputLabel value="Intervalo entre as parcelas" for="dias" />
-							<p:inputNumber id="dias" decimalPlaces="0" 
-								value="#{cadastroFormaPagamentoBean.dias}"
-								disabled="#{cadastroFormaPagamentoBean.formaPagamento.avista}">
-								
-								<p:ajax event="keyup" listener="#{cadastroFormaPagamentoBean.buildDescription}" process="@this" update="descricao" />
-							</p:inputNumber>
-
-
 							<p:outputLabel value="Descrição" for="descricao" />
-							<p:inputText id="descricao" readonly="true"
-								value="#{cadastroFormaPagamentoBean.formaPagamento.descricao}" />
+							<p:inputText id="descricao" autocomplete="off"
+								value="#{cadastroTipoLancamentoBean.tipoDespesa.descricao}" />
 
+							<p:outputLabel value="Origem" for="origem" />
+							<p:selectOneRadio id="origem" unselectable="true" value="#{cadastroTipoLancamentoBean.tipoDespesa.origem}">
+								<f:selectItems
+									value="#{cadastroTipoLancamentoBean.origensLancamentos}"
+									var="origemLancamento"
+									itemLabel="#{origemLancamento.descricao}"
+									itemValue="#{origemLancamento}" />
+							</p:selectOneRadio>
 						</p:panelGrid>
 
-						<div
-							style="width: 80%; margin-left: 10%; margin-top: 15px; margin-bottom: 10px; border-top: 1px solid #ccc"></div>
+						<p:spacer />
 
 						<p:panelGrid columns="1" layout="grid"
 							styleClass="panelgrid-noborder disabled disabled">
@@ -285,9 +243,9 @@
 								widgetVar="btn-save"
 								onstart="PF('downloadLoading').show(); PF('btn-save').disable();"
 								onsuccess="PF('downloadLoading').hide(); PF('btn-save').enable();"
-								oncomplete="if (!args.validationFailed) PF('formaPagamento-dialog').hide();"
+								oncomplete="if (!args.validationFailed) PF('tipoDespesa-dialog').hide();"
 								update="msg form-dialog form"
-								action="#{cadastroFormaPagamentoBean.salvar}"
+								action="#{cadastroTipoLancamentoBean.salvar}"
 								process="@this form-dialog" style="font-weight: bold" />
 						</p:panelGrid>
 

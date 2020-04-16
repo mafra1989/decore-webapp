@@ -51,9 +51,12 @@
 		<intercept-url pattern="/Dashboard.xhtml"
 			access="isAuthenticated()" />
 			
+		<intercept-url pattern="/Contas.xhtml"
+			access="hasAnyRole('ADMINISTRADOR',	'USUARIO_AVANCADO', 'USUARIO_COMUM')" />
+			
 		<intercept-url pattern="/cadastros/CadastroBairros.xhtml"
 			access="hasAnyRole('ADMINISTRADOR')" />
-		<intercept-url pattern="/cadastros/CadastroCategoriaDespesa.xhtml"
+		<intercept-url pattern="/cadastros/CadastroCategoriaLancamento.xhtml"
 			access="hasAnyRole('ADMINISTRADOR')" />
 		<intercept-url pattern="/cadastros/CadastroCategoriaProduto.xhtml"
 			access="hasAnyRole('ADMINISTRADOR')" />
@@ -65,14 +68,12 @@
 			access="hasAnyRole('ADMINISTRADOR')" />
 		<intercept-url pattern="/cadastros/CadastroProdutos.xhtml"
 			access="hasAnyRole('ADMINISTRADOR',	'USUARIO_AVANCADO', 'USUARIO_COMUM')" />
-		<intercept-url pattern="/cadastros/CadastroTipoDespesa.xhtml"
+		<intercept-url pattern="/cadastros/CadastroTipoLancamento.xhtml"
 			access="hasAnyRole('ADMINISTRADOR')" />
 		<intercept-url pattern="/cadastros/CadastroTipoVenda.xhtml"
 			access="hasAnyRole('ADMINISTRADOR')" />
 			
 
-		<intercept-url pattern="/operacoes/Estoque.xhtml"
-			access="hasAnyRole('ADMINISTRADOR',	'USUARIO_AVANCADO', 'USUARIO_COMUM')" />
 		<intercept-url pattern="/operacoes/RegistroLancamentos.xhtml"
 			access="hasAnyRole('ADMINISTRADOR',	'USUARIO_AVANCADO', 'USUARIO_COMUM')" />
 		<intercept-url pattern="/operacoes/RegistroCompras.xhtml"
@@ -91,12 +92,13 @@
 			access="hasAnyRole('ADMINISTRADOR', 'USUARIO_AVANCADO', 'USUARIO_COMUM')" />
 			
 			
-		<intercept-url pattern="/relatorios/Despesas.xhtml"
+		<intercept-url pattern="/relatorios/Vendas.xhtml"
 			access="hasAnyRole('ADMINISTRADOR', 'USUARIO_AVANCADO', 'USUARIO_COMUM')" />
 		<intercept-url pattern="/relatorios/Lucros.xhtml"
 			access="hasAnyRole('ADMINISTRADOR', 'USUARIO_AVANCADO', 'USUARIO_COMUM')" />
-		<intercept-url pattern="/relatorios/Vendas.xhtml"
+		<intercept-url pattern="/relatorios/Lancamentos.xhtml"
 			access="hasAnyRole('ADMINISTRADOR', 'USUARIO_AVANCADO', 'USUARIO_COMUM')" />
+			
 			
 		<intercept-url pattern="/importar/ImportarDados.xhtml"
 			access="hasAnyRole('ADMINISTRADOR')" />

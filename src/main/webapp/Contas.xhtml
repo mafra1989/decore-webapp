@@ -15,6 +15,9 @@
 
 		<style>
 @media ( min-width :220px) {
+	body .ui-state-disabled {
+	    opacity: .7;
+    }
 	.pagar {
 		margin-top: -6px;
 	}
@@ -260,7 +263,8 @@
 
 							<p:column headerText="PAGO" width="20%">
 								<p:inputSwitch offLabel="Não" onLabel="Sim" styleClass="pagar"
-									value="#{conta.status}">
+									value="#{conta.status}"
+									disabled="#{not seguranca.acessoAdministrador()}">
 
 									<p:ajax process="@this"
 										listener="#{consultaContasBean.pagar(conta)}"
