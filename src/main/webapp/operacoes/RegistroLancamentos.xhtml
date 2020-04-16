@@ -286,7 +286,7 @@
 
 										<p:ajax event="change" onstart="start();" oncomplete="stop();"
 											listener="#{registroLancamentosBean.changeCategoriaDespesa}"
-											update="origem tipo-despesa contas destino-despesa favorecido"
+											update="origem tipo-despesa destino-despesa favorecido"
 											process="@this" />
 
 										<f:selectItems
@@ -398,33 +398,6 @@
 
 								</p:panelGrid>
 
-								<p:panelGrid columns="2" layout="grid"
-									style="margin-bottom: 5px" rendered="false"
-									styleClass="panelgrid-noborder disabled disabled"
-									columnClasses="ui-grid-col-4, ui-grid-col-8">
-
-									<p:outputLabel value="Lançar como:" />
-
-									<p:panel id="contas" class="card card-w-title ui-fluid"
-										styleClass="panel-contas"
-										style="margin-bottom: 0px;margin-top: 0px; padding-bottom: 0px !important">
-
-										<p:selectBooleanCheckbox style="margin-right:4px"
-											styleClass="#{registroLancamentosBean.despesa.categoriaLancamento.tipoLancamento.origem == 'CREDITO' or registroLancamentosBean.despesa.categoriaLancamento.id == null ? 'no-select' : ''}"
-											value="#{registroLancamentosBean.aPagar}" itemLabel="à pagar"
-											disabled="#{registroLancamentosBean.despesa.categoriaLancamento.tipoLancamento.origem == 'CREDITO' or registroLancamentosBean.despesa.categoriaLancamento.id == null}">
-										</p:selectBooleanCheckbox>
-
-										<p:selectBooleanCheckbox
-											value="#{registroLancamentosBean.aReceber}"
-											itemLabel="à receber"
-											styleClass="#{registroLancamentosBean.despesa.categoriaLancamento.tipoLancamento.origem == 'DEBITO' or registroLancamentosBean.despesa.categoriaLancamento.id == null ? 'no-select' : ''}"
-											disabled="#{registroLancamentosBean.despesa.categoriaLancamento.tipoLancamento.origem == 'DEBITO' or registroLancamentosBean.despesa.categoriaLancamento.id == null}">
-										</p:selectBooleanCheckbox>
-
-									</p:panel>
-								</p:panelGrid>
-
 								<p:panelGrid columns="1" layout="grid"
 									styleClass="panelgrid-noborder disabled disabled"
 									columnClasses="ui-grid-col-10">
@@ -499,7 +472,7 @@
 
 										<p:ajax event="change" onstart="start();" oncomplete="stop();"
 											listener="#{registroLancamentosBean.changeCategoriaReceita}"
-											update="origem tipo-receita contas destino-receita"
+											update="origem tipo-receita destino-receita"
 											process="@this" />
 
 										<f:selectItems
