@@ -107,20 +107,20 @@ public class ConsultaComprasBean implements Serializable {
 			if (itensVenda.size() == 0) {
 
 				boolean contasPagas = false;
-				List<Conta> contasTemp = contas.porContasPagas(compraSelecionada.getNumeroCompra(), "COMP");
+				//List<Conta> contasTemp = contas.porContasPagas(compraSelecionada.getNumeroCompra(), "COMP");
 
-				if (contasTemp.size() == 0) {
+				//if (contasTemp.size() == 0) {
 
-					contasTemp = contas.porCodigoOperacao(compraSelecionada.getNumeroCompra(), "COMP");
-					for (Conta conta : contasTemp) {
-						contas.remove(conta);
-					}
+				List<Conta> contasTemp = contas.porCodigoOperacao(compraSelecionada.getNumeroCompra(), "COMPRA");
+				for (Conta conta : contasTemp) {
+					contas.remove(conta);
+				}
 
-				} else {
+				/*} else {
 					contasPagas = true;
 					PrimeFaces.current().executeScript(
 							"stop();swal({ type: 'error', title: 'Erro!', text: 'Existe contas à pagar já registradas para essa compra!' });");
-				}
+				}*/
 
 				if (contasPagas != true) {
 					

@@ -116,16 +116,16 @@ public class ConsultaLancamentosBean implements Serializable {
 	public void excluir() {
 
 		boolean contasPagas = false;
-		List<Conta> contasTemp = contas.porContasPagas(lancamentoSelecionado.getNumeroLancamento(), "LANCAMENTO");
+		//List<Conta> contasTemp = contas.porContasPagas(lancamentoSelecionado.getNumeroLancamento(), "LANCAMENTO");
 
-		if (contasTemp.size() == 0) {
+		//if (contasTemp.size() == 0) {
 
-			contasTemp = contas.porCodigoOperacao(lancamentoSelecionado.getNumeroLancamento(), "LANCAMENTO");
-			for (Conta conta : contasTemp) {
-				contas.remove(conta);
-			}
+		List<Conta> contasTemp = contas.porCodigoOperacao(lancamentoSelecionado.getNumeroLancamento(), "LANCAMENTO");
+		for (Conta conta : contasTemp) {
+			contas.remove(conta);
+		}
 
-		} else {
+		/*} else {
 
 			String tipoConta = "";
 			if (contasTemp.get(0).getTipo().equals("DEBITO")) {
@@ -137,7 +137,7 @@ public class ConsultaLancamentosBean implements Serializable {
 			contasPagas = true;
 			PrimeFaces.current().executeScript("swal({ type: 'error', title: 'Erro!', text: 'Existe " + tipoConta
 					+ " já registradas para esse lançamento!' });");
-		}
+		}*/
 
 		if (contasPagas != true) {
 			lancamentos.remove(lancamentoSelecionado);
