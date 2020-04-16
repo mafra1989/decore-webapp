@@ -19,9 +19,13 @@
 
 		<style>
 @media ( min-width :220px) {
+	.entrada .ui-inputtext {
+		color: #2d5db3;
+		/*font-weight: bold;*/
+	}
 	body .ui-inputswitch .ui-inputswitch-on span {
-	    margin-left: -2px;
-	    width: 100% !important;
+		margin-left: -2px;
+		width: 100% !important;
 	}
 	body .ui-inputswitch .ui-inputswitch-handle {
 		width: 30px !important;
@@ -43,11 +47,11 @@
 		padding: 0px !important;
 	}
 	.panel-parcelas.hide {
-	  max-height: 0;
-	  pointer-events: none;
+		max-height: 0;
+		pointer-events: none;
 	}
 	.panel-parcelas {
-		overflow:hidden;
+		overflow: hidden;
 		max-height: 300px;
 		transition: max-height 1s ease-in-out;
 	}
@@ -510,18 +514,22 @@
 							</p:outputLabel>
 
 							<p:outputLabel style="font-weight: bold" value="Valor total: " />
-							<p:outputLabel value="#{registroComprasBean.compra.valorTotal}">
+							<p:outputLabel value="#{registroComprasBean.compra.valorTotal}"
+								style="color: #0db130;font-weight: bold;font-size: 14px;">
 								<f:convertNumber type="currency" />
 							</p:outputLabel>
 
 							<p:outputLabel
 								style="font-weight: bold;margin-top: 6px;float: left;"
 								for="formaPagamento" value="Forma de pagamento: " />
-							<p:selectOneMenu id="formaPagamento" 
+							<p:selectOneMenu id="formaPagamento"
 								value="#{registroComprasBean.tipoPagamento}"
 								placeholder="selecione">
-								
-								<p:ajax event="change" onstart="start();" oncomplete="stop();" process="@this" listener="#{registroComprasBean.changePagamento}" update="panel-contas panel-confirm" />
+
+								<p:ajax event="change" onstart="start();" oncomplete="stop();"
+									process="@this"
+									listener="#{registroComprasBean.changePagamento}"
+									update="panel-contas panel-confirm" />
 
 								<f:selectItems value="#{registroComprasBean.tiposPagamentos}"
 									var="tipoPagamento" itemLabel="#{tipoPagamento.descricao}"
@@ -535,12 +543,32 @@
 
 							<p:panelGrid columns="2" layout="grid"
 								styleClass="panelgrid-noborder disabled disabled"
+								columnClasses="ui-grid-col-7, ui-grid-col-5">
+
+								<p:outputLabel for="entrada"
+									style="font-weight: bold;margin-top: 3px;float: left;"
+									value="Entrada: " />
+
+								<p:inputNumber id="entrada" decimalPlaces="2"
+									placeholder="R$ 0,00" autocomplete="off" minValue="0"
+									symbol="R$ " styleClass="entrada"
+									value="#{registroComprasBean.valorEntrada}"
+									disabled="#{not (registroComprasBean.todasContasSize == 0)}">
+								</p:inputNumber>
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" layout="grid"
+								styleClass="panelgrid-noborder disabled disabled"
 								columnClasses="ui-grid-col-6, ui-grid-col-6">
 
-								<p:outputLabel
-									style="font-weight: bold;margin-top: 3px;float: left;"
+								<p:outputLabel style="font-weight: bold;float: left;"
 									value="Parcelamento: " />
-								<p:outputLabel value="" />
+								<p:commandLink value="Editar entrada" onstart="start();"
+									oncomplete="stop();" id="editar-parcelas"
+									icon="fa fa-fw fa-edit"
+									action="#{registroComprasBean.zerarParcelas}"
+									update="entrada contasTable panel-confirm panel-parcelas"
+									disabled="#{registroComprasBean.todasContasSize == 0}" />
 
 								<p:inputNumber decimalPlaces="0" required="true"
 									requiredMessage="Quantidade de Parcelas deve ser informado."
@@ -565,9 +593,11 @@
 							<p:panel style="text-align: center"
 								styleClass="panelgrid-noborder disabled disabled">
 
-								<p:commandButton value="Gerar parcelas" onstart="start();" oncomplete="stop();"
+								<p:commandButton value="Gerar parcelas" onstart="start();"
+									oncomplete="stop();"
 									action="#{registroComprasBean.gerarParcelas}"
-									process="formaPagamento panel-parcelas" update="msg panel-parcelas panel-confirm"
+									process="formaPagamento panel-parcelas"
+									update="msg panel-parcelas panel-confirm"
 									style="width: 110px; font-weight:bold"></p:commandButton>
 							</p:panel>
 
@@ -610,8 +640,8 @@
 
 							</p:dataTable>
 						</p:panel>
-						
-						
+
+
 						<p:panel id="panel-contas"
 							styleClass="panelgrid-noborder disabled disabled panel-confirm">
 
@@ -643,12 +673,13 @@
 							</p:inputSwitch>
 
 						</p:panel>
-						
+
 
 						<div
-							style="float:left;width: 80%; margin-left: 10%; margin-top: 15px; margin-bottom: 10px; border-top: 1px solid #ccc"></div>
+							style="float: left; width: 80%; margin-left: 10%; margin-top: 15px; margin-bottom: 10px; border-top: 1px solid #ccc"></div>
 
-						<p:panel style="text-align: right; margin-top: 13px;" id="panel-confirm"
+						<p:panel style="text-align: right; margin-top: 13px;"
+							id="panel-confirm"
 							styleClass="panelgrid-noborder disabled disabled panel-confirm">
 
 							<p:commandButton onstart="PF('downloadLoading').show();"
@@ -686,13 +717,13 @@
 			function stop() {
 				PF('downloadLoading').hide();
 			}
-			
+
 			function ocultar() {
 				$(".panel-parcelas").addClass("hide");
 			}
 
-			function mostrar() {			
-			  	$(".panel-parcelas").removeClass("hide");
+			function mostrar() {
+				$(".panel-parcelas").removeClass("hide");
 			}
 		</script>
 

@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import com.webapp.model.Conta;
@@ -42,6 +43,28 @@ public class Contas implements Serializable {
 	public List<Conta> todas() {
 		return this.manager.createQuery("from Conta order by id", Conta.class).getResultList();
 	}
+	
+	
+	public Number porContasPagas(String tipo) {
+		
+		String jpql = "SELECT sum(c.valor) FROM Conta c WHERE c.tipo = :tipo AND c.status = 'Y'";
+		Query q = manager.createQuery(jpql).setParameter("tipo", tipo);
+		
+        Number count = 0;
+		try {
+		    count = (Number) q.getSingleResult();
+			
+		} catch(NoResultException e) {
+			
+		}
+
+		if(count == null) {
+			count = 0;
+		}
+		
+		return count;
+	}
+
 
 	public List<Conta> porContasPagas(Long codigoOperacao, String operacao) {
 		return this.manager.createQuery(

@@ -20,9 +20,14 @@
 
 		<style>
 @media ( min-width :220px) {
+	.entrada .ui-inputtext {
+		/*text-align: end !important;*/
+		color: #2d5db3;
+		/*font-weight: bold;*/
+	}
 	body .ui-inputswitch .ui-inputswitch-on span {
-	    margin-left: -2px;
-	    width: 100% !important;
+		margin-left: -2px;
+		width: 100% !important;
 	}
 	body .ui-inputswitch .ui-inputswitch-handle {
 		width: 30px !important;
@@ -42,6 +47,17 @@
 	}
 	.panel-confirm.ui-panel .ui-panel-content {
 		padding: 0px !important;
+	}
+	.panel-favorecido {
+		overflow: hidden;
+		max-height: 300px;
+		transition: max-height 1s ease-in-out;
+		margin-bottom: 5px;
+	}
+	.panel-favorecido.hide {
+		max-height: 0;
+		pointer-events: none;
+		margin-bottom: 0px;
 	}
 	.panel-parcelas.hide {
 		max-height: 0;
@@ -228,6 +244,9 @@
 					<p:tab title="Despesas" titleStyleClass="tabs" id="tab-despesa"
 						disabled="#{registroLancamentosBean.receita.id != null}">
 
+						<p:defaultCommand target="btn-calcular-despesa"
+							scope="tab-despesa" />
+
 						<p:panelGrid columns="2" layout="grid"
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-6, ui-grid-col-6">
@@ -265,9 +284,9 @@
 
 										<f:selectItem itemLabel="Selecione" />
 
-										<p:ajax event="change"
+										<p:ajax event="change" onstart="start();" oncomplete="stop();"
 											listener="#{registroLancamentosBean.changeCategoriaDespesa}"
-											update="origem tipo-despesa contas destino-despesa"
+											update="origem tipo-despesa contas destino-despesa favorecido"
 											process="@this" />
 
 										<f:selectItems
@@ -275,6 +294,27 @@
 											var="categoriaLancamento"
 											itemLabel="#{categoriaLancamento.nome}"
 											itemValue="#{categoriaLancamento}" />
+									</p:selectOneMenu>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="2" layout="grid" id="panel-favorecido"
+									styleClass="panelgrid-noborder disabled disabled panel-favorecido #{registroLancamentosBean.renderFavorecido ? '' : 'hide'}"
+									columnClasses="ui-grid-col-4, ui-grid-col-6">
+
+									<p:outputLabel value="Funcionário Favorecido" for="favorecido" />
+									<p:selectOneMenu id="favorecido" styleClass="hide"
+										value="#{registroLancamentosBean.usuario}"
+										required="#{registroLancamentosBean.renderFavorecido}"
+										requiredMessage="Funcionário Favorecido deve ser informado."
+										placeholder="selecione">
+
+										<f:selectItem itemLabel="Selecione" />
+
+										<f:selectItems
+											value="#{registroLancamentosBean.todosUsuarios}"
+											var="usuario" itemLabel="#{usuario.nome}"
+											itemValue="#{usuario}" />
 									</p:selectOneMenu>
 
 								</p:panelGrid>
@@ -417,6 +457,9 @@
 					<p:tab title="Receitas" titleStyleClass="tabs" id="tab-receita"
 						disabled="#{registroLancamentosBean.despesa.id != null}">
 
+						<p:defaultCommand target="btn-calcular-receita"
+							scope="tab-receita" />
+
 						<p:panelGrid columns="2" layout="grid"
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-6, ui-grid-col-6">
@@ -454,7 +497,7 @@
 
 										<f:selectItem itemLabel="Selecione" />
 
-										<p:ajax event="change"
+										<p:ajax event="change" onstart="start();" oncomplete="stop();"
 											listener="#{registroLancamentosBean.changeCategoriaReceita}"
 											update="origem tipo-receita contas destino-receita"
 											process="@this" />
@@ -589,7 +632,7 @@
 							</p:outputLabel>
 
 							<p:outputLabel style="font-weight: bold" value="Valor total: " />
-							<p:outputLabel
+							<p:outputLabel style="color: #0db130;font-weight: bold;font-size: 14px;"
 								value="#{registroLancamentosBean.lancamento.valor}">
 								<f:convertNumber type="currency" />
 							</p:outputLabel>
@@ -622,14 +665,34 @@
 
 							<p:panelGrid columns="2" layout="grid"
 								styleClass="panelgrid-noborder disabled disabled"
+								columnClasses="ui-grid-col-7, ui-grid-col-5">
+
+								<p:outputLabel for="entrada"
+									style="font-weight: bold;margin-top: 3px;float: left;"
+									value="Entrada: " />
+
+								<p:inputNumber id="entrada" decimalPlaces="2"
+									placeholder="R$ 0,00" autocomplete="off" minValue="0"
+									symbol="R$ " styleClass="entrada"
+									value="#{registroLancamentosBean.valorEntrada}"
+									disabled="#{not (registroLancamentosBean.todasContasSize == 0)}">
+								</p:inputNumber>
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" layout="grid"
+								styleClass="panelgrid-noborder disabled disabled"
 								columnClasses="ui-grid-col-6, ui-grid-col-6">
 
-								<p:outputLabel
-									style="font-weight: bold;margin-top: 3px;float: left;"
+								<p:outputLabel style="font-weight: bold;float: left;"
 									value="Parcelamento: " />
-								<p:outputLabel value="" />
+								<p:commandLink value="Editar entrada" onstart="start();"
+									oncomplete="stop();" id="editar-parcelas"
+									icon="fa fa-fw fa-edit"
+									action="#{registroLancamentosBean.zerarParcelas}"
+									update="entrada contasTable panel-confirm panel-parcelas"
+									disabled="#{registroLancamentosBean.todasContasSize == 0}" />
 
-								<p:inputNumber decimalPlaces="0" required="true"
+								<p:inputNumber decimalPlaces="0" required="true" minValue="0"
 									requiredMessage="Quantidade de parcelas deve ser informado."
 									placeholder="Quantidade de parcelas"
 									value="#{registroLancamentosBean.parcelas}">
@@ -740,7 +803,7 @@
 								value="Repetir lançamento: "
 								rendered="#{registroLancamentosBean.tipoPagamento == 'AVISTA'}" />
 
-							<p:selectBooleanCheckbox 
+							<p:selectBooleanCheckbox
 								value="#{registroLancamentosBean.repetirLancamento}"
 								disabled="#{registroLancamentosBean.tipoPagamento == 'PARCELADO'}"
 								style="float:right;margin-top: 13px;margin-right: -72px;"
@@ -754,8 +817,7 @@
 
 
 						<p:panel id="repetir-parcelas"
-							styleClass="panelgrid-noborder disabled disabled repetir-parcelas #{(registroLancamentosBean.tipoPagamento == 'AVISTA' and registroLancamentosBean.repetirLancamento == false) ? 'hide' : (registroLancamentosBean.tipoPagamento == 'PARCELADO' ? 'hide' : '')}"
-							>
+							styleClass="panelgrid-noborder disabled disabled repetir-parcelas #{(registroLancamentosBean.tipoPagamento == 'AVISTA' and registroLancamentosBean.repetirLancamento == false) ? 'hide' : (registroLancamentosBean.tipoPagamento == 'PARCELADO' ? 'hide' : '')}">
 
 							<p:defaultCommand target="gerar-contas" scope="repetir-parcelas" />
 
@@ -902,6 +964,14 @@
 
 			function mostrarRepetir() {
 				$(".repetir-parcelas").removeClass("hide");
+			}
+
+			function ocultarFavorecido() {
+				$(".panel-favorecido").addClass("hide");
+			}
+
+			function mostrarFavorecido() {
+				$(".panel-favorecido").removeClass("hide");
 			}
 		</script>
 

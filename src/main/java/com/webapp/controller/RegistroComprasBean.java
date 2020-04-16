@@ -2,6 +2,7 @@ package com.webapp.controller;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -87,8 +88,12 @@ public class RegistroComprasBean implements Serializable {
 	private PeriodoPagamento periodoPagamento = PeriodoPagamento.MESES;
 
 	private boolean contaAPagar;
-	
+
 	private boolean compraPaga = true;
+
+	private Double valorEntrada;
+	
+	private List<Conta> entradas = new ArrayList<>();
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -126,6 +131,10 @@ public class RegistroComprasBean implements Serializable {
 		if (itensCompra.size() > 0) {
 
 			todasContas = new ArrayList<>();
+			
+			entradas = new ArrayList<>();
+			valorEntrada = null;
+			
 			PrimeFaces.current().executeScript("PF('confirmDialog').show();");
 
 		} else {
@@ -135,47 +144,80 @@ public class RegistroComprasBean implements Serializable {
 
 	}
 
+	public void zerarParcelas() {
+		todasContas = new ArrayList<>();
+	}
+
 	public void gerarParcelas() {
 
 		todasContas = new ArrayList<>();
+		
+		entradas = new ArrayList<>();
 
 		Calendar vencimento = Calendar.getInstance();
 		vencimento.setTime(compra.getDataCompra());
 
-		Double valorParcela = compra.getValorTotal().doubleValue() / parcelas;
-		for (int i = 0; i < parcelas; i++) {
-
-			long dias = parcelas;
-			if (periodoPagamento == PeriodoPagamento.MESES) {
-				// dias = 30;
-				// vencimento.add(Calendar.DAY_OF_MONTH, (int) dias);
-				vencimento.add(Calendar.MONTH, 1);
-			}
-
-			if (periodoPagamento == PeriodoPagamento.QUINZENAS) {
-				dias = 15;
-				vencimento.add(Calendar.DAY_OF_MONTH, (int) dias);
-			}
-
-			if (periodoPagamento == PeriodoPagamento.SEMANAS) {
-				dias = 7;
-				vencimento.add(Calendar.DAY_OF_MONTH, (int) dias);
-			}
-
-			if (periodoPagamento == PeriodoPagamento.DIAS) {
-				dias = i + 1;
-				vencimento.add(Calendar.DAY_OF_MONTH, (int) dias);
-			}
+		Double valorCompra = compra.getValorTotal().doubleValue();
+		if (valorEntrada != null && valorEntrada > 0) {
+			valorCompra = compra.getValorTotal().doubleValue() - valorEntrada;
 
 			Conta conta = new Conta();
-			conta.setOperacao("COMPRA");
-			conta.setParcela((i + 1) + "/" + parcelas);
-			conta.setTipo("DEBITO");
-			conta.setStatus(false);
-			conta.setValor(new BigDecimal(valorParcela));
-			conta.setVencimento(vencimento.getTime());
+			conta.setParcela("Entrada");
+			conta.setValor(new BigDecimal(valorEntrada));
+			conta.setVencimento(compra.getDataCompra());
 
-			todasContas.add(conta);
+			entradas.add(conta);
+		}
+
+		Double valorParcela = valorCompra / parcelas;
+
+		if (valorParcela > 0) {
+			for (int i = 0; i < parcelas; i++) {
+
+				long dias = parcelas;
+				if (periodoPagamento == PeriodoPagamento.MESES) {
+					// dias = 30;
+					// vencimento.add(Calendar.DAY_OF_MONTH, (int) dias);
+					vencimento.add(Calendar.MONTH, 1);
+				}
+
+				if (periodoPagamento == PeriodoPagamento.QUINZENAS) {
+					dias = 15;
+					vencimento.add(Calendar.DAY_OF_MONTH, (int) dias);
+				}
+
+				if (periodoPagamento == PeriodoPagamento.SEMANAS) {
+					dias = 7;
+					vencimento.add(Calendar.DAY_OF_MONTH, (int) dias);
+				}
+
+				if (periodoPagamento == PeriodoPagamento.DIAS) {
+					dias = i + 1;
+					vencimento.add(Calendar.DAY_OF_MONTH, (int) dias);
+				}
+
+				Conta conta = new Conta();
+				conta.setParcela((i + 1) + "/" + parcelas);
+				conta.setStatus(false);
+
+				if (i == parcelas - 1) {
+
+					Double valorTemp = 0D;
+					DecimalFormat fmt = new DecimalFormat("0.00");
+					for (int j = 0; j < i; j++) {
+						valorTemp += Double.parseDouble(fmt.format(valorParcela).replace(",", "."));
+					}
+
+					conta.setValor(new BigDecimal(valorCompra - valorTemp));
+
+				} else {
+					conta.setValor(new BigDecimal(valorParcela));
+				}
+
+				conta.setVencimento(vencimento.getTime());
+
+				todasContas.add(conta);
+			}
 		}
 	}
 
@@ -184,21 +226,21 @@ public class RegistroComprasBean implements Serializable {
 		boolean contasPagas = false;
 
 		if (compra.getId() != null) {
-			//List<Conta> contasTemp = contas.porContasPagas(compra.getNumeroCompra(), "COMPRA");
+			// List<Conta> contasTemp = contas.porContasPagas(compra.getNumeroCompra(),
+			// "COMPRA");
 
-			//if (contasTemp.size() == 0) {
+			// if (contasTemp.size() == 0) {
 
 			List<Conta> contasTemp = contas.porCodigoOperacao(compra.getNumeroCompra(), "COMPRA");
 			for (Conta conta : contasTemp) {
 				contas.remove(conta);
 			}
 
-			/*} else {
-				contasPagas = true;
-				PrimeFaces.current().executeScript(
-						"stop();swal({ type: 'error', title: 'Erro!', text: 'Existe contas à pagar já registradas para essa compra!' });");
-			}
-			*/
+			/*
+			 * } else { contasPagas = true; PrimeFaces.current().executeScript(
+			 * "stop();swal({ type: 'error', title: 'Erro!', text: 'Existe contas à pagar já registradas para essa compra!' });"
+			 * ); }
+			 */
 
 		}
 
@@ -278,8 +320,22 @@ public class RegistroComprasBean implements Serializable {
 				contas.save(conta);
 
 			} else {
+				
+				for (Conta conta : entradas) {
+
+					conta.setCodigoOperacao(compra.getNumeroCompra());
+					conta.setOperacao("COMPRA");
+					conta.setTipo("DEBITO");
+					conta.setStatus(true);
+
+					contas.save(conta);
+				}
+				
 				for (Conta conta : todasContas) {
 					conta.setCodigoOperacao(compra.getNumeroCompra());
+					conta.setOperacao("COMPRA");
+					conta.setTipo("DEBITO");
+					
 					conta = contas.save(conta);
 				}
 			}
@@ -299,6 +355,9 @@ public class RegistroComprasBean implements Serializable {
 				periodoPagamento = PeriodoPagamento.MESES;
 				contaAPagar = false;
 				compraPaga = true;
+				
+				entradas = new ArrayList<>();
+				valorEntrada = null;
 
 			} else {
 				PrimeFaces.current().executeScript(
@@ -476,5 +535,13 @@ public class RegistroComprasBean implements Serializable {
 
 	public void setCompraPaga(boolean compraPaga) {
 		this.compraPaga = compraPaga;
+	}
+
+	public Double getValorEntrada() {
+		return valorEntrada;
+	}
+
+	public void setValorEntrada(Double valorEntrada) {
+		this.valorEntrada = valorEntrada;
 	}
 }

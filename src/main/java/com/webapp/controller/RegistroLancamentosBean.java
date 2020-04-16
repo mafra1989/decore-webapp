@@ -2,6 +2,7 @@ package com.webapp.controller;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -23,10 +24,12 @@ import com.webapp.model.PeriodoPagamento;
 import com.webapp.model.TipoConta;
 import com.webapp.model.TipoLancamento;
 import com.webapp.model.TipoPagamento;
+import com.webapp.model.Usuario;
 import com.webapp.repository.CategoriasLancamentos;
 import com.webapp.repository.Contas;
 import com.webapp.repository.DestinosLancamentos;
 import com.webapp.repository.Lancamentos;
+import com.webapp.repository.Usuarios;
 import com.webapp.util.jsf.FacesUtil;
 
 @Named
@@ -46,6 +49,12 @@ public class RegistroLancamentosBean implements Serializable {
 
 	@Inject
 	private Lancamentos lancamentos;
+	
+	@Inject
+	private Usuarios usuarios;
+	
+	@Inject
+	private Usuario usuario;
 
 	@Inject
 	private CategoriasLancamentos categoriasLancamentos;
@@ -66,6 +75,8 @@ public class RegistroLancamentosBean implements Serializable {
 	private DestinosLancamentos destinosLancamentos;
 
 	private List<DestinoLancamento> todosDestinosLancamentos;
+	
+	private List<Usuario> todosUsuarios;
 
 	private static final Locale BRAZIL = new Locale("pt", "BR");
 
@@ -76,6 +87,8 @@ public class RegistroLancamentosBean implements Serializable {
 	@Inject
 	private Contas contas;
 
+	private List<Conta> entradas = new ArrayList<>();
+	
 	private List<Conta> todasContas = new ArrayList<>();
 
 	private List<Conta> todasContas_ = new ArrayList<>();
@@ -96,6 +109,10 @@ public class RegistroLancamentosBean implements Serializable {
 
 	private boolean repetirLancamento;
 
+	private Double valorEntrada;
+	
+	private boolean renderFavorecido;
+
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
 			todasCategoriasDespesas = categoriasLancamentos.todasDespesas();
@@ -106,6 +123,8 @@ public class RegistroLancamentosBean implements Serializable {
 			Calendar calendar = Calendar.getInstance(BRAZIL);
 			despesa.setDataLancamento(calendar.getTime());
 			receita.setDataLancamento(calendar.getTime());
+			
+			todosUsuarios = usuarios.todos();
 		}
 	}
 
@@ -117,6 +136,12 @@ public class RegistroLancamentosBean implements Serializable {
 				categoriaLancamentoDespesa = lancamento.getCategoriaLancamento();
 				despesa = lancamento;
 				activeIndex = 0;
+				
+				if(lancamento.getUsuario() != null) {
+					usuario = lancamento.getUsuario();	
+					renderFavorecido = true;
+				}
+				
 			} else {
 				categoriaLancamentoReceita = lancamento.getCategoriaLancamento();
 				receita = lancamento;
@@ -142,44 +167,79 @@ public class RegistroLancamentosBean implements Serializable {
 		}
 	}
 
+	public void zerarParcelas() {
+		todasContas = new ArrayList<>();
+	}
+
 	public void gerarParcelas() {
 
 		todasContas = new ArrayList<>();
+		
+		entradas = new ArrayList<>();
 
 		Calendar vencimento = Calendar.getInstance();
 		vencimento.setTime(lancamento.getDataLancamento());
 
-		Double valorParcela = lancamento.getValor().doubleValue() / parcelas;
-		for (int i = 0; i < parcelas; i++) {
-
-			long dias = parcelas;
-			if (periodoPagamento == PeriodoPagamento.MESES) {
-				// dias = 30;
-				// vencimento.add(Calendar.DAY_OF_MONTH, (int) dias);
-				vencimento.add(Calendar.MONTH, 1);
-			}
-
-			if (periodoPagamento == PeriodoPagamento.QUINZENAS) {
-				dias = 15;
-				vencimento.add(Calendar.DAY_OF_MONTH, (int) dias);
-			}
-
-			if (periodoPagamento == PeriodoPagamento.SEMANAS) {
-				dias = 7;
-				vencimento.add(Calendar.DAY_OF_MONTH, (int) dias);
-			}
-
-			if (periodoPagamento == PeriodoPagamento.DIAS) {
-				dias = i + 1;
-				vencimento.add(Calendar.DAY_OF_MONTH, (int) dias);
-			}
-
+		Double valorLancamento = lancamento.getValor().doubleValue();
+		if (valorEntrada!= null && valorEntrada > 0) {
+			valorLancamento = lancamento.getValor().doubleValue() - valorEntrada;
+			
 			Conta conta = new Conta();
-			conta.setParcela((i + 1) + "/" + parcelas);
-			conta.setValor(new BigDecimal(valorParcela));
-			conta.setVencimento(vencimento.getTime());
+			conta.setParcela("Entrada");
+			conta.setValor(new BigDecimal(valorEntrada));
+			conta.setVencimento(lancamento.getDataLancamento());
 
-			todasContas.add(conta);
+			entradas.add(conta);
+		}
+
+		Double valorParcela = valorLancamento / parcelas;
+
+		if (valorParcela > 0) {
+			for (int i = 0; i < parcelas; i++) {
+
+				long dias = parcelas;
+				if (periodoPagamento == PeriodoPagamento.MESES) {
+					// dias = 30;
+					// vencimento.add(Calendar.DAY_OF_MONTH, (int) dias);
+					vencimento.add(Calendar.MONTH, 1);
+				}
+
+				if (periodoPagamento == PeriodoPagamento.QUINZENAS) {
+					dias = 15;
+					vencimento.add(Calendar.DAY_OF_MONTH, (int) dias);
+				}
+
+				if (periodoPagamento == PeriodoPagamento.SEMANAS) {
+					dias = 7;
+					vencimento.add(Calendar.DAY_OF_MONTH, (int) dias);
+				}
+
+				if (periodoPagamento == PeriodoPagamento.DIAS) {
+					dias = i + 1;
+					vencimento.add(Calendar.DAY_OF_MONTH, (int) dias);
+				}
+
+				Conta conta = new Conta();
+				conta.setParcela((i + 1) + "/" + parcelas);
+
+				if (i == parcelas - 1) {
+
+					Double valorTemp = 0D;
+					DecimalFormat fmt = new DecimalFormat("0.00");
+					for (int j = 0; j < i; j++) {
+						valorTemp += Double.parseDouble(fmt.format(valorParcela).replace(",", "."));
+					}
+
+					conta.setValor(new BigDecimal(valorLancamento - valorTemp));
+
+				} else {
+					conta.setValor(new BigDecimal(valorParcela));
+				}
+
+				conta.setVencimento(vencimento.getTime());
+
+				todasContas.add(conta);
+			}
 		}
 	}
 
@@ -231,7 +291,20 @@ public class RegistroLancamentosBean implements Serializable {
 		if (categoriaLancamentoDespesa != null) {
 			despesa.setCategoriaLancamento(categoriaLancamentoDespesa);
 			despesa.setDestinoLancamento(categoriaLancamentoDespesa.getDestinoLancamento());
+			
+			if(categoriaLancamentoDespesa.getNome().equalsIgnoreCase("Categoria01")) {
+				PrimeFaces.current().executeScript("mostrarFavorecido();");
+				renderFavorecido = true;
+			} else {
+				PrimeFaces.current().executeScript("ocultarFavorecido();");
+				renderFavorecido = false;
+			}
+		} else {
+			PrimeFaces.current().executeScript("ocultarFavorecido();");
+			renderFavorecido = false;
 		}
+		
+		usuario = new Usuario();
 	}
 
 	public void changeCategoriaReceita() {
@@ -251,6 +324,9 @@ public class RegistroLancamentosBean implements Serializable {
 			PrimeFaces.current().executeScript("PF('confirmDialog').show();");
 			todasContas = new ArrayList<>();
 			todasContas_ = new ArrayList<>();
+			
+			entradas = new ArrayList<>();
+			valorEntrada = null;
 
 		} else {
 			PrimeFaces.current().executeScript(
@@ -277,28 +353,26 @@ public class RegistroLancamentosBean implements Serializable {
 		boolean contasPagas = false;
 
 		if (lancamento.getId() != null) {
-			//List<Conta> contasTemp = contas.porContasPagas(lancamento.getNumeroLancamento(), "LANCAMENTO");
+			// List<Conta> contasTemp =
+			// contas.porContasPagas(lancamento.getNumeroLancamento(), "LANCAMENTO");
 
-			//if (contasTemp.size() == 0) {
+			// if (contasTemp.size() == 0) {
 
 			List<Conta> contasTemp = contas.porCodigoOperacao(lancamento.getNumeroLancamento(), "LANCAMENTO");
 			for (Conta conta : contasTemp) {
 				contas.remove(conta);
 			}
 
-			/*} else {
-
-				String tipoConta = "";
-				if (contasTemp.get(0).getTipo().equals("DEBITO")) {
-					tipoConta = "contas à pagar";
-				} else {
-					tipoConta = "contas à receber";
-				}
-
-				contasPagas = true;
-				PrimeFaces.current().executeScript("stop();swal({ type: 'error', title: 'Erro!', text: 'Existe "
-						+ tipoConta + ", pagos já registrados para esse lançamento!' });");
-			}*/
+			/*
+			 * } else {
+			 * 
+			 * String tipoConta = ""; if (contasTemp.get(0).getTipo().equals("DEBITO")) {
+			 * tipoConta = "contas à pagar"; } else { tipoConta = "contas à receber"; }
+			 * 
+			 * contasPagas = true; PrimeFaces.current().
+			 * executeScript("stop();swal({ type: 'error', title: 'Erro!', text: 'Existe " +
+			 * tipoConta + ", pagos já registrados para esse lançamento!' });"); }
+			 */
 		}
 
 		if (contasPagas != true) {
@@ -326,6 +400,10 @@ public class RegistroLancamentosBean implements Serializable {
 			lancamento.setSemana(Long.valueOf((calendarioTemp.get(Calendar.WEEK_OF_YEAR))));
 			lancamento.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
 			lancamento.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
+			
+			if(activeIndex == 0) {
+				lancamento.setUsuario(renderFavorecido ? usuario : null);
+			}
 
 			lancamentos.save(lancamento);
 
@@ -355,6 +433,17 @@ public class RegistroLancamentosBean implements Serializable {
 				}
 
 			} else {
+				
+				for (Conta conta : entradas) {
+
+					conta.setCodigoOperacao(lancamento.getNumeroLancamento());
+					conta.setOperacao("LANCAMENTO");
+					conta.setTipo(lancamento.getCategoriaLancamento().getTipoLancamento().getOrigem().name());
+					conta.setStatus(true);
+
+					contas.save(conta);
+				}
+
 				for (Conta conta : todasContas) {
 
 					conta.setCodigoOperacao(lancamento.getNumeroLancamento());
@@ -377,6 +466,10 @@ public class RegistroLancamentosBean implements Serializable {
 
 					despesa = new Lancamento();
 					categoriaLancamentoDespesa = new CategoriaLancamento();
+					
+					usuario = new Usuario();	
+					renderFavorecido = false;
+					PrimeFaces.current().executeScript("ocultarFavorecido();");
 
 				} else {
 					PrimeFaces.current()
@@ -391,6 +484,9 @@ public class RegistroLancamentosBean implements Serializable {
 				tipoPagamento = TipoPagamento.AVISTA;
 				lancamentoPago = true;
 				repetirLancamento = false;
+				
+				entradas = new ArrayList<>();
+				valorEntrada = null;
 
 			} else {
 
@@ -559,5 +655,33 @@ public class RegistroLancamentosBean implements Serializable {
 
 	public void setParcelas_(Long parcelas_) {
 		this.parcelas_ = parcelas_;
+	}
+
+	public Double getValorEntrada() {
+		return valorEntrada;
+	}
+
+	public void setValorEntrada(Double valorEntrada) {
+		this.valorEntrada = valorEntrada;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+	public List<Usuario> getTodosUsuarios() {
+		return todosUsuarios;
+	}
+
+	public boolean isRenderFavorecido() {
+		return renderFavorecido;
+	}
+
+	public void setRenderFavorecido(boolean renderFavorecido) {
+		this.renderFavorecido = renderFavorecido;
 	}
 }

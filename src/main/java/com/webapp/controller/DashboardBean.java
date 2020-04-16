@@ -26,6 +26,7 @@ import org.primefaces.model.charts.polar.PolarAreaChartModel;
 
 import com.webapp.model.FluxoDeCaixa;
 import com.webapp.repository.Compras;
+import com.webapp.repository.Contas;
 import com.webapp.repository.Lancamentos;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.Vendas;
@@ -47,6 +48,9 @@ public class DashboardBean implements Serializable {
 	
 	@Inject
 	private Produtos produtos;
+	
+	@Inject
+	private Contas contas;
 	
 	
 	private PieChartModel pieModel;
@@ -150,17 +154,20 @@ public class DashboardBean implements Serializable {
         Number totalVendas = vendas.totalVendas();
         Number totalCompras = compras.totalCompras();
         
-        Number totalDebitos = lancamentos.totalDebitos();
-        Number totalCreditos = lancamentos.totalCreditos();
+        Number totalDebitosPagos = contas.porContasPagas("DEBITO");
+        Number totalCreditosPagos = contas.porContasPagas("CREDITO");
+        
+		//Number totalDebitos = lancamentos.totalDebitos();
+        //Number totalCreditos = lancamentos.totalCreditos();
          
         List<Number> values = new ArrayList<>();
-        values.add((totalVendas.doubleValue() + totalCreditos.doubleValue()) - (totalCompras.doubleValue() + totalDebitos.doubleValue()));//Em Caixa
+        values.add((totalVendas.doubleValue() + totalCreditosPagos.doubleValue()) - totalDebitosPagos.doubleValue());//Em Caixa
         values.add(totalVendas);//Vendas
-        values.add(totalCreditos);//Receitas
+        values.add(totalCreditosPagos);//Receitas
         //values.add(0);//Contas à Receber
         
         values.add(totalCompras);//Compras
-        values.add(totalDebitos);//Despesas
+        values.add(totalDebitosPagos);//Despesas
         //values.add(0);//Contas à Pagar
         values.add(produtos.totalAVender());//À Vender
                
@@ -169,7 +176,7 @@ public class DashboardBean implements Serializable {
         tabela = new ArrayList<FluxoDeCaixa>();
         FluxoDeCaixa fluxoDeCaixa = new FluxoDeCaixa();
         fluxoDeCaixa.setItem("Caixa");
-        fluxoDeCaixa.setValue((totalVendas.doubleValue() + totalCreditos.doubleValue()) - (totalCompras.doubleValue() + totalDebitos.doubleValue()));
+        fluxoDeCaixa.setValue((totalVendas.doubleValue() + totalCreditosPagos.doubleValue()) - totalDebitosPagos.doubleValue());
         tabela.add(fluxoDeCaixa);
         
         fluxoDeCaixa = new FluxoDeCaixa();
@@ -179,7 +186,7 @@ public class DashboardBean implements Serializable {
         
         fluxoDeCaixa = new FluxoDeCaixa();
         fluxoDeCaixa.setItem("Receitas");
-        fluxoDeCaixa.setValue(totalCreditos.doubleValue());
+        fluxoDeCaixa.setValue(totalCreditosPagos.doubleValue());
         tabela.add(fluxoDeCaixa); 
         /*
         fluxoDeCaixa = new FluxoDeCaixa();
@@ -194,7 +201,7 @@ public class DashboardBean implements Serializable {
         
         fluxoDeCaixa = new FluxoDeCaixa();
         fluxoDeCaixa.setItem("Despesas");
-        fluxoDeCaixa.setValue(totalDebitos.doubleValue());
+        fluxoDeCaixa.setValue(totalDebitosPagos.doubleValue());
         tabela.add(fluxoDeCaixa);
         /*
         fluxoDeCaixa = new FluxoDeCaixa();

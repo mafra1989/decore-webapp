@@ -41,24 +41,24 @@
 							<p:menuitem id="pm_Dashboard" styleClass="pm_Dashboard"
 								value="Dashboard" icon="fa fa-home" outcome="/Dashboard.xhtml"
 								rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()}" />
-
+						
+							<p:menuitem id="pm_Contas" value="Contas à Pagar / Receber"
+									icon="fa fa-folder-open-o" outcome="/Contas.xhtml" />
+									
 							<p:submenu id="pm_consulta" label="Consultar" icon="fa fa-search"
 								rendered="#{seguranca.acessoAdministrador()  or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()}">
-
-								<p:menuitem id="pm_Contas" value="Contas à Pag/Rec"
-									icon="fa fa-retweet" outcome="/pesquisas/Contas.xhtml" />
 									
 								<p:menuitem id="pm_estoque" value="Estoque" icon="fa fa-cubes"
-									outcome="/pesquisas/Estoque.xhtml" />
+									outcome="/consultas/Estoque.xhtml" />
 
 								<p:menuitem id="pm_compra" value="Compras"
-									icon="fa fa-shopping-cart" outcome="/pesquisas/Compras.xhtml" />
+									icon="fa fa-shopping-cart" outcome="/consultas/Compras.xhtml" />
 
 								<p:menuitem id="pm_venda" value="Vendas" icon="fa fa-dollar"
-									outcome="/pesquisas/Vendas.xhtml" />
+									outcome="/consultas/Vendas.xhtml" />
 
 								<p:menuitem id="pm_lancamento" value="Lançamentos"
-									icon="fa fa-list-ol" outcome="/pesquisas/Lancamentos.xhtml" />
+									icon="fa fa-list-ol" outcome="/consultas/Lancamentos.xhtml" />
 
 
 

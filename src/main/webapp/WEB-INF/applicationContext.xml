@@ -81,13 +81,13 @@
 			access="hasAnyRole('ADMINISTRADOR',	'USUARIO_AVANCADO', 'USUARIO_COMUM')" />
 			
 
-		<intercept-url pattern="/pesquisas/Compras.xhtml"
+		<intercept-url pattern="/consultas/Compras.xhtml"
 			access="hasAnyRole('ADMINISTRADOR', 'USUARIO_AVANCADO', 'USUARIO_COMUM')" />
-		<intercept-url pattern="/pesquisas/Estoque.xhtml"
+		<intercept-url pattern="/consultas/Estoque.xhtml"
 			access="hasAnyRole('ADMINISTRADOR', 'USUARIO_AVANCADO', 'USUARIO_COMUM')" />
-		<intercept-url pattern="/pesquisas/Lancamentos.xhtml"
+		<intercept-url pattern="/consultas/Lancamentos.xhtml"
 			access="hasAnyRole('ADMINISTRADOR', 'USUARIO_AVANCADO', 'USUARIO_COMUM')" />
-		<intercept-url pattern="/pesquisas/Vendas.xhtml"
+		<intercept-url pattern="/consultas/Vendas.xhtml"
 			access="hasAnyRole('ADMINISTRADOR', 'USUARIO_AVANCADO', 'USUARIO_COMUM')" />
 			
 			

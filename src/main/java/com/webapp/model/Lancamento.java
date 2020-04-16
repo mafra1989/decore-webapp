@@ -52,11 +52,9 @@ public class Lancamento implements Serializable {
 	@JoinColumn
 	private DestinoLancamento destinoLancamento = new DestinoLancamento();
 
-	/*
-	 * @ManyToOne
-	 * 
-	 * @JoinColumn private Usuario usuario;
-	 */
+	@ManyToOne
+	@JoinColumn
+	private Usuario usuario;
 
 	/* Campos para relat�rio */
 	@Column(nullable = false)
@@ -123,11 +121,13 @@ public class Lancamento implements Serializable {
 		this.categoriaLancamento = categoriaLancamento;
 	}
 
-	/*
-	 * public Usuario getUsuario() { return usuario; }
-	 * 
-	 * public void setUsuario(Usuario usuario) { this.usuario = usuario; }
-	 */
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
 
 	public DestinoLancamento getDestinoLancamento() {
 		return destinoLancamento;
