@@ -33,7 +33,7 @@
 								if(tooltipItem.datasetIndex == 1) {
 									var valor = "R$ " + numberToReal(amount);
 									if(valor.includes("-.")) {
-										valor = valor.replace("-.","- ");
+										valor = valor.replace("-.","-");
 									}
 									return valor;
 								} else {

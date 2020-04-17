@@ -146,8 +146,12 @@ public class RegistroComprasBean implements Serializable {
 		
 		entradas = new ArrayList<>();
 
+		Calendar calendario = Calendar.getInstance();
 		Calendar vencimento = Calendar.getInstance();
 		vencimento.setTime(compra.getDataCompra());
+		vencimento.set(Calendar.HOUR, calendario.get(Calendar.HOUR));
+		vencimento.set(Calendar.MINUTE, calendario.get(Calendar.MINUTE));
+		vencimento.set(Calendar.SECOND, calendario.get(Calendar.SECOND));
 
 		Double valorCompra = compra.getValorTotal().doubleValue();
 		if (valorEntrada != null && valorEntrada > 0) {
@@ -156,7 +160,7 @@ public class RegistroComprasBean implements Serializable {
 			Conta conta = new Conta();
 			conta.setParcela("Entrada");
 			conta.setValor(new BigDecimal(valorEntrada));
-			conta.setVencimento(compra.getDataCompra());
+			conta.setVencimento(vencimento.getTime());
 			 
 			Calendar calendarioTemp = Calendar.getInstance();
 			calendarioTemp.setTime(conta.getVencimento());
@@ -325,7 +329,15 @@ public class RegistroComprasBean implements Serializable {
 				conta.setTipo("DEBITO");
 				conta.setStatus(compraPaga != true ? false : true);
 				conta.setValor(compra.getValorTotal());
-				conta.setVencimento(compra.getDataCompra());
+				
+				calendario = Calendar.getInstance();
+				Calendar vencimento = Calendar.getInstance();
+				vencimento.setTime(compra.getDataCompra());
+				vencimento.set(Calendar.HOUR, calendario.get(Calendar.HOUR));
+				vencimento.set(Calendar.MINUTE, calendario.get(Calendar.MINUTE));
+				vencimento.set(Calendar.SECOND, calendario.get(Calendar.SECOND));
+				
+				conta.setVencimento(vencimento.getTime());
 				
 				calendarioTemp = Calendar.getInstance();
 				calendarioTemp.setTime(conta.getVencimento());

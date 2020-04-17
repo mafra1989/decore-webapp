@@ -177,8 +177,12 @@ public class RegistroLancamentosBean implements Serializable {
 		
 		entradas = new ArrayList<>();
 
+		Calendar calendario = Calendar.getInstance();
 		Calendar vencimento = Calendar.getInstance();
 		vencimento.setTime(lancamento.getDataLancamento());
+		vencimento.set(Calendar.HOUR, calendario.get(Calendar.HOUR));
+		vencimento.set(Calendar.MINUTE, calendario.get(Calendar.MINUTE));
+		vencimento.set(Calendar.SECOND, calendario.get(Calendar.SECOND));
 
 		Double valorLancamento = lancamento.getValor().doubleValue();
 		if (valorEntrada!= null && valorEntrada > 0) {
@@ -187,7 +191,7 @@ public class RegistroLancamentosBean implements Serializable {
 			Conta conta = new Conta();
 			conta.setParcela("Entrada");
 			conta.setValor(new BigDecimal(valorEntrada));
-			conta.setVencimento(lancamento.getDataLancamento());
+			conta.setVencimento(vencimento.getTime());
 			
 			Calendar calendarioTemp = Calendar.getInstance();
 			calendarioTemp.setTime(conta.getVencimento());
@@ -265,8 +269,12 @@ public class RegistroLancamentosBean implements Serializable {
 
 		todasContas_ = new ArrayList<>();
 
+		Calendar calendario = Calendar.getInstance();
 		Calendar vencimento = Calendar.getInstance();
 		vencimento.setTime(lancamento.getDataLancamento());
+		vencimento.set(Calendar.HOUR, calendario.get(Calendar.HOUR));
+		vencimento.set(Calendar.MINUTE, calendario.get(Calendar.MINUTE));
+		vencimento.set(Calendar.SECOND, calendario.get(Calendar.SECOND));
 
 		Double valorParcela = lancamento.getValor().doubleValue();
 		for (int i = 0; i < parcelas_; i++) {
@@ -443,7 +451,15 @@ public class RegistroLancamentosBean implements Serializable {
 				conta.setTipo(lancamento.getCategoriaLancamento().getTipoLancamento().getOrigem().name());
 				conta.setStatus(lancamentoPago != true ? false : true);
 				conta.setValor(lancamento.getValor());
-				conta.setVencimento(lancamento.getDataLancamento());
+				
+				calendario = Calendar.getInstance();
+				Calendar vencimento = Calendar.getInstance();
+				vencimento.setTime(lancamento.getDataLancamento());
+				vencimento.set(Calendar.HOUR, calendario.get(Calendar.HOUR));
+				vencimento.set(Calendar.MINUTE, calendario.get(Calendar.MINUTE));
+				vencimento.set(Calendar.SECOND, calendario.get(Calendar.SECOND));
+				
+				conta.setVencimento(vencimento.getTime());
 				
 				calendarioTemp = Calendar.getInstance();
 				calendarioTemp.setTime(conta.getVencimento());
