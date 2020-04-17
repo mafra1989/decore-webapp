@@ -9,44 +9,6 @@
 	<ui:define name="head">
 
 		<script type="text/javascript">
-			function percentExtender() {
-				var tickColor = "#666";
-				var gridlineColor = "rgba(0,0,0,0.1)";
-
-				this.cfg.config.type = 'pie';
-
-				this.cfg.config.options = {
-					legend : {
-						display : true,
-					},					
-
-					title : {
-						display : false,
-						text : 'Top 5 Despesas - Mês atual'
-					},
-					tooltips : {
-						callbacks : {
-
-							label : function(tooltipItem, data) {
-								var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-
-								var total = eval(data.datasets[tooltipItem.datasetIndex].data
-										.join("+"));
-
-								var label = tooltipItem.yLabel;
-
-								return numberToReal(amount)
-										+ ' / '
-										+ numberToReal(total)
-										+ ' ( '
-										+ parseFloat(amount * 100 / total)
-												.toFixed(2) + '% )';
-							}
-						}
-					},
-				};
-			}
-
 			function percentExtender2() {
 	
 				var options = $.extend(true, {}, this.cfg.config);
@@ -69,7 +31,11 @@
 								var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
 
 								if(tooltipItem.datasetIndex == 1) {
-									return "R$ " + numberToReal(amount);
+									valor = numberToReal(amount);
+									if(!valor.includes('-.') {
+										valor = valor.replace('-.','-');
+									}
+									return "R$ " + valor;
 								} else {
 									return numberToReal(amount) + "%";
 								}
@@ -108,32 +74,6 @@
 	  			          }
 	  			       },
 			       };
-			}
-			
-			function percentExtender4() {
-				var tickColor = "#666";
-				var gridlineColor = "rgba(0,0,0,0.1)";
-
-				this.cfg.config.options = {
-					legend : {
-						display : true,
-					},
-
-					tooltips : {
-						callbacks : {
-
-							label : function(tooltipItem, data) { 
-								var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-								if(tooltipItem.datasetIndex == 0) {
-									return "R$ " + numberToReal(amount);
-								} else {
-									return numberToReal(amount) + "%";
-								}
-								
-							}
-						}
-					},
-				};
 			}
 
 			function numberToReal(numero) {
