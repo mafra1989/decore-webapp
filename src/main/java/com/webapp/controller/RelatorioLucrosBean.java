@@ -11,6 +11,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.primefaces.model.charts.ChartData;
 import org.primefaces.model.charts.axes.cartesian.CartesianScales;
 import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearAxes;
@@ -25,6 +26,7 @@ import org.primefaces.model.charts.line.LineChartDataSet;
 import com.webapp.model.CategoriaProduto;
 import com.webapp.model.Produto;
 import com.webapp.repository.CategoriasProdutos;
+import com.webapp.repository.Contas;
 import com.webapp.repository.Lancamentos;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.Vendas;
@@ -43,6 +45,9 @@ public class RelatorioLucrosBean implements Serializable {
 
 	@Inject
 	private Lancamentos lancamentos;
+	
+	@Inject
+	private Contas contas;
 
 	private BarChartModel mixedModel;
 
@@ -313,15 +318,37 @@ public class RelatorioLucrosBean implements Serializable {
 					.doubleValue();*/
 
 			if (categoriaPorDia == null || categoriaPorDia.getId() == null) {
-				
+				/*
 				totalDeReceitas = lancamentos
 						.totalDeReceitasPorDia(Long.parseLong(object[0].toString()),
 								Long.parseLong(object[1].toString()), Long.parseLong(object[2].toString()))
 						.doubleValue();
+				*/
+				Calendar calendarInicio = Calendar.getInstance();
+				calendarInicio.set(Calendar.DAY_OF_MONTH, Integer.parseInt(object[0].toString()));
+				calendarInicio.set(Calendar.MONTH, Integer.parseInt(object[1].toString()));
+				calendarInicio.set(Calendar.YEAR, Integer.parseInt(object[2].toString()));
+				
+				calendarInicio = DateUtils.truncate(calendarInicio, Calendar.DAY_OF_MONTH);
+				
+				Calendar calendarTermino = Calendar.getInstance();
+				calendarTermino = (Calendar) calendarInicio.clone();
+				calendarTermino.add(Calendar.DAY_OF_MONTH, 1);
+				
+				//System.out.println(totalDeReceitas);
+				
+				totalDeReceitas = contas.totalDeReceitasPagasPorDia(calendarInicio, calendarTermino).doubleValue();
+				
+				System.out.println(totalDeReceitas);
+				
+				/*
 				totalDeDespesas = lancamentos
 						.totalDespesasPorData(Long.parseLong(object[0].toString()),
 								Long.parseLong(object[1].toString()), Long.parseLong(object[2].toString()))
 						.doubleValue();
+				*/
+								
+				totalDeDespesas = contas.totalDeDespesasPagasPorDia(calendarInicio, calendarTermino).doubleValue();
 				
 				values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
 				

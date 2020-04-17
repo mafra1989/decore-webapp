@@ -146,4 +146,31 @@ public class Contas implements Serializable {
 
 		return q.getResultList();
 	}
+	
+	public Number totalDeReceitasPagasPorDia(Calendar inicio, Calendar termino) {
+		String jpql = "SELECT sum(c.valor) FROM Conta c WHERE c.tipo = 'CREDITO' AND c.status = 'Y' AND c.vencimento BETWEEN :inicio AND :termino";
+		Query q = manager.createQuery(jpql).setParameter("inicio", inicio.getTime())
+				.setParameter("termino", termino.getTime());
+		Number count = (Number) q.getSingleResult();
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+	
+	public Number totalDeDespesasPagasPorDia(Calendar inicio, Calendar termino) {
+		String jpql = "SELECT sum(c.valor) FROM Conta c WHERE c.tipo = 'DEBITO' AND c.operacao = 'LANCAMENTO' AND c.status = 'Y' AND c.vencimento between :inicio AND :termino";
+		Query q = manager.createQuery(jpql).setParameter("inicio", inicio.getTime())
+				.setParameter("termino", termino.getTime());
+		Number count = (Number) q.getSingleResult();
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+
 }
