@@ -146,24 +146,10 @@ public class Contas implements Serializable {
 
 		return q.getResultList();
 	}
-	
-	public Number totalDeReceitasPagasPorDia(Calendar inicio, Calendar termino) {
-		String jpql = "SELECT sum(c.valor) FROM Conta c WHERE c.tipo = 'CREDITO' AND c.status = 'Y' AND c.vencimento BETWEEN :inicio AND :termino";
-		Query q = manager.createQuery(jpql).setParameter("inicio", inicio.getTime())
-				.setParameter("termino", termino.getTime());
-		Number count = (Number) q.getSingleResult();
 
-		if (count == null) {
-			count = 0;
-		}
-
-		return count;
-	}
-	
-	public Number totalDeDespesasPagasPorDia(Calendar inicio, Calendar termino) {
-		String jpql = "SELECT sum(c.valor) FROM Conta c WHERE c.tipo = 'DEBITO' AND c.operacao = 'LANCAMENTO' AND c.status = 'Y' AND c.vencimento between :inicio AND :termino";
-		Query q = manager.createQuery(jpql).setParameter("inicio", inicio.getTime())
-				.setParameter("termino", termino.getTime());
+	public Number totalDeReceitasPorDia(Long dia, Long mes, Long ano) {
+		String jpql = "SELECT sum(i.valor) FROM Conta i WHERE i.tipo = 'CREDITO' AND i.status = 'Y' AND i.dia = :dia AND i.mes = :mes AND i.ano = :ano";
+		Query q = manager.createQuery(jpql).setParameter("dia", dia).setParameter("mes", mes).setParameter("ano", ano);
 		Number count = (Number) q.getSingleResult();
 
 		if (count == null) {
@@ -173,4 +159,172 @@ public class Contas implements Serializable {
 		return count;
 	}
 
+	public Number totalDespesasPorData(Number dia, Number mes, Number ano) {
+
+		String condition = "";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+
+		select_Condition = "";
+		sum_Condition = "sum(i.valor)";
+		groupBy_Condition = "i.dia, i.mes, i.ano ";
+		orderBy_Condition = "i.dia asc, i.mes asc, i.ano asc";
+
+		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i " + "WHERE i.dia = :dia "
+				+ "AND i.mes = :mes " + "AND i.ano = :ano "
+				+ "AND i.tipo = 'DEBITO' AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' " + condition + "group by "
+				+ groupBy_Condition + " order by " + orderBy_Condition;
+		Query q = manager.createQuery(jpql).setParameter("dia", Long.parseLong(String.valueOf(dia)))
+				.setParameter("mes", Long.parseLong(String.valueOf(mes)))
+				.setParameter("ano", Long.parseLong(String.valueOf(ano)));
+
+		Number value = 0;
+		try {
+			value = (Number) q.getSingleResult();
+		} catch (NoResultException e) {
+
+		}
+
+		if (value == null) {
+			value = 0;
+		}
+
+		return value;
+	}
+
+	public Number totalDeReceitasPorSemana(Long semana, Long ano) {
+		String jpql = "SELECT sum(i.valor) FROM Conta i WHERE i.tipo = 'CREDITO' AND i.status = 'Y' AND i.semana = :semana AND i.ano = :ano";
+		Query q = manager.createQuery(jpql).setParameter("semana", semana).setParameter("ano", ano);
+		Number count = (Number) q.getSingleResult();
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+
+	public Number totalDespesasPorSemana(Number semana, Number ano) {
+
+		String condition = "";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+
+		select_Condition = "";
+		sum_Condition = "sum(i.valor)";
+		groupBy_Condition = "i.semana, i.ano ";
+		orderBy_Condition = "i.semana asc, i.ano asc";
+
+		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i " + "WHERE " + "i.semana = :semana "
+				+ "AND i.ano = :ano " + "AND i.tipo = 'DEBITO' AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' "
+				+ condition + "group by " + groupBy_Condition + " order by " + orderBy_Condition;
+		Query q = manager.createQuery(jpql).setParameter("semana", Long.parseLong(String.valueOf(semana)))
+				.setParameter("ano", Long.parseLong(String.valueOf(ano)));
+
+		Number value = 0;
+		try {
+			value = (Number) q.getSingleResult();
+		} catch (NoResultException e) {
+
+		}
+
+		if (value == null) {
+			value = 0;
+		}
+
+		return value;
+	}
+
+	public Number totalDeReceitasPorMes(Long mes, Long ano) {
+		String jpql = "SELECT sum(i.valor) FROM Conta i WHERE i.tipo = 'CREDITO' AND i.status = 'Y' AND i.mes = :mes AND i.ano = :ano";
+		Query q = manager.createQuery(jpql).setParameter("mes", mes).setParameter("ano", ano);
+		Number count = (Number) q.getSingleResult();
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+
+	public Number totalDespesasPorMes(Number mes, Number ano) {
+
+		String condition = "";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+
+		select_Condition = "";
+		sum_Condition = "sum(i.valor)";
+		groupBy_Condition = "i.mes, i.ano ";
+		orderBy_Condition = "i.mes asc, i.ano asc";
+
+		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i " + "WHERE " + "i.mes = :mes "
+				+ "AND i.ano = :ano " + "AND i.tipo = 'DEBITO' AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' "
+				+ condition + "group by " + groupBy_Condition + " order by " + orderBy_Condition;
+		Query q = manager.createQuery(jpql).setParameter("mes", Long.parseLong(String.valueOf(mes))).setParameter("ano",
+				Long.parseLong(String.valueOf(ano)));
+
+		Number value = 0;
+		try {
+			value = (Number) q.getSingleResult();
+		} catch (NoResultException e) {
+
+		}
+
+		if (value == null) {
+			value = 0;
+		}
+
+		return value;
+	}
+
+	public Number totalDeReceitasPorAno(Long ano) {
+		String jpql = "SELECT sum(i.valor) FROM Conta i WHERE i.tipo = 'CREDITO' AND i.status = 'Y' AND i.ano = :ano";
+		Query q = manager.createQuery(jpql).setParameter("ano", ano);
+		Number count = (Number) q.getSingleResult();
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+
+	public Number totalDespesasPorAno(Number ano) {
+
+		String condition = "";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+
+		select_Condition = "";
+		sum_Condition = "sum(i.valor)";
+		groupBy_Condition = "i.ano ";
+		orderBy_Condition = "i.ano asc";
+
+		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i " + "WHERE " + "i.ano = :ano "
+				+ "AND i.tipo = 'DEBITO' AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' " + condition + "group by "
+				+ groupBy_Condition + " order by " + orderBy_Condition;
+		Query q = manager.createQuery(jpql).setParameter("ano", Long.parseLong(String.valueOf(ano)));
+
+		Number value = 0;
+		try {
+			value = (Number) q.getSingleResult();
+		} catch (NoResultException e) {
+
+		}
+
+		if (value == null) {
+			value = 0;
+		}
+
+		return value;
+	}
 }

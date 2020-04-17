@@ -11,7 +11,6 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.primefaces.model.charts.ChartData;
 import org.primefaces.model.charts.axes.cartesian.CartesianScales;
 import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearAxes;
@@ -27,7 +26,6 @@ import com.webapp.model.CategoriaProduto;
 import com.webapp.model.Produto;
 import com.webapp.repository.CategoriasProdutos;
 import com.webapp.repository.Contas;
-import com.webapp.repository.Lancamentos;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.Vendas;
 
@@ -43,9 +41,6 @@ public class RelatorioLucrosBean implements Serializable {
 	@Inject
 	private Produtos produtos;
 
-	@Inject
-	private Lancamentos lancamentos;
-	
 	@Inject
 	private Contas contas;
 
@@ -123,7 +118,7 @@ public class RelatorioLucrosBean implements Serializable {
 	private String mes02;
 
 	private DonutChartModel donutModel;
-	
+
 	private Boolean lucroPorLote = false;
 
 	@PostConstruct
@@ -289,75 +284,58 @@ public class RelatorioLucrosBean implements Serializable {
 
 		BarChartDataSet dataSet = new BarChartDataSet();
 		List<Number> values = new ArrayList<>();
-			
+
 		Calendar calendarStart = Calendar.getInstance();
 		calendarStart.setTime(dateStart);
-			
+
 		Calendar calendarStop = Calendar.getInstance();
 		calendarStop.setTime(dateStop);
 		calendarStop.add(Calendar.DAY_OF_MONTH, 1);
 
 		List<Object[]> result = vendas.totalLucrosPorData(calendarStart, calendarStop, categoriaPorDia, produto01,
 				true);
-		
-		
-		LineChartDataSet dataSet2 = new LineChartDataSet();
-        List<Number> values2 = new ArrayList<>();
 
-	
+		LineChartDataSet dataSet2 = new LineChartDataSet();
+		List<Number> values2 = new ArrayList<>();
+
 		for (Object[] object : result) {
 			Double totalDeVendas = ((Number) object[3]).doubleValue();
-			Double totalCompras = ((Number) object[4]).doubleValue();			
+			Double totalCompras = ((Number) object[4]).doubleValue();
 
 			Double totalDeReceitas = 0D;
 			Double totalDeDespesas = 0D;
-			
-			/*Double totalDeCompras = compras
-					.totalComprasPorData(Long.parseLong(object[0].toString()), Long.parseLong(object[1].toString()),
-							Long.parseLong(object[2].toString()), categoriaPorDia, produto01, true)
-					.doubleValue();*/
+
+			/*
+			 * Double totalDeCompras = compras
+			 * .totalComprasPorData(Long.parseLong(object[0].toString()),
+			 * Long.parseLong(object[1].toString()), Long.parseLong(object[2].toString()),
+			 * categoriaPorDia, produto01, true) .doubleValue();
+			 */
 
 			if (categoriaPorDia == null || categoriaPorDia.getId() == null) {
-				/*
-				totalDeReceitas = lancamentos
+
+				totalDeReceitas = contas
 						.totalDeReceitasPorDia(Long.parseLong(object[0].toString()),
 								Long.parseLong(object[1].toString()), Long.parseLong(object[2].toString()))
 						.doubleValue();
-				*/
-				Calendar calendarInicio = Calendar.getInstance();
-				calendarInicio.set(Calendar.DAY_OF_MONTH, Integer.parseInt(object[0].toString()));
-				calendarInicio.set(Calendar.MONTH, Integer.parseInt(object[1].toString()));
-				calendarInicio.set(Calendar.YEAR, Integer.parseInt(object[2].toString()));
-				
-				calendarInicio = DateUtils.truncate(calendarInicio, Calendar.DAY_OF_MONTH);
-				
-				Calendar calendarTermino = Calendar.getInstance();
-				calendarTermino = (Calendar) calendarInicio.clone();
-				calendarTermino.add(Calendar.DAY_OF_MONTH, 1);
-				
-				//System.out.println(totalDeReceitas);
-				
-				totalDeReceitas = contas.totalDeReceitasPagasPorDia(calendarInicio, calendarTermino).doubleValue();
-				
+
 				System.out.println("Total vendas: " + totalDeVendas);
 				System.out.println("Receitas: " + totalDeReceitas);
-				
-				/*
-				totalDeDespesas = lancamentos
+
+				totalDeDespesas = contas
 						.totalDespesasPorData(Long.parseLong(object[0].toString()),
 								Long.parseLong(object[1].toString()), Long.parseLong(object[2].toString()))
 						.doubleValue();
-				*/
-								
-				totalDeDespesas = contas.totalDeDespesasPagasPorDia(calendarInicio, calendarTermino).doubleValue();
+
 				System.out.println("Despesas: " + totalDeDespesas);
-				
+
 				values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
-				
-				values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas)) * 100);			
-				
+
+				values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
+						* 100);
+
 			} else {
-				values.add(totalDeVendas/* - totalDeCompras*/);
+				values.add(totalDeVendas/* - totalDeCompras */);
 				values2.add((totalDeVendas / totalCompras) * 100);
 			}
 
@@ -369,19 +347,19 @@ public class RelatorioLucrosBean implements Serializable {
 		dataSet.setYaxisID("left-y-axis");
 		dataSet.setBorderColor("rgb(54, 162, 235)");
 		dataSet.setBackgroundColor("rgba(54, 162, 235)");
-		
+
 		dataSet2.setData(values2);
-        dataSet2.setLabel("Percentual");
-        dataSet2.setYaxisID("right-y-axis");
-        //dataSet2.setFill(false);
-        dataSet2.setBorderColor("rgba(255, 159, 64");
-	
+		dataSet2.setLabel("Percentual");
+		dataSet2.setYaxisID("right-y-axis");
+		// dataSet2.setFill(false);
+		dataSet2.setBorderColor("rgba(255, 159, 64");
+
 		data.addChartDataSet(dataSet2);
 		data.addChartDataSet(dataSet);
 
 		List<String> labels = new ArrayList<>();
 		for (Object[] object : result) {
-			labels.add(object[0] + "/" + object[1]/* + "/" + object[2]*/);
+			labels.add(object[0] + "/" + object[1]/* + "/" + object[2] */);
 		}
 
 		data.setLabels(labels);
@@ -391,29 +369,27 @@ public class RelatorioLucrosBean implements Serializable {
 		// Options
 		BarChartOptions options = new BarChartOptions();
 		CartesianScales cScales = new CartesianScales();
-		
+
 		CartesianLinearAxes linearAxes = new CartesianLinearAxes();
-        linearAxes.setId("left-y-axis");
-        linearAxes.setPosition("left");
-        
-        CartesianLinearAxes linearAxes2 = new CartesianLinearAxes();
-        linearAxes2.setId("right-y-axis");
-        linearAxes2.setPosition("right");		
-		
-		
+		linearAxes.setId("left-y-axis");
+		linearAxes.setPosition("left");
+
+		CartesianLinearAxes linearAxes2 = new CartesianLinearAxes();
+		linearAxes2.setId("right-y-axis");
+		linearAxes2.setPosition("right");
+
 		CartesianLinearTicks ticks = new CartesianLinearTicks();
 		ticks.setBeginAtZero(true);
 		linearAxes.setTicks(ticks);
-		
+
 		CartesianLinearTicks ticks2 = new CartesianLinearTicks();
 		ticks2.setBeginAtZero(true);
 		linearAxes2.setTicks(ticks2);
-		
 
 		cScales.addYAxesData(linearAxes);
-        cScales.addYAxesData(linearAxes2);
+		cScales.addYAxesData(linearAxes2);
 		options.setScales(cScales);
-		
+
 		mixedModelPorDia.setOptions(options);
 
 		mixedModelPorDia.setExtender("percentExtender2");
@@ -428,39 +404,40 @@ public class RelatorioLucrosBean implements Serializable {
 
 		List<Object[]> result = vendas.totalLucrosPorSemana(ano01, semana01, semana02, categoriaPorSemana, produto02,
 				true);
-		
+
 		LineChartDataSet dataSet2 = new LineChartDataSet();
-        List<Number> values2 = new ArrayList<>();
-        
+		List<Number> values2 = new ArrayList<>();
+
 		for (Object[] object : result) {
-			
+
 			Double totalDeVendas = ((Number) object[2]).doubleValue();
 			Double totalCompras = ((Number) object[3]).doubleValue();
 
 			Double totalDeReceitas = 0D;
 			Double totalDeDespesas = 0D;
-			
+
 			/*
-			Double totalDeCompras = compras
-					.totalComprasPorSemana(Long.parseLong(object[0].toString()), Long.parseLong(object[1].toString()), categoriaPorSemana, produto02, true)
-					.doubleValue();*/
+			 * Double totalDeCompras = compras
+			 * .totalComprasPorSemana(Long.parseLong(object[0].toString()),
+			 * Long.parseLong(object[1].toString()), categoriaPorSemana, produto02, true)
+			 * .doubleValue();
+			 */
 
 			if (categoriaPorSemana == null || categoriaPorSemana.getId() == null) {
-				
-				totalDeReceitas = lancamentos
-						.totalDeReceitasPorSemana(Long.parseLong(object[0].toString()), Long.parseLong(object[1].toString()))
-						.doubleValue();
-				totalDeDespesas = lancamentos
-						.totalDespesasPorSemana(Long.parseLong(object[0].toString()),
-								Long.parseLong(object[1].toString()))
-						.doubleValue();
-				
+
+				totalDeReceitas = contas.totalDeReceitasPorSemana(Long.parseLong(object[0].toString()),
+						Long.parseLong(object[1].toString())).doubleValue();
+
+				totalDeDespesas = contas.totalDespesasPorSemana(Long.parseLong(object[0].toString()),
+						Long.parseLong(object[1].toString())).doubleValue();
+
 				values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
-				
-				values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas)) * 100);
+
+				values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
+						* 100);
 			} else {
-				
-				values.add(totalDeVendas/* - totalDeCompras*/);
+
+				values.add(totalDeVendas/* - totalDeCompras */);
 				values2.add((totalDeVendas / totalCompras) * 100);
 			}
 		}
@@ -470,13 +447,13 @@ public class RelatorioLucrosBean implements Serializable {
 		dataSet.setYaxisID("left-y-axis");
 		dataSet.setBorderColor("rgb(54, 162, 235)");
 		dataSet.setBackgroundColor("rgba(54, 162, 235)");
-		
+
 		dataSet2.setData(values2);
-        dataSet2.setLabel("Percentual");
-        dataSet2.setYaxisID("right-y-axis");
-        //dataSet2.setFill(false);
-        dataSet2.setBorderColor("rgba(255, 159, 64");
-	
+		dataSet2.setLabel("Percentual");
+		dataSet2.setYaxisID("right-y-axis");
+		// dataSet2.setFill(false);
+		dataSet2.setBorderColor("rgba(255, 159, 64");
+
 		data.addChartDataSet(dataSet2);
 		data.addChartDataSet(dataSet);
 
@@ -497,29 +474,27 @@ public class RelatorioLucrosBean implements Serializable {
 		// Options
 		BarChartOptions options = new BarChartOptions();
 		CartesianScales cScales = new CartesianScales();
-		
+
 		CartesianLinearAxes linearAxes = new CartesianLinearAxes();
-        linearAxes.setId("left-y-axis");
-        linearAxes.setPosition("left");
-        
-        CartesianLinearAxes linearAxes2 = new CartesianLinearAxes();
-        linearAxes2.setId("right-y-axis");
-        linearAxes2.setPosition("right");		
-		
-		
+		linearAxes.setId("left-y-axis");
+		linearAxes.setPosition("left");
+
+		CartesianLinearAxes linearAxes2 = new CartesianLinearAxes();
+		linearAxes2.setId("right-y-axis");
+		linearAxes2.setPosition("right");
+
 		CartesianLinearTicks ticks = new CartesianLinearTicks();
 		ticks.setBeginAtZero(true);
 		linearAxes.setTicks(ticks);
-		
+
 		CartesianLinearTicks ticks2 = new CartesianLinearTicks();
 		ticks2.setBeginAtZero(true);
 		linearAxes2.setTicks(ticks2);
-		
 
 		cScales.addYAxesData(linearAxes);
-        cScales.addYAxesData(linearAxes2);
+		cScales.addYAxesData(linearAxes2);
 		options.setScales(cScales);
-		
+
 		mixedModelPorSemana.setOptions(options);
 
 		mixedModelPorSemana.setExtender("percentExtender2");
@@ -596,46 +571,49 @@ public class RelatorioLucrosBean implements Serializable {
 		BarChartDataSet dataSet = new BarChartDataSet();
 		List<Number> values = new ArrayList<>();
 
-		List<Object[]> result = new ArrayList<>(); 
-		if(lucroPorLote != true) {
-			result = vendas.totalLucrosPorMes(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes,
-				produto03, true);
+		List<Object[]> result = new ArrayList<>();
+		if (lucroPorLote != true) {
+			result = vendas.totalLucrosPorMes(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes, produto03,
+					true);
 		} else {
-			result = vendas.totalLucrosPorLote(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes,
-					produto03, true);
+			result = vendas.totalLucrosPorLote(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes, produto03,
+					true);
 		}
-		
+
 		LineChartDataSet dataSet2 = new LineChartDataSet();
-        List<Number> values2 = new ArrayList<>();
-		
+		List<Number> values2 = new ArrayList<>();
+
 		for (Object[] object : result) {
-			
+
 			Double totalDeVendas = ((Number) object[2]).doubleValue();
 			Double totalCompras = ((Number) object[3]).doubleValue();
 
 			Double totalDeReceitas = 0D;
 			Double totalDeDespesas = 0D;
 
-			/*Double totalDeCompras = compras
-					.totalComprasPorMes(Long.parseLong(object[0].toString()), Long.parseLong(object[1].toString()), categoriaPorMes, produto03, true)
-					.doubleValue();*/
+			/*
+			 * Double totalDeCompras = compras
+			 * .totalComprasPorMes(Long.parseLong(object[0].toString()),
+			 * Long.parseLong(object[1].toString()), categoriaPorMes, produto03, true)
+			 * .doubleValue();
+			 */
 
 			if (categoriaPorMes == null || categoriaPorMes.getId() == null) {
-				
-				totalDeReceitas = lancamentos
-						.totalDeReceitasPorMes(Long.parseLong(object[0].toString()), Long.parseLong(object[1].toString()))
+
+				totalDeReceitas = contas.totalDeReceitasPorMes(Long.parseLong(object[0].toString()),
+						Long.parseLong(object[1].toString())).doubleValue();
+
+				totalDeDespesas = contas
+						.totalDespesasPorMes(Long.parseLong(object[0].toString()), Long.parseLong(object[1].toString()))
 						.doubleValue();
-				totalDeDespesas = lancamentos
-						.totalDespesasPorMes(Long.parseLong(object[0].toString()),
-								Long.parseLong(object[1].toString()))
-						.doubleValue();
-				
+
 				values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
-				
-				values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas)) * 100);
+
+				values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
+						* 100);
 			} else {
-				
-				values.add(totalDeVendas/* - totalDeCompras*/);
+
+				values.add(totalDeVendas/* - totalDeCompras */);
 				values2.add((totalDeVendas / totalCompras) * 100);
 			}
 		}
@@ -645,19 +623,19 @@ public class RelatorioLucrosBean implements Serializable {
 		dataSet.setYaxisID("left-y-axis");
 		dataSet.setBorderColor("rgb(54, 162, 235)");
 		dataSet.setBackgroundColor("rgba(54, 162, 235)");
-		
+
 		dataSet2.setData(values2);
-        dataSet2.setLabel("Percentual");
-        dataSet2.setYaxisID("right-y-axis");
-        //dataSet2.setFill(false);
-        dataSet2.setBorderColor("rgba(255, 159, 64");
-	
+		dataSet2.setLabel("Percentual");
+		dataSet2.setYaxisID("right-y-axis");
+		// dataSet2.setFill(false);
+		dataSet2.setBorderColor("rgba(255, 159, 64");
+
 		data.addChartDataSet(dataSet2);
 		data.addChartDataSet(dataSet);
 
 		List<String> labels = new ArrayList<>();
 		for (Object[] object : result) {
-			if(lucroPorLote != true) {
+			if (lucroPorLote != true) {
 				labels.add(nameMes(((Long) object[0]).intValue()));
 			} else {
 				labels.add(nameMes(((Long) object[4]).intValue()));
@@ -671,29 +649,27 @@ public class RelatorioLucrosBean implements Serializable {
 		// Options
 		BarChartOptions options = new BarChartOptions();
 		CartesianScales cScales = new CartesianScales();
-		
+
 		CartesianLinearAxes linearAxes = new CartesianLinearAxes();
-        linearAxes.setId("left-y-axis");
-        linearAxes.setPosition("left");
-        
-        CartesianLinearAxes linearAxes2 = new CartesianLinearAxes();
-        linearAxes2.setId("right-y-axis");
-        linearAxes2.setPosition("right");		
-		
-		
+		linearAxes.setId("left-y-axis");
+		linearAxes.setPosition("left");
+
+		CartesianLinearAxes linearAxes2 = new CartesianLinearAxes();
+		linearAxes2.setId("right-y-axis");
+		linearAxes2.setPosition("right");
+
 		CartesianLinearTicks ticks = new CartesianLinearTicks();
 		ticks.setBeginAtZero(true);
 		linearAxes.setTicks(ticks);
-		
+
 		CartesianLinearTicks ticks2 = new CartesianLinearTicks();
 		ticks2.setBeginAtZero(true);
 		linearAxes2.setTicks(ticks2);
-		
 
 		cScales.addYAxesData(linearAxes);
-        cScales.addYAxesData(linearAxes2);
+		cScales.addYAxesData(linearAxes2);
 		options.setScales(cScales);
-		
+
 		mixedModelPorMes.setOptions(options);
 
 		mixedModelPorMes.setExtender("percentExtender2");
@@ -707,37 +683,37 @@ public class RelatorioLucrosBean implements Serializable {
 		List<Number> values = new ArrayList<>();
 
 		List<Object[]> result = vendas.totalLucrosPorAno(ano03, ano04, categoriaPorAno, produto04, true);
-		
+
 		LineChartDataSet dataSet2 = new LineChartDataSet();
-        List<Number> values2 = new ArrayList<>();
-        
+		List<Number> values2 = new ArrayList<>();
+
 		for (Object[] object : result) {
-			
+
 			Double totalDeVendas = ((Number) object[1]).doubleValue();
 			Double totalCompras = ((Number) object[2]).doubleValue();
 
 			Double totalDeReceitas = 0D;
 			Double totalDeDespesas = 0D;
-			
-			/*Double totalDeCompras = compras
-					.totalComprasPorAno(Long.parseLong(object[0].toString()), categoriaPorAno, produto04, true)
-					.doubleValue();*/
+
+			/*
+			 * Double totalDeCompras = compras
+			 * .totalComprasPorAno(Long.parseLong(object[0].toString()), categoriaPorAno,
+			 * produto04, true) .doubleValue();
+			 */
 
 			if (categoriaPorAno == null || categoriaPorAno.getId() == null) {
+
+				totalDeReceitas = contas.totalDeReceitasPorAno(Long.parseLong(object[0].toString())).doubleValue();
 				
-				totalDeReceitas = lancamentos
-						.totalDeReceitasPorAno(Long.parseLong(object[0].toString()))
-						.doubleValue();
-				totalDeDespesas = lancamentos
-						.totalDespesasPorAno(Long.parseLong(object[0].toString()))
-						.doubleValue();
-				
+				totalDeDespesas = contas.totalDespesasPorAno(Long.parseLong(object[0].toString())).doubleValue();
+
 				values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
-				
-				values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas)) * 100);
+
+				values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
+						* 100);
 			} else {
-				
-				values.add(totalDeVendas/* - totalDeCompras*/);
+
+				values.add(totalDeVendas/* - totalDeCompras */);
 				values2.add((totalDeVendas / totalCompras) * 100);
 			}
 		}
@@ -747,13 +723,13 @@ public class RelatorioLucrosBean implements Serializable {
 		dataSet.setYaxisID("left-y-axis");
 		dataSet.setBorderColor("rgb(54, 162, 235)");
 		dataSet.setBackgroundColor("rgba(54, 162, 235)");
-		
+
 		dataSet2.setData(values2);
-        dataSet2.setLabel("Percentual");
-        dataSet2.setYaxisID("right-y-axis");
-        //dataSet2.setFill(false);
-        dataSet2.setBorderColor("rgba(255, 159, 64");
-	
+		dataSet2.setLabel("Percentual");
+		dataSet2.setYaxisID("right-y-axis");
+		// dataSet2.setFill(false);
+		dataSet2.setBorderColor("rgba(255, 159, 64");
+
 		data.addChartDataSet(dataSet2);
 		data.addChartDataSet(dataSet);
 
@@ -769,35 +745,33 @@ public class RelatorioLucrosBean implements Serializable {
 		// Options
 		BarChartOptions options = new BarChartOptions();
 		CartesianScales cScales = new CartesianScales();
-		
+
 		CartesianLinearAxes linearAxes = new CartesianLinearAxes();
-        linearAxes.setId("left-y-axis");
-        linearAxes.setPosition("left");
-        
-        CartesianLinearAxes linearAxes2 = new CartesianLinearAxes();
-        linearAxes2.setId("right-y-axis");
-        linearAxes2.setPosition("right");		
-		
-		
+		linearAxes.setId("left-y-axis");
+		linearAxes.setPosition("left");
+
+		CartesianLinearAxes linearAxes2 = new CartesianLinearAxes();
+		linearAxes2.setId("right-y-axis");
+		linearAxes2.setPosition("right");
+
 		CartesianLinearTicks ticks = new CartesianLinearTicks();
 		ticks.setBeginAtZero(true);
 		linearAxes.setTicks(ticks);
-		
+
 		CartesianLinearTicks ticks2 = new CartesianLinearTicks();
 		ticks2.setBeginAtZero(true);
 		linearAxes2.setTicks(ticks2);
-		
 
 		cScales.addYAxesData(linearAxes);
-        cScales.addYAxesData(linearAxes2);
+		cScales.addYAxesData(linearAxes2);
 		options.setScales(cScales);
-		
+
 		mixedModelPorAno.setOptions(options);
 
 		mixedModelPorAno.setExtender("percentExtender2");
 	}
-	
-	public void prepareLucroPorLote() { 
+
+	public void prepareLucroPorLote() {
 		createMixedModelPorMes();
 	}
 
