@@ -31,11 +31,11 @@
 								var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
 
 								if(tooltipItem.datasetIndex == 1) {
-									var valor = numberToReal(amount);
-									/*if(valor.includes("-.") {
+									var valor = "R$ " + numberToReal(amount);
+									if(valor.includes("-.") {
 										valor = valor.replace("-.","-");
-									}*/
-									return "R$ " + valor;
+									}
+									return valor;
 								} else {
 									return numberToReal(amount) + "%";
 								}
