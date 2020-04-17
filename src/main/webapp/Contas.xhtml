@@ -243,6 +243,10 @@
 									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt" />
 								</h:outputText>
 							</p:column>
+							
+							<p:column headerText="Tipo" width="20%">
+								<h:outputText value="#{conta.tipo == 'CREDITO' ? 'Crédito' : (conta.tipo == 'DEBITO' ? 'Débito' : '-')}" />
+							</p:column>
 
 							<p:column headerText="Parcela" width="20%">
 								<h:outputText
