@@ -75,6 +75,32 @@ public class ConsultaContasBean implements Serializable {
 	}
 	
 	public void pagar(Conta conta) {
+		
+		if(conta.isStatus()) {
+			conta.setPagamento(new Date());
+			
+			Calendar calendarioTemp = Calendar.getInstance();
+			calendarioTemp.setTime(conta.getPagamento());
+			
+			conta.setDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_MONTH))));
+			conta.setNomeDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_WEEK))));
+			conta.setSemana(Long.valueOf((calendarioTemp.get(Calendar.WEEK_OF_YEAR))));
+			conta.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
+			conta.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
+			
+		} else {
+			conta.setPagamento(null);
+			
+			Calendar calendarioTemp = Calendar.getInstance();
+			calendarioTemp.setTime(conta.getVencimento());
+			
+			conta.setDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_MONTH))));
+			conta.setNomeDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_WEEK))));
+			conta.setSemana(Long.valueOf((calendarioTemp.get(Calendar.WEEK_OF_YEAR))));
+			conta.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
+			conta.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
+		}
+		
 		contas.save(conta);
 	}
 	

@@ -193,6 +193,8 @@ public class RegistroLancamentosBean implements Serializable {
 			conta.setValor(new BigDecimal(valorEntrada));
 			conta.setVencimento(vencimento.getTime());
 			
+			conta.setPagamento(vencimento.getTime());
+			
 			Calendar calendarioTemp = Calendar.getInstance();
 			calendarioTemp.setTime(conta.getVencimento());
 			
@@ -461,6 +463,8 @@ public class RegistroLancamentosBean implements Serializable {
 				
 				conta.setVencimento(vencimento.getTime());
 				
+				conta.setPagamento(lancamentoPago != true ? null : vencimento.getTime());
+				
 				calendarioTemp = Calendar.getInstance();
 				calendarioTemp.setTime(conta.getVencimento());
 				
@@ -479,6 +483,7 @@ public class RegistroLancamentosBean implements Serializable {
 						contaTemp.setOperacao("LANCAMENTO");
 						contaTemp.setTipo(lancamento.getCategoriaLancamento().getTipoLancamento().getOrigem().name());
 						contaTemp.setStatus(false);
+						contaTemp.setPagamento(null);
 
 						contas.save(contaTemp);
 					}
@@ -502,6 +507,7 @@ public class RegistroLancamentosBean implements Serializable {
 					conta.setOperacao("LANCAMENTO");
 					conta.setTipo(lancamento.getCategoriaLancamento().getTipoLancamento().getOrigem().name());
 					conta.setStatus(false);
+					conta.setPagamento(null);
 
 					contas.save(conta);
 				}

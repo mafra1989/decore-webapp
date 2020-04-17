@@ -161,6 +161,8 @@ public class RegistroComprasBean implements Serializable {
 			conta.setParcela("Entrada");
 			conta.setValor(new BigDecimal(valorEntrada));
 			conta.setVencimento(vencimento.getTime());
+			
+			conta.setPagamento(vencimento.getTime());
 			 
 			Calendar calendarioTemp = Calendar.getInstance();
 			calendarioTemp.setTime(conta.getVencimento());
@@ -338,6 +340,8 @@ public class RegistroComprasBean implements Serializable {
 				vencimento.set(Calendar.SECOND, calendario.get(Calendar.SECOND));
 				
 				conta.setVencimento(vencimento.getTime());
+
+				conta.setPagamento(compraPaga != true ? null : vencimento.getTime());
 				
 				calendarioTemp = Calendar.getInstance();
 				calendarioTemp.setTime(conta.getVencimento());
@@ -366,6 +370,7 @@ public class RegistroComprasBean implements Serializable {
 					conta.setCodigoOperacao(compra.getNumeroCompra());
 					conta.setOperacao("COMPRA");
 					conta.setTipo("DEBITO");
+					conta.setPagamento(null);
 					
 					conta = contas.save(conta);
 				}

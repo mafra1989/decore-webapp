@@ -260,13 +260,19 @@
 									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt" />
 								</h:outputText>
 							</p:column>
+							
+							<p:column headerText="Pagamento" width="20%">
+								<h:outputText value="#{conta.pagamento == null ? '-' : conta.pagamento}">
+									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt"  />
+								</h:outputText>
+							</p:column>
 
 							<p:column headerText="PAGO" width="20%">
 								<p:inputSwitch offLabel="Não" onLabel="Sim" styleClass="pagar"
 									value="#{conta.status}"
 									disabled="#{not seguranca.acessoAdministrador()}">
 
-									<p:ajax process="@this"
+									<p:ajax process="@this" update="contasTable"
 										listener="#{consultaContasBean.pagar(conta)}"
 										onstart="start();" oncomplete="stop();" />
 								</p:inputSwitch>

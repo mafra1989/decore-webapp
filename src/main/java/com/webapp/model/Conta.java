@@ -14,7 +14,7 @@ import javax.validation.constraints.Digits;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "conta_fix_v2")
+@Table(name = "conta_fix_v3")
 public class Conta implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -36,6 +36,9 @@ public class Conta implements Serializable {
 	@Column(nullable = false)
 	private Date vencimento = new Date();
 
+	@Column
+	private Date pagamento = new Date();
+
 	@Column(nullable = false, length = 10)
 	private String tipo;
 
@@ -45,8 +48,7 @@ public class Conta implements Serializable {
 	@Type(type = "yes_no")
 	@Column(nullable = false)
 	private boolean status;
-	
-	
+
 	/* Campos para relat�rio */
 	@Column(nullable = false)
 	private Long dia;
@@ -62,8 +64,6 @@ public class Conta implements Serializable {
 
 	@Column(nullable = false)
 	private Long ano;
-	
-	
 
 	public Long getId() {
 		return id;
@@ -103,6 +103,14 @@ public class Conta implements Serializable {
 
 	public void setVencimento(Date vencimento) {
 		this.vencimento = vencimento;
+	}
+
+	public Date getPagamento() {
+		return pagamento;
+	}
+
+	public void setPagamento(Date pagamento) {
+		this.pagamento = pagamento;
 	}
 
 	public String getTipo() {
