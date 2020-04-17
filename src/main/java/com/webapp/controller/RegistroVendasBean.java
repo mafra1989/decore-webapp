@@ -180,6 +180,16 @@ public class RegistroVendasBean implements Serializable {
 			venda.setSemana(Long.valueOf((calendarioTemp.get(Calendar.WEEK_OF_YEAR))));
 			venda.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
 			venda.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
+			
+			Venda vendaTemp = vendas.ultimoNVenda();
+
+			if (vendaTemp == null) {
+				venda.setNumeroVenda(1L);
+			} else {
+				if (venda.getId() == null) {
+					venda.setNumeroVenda(vendaTemp.getNumeroVenda() + 1);
+				}
+			}
 
 			venda = vendas.save(venda);
 

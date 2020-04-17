@@ -14,7 +14,7 @@ import javax.validation.constraints.Digits;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "conta")
+@Table(name = "conta_fix")
 public class Conta implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -45,6 +45,25 @@ public class Conta implements Serializable {
 	@Type(type = "yes_no")
 	@Column(nullable = false)
 	private boolean status;
+	
+	
+	/* Campos para relat�rio */
+	@Column(nullable = false)
+	private Long dia;
+
+	@Column(nullable = false)
+	private Long nomeDia;
+
+	@Column(nullable = false)
+	private Long semana;
+
+	@Column(nullable = false)
+	private Long mes;
+
+	@Column(nullable = false)
+	private Long ano;
+	
+	
 
 	public Long getId() {
 		return id;
@@ -108,6 +127,46 @@ public class Conta implements Serializable {
 
 	public void setStatus(boolean status) {
 		this.status = status;
+	}
+
+	public Long getDia() {
+		return dia;
+	}
+
+	public void setDia(Long dia) {
+		this.dia = dia;
+	}
+
+	public Long getNomeDia() {
+		return nomeDia;
+	}
+
+	public void setNomeDia(Long nomeDia) {
+		this.nomeDia = nomeDia;
+	}
+
+	public Long getSemana() {
+		return semana;
+	}
+
+	public void setSemana(Long semana) {
+		this.semana = semana;
+	}
+
+	public Long getMes() {
+		return mes;
+	}
+
+	public void setMes(Long mes) {
+		this.mes = mes;
+	}
+
+	public Long getAno() {
+		return ano;
+	}
+
+	public void setAno(Long ano) {
+		this.ano = ano;
 	}
 
 	@Override

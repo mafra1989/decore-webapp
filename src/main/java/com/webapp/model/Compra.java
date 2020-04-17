@@ -68,6 +68,7 @@ public class Compra implements Serializable {
 
 	@Column(nullable = false)
 	private Long ano;
+	
 
 	public Long getId() {
 		return id;

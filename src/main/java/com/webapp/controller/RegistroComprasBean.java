@@ -157,6 +157,15 @@ public class RegistroComprasBean implements Serializable {
 			conta.setParcela("Entrada");
 			conta.setValor(new BigDecimal(valorEntrada));
 			conta.setVencimento(compra.getDataCompra());
+			 
+			Calendar calendarioTemp = Calendar.getInstance();
+			calendarioTemp.setTime(conta.getVencimento());
+			
+			conta.setDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_MONTH))));
+			conta.setNomeDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_WEEK))));
+			conta.setSemana(Long.valueOf((calendarioTemp.get(Calendar.WEEK_OF_YEAR))));
+			conta.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
+			conta.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
 
 			entradas.add(conta);
 		}
@@ -207,6 +216,15 @@ public class RegistroComprasBean implements Serializable {
 				}
 
 				conta.setVencimento(vencimento.getTime());
+				
+				Calendar calendarioTemp = Calendar.getInstance();
+				calendarioTemp.setTime(conta.getVencimento());
+				
+				conta.setDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_MONTH))));
+				conta.setNomeDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_WEEK))));
+				conta.setSemana(Long.valueOf((calendarioTemp.get(Calendar.WEEK_OF_YEAR))));
+				conta.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
+				conta.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
 
 				todasContas.add(conta);
 			}

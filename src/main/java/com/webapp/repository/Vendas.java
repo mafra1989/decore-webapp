@@ -45,6 +45,17 @@ public class Vendas implements Serializable {
 		return this.manager.createQuery("from Venda order by numeroVenda desc", Venda.class).getResultList();
 	}
 	
+	public Venda ultimoNVenda() {
+
+		try {
+			return this.manager.createQuery("from Venda e order by e.numeroVenda desc", Venda.class).setMaxResults(1)
+					.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
+
+	}
+	
 	public Venda porNumeroVenda(Long numeroVenda) {
 		try {
 			return this.manager
