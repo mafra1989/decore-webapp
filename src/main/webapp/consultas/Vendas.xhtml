@@ -15,6 +15,9 @@
 
 		<style>
 @media ( min-width :220px) {
+	body .ui-button.ui-button-text-icon-left .ui-button-text {
+	    font-weight: bold;
+	}
 	.panel-total.ui-panel .ui-panel-content {
 	    border: none;
 	    padding: 0px;
@@ -196,22 +199,21 @@
 
 					<h3 style="font-weight: bold">Resultado da consulta</h3>
 					
-					<p:commandButton icon="fa fa-fw fa-trash" id="btn-trash"
-						title="Excluir"
-						style="margin-right:113px;font-weight:bold; background: #fd6161; float:right;width:38px;margin-top: -40px;position: relative"
-						process="@this"
-						onclick="deleteItem(#{consultaVendasBean.vendaSelecionada.id});" />
+					<p:menuButton id="menu-btn" value="Opções"
+						style="width: 80px;float: right;margin-top: -40px;margin-right: 10px"
+						disabled="#{(consultaVendasBean.vendasFiltradasSize eq 0) or consultaVendasBean.vendaSelecionada.id == null}">
 
-					<p:button icon="fa fa-fw fa-eye" value="Visualizar"
-						outcome="/operacoes/RegistroVendas.xhtml" id="btn-view"
-						style="margin-right:10px;font-weight:bold; float:right;width:100px;margin-top: -40px;position: relative"
-						process="@this vendasTable"
-						disabled="#{(consultaVendasBean.vendasFiltradasSize eq 0) or consultaVendasBean.vendaSelecionada.id == null}"
-						onclick="PF('downloadLoading').show();">
-
-						<f:param name="id"
-							value="#{consultaVendasBean.vendaSelecionada.id}" />
-					</p:button>
+						<p:menuitem value="Visualizar" icon="fa fa-fw fa-eye"
+							id="btn-view" outcome="/operacoes/RegistroVendas.xhtml"
+							onclick="PF('downloadLoading').show();">
+							<f:param name="id"
+								value="#{consultaVendasBean.vendaSelecionada.id}" />
+						</p:menuitem>
+						<p:separator />
+						<p:menuitem icon="fa fa-fw fa-trash" id="btn-trash"
+							value="Excluir" process="@this"
+							onclick="deleteItem(#{consultaVendasBean.vendaSelecionada.id});" />
+					</p:menuButton>
 
 					<p:panelGrid columns="1" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
@@ -226,9 +228,9 @@
 							selection="#{consultaVendasBean.vendaSelecionada}"
 							selectionMode="single">
 
-							<p:ajax process="@this" event="rowSelect" update="btn-view btn-trash" onstart="PF('downloadLoading').show();"
+							<p:ajax process="@this" event="rowSelect" update="menu-btn" onstart="PF('downloadLoading').show();"
 								oncomplete="PF('downloadLoading').hide();" />
-							<p:ajax process="@this" event="rowUnselect" update="btn-view btn-trash" onstart="PF('downloadLoading').show();"
+							<p:ajax process="@this" event="rowUnselect" update="menu-btn" onstart="PF('downloadLoading').show();"
 								oncomplete="PF('downloadLoading').hide();" />
 								
 							<p:column headerText="N. Venda" width="10%">

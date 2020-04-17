@@ -616,18 +616,9 @@
 								<p:column headerText="Valor" width="20%"
 									style="text-align: center">
 
-									<p:cellEditor>
-										<f:facet name="output">
-											<h:outputText value="#{conta.valor}">
-												<f:convertNumber type="currency" />
-											</h:outputText>
-										</f:facet>
-										<f:facet name="input">
-											<p:inputNumber decimalPlaces="2" value="#{conta.valor}">
-												<p:ajax event="change" process="@this" />
-											</p:inputNumber>
-										</f:facet>
-									</p:cellEditor>
+									<h:outputText value="#{conta.valor}">
+										<f:convertNumber type="currency" />
+									</h:outputText>
 								</p:column>
 
 								<p:column headerText="Vencimento" width="20%"

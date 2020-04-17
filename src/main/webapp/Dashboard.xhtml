@@ -135,8 +135,12 @@
 
 							label : function(tooltipItem, data) {
 								var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-
-								return numberToReal(amount);
+								
+								var valor = numberToReal(amount);
+								if(valor.includes("-.")) {
+									valor = valor.replace("-.","-");
+								}
+								return valor;
 							}
 						}
 					},

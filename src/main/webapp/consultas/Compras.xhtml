@@ -15,6 +15,17 @@
 
 		<style>
 @media ( min-width :220px) {
+	body .ui-button.ui-button-text-icon-left .ui-button-text {
+	    font-weight: bold;
+	}
+	.ui-fluid .ui-splitbutton .ui-button.ui-splitbutton-menubutton {
+	    width: 32px;
+	    margin-top: -20px;
+	    margin-right: 12px;
+    }
+    body .ui-splitbutton.ui-buttonset .ui-button {
+	    margin-right: 15px;
+	}
 	.panel-total.ui-panel .ui-panel-content {
 		border: none;
 		padding: 0px;
@@ -161,7 +172,7 @@
 							value="#{consultaComprasBean.numeroCompra}">
 						</p:inputNumber>
 					</p:panelGrid>
-					
+
 					<p:panelGrid columns="4" id="painel" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-1, ui-grid-col-2">
@@ -200,22 +211,21 @@
 
 					<h3 style="font-weight: bold">Resultado da consulta</h3>
 
-					<p:commandButton icon="fa fa-fw fa-trash" id="btn-trash"
-						title="Excluir"
-						style="margin-right:113px;font-weight:bold; background: #fd6161; float:right;width:38px;margin-top: -40px;position: relative"
-						process="@this"
-						onclick="deleteItem(#{consultaComprasBean.compraSelecionada.id});" />
+					<p:menuButton id="menu-btn" value="Opções"
+						style="width: 80px;float: right;margin-top: -40px;margin-right: 10px"
+						disabled="#{(consultaComprasBean.comprasFiltradasSize eq 0) or consultaComprasBean.compraSelecionada.id == null}">
 
-					<p:button icon="fa fa-fw fa-eye" value="Visualizar"
-						outcome="/operacoes/RegistroCompras.xhtml" id="btn-view"
-						style="margin-right:10px;font-weight:bold; float:right;width:100px;margin-top: -40px;position: relative"
-						process="@this comprasTable"
-						disabled="#{(consultaComprasBean.comprasFiltradasSize eq 0) or consultaComprasBean.compraSelecionada.id == null}"
-						onclick="PF('downloadLoading').show();">
-
-						<f:param name="id"
-							value="#{consultaComprasBean.compraSelecionada.id}" />
-					</p:button>
+						<p:menuitem value="Visualizar" icon="fa fa-fw fa-eye"
+							id="btn-view" outcome="/operacoes/RegistroCompras.xhtml"
+							onclick="PF('downloadLoading').show();">
+							<f:param name="id"
+								value="#{consultaComprasBean.compraSelecionada.id}" />
+						</p:menuitem>
+						<p:separator />
+						<p:menuitem icon="fa fa-fw fa-trash" id="btn-trash"
+							value="Excluir" process="@this"
+							onclick="deleteItem(#{consultaComprasBean.compraSelecionada.id});" />
+					</p:menuButton>
 
 					<p:panelGrid columns="1" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
@@ -232,11 +242,11 @@
 							<p:ajax process="@this" event="rowSelect"
 								onstart="PF('downloadLoading').show();"
 								oncomplete="PF('downloadLoading').hide();"
-								update="btn-view btn-trash" />
+								update="menu-btn" />
 							<p:ajax process="@this" event="rowUnselect"
 								onstart="PF('downloadLoading').show();"
 								oncomplete="PF('downloadLoading').hide();"
-								update="btn-view btn-trash" />
+								update="menu-btn" />
 
 							<p:column headerText="N. Compra" width="10%">
 								<h:outputText value="#{compra.numeroCompra}" />
