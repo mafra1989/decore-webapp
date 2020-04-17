@@ -339,7 +339,8 @@ public class RelatorioLucrosBean implements Serializable {
 				
 				totalDeReceitas = contas.totalDeReceitasPagasPorDia(calendarInicio, calendarTermino).doubleValue();
 				
-				System.out.println(totalDeReceitas);
+				System.out.println("Total vendas: " + totalDeVendas);
+				System.out.println("Receitas: " + totalDeReceitas);
 				
 				/*
 				totalDeDespesas = lancamentos
@@ -349,6 +350,7 @@ public class RelatorioLucrosBean implements Serializable {
 				*/
 								
 				totalDeDespesas = contas.totalDeDespesasPagasPorDia(calendarInicio, calendarTermino).doubleValue();
+				System.out.println("Despesas: " + totalDeDespesas);
 				
 				values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
 				
