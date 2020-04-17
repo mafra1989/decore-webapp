@@ -444,6 +444,15 @@ public class RegistroLancamentosBean implements Serializable {
 				conta.setStatus(lancamentoPago != true ? false : true);
 				conta.setValor(lancamento.getValor());
 				conta.setVencimento(lancamento.getDataLancamento());
+				
+				calendarioTemp = Calendar.getInstance();
+				calendarioTemp.setTime(conta.getVencimento());
+				
+				conta.setDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_MONTH))));
+				conta.setNomeDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_WEEK))));
+				conta.setSemana(Long.valueOf((calendarioTemp.get(Calendar.WEEK_OF_YEAR))));
+				conta.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
+				conta.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
 
 				contas.save(conta);
 

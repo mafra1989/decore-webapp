@@ -326,6 +326,15 @@ public class RegistroComprasBean implements Serializable {
 				conta.setStatus(compraPaga != true ? false : true);
 				conta.setValor(compra.getValorTotal());
 				conta.setVencimento(compra.getDataCompra());
+				
+				calendarioTemp = Calendar.getInstance();
+				calendarioTemp.setTime(conta.getVencimento());
+				
+				conta.setDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_MONTH))));
+				conta.setNomeDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_WEEK))));
+				conta.setSemana(Long.valueOf((calendarioTemp.get(Calendar.WEEK_OF_YEAR))));
+				conta.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
+				conta.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
 
 				contas.save(conta);
 
