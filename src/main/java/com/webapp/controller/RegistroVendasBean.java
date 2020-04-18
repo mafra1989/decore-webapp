@@ -161,8 +161,8 @@ public class RegistroVendasBean implements Serializable {
 					List<ItemCompra> itensCompraTemp = itensCompras.porProduto(itemVenda.getProduto());
 					for (ItemCompra itemCompraTemp : itensCompraTemp) {
 
-						if (itemCompraTemp.getCompra().getId() == itemVenda.getCompra().getId()) {
-							if (itemCompraTemp.getProduto().getId() == itemVenda.getProduto().getId()) {
+						if (itemCompraTemp.getCompra().getId().longValue() == itemVenda.getCompra().getId().longValue()) {
+							if (itemCompraTemp.getProduto().getId().longValue() == itemVenda.getProduto().getId().longValue()) {
 								System.out.println(itemCompraTemp.getQuantidadeDisponivel());
 								System.out.println(itemVenda.getQuantidade());
 								itemCompraTemp.setQuantidadeDisponivel(
@@ -216,13 +216,14 @@ public class RegistroVendasBean implements Serializable {
 					System.out.println(itemCompraTemp.getCompra().getId() + " == " + itemVenda.getCompra().getId());
 					System.out.println(itemCompraTemp.getProduto().getId() + " == " + itemVenda.getProduto().getId());
 					
-					if (itemCompraTemp.getCompra().getId() == itemVenda.getCompra().getId()) {
-						if (itemCompraTemp.getProduto().getId() == itemVenda.getProduto().getId()) {
+					if (itemCompraTemp.getCompra().getId().longValue() == itemVenda.getCompra().getId().longValue()) {
+						if (itemCompraTemp.getProduto().getId().longValue() == itemVenda.getProduto().getId().longValue()) {
 							// if(itemVenda.getId() == null) {
-							System.out.println(itemVenda.getQuantidade());
-							System.out.println(itemCompraTemp.getQuantidadeDisponivel());
+							System.out.println("itemVenda.getQuantidade(): " + itemVenda.getQuantidade());
+							System.out.println("itemCompraTemp.getQuantidadeDisponivel(): " + itemCompraTemp.getQuantidadeDisponivel());
 							itemCompraTemp.setQuantidadeDisponivel(
 									itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());
+							System.out.println("Nova QuantidadeDisponivel: " + itemCompraTemp.getQuantidadeDisponivel());
 							itensCompras.save(itemCompraTemp);
 							// }
 						}
