@@ -212,7 +212,10 @@ public class RegistroVendasBean implements Serializable {
 
 				List<ItemCompra> itensCompraTemp = itensCompras.porProduto(itemVenda.getProduto());
 				for (ItemCompra itemCompraTemp : itensCompraTemp) {
-
+					
+					System.out.println(itemCompraTemp.getCompra().getId() + " == " + itemVenda.getCompra().getId());
+					System.out.println(itemCompraTemp.getProduto().getId() + " == " + itemVenda.getProduto().getId());
+					
 					if (itemCompraTemp.getCompra().getId() == itemVenda.getCompra().getId()) {
 						if (itemCompraTemp.getProduto().getId() == itemVenda.getProduto().getId()) {
 							// if(itemVenda.getId() == null) {
