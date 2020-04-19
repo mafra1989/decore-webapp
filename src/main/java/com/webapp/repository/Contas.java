@@ -159,6 +159,41 @@ public class Contas implements Serializable {
 		return count;
 	}
 
+	public Number totalComprasPorData(Number dia, Number mes, Number ano) {
+
+		String condition = "";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+
+		select_Condition = "";
+		sum_Condition = "sum(i.valor)";
+		groupBy_Condition = "i.dia, i.mes, i.ano ";
+		orderBy_Condition = "i.dia asc, i.mes asc, i.ano asc";
+
+		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i " + "WHERE i.dia = :dia "
+				+ "AND i.mes = :mes " + "AND i.ano = :ano "
+				+ "AND i.tipo = 'DEBITO' AND i.operacao = 'COMPRA' AND i.status = 'Y' " + condition + "group by "
+				+ groupBy_Condition + " order by " + orderBy_Condition;
+		Query q = manager.createQuery(jpql).setParameter("dia", Long.parseLong(String.valueOf(dia)))
+				.setParameter("mes", Long.parseLong(String.valueOf(mes)))
+				.setParameter("ano", Long.parseLong(String.valueOf(ano)));
+
+		Number value = 0;
+		try {
+			value = (Number) q.getSingleResult();
+		} catch (NoResultException e) {
+
+		}
+
+		if (value == null) {
+			value = 0;
+		}
+
+		return value;
+	}
+	
 	public Number totalDespesasPorData(Number dia, Number mes, Number ano) {
 
 		String condition = "";

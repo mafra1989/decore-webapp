@@ -297,61 +297,62 @@ public class RelatorioLucrosBean implements Serializable {
 
 		List<Object[]> result = new ArrayList<>();
 
-		if(calendarStart.before(calendarStop)) {
-			
-			calendarStop.add(Calendar.DAY_OF_MONTH, 1);
+		if (calendarStart.before(calendarStop)) {
+
 			Calendar calendarStartTemp = (Calendar) calendarStart.clone();
-	
+
 			do {
 				Calendar calendarStopTemp = (Calendar) calendarStartTemp.clone();
 				calendarStopTemp.add(Calendar.DAY_OF_MONTH, 1);
-				
-				List<Object[]> resultTemp = vendas.totalLucrosPorData(calendarStartTemp, calendarStopTemp, categoriaPorDia, produto01,
-						true);
-				
+
+				List<Object[]> resultTemp = vendas.totalLucrosPorData(calendarStartTemp, calendarStopTemp,
+						categoriaPorDia, produto01, true);
+
 				System.out.println("Data: " + calendarStartTemp.getTime() + " - " + resultTemp.size());
-				
-				if(resultTemp.size() == 0) {
-					
+
+				if (resultTemp.size() == 0) {
+
 					Object[] object = new Object[5];
 					object[0] = calendarStartTemp.get(Calendar.DAY_OF_MONTH);
-					if(calendarStartTemp.get(Calendar.DAY_OF_MONTH) < 10) {
+					if (calendarStartTemp.get(Calendar.DAY_OF_MONTH) < 10) {
 						object[0] = "0" + calendarStartTemp.get(Calendar.DAY_OF_MONTH);
 					}
-					
+
 					object[1] = calendarStartTemp.get(Calendar.MONTH) + 1;
-					if(calendarStartTemp.get(Calendar.MONTH) + 1 < 10) {
+					if (calendarStartTemp.get(Calendar.MONTH) + 1 < 10) {
 						object[1] = "0" + (calendarStartTemp.get(Calendar.MONTH) + 1);
 					}
 
 					object[2] = calendarStartTemp.get(Calendar.YEAR);
 
 					object[3] = 0;
-					object[4] = 0;
-					
+					object[4] = contas
+							.totalDespesasPorData(Long.parseLong(object[0].toString()),
+									Long.parseLong(object[1].toString()), Long.parseLong(object[2].toString()))
+							.doubleValue();
+
 					result.add(object);
 				} else {
 					for (Object[] object : resultTemp) {
 						result.add(object);
 					}
 				}
-				
+
 				calendarStartTemp.add(Calendar.DAY_OF_MONTH, 1);
-				
+
 				System.out.println("Data calendarStartTemp: " + calendarStartTemp.getTime());
 				System.out.println("Data calendarStop: " + calendarStop.getTime());
-				
-				System.out.println("Data While: " + calendarStartTemp.after(calendarStop));
-				
-			}
-			while(calendarStartTemp.before(calendarStop));
+
+				System.out.println("Data While: " + calendarStartTemp.before(calendarStop));
+
+			} while (calendarStartTemp.before(calendarStop));
 		}
-				
+
 		System.out.println("result.size(): " + result.size());
 
 		LineChartDataSet dataSet2 = new LineChartDataSet();
 		List<Number> values2 = new ArrayList<>();
-		
+
 		List<String> labels = new ArrayList<>();
 
 		for (Object[] object : result) {
@@ -384,25 +385,25 @@ public class RelatorioLucrosBean implements Serializable {
 						.doubleValue();
 
 				System.out.println("Despesas: " + totalDeDespesas);
-				
-				
-				if(totalDeReceitas > 0 || totalDeDespesas > 0 || totalDeVendas > 0 || totalCompras > 0) {
-					
+
+				if (totalDeReceitas > 0 || totalDeDespesas > 0 || totalDeVendas > 0 || totalCompras > 0) {
+
 					values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
 
-					values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
-							* 100);
-					
+					values2.add(
+							(((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
+									* 100);
+
 					labels.add(object[0] + "/" + object[1]/* + "/" + object[2] */);
-				}			
+				}
 
 			} else {
-				if(totalDeVendas > 0 || totalCompras > 0) {
+				if (totalDeVendas > 0 || totalCompras > 0) {
 					values.add(totalDeVendas/* - totalDeCompras */);
 					values2.add((totalDeVendas / totalCompras) * 100);
-					
+
 					labels.add(object[0] + "/" + object[1]/* + "/" + object[2] */);
-				}	
+				}
 			}
 
 			System.out.println(object[3]);
@@ -422,7 +423,6 @@ public class RelatorioLucrosBean implements Serializable {
 
 		data.addChartDataSet(dataSet2);
 		data.addChartDataSet(dataSet);
-
 
 		data.setLabels(labels);
 
@@ -766,7 +766,7 @@ public class RelatorioLucrosBean implements Serializable {
 			if (categoriaPorAno == null || categoriaPorAno.getId() == null) {
 
 				totalDeReceitas = contas.totalDeReceitasPorAno(Long.parseLong(object[0].toString())).doubleValue();
-				
+
 				totalDeDespesas = contas.totalDespesasPorAno(Long.parseLong(object[0].toString())).doubleValue();
 
 				values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
