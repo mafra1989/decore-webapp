@@ -327,7 +327,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 					object[3] = 0;
 					object[4] = contas
-							.totalDespesasPorData(Long.parseLong(object[0].toString()),
+							.totalComprasPorData(Long.parseLong(object[0].toString()),
 									Long.parseLong(object[1].toString()), Long.parseLong(object[2].toString()))
 							.doubleValue();
 
