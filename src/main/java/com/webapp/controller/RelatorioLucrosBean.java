@@ -515,6 +515,8 @@ public class RelatorioLucrosBean implements Serializable {
 					}
 				}
 			}
+			
+			System.out.println("result.size(): " + result.size());
 		}
 
 		LineChartDataSet dataSet2 = new LineChartDataSet();
@@ -536,8 +538,6 @@ public class RelatorioLucrosBean implements Serializable {
 			 */
 
 			if (categoriaPorSemana == null || categoriaPorSemana.getId() == null) {
-
-				if (totalDeReceitas > 0 || totalDeDespesas > 0 || totalDeVendas > 0 || totalCompras > 0) {
 					
 					totalDeReceitas = contas.totalDeReceitasPorSemana(Long.parseLong(object[0].toString()),
 							Long.parseLong(object[1].toString())).doubleValue();
@@ -545,18 +545,19 @@ public class RelatorioLucrosBean implements Serializable {
 					totalDeDespesas = contas.totalDespesasPorSemana(Long.parseLong(object[0].toString()),
 							Long.parseLong(object[1].toString())).doubleValue();
 	
-					values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
-	
-					values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
-							* 100);
-					
-					long semana = Long.parseLong(object[0].toString());
-					String semanaTemp = String.valueOf(semana);
-					if (semana < 10) {
-						semanaTemp = "0" + semana;
+					if (totalDeReceitas > 0 || totalDeDespesas > 0 || totalDeVendas > 0 || totalCompras > 0) {
+						values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
+		
+						values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
+								* 100);
+						
+						long semana = Long.parseLong(object[0].toString());
+						String semanaTemp = String.valueOf(semana);
+						if (semana < 10) {
+							semanaTemp = "0" + semana;
+						}
+						labels.add("W" + semanaTemp);
 					}
-					labels.add("W" + semanaTemp);
-				}
 							
 			} else {
 				if (totalDeVendas > 0 || totalCompras > 0) {
