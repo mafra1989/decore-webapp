@@ -492,6 +492,8 @@ public class RelatorioLucrosBean implements Serializable {
 				} else {
 					semana01 += i;
 				}
+				
+				System.out.println(semana01);
 
 				List<Object[]> resultTemp = vendas.totalLucrosPorSemana(ano01, semana01, semana01, categoriaPorSemana,
 						produto02, true);
