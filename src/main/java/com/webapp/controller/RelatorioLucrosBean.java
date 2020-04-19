@@ -139,9 +139,9 @@ public class RelatorioLucrosBean implements Serializable {
 
 			this.semana01 = "W" + semanaTemp;
 
-			calendar.add(Calendar.DAY_OF_MONTH, -5);
+			calendar.add(Calendar.DAY_OF_MONTH, -4);
 
-			int semana02 = calendarTemp.get(Calendar.WEEK_OF_YEAR);
+			int semana02 = calendarTemp.get(Calendar.WEEK_OF_YEAR) + 3;
 			semanaTemp = String.valueOf(semana02);
 			if (semana02 < 10) {
 				semanaTemp = "0" + semana02;
@@ -152,7 +152,7 @@ public class RelatorioLucrosBean implements Serializable {
 		} else {
 			this.semana01 = "W01";
 
-			int semana02 = calendarTemp.get(Calendar.WEEK_OF_YEAR);
+			int semana02 = calendarTemp.get(Calendar.WEEK_OF_YEAR) + 3;
 			String semanaTemp = String.valueOf(semana02);
 			if (semana02 < 10) {
 				semanaTemp = "0" + semana02;
@@ -160,7 +160,7 @@ public class RelatorioLucrosBean implements Serializable {
 			this.semana02 = "W" + semanaTemp;
 		}
 
-		calendar.add(Calendar.DAY_OF_MONTH, -5);
+		//calendar.add(Calendar.DAY_OF_MONTH, -5);
 		dateStart = calendar.getTime();
 
 		createMixedModelPorDia();
