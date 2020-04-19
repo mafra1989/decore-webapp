@@ -402,7 +402,6 @@ public class RelatorioLucrosBean implements Serializable {
 						System.out.println("Valor: " + ((totalDeVendas + totalDeReceitas) - totalDeDespesas));
 					}
 
-					
 					System.out.println("Percentual: "
 							+ (((totalDeVendas + totalDeReceitas) - totalDeDespesas) / totalDeDespesas) * 100);
 
@@ -476,8 +475,39 @@ public class RelatorioLucrosBean implements Serializable {
 		BarChartDataSet dataSet = new BarChartDataSet();
 		List<Number> values = new ArrayList<>();
 
-		List<Object[]> result = vendas.totalLucrosPorSemana(ano01, semana01, semana02, categoriaPorSemana, produto02,
-				true);
+		List<Object[]> result = new ArrayList<>();
+		if (Integer.parseInt(semana01.replace("W", "")) >= Integer.parseInt(semana02.replace("W", ""))) {
+
+			for (int i = Integer.parseInt(semana01.replace("W", "")); i <= Integer
+					.parseInt(semana02.replace("W", "")); i++) {
+				
+				semana01 = "W";
+				if(i < 10) {
+					semana01 += "0" + i;
+				} else {
+					semana01 += i;
+				}
+				
+				List<Object[]> resultTemp = vendas.totalLucrosPorSemana(ano01, semana01, semana01, categoriaPorSemana, produto02, true);
+				
+				if (resultTemp.size() == 0) {
+
+					Object[] object = new Object[4];
+					
+					object[0] = i;
+					object[1] = ano01;
+
+					object[2] = 0;
+					object[3] = 0;
+
+					result.add(object);
+				} else {
+					for (Object[] object : resultTemp) {
+						result.add(object);
+					}
+				}
+			}
+		}
 
 		LineChartDataSet dataSet2 = new LineChartDataSet();
 		List<Number> values2 = new ArrayList<>();
