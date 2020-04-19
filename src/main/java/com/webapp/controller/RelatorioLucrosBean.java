@@ -933,7 +933,7 @@ public class RelatorioLucrosBean implements Serializable {
 				values.add(totalDeVendas/* - totalDeCompras */);
 				values2.add((totalDeVendas / totalCompras) * 100);
 				
-				labels.add(String.valueOf(((Long) object[0]).longValue()));
+				labels.add(object[0].toString());
 			}
 		}
 
