@@ -397,6 +397,10 @@ public class RelatorioLucrosBean implements Serializable {
 					values2.add(
 							(((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
 									* 100);
+					
+					System.out.println("Valor: " + ((totalDeVendas + totalDeReceitas) - (totalCompras + totalDeDespesas)));
+					System.out.println("Percentual: " + (((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
+									* 100);
 
 					labels.add(object[0] + "/" + object[1]/* + "/" + object[2] */);
 				}
