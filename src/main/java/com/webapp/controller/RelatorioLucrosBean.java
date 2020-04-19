@@ -477,6 +477,8 @@ public class RelatorioLucrosBean implements Serializable {
 
 		BarChartDataSet dataSet = new BarChartDataSet();
 		List<Number> values = new ArrayList<>();
+		
+		List<String> labels = new ArrayList<>();
 
 		List<Object[]> result = new ArrayList<>();
 		if (Integer.parseInt(semana01.replace("W", "")) <= Integer.parseInt(semana02.replace("W", ""))) {
@@ -533,20 +535,39 @@ public class RelatorioLucrosBean implements Serializable {
 
 			if (categoriaPorSemana == null || categoriaPorSemana.getId() == null) {
 
-				totalDeReceitas = contas.totalDeReceitasPorSemana(Long.parseLong(object[0].toString()),
-						Long.parseLong(object[1].toString())).doubleValue();
-
-				totalDeDespesas = contas.totalDespesasPorSemana(Long.parseLong(object[0].toString()),
-						Long.parseLong(object[1].toString())).doubleValue();
-
-				values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
-
-				values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
-						* 100);
+				if (totalDeReceitas > 0 || totalDeDespesas > 0 || totalDeVendas > 0 || totalCompras > 0) {
+					
+					totalDeReceitas = contas.totalDeReceitasPorSemana(Long.parseLong(object[0].toString()),
+							Long.parseLong(object[1].toString())).doubleValue();
+	
+					totalDeDespesas = contas.totalDespesasPorSemana(Long.parseLong(object[0].toString()),
+							Long.parseLong(object[1].toString())).doubleValue();
+	
+					values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
+	
+					values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
+							* 100);
+					
+					long semana = Long.parseLong(object[0].toString());
+					String semanaTemp = String.valueOf(semana);
+					if (semana < 10) {
+						semanaTemp = "0" + semana;
+					}
+					labels.add("W" + semanaTemp);
+				}
+							
 			} else {
-
-				values.add(totalDeVendas/* - totalDeCompras */);
-				values2.add((totalDeVendas / totalCompras) * 100);
+				if (totalDeVendas > 0 || totalCompras > 0) {
+					values.add(totalDeVendas/* - totalDeCompras */);
+					values2.add((totalDeVendas / totalCompras) * 100);
+					
+					long semana = Long.parseLong(object[0].toString());
+					String semanaTemp = String.valueOf(semana);
+					if (semana < 10) {
+						semanaTemp = "0" + semana;
+					}
+					labels.add("W" + semanaTemp);
+				}
 			}
 		}
 
@@ -564,16 +585,6 @@ public class RelatorioLucrosBean implements Serializable {
 
 		data.addChartDataSet(dataSet2);
 		data.addChartDataSet(dataSet);
-
-		List<String> labels = new ArrayList<>();
-		for (Object[] object : result) {
-			long semana = (long) object[0];
-			String semanaTemp = String.valueOf(semana);
-			if (semana < 10) {
-				semanaTemp = "0" + semana;
-			}
-			labels.add("W" + semanaTemp);
-		}
 
 		data.setLabels(labels);
 
