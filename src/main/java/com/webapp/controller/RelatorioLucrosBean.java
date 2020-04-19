@@ -858,11 +858,39 @@ public class RelatorioLucrosBean implements Serializable {
 
 		BarChartDataSet dataSet = new BarChartDataSet();
 		List<Number> values = new ArrayList<>();
+		
+		List<Object[]> result = new ArrayList<>();
+		if(Integer.parseInt(ano03) <= Integer.parseInt(ano04)) {
+			
+			for (int i = Integer.parseInt(ano03); i <= Integer.parseInt(ano04); i++) {
+				
+				String ano03 = String.valueOf(i);
+				
+				List<Object[]> resultTemp = vendas.totalLucrosPorAno(ano03, ano03, categoriaPorAno, produto04, true);
+				
+				if(resultTemp.size() == 0) {
+					
+					Object[] object = new Object[3];
 
-		List<Object[]> result = vendas.totalLucrosPorAno(ano03, ano04, categoriaPorAno, produto04, true);
+					object[0] = i;
+					
+					object[1] = 0;
+					object[2] = 0;
+					
+					//result.add(object);
+					
+				} else {
+					for (Object[] object : resultTemp) {
+						result.add(object);
+					}
+				}
+			}		
+		}
 
 		LineChartDataSet dataSet2 = new LineChartDataSet();
 		List<Number> values2 = new ArrayList<>();
+		
+		List<String> labels = new ArrayList<>();
 
 		for (Object[] object : result) {
 
@@ -886,12 +914,26 @@ public class RelatorioLucrosBean implements Serializable {
 
 				values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
 
-				values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
-						* 100);
+				if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) == 0 && totalDeDespesas > 0) {
+					values2.add(-100.0);
+					System.out.println("Valor Percentual: -100.0");
+				} else if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) > 0 && (totalCompras + totalDeDespesas) == 0) {
+					values2.add(100.0);
+					System.out.println("Valor Percentual: 100.0");
+				} else {
+					values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas)
+							/ (totalCompras + totalDeDespesas)) * 100);
+					System.out.println("Valor Percentual: " + (((totalDeVendas + totalDeReceitas) - totalDeDespesas)
+							/ (totalCompras + totalDeDespesas)) * 100);
+				}
+				
+				labels.add(String.valueOf(((Long) object[0]).longValue()));
 			} else {
 
 				values.add(totalDeVendas/* - totalDeCompras */);
 				values2.add((totalDeVendas / totalCompras) * 100);
+				
+				labels.add(String.valueOf(((Long) object[0]).longValue()));
 			}
 		}
 
@@ -909,11 +951,6 @@ public class RelatorioLucrosBean implements Serializable {
 
 		data.addChartDataSet(dataSet2);
 		data.addChartDataSet(dataSet);
-
-		List<String> labels = new ArrayList<>();
-		for (Object[] object : result) {
-			labels.add(String.valueOf(((Long) object[0]).longValue()));
-		}
 
 		data.setLabels(labels);
 
