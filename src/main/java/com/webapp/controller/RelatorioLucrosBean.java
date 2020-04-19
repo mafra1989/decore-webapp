@@ -633,9 +633,9 @@ public class RelatorioLucrosBean implements Serializable {
 		mixedModelPorSemana.setExtender("percentExtender2");
 	}
 
-	public String nameMes(long mes) {
+	public String nameMes(int mes) {
 
-		switch ((int) mes) {
+		switch (mes) {
 		case 1:
 			return "Janeiro";
 		case 2:
@@ -786,9 +786,9 @@ public class RelatorioLucrosBean implements Serializable {
 				}
 				
 				if (lucroPorLote != true) {
-					labels.add(nameMes(((Long) object[0])));
+					labels.add(nameMes((Integer.parseInt(object[0].toString()))));
 				} else {
-					labels.add(nameMes(((Long) object[4])));
+					labels.add(nameMes((Integer.parseInt(object[4].toString()))));
 				}
 				
 			} else {
@@ -797,9 +797,9 @@ public class RelatorioLucrosBean implements Serializable {
 				values2.add((totalDeVendas / totalCompras) * 100);
 				
 				if (lucroPorLote != true) {
-					labels.add(nameMes(((Long) object[0])));
+					labels.add(nameMes((Integer.parseInt(object[0].toString()))));
 				} else {
-					labels.add(nameMes(((Long) object[4])));
+					labels.add(nameMes((Integer.parseInt(object[4].toString()))));
 				}
 			}
 		}
