@@ -311,6 +311,7 @@ public class RelatorioLucrosBean implements Serializable {
 					Object[] object = new Object[5];
 					object[0] = calendarStartTemp.get(Calendar.DAY_OF_MONTH);
 					object[1] = calendarStartTemp.get(Calendar.MONTH) + 1;
+					object[2] = calendarStartTemp.get(Calendar.YEAR);
 
 					object[3] = 0;
 					object[4] = 0;
