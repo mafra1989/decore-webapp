@@ -9,44 +9,7 @@
 	<ui:define name="head">
 
 		<script type="text/javascript">
-			function percentExtender() {
-				var tickColor = "#666";
-				var gridlineColor = "rgba(0,0,0,0.1)";
-
-				this.cfg.config.type = 'pie';
-
-				this.cfg.config.options = {
-					legend : {
-						display : true,
-					},
-
-					title : {
-						display : false,
-						text : 'Top 5 Despesas - Mês atual'
-					},
-					tooltips : {
-						callbacks : {
-
-							label : function(tooltipItem, data) {
-								var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-
-								var total = eval(data.datasets[tooltipItem.datasetIndex].data
-										.join("+"));
-
-								var label = tooltipItem.yLabel;
-
-								return numberToReal(amount)
-										+ ' / '
-										+ numberToReal(total)
-										+ ' ( '
-										+ parseFloat(amount * 100 / total)
-												.toFixed(2) + '% )';
-							}
-						}
-					},
-				};
-			}
-
+			
 			function percentExtender2() {
 				var tickColor = "#666";
 				var gridlineColor = "rgba(0,0,0,0.1)";
@@ -142,12 +105,14 @@
 	.barChart-01 {
 		width: 100%;
 		height: 150px;
-		margin-top: 17px
+		margin-top: 17px;
+		margin-bottom: 20px;
 	}
 	.barChart-02 {
 		width: 100%;
 		height: 150px;
 		margin-top: 17px;
+		margin-bottom: 20px;
 	}
 	.barChart-02 {
 		width: 100%;
@@ -181,11 +146,13 @@
 		width: 100%;
 		height: 270px;
 		margin-top: 47px;
+		margin-bottom: 0px;
 	}
 	.barChart-02 {
 		width: 100%;
 		height: 270px;
 		margin-top: 10px;
+		margin-bottom: 0px;
 	}
 	.ano {
 		width: 78% !important;
@@ -288,7 +255,7 @@
 
 					</p:panelGrid>
 
-					<p:commandButton icon="fa fa-pie-chart" actionListener="#{relatorioVendasBean.prepareDonutModelPorDia}" styleClass="btn-pie"
+					<p:commandButton rendered="false" icon="fa fa-pie-chart" actionListener="#{relatorioVendasBean.prepareDonutModelPorDia}" styleClass="btn-pie"
 						title="Produtos por Quantidade" oncomplete="PF('produtos-qty').show();" update="form-dialog:pieChart-vendasPorQuantidade"
 						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-right:10px" />
 					
@@ -400,7 +367,7 @@
 
 					</p:panelGrid>
 					
-					<p:commandButton icon="fa fa-pie-chart" actionListener="#{relatorioVendasBean.prepareDonutModelPorSemana}"
+					<p:commandButton rendered="false" icon="fa fa-pie-chart" actionListener="#{relatorioVendasBean.prepareDonutModelPorSemana}"
 						title="Produtos por Quantidade" oncomplete="PF('produtos-qty').show();" update="form-dialog:pieChart-vendasPorQuantidade"
 						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-top:5px;margin-right:10px" />
 										
@@ -414,7 +381,7 @@
 
 
 
-			<p:panelGrid columns="2" layout="grid" style="margin-top:20px;margin-bottom:20px"
+			<p:panelGrid columns="2" layout="grid" style="margin-top:10px;margin-bottom:20px"
 				styleClass="panelgrid-noborder disabled disabled"
 				columnClasses="ui-grid-col-6, ui-grid-col-6">
 
@@ -520,7 +487,7 @@
 
 					</p:panelGrid>
 
-					<p:commandButton icon="fa fa-pie-chart" actionListener="#{relatorioVendasBean.prepareDonutModelPorMes}"
+					<p:commandButton rendered="false" icon="fa fa-pie-chart" actionListener="#{relatorioVendasBean.prepareDonutModelPorMes}"
 						title="Produtos por Quantidade" oncomplete="PF('produtos-qty').show();" update="form-dialog:pieChart-vendasPorQuantidade"
 						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-top:5px;margin-right:10px" />
 				
@@ -608,7 +575,7 @@
 						</p:selectOneMenu>
 					</p:panelGrid>
 
-					<p:commandButton icon="fa fa-pie-chart" actionListener="#{relatorioVendasBean.prepareDonutModelPorAno}" styleClass="btn-pie"
+					<p:commandButton rendered="false" icon="fa fa-pie-chart" actionListener="#{relatorioVendasBean.prepareDonutModelPorAno}" styleClass="btn-pie"
 						title="Produtos por Quantidade" oncomplete="PF('produtos-qty').show();" update="form-dialog:pieChart-vendasPorQuantidade"
 						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-right:10px" />
 				
