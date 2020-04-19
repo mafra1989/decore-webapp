@@ -307,10 +307,21 @@ public class RelatorioLucrosBean implements Serializable {
 				List<Object[]> resultTemp = vendas.totalLucrosPorData(calendarStartTemp, calendarStopTemp, categoriaPorDia, produto01,
 						true);
 				
+				System.out.println("Data: " + calendarStartTemp.getTime() + " - " + resultTemp.size());
+				
 				if(resultTemp.size() == 0) {
+					
 					Object[] object = new Object[5];
 					object[0] = calendarStartTemp.get(Calendar.DAY_OF_MONTH);
+					if(calendarStartTemp.get(Calendar.DAY_OF_MONTH) < 9) {
+						object[0] = "0" + calendarStartTemp.get(Calendar.DAY_OF_MONTH);
+					}
+					
 					object[1] = calendarStartTemp.get(Calendar.MONTH) + 1;
+					if(calendarStartTemp.get(Calendar.MONTH) + 1 < 9) {
+						object[1] = "0" + (calendarStartTemp.get(Calendar.MONTH) + 1);
+					}
+
 					object[2] = calendarStartTemp.get(Calendar.YEAR);
 
 					object[3] = 0;
@@ -329,6 +340,7 @@ public class RelatorioLucrosBean implements Serializable {
 			while(calendarStartTemp.after(calendarStop));
 		}
 				
+		System.out.println("result.size(): " + result.size());
 
 		LineChartDataSet dataSet2 = new LineChartDataSet();
 		List<Number> values2 = new ArrayList<>();
