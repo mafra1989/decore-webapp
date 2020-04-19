@@ -391,14 +391,18 @@ public class RelatorioLucrosBean implements Serializable {
 
 					values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
 
-					values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas) / totalDeDespesas) * 100);
 					if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) == 0 && totalDeDespesas > 0) {
-						values2.add(-100);
+						values2.add(-100.0);
+						System.out.println("Valor: -100.0");
 					} else if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) > 0 && totalDeDespesas == 0) {
-						values2.add(100);
+						values2.add(100.0);
+						System.out.println("Valor: 100.0");
+					} else {
+						values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas) / totalDeDespesas) * 100);
+						System.out.println("Valor: " + ((totalDeVendas + totalDeReceitas) - totalDeDespesas));
 					}
 
-					System.out.println("Valor: " + ((totalDeVendas + totalDeReceitas) - totalDeDespesas));
+					
 					System.out.println("Percentual: "
 							+ (((totalDeVendas + totalDeReceitas) - totalDeDespesas) / totalDeDespesas) * 100);
 
