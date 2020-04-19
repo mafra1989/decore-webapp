@@ -344,13 +344,15 @@ public class RelatorioLucrosBean implements Serializable {
 				System.out.println("Data While: " + calendarStartTemp.after(calendarStop));
 				
 			}
-			while(calendarStartTemp.after(calendarStop));
+			while(calendarStartTemp.before(calendarStop));
 		}
 				
 		System.out.println("result.size(): " + result.size());
 
 		LineChartDataSet dataSet2 = new LineChartDataSet();
 		List<Number> values2 = new ArrayList<>();
+		
+		List<String> labels = new ArrayList<>();
 
 		for (Object[] object : result) {
 			Double totalDeVendas = ((Number) object[3]).doubleValue();
@@ -382,15 +384,25 @@ public class RelatorioLucrosBean implements Serializable {
 						.doubleValue();
 
 				System.out.println("Despesas: " + totalDeDespesas);
+				
+				
+				if(totalDeReceitas > 0 || totalDeDespesas > 0 || totalDeVendas > 0 || totalCompras > 0) {
+					
+					values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
 
-				values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
-
-				values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
-						* 100);
+					values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
+							* 100);
+					
+					labels.add(object[0] + "/" + object[1]/* + "/" + object[2] */);
+				}			
 
 			} else {
-				values.add(totalDeVendas/* - totalDeCompras */);
-				values2.add((totalDeVendas / totalCompras) * 100);
+				if(totalDeVendas > 0 || totalCompras > 0) {
+					values.add(totalDeVendas/* - totalDeCompras */);
+					values2.add((totalDeVendas / totalCompras) * 100);
+					
+					labels.add(object[0] + "/" + object[1]/* + "/" + object[2] */);
+				}	
 			}
 
 			System.out.println(object[3]);
@@ -411,10 +423,6 @@ public class RelatorioLucrosBean implements Serializable {
 		data.addChartDataSet(dataSet2);
 		data.addChartDataSet(dataSet);
 
-		List<String> labels = new ArrayList<>();
-		for (Object[] object : result) {
-			labels.add(object[0] + "/" + object[1]/* + "/" + object[2] */);
-		}
 
 		data.setLabels(labels);
 
