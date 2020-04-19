@@ -327,7 +327,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 					object[3] = 0;
 					object[4] = 0;
-					
+
 					System.out.println("totalComprasPorData: " + object[4]);
 
 					result.add(object);
@@ -356,7 +356,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 		for (Object[] object : result) {
 			Double totalDeVendas = ((Number) object[3]).doubleValue();
-			
+
 			System.out.println("totalComprasPorData: " + object[4]);
 			Double totalCompras = ((Number) object[4]).doubleValue();
 
@@ -391,13 +391,16 @@ public class RelatorioLucrosBean implements Serializable {
 
 					values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
 
-					values2.add(
-							(((totalDeVendas + totalDeReceitas) - totalDeDespesas) / totalDeDespesas)
-									* 100);
-					
+					values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas) / totalDeDespesas) * 100);
+					if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) == 0 && totalDeDespesas > 0) {
+						values2.add(-100);
+					} else if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) > 0 && totalDeDespesas == 0) {
+						values2.add(100);
+					}
+
 					System.out.println("Valor: " + ((totalDeVendas + totalDeReceitas) - totalDeDespesas));
-					System.out.println("Percentual: " + (((totalDeVendas + totalDeReceitas) - totalDeDespesas) / totalDeDespesas)
-							* 100);
+					System.out.println("Percentual: "
+							+ (((totalDeVendas + totalDeReceitas) - totalDeDespesas) / totalDeDespesas) * 100);
 
 					labels.add(object[0] + "/" + object[1]/* + "/" + object[2] */);
 				}
