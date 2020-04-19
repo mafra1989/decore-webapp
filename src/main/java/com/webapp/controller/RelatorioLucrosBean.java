@@ -359,6 +359,8 @@ public class RelatorioLucrosBean implements Serializable {
 
 		for (Object[] object : result) {
 			Double totalDeVendas = ((Number) object[3]).doubleValue();
+			
+			System.out.println("totalComprasPorData: " + object[4]);
 			Double totalCompras = ((Number) object[4]).doubleValue();
 
 			Double totalDeReceitas = 0D;
@@ -390,7 +392,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 				if (totalDeReceitas > 0 || totalDeDespesas > 0 || totalDeVendas > 0 || totalCompras > 0) {
 
-					values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
+					values.add(((totalDeVendas + totalDeReceitas) - (totalCompras + totalDeDespesas)));
 
 					values2.add(
 							(((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
