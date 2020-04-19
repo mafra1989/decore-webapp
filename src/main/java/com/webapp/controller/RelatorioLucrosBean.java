@@ -726,7 +726,7 @@ public class RelatorioLucrosBean implements Serializable {
 						object[2] = 0;
 						object[3] = 0;
 						
-						result.add(object);
+						//result.add(object);
 						
 					} else {
 						for (Object[] object : resultTemp) {
