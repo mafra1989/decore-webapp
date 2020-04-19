@@ -330,6 +330,8 @@ public class RelatorioLucrosBean implements Serializable {
 							.totalComprasPorData(Long.parseLong(object[0].toString()),
 									Long.parseLong(object[1].toString()), Long.parseLong(object[2].toString()))
 							.doubleValue();
+					
+					System.out.println("totalComprasPorData: " + object[4]);
 
 					result.add(object);
 				} else {
