@@ -786,9 +786,9 @@ public class RelatorioLucrosBean implements Serializable {
 				}
 				
 				if (lucroPorLote != true) {
-					labels.add(nameMes(((Long) object[0]).intValue()));
+					labels.add(nameMes(((int) object[0])));
 				} else {
-					labels.add(nameMes(((Long) object[4]).intValue()));
+					labels.add(nameMes(((int) object[4])));
 				}
 				
 			} else {
@@ -797,9 +797,9 @@ public class RelatorioLucrosBean implements Serializable {
 				values2.add((totalDeVendas / totalCompras) * 100);
 				
 				if (lucroPorLote != true) {
-					labels.add(nameMes(((Long) object[0]).intValue()));
+					labels.add(nameMes(((int) object[0])));
 				} else {
-					labels.add(nameMes(((Long) object[4]).intValue()));
+					labels.add(nameMes(((int) object[4])));
 				}
 			}
 		}
