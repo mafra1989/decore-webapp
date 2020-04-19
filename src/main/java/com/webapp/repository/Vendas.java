@@ -569,12 +569,11 @@ public class Vendas implements Serializable {
 		}
 		
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.mes BETWEEN :mesInicio AND :mesFim "
+				+ "WHERE p.mes = :mesInicio "
 				+ "AND p.ano = :ano "
 				+ condition
 				+ "group by " + groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("mesInicio", Long.parseLong(mes01))
-				.setParameter("mesFim", Long.parseLong(mes02))
 				.setParameter("ano", Long.parseLong(ano));
 		
 		if(categoriaProduto != null && categoriaProduto.getId() != null) {

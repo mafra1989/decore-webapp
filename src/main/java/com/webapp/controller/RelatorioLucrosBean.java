@@ -194,12 +194,12 @@ public class RelatorioLucrosBean implements Serializable {
 		ano02 = String.valueOf(calendarTemp.get(Calendar.YEAR));
 
 		int mes = calendarTemp.get(Calendar.MONTH) + 1;
-		if (mes >= 5) {
-			mes01 = nameMes(mes - 4);
+		if (mes >= 4) {
+			mes01 = nameMes(mes - 3);
 			mes02 = nameMes(mes);
 		} else {
 			mes01 = nameMes(1);
-			mes02 = nameMes(mes);
+			mes02 = nameMes(mes + 3);
 		}
 
 		createMixedModelPorMes();
@@ -486,7 +486,7 @@ public class RelatorioLucrosBean implements Serializable {
 			for (int i = Integer.parseInt(semana01.replace("W", "")); i <= Integer
 					.parseInt(semana02.replace("W", "")); i++) {
 
-				semana01 = "W";
+				String semana01 = "W";
 				if (i < 10) {
 					semana01 += "0" + i;
 				} else {
@@ -706,8 +706,34 @@ public class RelatorioLucrosBean implements Serializable {
 
 		List<Object[]> result = new ArrayList<>();
 		if (lucroPorLote != true) {
-			result = vendas.totalLucrosPorMes(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes, produto03,
-					true);
+			if(Integer.parseInt(numberMes(mes01)) <= Integer.parseInt(numberMes(mes02))) {
+				
+				for (int i = Integer.parseInt(numberMes(mes01)); i <= Integer.parseInt(numberMes(mes02)); i++) {
+					String mes01 = String.valueOf(i);
+					if(i < 10) {
+						mes01 = "0" + i;
+					}
+					List<Object[]> resultTemp = vendas.totalLucrosPorMes(ano02, mes01, mes01, categoriaPorMes, produto03,
+							true);
+					
+					if(resultTemp.size() == 0) {
+						
+						Object[] object = new Object[4];
+
+						object[0] = i;
+						object[1] = ano02;
+
+						object[2] = 0;
+						object[3] = 0;
+						
+					} else {
+						for (Object[] object : resultTemp) {
+							result.add(object);
+						}
+					}
+				}
+				
+			}
 		} else {
 			result = vendas.totalLucrosPorLote(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes, produto03,
 					true);
@@ -715,6 +741,8 @@ public class RelatorioLucrosBean implements Serializable {
 
 		LineChartDataSet dataSet2 = new LineChartDataSet();
 		List<Number> values2 = new ArrayList<>();
+		
+		List<String> labels = new ArrayList<>();
 
 		for (Object[] object : result) {
 
@@ -742,12 +770,35 @@ public class RelatorioLucrosBean implements Serializable {
 
 				values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
 
-				values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
-						* 100);
+				if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) == 0 && totalDeDespesas > 0) {
+					values2.add(-100.0);
+					System.out.println("Valor Percentual: -100.0");
+				} else if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) > 0 && (totalCompras + totalDeDespesas) == 0) {
+					values2.add(100.0);
+					System.out.println("Valor Percentual: 100.0");
+				} else {
+					values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas)
+							/ (totalCompras + totalDeDespesas)) * 100);
+					System.out.println("Valor Percentual: " + (((totalDeVendas + totalDeReceitas) - totalDeDespesas)
+							/ (totalCompras + totalDeDespesas)) * 100);
+				}
+				
+				if (lucroPorLote != true) {
+					labels.add(nameMes(((Long) object[0]).intValue()));
+				} else {
+					labels.add(nameMes(((Long) object[4]).intValue()));
+				}
+				
 			} else {
 
 				values.add(totalDeVendas/* - totalDeCompras */);
 				values2.add((totalDeVendas / totalCompras) * 100);
+				
+				if (lucroPorLote != true) {
+					labels.add(nameMes(((Long) object[0]).intValue()));
+				} else {
+					labels.add(nameMes(((Long) object[4]).intValue()));
+				}
 			}
 		}
 
@@ -765,15 +816,6 @@ public class RelatorioLucrosBean implements Serializable {
 
 		data.addChartDataSet(dataSet2);
 		data.addChartDataSet(dataSet);
-
-		List<String> labels = new ArrayList<>();
-		for (Object[] object : result) {
-			if (lucroPorLote != true) {
-				labels.add(nameMes(((Long) object[0]).intValue()));
-			} else {
-				labels.add(nameMes(((Long) object[4]).intValue()));
-			}
-		}
 
 		data.setLabels(labels);
 

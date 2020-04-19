@@ -300,7 +300,7 @@ public class Contas implements Serializable {
 		orderBy_Condition = "i.mes asc, i.ano asc";
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i " + "WHERE " + "i.mes = :mes "
-				+ "AND i.ano = :ano " + "AND i.tipo = 'DEBITO' AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' "
+				+ "AND i.ano = :ano " + "AND i.tipo = 'DEBITO' AND (i.operacao = 'LANCAMENTO' OR i.operacao = 'COMPRA') AND i.status = 'Y' "
 				+ condition + "group by " + groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("mes", Long.parseLong(String.valueOf(mes))).setParameter("ano",
 				Long.parseLong(String.valueOf(ano)));
