@@ -11,6 +11,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.primefaces.model.charts.ChartData;
 import org.primefaces.model.charts.axes.cartesian.CartesianScales;
 import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearAxes;
@@ -287,14 +288,15 @@ public class RelatorioLucrosBean implements Serializable {
 
 		Calendar calendarStart = Calendar.getInstance();
 		calendarStart.setTime(dateStart);
+		calendarStart = DateUtils.truncate(calendarStart, Calendar.DAY_OF_MONTH);
 
 		Calendar calendarStop = Calendar.getInstance();
 		calendarStop.setTime(dateStop);
 		calendarStop.add(Calendar.DAY_OF_MONTH, 1);
+		calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);
 
 		List<Object[]> result = new ArrayList<>();
-		
-		
+
 		if(calendarStart.before(calendarStop)) {
 			
 			calendarStop.add(Calendar.DAY_OF_MONTH, 1);
@@ -313,12 +315,12 @@ public class RelatorioLucrosBean implements Serializable {
 					
 					Object[] object = new Object[5];
 					object[0] = calendarStartTemp.get(Calendar.DAY_OF_MONTH);
-					if(calendarStartTemp.get(Calendar.DAY_OF_MONTH) < 9) {
+					if(calendarStartTemp.get(Calendar.DAY_OF_MONTH) < 10) {
 						object[0] = "0" + calendarStartTemp.get(Calendar.DAY_OF_MONTH);
 					}
 					
 					object[1] = calendarStartTemp.get(Calendar.MONTH) + 1;
-					if(calendarStartTemp.get(Calendar.MONTH) + 1 < 9) {
+					if(calendarStartTemp.get(Calendar.MONTH) + 1 < 10) {
 						object[1] = "0" + (calendarStartTemp.get(Calendar.MONTH) + 1);
 					}
 
@@ -335,6 +337,11 @@ public class RelatorioLucrosBean implements Serializable {
 				}
 				
 				calendarStartTemp.add(Calendar.DAY_OF_MONTH, 1);
+				
+				System.out.println("Data calendarStartTemp: " + calendarStartTemp.getTime());
+				System.out.println("Data calendarStop: " + calendarStop.getTime());
+				
+				System.out.println("Data While: " + calendarStartTemp.after(calendarStop));
 				
 			}
 			while(calendarStartTemp.after(calendarStop));
