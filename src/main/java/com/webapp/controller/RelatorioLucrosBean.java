@@ -393,17 +393,20 @@ public class RelatorioLucrosBean implements Serializable {
 
 					if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) == 0 && totalDeDespesas > 0) {
 						values2.add(-100.0);
-						System.out.println("Valor: -100.0");
+						System.out.println("Valor Percentual: -100.0");
 					} else if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) > 0 && totalDeDespesas == 0) {
 						values2.add(100.0);
-						System.out.println("Valor: 100.0");
+						System.out.println("Valor Percentual: 100.0");
 					} else {
-						values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas) / totalDeDespesas) * 100);
-						System.out.println("Valor: " + ((totalDeVendas + totalDeReceitas) - totalDeDespesas));
+						values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas)
+								/ (totalCompras + totalDeDespesas)) * 100);
+						System.out.println("Valor Percentual: " + (((totalDeVendas + totalDeReceitas) - totalDeDespesas)
+								/ (totalCompras + totalDeDespesas)) * 100);
 					}
 
 					System.out.println("Percentual: "
-							+ (((totalDeVendas + totalDeReceitas) - totalDeDespesas) / totalDeDespesas) * 100);
+							+ (((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
+									* 100);
 
 					labels.add(object[0] + "/" + object[1]/* + "/" + object[2] */);
 				}
@@ -476,24 +479,25 @@ public class RelatorioLucrosBean implements Serializable {
 		List<Number> values = new ArrayList<>();
 
 		List<Object[]> result = new ArrayList<>();
-		if (Integer.parseInt(semana01.replace("W", "")) >= Integer.parseInt(semana02.replace("W", ""))) {
+		if (Integer.parseInt(semana01.replace("W", "")) <= Integer.parseInt(semana02.replace("W", ""))) {
 
 			for (int i = Integer.parseInt(semana01.replace("W", "")); i <= Integer
 					.parseInt(semana02.replace("W", "")); i++) {
-				
+
 				semana01 = "W";
-				if(i < 10) {
+				if (i < 10) {
 					semana01 += "0" + i;
 				} else {
 					semana01 += i;
 				}
-				
-				List<Object[]> resultTemp = vendas.totalLucrosPorSemana(ano01, semana01, semana01, categoriaPorSemana, produto02, true);
-				
+
+				List<Object[]> resultTemp = vendas.totalLucrosPorSemana(ano01, semana01, semana01, categoriaPorSemana,
+						produto02, true);
+
 				if (resultTemp.size() == 0) {
 
 					Object[] object = new Object[4];
-					
+
 					object[0] = i;
 					object[1] = ano01;
 
