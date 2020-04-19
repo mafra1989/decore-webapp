@@ -326,10 +326,7 @@ public class RelatorioLucrosBean implements Serializable {
 					object[2] = calendarStartTemp.get(Calendar.YEAR);
 
 					object[3] = 0;
-					object[4] = contas
-							.totalComprasPorData(Long.parseLong(object[0].toString()),
-									Long.parseLong(object[1].toString()), Long.parseLong(object[2].toString()))
-							.doubleValue();
+					object[4] = 0;
 					
 					System.out.println("totalComprasPorData: " + object[4]);
 
@@ -392,15 +389,15 @@ public class RelatorioLucrosBean implements Serializable {
 
 				if (totalDeReceitas > 0 || totalDeDespesas > 0 || totalDeVendas > 0 || totalCompras > 0) {
 
-					values.add(((totalDeVendas + totalDeReceitas) - (totalCompras + totalDeDespesas)));
+					values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
 
 					values2.add(
-							(((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
+							(((totalDeVendas + totalDeReceitas) - totalDeDespesas) / totalDeDespesas)
 									* 100);
 					
-					System.out.println("Valor: " + ((totalDeVendas + totalDeReceitas) - (totalCompras + totalDeDespesas)));
-					System.out.println("Percentual: " + (((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
-									* 100);
+					System.out.println("Valor: " + ((totalDeVendas + totalDeReceitas) - totalDeDespesas));
+					System.out.println("Percentual: " + (((totalDeVendas + totalDeReceitas) - totalDeDespesas) / totalDeDespesas)
+							* 100);
 
 					labels.add(object[0] + "/" + object[1]/* + "/" + object[2] */);
 				}
