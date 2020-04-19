@@ -14,10 +14,12 @@ import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
 
+import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.Produto;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
+import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.Usuarios;
@@ -42,15 +44,18 @@ public class ConsultaVendasBean implements Serializable {
 
 	@Inject
 	private Vendas vendas;
-	
+
 	@Inject
 	private ItensVendas itensVendas;
-	
+
 	@Inject
 	private Produtos produtos;
 
+	@Inject
+	private ItensCompras itensCompras;
+
 	private Venda vendaSelecionada;
-	
+
 	private Long numeroVenda;
 
 	private Date dateStart = new Date();
@@ -89,14 +94,28 @@ public class ConsultaVendasBean implements Serializable {
 	}
 
 	public void excluir() {
-		
-		if(vendaSelecionada != null) {
-			
+
+		if (vendaSelecionada != null) {
+
 			List<ItemVenda> itensVenda = itensVendas.porVenda(vendaSelecionada);
 			for (ItemVenda itemVenda : itensVenda) {
 				Produto produto = itemVenda.getProduto();
 				produto.setQuantidadeAtual(produto.getQuantidadeAtual() + itemVenda.getQuantidade());
 				produtos.save(produto);
+
+				List<ItemCompra> itensCompra = itensCompras.porProduto(itemVenda.getProduto());
+				for (ItemCompra itemCompra : itensCompra) {
+
+					if (itemCompra.getCompra().getId().longValue() == itemVenda.getCompra().getId().longValue()) {
+						if (itemCompra.getProduto().getId().longValue() == itemVenda.getProduto().getId().longValue()) {
+							System.out.println(itemCompra.getQuantidadeDisponivel());
+							System.out.println(itemVenda.getQuantidade());
+							itemCompra.setQuantidadeDisponivel(
+									itemCompra.getQuantidadeDisponivel() + itemVenda.getQuantidade());
+							itensCompras.save(itemCompra);
+						}
+					}
+				}
 
 				itensVendas.remove(itemVenda);
 			}
@@ -104,36 +123,49 @@ public class ConsultaVendasBean implements Serializable {
 			vendas.remove(vendaSelecionada);
 
 			vendaSelecionada = null;
-			
+
 			pesquisar();
-			PrimeFaces.current()
-					.executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda excluída com sucesso!' });");
-			
-			
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'success', title: 'Concluído!', text: 'Venda excluída com sucesso!' });");
+
 		} else {
-			
+
 			for (Venda venda : vendasFiltradas) {
-				
+
 				venda = vendas.porId(venda.getId());
-				
+
 				List<ItemVenda> itensVenda = itensVendas.porVenda(venda);
-				
+
 				for (ItemVenda itemVenda : itensVenda) {
 					Produto produto = itemVenda.getProduto();
 					produto = produtos.porId(produto.getId());
 					produto.setQuantidadeAtual(produto.getQuantidadeAtual() + itemVenda.getQuantidade());
 					produtos.save(produto);
+					
+					List<ItemCompra> itensCompra = itensCompras.porProduto(itemVenda.getProduto());
+					for (ItemCompra itemCompra : itensCompra) {
+
+						if (itemCompra.getCompra().getId().longValue() == itemVenda.getCompra().getId().longValue()) {
+							if (itemCompra.getProduto().getId().longValue() == itemVenda.getProduto().getId().longValue()) {
+								System.out.println(itemCompra.getQuantidadeDisponivel());
+								System.out.println(itemVenda.getQuantidade());
+								itemCompra.setQuantidadeDisponivel(
+										itemCompra.getQuantidadeDisponivel() + itemVenda.getQuantidade());
+								itensCompras.save(itemCompra);
+							}
+						}
+					}
 
 					itensVendas.remove(itemVenda);
 				}
 
 				vendas.remove(venda);
 			}
-			
+
 			pesquisar();
-			PrimeFaces.current()
-					.executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda excluída com sucesso!' });");
-		
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'success', title: 'Concluído!', text: 'Venda excluída com sucesso!' });");
+
 		}
 
 	}
