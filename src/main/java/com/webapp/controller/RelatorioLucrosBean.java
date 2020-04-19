@@ -129,7 +129,7 @@ public class RelatorioLucrosBean implements Serializable {
 		Calendar calendar = Calendar.getInstance();
 		Calendar calendarTemp = Calendar.getInstance();
 
-		int semana01 = calendarTemp.get(Calendar.WEEK_OF_YEAR);
+		int semana01 = calendarTemp.get(Calendar.WEEK_OF_YEAR) - 3;
 		if (semana01 >= 4) {
 
 			String semanaTemp = String.valueOf(semana01);
@@ -141,7 +141,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 			calendar.add(Calendar.DAY_OF_MONTH, -3);
 
-			int semana02 = calendarTemp.get(Calendar.WEEK_OF_YEAR) - 3;
+			int semana02 = calendarTemp.get(Calendar.WEEK_OF_YEAR);
 			semanaTemp = String.valueOf(semana02);
 			if (semana02 < 10) {
 				semanaTemp = "0" + semana02;
