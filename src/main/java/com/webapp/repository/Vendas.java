@@ -196,18 +196,12 @@ public class Vendas implements Serializable {
 		}
 		
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.dia BETWEEN :diaInicio AND :diaFim "
-				+ "AND p.mes BETWEEN :mesInicio AND :mesFim "
-				+ "AND p.ano BETWEEN :anoInicio AND :anoFim "
+				+ "WHERE p.dataVenda BETWEEN :dataInicio AND :dataFim "
 				+ condition
 				+ "group by " + groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql)
-				.setParameter("anoInicio", Long.parseLong(String.valueOf(calendarStart.get(Calendar.YEAR))))
-				.setParameter("anoFim", Long.parseLong(String.valueOf(calendarStop.get(Calendar.YEAR))))			
-				.setParameter("mesInicio", Long.parseLong(String.valueOf(calendarStart.get(Calendar.MONTH) + 1)))
-				.setParameter("mesFim", Long.parseLong(String.valueOf(calendarStop.get(Calendar.MONTH) + 1)))
-				.setParameter("diaInicio", Long.parseLong(String.valueOf(calendarStart.get(Calendar.DAY_OF_MONTH))))
-				.setParameter("diaFim", Long.parseLong(String.valueOf(calendarStop.get(Calendar.DAY_OF_MONTH))));
+				.setParameter("dataInicio", calendarStart.getTime())
+				.setParameter("dataFim", calendarStop.getTime());
 		
 		if(categoriaProduto != null && categoriaProduto.getId() != null) {
 			q.setParameter("categoriaProduto", categoriaProduto.getNome());
