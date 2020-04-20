@@ -11,6 +11,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.primefaces.model.charts.ChartData;
 import org.primefaces.model.charts.axes.cartesian.CartesianScales;
 import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearAxes;
@@ -40,7 +41,7 @@ public class RelatorioVendasBean implements Serializable {
 
 	@Inject
 	private Produtos produtos;
-	
+
 	@Inject
 	private Usuarios usuarios;
 
@@ -55,18 +56,18 @@ public class RelatorioVendasBean implements Serializable {
 	private BarChartModel mixedModelPorAno;
 
 	private List<CategoriaProduto> todasCategoriasProduto;
-	
+
 	private List<Usuario> todosVendedores;
-	
+
 	@Inject
 	private Usuario usuarioPorDia;
-	
+
 	@Inject
 	private Usuario usuarioPorSemana;
-	
+
 	@Inject
 	private Usuario usuarioPorMes;
-	
+
 	@Inject
 	private Usuario usuarioPorAno;
 
@@ -75,13 +76,13 @@ public class RelatorioVendasBean implements Serializable {
 
 	@Inject
 	private CategoriaProduto categoriaPorDia;
-	
+
 	private String[] categoriasPorDia;
-	
+
 	private String[] categoriasPorSemana;
-	
+
 	private String[] categoriasPorMes;
-	
+
 	private String[] categoriasPorAno;
 
 	@Inject
@@ -144,14 +145,14 @@ public class RelatorioVendasBean implements Serializable {
 	@PostConstruct
 	public void init() {
 		listarTodasCategoriasProdutos();
-		
+
 		todosVendedores = usuarios.todos();
 
 		Calendar calendar = Calendar.getInstance();
 		Calendar calendarTemp = Calendar.getInstance();
 
-		int semana01 = calendarTemp.get(Calendar.WEEK_OF_YEAR);
-		if (semana01 >= 5) {
+		int semana01 = calendarTemp.get(Calendar.WEEK_OF_YEAR) - 3;
+		if (semana01 >= 4) {
 
 			String semanaTemp = String.valueOf(semana01);
 			if (semana01 < 10) {
@@ -159,8 +160,6 @@ public class RelatorioVendasBean implements Serializable {
 			}
 
 			this.semana01 = "W" + semanaTemp;
-
-			calendar.add(Calendar.DAY_OF_MONTH, -5);
 
 			int semana02 = calendarTemp.get(Calendar.WEEK_OF_YEAR);
 			semanaTemp = String.valueOf(semana02);
@@ -173,7 +172,7 @@ public class RelatorioVendasBean implements Serializable {
 		} else {
 			this.semana01 = "W01";
 
-			int semana02 = calendarTemp.get(Calendar.WEEK_OF_YEAR);
+			int semana02 = calendarTemp.get(Calendar.WEEK_OF_YEAR) + 3;
 			String semanaTemp = String.valueOf(semana02);
 			if (semana02 < 10) {
 				semanaTemp = "0" + semana02;
@@ -181,12 +180,12 @@ public class RelatorioVendasBean implements Serializable {
 			this.semana02 = "W" + semanaTemp;
 		}
 
-		calendar.add(Calendar.DAY_OF_MONTH, -5);
+		calendar.add(Calendar.DAY_OF_MONTH, -3);
 		dateStart = calendar.getTime();
 
 		createMixedModelPorDia();
 
-		for (int i = 2019; i <= calendar.get(Calendar.YEAR); i++) {
+		for (int i = 2018; i <= calendar.get(Calendar.YEAR); i++) {
 			anos.add(String.valueOf(i));
 		}
 
@@ -215,29 +214,29 @@ public class RelatorioVendasBean implements Serializable {
 		ano02 = String.valueOf(calendarTemp.get(Calendar.YEAR));
 
 		int mes = calendarTemp.get(Calendar.MONTH) + 1;
-		if (mes >= 5) {
-			mes01 = nameMes(mes - 4);
+		if (mes >= 4) {
+			mes01 = nameMes(mes - 3);
 			mes02 = nameMes(mes);
 		} else {
 			mes01 = nameMes(1);
-			mes02 = nameMes(mes);
+			mes02 = nameMes(mes + 3);
 		}
 
 		createMixedModelPorMes();
 
 		createDonutModel(new ArrayList<Object[]>());
-		
+
 		ano03 = "2019";
-		
+
 		ano04 = String.valueOf(calendarTemp.get(Calendar.YEAR));
-		
+
 		createMixedModelPorAno();
 	}
 
 	private void listarTodasCategoriasProdutos() {
 		todasCategoriasProduto = categoriasProdutos.todos();
 	}
-	
+
 	public void changeVendedorPorDia() {
 
 		createMixedModelPorDia();
@@ -265,7 +264,6 @@ public class RelatorioVendasBean implements Serializable {
 			produtosPorSemana = produtos.porCategoria(categoriasPorSemana);
 		}
 
-
 		createMixedModelPorSemana();
 	}
 
@@ -273,7 +271,7 @@ public class RelatorioVendasBean implements Serializable {
 
 		createMixedModelPorSemana();
 	}
-	
+
 	public void changeVendedorPorSemana() {
 
 		createMixedModelPorSemana();
@@ -293,13 +291,12 @@ public class RelatorioVendasBean implements Serializable {
 
 		createMixedModelPorMes();
 	}
-	
+
 	public void changeVendedorPorMes() {
 
 		createMixedModelPorMes();
 	}
-	
-	
+
 	public void changeCategoriaPorAno() {
 		produtosPorAno = new ArrayList<Produto>();
 		produto04 = null;
@@ -314,12 +311,11 @@ public class RelatorioVendasBean implements Serializable {
 
 		createMixedModelPorAno();
 	}
-	
+
 	public void changeVendedorPorAno() {
 
 		createMixedModelPorAno();
 	}
-	
 
 	public void createMixedModelPorDia() {
 		mixedModelPorDia = new BarChartModel();
@@ -330,14 +326,67 @@ public class RelatorioVendasBean implements Serializable {
 
 		Calendar calendarStart = Calendar.getInstance();
 		calendarStart.setTime(dateStart);
+		calendarStart = DateUtils.truncate(calendarStart, Calendar.DAY_OF_MONTH);
 
 		Calendar calendarStop = Calendar.getInstance();
 		calendarStop.setTime(dateStop);
+		calendarStop.add(Calendar.DAY_OF_MONTH, 1);
+		calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);
 
-		List<Object[]> result = vendas.totalVendasPorData(calendarStart, calendarStop, categoriaPorDia, categoriasPorDia, produto01, usuarioPorDia,
-				true);
+		List<Object[]> result = new ArrayList<>();
+
+		if (calendarStart.before(calendarStop)) {
+
+			Calendar calendarStartTemp = (Calendar) calendarStart.clone();
+
+			do {
+				Calendar calendarStopTemp = (Calendar) calendarStartTemp.clone();
+				calendarStopTemp.add(Calendar.DAY_OF_MONTH, 1);
+
+				List<Object[]> resultTemp = vendas.totalVendasPorData(calendarStartTemp, calendarStopTemp,
+						categoriaPorDia, categoriasPorDia, produto01, usuarioPorDia, true);
+
+				System.out.println("Data: " + calendarStartTemp.getTime() + " - " + resultTemp.size());
+
+				if (resultTemp.size() == 0) {
+
+					Object[] object = new Object[4];
+					object[0] = calendarStartTemp.get(Calendar.DAY_OF_MONTH);
+					if (calendarStartTemp.get(Calendar.DAY_OF_MONTH) < 10) {
+						object[0] = "0" + calendarStartTemp.get(Calendar.DAY_OF_MONTH);
+					}
+
+					object[1] = calendarStartTemp.get(Calendar.MONTH) + 1;
+					if (calendarStartTemp.get(Calendar.MONTH) + 1 < 10) {
+						object[1] = "0" + (calendarStartTemp.get(Calendar.MONTH) + 1);
+					}
+
+					object[2] = calendarStartTemp.get(Calendar.YEAR);
+
+					object[3] = 0;
+
+					result.add(object);
+				} else {
+					for (Object[] object : resultTemp) {
+						result.add(object);
+					}
+				}
+
+				calendarStartTemp.add(Calendar.DAY_OF_MONTH, 1);
+
+				System.out.println("Data calendarStartTemp: " + calendarStartTemp.getTime());
+				System.out.println("Data calendarStop: " + calendarStop.getTime());
+
+				System.out.println("Data While: " + calendarStartTemp.before(calendarStop));
+
+			} while (calendarStartTemp.before(calendarStop));
+		}
+
+		List<String> labels = new ArrayList<>();
+
 		for (Object[] object : result) {
 			values.add((Number) object[3]);
+			labels.add(object[0] + "/" + object[1]/* + "/" + object[2] */);
 			System.out.println(object[3]);
 		}
 
@@ -355,11 +404,6 @@ public class RelatorioVendasBean implements Serializable {
 
 		data.addChartDataSet(dataSet);
 		// data.addChartDataSet(dataSet2);
-
-		List<String> labels = new ArrayList<>();
-		for (Object[] object : result) {
-			labels.add(object[0] + "/" + object[1] + "/" + object[2]);
-		}
 
 		data.setLabels(labels);
 
@@ -387,9 +431,57 @@ public class RelatorioVendasBean implements Serializable {
 		BarChartDataSet dataSet = new BarChartDataSet();
 		List<Number> values = new ArrayList<>();
 
-		List<Object[]> result = vendas.totalVendasPorSemana(ano01, semana01, semana02, categoriaPorSemana, categoriasPorSemana, produto02, usuarioPorSemana, true);
+		List<String> labels = new ArrayList<>();
+
+		List<Object[]> result = new ArrayList<>();
+
+		if (Integer.parseInt(semana01.replace("W", "")) <= Integer.parseInt(semana02.replace("W", ""))) {
+
+			for (int i = Integer.parseInt(semana01.replace("W", "")); i <= Integer
+					.parseInt(semana02.replace("W", "")); i++) {
+
+				String semana01 = "W";
+				if (i < 10) {
+					semana01 += "0" + i;
+				} else {
+					semana01 += i;
+				}
+
+				System.out.println(semana01);
+
+				List<Object[]> resultTemp = vendas.totalVendasPorSemana(ano01, semana01, semana01, categoriaPorSemana,
+						categoriasPorSemana, produto02, usuarioPorSemana, true);
+
+				if (resultTemp.size() == 0) {
+
+					Object[] object = new Object[3];
+
+					object[0] = i;
+					object[1] = ano01;
+
+					object[2] = 0;
+
+					result.add(object);
+				} else {
+					for (Object[] object : resultTemp) {
+						result.add(object);
+					}
+				}
+			}
+
+			System.out.println("result.size(): " + result.size());
+		}
+
 		for (Object[] object : result) {
 			values.add((Number) object[2]);
+
+			long semana = Long.parseLong(object[0].toString());
+			String semanaTemp = String.valueOf(semana);
+			if (semana < 10) {
+				semanaTemp = "0" + semana;
+			}
+			labels.add("W" + semanaTemp);
+
 			System.out.println(object[2]);
 		}
 
@@ -407,16 +499,6 @@ public class RelatorioVendasBean implements Serializable {
 
 		data.addChartDataSet(dataSet);
 		// data.addChartDataSet(dataSet2);
-
-		List<String> labels = new ArrayList<>();
-		for (Object[] object : result) {
-			long semana = (long) object[0];
-			String semanaTemp = String.valueOf(semana);
-			if (semana < 10) {
-				semanaTemp = "0" + semana;
-			}
-			labels.add("W" + semanaTemp);
-		}
 
 		data.setLabels(labels);
 
@@ -508,10 +590,43 @@ public class RelatorioVendasBean implements Serializable {
 		BarChartDataSet dataSet = new BarChartDataSet();
 		List<Number> values = new ArrayList<>();
 
-		List<Object[]> result = vendas.totalVendasPorMes(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes, categoriasPorMes,
-				produto03, usuarioPorMes, true);
+		List<Object[]> result = new ArrayList<>();
+
+		List<String> labels = new ArrayList<>();
+
+		if (Integer.parseInt(numberMes(mes01)) <= Integer.parseInt(numberMes(mes02))) {
+
+			for (int i = Integer.parseInt(numberMes(mes01)); i <= Integer.parseInt(numberMes(mes02)); i++) {
+				String mes01 = String.valueOf(i);
+				if (i < 10) {
+					mes01 = "0" + i;
+				}
+				List<Object[]> resultTemp = vendas.totalVendasPorMes(ano02, mes01, mes01,
+						categoriaPorMes, categoriasPorMes, produto03, usuarioPorMes, true);
+
+				if (resultTemp.size() == 0) {
+
+					Object[] object = new Object[4];
+
+					object[0] = i;
+					object[1] = ano02;
+
+					object[2] = 0;
+
+					result.add(object);
+
+				} else {
+					for (Object[] object : resultTemp) {
+						result.add(object);
+					}
+				}
+			}
+
+		}
+
 		for (Object[] object : result) {
 			values.add((Number) object[2]);
+			labels.add(nameMes(Integer.parseInt(object[0].toString())));
 			System.out.println(object[2]);
 		}
 
@@ -529,11 +644,6 @@ public class RelatorioVendasBean implements Serializable {
 
 		data.addChartDataSet(dataSet);
 		// data.addChartDataSet(dataSet2);
-
-		List<String> labels = new ArrayList<>();
-		for (Object[] object : result) {
-			labels.add(nameMes(((Long) object[0]).intValue()));
-		}
 
 		data.setLabels(labels);
 
@@ -553,18 +663,47 @@ public class RelatorioVendasBean implements Serializable {
 
 		mixedModelPorMes.setExtender("percentExtender2");
 	}
-	
-	
+
 	public void createMixedModelPorAno() {
 		mixedModelPorAno = new BarChartModel();
 		ChartData data = new ChartData();
 
 		BarChartDataSet dataSet = new BarChartDataSet();
 		List<Number> values = new ArrayList<>();
+		
+		List<String> labels = new ArrayList<>();
+		
+		List<Object[]> result = new ArrayList<>();
+		if(Integer.parseInt(ano03) <= Integer.parseInt(ano04)) {
+			
+			for (int i = Integer.parseInt(ano03); i <= Integer.parseInt(ano04); i++) {
+				
+				String ano03 = String.valueOf(i);
+				
+				List<Object[]> resultTemp = vendas.totalVendasPorAno(ano03, ano03, categoriaPorAno, categoriasPorAno, produto04,
+						usuarioPorAno, true);
+				
+				if(resultTemp.size() == 0) {
+					
+					Object[] object = new Object[2];
 
-		List<Object[]> result = vendas.totalVendasPorAno(ano03, ano04, categoriaPorAno, categoriasPorAno, produto04, usuarioPorAno, true);
+					object[0] = i;				
+					object[1] = 0;
+					
+					result.add(object);
+					
+				} else {
+					for (Object[] object : resultTemp) {
+						result.add(object);
+					}
+				}
+			}		
+		}
+
 		for (Object[] object : result) {
 			values.add((Number) object[1]);
+			labels.add(String.valueOf(Integer.parseInt(object[0].toString())));
+			
 			System.out.println(object[1]);
 		}
 
@@ -582,11 +721,6 @@ public class RelatorioVendasBean implements Serializable {
 
 		data.addChartDataSet(dataSet);
 		// data.addChartDataSet(dataSet2);
-
-		List<String> labels = new ArrayList<>();
-		for (Object[] object : result) {
-			labels.add(String.valueOf(((Long) object[0]).longValue()));
-		}
 
 		data.setLabels(labels);
 
@@ -615,34 +749,35 @@ public class RelatorioVendasBean implements Serializable {
 		Calendar calendarStop = Calendar.getInstance();
 		calendarStop.setTime(dateStop);
 
-		List<Object[]> result = vendas.totalVendasPorData(calendarStart, calendarStop, categoriaPorDia, categoriasPorDia, produto01, usuarioPorDia,
-				false);
+		List<Object[]> result = vendas.totalVendasPorData(calendarStart, calendarStop, categoriaPorDia,
+				categoriasPorDia, produto01, usuarioPorDia, false);
 
 		createDonutModel(result);
 	}
 
 	public void prepareDonutModelPorSemana() {
 
-		List<Object[]> result = vendas.totalVendasPorSemana(ano01, semana01, semana02, categoriaPorSemana, categoriasPorSemana, produto02, usuarioPorSemana, false);
+		List<Object[]> result = vendas.totalVendasPorSemana(ano01, semana01, semana02, categoriaPorSemana,
+				categoriasPorSemana, produto02, usuarioPorSemana, false);
 
 		createDonutModel(result);
 	}
-	
+
 	public void prepareDonutModelPorMes() {
 
-		List<Object[]> result = vendas.totalVendasPorMes(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes, categoriasPorMes,
-				produto03, usuarioPorMes, false);
+		List<Object[]> result = vendas.totalVendasPorMes(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes,
+				categoriasPorMes, produto03, usuarioPorMes, false);
 
 		createDonutModel(result);
 	}
-	
+
 	public void prepareDonutModelPorAno() {
 
-		List<Object[]> result = vendas.totalVendasPorAno(ano03, ano04, categoriaPorAno, categoriasPorAno, produto04, usuarioPorAno, false);
+		List<Object[]> result = vendas.totalVendasPorAno(ano03, ano04, categoriaPorAno, categoriasPorAno, produto04,
+				usuarioPorAno, false);
 
 		createDonutModel(result);
 	}
-	
 
 	public void createDonutModel(List<Object[]> result) {
 		donutModel = new DonutChartModel();

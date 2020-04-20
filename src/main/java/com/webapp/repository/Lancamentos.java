@@ -40,6 +40,17 @@ public class Lancamentos implements Serializable {
 
 		this.manager.remove(despesaTemp);
 	}
+	
+	public Lancamento porNumeroLancamento(Long condigoOperacao) {
+
+		try {
+			return this.manager.createQuery("from Lancamento e where e.numeroLancamento = :numeroLancamento", Lancamento.class)
+					.setParameter("numeroLancamento", condigoOperacao).setMaxResults(1).getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
+
+	}
 
 	public Lancamento ultimoLancamento() {
 

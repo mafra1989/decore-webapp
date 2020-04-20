@@ -1,6 +1,7 @@
 package com.webapp.controller;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -11,6 +12,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.primefaces.model.charts.ChartData;
 import org.primefaces.model.charts.axes.cartesian.CartesianScales;
 import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearAxes;
@@ -22,8 +24,11 @@ import org.primefaces.model.charts.donut.DonutChartDataSet;
 import org.primefaces.model.charts.donut.DonutChartModel;
 
 import com.webapp.model.CategoriaLancamento;
+import com.webapp.model.Lancamento;
+import com.webapp.model.OrigemLancamento;
 import com.webapp.model.Produto;
 import com.webapp.repository.CategoriasLancamentos;
+import com.webapp.repository.Contas;
 import com.webapp.repository.Lancamentos;
 
 @Named
@@ -47,6 +52,9 @@ public class RelatorioLancamentosBean implements Serializable {
 
 	private List<CategoriaLancamento> todasCategoriasLancamento;
 
+	@Inject
+	private Contas contas;
+	
 	@Inject
 	private CategoriasLancamentos categoriasLancamentos;
 
@@ -127,8 +135,6 @@ public class RelatorioLancamentosBean implements Serializable {
 
 			this.semana01 = "W" + semanaTemp;
 
-			calendar.add(Calendar.DAY_OF_MONTH, -5);
-
 			int semana02 = calendarTemp.get(Calendar.WEEK_OF_YEAR);
 			semanaTemp = String.valueOf(semana02);
 			if (semana02 < 10) {
@@ -148,7 +154,7 @@ public class RelatorioLancamentosBean implements Serializable {
 			this.semana02 = "W" + semanaTemp;
 		}
 
-		calendar.add(Calendar.DAY_OF_MONTH, -5);
+		calendar.add(Calendar.DAY_OF_MONTH, -3);
 		dateStart = calendar.getTime();
 
 		createMixedModelPorDia();
@@ -242,24 +248,132 @@ public class RelatorioLancamentosBean implements Serializable {
 
 		BarChartDataSet dataSet = new BarChartDataSet();
 		List<Number> values = new ArrayList<>();
-
+		
+		BarChartDataSet dataSet2 = new BarChartDataSet();
+		List<Number> values2 = new ArrayList<>();
+		
 		Calendar calendarStart = Calendar.getInstance();
 		calendarStart.setTime(dateStart);
+		calendarStart = DateUtils.truncate(calendarStart, Calendar.DAY_OF_MONTH);
 
 		Calendar calendarStop = Calendar.getInstance();
 		calendarStop.setTime(dateStop);
+		calendarStop.add(Calendar.DAY_OF_MONTH, 1);
+		calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);
 
-		List<Object[]> result = lancamentos.totalDespesasPorData(calendarStart, calendarStop, categoriaPorDia,
-				true);
-		for (Object[] object : result) {
-			values.add((Number) object[3]);
-			System.out.println(object[3]);
+		List<Object[]> result = new ArrayList<>();
+		
+		List<String> labels = new ArrayList<>();
+
+		if (calendarStart.before(calendarStop)) {
+
+			Calendar calendarStartTemp = (Calendar) calendarStart.clone();
+
+			do {
+				Calendar calendarStopTemp = (Calendar) calendarStartTemp.clone();
+				calendarStopTemp.add(Calendar.DAY_OF_MONTH, 1);
+
+				List<Object[]> resultTemp = contas.totalLancamentosPorData(calendarStartTemp, calendarStopTemp);
+
+				if (resultTemp.size() == 0) {
+
+					Object[] object = new Object[6];
+					object[0] = calendarStartTemp.get(Calendar.DAY_OF_MONTH);
+					if (calendarStartTemp.get(Calendar.DAY_OF_MONTH) < 10) {
+						object[0] = "0" + calendarStartTemp.get(Calendar.DAY_OF_MONTH);
+					}
+
+					object[1] = calendarStartTemp.get(Calendar.MONTH) + 1;
+					if (calendarStartTemp.get(Calendar.MONTH) + 1 < 10) {
+						object[1] = "0" + (calendarStartTemp.get(Calendar.MONTH) + 1);
+					}
+
+					object[2] = calendarStartTemp.get(Calendar.YEAR);
+
+					object[3] = "";
+					object[4] = "";
+					object[5] = 0;
+
+					result.add(object);
+				} else {
+					double valor = 0;
+					Object[] objectTemp = null;
+					String tipo = "";
+					
+					for (Object[] object : resultTemp) {
+						
+						if(!tipo.equals(object[4].toString()) && !tipo.equals("")) {	
+							objectTemp[5] = valor;
+							result.add(objectTemp);
+							valor = 0;
+						}
+						
+						if(!tipo.equals(object[4].toString())) {								
+							objectTemp = new Object[6];	
+							tipo = object[4].toString();
+						}
+						
+						objectTemp[0] = object[0];
+						objectTemp[1] = object[1];
+						objectTemp[2] = object[2];
+						objectTemp[4] = object[4];
+
+						Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[3].toString()));
+						if(lancamento != null) {
+							if(categoriaPorDia != null && categoriaPorDia.getId() != null) {
+								if(lancamento.getCategoriaLancamento().getId().intValue() == categoriaPorDia.getId().intValue()) {
+									valor += new BigDecimal(object[5].toString()).doubleValue();
+								}
+							} else {
+								valor += new BigDecimal(object[5].toString()).doubleValue();
+							}
+						}
+					}		
+					
+					objectTemp[5] = valor;
+					result.add(objectTemp);
+				}
+
+				calendarStartTemp.add(Calendar.DAY_OF_MONTH, 1);
+
+			} while (calendarStartTemp.before(calendarStop));
 		}
 
-		dataSet.setData(values);
-		dataSet.setLabel("Valor Total");
-		dataSet.setBorderColor("rgb(54, 162, 235)");
-		dataSet.setBackgroundColor("rgba(54, 162, 235)");
+		String date = "";
+		for (Object[] object : result) {
+			
+			if(!date.equals(object[0] + "/" + object[1])) {
+				date = object[0] + "/" + object[1];
+				labels.add(object[0] + "/" + object[1]/* + "/" + object[2]*/);			
+			}
+			
+			if(object[4].toString().equals("DEBITO")) {
+				values.add((Number) object[5]);
+				
+			} else if(object[4].toString().equals("CREDITO")) {
+				values2.add((Number) object[5]);
+				
+			} else if(object[4].toString().equals("")) {
+				values.add((Number) object[5]);
+				values2.add((Number) object[5]);
+			} 
+		}
+
+		if(categoriaPorDia == null || categoriaPorDia.getId() == null || categoriaPorDia.getTipoLancamento().getOrigem() == OrigemLancamento.DEBITO) {
+			dataSet.setData(values);
+			dataSet.setLabel("Débito");
+			dataSet.setBorderColor("rgba(54, 162, 235)");
+			dataSet.setBackgroundColor("rgba(54, 162, 235)");
+			data.addChartDataSet(dataSet);
+		}
+		
+		if(categoriaPorDia == null || categoriaPorDia.getId() == null || categoriaPorDia.getTipoLancamento().getOrigem() == OrigemLancamento.CREDITO) {
+			dataSet2.setData(values2);
+			dataSet2.setLabel("Crédito");
+			dataSet2.setBorderColor("rgba(255, 205, 86)");
+			dataSet2.setBackgroundColor("rgba(255, 205, 86)");
+			data.addChartDataSet(dataSet2);
+		}
 
 		/*
 		 * LineChartDataSet dataSet2 = new LineChartDataSet(); List<Object> values2 =
@@ -267,14 +381,6 @@ public class RelatorioLancamentosBean implements Serializable {
 		 * values2.add(50); dataSet2.setLabel("Line Dataset"); dataSet2.setFill(false);
 		 * dataSet2.setBorderColor("rgb(54, 162, 235)");
 		 */
-
-		data.addChartDataSet(dataSet);
-		// data.addChartDataSet(dataSet2);
-
-		List<String> labels = new ArrayList<>();
-		for (Object[] object : result) {
-			labels.add(object[0] + "/" + object[1] + "/" + object[2]);
-		}
 
 		data.setLabels(labels);
 

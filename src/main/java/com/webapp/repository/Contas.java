@@ -362,4 +362,43 @@ public class Contas implements Serializable {
 
 		return value;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalLancamentosPorData(Calendar calendarStart, Calendar calendarStop) {
+
+		String condition = "";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+
+		select_Condition = "i.dia, i.mes, i.ano, i.codigoOperacao, i.tipo, ";
+		sum_Condition = "sum(i.valor)";
+		groupBy_Condition = "i.dia, i.mes, i.ano, i.codigoOperacao ";
+		orderBy_Condition = "i.dia asc, i.mes asc, i.ano asc";
+
+		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i "
+				+ "WHERE i.pagamento BETWEEN :dataInicio AND :dataFim "
+				+ "AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' " + condition + "group by "
+				+ groupBy_Condition + " order by " + orderBy_Condition;
+		Query q = manager.createQuery(jpql)
+				.setParameter("dataInicio", calendarStart.getTime())
+				.setParameter("dataFim", calendarStop.getTime());
+		
+		System.out.println(jpql);
+		
+		List<Object[]> result = q.getResultList();
+		
+		for (Object[] object : result) {
+			if((long)object[0] < 10) {
+				object[0] = "0" + object[0];
+			}
+			
+			if((long)object[1] < 10) {
+				object[1] = "0" + object[1];
+			}
+		}
+
+		return result;
+	}
 }
