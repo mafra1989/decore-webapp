@@ -86,6 +86,7 @@ public class DashboardBean implements Serializable {
 
 		List<Top5Despesa> top5Despesas = new ArrayList<>();
 		for (Object[] object : despesasTemp) {
+			System.out.println("Top5Despesas: " + object[1].toString());
 			Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[0].toString()));
 			if (lancamento != null) {
 
