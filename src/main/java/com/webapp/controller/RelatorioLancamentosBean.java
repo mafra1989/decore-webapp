@@ -125,8 +125,8 @@ public class RelatorioLancamentosBean implements Serializable {
 		Calendar calendar = Calendar.getInstance();
 		Calendar calendarTemp = Calendar.getInstance();
 
-		int semana01 = calendarTemp.get(Calendar.WEEK_OF_YEAR);
-		if (semana01 >= 5) {
+		int semana01 = calendarTemp.get(Calendar.WEEK_OF_YEAR) - 3;
+		if (semana01 >= 4) {
 
 			String semanaTemp = String.valueOf(semana01);
 			if (semana01 < 10) {
@@ -146,7 +146,7 @@ public class RelatorioLancamentosBean implements Serializable {
 		} else {
 			this.semana01 = "W01";
 
-			int semana02 = calendarTemp.get(Calendar.WEEK_OF_YEAR);
+			int semana02 = calendarTemp.get(Calendar.WEEK_OF_YEAR) + 3;
 			String semanaTemp = String.valueOf(semana02);
 			if (semana02 < 10) {
 				semanaTemp = "0" + semana02;
@@ -299,6 +299,7 @@ public class RelatorioLancamentosBean implements Serializable {
 					double valor = 0;
 					Object[] objectTemp = null;
 					String tipo = "";
+					List<String> tipos = new ArrayList<>();
 					
 					for (Object[] object : resultTemp) {
 						
@@ -311,6 +312,7 @@ public class RelatorioLancamentosBean implements Serializable {
 						if(!tipo.equals(object[4].toString())) {								
 							objectTemp = new Object[6];	
 							tipo = object[4].toString();
+							tipos.add(tipo);
 						}
 						
 						objectTemp[0] = object[0];
@@ -328,7 +330,49 @@ public class RelatorioLancamentosBean implements Serializable {
 								valor += new BigDecimal(object[5].toString()).doubleValue();
 							}
 						}
-					}		
+					}	
+					
+					if(!tipos.contains("DEBITO")) {
+						Object[] object = new Object[6];
+						object[0] = calendarStartTemp.get(Calendar.DAY_OF_MONTH);
+						if (calendarStartTemp.get(Calendar.DAY_OF_MONTH) < 10) {
+							object[0] = "0" + calendarStartTemp.get(Calendar.DAY_OF_MONTH);
+						}
+
+						object[1] = calendarStartTemp.get(Calendar.MONTH) + 1;
+						if (calendarStartTemp.get(Calendar.MONTH) + 1 < 10) {
+							object[1] = "0" + (calendarStartTemp.get(Calendar.MONTH) + 1);
+						}
+
+						object[2] = calendarStartTemp.get(Calendar.YEAR);
+
+						object[3] = "";
+						object[4] = "DEBITO";
+						object[5] = 0;
+
+						result.add(object);
+					}
+					
+					if(!tipos.contains("CREDITO")) {
+						Object[] object = new Object[6];
+						object[0] = calendarStartTemp.get(Calendar.DAY_OF_MONTH);
+						if (calendarStartTemp.get(Calendar.DAY_OF_MONTH) < 10) {
+							object[0] = "0" + calendarStartTemp.get(Calendar.DAY_OF_MONTH);
+						}
+
+						object[1] = calendarStartTemp.get(Calendar.MONTH) + 1;
+						if (calendarStartTemp.get(Calendar.MONTH) + 1 < 10) {
+							object[1] = "0" + (calendarStartTemp.get(Calendar.MONTH) + 1);
+						}
+
+						object[2] = calendarStartTemp.get(Calendar.YEAR);
+
+						object[3] = "";
+						object[4] = "CREDITO";
+						object[5] = 0;
+
+						result.add(object);
+					}
 					
 					objectTemp[5] = valor;
 					result.add(objectTemp);
@@ -407,17 +451,159 @@ public class RelatorioLancamentosBean implements Serializable {
 
 		BarChartDataSet dataSet = new BarChartDataSet();
 		List<Number> values = new ArrayList<>();
+		
+		BarChartDataSet dataSet2 = new BarChartDataSet();
+		List<Number> values2 = new ArrayList<>();
+		
+		List<String> labels = new ArrayList<>();
 
-		List<Object[]> result = lancamentos.totalDespesasPorSemana(ano01, semana01, semana02, categoriaPorSemana, true);
-		for (Object[] object : result) {
-			values.add((Number) object[2]);
-			System.out.println(object[2]);
+		List<Object[]> result = new ArrayList<>();
+		if (Integer.parseInt(semana01.replace("W", "")) <= Integer.parseInt(semana02.replace("W", ""))) {
+
+			for (int i = Integer.parseInt(semana01.replace("W", "")); i <= Integer
+					.parseInt(semana02.replace("W", "")); i++) {
+
+				String semana01 = "W";
+				if (i < 10) {
+					semana01 += "0" + i;
+				} else {
+					semana01 += i;
+				}
+
+				System.out.println(semana01);
+
+				List<Object[]> resultTemp = contas.totalLancamentosPorSemana(ano01, semana01, semana01, true);
+
+				if (resultTemp.size() == 0) {
+
+					Object[] object = new Object[5];
+
+					object[0] = i;
+					object[1] = ano01;
+
+					object[2] = "";
+					object[3] = "";
+					
+					object[4] = 0;
+
+					result.add(object);
+				} else {
+					double valor = 0;
+					Object[] objectTemp = null;
+					String tipo = "";
+					List<String> tipos = new ArrayList<>();
+					
+					for (Object[] object : resultTemp) {
+						
+						if(!tipo.equals(object[3].toString()) && !tipo.equals("")) {	
+							objectTemp[4] = valor;
+							result.add(objectTemp);
+							valor = 0;
+						}
+						
+						if(!tipo.equals(object[3].toString())) {								
+							objectTemp = new Object[5];	
+							tipo = object[3].toString();
+							tipos.add(tipo);
+						}
+						
+						objectTemp[0] = object[0];
+						objectTemp[1] = object[1];
+						objectTemp[2] = object[2];
+						objectTemp[3] = object[3];
+
+						Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[2].toString()));
+						if(lancamento != null) {
+							if(categoriaPorDia != null && categoriaPorDia.getId() != null) {
+								if(lancamento.getCategoriaLancamento().getId().intValue() == categoriaPorDia.getId().intValue()) {
+									valor += new BigDecimal(object[4].toString()).doubleValue();
+								}
+							} else {
+								valor += new BigDecimal(object[4].toString()).doubleValue();
+							}
+						}
+					}	
+					
+					if(!tipos.contains("DEBITO")) {
+						Object[] object = new Object[5];
+
+						object[0] = i;
+						object[1] = ano01;
+
+						object[2] = "";
+						object[3] = "DEBITO";
+						
+						object[4] = 0;
+
+						result.add(object);
+					}
+					
+					if(!tipos.contains("CREDITO")) {
+						Object[] object = new Object[5];
+
+						object[0] = i;
+						object[1] = ano01;
+
+						object[2] = "";
+						object[3] = "CREDITO";
+						
+						object[4] = 0;
+
+						result.add(object);
+					}
+					
+					
+					objectTemp[4] = valor;
+					result.add(objectTemp);
+				}
+			}
+
+			System.out.println("result.size(): " + result.size());
 		}
-
-		dataSet.setData(values);
-		dataSet.setLabel("Valor Total");
-		dataSet.setBorderColor("rgb(54, 162, 235)");
-		dataSet.setBackgroundColor("rgba(54, 162, 235)");
+			
+		
+		String week = "";
+		for (Object[] object : result) {
+			
+			int semana = Integer.parseInt(object[0].toString());
+			String semanaTemp = String.valueOf(semana);
+			if (semana < 10) {
+				semanaTemp = "0" + semana;
+			}
+			String weekTemp = "W" + semanaTemp;
+			
+			if(!week.equals(weekTemp)) {
+				labels.add(weekTemp);					
+				week = weekTemp;
+			}
+			
+			if(object[3].toString().equals("DEBITO")) {
+				values.add((Number) object[4]);
+				
+			} else if(object[3].toString().equals("CREDITO")) {
+				values2.add((Number) object[4]);
+				
+			} else if(object[3].toString().equals("")) {
+				values.add((Number) object[4]);
+				values2.add((Number) object[4]);
+			} 
+		}
+		
+		if(categoriaPorSemana == null || categoriaPorSemana.getId() == null || categoriaPorSemana.getTipoLancamento().getOrigem() == OrigemLancamento.DEBITO) {
+			dataSet.setData(values);
+			dataSet.setLabel("Débito");
+			dataSet.setBorderColor("rgba(54, 162, 235)");
+			dataSet.setBackgroundColor("rgba(54, 162, 235)");
+			data.addChartDataSet(dataSet);
+		}
+		
+		if(categoriaPorSemana == null || categoriaPorSemana.getId() == null || categoriaPorSemana.getTipoLancamento().getOrigem() == OrigemLancamento.CREDITO) {
+			dataSet2.setData(values2);
+			dataSet2.setLabel("Crédito");
+			dataSet2.setBorderColor("rgba(255, 205, 86)");
+			dataSet2.setBackgroundColor("rgba(255, 205, 86)");
+			data.addChartDataSet(dataSet2);
+		}
 
 		/*
 		 * LineChartDataSet dataSet2 = new LineChartDataSet(); List<Object> values2 =
@@ -425,19 +611,6 @@ public class RelatorioLancamentosBean implements Serializable {
 		 * values2.add(50); dataSet2.setLabel("Line Dataset"); dataSet2.setFill(false);
 		 * dataSet2.setBorderColor("rgb(54, 162, 235)");
 		 */
-
-		data.addChartDataSet(dataSet);
-		// data.addChartDataSet(dataSet2);
-
-		List<String> labels = new ArrayList<>();
-		for (Object[] object : result) {
-			long semana = (long) object[0];
-			String semanaTemp = String.valueOf(semana);
-			if (semana < 10) {
-				semanaTemp = "0" + semana;
-			}
-			labels.add("W" + semanaTemp);
-		}
 
 		data.setLabels(labels);
 

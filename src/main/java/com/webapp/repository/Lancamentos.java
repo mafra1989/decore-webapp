@@ -211,18 +211,6 @@ public class Lancamentos implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalDespesasPorCategoriaMesAtual() {
-		Calendar calendar = Calendar.getInstance();
-		String jpql = "SELECT c.nome, sum(i.valor) FROM Lancamento i join i.categoriaLancamento c WHERE i.categoriaLancamento.tipoLancamento.origem = :origem and i.mes = :mesAtual GROUP BY c.nome order by sum(i.valor) desc";
-		Query q = manager.createQuery(jpql).setParameter("origem", OrigemLancamento.DEBITO)
-				.setParameter("mesAtual", Long.parseLong(String.valueOf(calendar.get(Calendar.MONTH) + 1)))
-				.setMaxResults(5);
-		List<Object[]> result = q.getResultList();
-
-		return result;
-	}
-
-	@SuppressWarnings("unchecked")
 	public List<Object[]> totalDespesasPorData(Calendar calendarStart, Calendar calendarStop,
 			CategoriaLancamento categoriaLancamento, boolean chartCondition) {
 

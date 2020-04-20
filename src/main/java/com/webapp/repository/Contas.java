@@ -43,6 +43,18 @@ public class Contas implements Serializable {
 	public List<Conta> todas() {
 		return this.manager.createQuery("from Conta order by id", Conta.class).getResultList();
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalDespesasPorCategoriaMesAtual() {
+		Calendar calendar = Calendar.getInstance();
+		String jpql = "SELECT i.codigoOperacao, sum(i.valor) FROM Conta i WHERE i.tipo = 'DEBITO' and i.status = 'Y' and i.mes = :mesAtual GROUP BY i.codigoOperacao order by sum(i.valor) desc";
+		Query q = manager.createQuery(jpql)
+				.setParameter("mesAtual", Long.parseLong(String.valueOf(calendar.get(Calendar.MONTH) + 1)))
+				.setMaxResults(5);
+		List<Object[]> result = q.getResultList();
+
+		return result;
+	}
 
 	public Number porContasPagas(String tipo, String operacao) {
 
@@ -375,7 +387,7 @@ public class Contas implements Serializable {
 		select_Condition = "i.dia, i.mes, i.ano, i.codigoOperacao, i.tipo, ";
 		sum_Condition = "sum(i.valor)";
 		groupBy_Condition = "i.dia, i.mes, i.ano, i.codigoOperacao, i.tipo ";
-		orderBy_Condition = "i.dia asc, i.mes asc, i.ano asc";
+		orderBy_Condition = "i.dia asc, i.mes asc, i.ano asc, i.tipo";
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i "
 				+ "WHERE i.pagamento BETWEEN :dataInicio AND :dataFim "
@@ -398,6 +410,40 @@ public class Contas implements Serializable {
 				object[1] = "0" + object[1];
 			}
 		}
+
+		return result;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalLancamentosPorSemana(String ano, String semana01, String semana02, boolean chartCondition) {
+
+		String condition = "";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+
+		if (chartCondition != false) {
+			select_Condition = "i.semana, i.ano, i.codigoOperacao, i.tipo, ";
+			sum_Condition = "sum(i.valor)";
+			groupBy_Condition = "i.semana, i.ano, i.codigoOperacao, i.tipo ";
+			orderBy_Condition = "i.semana asc, i.ano asc, i.tipo";
+		} else {
+			select_Condition = "i.categoriaLancamento.tipoLancamento.descricao, ";
+			sum_Condition = "count(i.categoriaLancamento.tipoLancamento.descricao)";
+			groupBy_Condition = "i.categoriaLancamento.tipoLancamento.descricao ";
+			orderBy_Condition = "count(i.categoriaLancamento.tipoLancamento.descricao) asc";
+		}
+
+		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i "
+				+ "WHERE i.semana = :semanaInicio " + "AND i.ano = :ano "
+				+ "AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' " + condition + "group by "
+				+ groupBy_Condition + " order by " + orderBy_Condition;
+		Query q = manager.createQuery(jpql).setParameter("semanaInicio", Long.parseLong(semana01.replace("W", "")))
+				.setParameter("ano", Long.parseLong(ano));
+
+		List<Object[]> result = q.getResultList();
 
 		return result;
 	}
