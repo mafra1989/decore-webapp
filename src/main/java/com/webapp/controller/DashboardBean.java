@@ -91,7 +91,7 @@ public class DashboardBean implements Serializable {
 
 				Top5Despesa top5Despesa = new Top5Despesa();
 				top5Despesa.setItem(lancamento.getCategoriaLancamento().getNome());
-				top5Despesa.setValue(lancamento.getValor().doubleValue());
+				top5Despesa.setValue(Double.parseDouble(object[1].toString()));
 				if (!top5Despesas.contains(top5Despesa)) {
 					top5Despesas.add(top5Despesa);
 				} else {
