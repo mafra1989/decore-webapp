@@ -160,7 +160,7 @@ public class RelatorioLucrosBean implements Serializable {
 			this.semana02 = "W" + semanaTemp;
 		}
 
-		//calendar.add(Calendar.DAY_OF_MONTH, -5);
+		// calendar.add(Calendar.DAY_OF_MONTH, -5);
 		dateStart = calendar.getTime();
 
 		createMixedModelPorDia();
@@ -387,37 +387,41 @@ public class RelatorioLucrosBean implements Serializable {
 
 				System.out.println("Despesas: " + totalDeDespesas);
 
-				//if (totalDeReceitas > 0 || totalDeDespesas > 0 || totalDeVendas > 0 || totalCompras > 0) {
+				// if (totalDeReceitas > 0 || totalDeDespesas > 0 || totalDeVendas > 0 ||
+				// totalCompras > 0) {
 
-					values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
+				values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
 
-					if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) == 0 && totalDeDespesas > 0) {
-						values2.add(-100.0);
-						System.out.println("Valor Percentual: -100.0");
-					} else if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) > 0 && (totalCompras + totalDeDespesas) == 0) {
-						values2.add(100.0);
-						System.out.println("Valor Percentual: 100.0");
-					} else {
-						values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas)
-								/ (totalCompras + totalDeDespesas)) * 100);
-						System.out.println("Valor Percentual: " + (((totalDeVendas + totalDeReceitas) - totalDeDespesas)
-								/ (totalCompras + totalDeDespesas)) * 100);
-					}
-
-					System.out.println("Percentual: "
+				if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) == 0 && totalDeDespesas > 0) {
+					values2.add(-100.0);
+					System.out.println("Valor Percentual: -100.0");
+				} else if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) > 0
+						&& (totalCompras + totalDeDespesas) == 0) {
+					values2.add(100.0);
+					System.out.println("Valor Percentual: 100.0");
+				} else {
+					values2.add(
+							(((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
+									* 100);
+					System.out.println("Valor Percentual: "
 							+ (((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
 									* 100);
+				}
 
-					labels.add(object[0] + "/" + object[1]/* + "/" + object[2] */);
-				//}
+				System.out.println("Percentual: "
+						+ (((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
+								* 100);
+
+				labels.add(object[0] + "/" + object[1]/* + "/" + object[2] */);
+				// }
 
 			} else {
-				//if (totalDeVendas > 0 || totalCompras > 0) {
-					values.add(totalDeVendas/* - totalDeCompras */);
-					values2.add((totalDeVendas / totalCompras) * 100);
+				// if (totalDeVendas > 0 || totalCompras > 0) {
+				values.add(totalDeVendas/* - totalDeCompras */);
+				values2.add((totalDeVendas / totalCompras) * 100);
 
-					labels.add(object[0] + "/" + object[1]/* + "/" + object[2] */);
-				//}
+				labels.add(object[0] + "/" + object[1]/* + "/" + object[2] */);
+				// }
 			}
 
 			System.out.println(object[3]);
@@ -477,7 +481,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 		BarChartDataSet dataSet = new BarChartDataSet();
 		List<Number> values = new ArrayList<>();
-		
+
 		List<String> labels = new ArrayList<>();
 
 		List<Object[]> result = new ArrayList<>();
@@ -492,7 +496,7 @@ public class RelatorioLucrosBean implements Serializable {
 				} else {
 					semana01 += i;
 				}
-				
+
 				System.out.println(semana01);
 
 				List<Object[]> resultTemp = vendas.totalLucrosPorSemana(ano01, semana01, semana01, categoriaPorSemana,
@@ -515,7 +519,7 @@ public class RelatorioLucrosBean implements Serializable {
 					}
 				}
 			}
-			
+
 			System.out.println("result.size(): " + result.size());
 		}
 
@@ -538,50 +542,53 @@ public class RelatorioLucrosBean implements Serializable {
 			 */
 
 			if (categoriaPorSemana == null || categoriaPorSemana.getId() == null) {
-					
-					totalDeReceitas = contas.totalDeReceitasPorSemana(Long.parseLong(object[0].toString()),
-							Long.parseLong(object[1].toString())).doubleValue();
-	
-					totalDeDespesas = contas.totalDespesasPorSemana(Long.parseLong(object[0].toString()),
-							Long.parseLong(object[1].toString())).doubleValue();
-	
-					//if (totalDeReceitas > 0 || totalDeDespesas > 0 || totalDeVendas > 0 || totalCompras > 0) {
-						values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
 
-						
-						if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) == 0 && totalDeDespesas > 0) {
-							values2.add(-100.0);
-							System.out.println("Valor Percentual: -100.0");
-						} else if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) > 0 && (totalCompras + totalDeDespesas) == 0) {
-							values2.add(100.0);
-							System.out.println("Valor Percentual: 100.0");
-						} else {
-							values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas)
-									/ (totalCompras + totalDeDespesas)) * 100);
-							System.out.println("Valor Percentual: " + (((totalDeVendas + totalDeReceitas) - totalDeDespesas)
-									/ (totalCompras + totalDeDespesas)) * 100);
-						}
-						
-						long semana = Long.parseLong(object[0].toString());
-						String semanaTemp = String.valueOf(semana);
-						if (semana < 10) {
-							semanaTemp = "0" + semana;
-						}
-						labels.add("W" + semanaTemp);
-					//}
-							
+				totalDeReceitas = contas.totalDeReceitasPorSemana(Long.parseLong(object[0].toString()),
+						Long.parseLong(object[1].toString())).doubleValue();
+
+				totalDeDespesas = contas.totalDespesasPorSemana(Long.parseLong(object[0].toString()),
+						Long.parseLong(object[1].toString())).doubleValue();
+
+				// if (totalDeReceitas > 0 || totalDeDespesas > 0 || totalDeVendas > 0 ||
+				// totalCompras > 0) {
+				values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
+
+				if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) == 0 && totalDeDespesas > 0) {
+					values2.add(-100.0);
+					System.out.println("Valor Percentual: -100.0");
+				} else if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) > 0
+						&& (totalCompras + totalDeDespesas) == 0) {
+					values2.add(100.0);
+					System.out.println("Valor Percentual: 100.0");
+				} else {
+					values2.add(
+							(((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
+									* 100);
+					System.out.println("Valor Percentual: "
+							+ (((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
+									* 100);
+				}
+
+				long semana = Long.parseLong(object[0].toString());
+				String semanaTemp = String.valueOf(semana);
+				if (semana < 10) {
+					semanaTemp = "0" + semana;
+				}
+				labels.add("W" + semanaTemp);
+				// }
+
 			} else {
-				//if (totalDeVendas > 0 || totalCompras > 0) {
-					values.add(totalDeVendas/* - totalDeCompras */);
-					values2.add((totalDeVendas / totalCompras) * 100);
-					
-					long semana = Long.parseLong(object[0].toString());
-					String semanaTemp = String.valueOf(semana);
-					if (semana < 10) {
-						semanaTemp = "0" + semana;
-					}
-					labels.add("W" + semanaTemp);
-				//}
+				// if (totalDeVendas > 0 || totalCompras > 0) {
+				values.add(totalDeVendas/* - totalDeCompras */);
+				values2.add((totalDeVendas / totalCompras) * 100);
+
+				long semana = Long.parseLong(object[0].toString());
+				String semanaTemp = String.valueOf(semana);
+				if (semana < 10) {
+					semanaTemp = "0" + semana;
+				}
+				labels.add("W" + semanaTemp);
+				// }
 			}
 		}
 
@@ -706,18 +713,18 @@ public class RelatorioLucrosBean implements Serializable {
 
 		List<Object[]> result = new ArrayList<>();
 		if (lucroPorLote != true) {
-			if(Integer.parseInt(numberMes(mes01)) <= Integer.parseInt(numberMes(mes02))) {
-				
+			if (Integer.parseInt(numberMes(mes01)) <= Integer.parseInt(numberMes(mes02))) {
+
 				for (int i = Integer.parseInt(numberMes(mes01)); i <= Integer.parseInt(numberMes(mes02)); i++) {
 					String mes01 = String.valueOf(i);
-					if(i < 10) {
+					if (i < 10) {
 						mes01 = "0" + i;
 					}
-					List<Object[]> resultTemp = vendas.totalLucrosPorMes(ano02, mes01, mes01, categoriaPorMes, produto03,
-							true);
-					
-					if(resultTemp.size() == 0) {
-						
+					List<Object[]> resultTemp = vendas.totalLucrosPorMes(ano02, mes01, mes01, categoriaPorMes,
+							produto03, true);
+
+					if (resultTemp.size() == 0) {
+
 						Object[] object = new Object[4];
 
 						object[0] = i;
@@ -725,25 +732,55 @@ public class RelatorioLucrosBean implements Serializable {
 
 						object[2] = 0;
 						object[3] = 0;
-						
+
 						result.add(object);
-						
+
 					} else {
 						for (Object[] object : resultTemp) {
 							result.add(object);
 						}
 					}
 				}
-				
+
 			}
 		} else {
-			result = vendas.totalLucrosPorLote(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes, produto03,
-					true);
+
+			if (Integer.parseInt(numberMes(mes01)) <= Integer.parseInt(numberMes(mes02))) {
+
+				for (int i = Integer.parseInt(numberMes(mes01)); i <= Integer.parseInt(numberMes(mes02)); i++) {
+					String mes01 = String.valueOf(i);
+					if (i < 10) {
+						mes01 = "0" + i;
+					}
+					List<Object[]> resultTemp = vendas.totalLucrosPorLote(ano02, mes01, mes01, categoriaPorMes, produto03,
+							true);
+
+					if (resultTemp.size() == 0) {
+
+						Object[] object = new Object[5];
+
+						object[0] = i;
+						object[1] = ano02;
+
+						object[2] = 0;
+						object[3] = 0;
+						object[4] = i;
+
+						result.add(object);
+
+					} else {
+						for (Object[] object : resultTemp) {
+							result.add(object);
+						}
+					}
+				}
+
+			}
 		}
 
 		LineChartDataSet dataSet2 = new LineChartDataSet();
 		List<Number> values2 = new ArrayList<>();
-		
+
 		List<String> labels = new ArrayList<>();
 
 		for (Object[] object : result) {
@@ -775,27 +812,30 @@ public class RelatorioLucrosBean implements Serializable {
 				if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) == 0 && totalDeDespesas > 0) {
 					values2.add(-100.0);
 					System.out.println("Valor Percentual: -100.0");
-				} else if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) > 0 && (totalCompras + totalDeDespesas) == 0) {
+				} else if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) > 0
+						&& (totalCompras + totalDeDespesas) == 0) {
 					values2.add(100.0);
 					System.out.println("Valor Percentual: 100.0");
 				} else {
-					values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas)
-							/ (totalCompras + totalDeDespesas)) * 100);
-					System.out.println("Valor Percentual: " + (((totalDeVendas + totalDeReceitas) - totalDeDespesas)
-							/ (totalCompras + totalDeDespesas)) * 100);
+					values2.add(
+							(((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
+									* 100);
+					System.out.println("Valor Percentual: "
+							+ (((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
+									* 100);
 				}
-				
+
 				if (lucroPorLote != true) {
 					labels.add(nameMes((Integer.parseInt(object[0].toString()))));
 				} else {
 					labels.add(nameMes((Integer.parseInt(object[4].toString()))));
 				}
-				
+
 			} else {
 
 				values.add(totalDeVendas/* - totalDeCompras */);
 				values2.add((totalDeVendas / totalCompras) * 100);
-				
+
 				if (lucroPorLote != true) {
 					labels.add(nameMes((Integer.parseInt(object[0].toString()))));
 				} else {
@@ -858,38 +898,38 @@ public class RelatorioLucrosBean implements Serializable {
 
 		BarChartDataSet dataSet = new BarChartDataSet();
 		List<Number> values = new ArrayList<>();
-		
+
 		List<Object[]> result = new ArrayList<>();
-		if(Integer.parseInt(ano03) <= Integer.parseInt(ano04)) {
-			
+		if (Integer.parseInt(ano03) <= Integer.parseInt(ano04)) {
+
 			for (int i = Integer.parseInt(ano03); i <= Integer.parseInt(ano04); i++) {
-				
+
 				String ano03 = String.valueOf(i);
-				
+
 				List<Object[]> resultTemp = vendas.totalLucrosPorAno(ano03, ano03, categoriaPorAno, produto04, true);
-				
-				if(resultTemp.size() == 0) {
-					
+
+				if (resultTemp.size() == 0) {
+
 					Object[] object = new Object[3];
 
 					object[0] = i;
-					
+
 					object[1] = 0;
 					object[2] = 0;
-					
+
 					result.add(object);
-					
+
 				} else {
 					for (Object[] object : resultTemp) {
 						result.add(object);
 					}
 				}
-			}		
+			}
 		}
 
 		LineChartDataSet dataSet2 = new LineChartDataSet();
 		List<Number> values2 = new ArrayList<>();
-		
+
 		List<String> labels = new ArrayList<>();
 
 		for (Object[] object : result) {
@@ -917,22 +957,25 @@ public class RelatorioLucrosBean implements Serializable {
 				if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) == 0 && totalDeDespesas > 0) {
 					values2.add(-100.0);
 					System.out.println("Valor Percentual: -100.0");
-				} else if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) > 0 && (totalCompras + totalDeDespesas) == 0) {
+				} else if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) > 0
+						&& (totalCompras + totalDeDespesas) == 0) {
 					values2.add(100.0);
 					System.out.println("Valor Percentual: 100.0");
 				} else {
-					values2.add((((totalDeVendas + totalDeReceitas) - totalDeDespesas)
-							/ (totalCompras + totalDeDespesas)) * 100);
-					System.out.println("Valor Percentual: " + (((totalDeVendas + totalDeReceitas) - totalDeDespesas)
-							/ (totalCompras + totalDeDespesas)) * 100);
+					values2.add(
+							(((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
+									* 100);
+					System.out.println("Valor Percentual: "
+							+ (((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
+									* 100);
 				}
-				
+
 				labels.add(object[0].toString());
 			} else {
 
 				values.add(totalDeVendas/* - totalDeCompras */);
 				values2.add((totalDeVendas / totalCompras) * 100);
-				
+
 				labels.add(object[0].toString());
 			}
 		}
