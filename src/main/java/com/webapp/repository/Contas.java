@@ -374,7 +374,7 @@ public class Contas implements Serializable {
 
 		select_Condition = "i.dia, i.mes, i.ano, i.codigoOperacao, i.tipo, ";
 		sum_Condition = "sum(i.valor)";
-		groupBy_Condition = "i.dia, i.mes, i.ano, i.codigoOperacao ";
+		groupBy_Condition = "i.dia, i.mes, i.ano, i.codigoOperacao, i.tipo ";
 		orderBy_Condition = "i.dia asc, i.mes asc, i.ano asc";
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i "
