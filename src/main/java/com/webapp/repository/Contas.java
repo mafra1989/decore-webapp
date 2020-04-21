@@ -447,4 +447,37 @@ public class Contas implements Serializable {
 
 		return result;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalDespesasPorMes(String ano, String mes01, String mes02, boolean chartCondition) {
+
+		String condition = "";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+
+		if (chartCondition != false) {
+			select_Condition = "i.mes, i.ano, i.codigoOperacao, i.tipo, ";
+			sum_Condition = "sum(i.valor)";
+			groupBy_Condition = "i.mes, i.ano, i.codigoOperacao, i.tipo ";
+			orderBy_Condition = "i.mes asc, i.ano asc, i.tipo";
+		} else {
+			select_Condition = "i.categoriaLancamento.tipoLancamento.descricao, ";
+			sum_Condition = "count(i.categoriaLancamento.tipoLancamento.descricao)";
+			groupBy_Condition = "i.categoriaLancamento.tipoLancamento.descricao ";
+			orderBy_Condition = "count(i.categoriaLancamento.tipoLancamento.descricao) asc";
+		}
+
+		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i "
+				+ "WHERE i.mes BETWEEN :mesInicio AND :mesFim " + "AND i.ano = :ano "
+				+ "AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' " + condition + "group by "
+				+ groupBy_Condition + " order by " + orderBy_Condition;
+		Query q = manager.createQuery(jpql).setParameter("mesInicio", Long.parseLong(mes01))
+				.setParameter("mesFim", Long.parseLong(mes02)).setParameter("ano", Long.parseLong(ano));
+
+		List<Object[]> result = q.getResultList();
+
+		return result;
+	}
 }
