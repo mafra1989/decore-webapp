@@ -915,7 +915,7 @@ public class RelatorioLancamentosBean implements Serializable {
 
 					for (Object[] object : resultTemp) {
 
-						if (!tipo.equals(object[3].toString()) && !tipo.equals("")) {
+						if (!tipo.equals(object[2].toString()) && !tipo.equals("")) {
 							objectTemp[3] = valor;
 							result.add(objectTemp);
 							valor = 0;
