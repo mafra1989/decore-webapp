@@ -503,11 +503,10 @@ public class Contas implements Serializable {
 		}
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i "
-				+ "WHERE i.ano BETWEEN :anoInicio AND :anoFim "
+				+ "WHERE i.ano = :anoInicio "
 				+ "AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' " + condition + "group by "
 				+ groupBy_Condition + " order by " + orderBy_Condition;
-		Query q = manager.createQuery(jpql).setParameter("anoInicio", Long.parseLong(ano01))
-				.setParameter("anoFim", Long.parseLong(ano02));
+		Query q = manager.createQuery(jpql).setParameter("anoInicio", Long.parseLong(ano01));
 
 		List<Object[]> result = q.getResultList();
 

@@ -979,11 +979,11 @@ public class RelatorioLancamentosBean implements Serializable {
 			int ano = Integer.parseInt(object[0].toString());
 			String yearTemp = String.valueOf(ano);
 			if (ano < 10) {
-				year = "0" + ano;
+				yearTemp = "0" + ano;
 			}
 
 			if (!year.equals(yearTemp)) {
-				labels.add(nameMes(Integer.parseInt(object[0].toString())));
+				labels.add(object[0].toString());
 				year = yearTemp;
 			}
 
