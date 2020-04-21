@@ -138,7 +138,7 @@ public class Contas implements Serializable {
 		}
 
 		String jpql = "SELECT c FROM Conta c " + "WHERE c.id > 0 " + conditionCodigo + conditionTipoOperacao
-				+ conditionOrigemConta + conditionContasPagas + "order by c.pagameto ASC, c.id asc";
+				+ conditionOrigemConta + conditionContasPagas + "order by c.pagamento ASC, c.id asc";
 
 		Query q = manager.createQuery(jpql);/* setParameter("vencimento", vencimento.getTime()); */
 
