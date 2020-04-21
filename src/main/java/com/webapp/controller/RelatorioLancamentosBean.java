@@ -159,7 +159,7 @@ public class RelatorioLancamentosBean implements Serializable {
 
 		createMixedModelPorDia();
 
-		for (int i = 2019; i <= calendar.get(Calendar.YEAR); i++) {
+		for (int i = 2018; i <= calendar.get(Calendar.YEAR); i++) {
 			anos.add(String.valueOf(i));
 		}
 
@@ -511,8 +511,8 @@ public class RelatorioLancamentosBean implements Serializable {
 
 						Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[2].toString()));
 						if (lancamento != null) {
-							if (categoriaPorDia != null && categoriaPorDia.getId() != null) {
-								if (lancamento.getCategoriaLancamento().getId().intValue() == categoriaPorDia.getId()
+							if (categoriaPorSemana != null && categoriaPorSemana.getId() != null) {
+								if (lancamento.getCategoriaLancamento().getId().intValue() == categoriaPorSemana.getId()
 										.intValue()) {
 									valor += new BigDecimal(object[4].toString()).doubleValue();
 								}
@@ -757,8 +757,8 @@ public class RelatorioLancamentosBean implements Serializable {
 
 						Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[2].toString()));
 						if (lancamento != null) {
-							if (categoriaPorDia != null && categoriaPorDia.getId() != null) {
-								if (lancamento.getCategoriaLancamento().getId().intValue() == categoriaPorDia.getId()
+							if (categoriaPorMes != null && categoriaPorMes.getId() != null) {
+								if (lancamento.getCategoriaLancamento().getId().intValue() == categoriaPorMes.getId()
 										.intValue()) {
 									valor += new BigDecimal(object[4].toString()).doubleValue();
 								}
@@ -882,17 +882,141 @@ public class RelatorioLancamentosBean implements Serializable {
 
 		BarChartDataSet dataSet = new BarChartDataSet();
 		List<Number> values = new ArrayList<>();
+		
+		BarChartDataSet dataSet2 = new BarChartDataSet();
+		List<Number> values2 = new ArrayList<>();
+		
+		List<String> labels = new ArrayList<>();
+		
+		List<Object[]> result = new ArrayList<>();
+		if(Integer.parseInt(ano03) <= Integer.parseInt(ano04)) {
+			
+			for (int i = Integer.parseInt(ano03); i <= Integer.parseInt(ano04); i++) {
+				
+				String ano03 = String.valueOf(i);
+				
+				List<Object[]> resultTemp = contas.totalDespesasPorAno(ano03, ano03, true);
+				
+				if (resultTemp.size() == 0) {
 
-		List<Object[]> result = lancamentos.totalDespesasPorAno(ano03, ano04, categoriaPorAno, true);
-		for (Object[] object : result) {
-			values.add((Number) object[1]);
-			System.out.println(object[1]);
+					Object[] object = new Object[4];
+
+					object[0] = i;
+					object[1] = "";
+					object[2] = "";
+					object[3] = 0;
+
+					result.add(object);
+				} else {
+					double valor = 0;
+					Object[] objectTemp = null;
+					String tipo = "";
+					List<String> tipos = new ArrayList<>();
+
+					for (Object[] object : resultTemp) {
+
+						if (!tipo.equals(object[3].toString()) && !tipo.equals("")) {
+							objectTemp[3] = valor;
+							result.add(objectTemp);
+							valor = 0;
+						}
+
+						if (!tipo.equals(object[2].toString())) {
+							objectTemp = new Object[4];
+							tipo = object[2].toString();
+							tipos.add(tipo);
+						}
+
+						objectTemp[0] = object[0];
+						objectTemp[1] = object[1];
+						objectTemp[2] = object[2];
+
+						Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[1].toString()));
+						if (lancamento != null) {
+							if (categoriaPorAno != null && categoriaPorAno.getId() != null) {
+								if (lancamento.getCategoriaLancamento().getId().intValue() == categoriaPorAno.getId()
+										.intValue()) {
+									valor += new BigDecimal(object[3].toString()).doubleValue();
+								}
+							} else {
+								valor += new BigDecimal(object[3].toString()).doubleValue();
+							}
+						}
+					}
+
+					if (!tipos.contains("DEBITO")) {
+						Object[] object = new Object[4];
+
+						object[0] = i;
+						object[1] = "";
+						object[2] = "DEBITO";
+						object[3] = 0;
+
+						result.add(object);
+					}
+
+					if (!tipos.contains("CREDITO")) {
+						Object[] object = new Object[4];
+
+						object[0] = i;
+						object[1] = "";
+						object[2] = "CREDITO";
+						object[3] = 0;
+
+						result.add(object);
+					}
+
+					objectTemp[3] = valor;
+					result.add(objectTemp);
+				}
+			}		
 		}
 
-		dataSet.setData(values);
-		dataSet.setLabel("Valor Total");
-		dataSet.setBorderColor("rgb(54, 162, 235)");
-		dataSet.setBackgroundColor("rgba(54, 162, 235)");
+		
+		String year = "";
+		for (Object[] object : result) {
+
+			int ano = Integer.parseInt(object[0].toString());
+			String yearTemp = String.valueOf(ano);
+			if (ano < 10) {
+				year = "0" + ano;
+			}
+
+			if (!year.equals(yearTemp)) {
+				labels.add(nameMes(Integer.parseInt(object[0].toString())));
+				year = yearTemp;
+			}
+
+			if (object[2].toString().equals("DEBITO")) {
+				values.add((Number) object[3]);
+
+			} else if (object[2].toString().equals("CREDITO")) {
+				values2.add((Number) object[3]);
+
+			} else if (object[2].toString().equals("")) {
+				values.add((Number) object[3]);
+				values2.add((Number) object[3]);
+			}
+		}
+
+		
+		if (categoriaPorAno == null || categoriaPorAno.getId() == null
+				|| categoriaPorAno.getTipoLancamento().getOrigem() == OrigemLancamento.DEBITO) {
+			dataSet.setData(values);
+			dataSet.setLabel("Débito");
+			dataSet.setBorderColor("rgba(54, 162, 235)");
+			dataSet.setBackgroundColor("rgba(54, 162, 235)");
+			data.addChartDataSet(dataSet);
+		}
+
+		if (categoriaPorAno == null || categoriaPorAno.getId() == null
+				|| categoriaPorAno.getTipoLancamento().getOrigem() == OrigemLancamento.CREDITO) {
+			dataSet2.setData(values2);
+			dataSet2.setLabel("Crédito");
+			dataSet2.setBorderColor("rgba(255, 205, 86)");
+			dataSet2.setBackgroundColor("rgba(255, 205, 86)");
+			data.addChartDataSet(dataSet2);
+		}
 
 		/*
 		 * LineChartDataSet dataSet2 = new LineChartDataSet(); List<Object> values2 =
@@ -901,13 +1025,8 @@ public class RelatorioLancamentosBean implements Serializable {
 		 * dataSet2.setBorderColor("rgb(54, 162, 235)");
 		 */
 
-		data.addChartDataSet(dataSet);
+		// data.addChartDataSet(dataSet);
 		// data.addChartDataSet(dataSet2);
-
-		List<String> labels = new ArrayList<>();
-		for (Object[] object : result) {
-			labels.add(String.valueOf(((Long) object[0]).longValue()));
-		}
 
 		data.setLabels(labels);
 

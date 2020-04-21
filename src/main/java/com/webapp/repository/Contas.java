@@ -480,4 +480,37 @@ public class Contas implements Serializable {
 
 		return result;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalDespesasPorAno(String ano01, String ano02, boolean chartCondition) {
+
+		String condition = "";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+
+		if (chartCondition != false) {
+			select_Condition = "i.ano, i.codigoOperacao, i.tipo, ";
+			sum_Condition = "sum(i.valor)";
+			groupBy_Condition = "i.ano, i.codigoOperacao, i.tipo";
+			orderBy_Condition = "i.ano asc, i.tipo";
+		} else {
+			select_Condition = "i.categoriaLancamento.tipoLancamento.descricao, ";
+			sum_Condition = "count(i.categoriaLancamento.tipoLancamento.descricao)";
+			groupBy_Condition = "i.categoriaLancamento.tipoLancamento.descricao ";
+			orderBy_Condition = "count(i.categoriaLancamento.tipoLancamento.descricao) asc";
+		}
+
+		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i "
+				+ "WHERE i.ano BETWEEN :anoInicio AND :anoFim "
+				+ "AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' " + condition + "group by "
+				+ groupBy_Condition + " order by " + orderBy_Condition;
+		Query q = manager.createQuery(jpql).setParameter("anoInicio", Long.parseLong(ano01))
+				.setParameter("anoFim", Long.parseLong(ano02));
+
+		List<Object[]> result = q.getResultList();
+
+		return result;
+	}
 }

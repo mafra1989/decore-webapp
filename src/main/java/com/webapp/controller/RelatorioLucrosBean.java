@@ -165,7 +165,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 		createMixedModelPorDia();
 
-		for (int i = 2019; i <= calendar.get(Calendar.YEAR); i++) {
+		for (int i = 2018; i <= calendar.get(Calendar.YEAR); i++) {
 			anos.add(String.valueOf(i));
 		}
 
