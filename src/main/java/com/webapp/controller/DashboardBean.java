@@ -31,6 +31,7 @@ import org.primefaces.model.charts.polar.PolarAreaChartModel;
 import com.webapp.model.FluxoDeCaixa;
 import com.webapp.model.Lancamento;
 import com.webapp.model.Top5Despesa;
+import com.webapp.model.VendaPorCategoria;
 import com.webapp.repository.Compras;
 import com.webapp.repository.Contas;
 import com.webapp.repository.Lancamentos;
@@ -78,6 +79,8 @@ public class DashboardBean implements Serializable {
 	private NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
 
 	private String saldoGeral = "0,00";
+	
+	private List<VendaPorCategoria> detalhesVendasPorCategoria = new ArrayList<>();
 
 	@PostConstruct
 	public void init() {
@@ -375,9 +378,18 @@ public class DashboardBean implements Serializable {
 		DonutChartDataSet dataSet = new DonutChartDataSet();
 		List<Number> values = new ArrayList<>();
 
+		detalhesVendasPorCategoria = new ArrayList<>();
+		
 		List<Object[]> result = vendas.totalVendasPorCategoria();
 		for (Object[] object : result) {
 			values.add((Number) object[1]);
+			
+			VendaPorCategoria vendaPorCategoria = new VendaPorCategoria();
+			vendaPorCategoria.setItem(object[0].toString());
+			vendaPorCategoria.setValue((Number) object[1]);
+			vendaPorCategoria.setQuantidade((Number) object[2]);
+			
+			detalhesVendasPorCategoria.add(vendaPorCategoria);
 		}
 
 		dataSet.setData(values);
@@ -464,6 +476,10 @@ public class DashboardBean implements Serializable {
 
 	public String getSaldoGeral() {
 		return saldoGeral;
+	}
+
+	public List<VendaPorCategoria> getDetalhesVendasPorCategoria() {
+		return detalhesVendasPorCategoria;
 	}
 
 }
