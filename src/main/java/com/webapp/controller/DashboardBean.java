@@ -81,6 +81,10 @@ public class DashboardBean implements Serializable {
 	private String saldoGeral = "0,00";
 	
 	private List<VendaPorCategoria> detalhesVendasPorCategoria = new ArrayList<>();
+	
+	private List<VendaPorCategoria> detalhesEstoqueParaVendaPorCategoria = new ArrayList<>();
+	
+	private List<Top5Despesa> top5Despesas = new ArrayList<>();
 
 	@PostConstruct
 	public void init() {
@@ -100,7 +104,7 @@ public class DashboardBean implements Serializable {
 
 		List<Object[]> despesasTemp = contas.totalDespesasPorCategoriaMesAtual();
 
-		List<Top5Despesa> top5Despesas = new ArrayList<>();
+		top5Despesas = new ArrayList<>();
 		for (Object[] object : despesasTemp) {
 			System.out.println("Top5Despesas: " + object[1].toString());
 			Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[0].toString()));
@@ -150,10 +154,19 @@ public class DashboardBean implements Serializable {
 
 		PolarAreaChartDataSet dataSet = new PolarAreaChartDataSet();
 		List<Number> values = new ArrayList<>();
-
+		
+		detalhesEstoqueParaVendaPorCategoria = new ArrayList<>();
+		
 		List<Object[]> totalParaVendasPorCategoria = vendas.totalParaVendasPorCategoria();
 		for (Object[] object : totalParaVendasPorCategoria) {
 			values.add((Number) object[1]);
+			
+			VendaPorCategoria vendaPorCategoria = new VendaPorCategoria();
+			vendaPorCategoria.setItem(object[0].toString());
+			vendaPorCategoria.setValue((Number) object[1]);
+			vendaPorCategoria.setQuantidade((Number) object[2]);
+			
+			detalhesEstoqueParaVendaPorCategoria.add(vendaPorCategoria);
 		}
 
 		dataSet.setData(values);
@@ -480,6 +493,14 @@ public class DashboardBean implements Serializable {
 
 	public List<VendaPorCategoria> getDetalhesVendasPorCategoria() {
 		return detalhesVendasPorCategoria;
+	}
+
+	public List<VendaPorCategoria> getDetalhesEstoqueParaVendaPorCategoria() {
+		return detalhesEstoqueParaVendaPorCategoria;
+	}
+
+	public List<Top5Despesa> getTop5Despesas() {
+		return top5Despesas;
 	}
 
 }
