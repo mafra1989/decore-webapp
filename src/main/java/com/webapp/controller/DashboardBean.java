@@ -1,8 +1,12 @@
 package com.webapp.controller;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.RequestScoped;
@@ -65,6 +69,15 @@ public class DashboardBean implements Serializable {
 	private DonutChartModel donutModel;
 
 	private List<FluxoDeCaixa> tabela = new ArrayList<FluxoDeCaixa>();
+	
+	
+	private static final Locale BRAZIL = new Locale("pt", "BR");
+
+	private static final DecimalFormatSymbols REAL = new DecimalFormatSymbols(BRAZIL);
+
+	private NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
+
+	private String saldoGeral = "0,00";
 
 	@PostConstruct
 	public void init() {
@@ -201,6 +214,9 @@ public class DashboardBean implements Serializable {
 		fluxoDeCaixa.setValue(
 				(totalVendas.doubleValue() + totalCreditosPagos.doubleValue()) - totalDebitosPagos.doubleValue());
 		tabela.add(fluxoDeCaixa);
+		
+		double saldo = (totalVendas.doubleValue() + totalCreditosPagos.doubleValue()) - totalDebitosPagos.doubleValue();
+		saldoGeral = nf.format(saldo);
 
 		fluxoDeCaixa = new FluxoDeCaixa();
 		fluxoDeCaixa.setItem("Vendas");
@@ -444,6 +460,10 @@ public class DashboardBean implements Serializable {
 
 	public List<FluxoDeCaixa> getTabela() {
 		return tabela;
+	}
+
+	public String getSaldoGeral() {
+		return saldoGeral;
 	}
 
 }
