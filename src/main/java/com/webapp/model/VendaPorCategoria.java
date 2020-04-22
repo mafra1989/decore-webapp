@@ -9,8 +9,9 @@ public class VendaPorCategoria implements Serializable {
 	private String item;
 
 	private Number value;
-	
+
 	private Number quantidade;
+
 
 	public String getItem() {
 		return item;
@@ -34,6 +35,31 @@ public class VendaPorCategoria implements Serializable {
 
 	public void setQuantidade(Number quantidade) {
 		this.quantidade = quantidade;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((item == null) ? 0 : item.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		VendaPorCategoria other = (VendaPorCategoria) obj;
+		if (item == null) {
+			if (other.item != null)
+				return false;
+		} else if (!item.equals(other.item))
+			return false;
+		return true;
 	}
 
 }

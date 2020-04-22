@@ -2,6 +2,7 @@ package com.webapp.controller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -121,6 +122,14 @@ public class RelatorioLucrosBean implements Serializable {
 	private DonutChartModel donutModel;
 
 	private Boolean lucroPorLote = false;
+	
+	private String[] categoriasPorDia;
+
+	private String[] categoriasPorSemana;
+
+	private String[] categoriasPorMes;
+
+	private String[] categoriasPorAno;
 
 	@PostConstruct
 	public void init() {
@@ -220,8 +229,9 @@ public class RelatorioLucrosBean implements Serializable {
 	public void changeCategoriaPorDia() {
 		produtosPorDia = new ArrayList<Produto>();
 		produto01 = null;
-		if (categoriaPorDia != null) {
-			produtosPorDia = produtos.porCategoria_(categoriaPorDia);
+
+		if (categoriasPorDia != null && categoriasPorDia.length > 0) {
+			produtosPorDia = produtos.porCategoria(categoriasPorDia);
 		}
 
 		createMixedModelPorDia();
@@ -235,8 +245,10 @@ public class RelatorioLucrosBean implements Serializable {
 	public void changeCategoriaPorSemana() {
 		produtosPorSemana = new ArrayList<Produto>();
 		produto02 = null;
-		if (categoriaPorSemana != null) {
-			produtosPorSemana = produtos.porCategoria_(categoriaPorSemana);
+
+		if (categoriasPorSemana != null && categoriasPorSemana.length > 0) {
+			produtosPorSemana = produtos.porCategoria(categoriasPorSemana);
+			System.out.println(Arrays.asList(categoriasPorSemana) + "-" + produtosPorSemana.size());
 		}
 
 		createMixedModelPorSemana();
@@ -250,8 +262,9 @@ public class RelatorioLucrosBean implements Serializable {
 	public void changeCategoriaPorMes() {
 		produtosPorMes = new ArrayList<Produto>();
 		produto03 = null;
-		if (categoriaPorMes != null) {
-			produtosPorMes = produtos.porCategoria_(categoriaPorMes);
+		
+		if (categoriasPorMes != null && categoriasPorMes.length > 0) {
+			produtosPorMes = produtos.porCategoria(categoriasPorMes);
 		} else {
 			lucroPorLote = false;
 		}
@@ -267,8 +280,9 @@ public class RelatorioLucrosBean implements Serializable {
 	public void changeCategoriaPorAno() {
 		produtosPorAno = new ArrayList<Produto>();
 		produto04 = null;
-		if (categoriaPorAno != null) {
-			produtosPorAno = produtos.porCategoria_(categoriaPorAno);
+
+		if (categoriasPorAno != null && categoriasPorAno.length > 0) {
+			produtosPorAno = produtos.porCategoria(categoriasPorAno);
 		}
 
 		createMixedModelPorAno();
@@ -306,7 +320,7 @@ public class RelatorioLucrosBean implements Serializable {
 				calendarStopTemp.add(Calendar.DAY_OF_MONTH, 1);
 
 				List<Object[]> resultTemp = vendas.totalLucrosPorData(calendarStartTemp, calendarStopTemp,
-						categoriaPorDia, produto01, true);
+						categoriaPorDia, categoriasPorDia, produto01, true);
 
 				System.out.println("Data: " + calendarStartTemp.getTime() + " - " + resultTemp.size());
 
@@ -499,7 +513,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 				System.out.println(semana01);
 
-				List<Object[]> resultTemp = vendas.totalLucrosPorSemana(ano01, semana01, semana01, categoriaPorSemana,
+				List<Object[]> resultTemp = vendas.totalLucrosPorSemana(ano01, semana01, semana01, categoriaPorSemana, categoriasPorSemana,
 						produto02, true);
 
 				if (resultTemp.size() == 0) {
@@ -720,7 +734,7 @@ public class RelatorioLucrosBean implements Serializable {
 					if (i < 10) {
 						mes01 = "0" + i;
 					}
-					List<Object[]> resultTemp = vendas.totalLucrosPorMes(ano02, mes01, mes01, categoriaPorMes,
+					List<Object[]> resultTemp = vendas.totalLucrosPorMes(ano02, mes01, mes01, categoriaPorMes, categoriasPorMes,
 							produto03, true);
 
 					if (resultTemp.size() == 0) {
@@ -906,7 +920,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 				String ano03 = String.valueOf(i);
 
-				List<Object[]> resultTemp = vendas.totalLucrosPorAno(ano03, ano03, categoriaPorAno, produto04, true);
+				List<Object[]> resultTemp = vendas.totalLucrosPorAno(ano03, ano03, categoriaPorAno, categoriasPorAno, produto04, true);
 
 				if (resultTemp.size() == 0) {
 
@@ -1040,7 +1054,7 @@ public class RelatorioLucrosBean implements Serializable {
 		Calendar calendarStop = Calendar.getInstance();
 		calendarStop.setTime(dateStop);
 
-		List<Object[]> result = vendas.totalLucrosPorData(calendarStart, calendarStop, categoriaPorDia, produto01,
+		List<Object[]> result = vendas.totalLucrosPorData(calendarStart, calendarStop, categoriaPorDia, categoriasPorDia, produto01,
 				false);
 
 		createDonutModel(result);
@@ -1048,7 +1062,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 	public void prepareDonutModelPorSemana() {
 
-		List<Object[]> result = vendas.totalLucrosPorSemana(ano01, semana01, semana02, categoriaPorSemana, produto02,
+		List<Object[]> result = vendas.totalLucrosPorSemana(ano01, semana01, semana02, categoriaPorSemana, categoriasPorSemana, produto02,
 				false);
 
 		createDonutModel(result);
@@ -1056,7 +1070,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 	public void prepareDonutModelPorMes() {
 
-		List<Object[]> result = vendas.totalLucrosPorMes(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes,
+		List<Object[]> result = vendas.totalLucrosPorMes(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes, categoriasPorMes,
 				produto03, false);
 
 		createDonutModel(result);
@@ -1064,7 +1078,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 	public void prepareDonutModelPorAno() {
 
-		List<Object[]> result = vendas.totalLucrosPorAno(ano03, ano04, categoriaPorAno, produto04, false);
+		List<Object[]> result = vendas.totalLucrosPorAno(ano03, ano04, categoriaPorAno, categoriasPorAno, produto04, false);
 
 		createDonutModel(result);
 	}
@@ -1317,5 +1331,37 @@ public class RelatorioLucrosBean implements Serializable {
 
 	public void setLucroPorLote(Boolean lucroPorLote) {
 		this.lucroPorLote = lucroPorLote;
+	}
+
+	public String[] getCategoriasPorSemana() {
+		return categoriasPorSemana;
+	}
+
+	public void setCategoriasPorSemana(String[] categoriasPorSemana) {
+		this.categoriasPorSemana = categoriasPorSemana;
+	}
+
+	public String[] getCategoriasPorDia() {
+		return categoriasPorDia;
+	}
+
+	public void setCategoriasPorDia(String[] categoriasPorDia) {
+		this.categoriasPorDia = categoriasPorDia;
+	}
+
+	public String[] getCategoriasPorMes() {
+		return categoriasPorMes;
+	}
+
+	public void setCategoriasPorMes(String[] categoriasPorMes) {
+		this.categoriasPorMes = categoriasPorMes;
+	}
+
+	public String[] getCategoriasPorAno() {
+		return categoriasPorAno;
+	}
+
+	public void setCategoriasPorAno(String[] categoriasPorAno) {
+		this.categoriasPorAno = categoriasPorAno;
 	}
 }

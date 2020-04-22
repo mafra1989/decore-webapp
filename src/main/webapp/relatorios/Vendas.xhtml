@@ -9,7 +9,6 @@
 	<ui:define name="head">
 
 		<script type="text/javascript">
-			
 			function percentExtender2() {
 				var tickColor = "#666";
 				var gridlineColor = "rgba(0,0,0,0.1)";
@@ -31,35 +30,42 @@
 					},
 				};
 			}
-			
+
 			function percentExtender3() {
 
-			      this.cfg.config.options = {
-			    		  legend: {
-			    	            display: true,
-			    	        },
-			    	        
-			          title: {
-	  			         display: true,
-	  			         text: 'Produtos vs Quantidade'
-	  				},
-	  				tooltips: {
-	  			         callbacks: {
+				this.cfg.config.options = {
+					legend : {
+						display : true,
+					},
 
-	  			             label: function (tooltipItem, data) {
-	  			            	var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-	                            
-	                            var total = eval(data.datasets[tooltipItem.datasetIndex].data.join("+"));
-	                            
-	                            var label = tooltipItem.yLabel;
-	                            
-	                            return "QTY: " + amount + ' / ' + total + ' ( ' + parseFloat(amount * 100 / total).toFixed(2) + '% )';
-	                        }
-	  			          }
-	  			       },
-			       };
+					title : {
+						display : true,
+						text : 'Produtos vs Quantidade'
+					},
+					tooltips : {
+						callbacks : {
+
+							label : function(tooltipItem, data) {
+								var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+
+								var total = eval(data.datasets[tooltipItem.datasetIndex].data
+										.join("+"));
+
+								var label = tooltipItem.yLabel;
+
+								return "QTY: "
+										+ amount
+										+ ' / '
+										+ total
+										+ ' ( '
+										+ parseFloat(amount * 100 / total)
+												.toFixed(2) + '% )';
+							}
+						}
+					},
+				};
 			}
-			
+
 			function percentExtender4() {
 				var tickColor = "#666";
 				var gridlineColor = "rgba(0,0,0,0.1)";
@@ -94,6 +100,13 @@
 	.ui-fluid .ui-calendar, .ui-fluid .ui-calendar input {
 		width: 100%;
 	}
+	body .ui-selectcheckboxmenu .ui-selectcheckboxmenu-trigger {
+		margin-top: -15px;
+	}
+	body .ui-selectcheckboxmenu-panel .ui-selectcheckboxmenu-header .ui-chkbox
+		{
+		display: none;
+	}
 	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
 		right: 0;
 		height: 32px;
@@ -123,7 +136,7 @@
 		width: 100%;
 	}
 	.btn-pie {
-		margin-top:5px;
+		margin-top: 5px;
 	}
 }
 
@@ -158,7 +171,7 @@
 		width: 78% !important;
 	}
 	.btn-pie {
-		margin-top:40px;
+		margin-top: 40px;
 	}
 }
 </style>
@@ -187,8 +200,9 @@
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-1">
 
 						<p:outputLabel value="Data da venda" for="data01" />
-						<p:datePicker id="data01" value="#{relatorioVendasBean.dateStart}" readonlyInput="true"
-							pattern="dd/MM/yyyy" locale="pt" showIcon="true">
+						<p:datePicker id="data01" value="#{relatorioVendasBean.dateStart}"
+							readonlyInput="true" pattern="dd/MM/yyyy" locale="pt"
+							showIcon="true">
 
 							<p:ajax event="dateSelect"
 								listener="#{relatorioVendasBean.createMixedModelPorDia}"
@@ -197,45 +211,47 @@
 
 
 						<p:outputLabel value="até" id="data02" />
-						<p:datePicker id="data-02" value="#{relatorioVendasBean.dateStop}" readonlyInput="true"
-							styleClass="dateStop" pattern="dd/MM/yyyy" locale="pt"
-							showIcon="true">
+						<p:datePicker id="data-02" value="#{relatorioVendasBean.dateStop}"
+							readonlyInput="true" styleClass="dateStop" pattern="dd/MM/yyyy"
+							locale="pt" showIcon="true">
 
 							<p:ajax event="dateSelect"
 								listener="#{relatorioVendasBean.createMixedModelPorDia}"
 								process="@this" update="barChart-vendasPorDia" />
 						</p:datePicker>
-						
+
 						<p:outputLabel value="Vendedor" for="vendedor1" />
 						<p:selectOneMenu id="vendedor1"
-								value="#{relatorioVendasBean.usuarioPorDia}"
-								placeholder="selecione">
+							value="#{relatorioVendasBean.usuarioPorDia}"
+							placeholder="selecione">
 
-								<f:selectItem itemLabel="Selecione" />
-								
-								<p:ajax event="change"
+							<f:selectItem itemLabel="Selecione" />
+
+							<p:ajax event="change"
 								listener="#{relatorioVendasBean.changeVendedorPorDia}"
 								process="@this" update="produto1 barChart-vendasPorDia" />
 
-								<f:selectItems value="#{relatorioVendasBean.todosVendedores}"
-									var="vendedor" itemLabel="#{vendedor.nome}"
-									itemValue="#{vendedor}" />
-							</p:selectOneMenu>
+							<f:selectItems value="#{relatorioVendasBean.todosVendedores}"
+								var="vendedor" itemLabel="#{vendedor.nome}"
+								itemValue="#{vendedor}" />
+						</p:selectOneMenu>
 
 					</p:panelGrid>
 
 					<p:panelGrid columns="2" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
-						columnClasses="ui-grid-col-3, ui-grid-col-5">	
-						
-						<p:outputLabel value="Categoria"  />
-						<p:selectCheckboxMenu styleClass="categoria" label="Selecione"   
+						columnClasses="ui-grid-col-3, ui-grid-col-5">
+
+						<p:outputLabel value="Categoria" />
+						<p:selectCheckboxMenu styleClass="categoria" label="Selecione"
+							multiple="true" showHeader="true" emptyLabel="Selecione"
+							filter="true" filterMatchMode="startsWith"
 							value="#{relatorioVendasBean.categoriasPorDia}">
 
 							<p:ajax event="change"
 								listener="#{relatorioVendasBean.changeCategoriaPorDia}"
 								process="@this painel" update="produto1 barChart-vendasPorDia" />
-							<f:selectItems 
+							<f:selectItems
 								value="#{relatorioVendasBean.todasCategoriasProduto}"
 								var="categoria" itemLabel="#{categoria.nome}"
 								itemValue="#{categoria.nome}"></f:selectItems>
@@ -255,10 +271,13 @@
 
 					</p:panelGrid>
 
-					<p:commandButton rendered="false" icon="fa fa-pie-chart" actionListener="#{relatorioVendasBean.prepareDonutModelPorDia}" styleClass="btn-pie"
-						title="Produtos por Quantidade" oncomplete="PF('produtos-qty').show();" update="form-dialog:pieChart-vendasPorQuantidade"
+					<p:commandButton rendered="false" icon="fa fa-pie-chart"
+						actionListener="#{relatorioVendasBean.prepareDonutModelPorDia}"
+						styleClass="btn-pie" title="Produtos por Quantidade"
+						oncomplete="PF('produtos-qty').show();"
+						update="form-dialog:pieChart-vendasPorQuantidade"
 						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-right:10px" />
-					
+
 					<p:barChart id="barChart-vendasPorDia"
 						model="#{relatorioVendasBean.mixedModelPorDia}"
 						styleClass="barChart-01" />
@@ -316,28 +335,30 @@
 
 						<p:outputLabel value="Vendedor" for="vendedor2" />
 						<p:selectOneMenu id="vendedor2"
-								value="#{relatorioVendasBean.usuarioPorSemana}"
-								placeholder="selecione">
+							value="#{relatorioVendasBean.usuarioPorSemana}"
+							placeholder="selecione">
 
-								<f:selectItem itemLabel="Selecione" />
-								
-								<p:ajax event="change"
+							<f:selectItem itemLabel="Selecione" />
+
+							<p:ajax event="change"
 								listener="#{relatorioVendasBean.changeVendedorPorSemana}"
 								process="@this" update="produto2 barChart-vendasPorSemana" />
 
-								<f:selectItems value="#{relatorioVendasBean.todosVendedores}"
-									var="vendedor" itemLabel="#{vendedor.nome}"
-									itemValue="#{vendedor}" />
-							</p:selectOneMenu>
+							<f:selectItems value="#{relatorioVendasBean.todosVendedores}"
+								var="vendedor" itemLabel="#{vendedor.nome}"
+								itemValue="#{vendedor}" />
+						</p:selectOneMenu>
 
 					</p:panelGrid>
 
 					<p:panelGrid columns="2" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-5">
-						
+
 						<p:outputLabel value="Categoria" />
-						<p:selectCheckboxMenu style="width: 100%"  label="Selecione"
+						<p:selectCheckboxMenu style="width: 100%" label="Selecione"
+							multiple="true" showHeader="true" emptyLabel="Selecione"
+							filter="true" filterMatchMode="startsWith"
 							value="#{relatorioVendasBean.categoriasPorSemana}">
 
 							<p:ajax event="change"
@@ -366,11 +387,14 @@
 						</p:selectOneMenu>
 
 					</p:panelGrid>
-					
-					<p:commandButton rendered="false" icon="fa fa-pie-chart" actionListener="#{relatorioVendasBean.prepareDonutModelPorSemana}"
-						title="Produtos por Quantidade" oncomplete="PF('produtos-qty').show();" update="form-dialog:pieChart-vendasPorQuantidade"
+
+					<p:commandButton rendered="false" icon="fa fa-pie-chart"
+						actionListener="#{relatorioVendasBean.prepareDonutModelPorSemana}"
+						title="Produtos por Quantidade"
+						oncomplete="PF('produtos-qty').show();"
+						update="form-dialog:pieChart-vendasPorQuantidade"
 						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-top:5px;margin-right:10px" />
-										
+
 					<p:barChart id="barChart-vendasPorSemana"
 						model="#{relatorioVendasBean.mixedModelPorSemana}"
 						styleClass="barChart-02" />
@@ -381,7 +405,8 @@
 
 
 
-			<p:panelGrid columns="2" layout="grid" style="margin-top:10px;margin-bottom:20px"
+			<p:panelGrid columns="2" layout="grid"
+				style="margin-top:10px;margin-bottom:20px"
 				styleClass="panelgrid-noborder disabled disabled"
 				columnClasses="ui-grid-col-6, ui-grid-col-6">
 
@@ -437,19 +462,19 @@
 
 						<p:outputLabel value="Vendedor" for="vendedor3" />
 						<p:selectOneMenu id="vendedor3"
-								value="#{relatorioVendasBean.usuarioPorMes}"
-								placeholder="selecione">
+							value="#{relatorioVendasBean.usuarioPorMes}"
+							placeholder="selecione">
 
-								<f:selectItem itemLabel="Selecione" />
-								
-								<p:ajax event="change"
+							<f:selectItem itemLabel="Selecione" />
+
+							<p:ajax event="change"
 								listener="#{relatorioVendasBean.changeVendedorPorMes}"
 								process="@this" update="produto3 barChart-vendasPorMes" />
 
-								<f:selectItems value="#{relatorioVendasBean.todosVendedores}"
-									var="vendedor" itemLabel="#{vendedor.nome}"
-									itemValue="#{vendedor}" />
-							</p:selectOneMenu>
+							<f:selectItems value="#{relatorioVendasBean.todosVendedores}"
+								var="vendedor" itemLabel="#{vendedor.nome}"
+								itemValue="#{vendedor}" />
+						</p:selectOneMenu>
 
 					</p:panelGrid>
 
@@ -457,9 +482,11 @@
 					<p:panelGrid columns="2" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-5">
-						
+
 						<p:outputLabel value="Categoria" />
-						<p:selectCheckboxMenu style="width: 100%"  label="Selecione"
+						<p:selectCheckboxMenu style="width: 100%" label="Selecione"
+							multiple="true" showHeader="true" emptyLabel="Selecione"
+							filter="true" filterMatchMode="startsWith"
 							value="#{relatorioVendasBean.categoriasPorMes}">
 
 							<p:ajax event="change"
@@ -487,10 +514,13 @@
 
 					</p:panelGrid>
 
-					<p:commandButton rendered="false" icon="fa fa-pie-chart" actionListener="#{relatorioVendasBean.prepareDonutModelPorMes}"
-						title="Produtos por Quantidade" oncomplete="PF('produtos-qty').show();" update="form-dialog:pieChart-vendasPorQuantidade"
+					<p:commandButton rendered="false" icon="fa fa-pie-chart"
+						actionListener="#{relatorioVendasBean.prepareDonutModelPorMes}"
+						title="Produtos por Quantidade"
+						oncomplete="PF('produtos-qty').show();"
+						update="form-dialog:pieChart-vendasPorQuantidade"
 						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-top:5px;margin-right:10px" />
-				
+
 					<p:barChart model="#{relatorioVendasBean.mixedModelPorMes}"
 						id="barChart-vendasPorMes" styleClass="barChart-02" />
 				</p:panel>
@@ -508,7 +538,7 @@
 						<p:outputLabel value="Ano" for="ano3" />
 						<p:selectOneMenu id="ano3" style="width: 100%"
 							value="#{relatorioVendasBean.ano03}">
-							
+
 							<p:ajax event="change"
 								listener="#{relatorioVendasBean.createMixedModelPorAno}"
 								process="@this" update="barChart-vendasPorAno" />
@@ -519,7 +549,7 @@
 						<p:outputLabel value="Até" for="ano4" />
 						<p:selectOneMenu id="ano4" style="width: 100%"
 							value="#{relatorioVendasBean.ano04}">
-							
+
 							<p:ajax event="change"
 								listener="#{relatorioVendasBean.createMixedModelPorAno}"
 								process="@this" update="barChart-vendasPorAno" />
@@ -529,36 +559,38 @@
 
 						<p:outputLabel value="Vendedor" for="vendedor4" />
 						<p:selectOneMenu id="vendedor4"
-								value="#{relatorioVendasBean.usuarioPorAno}"
-								placeholder="selecione">
+							value="#{relatorioVendasBean.usuarioPorAno}"
+							placeholder="selecione">
 
-								<f:selectItem itemLabel="Selecione" />
-								
-								<p:ajax event="change"
+							<f:selectItem itemLabel="Selecione" />
+
+							<p:ajax event="change"
 								listener="#{relatorioVendasBean.changeVendedorPorAno}"
 								process="@this" update="produto4 barChart-vendasPorAno" />
 
-								<f:selectItems value="#{relatorioVendasBean.todosVendedores}"
-									var="vendedor" itemLabel="#{vendedor.nome}"
-									itemValue="#{vendedor}" />
-							</p:selectOneMenu>
-				
+							<f:selectItems value="#{relatorioVendasBean.todosVendedores}"
+								var="vendedor" itemLabel="#{vendedor.nome}"
+								itemValue="#{vendedor}" />
+						</p:selectOneMenu>
+
 					</p:panelGrid>
 
 					<p:panelGrid columns="2" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-5">
-						
+
 						<p:outputLabel value="Categoria" />
-						<p:selectCheckboxMenu style="width: 100%"  label="Selecione"
+						<p:selectCheckboxMenu style="width: 100%" label="Selecione"
+							multiple="true" showHeader="true" emptyLabel="Selecione"
+							filter="true" filterMatchMode="startsWith"
 							value="#{relatorioVendasBean.categoriasPorAno}">
-							
+
 							<p:ajax event="change"
 								listener="#{relatorioVendasBean.changeCategoriaPorAno}"
 								process="@this" update="produto4 barChart-vendasPorAno" />
-							<f:selectItems value="#{relatorioVendasBean.todasCategoriasProduto}"
-								var="categoria"
-								itemLabel="#{categoria.nome}"
+							<f:selectItems
+								value="#{relatorioVendasBean.todasCategoriasProduto}"
+								var="categoria" itemLabel="#{categoria.nome}"
 								itemValue="#{categoria.nome}"></f:selectItems>
 						</p:selectCheckboxMenu>
 
@@ -566,7 +598,7 @@
 						<p:selectOneMenu id="produto4" style="width: 100%"
 							value="#{relatorioVendasBean.produto04}">
 							<f:selectItem itemLabel="Selecione" itemValue="" />
-							
+
 							<p:ajax event="change"
 								listener="#{relatorioVendasBean.changeProdutoPorAno}"
 								process="@this" update="barChart-vendasPorAno" />
@@ -575,11 +607,15 @@
 						</p:selectOneMenu>
 					</p:panelGrid>
 
-					<p:commandButton rendered="false" icon="fa fa-pie-chart" actionListener="#{relatorioVendasBean.prepareDonutModelPorAno}" styleClass="btn-pie"
-						title="Produtos por Quantidade" oncomplete="PF('produtos-qty').show();" update="form-dialog:pieChart-vendasPorQuantidade"
+					<p:commandButton rendered="false" icon="fa fa-pie-chart"
+						actionListener="#{relatorioVendasBean.prepareDonutModelPorAno}"
+						styleClass="btn-pie" title="Produtos por Quantidade"
+						oncomplete="PF('produtos-qty').show();"
+						update="form-dialog:pieChart-vendasPorQuantidade"
 						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-right:10px" />
-				
-					<p:barChart id="barChart-vendasPorAno" model="#{relatorioVendasBean.mixedModelPorAno}"
+
+					<p:barChart id="barChart-vendasPorAno"
+						model="#{relatorioVendasBean.mixedModelPorAno}"
 						styleClass="barChart-01" />
 				</p:panel>
 
@@ -587,25 +623,25 @@
 
 		</h:form>
 
-		<p:dialog
-			header="Produtos por Quantidade"
-			widgetVar="produtos-qty" id="produtos-qty" resizable="false"
-			modal="true" closeOnEscape="true" responsive="true" position="center"
-			styleClass="modal-donut" width="250px">
+		<p:dialog header="Produtos por Quantidade" widgetVar="produtos-qty"
+			id="produtos-qty" resizable="false" modal="true" closeOnEscape="true"
+			responsive="true" position="center" styleClass="modal-donut"
+			width="250px">
 
 			<h:form id="form-dialog">
 
 				<div class="ui-fluid">
 
 					<div class="card card-w-title ui-fluid"
-						style="padding: 0px 5px 0px 5px; padding-bottom: 0px !important;margin-bottom: 10px;text-align:center">
+						style="padding: 0px 5px 0px 5px; padding-bottom: 0px !important; margin-bottom: 10px; text-align: center">
 
-						<p:donutChart id="pieChart-vendasPorQuantidade" 
-						model="#{relatorioVendasBean.donutModel}" style="width: 100%; height: 320px;margin-top:10px" />
-						
-						<p:commandButton icon="fa fa-fw fa-close" style="margin-top: 5px;font-weight: bold;width: 120px;background: #f3f3f3f0;color: #716c6c;border: 1px solid #484545;"
-							value="Fechar" 
-							oncomplete="PF('produtos-qty').hide();">
+						<p:donutChart id="pieChart-vendasPorQuantidade"
+							model="#{relatorioVendasBean.donutModel}"
+							style="width: 100%; height: 320px;margin-top:10px" />
+
+						<p:commandButton icon="fa fa-fw fa-close"
+							style="margin-top: 5px;font-weight: bold;width: 120px;background: #f3f3f3f0;color: #716c6c;border: 1px solid #484545;"
+							value="Fechar" oncomplete="PF('produtos-qty').hide();">
 						</p:commandButton>
 
 					</div>

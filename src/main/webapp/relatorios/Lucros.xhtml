@@ -10,18 +10,18 @@
 
 		<script type="text/javascript">
 			function percentExtender2() {
-	
+
 				var options = $.extend(true, {}, this.cfg.config);
-								
+
 				this.cfg.config.options = {
 					legend : {
 						display : true,
 					},
-									
-					scales: {
-				         xAxes: [{
-				            display: true,
-				         }]
+
+					scales : {
+						xAxes : [ {
+							display : true,
+						} ]
 					},
 
 					tooltips : {
@@ -30,10 +30,10 @@
 							label : function(tooltipItem, data) {
 								var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
 
-								if(tooltipItem.datasetIndex == 1) {
+								if (tooltipItem.datasetIndex == 1) {
 									var valor = "R$ " + numberToReal(amount);
-									if(valor.includes("-.")) {
-										valor = valor.replace("-.","-");
+									if (valor.includes("-.")) {
+										valor = valor.replace("-.", "-");
 									}
 									return valor;
 								} else {
@@ -43,37 +43,43 @@
 						}
 					},
 				};
-				
+
 				$.extend(true, this.cfg.config, options);
 			}
 
-			
 			function percentExtender3() {
 
-			      this.cfg.config.options = {
-			    		  legend: {
-			    	            display: true,
-			    	        },
-			    	        
-			          title: {
-	  			         display: true,
-	  			         text: 'Produtos vs Quantidade'
-	  				},
-	  				tooltips: {
-	  			         callbacks: {
+				this.cfg.config.options = {
+					legend : {
+						display : true,
+					},
 
-	  			             label: function (tooltipItem, data) {
-	  			            	var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-	                            
-	                            var total = eval(data.datasets[tooltipItem.datasetIndex].data.join("+"));
-	                            
-	                            var label = tooltipItem.yLabel;
-	                            
-	                            return "QTY: " + amount + ' / ' + total + ' ( ' + parseFloat(amount * 100 / total).toFixed(2) + '% )';
-	                        }
-	  			          }
-	  			       },
-			       };
+					title : {
+						display : true,
+						text : 'Produtos vs Quantidade'
+					},
+					tooltips : {
+						callbacks : {
+
+							label : function(tooltipItem, data) {
+								var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+
+								var total = eval(data.datasets[tooltipItem.datasetIndex].data
+										.join("+"));
+
+								var label = tooltipItem.yLabel;
+
+								return "QTY: "
+										+ amount
+										+ ' / '
+										+ total
+										+ ' ( '
+										+ parseFloat(amount * 100 / total)
+												.toFixed(2) + '% )';
+							}
+						}
+					},
+				};
 			}
 
 			function numberToReal(numero) {
@@ -87,6 +93,13 @@
 @media ( min-width :220px) {
 	.ui-fluid .ui-calendar, .ui-fluid .ui-calendar input {
 		width: 100%;
+	}
+	body .ui-selectcheckboxmenu .ui-selectcheckboxmenu-trigger {
+		margin-top: -15px;
+	}
+	body .ui-selectcheckboxmenu-panel .ui-selectcheckboxmenu-header .ui-chkbox
+		{
+		display: none;
 	}
 	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
 		right: 0;
@@ -117,7 +130,7 @@
 		width: 100%;
 	}
 	.btn-pie {
-		margin-top:5px;
+		margin-top: 5px;
 	}
 }
 
@@ -152,7 +165,7 @@
 		width: 78% !important;
 	}
 	.btn-pie {
-		margin-top:40px;
+		margin-top: 40px;
 	}
 }
 </style>
@@ -173,26 +186,15 @@
 				<p:panel class="ui-lg-6 ui-fluid itens-add"
 					style="padding-bottom: 0px !important; margin-top:10px;width:100%">
 
-					<h3 style="font-weight: bold; margin-top: -8px;">Lucro por
-						Dia</h3>
+					<h3 style="font-weight: bold; margin-top: -8px;">Lucro por Dia</h3>
 
 					<p:panelGrid columns="4" id="painel" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-1">
 
 						<p:outputLabel value="Data da venda" for="data01" />
-						<p:datePicker id="data01" value="#{relatorioLucrosBean.dateStart}" readonlyInput="true"
-							pattern="dd/MM/yyyy" locale="pt" showIcon="true">
-
-							<p:ajax event="dateSelect"
-								listener="#{relatorioLucrosBean.createMixedModelPorDia}"
-								process="@this" update="barChart-lucrosPorDia" />
-						</p:datePicker>
-
-
-						<p:outputLabel value="até" id="data02" />
-						<p:datePicker id="data-02" value="#{relatorioLucrosBean.dateStop}" readonlyInput="true"
-							styleClass="dateStop" pattern="dd/MM/yyyy" locale="pt"
+						<p:datePicker id="data01" value="#{relatorioLucrosBean.dateStart}"
+							readonlyInput="true" pattern="dd/MM/yyyy" locale="pt"
 							showIcon="true">
 
 							<p:ajax event="dateSelect"
@@ -201,10 +203,22 @@
 						</p:datePicker>
 
 
+						<p:outputLabel value="até" id="data02" />
+						<p:datePicker id="data-02" value="#{relatorioLucrosBean.dateStop}"
+							readonlyInput="true" styleClass="dateStop" pattern="dd/MM/yyyy"
+							locale="pt" showIcon="true">
+
+							<p:ajax event="dateSelect"
+								listener="#{relatorioLucrosBean.createMixedModelPorDia}"
+								process="@this" update="barChart-lucrosPorDia" />
+						</p:datePicker>
+
+
 						<p:outputLabel value="Categoria" for="categoria1" />
-						<p:selectOneMenu id="categoria1" styleClass="categoria"
-							value="#{relatorioLucrosBean.categoriaPorDia}">
-							<f:selectItem itemLabel="Selecione" itemValue="" />
+						<p:selectCheckboxMenu id="categoria1" label="Selecione" 
+							multiple="true" showHeader="true" emptyLabel="Selecione"
+							filter="true" filterMatchMode="startsWith"
+							value="#{relatorioLucrosBean.categoriasPorDia}">
 
 							<p:ajax event="change"
 								listener="#{relatorioLucrosBean.changeCategoriaPorDia}"
@@ -212,8 +226,8 @@
 							<f:selectItems
 								value="#{relatorioLucrosBean.todasCategoriasProduto}"
 								var="categoria" itemLabel="#{categoria.nome}"
-								itemValue="#{categoria}"></f:selectItems>
-						</p:selectOneMenu>
+								itemValue="#{categoria.nome}"></f:selectItems>
+						</p:selectCheckboxMenu>
 
 					</p:panelGrid>
 
@@ -230,15 +244,20 @@
 								listener="#{relatorioLucrosBean.changeProdutoPorDia}"
 								process="@this" update="barChart-lucrosPorDia" />
 							<f:selectItems value="#{relatorioLucrosBean.produtosPorDia}"
-								var="produto" itemLabel="#{produto.nome}" itemValue="#{produto}"></f:selectItems>
+								var="produto"
+								itemLabel="#{produto.codigo.concat(' | ').concat(produto.descricao)}"
+								itemValue="#{produto}"></f:selectItems>
 						</p:selectOneMenu>
 
 					</p:panelGrid>
 
-					<p:commandButton rendered="false" icon="fa fa-pie-chart" actionListener="#{relatorioLucrosBean.prepareDonutModelPorDia}" styleClass="btn-pie"
-						title="Produtos por Quantidade" oncomplete="PF('produtos-qty').show();" update="form-dialog:pieChart-vendasPorQuantidade"
+					<p:commandButton rendered="false" icon="fa fa-pie-chart"
+						actionListener="#{relatorioLucrosBean.prepareDonutModelPorDia}"
+						styleClass="btn-pie" title="Produtos por Quantidade"
+						oncomplete="PF('produtos-qty').show();"
+						update="form-dialog:pieChart-vendasPorQuantidade"
 						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-right:10px" />
-					
+
 					<p:barChart id="barChart-lucrosPorDia" rendered="true"
 						model="#{relatorioLucrosBean.mixedModelPorDia}"
 						styleClass="barChart-01" />
@@ -295,10 +314,10 @@
 
 
 						<p:outputLabel value="Categoria" for="categoria2" />
-						<p:selectOneMenu id="categoria2" style="width: 100%"
-							value="#{relatorioLucrosBean.categoriaPorSemana}">
-
-							<f:selectItem itemLabel="Selecione" itemValue="" />
+						<p:selectCheckboxMenu id="categoria2" label="Selecione"
+							style="width: 100%" multiple="true" showHeader="true"
+							emptyLabel="Selecione" filter="true" filterMatchMode="startsWith"
+							value="#{relatorioLucrosBean.categoriasPorSemana}">
 
 							<p:ajax event="change"
 								listener="#{relatorioLucrosBean.changeCategoriaPorSemana}"
@@ -307,8 +326,8 @@
 							<f:selectItems
 								value="#{relatorioLucrosBean.todasCategoriasProduto}"
 								var="categoria" itemLabel="#{categoria.nome}"
-								itemValue="#{categoria}"></f:selectItems>
-						</p:selectOneMenu>
+								itemValue="#{categoria.nome}"></f:selectItems>
+						</p:selectCheckboxMenu>
 					</p:panelGrid>
 
 					<p:panelGrid columns="3" layout="grid"
@@ -331,12 +350,15 @@
 						</p:selectOneMenu>
 
 					</p:panelGrid>
-					
-					<p:commandButton rendered="false" icon="fa fa-pie-chart" actionListener="#{relatorioLucrosBean.prepareDonutModelPorSemana}"
-						title="Produtos por Quantidade" oncomplete="PF('produtos-qty').show();" update="form-dialog:pieChart-vendasPorQuantidade"
+
+					<p:commandButton rendered="false" icon="fa fa-pie-chart"
+						actionListener="#{relatorioLucrosBean.prepareDonutModelPorSemana}"
+						title="Produtos por Quantidade"
+						oncomplete="PF('produtos-qty').show();"
+						update="form-dialog:pieChart-vendasPorQuantidade"
 						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-top:5px;margin-right:10px" />
-										
-					<p:barChart id="barChart-lucrosPorSemana" 
+
+					<p:barChart id="barChart-lucrosPorSemana"
 						model="#{relatorioLucrosBean.mixedModelPorSemana}"
 						styleClass="barChart-02" />
 				</p:panel>
@@ -346,15 +368,15 @@
 
 
 
-			<p:panelGrid columns="2" layout="grid" style="margin-top:10px;margin-bottom:20px"
+			<p:panelGrid columns="2" layout="grid"
+				style="margin-top:10px;margin-bottom:20px"
 				styleClass="panelgrid-noborder disabled disabled"
 				columnClasses="ui-grid-col-6, ui-grid-col-6">
 
 				<p:panel class="ui-lg-6 ui-fluid itens-add"
 					style="padding-bottom: 0px !important; margin-top:10px;width:100%">
 
-					<h3 style="font-weight: bold; margin-top: -8px;">Lucro por
-						Mês</h3>
+					<h3 style="font-weight: bold; margin-top: -8px;">Lucro por Mês</h3>
 
 					<p:panelGrid columns="2" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
@@ -402,10 +424,10 @@
 
 
 						<p:outputLabel value="Categoria" for="categoria3" />
-						<p:selectOneMenu id="categoria3" style="width: 100%"
-							value="#{relatorioLucrosBean.categoriaPorMes}">
-
-							<f:selectItem itemLabel="Selecione" itemValue="" />
+						<p:selectCheckboxMenu id="categoria3" label="Selecione"
+							style="width: 100%" multiple="true" showHeader="true"
+							emptyLabel="Selecione" filter="true" filterMatchMode="startsWith"
+							value="#{relatorioLucrosBean.categoriasPorMes}">
 
 							<p:ajax event="change"
 								listener="#{relatorioLucrosBean.changeCategoriaPorMes}"
@@ -414,8 +436,8 @@
 							<f:selectItems
 								value="#{relatorioLucrosBean.todasCategoriasProduto}"
 								var="categoria" itemLabel="#{categoria.nome}"
-								itemValue="#{categoria}"></f:selectItems>
-						</p:selectOneMenu>
+								itemValue="#{categoria.nome}"></f:selectItems>
+						</p:selectCheckboxMenu>
 
 					</p:panelGrid>
 
@@ -434,28 +456,37 @@
 								listener="#{relatorioLucrosBean.changeProdutoPorMes}"
 								process="@this" update="barChart-lucrosPorMes" />
 							<f:selectItems value="#{relatorioLucrosBean.produtosPorMes}"
-								var="produto" itemLabel="#{produto.nome}" itemValue="#{produto}"></f:selectItems>
+								var="produto"
+								itemLabel="#{produto.codigo.concat(' | ').concat(produto.descricao)}"
+								itemValue="#{produto}"></f:selectItems>
 						</p:selectOneMenu>
-						
-						<p:selectBooleanCheckbox id="check-box" value="#{relatorioLucrosBean.lucroPorLote}" itemLabel="Por Lote" disabled="#{relatorioLucrosBean.categoriaPorMes.id == null}">
-							<p:ajax event="change" listener="#{relatorioLucrosBean.prepareLucroPorLote}" process="@this panel-mensal produto3 check-box" update="barChart-lucrosPorMes" />
+
+						<p:selectBooleanCheckbox id="check-box"
+							value="#{relatorioLucrosBean.lucroPorLote}" itemLabel="Por Lote"
+							disabled="#{relatorioLucrosBean.categoriaPorMes.id == null}">
+							<p:ajax event="change"
+								listener="#{relatorioLucrosBean.prepareLucroPorLote}"
+								process="@this panel-mensal produto3 check-box"
+								update="barChart-lucrosPorMes" />
 						</p:selectBooleanCheckbox>
 
 					</p:panelGrid>
 
-					<p:commandButton rendered="false" icon="fa fa-pie-chart" actionListener="#{relatorioLucrosBean.prepareDonutModelPorMes}"
-						title="Produtos por Quantidade" oncomplete="PF('produtos-qty').show();" update="form-dialog:pieChart-vendasPorQuantidade"
+					<p:commandButton rendered="false" icon="fa fa-pie-chart"
+						actionListener="#{relatorioLucrosBean.prepareDonutModelPorMes}"
+						title="Produtos por Quantidade"
+						oncomplete="PF('produtos-qty').show();"
+						update="form-dialog:pieChart-vendasPorQuantidade"
 						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-top:5px;margin-right:10px" />
-				
-					<p:barChart model="#{relatorioLucrosBean.mixedModelPorMes}" 
+
+					<p:barChart model="#{relatorioLucrosBean.mixedModelPorMes}"
 						id="barChart-lucrosPorMes" styleClass="barChart-02" />
 				</p:panel>
 
 				<p:panel class="ui-lg-6  ui-fluid itens-add"
 					style="padding-bottom: 0px !important; margin-top:10px;width:100%">
 
-					<h3 style="font-weight: bold; margin-top: -8px;">Lucro por
-						Ano</h3>
+					<h3 style="font-weight: bold; margin-top: -8px;">Lucro por Ano</h3>
 
 					<p:panelGrid columns="4" id="painel3" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
@@ -464,7 +495,7 @@
 						<p:outputLabel value="Ano" for="ano3" />
 						<p:selectOneMenu id="ano3" style="width: 100%"
 							value="#{relatorioLucrosBean.ano03}">
-							
+
 							<p:ajax event="change"
 								listener="#{relatorioLucrosBean.createMixedModelPorAno}"
 								process="@this" update="barChart-lucrosPorAno" />
@@ -475,7 +506,7 @@
 						<p:outputLabel value="Até" for="ano4" />
 						<p:selectOneMenu id="ano4" style="width: 100%"
 							value="#{relatorioLucrosBean.ano04}">
-							
+
 							<p:ajax event="change"
 								listener="#{relatorioLucrosBean.createMixedModelPorAno}"
 								process="@this" update="barChart-lucrosPorAno" />
@@ -485,19 +516,19 @@
 
 
 						<p:outputLabel value="Categoria" for="categoria4" />
-						<p:selectOneMenu id="categoria4" style="width: 100%"
-							value="#{relatorioLucrosBean.categoriaPorAno}">
-							
-							<f:selectItem itemLabel="Selecione" itemValue="" />
-							
+						<p:selectCheckboxMenu id="categoria4" style="width: 100%"
+							multiple="true" showHeader="true" emptyLabel="Selecione"
+							filter="true" filterMatchMode="startsWith"
+							value="#{relatorioLucrosBean.categoriasPorAno}">
+
 							<p:ajax event="change"
 								listener="#{relatorioLucrosBean.changeCategoriaPorAno}"
 								process="@this" update="produto4 barChart-lucrosPorAno" />
-							<f:selectItems value="#{relatorioLucrosBean.todasCategoriasProduto}"
-								var="categoria"
-								itemLabel="#{categoria.nome}"
-								itemValue="#{categoria}"></f:selectItems>
-						</p:selectOneMenu>
+							<f:selectItems
+								value="#{relatorioLucrosBean.todasCategoriasProduto}"
+								var="categoria" itemLabel="#{categoria.nome}"
+								itemValue="#{categoria.nome}"></f:selectItems>
+						</p:selectCheckboxMenu>
 					</p:panelGrid>
 
 					<p:panelGrid columns="2" layout="grid"
@@ -508,46 +539,52 @@
 						<p:selectOneMenu id="produto4" style="width: 100%"
 							value="#{relatorioLucrosBean.produto04}">
 							<f:selectItem itemLabel="Selecione" itemValue="" />
-							
+
 							<p:ajax event="change"
 								listener="#{relatorioLucrosBean.changeProdutoPorAno}"
 								process="@this" update="barChart-lucrosPorAno" />
 							<f:selectItems value="#{relatorioLucrosBean.produtosPorAno}"
-								var="produto" itemLabel="#{produto.nome}" itemValue="#{produto}"></f:selectItems>
+								var="produto"
+								itemLabel="#{produto.codigo.concat(' | ').concat(produto.descricao)}"
+								itemValue="#{produto}"></f:selectItems>
 						</p:selectOneMenu>
 					</p:panelGrid>
 
-					<p:commandButton rendered="false" icon="fa fa-pie-chart" actionListener="#{relatorioLucrosBean.prepareDonutModelPorAno}" styleClass="btn-pie"
-						title="Produtos por Quantidade" oncomplete="PF('produtos-qty').show();" update="form-dialog:pieChart-vendasPorQuantidade"
+					<p:commandButton rendered="false" icon="fa fa-pie-chart"
+						actionListener="#{relatorioLucrosBean.prepareDonutModelPorAno}"
+						styleClass="btn-pie" title="Produtos por Quantidade"
+						oncomplete="PF('produtos-qty').show();"
+						update="form-dialog:pieChart-vendasPorQuantidade"
 						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-right:10px" />
-				
-					<p:barChart id="barChart-lucrosPorAno" model="#{relatorioLucrosBean.mixedModelPorAno}"
-						styleClass="barChart-01"  />
+
+					<p:barChart id="barChart-lucrosPorAno"
+						model="#{relatorioLucrosBean.mixedModelPorAno}"
+						styleClass="barChart-01" />
 				</p:panel>
 
 			</p:panelGrid>
 
 		</h:form>
 
-		<p:dialog
-			header="Produtos por Quantidade"
-			widgetVar="produtos-qty" id="produtos-qty" resizable="false"
-			modal="true" closeOnEscape="true" responsive="true" position="center"
-			styleClass="modal-donut" width="250px">
+		<p:dialog header="Produtos por Quantidade" widgetVar="produtos-qty"
+			id="produtos-qty" resizable="false" modal="true" closeOnEscape="true"
+			responsive="true" position="center" styleClass="modal-donut"
+			width="250px">
 
 			<h:form id="form-dialog">
 
 				<div class="ui-fluid">
 
 					<div class="card card-w-title ui-fluid"
-						style="padding: 0px 5px 0px 5px; padding-bottom: 0px !important;margin-bottom: 10px;text-align:center">
+						style="padding: 0px 5px 0px 5px; padding-bottom: 0px !important; margin-bottom: 10px; text-align: center">
 
-						<p:donutChart id="pieChart-vendasPorQuantidade" 
-						model="#{relatorioLucrosBean.donutModel}" style="width: 100%; height: 320px;margin-top:10px" />
-						
-						<p:commandButton icon="fa fa-fw fa-close" style="margin-top: 5px;font-weight: bold;width: 120px;background: #f3f3f3f0;color: #716c6c;border: 1px solid #484545;"
-							value="Fechar" 
-							oncomplete="PF('produtos-qty').hide();">
+						<p:donutChart id="pieChart-vendasPorQuantidade"
+							model="#{relatorioLucrosBean.donutModel}"
+							style="width: 100%; height: 320px;margin-top:10px" />
+
+						<p:commandButton icon="fa fa-fw fa-close"
+							style="margin-top: 5px;font-weight: bold;width: 120px;background: #f3f3f3f0;color: #716c6c;border: 1px solid #484545;"
+							value="Fechar" oncomplete="PF('produtos-qty').hide();">
 						</p:commandButton>
 
 					</div>
