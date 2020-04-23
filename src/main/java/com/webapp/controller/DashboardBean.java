@@ -454,7 +454,7 @@ public class DashboardBean implements Serializable {
 	}
 
 	public void buscarEstoquePorCategoriaSelecionada() {
-		detalhesVendasPorProduto = new ArrayList<>();
+		detalhesEstoquePorProduto = new ArrayList<>();
 
 		List<Object[]> produtos = vendas.totalParaVendasPorProduto(estoquePorCategoriaSelecionada.getItem());
 		for (Object[] object : produtos) {
@@ -463,7 +463,7 @@ public class DashboardBean implements Serializable {
 			vendaPorCategoria.setValue((Number) object[1]);
 			vendaPorCategoria.setQuantidade((Number) object[2]);
 
-			detalhesVendasPorProduto.add(vendaPorCategoria);
+			detalhesEstoquePorProduto.add(vendaPorCategoria);
 		}
 	}
 
