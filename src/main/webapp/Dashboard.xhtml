@@ -442,11 +442,11 @@ body .ui-datatable .ui-datatable-data>tr td {
 						<p:donutChart model="#{dashboardBean.donutModel}"
 							style="width: 100%; height: 230px;" />
 
-						<p:commandButton icon="fa fa-fw fa-search"
+						<p:commandButton icon="fa fa-fw fa-search" id="btn-detalhes-venda"
 							style="margin-top: -32px; margin-bottom: 2px;float:right;font-weight: bold;width: 32px;height:26px;background: #f3f3f3f0;color: #716c6c;border: 1px solid #6b6b6b"
 							action="#{dashboardBean.buscarVendaPorCategoriaSelecionada}"
 							process="@this fluxoTable2" update="info-detalhes"
-							onstart="start();"
+							onstart="start();" disabled="#{dashboardBean.vendaPorCategoriaSelecionada.id == null}"
 							oncomplete="stop();PF('info-detalhes').show();">
 						</p:commandButton>
 
@@ -456,8 +456,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 							selection="#{dashboardBean.vendaPorCategoriaSelecionada}"
 							rowKey="#{venda.item}">
 
-							<p:ajax event="rowSelect" process="@this" update="info-detalhes"
-								onstart="start();" oncomplete="stop();" />
+							<p:ajax event="rowSelect" process="@this" update="btn-detalhes-venda" />
 
 							<p:column headerText="Categoria" style="text-align:left">
 								<h:outputText value="#{venda.item}" />
