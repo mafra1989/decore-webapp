@@ -94,6 +94,11 @@ public class DashboardBean implements Serializable {
 
 	@Inject
 	private VendaPorCategoria estoquePorCategoriaSelecionada;
+	
+	private String totalValorVenda = "0,00";
+	private String totalItensVenda = "0";	
+	private String totalValorEstoque = "0,00";
+	private String totalItensEstoque = "0";
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -166,7 +171,9 @@ public class DashboardBean implements Serializable {
 		List<Number> values = new ArrayList<>();
 
 		detalhesEstoqueParaVendaPorCategoria = new ArrayList<>();
-
+		
+		double totalValorEstoque = 0;
+		long totalItensEstoque = 0;
 		List<Object[]> totalParaVendasPorCategoria = vendas.totalParaVendasPorCategoria();
 		for (Object[] object : totalParaVendasPorCategoria) {
 			values.add((Number) object[1]);
@@ -175,9 +182,15 @@ public class DashboardBean implements Serializable {
 			vendaPorCategoria.setItem(object[0].toString());
 			vendaPorCategoria.setValue((Number) object[1]);
 			vendaPorCategoria.setQuantidade((Number) object[2]);
-
+			
+			totalValorEstoque += vendaPorCategoria.getValue().doubleValue();
+			totalItensEstoque += vendaPorCategoria.getQuantidade().doubleValue();
+			
 			detalhesEstoqueParaVendaPorCategoria.add(vendaPorCategoria);
 		}
+		
+		this.totalValorEstoque = nf.format(totalValorEstoque);
+		this.totalItensEstoque = String.valueOf(totalItensEstoque);
 
 		dataSet.setData(values);
 
@@ -402,6 +415,9 @@ public class DashboardBean implements Serializable {
 		List<Number> values = new ArrayList<>();
 
 		detalhesVendasPorCategoria = new ArrayList<>();
+		
+		double totalValorVenda = 0;
+		long totalItensVenda = 0;
 
 		List<Object[]> result = vendas.totalVendasPorCategoria();
 		for (Object[] object : result) {
@@ -412,9 +428,15 @@ public class DashboardBean implements Serializable {
 			vendaPorCategoria.setItem(object[0].toString());
 			vendaPorCategoria.setValue((Number) object[1]);
 			vendaPorCategoria.setQuantidade((Number) object[2]);
+			
+			totalValorVenda += vendaPorCategoria.getValue().doubleValue();
+			totalItensVenda += vendaPorCategoria.getQuantidade().doubleValue();
 
 			detalhesVendasPorCategoria.add(vendaPorCategoria);
 		}
+		
+		this.totalValorVenda = nf.format(totalValorVenda);
+		this.totalItensVenda = String.valueOf(totalItensVenda);
 
 		dataSet.setData(values);
 
@@ -564,6 +586,22 @@ public class DashboardBean implements Serializable {
 
 	public List<VendaPorCategoria> getDetalhesEstoquePorProduto() {
 		return detalhesEstoquePorProduto;
+	}
+
+	public String getTotalValorVenda() {
+		return totalValorVenda;
+	}
+
+	public String getTotalItensVenda() {
+		return totalItensVenda;
+	}
+
+	public String getTotalValorEstoque() {
+		return totalValorEstoque;
+	}
+
+	public String getTotalItensEstoque() {
+		return totalItensEstoque;
 	}
 
 }
