@@ -143,7 +143,7 @@ public class Vendas implements Serializable {
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalVendasPorProduto(String categoriaProduto) {		
 		
-		String jpql = "SELECT p.descricao, SUM(i.total), SUM(i.quantidade) FROM ItemVenda i JOIN i.produto p where p.categoriaProduto.nome = :categoriaProduto GROUP BY p.codigo ORDER BY SUM(i.total) DESC";
+		String jpql = "SELECT p.descricao, SUM(i.total), SUM(i.quantidade) FROM ItemVenda i JOIN i.produto p where p.categoriaProduto.nome = :categoriaProduto GROUP BY p.codigo, p.descricao ORDER BY SUM(i.total) DESC";
 		Query q = manager.createQuery(jpql).setParameter("categoriaProduto", categoriaProduto);
 		List<Object[]> result = q.getResultList();
 		
