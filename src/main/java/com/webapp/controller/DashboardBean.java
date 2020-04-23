@@ -70,8 +70,7 @@ public class DashboardBean implements Serializable {
 	private DonutChartModel donutModel;
 
 	private List<FluxoDeCaixa> tabela = new ArrayList<FluxoDeCaixa>();
-	
-	
+
 	private static final Locale BRAZIL = new Locale("pt", "BR");
 
 	private static final DecimalFormatSymbols REAL = new DecimalFormatSymbols(BRAZIL);
@@ -79,18 +78,23 @@ public class DashboardBean implements Serializable {
 	private NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
 
 	private String saldoGeral = "0,00";
-	
+
 	private List<VendaPorCategoria> detalhesVendasPorCategoria = new ArrayList<>();
-	
+
 	private List<VendaPorCategoria> detalhesEstoqueParaVendaPorCategoria = new ArrayList<>();
-	
+
 	private List<Top5Despesa> top5Despesas = new ArrayList<>();
-	
+
 	private List<VendaPorCategoria> detalhesVendasPorProduto = new ArrayList<>();
 	
+	private List<VendaPorCategoria> detalhesEstoquePorProduto = new ArrayList<>();
+
 	@Inject
 	private VendaPorCategoria vendaPorCategoriaSelecionada;
-	
+
+	@Inject
+	private VendaPorCategoria estoquePorCategoriaSelecionada;
+
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
 			createPieModel();
@@ -128,13 +132,13 @@ public class DashboardBean implements Serializable {
 				}
 			}
 		}
-		
+
 		List<String> labels = new ArrayList<>();
 		for (Top5Despesa top5Despesa : top5Despesas) {
 			values.add(top5Despesa.getValue());
 			labels.add(top5Despesa.getItem());
 		}
-		
+
 		dataSet.setData(values);
 
 		List<String> bgColors = new ArrayList<>();
@@ -160,18 +164,18 @@ public class DashboardBean implements Serializable {
 
 		PolarAreaChartDataSet dataSet = new PolarAreaChartDataSet();
 		List<Number> values = new ArrayList<>();
-		
+
 		detalhesEstoqueParaVendaPorCategoria = new ArrayList<>();
-		
+
 		List<Object[]> totalParaVendasPorCategoria = vendas.totalParaVendasPorCategoria();
 		for (Object[] object : totalParaVendasPorCategoria) {
 			values.add((Number) object[1]);
-			
+
 			VendaPorCategoria vendaPorCategoria = new VendaPorCategoria();
 			vendaPorCategoria.setItem(object[0].toString());
 			vendaPorCategoria.setValue((Number) object[1]);
 			vendaPorCategoria.setQuantidade((Number) object[2]);
-			
+
 			detalhesEstoqueParaVendaPorCategoria.add(vendaPorCategoria);
 		}
 
@@ -236,7 +240,7 @@ public class DashboardBean implements Serializable {
 		fluxoDeCaixa.setValue(
 				(totalVendas.doubleValue() + totalCreditosPagos.doubleValue()) - totalDebitosPagos.doubleValue());
 		tabela.add(fluxoDeCaixa);
-		
+
 		double saldo = (totalVendas.doubleValue() + totalCreditosPagos.doubleValue()) - totalDebitosPagos.doubleValue();
 		saldoGeral = nf.format(saldo);
 
@@ -398,17 +402,17 @@ public class DashboardBean implements Serializable {
 		List<Number> values = new ArrayList<>();
 
 		detalhesVendasPorCategoria = new ArrayList<>();
-		
+
 		List<Object[]> result = vendas.totalVendasPorCategoria();
 		for (Object[] object : result) {
 			values.add((Number) object[1]);
-			
+
 			VendaPorCategoria vendaPorCategoria = new VendaPorCategoria();
-			
+
 			vendaPorCategoria.setItem(object[0].toString());
 			vendaPorCategoria.setValue((Number) object[1]);
 			vendaPorCategoria.setQuantidade((Number) object[2]);
-			
+
 			detalhesVendasPorCategoria.add(vendaPorCategoria);
 		}
 
@@ -434,17 +438,31 @@ public class DashboardBean implements Serializable {
 
 		donutModel.setExtender("percentExtender3");
 	}
-	
-	public void buscarVendaPorCategoriaSelecionada() { 
+
+	public void buscarVendaPorCategoriaSelecionada() {
 		detalhesVendasPorProduto = new ArrayList<>();
-		
+
 		List<Object[]> produtos = vendas.totalVendasPorProduto(vendaPorCategoriaSelecionada.getItem());
 		for (Object[] object : produtos) {
-			VendaPorCategoria vendaPorCategoria = new VendaPorCategoria();		
+			VendaPorCategoria vendaPorCategoria = new VendaPorCategoria();
 			vendaPorCategoria.setItem(object[0].toString());
 			vendaPorCategoria.setValue((Number) object[1]);
 			vendaPorCategoria.setQuantidade((Number) object[2]);
-			
+
+			detalhesVendasPorProduto.add(vendaPorCategoria);
+		}
+	}
+
+	public void buscarEstoquePorCategoriaSelecionada() {
+		detalhesVendasPorProduto = new ArrayList<>();
+
+		List<Object[]> produtos = vendas.totalParaVendasPorProduto(estoquePorCategoriaSelecionada.getItem());
+		for (Object[] object : produtos) {
+			VendaPorCategoria vendaPorCategoria = new VendaPorCategoria();
+			vendaPorCategoria.setItem(object[0].toString());
+			vendaPorCategoria.setValue((Number) object[1]);
+			vendaPorCategoria.setQuantidade((Number) object[2]);
+
 			detalhesVendasPorProduto.add(vendaPorCategoria);
 		}
 	}
@@ -534,6 +552,18 @@ public class DashboardBean implements Serializable {
 
 	public List<VendaPorCategoria> getDetalhesVendasPorProduto() {
 		return detalhesVendasPorProduto;
+	}
+
+	public VendaPorCategoria getEstoquePorCategoriaSelecionada() {
+		return estoquePorCategoriaSelecionada;
+	}
+
+	public void setEstoquePorCategoriaSelecionada(VendaPorCategoria estoquePorCategoriaSelecionada) {
+		this.estoquePorCategoriaSelecionada = estoquePorCategoriaSelecionada;
+	}
+
+	public List<VendaPorCategoria> getDetalhesEstoquePorProduto() {
+		return detalhesEstoquePorProduto;
 	}
 
 }

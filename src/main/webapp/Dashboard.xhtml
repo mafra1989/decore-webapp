@@ -236,13 +236,15 @@ body .ui-datatable .ui-datatable-data>tr td {
 	.ui-grid-col-3 {
 	    width: 25%;
 	}
-	#info-detalhes .ui-panelgrid .ui-panelgrid-cell:nth-child(2n) {
+	#info-detalhes .ui-panelgrid .ui-panelgrid-cell:nth-child(2n),
+	 #info-detalhes-estoque .ui-panelgrid .ui-panelgrid-cell:nth-child(2n) {
 		text-align: end;
 	}
-	#info-detalhes .ui-datatable table {
+	#info-detalhes .ui-datatable table, 
+	#info-detalhes-estoque .ui-datatable table {
 		width: auto;
 	}
-	#info-detalhes.ui-widget-content, #downloadLoading.ui-widget-content {
+	#info-detalhes.ui-widget-content, #info-detalhes-estoque.ui-widget-content, #downloadLoading.ui-widget-content {
 		border: none;
 	}
 	.ui-grid-responsive .ui-grid-row {
@@ -479,24 +481,37 @@ body .ui-datatable .ui-datatable-data>tr td {
 						<p:polarAreaChart model="#{dashboardBean.polarAreaModel}"
 							style="width: 100%; height: 230px;" />
 
-						<p:dataTable id="fluxoTable3" rows="10"
+						<p:commandButton icon="fa fa-fw fa-search" id="btn-detalhes-estoque"
+							style="margin-top: -32px; margin-bottom: 2px;float:right;font-weight: bold;width: 32px;height:26px;background: #f3f3f3f0;color: #716c6c;border: 1px solid #6b6b6b"
+							action="#{dashboardBean.buscarEstoquePorCategoriaSelecionada}"
+							process="@this fluxoTable3" update="info-detalhes-estoque"
+							onstart="start();" disabled="#{dashboardBean.estoquePorCategoriaSelecionada.item == null}"
+							oncomplete="stop();PF('info-detalhes-estoque').show();">
+						</p:commandButton>
+						
+						<p:dataTable id="fluxoTable3" 
 							value="#{dashboardBean.detalhesEstoqueParaVendaPorCategoria}"
-							var="venda" styleClass="vendas-top5">
+							var="estoque" styleClass="vendas-top5"
+							selectionMode="single"
+							selection="#{dashboardBean.estoquePorCategoriaSelecionada}"
+							rowKey="#{estoque.item}">
+							
+							<p:ajax event="rowSelect" process="@this" update="form:btn-detalhes-estoque" />
 
 							<p:column headerText="Categoria" width="10%"
 								style="text-align:left">
-								<h:outputText value="#{venda.item}" />
+								<h:outputText value="#{estoque.item}" />
 							</p:column>
 
 							<p:column headerText="Valor" width="80%" style="text-align:right">
-								<h:outputText value="#{venda.value}">
+								<h:outputText value="#{estoque.value}">
 									<f:convertNumber type="currency" />
 								</h:outputText>
 							</p:column>
 
 							<p:column headerText="Quantidade" width="80%"
 								style="text-align:right">
-								<h:outputText value="#{venda.quantidade}">
+								<h:outputText value="#{estoque.quantidade}">
 								</h:outputText>
 							</p:column>
 
@@ -604,6 +619,84 @@ body .ui-datatable .ui-datatable-data>tr td {
 				</div>
 			</h:form>
 		</p:dialog>
+		
+		
+		<p:dialog header="Informações detalhadas" widgetVar="info-detalhes-estoque"
+			id="info-detalhes-estoque" resizable="false" modal="true" position="top"
+			style="margin-top: 100px" closeOnEscape="true" responsive="true"
+			width="350px">
+
+			<h:form id="form-dialog-estoque" style="margin-top: 10px;">
+
+				<div class="ui-fluid">
+
+					<div class="card card-w-title ui-fluid"
+						style="padding: 0px 5px 0px 5px; padding-bottom: 0px !important; margin-bottom: 10px;">
+
+						<p:panelGrid columns="2" layout="grid"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-3, ui-grid-col-5">
+
+							<p:outputLabel style="font-weight: bold" value="Categoria: " />
+							<p:outputLabel
+								value="#{dashboardBean.estoquePorCategoriaSelecionada.item}">
+							</p:outputLabel>
+
+							<p:outputLabel style="font-weight: bold"
+								value="Valor em estoque: " />
+							<p:outputLabel
+								value="#{dashboardBean.estoquePorCategoriaSelecionada.value}"
+								style="color: #0db130;font-weight: bold;font-size: 14px;">
+								<f:convertNumber type="currency" />
+							</p:outputLabel>
+
+							<p:outputLabel style="font-weight: bold" value="Total de itens: " />
+							<p:outputLabel
+								value="#{dashboardBean.estoquePorCategoriaSelecionada.quantidade}"
+								style="font-weight: bold;font-size: 14px;">
+							</p:outputLabel>
+						</p:panelGrid>
+
+						<p:panelGrid columns="1" layout="grid" style="text-align:center;background: #f9f9f9;"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-12">
+
+							<p:outputLabel style="font-weight: bold" value="Produtos " />
+						</p:panelGrid>
+
+						<p:dataTable id="fluxoTable6"
+							value="#{dashboardBean.detalhesEstoquePorProduto}" var="produto"
+							scrollable="true" scrollHeight="337" styleClass="vendas-top5">
+
+							<p:column headerText="Produto" style="text-align:left;width:65%">
+								<h:outputText value="#{produto.item}" />
+							</p:column>
+
+							<p:column headerText="Valor" style="text-align:right;width:30%">
+								<h:outputText value="#{produto.value}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Quantidade"
+								style="text-align:right;width:20%">
+								<h:outputText value="#{produto.quantidade}">
+								</h:outputText>
+							</p:column>
+
+						</p:dataTable>
+
+						<p:commandButton icon="fa fa-fw fa-close"
+							style="margin-top: 15px; margin-bottom: 2px;float:right;font-weight: bold;width: 120px;background: #fd6161;color: #ffffff;"
+							value="Fechar" onstart="start();"
+							oncomplete="stop();PF('info-detalhes-estoque').hide();">
+						</p:commandButton>
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		
 
 		<p:dialog id="downloadLoading" showHeader="false" modal="true"
 			widgetVar="downloadLoading" header="Status" draggable="false"

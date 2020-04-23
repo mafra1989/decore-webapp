@@ -170,6 +170,16 @@ public class Vendas implements Serializable {
 		
 		return result;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalParaVendasPorProduto(String categoriaProduto) {		
+		
+		String jpql = "SELECT i.produto.descricao, sum(i.quantidadeDisponivel * i.valorUnitario * (1+(i.produto.margemLucro/100))), SUM(i.quantidadeDisponivel) from ItemCompra i where i.quantidadeDisponivel > 0 AND i.produto.categoriaProduto.nome = :categoriaProduto group by i.produto.codigo, i.produto.descricao order by sum(i.quantidadeDisponivel * i.valorUnitario * (1+(i.produto.margemLucro/100))) desc";
+		Query q = manager.createQuery(jpql).setParameter("categoriaProduto", categoriaProduto);
+		List<Object[]> result = q.getResultList();
+		
+		return result;
+	}
 		
 	
 	@SuppressWarnings("unchecked")
