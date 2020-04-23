@@ -432,7 +432,12 @@ public class RelatorioLucrosBean implements Serializable {
 			} else {
 				// if (totalDeVendas > 0 || totalCompras > 0) {
 				values.add(totalDeVendas/* - totalDeCompras */);
-				values2.add((totalDeVendas / totalCompras) * 100);
+				
+				if(totalDeVendas > 0) {
+					values2.add((totalDeVendas / totalCompras) * 100);
+				} else {
+					values2.add(0);
+				}
 
 				labels.add(object[0] + "/" + object[1]/* + "/" + object[2] */);
 				// }
@@ -594,7 +599,13 @@ public class RelatorioLucrosBean implements Serializable {
 			} else {
 				// if (totalDeVendas > 0 || totalCompras > 0) {
 				values.add(totalDeVendas/* - totalDeCompras */);
-				values2.add((totalDeVendas / totalCompras) * 100);
+				
+				if(totalDeVendas > 0) {
+					values2.add((totalDeVendas / totalCompras) * 100);
+				} else {
+					values2.add(0);
+				}				
+				
 
 				long semana = Long.parseLong(object[0].toString());
 				String semanaTemp = String.valueOf(semana);
