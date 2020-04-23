@@ -446,7 +446,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 							style="margin-top: -32px; margin-bottom: 2px;float:right;font-weight: bold;width: 32px;height:26px;background: #f3f3f3f0;color: #716c6c;border: 1px solid #6b6b6b"
 							action="#{dashboardBean.buscarVendaPorCategoriaSelecionada}"
 							process="@this fluxoTable2" update="info-detalhes"
-							onstart="start();" disabled="#{dashboardBean.vendaPorCategoriaSelecionada.id == null}"
+							onstart="start();" disabled="#{dashboardBean.vendaPorCategoriaSelecionada.item == null}"
 							oncomplete="stop();PF('info-detalhes').show();">
 						</p:commandButton>
 
