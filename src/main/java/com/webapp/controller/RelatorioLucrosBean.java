@@ -384,7 +384,7 @@ public class RelatorioLucrosBean implements Serializable {
 			 * categoriaPorDia, produto01, true) .doubleValue();
 			 */
 
-			if (categoriaPorDia == null || categoriaPorDia.getId() == null) {
+			if (categoriasPorDia == null || categoriasPorDia.length == 0) {
 
 				totalDeReceitas = contas
 						.totalDeReceitasPorDia(Long.parseLong(object[0].toString()),
@@ -555,7 +555,7 @@ public class RelatorioLucrosBean implements Serializable {
 			 * .doubleValue();
 			 */
 
-			if (categoriaPorSemana == null || categoriaPorSemana.getId() == null) {
+			if (categoriasPorSemana == null || categoriasPorSemana.length == 0) {
 
 				totalDeReceitas = contas.totalDeReceitasPorSemana(Long.parseLong(object[0].toString()),
 						Long.parseLong(object[1].toString())).doubleValue();
@@ -812,7 +812,7 @@ public class RelatorioLucrosBean implements Serializable {
 			 * .doubleValue();
 			 */
 
-			if (categoriaPorMes == null || categoriaPorMes.getId() == null) {
+			if (categoriasPorMes == null || categoriasPorMes.length == 0) {
 
 				totalDeReceitas = contas.totalDeReceitasPorMes(Long.parseLong(object[0].toString()),
 						Long.parseLong(object[1].toString())).doubleValue();
@@ -959,8 +959,7 @@ public class RelatorioLucrosBean implements Serializable {
 			 * .totalComprasPorAno(Long.parseLong(object[0].toString()), categoriaPorAno,
 			 * produto04, true) .doubleValue();
 			 */
-
-			if (categoriaPorAno == null || categoriaPorAno.getId() == null) {
+			if (categoriasPorAno == null || categoriasPorAno.length == 0) {
 
 				totalDeReceitas = contas.totalDeReceitasPorAno(Long.parseLong(object[0].toString())).doubleValue();
 
