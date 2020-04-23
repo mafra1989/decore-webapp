@@ -177,22 +177,10 @@
 		</script>
 
 		<style>
-#info-detalhes .ui-panelgrid .ui-panelgrid-cell:nth-child(2n) {
-	text-align: end;
-}
-
-#info-detalhes .ui-datatable table {
-    width: auto;
-}
-
-#info-detalhes.ui-widget-content, #downloadLoading.ui-widget-content {
-	border: none;
-}
-
 body .ui-datatable .ui-datatable-data>tr.ui-state-highlight {
 	background-color: #fbfbfb !important;
 	color: #ffffff;
-	border-color: #eb25668f;
+	border-color: #d8d8d88f;
 }
 
 body .ui-datatable .ui-datatable-data>tr.ui-state-hover {
@@ -245,6 +233,18 @@ body .ui-datatable .ui-datatable-data>tr td {
 }
 
 @media ( min-width :220px) {
+	.ui-grid-col-3 {
+	    width: 25%;
+	}
+	#info-detalhes .ui-panelgrid .ui-panelgrid-cell:nth-child(2n) {
+		text-align: end;
+	}
+	#info-detalhes .ui-datatable table {
+		width: auto;
+	}
+	#info-detalhes.ui-widget-content, #downloadLoading.ui-widget-content {
+		border: none;
+	}
 	.ui-grid-responsive .ui-grid-row {
 		display: flex;
 	}
@@ -308,6 +308,9 @@ body .ui-datatable .ui-datatable-data>tr td {
 }
 
 @media ( min-width :460px) {
+	.ui-grid-col-3 {
+	    width: 100%;
+	}
 	.dashboard-top {
 		margin-top: -5px;
 	}
@@ -439,16 +442,22 @@ body .ui-datatable .ui-datatable-data>tr td {
 						<p:donutChart model="#{dashboardBean.donutModel}"
 							style="width: 100%; height: 230px;" />
 
+						<p:commandButton icon="fa fa-fw fa-search"
+							style="margin-top: -32px; margin-bottom: 2px;float:right;font-weight: bold;width: 32px;height:26px;background: #f3f3f3f0;color: #716c6c;border: 1px solid #6b6b6b"
+							action="#{dashboardBean.buscarVendaPorCategoriaSelecionada}"
+							process="@this fluxoTable2" update="info-detalhes"
+							onstart="start();"
+							oncomplete="stop();PF('info-detalhes').show();">
+						</p:commandButton>
+
 						<p:dataTable id="fluxoTable2"
 							value="#{dashboardBean.detalhesVendasPorCategoria}" var="venda"
 							styleClass="vendas-top5" selectionMode="single"
 							selection="#{dashboardBean.vendaPorCategoriaSelecionada}"
 							rowKey="#{venda.item}">
 
-							<p:ajax event="rowSelect" process="@this fluxoTable2"
-								update="info-detalhes" onstart="start();"
-								listener="#{dashboardBean.buscarVendaPorCategoriaSelecionada}"
-								oncomplete="stop();PF('info-detalhes').show()" />
+							<p:ajax event="rowSelect" process="@this" update="info-detalhes"
+								onstart="start();" oncomplete="stop();" />
 
 							<p:column headerText="Categoria" style="text-align:left">
 								<h:outputText value="#{venda.item}" />
@@ -542,7 +551,8 @@ body .ui-datatable .ui-datatable-data>tr td {
 								value="#{dashboardBean.vendaPorCategoriaSelecionada.item}">
 							</p:outputLabel>
 
-							<p:outputLabel style="font-weight: bold" value="Valor total de vendas: " />
+							<p:outputLabel style="font-weight: bold"
+								value="Valor total de vendas: " />
 							<p:outputLabel
 								value="#{dashboardBean.vendaPorCategoriaSelecionada.value}"
 								style="color: #0db130;font-weight: bold;font-size: 14px;">
@@ -555,8 +565,8 @@ body .ui-datatable .ui-datatable-data>tr td {
 								style="font-weight: bold;font-size: 14px;">
 							</p:outputLabel>
 						</p:panelGrid>
-						
-						<p:panelGrid columns="1" layout="grid" style="text-align:center"
+
+						<p:panelGrid columns="1" layout="grid" style="text-align:center;background: #f9f9f9;"
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-12">
 
@@ -567,8 +577,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 							value="#{dashboardBean.detalhesVendasPorProduto}" var="produto"
 							scrollable="true" scrollHeight="337" styleClass="vendas-top5">
 
-							<p:column headerText="Produto" 
-								style="text-align:left;width:65%">
+							<p:column headerText="Produto" style="text-align:left;width:65%">
 								<h:outputText value="#{produto.item}" />
 							</p:column>
 
@@ -578,7 +587,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 								</h:outputText>
 							</p:column>
 
-							<p:column headerText="Quantidade" 
+							<p:column headerText="Quantidade"
 								style="text-align:right;width:20%">
 								<h:outputText value="#{produto.quantidade}">
 								</h:outputText>
