@@ -583,6 +583,10 @@ public class RelatorioLucrosBean implements Serializable {
 						&& (totalCompras + totalDeDespesas) == 0) {
 					values2.add(100.0);
 					System.out.println("Valor Percentual: 100.0");
+					
+				} else if (((totalDeVendas + totalDeReceitas) - totalDeDespesas == 0) && totalDeDespesas == 0) {
+					values2.add(0);
+					
 				} else {
 					values2.add(
 							(((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
@@ -845,6 +849,10 @@ public class RelatorioLucrosBean implements Serializable {
 						&& (totalCompras + totalDeDespesas) == 0) {
 					values2.add(100.0);
 					System.out.println("Valor Percentual: 100.0");
+				
+				} else if (((totalDeVendas + totalDeReceitas) - totalDeDespesas == 0) && totalDeDespesas == 0) {
+					values2.add(0);
+					
 				} else {
 					values2.add(
 							(((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
@@ -994,6 +1002,10 @@ public class RelatorioLucrosBean implements Serializable {
 						&& (totalCompras + totalDeDespesas) == 0) {
 					values2.add(100.0);
 					System.out.println("Valor Percentual: 100.0");
+					
+				} else if (((totalDeVendas + totalDeReceitas) - totalDeDespesas == 0) && totalDeDespesas == 0) {
+					values2.add(0);
+					
 				} else {
 					values2.add(
 							(((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
