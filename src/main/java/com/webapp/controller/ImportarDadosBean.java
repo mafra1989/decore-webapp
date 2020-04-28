@@ -33,6 +33,7 @@ import com.webapp.model.Compra;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.Produto;
+import com.webapp.model.TipoVenda;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
 import com.webapp.repository.Bairros;
@@ -169,9 +170,9 @@ public class ImportarDadosBean implements Serializable {
 						if (produto != null) {
 							itemCompra.setProduto(produto);
 						} else {
-							//produto = new Produto(); // Producao
-							//produto.setCodeTemp(codigo);  // Producao
-							produto = produtosRepository.porCodigo("0"); // Teste
+							produto = new Produto(); // Producao
+							produto.setCodeTemp(codigo);  // Producao
+							//produto = produtosRepository.porCodigo("0"); // Teste
 							itemCompra.setProduto(produto);
 						}
 
@@ -294,10 +295,17 @@ public class ImportarDadosBean implements Serializable {
 
 						/* Venda */
 						/* Tipo de Venda e Bairro */
-						//venda.setTipoVenda(tiposVendas.porId(3009L));// Producao
-						//venda.setBairro(bairros.porId(3008L));// Producao
-						venda.setTipoVenda(tiposVendas.porId(859L)); // Teste
-						venda.setBairro(bairros.porId(860L)); // Teste
+						TipoVenda tipoVenda = tiposVendas.porDescricao(row.getCell(2).toString());
+						if(tipoVenda != null) {
+							venda.setTipoVenda(tipoVenda);// Producao
+						} else {
+							venda.setTipoVenda(tiposVendas.porId(3009L));// Producao
+						}
+						
+						
+						venda.setBairro(bairros.porId(3008L));// Producao
+						//venda.setTipoVenda(tiposVendas.porId(859L)); // Teste
+						//venda.setBairro(bairros.porId(860L)); // Teste
 
 						/* Venda */
 						/* Usuario */
@@ -372,7 +380,7 @@ public class ImportarDadosBean implements Serializable {
 									} else {
 										produto = new Produto(); //Producao
 										produto.setCodeTemp(codigo); //Producao
-										produto = produtosRepository.porCodigo("0"); // Teste
+										//produto = produtosRepository.porCodigo("0"); // Teste
 										itemVenda.setProduto(produto);
 									}
 

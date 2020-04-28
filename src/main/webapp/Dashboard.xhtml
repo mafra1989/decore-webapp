@@ -469,7 +469,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 							oncomplete="stop();PF('info-detalhes').show();">
 						</p:commandButton>
 
-						<p:dataTable id="fluxoTable2"
+						<p:dataTable id="fluxoTable2" scrollable="true" scrollHeight="187"
 							value="#{dashboardBean.detalhesVendasPorCategoria}" var="venda"
 							styleClass="vendas-top5" selectionMode="single"
 							selection="#{dashboardBean.vendaPorCategoriaSelecionada}"
@@ -517,7 +517,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 							oncomplete="stop();PF('info-detalhes-estoque').show();">
 						</p:commandButton>
 
-						<p:dataTable id="fluxoTable3"
+						<p:dataTable id="fluxoTable3" scrollable="true" scrollHeight="187"
 							value="#{dashboardBean.detalhesEstoqueParaVendaPorCategoria}"
 							var="estoque" styleClass="vendas-top5" selectionMode="single"
 							selection="#{dashboardBean.estoquePorCategoriaSelecionada}"
@@ -705,7 +705,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 
 						<p:dataTable id="fluxoTable6"
 							value="#{dashboardBean.detalhesEstoquePorProduto}" var="produto"
-							scrollable="true" scrollHeight="337" styleClass="vendas-top5">
+							scrollable="true" scrollHeight="287" styleClass="vendas-top5">
 
 							<p:column headerText="Produto" style="text-align:left;width:65%">
 								<h:outputText value="#{produto.item}" />
