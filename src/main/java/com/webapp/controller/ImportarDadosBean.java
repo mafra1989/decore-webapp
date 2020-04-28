@@ -321,8 +321,8 @@ public class ImportarDadosBean implements Serializable {
 						System.out.println((long) Double.parseDouble(row.getCell(4).toString()) + " - "
 								+ Double.parseDouble(row.getCell(7).toString()));
 						String codigo = ((long) Double.parseDouble(row.getCell(4).toString())) + "";
-						//Produto produto = produtosRepository.porCodigo(codigo);// Producao
-						Produto produto = produtosRepository.porCodigo("0");
+						Produto produto = produtosRepository.porCodigo(codigo);// Producao
+						//Produto produto = produtosRepository.porCodigo("0"); // Teste
 						
 						Long saldo = (long) Double.parseDouble(row.getCell(7).toString());
 
