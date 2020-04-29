@@ -486,36 +486,40 @@ public class ImportarDadosBean implements Serializable {
 
 				for (Venda vendaTemp : vendas) {
 					
-					Venda vendaTemp_ = vendasRepository.porNumeroVenda(vendaTemp.getNumeroVenda());
-					if(vendaTemp_ == null) {
-						
-						System.out.println("Venda N.:" + vendaTemp.getNumeroVenda() + " Quant. Itens: " + vendaTemp.getQuantidadeItens() + " - Valor Total: "
-								+ vendaTemp.getValorTotal() + " _ " + vendaTemp.getItensVenda().size());
+					Venda vendaTemp_ = vendasRepository.ultimoNVenda();
 
-						List<ItemVenda> itensTemp = new ArrayList<>();
-						itensTemp.addAll(vendaTemp.getItensVenda());
+					if (vendaTemp_ == null) {
+						vendaTemp.setNumeroVenda(1L);
+					} else {						
+						vendaTemp.setNumeroVenda(vendaTemp.getNumeroVenda() + 1);
+					}
+					
+					System.out.println("Venda N.:" + vendaTemp.getNumeroVenda() + " Quant. Itens: " + vendaTemp.getQuantidadeItens() + " - Valor Total: "
+							+ vendaTemp.getValorTotal() + " _ " + vendaTemp.getItensVenda().size());
 
-						vendaTemp = vendasRepository.save(vendaTemp);
+					List<ItemVenda> itensTemp = new ArrayList<>();
+					itensTemp.addAll(vendaTemp.getItensVenda());
 
-						for (ItemVenda itemVendaTemp : itensTemp) {
-							/* Item */
-							/* Venda */
-							itemVendaTemp.setVenda(vendaTemp);
+					vendaTemp = vendasRepository.save(vendaTemp);
 
-							quantidade += itemVendaTemp.getQuantidade();
-							valorTotal += itemVendaTemp.getTotal().doubleValue();
+					for (ItemVenda itemVendaTemp : itensTemp) {
+						/* Item */
+						/* Venda */
+						itemVendaTemp.setVenda(vendaTemp);
 
-							Produto produto = itemVendaTemp.getProduto();
-							produto = produtosRepository.porId(produto.getId());
-							produto.setQuantidadeAtual(produto.getQuantidadeAtual() - itemVendaTemp.getQuantidade());
+						quantidade += itemVendaTemp.getQuantidade();
+						valorTotal += itemVendaTemp.getTotal().doubleValue();
 
-							System.out.println(produto.getCodigo() + " - " + produto.getQuantidadeAtual());
+						Produto produto = itemVendaTemp.getProduto();
+						produto = produtosRepository.porId(produto.getId());
+						produto.setQuantidadeAtual(produto.getQuantidadeAtual() - itemVendaTemp.getQuantidade());
 
-							produtosRepository.save(produto);
+						System.out.println(produto.getCodigo() + " - " + produto.getQuantidadeAtual());
 
-							itensVendasRepository.save(itemVendaTemp);
-						}
-					}		
+						produtosRepository.save(produto);
+
+						itensVendasRepository.save(itemVendaTemp);
+					}	
 
 				}
 
