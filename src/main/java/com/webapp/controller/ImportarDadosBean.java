@@ -32,14 +32,18 @@ import org.primefaces.model.UploadedFile;
 import com.webapp.model.Compra;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
+import com.webapp.model.Lancamento;
 import com.webapp.model.Produto;
 import com.webapp.model.TipoVenda;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
 import com.webapp.repository.Bairros;
+import com.webapp.repository.CategoriasLancamentos;
 import com.webapp.repository.Compras;
+import com.webapp.repository.DestinosLancamentos;
 import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
+import com.webapp.repository.Lancamentos;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.TiposVendas;
 import com.webapp.repository.Usuarios;
@@ -69,6 +73,15 @@ public class ImportarDadosBean implements Serializable {
 
 	@Inject
 	private Usuarios usuariosRepository;
+	
+	@Inject
+	private Lancamentos lancamentosRepository;
+	
+	@Inject
+	private CategoriasLancamentos categoriasLancamentosRepository;
+	
+	@Inject
+	private DestinosLancamentos destinosLancamentosRepository;
 
 	@Inject
 	private Bairros bairros;
@@ -203,7 +216,7 @@ public class ImportarDadosBean implements Serializable {
 					if (compraTemp_ == null) {
 						compraTemp.setNumeroCompra(1L);
 					} else {						
-						compraTemp.setNumeroCompra(compraTemp.getNumeroCompra() + 1);
+						compraTemp.setNumeroCompra(compraTemp_.getNumeroCompra() + 1);
 					}
 					
 					System.out.println("Compra N.:" + compraTemp.getNumeroCompra() + " Quant. Itens: " + compraTemp.getQuantidadeItens() + " - Valor Total: "
@@ -493,7 +506,7 @@ public class ImportarDadosBean implements Serializable {
 					if (vendaTemp_ == null) {
 						vendaTemp.setNumeroVenda(1L);
 					} else {						
-						vendaTemp.setNumeroVenda(vendaTemp.getNumeroVenda() + 1);
+						vendaTemp.setNumeroVenda(vendaTemp_.getNumeroVenda() + 1);
 					}
 					
 					System.out.println("Venda N.:" + vendaTemp.getNumeroVenda() + " Quant. Itens: " + vendaTemp.getQuantidadeItens() + " - Valor Total: "
@@ -545,6 +558,88 @@ public class ImportarDadosBean implements Serializable {
 
 		fileContent = null;
 	}
+	
+	
+	public void importarLancamentos(UploadedFile file) {
+
+		Lancamento lancamento = null;
+		Iterator<Row> rowIterator = null;
+
+		List<Lancamento> lancamentos = new ArrayList<>();
+
+		Workbook workbook;
+		try {
+			workbook = create(file.getInputstream());
+
+			Sheet sheet = workbook.getSheetAt(0);
+			rowIterator = sheet.iterator();
+
+			while (rowIterator.hasNext()) {
+				Row row = rowIterator.next();
+
+				if (row.getRowNum() > 0) {
+
+					lancamento = new Lancamento();
+					
+					Calendar calendar = Calendar.getInstance();
+
+					try {
+						calendar.setTime(new SimpleDateFormat("dd MMM yyyy")
+								.parse(row.getCell(0).toString().replace("-", " ")));
+						lancamento.setDataLancamento(calendar.getTime());
+					} catch (ParseException e) {
+
+					}
+
+					System.out.println(lancamento.getDataLancamento());
+					lancamento.setDia(Long.valueOf((calendar.get(Calendar.DAY_OF_MONTH))));
+					lancamento.setNomeDia(Long.valueOf((calendar.get(Calendar.DAY_OF_WEEK))));
+					lancamento.setSemana(Long.valueOf((calendar.get(Calendar.WEEK_OF_YEAR))));
+					lancamento.setMes(Long.valueOf((calendar.get(Calendar.MONTH))) + 1);
+					lancamento.setAno(Long.valueOf((calendar.get(Calendar.YEAR))));
+
+					/* Usuario */
+					Usuario usuario = usuariosRepository.porId(1L);
+					lancamento.setUsuario(usuario);
+					
+					lancamento.setCategoriaLancamento(categoriasLancamentosRepository.porNome(row.getCell(5).toString()));
+					lancamento.setDestinoLancamento(destinosLancamentosRepository.porDescricao(row.getCell(2).toString()));
+					lancamento.setDescricao(row.getCell(3).toString());
+					lancamento.setValor(BigDecimal.valueOf(Double.parseDouble(row.getCell(4).toString())));
+					
+					lancamentos.add(lancamento);	
+				}
+			}
+
+				
+			for (Lancamento lancamentoTemp : lancamentos) {
+				
+				Lancamento lancamentoTemp_ = lancamentosRepository.ultimoNLancamento();
+
+				if (lancamentoTemp_ == null) {
+					lancamentoTemp.setNumeroLancamento(1L);
+				} else {						
+					lancamentoTemp.setNumeroLancamento(lancamentoTemp_.getNumeroLancamento() + 1);
+				}
+				
+				System.out.println("Lancamento N.:" + lancamentoTemp.getNumeroLancamento());
+
+				lancamentosRepository.save(lancamentoTemp);
+			}
+
+			System.out.println("Total de Lancamentos: " + lancamentos.size());
+
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'success', title: 'Concluído!', text: 'Dados importados com sucesso!' });");
+
+		} catch (IOException | IllegalArgumentException e) {
+			PrimeFaces.current()
+					.executeScript("swal({ type: 'error', title: 'Erro!', text: 'Selecione um arquivo válido!' });");
+		}
+
+		fileContent = null;
+	}
+	
 
 	public void importar() { 
 		
@@ -573,7 +668,8 @@ public class ImportarDadosBean implements Serializable {
 					}
 
 					if (opcao.equalsIgnoreCase("lançamentos")) {
-
+						importarLancamentos(file);
+						upload = false;
 					}
 
 				} else {

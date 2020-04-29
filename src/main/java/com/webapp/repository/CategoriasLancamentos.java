@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 
 import com.webapp.model.CategoriaLancamento;
 import com.webapp.model.OrigemLancamento;
@@ -35,6 +36,18 @@ public class CategoriasLancamentos implements Serializable {
 		this.manager.remove(categoriaLancamentoTemp);
 	}
 
+	public CategoriaLancamento porNome(String nome) {
+		CategoriaLancamento categoriaLancamento = null;
+		try {
+			categoriaLancamento = this.manager.createQuery("from CategoriaLancamento i where lower(i.nome) like lower(:nome) order by nome", CategoriaLancamento.class)
+					.setParameter("nome", "%" + nome + "%").getSingleResult();
+			return categoriaLancamento;
+			
+		} catch (NoResultException e) {
+			return null;
+		}
+	}
+	
 	public List<CategoriaLancamento> todos() {
 		return this.manager.createQuery("from CategoriaLancamento order by nome", CategoriaLancamento.class)
 				.getResultList();

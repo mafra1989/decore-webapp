@@ -52,7 +52,7 @@ public class Lancamentos implements Serializable {
 
 	}
 
-	public Lancamento ultimoLancamento() {
+	public Lancamento ultimoNLancamento() {
 
 		try {
 			return this.manager.createQuery("from Lancamento e order by e.numeroLancamento desc", Lancamento.class)

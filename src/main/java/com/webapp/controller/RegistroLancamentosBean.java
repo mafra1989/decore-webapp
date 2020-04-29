@@ -414,7 +414,7 @@ public class RegistroLancamentosBean implements Serializable {
 
 		if (contasPagas != true) {
 
-			Lancamento lancamentoTemp = lancamentos.ultimoLancamento();
+			Lancamento lancamentoTemp = lancamentos.ultimoNLancamento();
 
 			if (lancamentoTemp == null) {
 				lancamento.setNumeroLancamento(1L);

@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 
 import com.webapp.model.DestinoLancamento;
 import com.webapp.repository.filter.DestinoLancamentoFilter;
@@ -32,6 +33,18 @@ public class DestinosLancamentos implements Serializable {
 		destinoLancamentoTemp = this.manager.merge(destinoLancamento);
 
 		this.manager.remove(destinoLancamentoTemp);
+	}
+	
+	public DestinoLancamento porDescricao(String descricao) {
+		DestinoLancamento destinoLancamento = null;
+		try {
+			destinoLancamento = this.manager.createQuery("from DestinoLancamento i where lower(i.descricao) like lower(:descricao) order by descricao", DestinoLancamento.class)
+					.setParameter("descricao", "%" + descricao + "%").getSingleResult();
+			return destinoLancamento;
+			
+		} catch (NoResultException e) {
+			return null;
+		}
 	}
 
 	public List<DestinoLancamento> todos() {
