@@ -326,7 +326,7 @@ public class ImportarDadosBean implements Serializable {
 						Produto produto = produtosRepository.porCodigo(codigo);// Producao
 						//Produto produto = produtosRepository.porCodigo("0"); // Teste
 						
-						Long saldo = (long) Double.parseDouble(row.getCell(7).toString());
+						long saldo = (long) Double.parseDouble(row.getCell(7).toString());
 
 						do {
 
@@ -339,7 +339,7 @@ public class ImportarDadosBean implements Serializable {
 							if (itemCompraTemp != null) {
 
 								System.out.println(itemCompraTemp.getQuantidadeDisponivel() + " >= " + saldo);
-								if (itemCompraTemp.getQuantidadeDisponivel() >= saldo) {
+								if (itemCompraTemp.getQuantidadeDisponivel().longValue() >= saldo) {
 
 									/* Item */
 									/* Quantidade, ValorUnitario e Total */
@@ -388,12 +388,13 @@ public class ImportarDadosBean implements Serializable {
 
 									itens.add(itemVenda);
 									System.out
-											.println(itemVenda.getValorUnitario() + " - " + itemVenda.getQuantidade());
-
-									saldo -= itemCompraTemp.getQuantidadeDisponivel();
-
-									itemCompraTemp.setQuantidadeDisponivel(
-											itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());
+											.println(itemVenda.getValorUnitario() + " - " + itemVenda.getQuantidade());									
+									
+									long quantidadeDisponivel = saldo;
+									saldo -= itemCompraTemp.getQuantidadeDisponivel().longValue();
+									quantidadeDisponivel = itemCompraTemp.getQuantidadeDisponivel().longValue() - quantidadeDisponivel;
+									
+									itemCompraTemp.setQuantidadeDisponivel(quantidadeDisponivel);								
 									itensComprasRepository.save(itemCompraTemp);
 
 								} else {
@@ -450,10 +451,9 @@ public class ImportarDadosBean implements Serializable {
 									System.out
 											.println(itemVenda.getValorUnitario() + " - " + itemVenda.getQuantidade());
 
-									saldo -= itemCompraTemp.getQuantidadeDisponivel();
-
-									itemCompraTemp.setQuantidadeDisponivel(
-											itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());
+									saldo -= itemCompraTemp.getQuantidadeDisponivel().longValue();
+									
+									itemCompraTemp.setQuantidadeDisponivel(0L);
 									itensComprasRepository.save(itemCompraTemp);
 
 								}
