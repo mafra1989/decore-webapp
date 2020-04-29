@@ -17,7 +17,7 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "compras_fix_v2")
+@Table(name = "compras_fix_v3")
 public class Compra implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -30,7 +30,7 @@ public class Compra implements Serializable {
 	@Column
 	private Date dataCompra = new Date();
 	
-	@Column(unique = true)
+	@Column
 	private Long numeroCompra;
 
 	@NotNull

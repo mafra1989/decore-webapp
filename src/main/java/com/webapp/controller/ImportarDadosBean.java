@@ -195,34 +195,36 @@ public class ImportarDadosBean implements Serializable {
 			}
 
 			if (produtoNaoEncontrado != true) {
-
 				
 				for (Compra compraTemp : compras) {
 					
-					Compra compraTemp_ = comprasRepository.porNumeroCompra(compraTemp.getNumeroCompra());
-					if(compraTemp_ == null) {
-						
-						System.out.println("Compra N.:" + compraTemp.getNumeroCompra() + " Quant. Itens: " + compraTemp.getQuantidadeItens() + " - Valor Total: "
-								+ compraTemp.getValorTotal() + " _ " + compraTemp.getItensCompra().size());
+					Compra compraTemp_ = comprasRepository.ultimoNCompra();
 
-						List<ItemCompra> itensTemp = new ArrayList<>();
-						itensTemp.addAll(compraTemp.getItensCompra());
-
-						Usuario usuario = usuariosRepository.porId(1L);
-						compraTemp.setUsuario(usuario);
-						compraTemp = comprasRepository.save(compraTemp);
-
-						for (ItemCompra itemCompraTemp : itensTemp) {
-							itemCompraTemp.setCompra(compraTemp);
-
-							Produto produto = itemCompraTemp.getProduto();
-							produto.setQuantidadeAtual(produto.getQuantidadeAtual() + itemCompraTemp.getQuantidade());
-							produtosRepository.save(produto);
-
-							itensComprasRepository.save(itemCompraTemp);
-						}
+					if (compraTemp_ == null) {
+						compraTemp.setNumeroCompra(1L);
+					} else {						
+						compraTemp.setNumeroCompra(compraTemp.getNumeroCompra() + 1);
 					}
 					
+					System.out.println("Compra N.:" + compraTemp.getNumeroCompra() + " Quant. Itens: " + compraTemp.getQuantidadeItens() + " - Valor Total: "
+							+ compraTemp.getValorTotal() + " _ " + compraTemp.getItensCompra().size());
+
+					List<ItemCompra> itensTemp = new ArrayList<>();
+					itensTemp.addAll(compraTemp.getItensCompra());
+
+					Usuario usuario = usuariosRepository.porId(1L);
+					compraTemp.setUsuario(usuario);
+					compraTemp = comprasRepository.save(compraTemp);
+
+					for (ItemCompra itemCompraTemp : itensTemp) {
+						itemCompraTemp.setCompra(compraTemp);
+
+						Produto produto = itemCompraTemp.getProduto();
+						produto.setQuantidadeAtual(produto.getQuantidadeAtual() + itemCompraTemp.getQuantidade());
+						produtosRepository.save(produto);
+
+						itensComprasRepository.save(itemCompraTemp);
+					}				
 				}
 
 				System.out.println("Total de Compras: " + compras.size());
