@@ -172,11 +172,16 @@ public class DashboardBean implements Serializable {
 
 		detalhesEstoqueParaVendaPorCategoria = new ArrayList<>();
 		
+		int cont = 0;	
 		double totalValorEstoque = 0;
 		long totalItensEstoque = 0;
 		List<Object[]> totalParaVendasPorCategoria = vendas.totalParaVendasPorCategoria();
 		for (Object[] object : totalParaVendasPorCategoria) {
-			values.add((Number) object[1]);
+			
+			if(cont < 5) {
+				values.add((Number) object[1]);
+				cont++;
+			}
 
 			VendaPorCategoria vendaPorCategoria = new VendaPorCategoria();
 			vendaPorCategoria.setItem(object[0].toString());
@@ -202,10 +207,14 @@ public class DashboardBean implements Serializable {
 		bgColors.add("rgb(249, 24, 24)");
 		dataSet.setBackgroundColor(bgColors);
 
+		cont = 0;
 		data.addChartDataSet(dataSet);
 		List<String> labels = new ArrayList<>();
 		for (Object[] object : totalParaVendasPorCategoria) {
-			labels.add((String) object[0]);
+			if(cont < 5) {
+				labels.add((String) object[0]);
+				cont++;
+			}
 		}
 
 		data.setLabels(labels);
@@ -234,7 +243,7 @@ public class DashboardBean implements Serializable {
 		// Number totalCreditos = lancamentos.totalCreditos();
 
 		List<Number> values = new ArrayList<>();
-		values.add((totalVendas.doubleValue() + totalCreditosPagos.doubleValue()) - totalDebitosPagos.doubleValue());// Em
+		values.add((totalVendas.doubleValue() + totalCreditosPagos.doubleValue()) - totalDebitosPagos.doubleValue() + totalCompras.doubleValue());// Em
 																														// Caixa
 		values.add(totalVendas);// Vendas
 		values.add(totalCreditosPagos);// Receitas
@@ -251,7 +260,7 @@ public class DashboardBean implements Serializable {
 		FluxoDeCaixa fluxoDeCaixa = new FluxoDeCaixa();
 		fluxoDeCaixa.setItem("Caixa");
 		fluxoDeCaixa.setValue(
-				(totalVendas.doubleValue() + totalCreditosPagos.doubleValue()) - totalDebitosPagos.doubleValue());
+				(totalVendas.doubleValue() + totalCreditosPagos.doubleValue()) - totalDebitosPagos.doubleValue() + totalCompras.doubleValue());
 		tabela.add(fluxoDeCaixa);
 
 		double saldo = (totalVendas.doubleValue() + totalCreditosPagos.doubleValue()) - totalDebitosPagos.doubleValue();
