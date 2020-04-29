@@ -425,12 +425,17 @@ public class DashboardBean implements Serializable {
 
 		detalhesVendasPorCategoria = new ArrayList<>();
 		
+		int cont = 0;
 		double totalValorVenda = 0;
 		long totalItensVenda = 0;
 
 		List<Object[]> result = vendas.totalVendasPorCategoria();
 		for (Object[] object : result) {
-			values.add((Number) object[1]);
+			
+			if(cont < 5) {
+				values.add((Number) object[1]);
+				cont++;
+			}
 
 			VendaPorCategoria vendaPorCategoria = new VendaPorCategoria();
 
@@ -458,10 +463,15 @@ public class DashboardBean implements Serializable {
 		bgColors.add("rgb(201, 203, 207)");
 		dataSet.setBackgroundColor(bgColors);
 
+		cont = 0;
 		data.addChartDataSet(dataSet);
 		List<String> labels = new ArrayList<>();
 		for (Object[] object : result) {
-			labels.add((String) object[0]);
+			
+			if(cont < 5) {
+				labels.add((String) object[0]);
+				cont++;
+			}
 		}
 		data.setLabels(labels);
 
