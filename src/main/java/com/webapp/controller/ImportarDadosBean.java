@@ -30,6 +30,7 @@ import org.primefaces.PrimeFaces;
 import org.primefaces.model.UploadedFile;
 
 import com.webapp.model.Compra;
+import com.webapp.model.Conta;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.Lancamento;
@@ -40,6 +41,7 @@ import com.webapp.model.Venda;
 import com.webapp.repository.Bairros;
 import com.webapp.repository.CategoriasLancamentos;
 import com.webapp.repository.Compras;
+import com.webapp.repository.Contas;
 import com.webapp.repository.DestinosLancamentos;
 import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
@@ -76,6 +78,9 @@ public class ImportarDadosBean implements Serializable {
 	
 	@Inject
 	private Lancamentos lancamentosRepository;
+	
+	@Inject
+	private Contas contasRepository;
 	
 	@Inject
 	private CategoriasLancamentos categoriasLancamentosRepository;
@@ -624,7 +629,28 @@ public class ImportarDadosBean implements Serializable {
 				
 				System.out.println("Lancamento N.:" + lancamentoTemp.getNumeroLancamento());
 
-				lancamentosRepository.save(lancamentoTemp);
+				lancamentoTemp = lancamentosRepository.save(lancamentoTemp);
+				
+				Conta conta = new Conta();
+				conta.setOperacao("LANCAMENTO");
+				conta.setCodigoOperacao(lancamentoTemp.getNumeroLancamento());
+				conta.setVencimento(lancamentoTemp.getDataLancamento());
+				conta.setPagamento(lancamentoTemp.getDataLancamento());
+				conta.setValor(lancamentoTemp.getValor());
+				conta.setParcela("AVISTA");
+				conta.setTipo(lancamentoTemp.getCategoriaLancamento().getTipoLancamento().getOrigem().name());
+				conta.setStatus(true);
+				 
+				Calendar calendario = Calendar.getInstance();
+				calendario.setTime(lancamentoTemp.getDataLancamento());
+				
+				conta.setDia(Long.valueOf((calendario.get(Calendar.DAY_OF_MONTH))));
+				conta.setNomeDia(Long.valueOf((calendario.get(Calendar.DAY_OF_WEEK))));
+				conta.setSemana(Long.valueOf((calendario.get(Calendar.WEEK_OF_YEAR))));
+				conta.setMes(Long.valueOf((calendario.get(Calendar.MONTH))) + 1);
+				conta.setAno(Long.valueOf((calendario.get(Calendar.YEAR))));
+				
+				contasRepository.save(conta);
 			}
 
 			System.out.println("Total de Lancamentos: " + lancamentos.size());
