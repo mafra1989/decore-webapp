@@ -212,7 +212,8 @@
 					<h3 style="font-weight: bold">Resultado da consulta</h3>
 
 					<p:menuButton id="menu-btn" value="Opções"
-						style="width: 80px;float: right;margin-top: -40px;margin-right: 10px">
+						style="width: 80px;float: right;margin-top: -40px;margin-right: 10px"
+						disabled="#{(consultaComprasBean.comprasFiltradasSize eq 0) or consultaComprasBean.compraSelecionada.id == null}">
 
 						<p:menuitem value="Visualizar" icon="fa fa-fw fa-eye"
 							id="btn-view" outcome="/operacoes/RegistroCompras.xhtml"
