@@ -123,6 +123,8 @@ public class ConsultaLancamentosBean implements Serializable {
 				conta.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
 				conta.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
 				
+				contas.save(conta);
+				
 				System.out.println(lancamento.getNumeroLancamento());
 			}
 		}
