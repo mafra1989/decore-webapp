@@ -99,6 +99,8 @@ public class DashboardBean implements Serializable {
 	private String totalItensVenda = "0";	
 	private String totalValorEstoque = "0,00";
 	private String totalItensEstoque = "0";
+	
+	private String totalDespesasTop5 = "0,00";
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -118,7 +120,9 @@ public class DashboardBean implements Serializable {
 		List<Number> values = new ArrayList<>();
 
 		List<Object[]> despesasTemp = contas.totalDespesasPorCategoriaMesAtual();
-
+		
+		double totalDespesasTop5 = 0;
+		
 		top5Despesas = new ArrayList<>();
 		for (Object[] object : despesasTemp) {
 
@@ -129,14 +133,23 @@ public class DashboardBean implements Serializable {
 				top5Despesa.setItem(lancamento.getCategoriaLancamento().getNome());
 				top5Despesa.setValue(Double.parseDouble(object[1].toString()));
 				if (!top5Despesas.contains(top5Despesa)) {
-					top5Despesas.add(top5Despesa);
+					
+					if(top5Despesas.size() < 5) {
+						top5Despesas.add(top5Despesa);
+						totalDespesasTop5 += top5Despesa.getValue().doubleValue();
+					}
+					
 				} else {
 					top5Despesas.get(top5Despesas.indexOf(top5Despesa))
 							.setValue(top5Despesas.get(top5Despesas.indexOf(top5Despesa)).getValue().doubleValue()
 									+ top5Despesa.getValue().doubleValue());
+					
+					totalDespesasTop5 += top5Despesa.getValue().doubleValue();
 				}
 			}
 		}
+		
+		this.totalDespesasTop5 = nf.format(totalDespesasTop5);
 
 		List<String> labels = new ArrayList<>();
 		for (Top5Despesa top5Despesa : top5Despesas) {
@@ -621,6 +634,10 @@ public class DashboardBean implements Serializable {
 
 	public String getTotalItensEstoque() {
 		return totalItensEstoque;
+	}
+
+	public String getTotalDespesasTop5() {
+		return totalDespesasTop5;
 	}
 
 }

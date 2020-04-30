@@ -573,6 +573,13 @@ body .ui-datatable .ui-datatable-data>tr td {
 									<f:convertNumber type="currency" />
 								</h:outputText>
 							</p:column>
+							
+							<p:columnGroup type="footer">
+								<p:row>
+									<p:column style="text-align:right" footerText="Total:" />
+									<p:column style="text-align:right" footerText="#{dashboardBean.totalDespesasTop5}" />
+								</p:row>
+							</p:columnGroup>
 
 						</p:dataTable>
 					</div>

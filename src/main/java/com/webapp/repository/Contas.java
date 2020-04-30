@@ -50,8 +50,7 @@ public class Contas implements Serializable {
 		String jpql = "SELECT i.codigoOperacao, sum(i.valor) FROM Conta i WHERE i.operacao = 'LANCAMENTO' and i.tipo = 'DEBITO' and i.status = 'Y' and i.mes = :mesAtual and i.ano = :anoAtual GROUP BY i.codigoOperacao order by sum(i.valor) desc";
 		Query q = manager.createQuery(jpql)
 				.setParameter("mesAtual", Long.parseLong(String.valueOf(calendar.get(Calendar.MONTH) + 1)))
-				.setParameter("anoAtual", Long.parseLong(String.valueOf(calendar.get(Calendar.YEAR))))
-				.setMaxResults(5);
+				.setParameter("anoAtual", Long.parseLong(String.valueOf(calendar.get(Calendar.YEAR))));
 		List<Object[]> result = q.getResultList();
 
 		return result;
