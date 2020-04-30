@@ -103,6 +103,29 @@ public class ConsultaLancamentosBean implements Serializable {
 		}
 
 		totalLancamentos = nf.format(totalLancamentosTemp);
+		
+		if(origemLancamento.length > 0) {
+			for (Lancamento lancamento : lancamentosFiltrados) {
+				Conta conta = new Conta();
+				conta.setOperacao("LANCAMENTO");
+				conta.setCodigoOperacao(lancamento.getNumeroLancamento());
+				conta.setVencimento(lancamento.getDataLancamento());
+				conta.setPagamento(lancamento.getDataLancamento());
+				conta.setParcela("AVISTA");
+				conta.setTipo("DEBITO");
+				conta.setStatus(true);
+				
+				calendarioTemp = Calendar.getInstance();
+				calendarioTemp.setTime(lancamento.getDataLancamento());
+				conta.setDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_MONTH))));
+				conta.setNomeDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_WEEK))));
+				conta.setSemana(Long.valueOf((calendarioTemp.get(Calendar.WEEK_OF_YEAR))));
+				conta.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
+				conta.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
+				
+				System.out.println(lancamento.getNumeroLancamento());
+			}
+		}
 	}
 
 	public void changeCategoria() {
