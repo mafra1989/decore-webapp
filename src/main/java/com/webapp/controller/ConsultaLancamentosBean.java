@@ -103,7 +103,7 @@ public class ConsultaLancamentosBean implements Serializable {
 		}
 
 		totalLancamentos = nf.format(totalLancamentosTemp);
-		
+/*	
 		if(origemLancamento.length > 0) {
 			
 			for (Lancamento lancamento : lancamentosFiltrados) {
@@ -131,6 +131,7 @@ public class ConsultaLancamentosBean implements Serializable {
 				System.out.println(lancamento.getNumeroLancamento());
 			}
 		}
+*/
 	}
 
 	public void changeCategoria() {

@@ -72,12 +72,13 @@ public class ConsultaContasBean implements Serializable {
 		}
 
 		totalContas = nf.format(totalContasTemp);
-		
+/*		
 		if(origemConta.length > 0 ) {
 			for (Conta conta : contasFiltradas) {
 				contas.remove(conta);
 			}
 		}
+*/
 	}
 	
 	public void pagar(Conta conta) {
