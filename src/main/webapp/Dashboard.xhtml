@@ -637,7 +637,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 							scrollable="true" scrollHeight="337" styleClass="vendas-top5">
 
 							<p:column headerText="Produto" style="text-align:left;width:65%">
-								<h:outputText value="#{produto.item}" />
+								<p:commandLink value="#{produto.item}" process="@this" update="produto-dialog" style="color: #525252;" actionListener="#{dashboardBean.carregarProduto(produto.codigo)}" onstart="start();" oncomplete="PF('produto-dialog').show();stop();" />
 							</p:column>
 
 							<p:column headerText="Valor" style="text-align:right;width:30%">
@@ -716,7 +716,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 							scrollable="true" scrollHeight="337" styleClass="vendas-top5">
 
 							<p:column headerText="Produto" style="text-align:left;width:65%">
-								<p:commandLink value="#{produto.item}" process="@this" update="produto-dialog" style="color: #2f5580;" actionListener="#{dashboardBean.carregarProduto(produto.codigo)}" onstart="start();" oncomplete="PF('produto-dialog').show();stop();" />
+								<p:commandLink value="#{produto.item}" process="@this" update="produto-dialog" style="color: #525252;" actionListener="#{dashboardBean.carregarProduto(produto.codigo)}" onstart="start();" oncomplete="PF('produto-dialog').show();stop();" />
 							</p:column>
 
 							<p:column headerText="Valor" style="text-align:right;width:30%">
