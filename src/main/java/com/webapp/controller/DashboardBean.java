@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
 
@@ -29,6 +30,7 @@ import org.primefaces.model.charts.polar.PolarAreaChartModel;
 
 import com.webapp.model.FluxoDeCaixa;
 import com.webapp.model.Lancamento;
+import com.webapp.model.Produto;
 import com.webapp.model.Top5Despesa;
 import com.webapp.model.VendaPorCategoria;
 import com.webapp.repository.Compras;
@@ -86,7 +88,7 @@ public class DashboardBean implements Serializable {
 	private List<Top5Despesa> top5Despesas = new ArrayList<>();
 
 	private List<VendaPorCategoria> detalhesVendasPorProduto = new ArrayList<>();
-	
+
 	private List<VendaPorCategoria> detalhesEstoquePorProduto = new ArrayList<>();
 
 	@Inject
@@ -94,13 +96,17 @@ public class DashboardBean implements Serializable {
 
 	@Inject
 	private VendaPorCategoria estoquePorCategoriaSelecionada;
-	
+
 	private String totalValorVenda = "0,00";
-	private String totalItensVenda = "0";	
+	private String totalItensVenda = "0";
 	private String totalValorEstoque = "0,00";
 	private String totalItensEstoque = "0";
-	
+
 	private String totalDespesasTop5 = "0,00";
+
+	private byte[] fileContent;
+	
+	private Long produtoId;
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -120,9 +126,9 @@ public class DashboardBean implements Serializable {
 		List<Number> values = new ArrayList<>();
 
 		List<Object[]> despesasTemp = contas.totalDespesasPorCategoriaMesAtual();
-		
+
 		double totalDespesasTop5 = 0;
-		
+
 		top5Despesas = new ArrayList<>();
 		for (Object[] object : despesasTemp) {
 
@@ -133,22 +139,22 @@ public class DashboardBean implements Serializable {
 				top5Despesa.setItem(lancamento.getCategoriaLancamento().getNome());
 				top5Despesa.setValue(Double.parseDouble(object[1].toString()));
 				if (!top5Despesas.contains(top5Despesa)) {
-					
-					if(top5Despesas.size() < 5) {
+
+					if (top5Despesas.size() < 5) {
 						top5Despesas.add(top5Despesa);
 						totalDespesasTop5 += top5Despesa.getValue().doubleValue();
 					}
-					
+
 				} else {
 					top5Despesas.get(top5Despesas.indexOf(top5Despesa))
 							.setValue(top5Despesas.get(top5Despesas.indexOf(top5Despesa)).getValue().doubleValue()
 									+ top5Despesa.getValue().doubleValue());
-					
+
 					totalDespesasTop5 += top5Despesa.getValue().doubleValue();
 				}
 			}
 		}
-		
+
 		this.totalDespesasTop5 = nf.format(totalDespesasTop5);
 
 		List<String> labels = new ArrayList<>();
@@ -184,14 +190,14 @@ public class DashboardBean implements Serializable {
 		List<Number> values = new ArrayList<>();
 
 		detalhesEstoqueParaVendaPorCategoria = new ArrayList<>();
-		
-		int cont = 0;	
+
+		int cont = 0;
 		double totalValorEstoque = 0;
 		long totalItensEstoque = 0;
 		List<Object[]> totalParaVendasPorCategoria = vendas.totalParaVendasPorCategoria();
 		for (Object[] object : totalParaVendasPorCategoria) {
-			
-			if(cont < 5) {
+
+			if (cont < 5) {
 				values.add((Number) object[1]);
 				cont++;
 			}
@@ -200,13 +206,13 @@ public class DashboardBean implements Serializable {
 			vendaPorCategoria.setItem(object[0].toString());
 			vendaPorCategoria.setValue((Number) object[1]);
 			vendaPorCategoria.setQuantidade((Number) object[2]);
-			
+
 			totalValorEstoque += vendaPorCategoria.getValue().doubleValue();
 			totalItensEstoque += vendaPorCategoria.getQuantidade().doubleValue();
-			
+
 			detalhesEstoqueParaVendaPorCategoria.add(vendaPorCategoria);
 		}
-		
+
 		this.totalValorEstoque = nf.format(totalValorEstoque);
 		this.totalItensEstoque = String.valueOf(totalItensEstoque);
 
@@ -224,7 +230,7 @@ public class DashboardBean implements Serializable {
 		data.addChartDataSet(dataSet);
 		List<String> labels = new ArrayList<>();
 		for (Object[] object : totalParaVendasPorCategoria) {
-			if(cont < 5) {
+			if (cont < 5) {
 				labels.add((String) object[0]);
 				cont++;
 			}
@@ -256,8 +262,9 @@ public class DashboardBean implements Serializable {
 		// Number totalCreditos = lancamentos.totalCreditos();
 
 		List<Number> values = new ArrayList<>();
-		values.add((totalVendas.doubleValue() + totalCreditosPagos.doubleValue()) - (totalDebitosPagos.doubleValue() + totalCompras.doubleValue()));// Em
-																														// Caixa
+		values.add((totalVendas.doubleValue() + totalCreditosPagos.doubleValue())
+				- (totalDebitosPagos.doubleValue() + totalCompras.doubleValue()));// Em
+		// Caixa
 		values.add(totalVendas);// Vendas
 		values.add(totalCreditosPagos);// Receitas
 		// values.add(0);//Contas à Receber
@@ -272,11 +279,12 @@ public class DashboardBean implements Serializable {
 		tabela = new ArrayList<FluxoDeCaixa>();
 		FluxoDeCaixa fluxoDeCaixa = new FluxoDeCaixa();
 		fluxoDeCaixa.setItem("Caixa");
-		fluxoDeCaixa.setValue(
-				(totalVendas.doubleValue() + totalCreditosPagos.doubleValue()) - (totalDebitosPagos.doubleValue() + totalCompras.doubleValue()));
+		fluxoDeCaixa.setValue((totalVendas.doubleValue() + totalCreditosPagos.doubleValue())
+				- (totalDebitosPagos.doubleValue() + totalCompras.doubleValue()));
 		tabela.add(fluxoDeCaixa);
 
-		double saldo = (totalVendas.doubleValue() + totalCreditosPagos.doubleValue()) - (totalDebitosPagos.doubleValue() + totalCompras.doubleValue());
+		double saldo = (totalVendas.doubleValue() + totalCreditosPagos.doubleValue())
+				- (totalDebitosPagos.doubleValue() + totalCompras.doubleValue());
 		saldoGeral = nf.format(saldo);
 
 		fluxoDeCaixa = new FluxoDeCaixa();
@@ -437,15 +445,15 @@ public class DashboardBean implements Serializable {
 		List<Number> values = new ArrayList<>();
 
 		detalhesVendasPorCategoria = new ArrayList<>();
-		
+
 		int cont = 0;
 		double totalValorVenda = 0;
 		long totalItensVenda = 0;
 
 		List<Object[]> result = vendas.totalVendasPorCategoria();
 		for (Object[] object : result) {
-			
-			if(cont < 5) {
+
+			if (cont < 5) {
 				values.add((Number) object[1]);
 				cont++;
 			}
@@ -455,13 +463,13 @@ public class DashboardBean implements Serializable {
 			vendaPorCategoria.setItem(object[0].toString());
 			vendaPorCategoria.setValue((Number) object[1]);
 			vendaPorCategoria.setQuantidade((Number) object[2]);
-			
+
 			totalValorVenda += vendaPorCategoria.getValue().doubleValue();
 			totalItensVenda += vendaPorCategoria.getQuantidade().doubleValue();
 
 			detalhesVendasPorCategoria.add(vendaPorCategoria);
 		}
-		
+
 		this.totalValorVenda = nf.format(totalValorVenda);
 		this.totalItensVenda = String.valueOf(totalItensVenda);
 
@@ -480,8 +488,8 @@ public class DashboardBean implements Serializable {
 		data.addChartDataSet(dataSet);
 		List<String> labels = new ArrayList<>();
 		for (Object[] object : result) {
-			
-			if(cont < 5) {
+
+			if (cont < 5) {
 				labels.add((String) object[0]);
 				cont++;
 			}
@@ -502,6 +510,7 @@ public class DashboardBean implements Serializable {
 			vendaPorCategoria.setItem(object[0].toString());
 			vendaPorCategoria.setValue((Number) object[1]);
 			vendaPorCategoria.setQuantidade((Number) object[2]);
+			vendaPorCategoria.setCodigo(object[3].toString());
 
 			detalhesVendasPorProduto.add(vendaPorCategoria);
 		}
@@ -516,9 +525,16 @@ public class DashboardBean implements Serializable {
 			vendaPorCategoria.setItem(object[0].toString());
 			vendaPorCategoria.setValue((Number) object[1]);
 			vendaPorCategoria.setQuantidade((Number) object[2]);
+			vendaPorCategoria.setCodigo(object[3].toString());
 
 			detalhesEstoquePorProduto.add(vendaPorCategoria);
 		}
+	}
+
+	public void carregarProduto(String codigo) {
+		Produto produto = produtos.porCodigo(codigo);
+		fileContent = produto.getFoto();
+		produtoId = produto.getId();
 	}
 
 	public PieChartModel getPieModel() {
@@ -638,6 +654,18 @@ public class DashboardBean implements Serializable {
 
 	public String getTotalDespesasTop5() {
 		return totalDespesasTop5;
+	}
+
+	public byte[] getFileContent() {
+		return fileContent;
+	}
+
+	public String getImageContentsAsBase64() {
+		return Base64.getEncoder().encodeToString(fileContent);
+	}
+
+	public Long getProdutoId() {
+		return produtoId;
 	}
 
 }

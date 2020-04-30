@@ -260,7 +260,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 		width: auto;
 	}
 	#info-detalhes.ui-widget-content, #info-detalhes-estoque.ui-widget-content,
-		#downloadLoading.ui-widget-content {
+		#downloadLoading.ui-widget-content, #produto-dialog.ui-widget-content {
 		border: none;
 	}
 	.ui-grid-responsive .ui-grid-row {
@@ -716,7 +716,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 							scrollable="true" scrollHeight="337" styleClass="vendas-top5">
 
 							<p:column headerText="Produto" style="text-align:left;width:65%">
-								<h:outputText value="#{produto.item}" />
+								<p:commandLink value="#{produto.item}" process="@this" update="produto-dialog" style="color: #2f5580;" actionListener="#{dashboardBean.carregarProduto(produto.codigo)}" onstart="start();" oncomplete="PF('produto-dialog').show();stop();" />
 							</p:column>
 
 							<p:column headerText="Valor" style="text-align:right;width:30%">
@@ -740,6 +740,44 @@ body .ui-datatable .ui-datatable-data>tr td {
 						</p:commandButton>
 
 					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		
+		
+		<p:dialog header="Produto selecionado" widgetVar="produto-dialog"  position="top" style="margin-top: 100px"
+			id="produto-dialog" resizable="false" modal="true"
+			closeOnEscape="true" responsive="true" 
+			styleClass="fotoDialog">
+
+			<h:form id="form-dialogProduto">
+
+				<div class="ui-fluid" style="margin-top: 10px; text-align: center">
+					<ui:fragment id="photo"
+						rendered="#{dashboardBean.fileContent != null}">
+						<img
+							src="data:image/png;base64,#{dashboardBean.imageContentsAsBase64}"
+							style="width: 200px; height: 250px;" />
+					</ui:fragment>
+
+					<div
+						style="width: 80%; margin: auto; border-top: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px"></div>
+
+					<p:button icon="fa fa-fw fa-list"
+						style="margin-bottom: 5px;font-weight: bold;float: right;width: 100px;margin-right: 5px;background:#147df0"
+						value="Detalhes" id="foto-button" 
+						outcome="/cadastros/CadastroProdutos.xhtml"
+						onclick="start();">
+
+						<f:param name="id" value="#{dashboardBean.produtoId}" />
+					</p:button>
+					
+					<p:commandButton icon="fa fa-fw fa-close"
+						style="margin-bottom: 5px;font-weight: bold;width: 100px;background:#e15e5ef0;"
+						value="Fechar" 
+						onstart="start();"
+						oncomplete="stop();PF('produto-dialog').hide();">
+					</p:commandButton>
 				</div>
 			</h:form>
 		</p:dialog>

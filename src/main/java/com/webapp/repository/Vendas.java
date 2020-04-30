@@ -143,7 +143,7 @@ public class Vendas implements Serializable {
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalVendasPorProduto(String categoriaProduto) {		
 		
-		String jpql = "SELECT p.descricao, SUM(i.total), SUM(i.quantidade) FROM ItemVenda i JOIN i.produto p where p.categoriaProduto.nome = :categoriaProduto GROUP BY p.codigo, p.descricao ORDER BY SUM(i.total) DESC";
+		String jpql = "SELECT p.descricao, SUM(i.total), SUM(i.quantidade), p.codigo FROM ItemVenda i JOIN i.produto p where p.categoriaProduto.nome = :categoriaProduto GROUP BY p.codigo, p.descricao ORDER BY SUM(i.total) DESC";
 		Query q = manager.createQuery(jpql).setParameter("categoriaProduto", categoriaProduto);
 		List<Object[]> result = q.getResultList();
 		
@@ -174,7 +174,7 @@ public class Vendas implements Serializable {
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalParaVendasPorProduto(String categoriaProduto) {		
 		
-		String jpql = "SELECT i.produto.descricao, sum(i.quantidadeDisponivel * i.valorUnitario * (1+(i.produto.margemLucro/100))), SUM(i.quantidadeDisponivel) from ItemCompra i where i.quantidadeDisponivel > 0 AND i.produto.categoriaProduto.nome = :categoriaProduto group by i.produto.codigo, i.produto.descricao order by sum(i.quantidadeDisponivel * i.valorUnitario * (1+(i.produto.margemLucro/100))) desc";
+		String jpql = "SELECT i.produto.descricao, sum(i.quantidadeDisponivel * i.valorUnitario * (1+(i.produto.margemLucro/100))), SUM(i.quantidadeDisponivel), i.produto.codigo from ItemCompra i where i.quantidadeDisponivel > 0 AND i.produto.categoriaProduto.nome = :categoriaProduto group by i.produto.codigo, i.produto.descricao order by sum(i.quantidadeDisponivel * i.valorUnitario * (1+(i.produto.margemLucro/100))) desc";
 		Query q = manager.createQuery(jpql).setParameter("categoriaProduto", categoriaProduto);
 		List<Object[]> result = q.getResultList();
 		

@@ -6,11 +6,14 @@ public class VendaPorCategoria implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	
 	private String item;
 
 	private Number value;
 
 	private Number quantidade;
+	
+	private String codigo;
 
 
 	public String getItem() {
@@ -35,6 +38,14 @@ public class VendaPorCategoria implements Serializable {
 
 	public void setQuantidade(Number quantidade) {
 		this.quantidade = quantidade;
+	}
+
+	public String getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
 	}
 
 	@Override
