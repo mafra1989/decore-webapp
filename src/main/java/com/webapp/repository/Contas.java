@@ -47,9 +47,10 @@ public class Contas implements Serializable {
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalDespesasPorCategoriaMesAtual() {
 		Calendar calendar = Calendar.getInstance();
-		String jpql = "SELECT i.codigoOperacao, sum(i.valor) FROM Conta i WHERE i.operacao = 'LANCAMENTO' and i.tipo = 'DEBITO' and i.status = 'Y' and i.mes = :mesAtual GROUP BY i.codigoOperacao order by sum(i.valor) desc";
+		String jpql = "SELECT i.codigoOperacao, sum(i.valor) FROM Conta i WHERE i.operacao = 'LANCAMENTO' and i.tipo = 'DEBITO' and i.status = 'Y' and i.mes = :mesAtual and i.ano :anoAtual GROUP BY i.codigoOperacao order by sum(i.valor) desc";
 		Query q = manager.createQuery(jpql)
 				.setParameter("mesAtual", Long.parseLong(String.valueOf(calendar.get(Calendar.MONTH) + 1)))
+				.setParameter("anoAtual", Long.parseLong(String.valueOf(calendar.get(Calendar.YEAR))))
 				.setMaxResults(5);
 		List<Object[]> result = q.getResultList();
 

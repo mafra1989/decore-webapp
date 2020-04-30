@@ -105,6 +105,7 @@ public class ConsultaLancamentosBean implements Serializable {
 		totalLancamentos = nf.format(totalLancamentosTemp);
 		
 		if(origemLancamento.length > 0) {
+			
 			for (Lancamento lancamento : lancamentosFiltrados) {
 				Conta conta = new Conta();
 				conta.setOperacao("LANCAMENTO");
@@ -118,6 +119,7 @@ public class ConsultaLancamentosBean implements Serializable {
 				
 				calendarioTemp = Calendar.getInstance();
 				calendarioTemp.setTime(lancamento.getDataLancamento());
+				
 				conta.setDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_MONTH))));
 				conta.setNomeDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_WEEK))));
 				conta.setSemana(Long.valueOf((calendarioTemp.get(Calendar.WEEK_OF_YEAR))));
