@@ -111,6 +111,7 @@ public class ConsultaLancamentosBean implements Serializable {
 				conta.setCodigoOperacao(lancamento.getNumeroLancamento());
 				conta.setVencimento(lancamento.getDataLancamento());
 				conta.setPagamento(lancamento.getDataLancamento());
+				conta.setValor(lancamento.getValor());
 				conta.setParcela("AVISTA");
 				conta.setTipo("DEBITO");
 				conta.setStatus(true);
