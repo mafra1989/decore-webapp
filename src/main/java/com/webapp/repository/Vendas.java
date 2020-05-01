@@ -627,11 +627,15 @@ public class Vendas implements Serializable {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalLucrosPorLote(String ano, String mes01, String mes02, CategoriaProduto categoriaProduto, Produto produto, boolean chartCondition) {		
+	public List<Object[]> totalLucrosPorLote(String ano, String mes01, String mes02, CategoriaProduto categoriaProduto, String[] categorias, Produto produto, boolean chartCondition) {		
 		
 		String condition = ""; String select_Condition = ""; String sum_Condition = ""; String groupBy_Condition = ""; String orderBy_Condition = "";
 		if(categoriaProduto != null && categoriaProduto.getId() != null) {
 			condition = "AND i.produto.categoriaProduto.nome = :categoriaProduto ";
+		}
+		
+		if(categorias != null && categorias.length > 0) {
+			condition = "AND i.produto.categoriaProduto.nome in (:categorias) ";
 		}
 		
 		if(produto != null && produto.getId() != null) {
@@ -661,6 +665,10 @@ public class Vendas implements Serializable {
 		
 		if(categoriaProduto != null && categoriaProduto.getId() != null) {
 			q.setParameter("categoriaProduto", categoriaProduto.getNome());
+		}
+		
+		if(categorias != null && categorias.length > 0) {
+			q.setParameter("categorias", Arrays.asList(categorias));
 		}
 		
 		if(produto != null && produto.getId() != null) {

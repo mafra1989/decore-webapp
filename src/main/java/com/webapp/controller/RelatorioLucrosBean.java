@@ -787,7 +787,7 @@ public class RelatorioLucrosBean implements Serializable {
 					if (i < 10) {
 						mes01 = "0" + i;
 					}
-					List<Object[]> resultTemp = vendas.totalLucrosPorLote(ano02, mes01, mes01, categoriaPorMes, produto03,
+					List<Object[]> resultTemp = vendas.totalLucrosPorLote(ano02, mes01, mes01, categoriaPorMes, categoriasPorMes, produto03,
 							true);
 
 					if (resultTemp.size() == 0) {
