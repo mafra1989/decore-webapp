@@ -645,7 +645,7 @@ public class Vendas implements Serializable {
 		if(chartCondition != false) {
 			select_Condition = "i.compra.mes, p.ano, ";//p.mes
 			sum_Condition = "sum(i.lucro), sum(i.valorCompra), i.compra.mes";
-			groupBy_Condition = "i.compra.mes, p.ano, i.produto.categoriaProduto.nome ";
+			groupBy_Condition = "i.compra.mes, p.ano "; //i.produto.categoriaProduto.nome
 			orderBy_Condition = "i.compra.mes asc";
 		} else {
 			select_Condition = "i.produto.nome, ";
