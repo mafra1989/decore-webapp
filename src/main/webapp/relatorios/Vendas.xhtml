@@ -254,12 +254,6 @@
 								process="@this" update="barChart-vendasPorDia" />
 						</p:datePicker>
 
-					</p:panelGrid>
-
-					<p:panelGrid columns="3" layout="grid" id="painel-categoria"
-						styleClass="panelgrid-noborder disabled disabled no-display"
-						columnClasses="ui-grid-col-3, ui-grid-col-5, ui-grid-col-4">
-						
 						<p:outputLabel value="Vendedor" for="vendedor1" />
 						<p:selectOneMenu id="vendedor1"
 							value="#{relatorioVendasBean.usuarioPorDia}"
@@ -275,8 +269,13 @@
 								var="vendedor" itemLabel="#{vendedor.nome}"
 								itemValue="#{vendedor}" />
 						</p:selectOneMenu>
-						<p:outputLabel value="" />
-						
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="3" layout="grid" id="painel-categoria"
+						styleClass="panelgrid-noborder disabled disabled no-display"
+						columnClasses="ui-grid-col-3, ui-grid-col-5, ui-grid-col-4">
+
 						<p:outputLabel value="Categoria" />
 						<p:selectCheckboxMenu styleClass="categoria" label=""
 							showHeader="true" emptyLabel=""

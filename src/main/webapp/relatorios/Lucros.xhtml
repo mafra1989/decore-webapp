@@ -259,7 +259,7 @@
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-2">
 
 						<p:outputLabel value="Categoria" for="categoria1" />
-						<p:selectCheckboxMenu id="categoria1" label=""
+						<p:selectCheckboxMenu id="categoria1" 
 							showHeader="true" emptyLabel=""
 							filter="true" filterMatchMode="startsWith"
 							value="#{relatorioLucrosBean.categoriasPorDia}">
@@ -365,9 +365,9 @@
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-2">
 						
 						<p:outputLabel value="Categoria" for="categoria2" />
-						<p:selectCheckboxMenu id="categoria2" label=""
+						<p:selectCheckboxMenu id="categoria2"
 							style="width: 100%" showHeader="true"
-							emptyLabel="" filter="true" filterMatchMode="startsWith"
+							emptyLabel="Test" filter="true" filterMatchMode="startsWith"
 							value="#{relatorioLucrosBean.categoriasPorSemana}">
 
 							<f:selectItems
