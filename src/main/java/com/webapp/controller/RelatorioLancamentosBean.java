@@ -267,6 +267,8 @@ public class RelatorioLancamentosBean implements Serializable {
 		List<Object[]> result = new ArrayList<>();
 
 		List<String> labels = new ArrayList<>();
+		
+		boolean debito = false, credito = false;
 
 		if (calendarStart.before(calendarStop)) {
 
@@ -356,6 +358,7 @@ public class RelatorioLancamentosBean implements Serializable {
 						object[5] = 0;
 
 						result.add(object);
+						debito = true;
 					}
 
 					if (!tipos.contains("CREDITO")) {
@@ -377,6 +380,7 @@ public class RelatorioLancamentosBean implements Serializable {
 						object[5] = 0;
 
 						result.add(object);
+						credito = true;
 					}
 
 					objectTemp[5] = valor;
@@ -388,7 +392,7 @@ public class RelatorioLancamentosBean implements Serializable {
 			} while (calendarStartTemp.before(calendarStop));
 		}
 		
-		boolean debito = false, credito = false;
+		
 		String date = "";
 		for (Object[] object : result) {
 
@@ -399,11 +403,9 @@ public class RelatorioLancamentosBean implements Serializable {
 
 			if (object[4].toString().equals("DEBITO")) {
 				values.add((Number) object[5]);
-				debito = true;
 
 			} else if (object[4].toString().equals("CREDITO")) {
 				values2.add((Number) object[5]);
-				credito = true;
 
 			} else if (object[4].toString().equals("")) {
 				values.add((Number) object[5]);
@@ -411,8 +413,8 @@ public class RelatorioLancamentosBean implements Serializable {
 			}
 		}
 
-		if ((categoriasPorDia == null || categoriasPorDia.length == 0
-				&& (!debito && !credito)) || debito) {
+		if (categoriasPorDia == null || categoriasPorDia.length == 0
+				|| debito) {
 			dataSet.setData(values);
 			dataSet.setLabel("Débito");
 			dataSet.setBorderColor("rgba(54, 162, 235)");
@@ -420,8 +422,8 @@ public class RelatorioLancamentosBean implements Serializable {
 			data.addChartDataSet(dataSet);
 		}
 
-		if ((categoriasPorDia == null || categoriasPorDia.length == 0
-				&& (!debito && !credito)) || credito) {
+		if (categoriasPorDia == null || categoriasPorDia.length == 0
+				|| credito) {
 			dataSet2.setData(values2);
 			dataSet2.setLabel("Crédito");
 			dataSet2.setBorderColor("rgba(255, 205, 86)");
