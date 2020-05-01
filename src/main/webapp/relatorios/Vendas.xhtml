@@ -107,9 +107,6 @@
 	.ui-fluid .ui-calendar, .ui-fluid .ui-calendar input {
 		width: 100%;
 	}
-	body .ui-selectcheckboxmenu .ui-selectcheckboxmenu-trigger {
-		margin-top: -15px;
-	}
 	body .ui-selectcheckboxmenu-panel .ui-selectcheckboxmenu-header .ui-chkbox
 		{
 		/*display: none;*/
@@ -202,11 +199,11 @@
 		width: 78% !important;
 	}
 	.btn-pie.ui-button {
-		width: 30px;
+		width: 32px;
 		float: left;
 		position: relative;
 		margin-top: 4px;
-		height: 27px;
+		height: 32px;
 		margin-left: -8px;
 	}
 }
@@ -279,8 +276,8 @@
 						columnClasses="ui-grid-col-3, ui-grid-col-5, ui-grid-col-4">
 
 						<p:outputLabel value="Categoria" />
-						<p:selectCheckboxMenu styleClass="categoria" label="Selecione"
-							showHeader="true" emptyLabel="Selecione"
+						<p:selectCheckboxMenu styleClass="categoria" label=""
+							showHeader="true" emptyLabel=""
 							filter="true" filterMatchMode="startsWith"
 							value="#{relatorioVendasBean.categoriasPorDia}">
 
@@ -402,8 +399,8 @@
 						columnClasses="ui-grid-col-3, ui-grid-col-5, ui-grid-col-4">
 
 						<p:outputLabel value="Categoria" />
-						<p:selectCheckboxMenu style="width: 100%" label="Selecione"
-							showHeader="true" emptyLabel="Selecione"
+						<p:selectCheckboxMenu style="width: 100%" label=""
+							showHeader="true" emptyLabel=""
 							filter="true" filterMatchMode="startsWith"
 							value="#{relatorioVendasBean.categoriasPorSemana}">
 
@@ -537,8 +534,8 @@
 						columnClasses="ui-grid-col-3, ui-grid-col-5, ui-grid-col-4">
 
 						<p:outputLabel value="Categoria" />
-						<p:selectCheckboxMenu style="width: 100%" label="Selecione"
-							showHeader="true" emptyLabel="Selecione"
+						<p:selectCheckboxMenu style="width: 100%" label=""
+							showHeader="true" emptyLabel=""
 							filter="true" filterMatchMode="startsWith"
 							value="#{relatorioVendasBean.categoriasPorMes}">
 
@@ -641,8 +638,8 @@
 						columnClasses="ui-grid-col-3, ui-grid-col-5, ui-grid-col-4">
 
 						<p:outputLabel value="Categoria" />
-						<p:selectCheckboxMenu style="width: 100%" label="Selecione"
-							showHeader="true" emptyLabel="Selecione"
+						<p:selectCheckboxMenu style="width: 100%" label=""
+							showHeader="true" emptyLabel=""
 							filter="true" filterMatchMode="startsWith"
 							value="#{relatorioVendasBean.categoriasPorAno}">
 

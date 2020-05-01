@@ -101,9 +101,6 @@
 	.ui-fluid .ui-calendar, .ui-fluid .ui-calendar input {
 		width: 100%;
 	}
-	body .ui-selectcheckboxmenu .ui-selectcheckboxmenu-trigger {
-		margin-top: -15px;
-	}
 	body .ui-selectcheckboxmenu-panel .ui-selectcheckboxmenu-header .ui-chkbox
 		{
 		/*display: none;*/
@@ -141,11 +138,11 @@
 		color: #6a6565;
 		background-color: #f2f2f200;
 		border: 1px solid #a8a8a8;
-		width: 30px;
+		width: 32px;
 		float: right;
 		position: relative;
     	margin-right: 10px;
-		height: 27px;
+		height: 32px;
 	}
 	.btn-pie2.ui-button {
 		margin-top: -4.6em !important;
@@ -261,8 +258,8 @@
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-2">
 
 						<p:outputLabel value="Categoria" for="categoria1" />
-						<p:selectCheckboxMenu id="categoria1" label="Selecione"
-							multiple="true" showHeader="true" emptyLabel="Selecione"
+						<p:selectCheckboxMenu id="categoria1" label=""
+							showHeader="true" emptyLabel=""
 							filter="true" filterMatchMode="startsWith"
 							value="#{relatorioLucrosBean.categoriasPorDia}">
 
@@ -367,9 +364,9 @@
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-2">
 						
 						<p:outputLabel value="Categoria" for="categoria2" />
-						<p:selectCheckboxMenu id="categoria2" label="Selecione"
-							style="width: 100%" multiple="true" showHeader="true"
-							emptyLabel="Selecione" filter="true" filterMatchMode="startsWith"
+						<p:selectCheckboxMenu id="categoria2" label=""
+							style="width: 100%" showHeader="true"
+							emptyLabel="" filter="true" filterMatchMode="startsWith"
 							value="#{relatorioLucrosBean.categoriasPorSemana}">
 
 							<f:selectItems
@@ -484,9 +481,9 @@
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-2">
 						
 						<p:outputLabel value="Categoria" for="categoria3" />
-						<p:selectCheckboxMenu id="categoria3" label="Selecione"
-							style="width: 100%" multiple="true" showHeader="true"
-							emptyLabel="Selecione" filter="true" filterMatchMode="startsWith"
+						<p:selectCheckboxMenu id="categoria3" label=""
+							style="width: 100%" showHeader="true"
+							emptyLabel="" filter="true" filterMatchMode="startsWith"
 							value="#{relatorioLucrosBean.categoriasPorMes}">
 
 							<f:selectItems
@@ -584,7 +581,7 @@
 
 						<p:outputLabel value="Categoria" for="categoria4" />
 						<p:selectCheckboxMenu id="categoria4" style="width: 100%"
-							multiple="true" showHeader="true" emptyLabel="Selecione"
+							showHeader="true" emptyLabel="" label=""
 							filter="true" filterMatchMode="startsWith"
 							value="#{relatorioLucrosBean.categoriasPorAno}">
 
