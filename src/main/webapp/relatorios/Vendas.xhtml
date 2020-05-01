@@ -97,6 +97,13 @@
 
 		<style>
 @media ( min-width :220px) {
+	.ui-selectonemenu-panel .ui-selectonemenu-list-item {
+	    /*border: 1px solid #e8e8e8;*/
+	    white-space: normal;
+	}
+	body .ui-selectonemenu-panel {
+	    width: 72%;
+	}
 	.ui-fluid .ui-calendar, .ui-fluid .ui-calendar input {
 		width: 100%;
 	}
@@ -162,6 +169,9 @@
 }
 
 @media ( min-width :460px) {
+	body .ui-selectonemenu-panel {
+	    width: auto;
+	}
 	.ui-fluid .ui-calendar, .ui-fluid .ui-calendar input {
 		width: 90px;
 	}
@@ -264,7 +274,7 @@
 
 					</p:panelGrid>
 
-					<p:panelGrid columns="3" layout="grid"
+					<p:panelGrid columns="3" layout="grid" id="painel-categoria"
 						styleClass="panelgrid-noborder disabled disabled no-display"
 						columnClasses="ui-grid-col-3, ui-grid-col-5, ui-grid-col-4">
 
@@ -282,7 +292,7 @@
 
 						<p:commandButton icon="fa fa-refresh"
 							action="#{relatorioVendasBean.changeCategoriaPorDia}"
-							process="@this painel" styleClass="btn-pie" title="Atualizar"
+							process="@this painel painel-categoria" styleClass="btn-pie" title="Atualizar"
 							onstart="start();" oncomplete="stop();"
 							update="produto1 barChart-vendasPorDia" />
 
@@ -386,7 +396,7 @@
 
 					</p:panelGrid>
 
-					<p:panelGrid columns="3" layout="grid"
+					<p:panelGrid columns="3" layout="grid" id="panel-semanal-categoria"
 						styleClass="panelgrid-noborder disabled disabled no-display"
 						columnClasses="ui-grid-col-3, ui-grid-col-5, ui-grid-col-4">
 
@@ -404,7 +414,7 @@
 
 						<p:commandButton icon="fa fa-refresh"
 							action="#{relatorioVendasBean.changeCategoriaPorSemana}"
-							process="@this panel-semanal" styleClass="btn-pie"
+							process="@this panel-semanal panel-semanal-categoria" styleClass="btn-pie"
 							title="Atualizar" onstart="start();" oncomplete="stop();"
 							update="produto2 barChart-vendasPorSemana" />
 					</p:panelGrid>
@@ -521,7 +531,7 @@
 					</p:panelGrid>
 
 
-					<p:panelGrid columns="3" layout="grid"
+					<p:panelGrid columns="3" layout="grid" id="panel-mensal-categoria"
 						styleClass="panelgrid-noborder disabled disabled no-display"
 						columnClasses="ui-grid-col-3, ui-grid-col-5, ui-grid-col-4">
 
@@ -539,7 +549,7 @@
 
 						<p:commandButton icon="fa fa-refresh"
 							action="#{relatorioVendasBean.changeCategoriaPorMes}"
-							process="@this panel-mensal" styleClass="btn-pie"
+							process="@this panel-mensal panel-mensal-categoria" styleClass="btn-pie"
 							title="Atualizar" onstart="start();" oncomplete="stop();"
 							update="produto3 barChart-vendasPorMes" />
 					</p:panelGrid>
@@ -580,7 +590,7 @@
 					<h3 style="font-weight: bold; margin-top: -8px;">Vendas por
 						Ano</h3>
 
-					<p:panelGrid columns="4" id="painel3" layout="grid"
+					<p:panelGrid columns="4" id="panel-anual" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-1, ui-grid-col-4">
 
@@ -624,7 +634,7 @@
 
 					</p:panelGrid>
 
-					<p:panelGrid columns="3" layout="grid"
+					<p:panelGrid columns="3" layout="grid" id="panel-anual-categoria"
 						styleClass="panelgrid-noborder disabled disabled no-display"
 						columnClasses="ui-grid-col-3, ui-grid-col-5, ui-grid-col-4">
 
@@ -640,9 +650,9 @@
 								itemValue="#{categoria.nome}"></f:selectItems>
 						</p:selectCheckboxMenu>
 
-						<p:commandButton icon="fa fa-refresh"
+						<p:commandButton icon="fa fa-refresh" 
 							action="#{relatorioVendasBean.changeCategoriaPorAno}"
-							process="@this" styleClass="btn-pie" title="Atualizar"
+							process="@this panel-anual panel-anual-categoria" styleClass="btn-pie" title="Atualizar"
 							onstart="start();" oncomplete="stop();"
 							update="produto4 barChart-vendasPorAno" />
 					</p:panelGrid>
