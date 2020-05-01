@@ -541,7 +541,7 @@
 
 					<h3 style="font-weight: bold; margin-top: -8px;">Lucro por Ano</h3>
 
-					<p:panelGrid columns="4" id="painel3" layout="grid"
+					<p:panelGrid columns="4" id="painel-anual" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-1, ui-grid-col-4">
 
@@ -568,7 +568,7 @@
 						</p:selectOneMenu>
 					</p:panelGrid>
 
-					<p:panelGrid columns="4" layout="grid"
+					<p:panelGrid columns="4" layout="grid" id="painel-anual-categoria"
 						styleClass="panelgrid-noborder disabled disabled no-display"
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-2">
 
@@ -586,7 +586,7 @@
 
 						<p:commandButton icon="fa fa-refresh"
 							action="#{relatorioLucrosBean.changeCategoriaPorAno}"
-							process="@this" styleClass="btn-pie"
+							process="@this painel-anual painel-anual-categoria" styleClass="btn-pie"
 							title="Atualizar" onstart="start();" oncomplete="stop();"
 							update="produto4 barChart-lucrosPorAno" />
 					</p:panelGrid>
