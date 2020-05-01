@@ -135,8 +135,7 @@
 		width: 32px;
 		float: right;
 		position: relative;
-		margin-right: 10px;
-		margin-right: 10px;
+		margin-top: -4px;
 	}
 	.btn-pie.ui-button.ui-state-hover {
 		background-color: #e8e5e5;
@@ -518,6 +517,22 @@
 			</h:form>
 		</p:dialog>
 
+		<p:dialog id="downloadLoading" showHeader="false" modal="true"
+			widgetVar="downloadLoading" header="Status" draggable="false"
+			closable="false" resizable="false">
+			<p:graphicImage name="images/loadingbar.gif"
+				library="manhattan-layout" width="50" />
+		</p:dialog>
+
+		<script type="text/javascript">
+			function start() {
+				PF('downloadLoading').show();
+			}
+
+			function stop() {
+				PF('downloadLoading').hide();
+			}
+		</script>
 		
 	</ui:define>
 
