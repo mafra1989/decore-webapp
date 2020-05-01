@@ -105,7 +105,8 @@
 	}
 	body .ui-selectcheckboxmenu-panel .ui-selectcheckboxmenu-header .ui-chkbox
 		{
-		display: none;
+		/*display: none;*/
+		
 	}
 	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
 		right: 0;
@@ -135,8 +136,29 @@
 	.ano {
 		width: 100%;
 	}
-	.btn-pie {
-		margin-top: 5px;
+	.btn-pie.ui-button {
+		color: #6a6565;
+		background-color: #f2f2f200;
+		border: 1px solid #a8a8a8;
+		width: 30px;
+		float: right;
+		position: relative;
+		margin-top: -4.6em;
+		margin-right: 10px;
+		height: 27px;
+		margin-right: 10px;
+	}
+	.btn-pie.ui-button.ui-state-hover {
+		background-color: #e8e5e5;
+	}
+	.btn-pie.ui-button.ui-state-focus {
+		background-color: #e8e5e5;
+	}
+	.btn-pie.ui-button.ui-state-active {
+		background-color: #f2f2f200;
+	}
+	.no-display.ui-panelgrid .ui-panelgrid-cell:nth-child(3) {
+		padding: 0;
 	}
 }
 
@@ -170,8 +192,13 @@
 	.ano {
 		width: 78% !important;
 	}
-	.btn-pie {
-		margin-top: 40px;
+	.btn-pie.ui-button {
+		width: 30px;
+		float: left;
+		position: relative;
+		margin-top: 4px;
+		height: 27px;
+		margin-left: -8px;
 	}
 }
 </style>
@@ -238,9 +265,9 @@
 
 					</p:panelGrid>
 
-					<p:panelGrid columns="2" layout="grid"
-						styleClass="panelgrid-noborder disabled disabled"
-						columnClasses="ui-grid-col-3, ui-grid-col-5">
+					<p:panelGrid columns="3" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled no-display"
+						columnClasses="ui-grid-col-3, ui-grid-col-5, ui-grid-col-4">
 
 						<p:outputLabel value="Categoria" />
 						<p:selectCheckboxMenu styleClass="categoria" label="Selecione"
@@ -248,14 +275,23 @@
 							filter="true" filterMatchMode="startsWith"
 							value="#{relatorioVendasBean.categoriasPorDia}">
 
-							<p:ajax event="change"
-								listener="#{relatorioVendasBean.changeCategoriaPorDia}"
-								process="@this painel" update="produto1 barChart-vendasPorDia" />
 							<f:selectItems
 								value="#{relatorioVendasBean.todasCategoriasProduto}"
 								var="categoria" itemLabel="#{categoria.nome}"
 								itemValue="#{categoria.nome}"></f:selectItems>
 						</p:selectCheckboxMenu>
+
+						<p:commandButton icon="fa fa-refresh"
+							action="#{relatorioVendasBean.changeCategoriaPorDia}"
+							process="@this painel" styleClass="btn-pie" title="Atualizar"
+							onstart="start();" oncomplete="stop();"
+							update="produto1 barChart-vendasPorDia" />
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="3" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-3, ui-grid-col-5">
 
 						<p:outputLabel value="Produto" for="produto1" />
 						<p:selectOneMenu id="produto1" style="width: 100%"
@@ -351,9 +387,9 @@
 
 					</p:panelGrid>
 
-					<p:panelGrid columns="2" layout="grid"
-						styleClass="panelgrid-noborder disabled disabled"
-						columnClasses="ui-grid-col-3, ui-grid-col-5">
+					<p:panelGrid columns="3" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled no-display"
+						columnClasses="ui-grid-col-3, ui-grid-col-5, ui-grid-col-4">
 
 						<p:outputLabel value="Categoria" />
 						<p:selectCheckboxMenu style="width: 100%" label="Selecione"
@@ -361,15 +397,22 @@
 							filter="true" filterMatchMode="startsWith"
 							value="#{relatorioVendasBean.categoriasPorSemana}">
 
-							<p:ajax event="change"
-								listener="#{relatorioVendasBean.changeCategoriaPorSemana}"
-								process="@this panel-semanal"
-								update="produto2 barChart-vendasPorSemana" />
 							<f:selectItems
 								value="#{relatorioVendasBean.todasCategoriasProduto}"
 								var="categoria" itemLabel="#{categoria.nome}"
 								itemValue="#{categoria.nome}"></f:selectItems>
 						</p:selectCheckboxMenu>
+
+						<p:commandButton icon="fa fa-refresh"
+							action="#{relatorioVendasBean.changeCategoriaPorSemana}"
+							process="@this panel-semanal" styleClass="btn-pie"
+							title="Atualizar" onstart="start();" oncomplete="stop();"
+							update="produto2 barChart-vendasPorSemana" />
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-3, ui-grid-col-5">
 
 						<p:outputLabel value="Produto" for="produto2" />
 						<p:selectOneMenu id="produto2" style="width: 100%"
@@ -479,9 +522,9 @@
 					</p:panelGrid>
 
 
-					<p:panelGrid columns="2" layout="grid"
-						styleClass="panelgrid-noborder disabled disabled"
-						columnClasses="ui-grid-col-3, ui-grid-col-5">
+					<p:panelGrid columns="3" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled no-display"
+						columnClasses="ui-grid-col-3, ui-grid-col-5, ui-grid-col-4">
 
 						<p:outputLabel value="Categoria" />
 						<p:selectCheckboxMenu style="width: 100%" label="Selecione"
@@ -489,15 +532,22 @@
 							filter="true" filterMatchMode="startsWith"
 							value="#{relatorioVendasBean.categoriasPorMes}">
 
-							<p:ajax event="change"
-								listener="#{relatorioVendasBean.changeCategoriaPorMes}"
-								process="@this panel-mensal"
-								update="produto3 barChart-vendasPorMes" />
 							<f:selectItems
 								value="#{relatorioVendasBean.todasCategoriasProduto}"
 								var="categoria" itemLabel="#{categoria.nome}"
 								itemValue="#{categoria.nome}"></f:selectItems>
 						</p:selectCheckboxMenu>
+
+						<p:commandButton icon="fa fa-refresh"
+							action="#{relatorioVendasBean.changeCategoriaPorMes}"
+							process="@this panel-mensal" styleClass="btn-pie"
+							title="Atualizar" onstart="start();" oncomplete="stop();"
+							update="produto3 barChart-vendasPorMes" />
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-3, ui-grid-col-5">
 
 						<p:outputLabel value="Produto" for="produto3" />
 						<p:selectOneMenu id="produto3" style="width: 100%"
@@ -575,9 +625,9 @@
 
 					</p:panelGrid>
 
-					<p:panelGrid columns="2" layout="grid"
-						styleClass="panelgrid-noborder disabled disabled"
-						columnClasses="ui-grid-col-3, ui-grid-col-5">
+					<p:panelGrid columns="3" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled no-display"
+						columnClasses="ui-grid-col-3, ui-grid-col-5, ui-grid-col-4">
 
 						<p:outputLabel value="Categoria" />
 						<p:selectCheckboxMenu style="width: 100%" label="Selecione"
@@ -585,14 +635,22 @@
 							filter="true" filterMatchMode="startsWith"
 							value="#{relatorioVendasBean.categoriasPorAno}">
 
-							<p:ajax event="change"
-								listener="#{relatorioVendasBean.changeCategoriaPorAno}"
-								process="@this" update="produto4 barChart-vendasPorAno" />
 							<f:selectItems
 								value="#{relatorioVendasBean.todasCategoriasProduto}"
 								var="categoria" itemLabel="#{categoria.nome}"
 								itemValue="#{categoria.nome}"></f:selectItems>
 						</p:selectCheckboxMenu>
+
+						<p:commandButton icon="fa fa-refresh"
+							action="#{relatorioVendasBean.changeCategoriaPorAno}"
+							process="@this" styleClass="btn-pie" title="Atualizar"
+							onstart="start();" oncomplete="stop();"
+							update="produto4 barChart-vendasPorAno" />
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-3, ui-grid-col-5">
 
 						<p:outputLabel value="Produto" for="produto4" />
 						<p:selectOneMenu id="produto4" style="width: 100%"
@@ -648,6 +706,24 @@
 				</div>
 			</h:form>
 		</p:dialog>
+
+
+		<p:dialog id="downloadLoading" showHeader="false" modal="true"
+			widgetVar="downloadLoading" header="Status" draggable="false"
+			closable="false" resizable="false">
+			<p:graphicImage name="images/loadingbar.gif"
+				library="manhattan-layout" width="50" />
+		</p:dialog>
+
+		<script type="text/javascript">
+			function start() {
+				PF('downloadLoading').show();
+			}
+
+			function stop() {
+				PF('downloadLoading').hide();
+			}
+		</script>
 
 	</ui:define>
 

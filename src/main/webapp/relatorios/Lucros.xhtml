@@ -99,7 +99,8 @@
 	}
 	body .ui-selectcheckboxmenu-panel .ui-selectcheckboxmenu-header .ui-chkbox
 		{
-		display: none;
+		/*display: none;*/
+		
 	}
 	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
 		right: 0;
@@ -129,8 +130,32 @@
 	.ano {
 		width: 100%;
 	}
-	.btn-pie {
-		margin-top: 5px;
+	.btn-pie.ui-button {
+		color: #6a6565;
+		background-color: #f2f2f200;
+		border: 1px solid #a8a8a8;
+		width: 30px;
+		float: right;
+		position: relative;
+		margin-top: -4.6em;
+    	margin-right: 10px;
+		height: 27px;
+	}
+	.btn-pie2.ui-button {
+		margin-top: -4.6em !important;
+	}
+	.btn-pie.ui-button.ui-state-hover {
+		background-color: #e8e5e5;
+	}
+	.btn-pie.ui-button.ui-state-focus {
+		background-color: #e8e5e5;
+	}
+	.btn-pie.ui-button.ui-state-active {
+		background-color: #f2f2f200;
+	}
+	
+	.no-display.ui-panelgrid .ui-panelgrid-cell:nth-child(3) {
+		padding: 0;
 	}
 }
 
@@ -164,8 +189,16 @@
 	.ano {
 		width: 78% !important;
 	}
-	.btn-pie {
-		margin-top: 40px;
+	.btn-pie.ui-button {
+		width: 30px;
+		float: left;
+		position: relative;
+		margin-top: 4px;
+	    height: 27px;
+	    margin-left: -8px;
+	}
+	.btn-pie2.ui-button {
+		margin-top: 0.3em !important;
 	}
 }
 </style>
@@ -212,27 +245,34 @@
 								listener="#{relatorioLucrosBean.createMixedModelPorDia}"
 								process="@this" update="barChart-lucrosPorDia" />
 						</p:datePicker>
+					</p:panelGrid>
 
+					<p:panelGrid columns="3" id="painel-categoria" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled no-display"
+						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-2">
 
 						<p:outputLabel value="Categoria" for="categoria1" />
-						<p:selectCheckboxMenu id="categoria1" label="Selecione" 
+						<p:selectCheckboxMenu id="categoria1" label="Selecione"
 							multiple="true" showHeader="true" emptyLabel="Selecione"
 							filter="true" filterMatchMode="startsWith"
 							value="#{relatorioLucrosBean.categoriasPorDia}">
 
-							<p:ajax event="change"
-								listener="#{relatorioLucrosBean.changeCategoriaPorDia}"
-								process="@this painel" update="produto1 barChart-lucrosPorDia" />
 							<f:selectItems
 								value="#{relatorioLucrosBean.todasCategoriasProduto}"
 								var="categoria" itemLabel="#{categoria.nome}"
 								itemValue="#{categoria.nome}"></f:selectItems>
 						</p:selectCheckboxMenu>
 
+						<p:commandButton icon="fa fa-refresh"
+							action="#{relatorioLucrosBean.changeCategoriaPorDia}"
+							process="@this painel painel-categoria" styleClass="btn-pie"
+							title="Atualizar" onstart="start();" oncomplete="stop();"
+							update="produto1 barChart-lucrosPorDia" />
+
 					</p:panelGrid>
 
 					<p:panelGrid columns="2" layout="grid"
-						styleClass="panelgrid-noborder disabled disabled"
+						styleClass="panelgrid-noborder disabled disabled produto"
 						columnClasses="ui-grid-col-3, ui-grid-col-5">
 
 						<p:outputLabel value="Produto" for="produto1" />
@@ -311,23 +351,30 @@
 							<f:selectItems value="#{relatorioLucrosBean.semanas}"
 								var="semana" itemLabel="#{semana}" itemValue="#{semana}"></f:selectItems>
 						</p:selectOneMenu>
+					</p:panelGrid>
 
-
+					<p:panelGrid id="panel-semanal-categoria" columns="4" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled no-display"
+						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-2">
+						
 						<p:outputLabel value="Categoria" for="categoria2" />
 						<p:selectCheckboxMenu id="categoria2" label="Selecione"
 							style="width: 100%" multiple="true" showHeader="true"
 							emptyLabel="Selecione" filter="true" filterMatchMode="startsWith"
 							value="#{relatorioLucrosBean.categoriasPorSemana}">
 
-							<p:ajax event="change"
-								listener="#{relatorioLucrosBean.changeCategoriaPorSemana}"
-								process="@this panel-semanal"
-								update="produto2 barChart-lucrosPorSemana" />
 							<f:selectItems
 								value="#{relatorioLucrosBean.todasCategoriasProduto}"
 								var="categoria" itemLabel="#{categoria.nome}"
 								itemValue="#{categoria.nome}"></f:selectItems>
 						</p:selectCheckboxMenu>
+
+						<p:commandButton icon="fa fa-refresh"
+							action="#{relatorioLucrosBean.changeCategoriaPorSemana}"
+							process="@this panel-semanal panel-semanal-categoria"
+							styleClass="btn-pie btn-pie2" title="Atualizar"
+							onstart="start();" oncomplete="stop();"
+							update="produto2 barChart-lucrosPorSemana" />
 					</p:panelGrid>
 
 					<p:panelGrid columns="3" layout="grid"
@@ -421,23 +468,30 @@
 							<f:selectItems value="#{relatorioLucrosBean.meses}" var="mes"
 								itemLabel="#{mes}" itemValue="#{mes}"></f:selectItems>
 						</p:selectOneMenu>
+					</p:panelGrid>
 
-
+					<p:panelGrid columns="4" id="panel-mensal-categoria" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled no-display"
+						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-2">
+						
 						<p:outputLabel value="Categoria" for="categoria3" />
 						<p:selectCheckboxMenu id="categoria3" label="Selecione"
 							style="width: 100%" multiple="true" showHeader="true"
 							emptyLabel="Selecione" filter="true" filterMatchMode="startsWith"
 							value="#{relatorioLucrosBean.categoriasPorMes}">
 
-							<p:ajax event="change"
-								listener="#{relatorioLucrosBean.changeCategoriaPorMes}"
-								process="@this panel-mensal"
-								update="produto3 barChart-lucrosPorMes check-box" />
 							<f:selectItems
 								value="#{relatorioLucrosBean.todasCategoriasProduto}"
 								var="categoria" itemLabel="#{categoria.nome}"
 								itemValue="#{categoria.nome}"></f:selectItems>
 						</p:selectCheckboxMenu>
+
+						<p:commandButton icon="fa fa-refresh"
+							action="#{relatorioLucrosBean.changeCategoriaPorMes}"
+							process="@this panel-mensal panel-mensal-categoria"
+							styleClass="btn-pie btn-pie2" title="Atualizar"
+							onstart="start();" oncomplete="stop();"
+							update="produto3 barChart-lucrosPorMes check-box" />
 
 					</p:panelGrid>
 
@@ -463,7 +517,7 @@
 
 						<p:selectBooleanCheckbox id="check-box"
 							value="#{relatorioLucrosBean.lucroPorLote}" itemLabel="Por Lote"
-							disabled="#{relatorioLucrosBean.categoriaPorMes.id == null}">
+							disabled="#{relatorioLucrosBean.categoriasPorMesSize() == 0}">
 							<p:ajax event="change"
 								listener="#{relatorioLucrosBean.prepareLucroPorLote}"
 								process="@this panel-mensal produto3 check-box"
@@ -513,7 +567,11 @@
 							<f:selectItems value="#{relatorioLucrosBean.anos}" var="ano"
 								itemLabel="#{ano}" itemValue="#{ano}"></f:selectItems>
 						</p:selectOneMenu>
+					</p:panelGrid>
 
+					<p:panelGrid columns="4" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled no-display"
+						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-2">
 
 						<p:outputLabel value="Categoria" for="categoria4" />
 						<p:selectCheckboxMenu id="categoria4" style="width: 100%"
@@ -521,14 +579,17 @@
 							filter="true" filterMatchMode="startsWith"
 							value="#{relatorioLucrosBean.categoriasPorAno}">
 
-							<p:ajax event="change"
-								listener="#{relatorioLucrosBean.changeCategoriaPorAno}"
-								process="@this" update="produto4 barChart-lucrosPorAno" />
 							<f:selectItems
 								value="#{relatorioLucrosBean.todasCategoriasProduto}"
 								var="categoria" itemLabel="#{categoria.nome}"
 								itemValue="#{categoria.nome}"></f:selectItems>
 						</p:selectCheckboxMenu>
+
+						<p:commandButton icon="fa fa-refresh"
+							action="#{relatorioLucrosBean.changeCategoriaPorAno}"
+							process="@this" styleClass="btn-pie"
+							title="Atualizar" onstart="start();" oncomplete="stop();"
+							update="produto4 barChart-lucrosPorAno" />
 					</p:panelGrid>
 
 					<p:panelGrid columns="2" layout="grid"
@@ -591,6 +652,24 @@
 				</div>
 			</h:form>
 		</p:dialog>
+
+
+		<p:dialog id="downloadLoading" showHeader="false" modal="true"
+			widgetVar="downloadLoading" header="Status" draggable="false"
+			closable="false" resizable="false">
+			<p:graphicImage name="images/loadingbar.gif"
+				library="manhattan-layout" width="50" />
+		</p:dialog>
+
+		<script type="text/javascript">
+			function start() {
+				PF('downloadLoading').show();
+			}
+
+			function stop() {
+				PF('downloadLoading').hide();
+			}
+		</script>
 
 	</ui:define>
 

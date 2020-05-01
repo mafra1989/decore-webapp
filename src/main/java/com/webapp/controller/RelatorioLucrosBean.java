@@ -1401,5 +1401,14 @@ public class RelatorioLucrosBean implements Serializable {
 
 	public void setCategoriasPorAno(String[] categoriasPorAno) {
 		this.categoriasPorAno = categoriasPorAno;
+	}  
+	
+	public Integer categoriasPorMesSize() {
+		
+		if(categoriasPorMes != null) {
+			return categoriasPorMes.length;
+		}
+		
+		return 0;
 	}
 }
