@@ -327,7 +327,7 @@ public class RelatorioLancamentosBean implements Serializable {
 
 						Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[3].toString()));
 						if (lancamento != null) {
-							if (categoriasPorDia != null || categoriasPorDia.length > 0) {
+							if (categoriasPorDia != null) {
 								for (String categoria : categoriasPorDia) {
 									if (lancamento.getCategoriaLancamento().getNome().equalsIgnoreCase(categoria)) {
 										valor += new BigDecimal(object[5].toString()).doubleValue();
