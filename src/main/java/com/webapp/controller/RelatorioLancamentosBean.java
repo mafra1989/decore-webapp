@@ -411,8 +411,8 @@ public class RelatorioLancamentosBean implements Serializable {
 			}
 		}
 
-		if (categoriasPorDia == null || categoriasPorDia.length == 0
-				|| (!debito && !credito) || debito) {
+		if ((categoriasPorDia == null || categoriasPorDia.length == 0
+				&& (!debito && !credito)) || debito) {
 			dataSet.setData(values);
 			dataSet.setLabel("Débito");
 			dataSet.setBorderColor("rgba(54, 162, 235)");
@@ -420,8 +420,8 @@ public class RelatorioLancamentosBean implements Serializable {
 			data.addChartDataSet(dataSet);
 		}
 
-		if (categoriasPorDia == null || categoriasPorDia.length == 0
-				|| (!debito && !credito) || credito) {
+		if ((categoriasPorDia == null || categoriasPorDia.length == 0
+				&& (!debito && !credito)) || credito) {
 			dataSet2.setData(values2);
 			dataSet2.setLabel("Crédito");
 			dataSet2.setBorderColor("rgba(255, 205, 86)");
