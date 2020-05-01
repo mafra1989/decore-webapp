@@ -197,12 +197,12 @@ public class RelatorioLancamentosBean implements Serializable {
 		ano02 = String.valueOf(calendarTemp.get(Calendar.YEAR));
 
 		int mes = calendarTemp.get(Calendar.MONTH) + 1;
-		if (mes >= 5) {
-			mes01 = nameMes(mes - 4);
+		if (mes >= 4) {
+			mes01 = nameMes(mes - 3);
 			mes02 = nameMes(mes);
 		} else {
 			mes01 = nameMes(1);
-			mes02 = nameMes(mes);
+			mes02 = nameMes(mes + 3);
 		}
 
 		createMixedModelPorMes();
@@ -411,7 +411,7 @@ public class RelatorioLancamentosBean implements Serializable {
 			}
 		}
 		
-		if (categoriasPorDia != null || categoriasPorDia.length > 0) {
+		if (categoriasPorDia != null) {
 			for (String categoria : categoriasPorDia) {
 				
 				System.out.println(categoria);
