@@ -91,6 +91,9 @@
 
 		<style>
 @media ( min-width :220px) {
+	body .ui-selectcheckboxmenu-panel {
+	    width: 72% !important;
+	}
 	.ui-fluid .ui-selectonemenu {
 	    min-width: max-content !important;
     }
@@ -125,12 +128,34 @@
 	.ano {
 		width: 100%;
 	}
-	.btn-pie {
-		margin-top:5px;
+	.btn-pie.ui-button {
+		color: #6a6565;
+		background-color: #f2f2f200;
+		border: 1px solid #a8a8a8;
+		width: 32px;
+		float: right;
+		position: relative;
+		margin-right: 10px;
+		margin-right: 10px;
 	}
+	.btn-pie.ui-button.ui-state-hover {
+		background-color: #e8e5e5;
+	}
+	.btn-pie.ui-button.ui-state-focus {
+		background-color: #e8e5e5;
+	}
+	.btn-pie.ui-button.ui-state-active {
+		background-color: #f2f2f200;
+	}
+	.ui-fluid .ui-selectcheckboxmenu {
+   		height: 29px;
+    }
 }
 
 @media ( min-width :460px) {
+	body .ui-selectcheckboxmenu-panel {
+	    width: auto !important;
+	}
 	.ui-fluid .ui-calendar, .ui-fluid .ui-calendar input {
 		width: 90px;
 	}
@@ -160,8 +185,12 @@
 	.ano {
 		width: 78% !important;
 	}
-	.btn-pie {
-		margin-top:40px;
+	.btn-pie.ui-button {
+		float: left;
+		position: relative;
+		margin-top: 4px;
+		margin-left: -8px;
+		height: 29px;
 	}
 }
 </style>
@@ -224,7 +253,7 @@
 						
 						<p:commandButton icon="fa fa-refresh"
 							action="#{relatorioLancamentosBean.changeCategoriaPorDia}"
-							process="@this painel"
+							process="@this painel" styleClass="btn-pie"
 							title="Atualizar" onstart="start();" oncomplete="stop();"
 							update="barChart-despesasPorDia" />
 					</p:panelGrid>
