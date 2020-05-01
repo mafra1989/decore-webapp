@@ -9,7 +9,6 @@
 	<ui:define name="head">
 
 		<script type="text/javascript">
-		
 			function percentExtender2() {
 				var tickColor = "#666";
 				var gridlineColor = "rgba(0,0,0,0.1)";
@@ -31,35 +30,42 @@
 					},
 				};
 			}
-			
+
 			function percentExtender3() {
 
-			      this.cfg.config.options = {
-			    		  legend: {
-			    	            display: true,
-			    	        },
-			    	        
-			          title: {
-	  			         display: true,
-	  			         text: 'Despesas vs Quantidade'
-	  				},
-	  				tooltips: {
-	  			         callbacks: {
+				this.cfg.config.options = {
+					legend : {
+						display : true,
+					},
 
-	  			             label: function (tooltipItem, data) {
-	  			            	var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-	                            
-	                            var total = eval(data.datasets[tooltipItem.datasetIndex].data.join("+"));
-	                            
-	                            var label = tooltipItem.yLabel;
-	                            
-	                            return "QTY: " + amount + ' / ' + total + ' ( ' + parseFloat(amount * 100 / total).toFixed(2) + '% )';
-	                        }
-	  			          }
-	  			       },
-			       };
+					title : {
+						display : true,
+						text : 'Despesas vs Quantidade'
+					},
+					tooltips : {
+						callbacks : {
+
+							label : function(tooltipItem, data) {
+								var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+
+								var total = eval(data.datasets[tooltipItem.datasetIndex].data
+										.join("+"));
+
+								var label = tooltipItem.yLabel;
+
+								return "QTY: "
+										+ amount
+										+ ' / '
+										+ total
+										+ ' ( '
+										+ parseFloat(amount * 100 / total)
+												.toFixed(2) + '% )';
+							}
+						}
+					},
+				};
 			}
-			
+
 			function percentExtender4() {
 				var tickColor = "#666";
 				var gridlineColor = "rgba(0,0,0,0.1)";
@@ -92,11 +98,11 @@
 		<style>
 @media ( min-width :220px) {
 	body .ui-selectcheckboxmenu-panel {
-	    width: 72% !important;
+		width: 72% !important;
 	}
 	.ui-fluid .ui-selectonemenu {
-	    min-width: max-content !important;
-    }
+		min-width: max-content !important;
+	}
 	.ui-fluid .ui-calendar, .ui-fluid .ui-calendar input {
 		width: 100%;
 	}
@@ -147,13 +153,13 @@
 		background-color: #f2f2f200;
 	}
 	.ui-fluid .ui-selectcheckboxmenu {
-   		height: 29px;
-    }
+		height: 29px;
+	}
 }
 
 @media ( min-width :460px) {
 	body .ui-selectcheckboxmenu-panel {
-	    width: auto !important;
+		width: auto !important;
 	}
 	.ui-fluid .ui-calendar, .ui-fluid .ui-calendar input {
 		width: 90px;
@@ -187,8 +193,8 @@
 	.btn-pie.ui-button {
 		float: left;
 		position: relative;
-		margin-top: 4px;
-		margin-left: -8px;
+		margin-top: 0px;
+		margin-left: -18px;
 		height: 29px;
 	}
 }
@@ -210,16 +216,18 @@
 				<p:panel class="ui-lg-6 ui-fluid itens-add"
 					style="padding-bottom: 0px !important; margin-top:10px;width:100%">
 
-					<h3 style="font-weight: bold; margin-top: -8px;">Lançamentos por
-						Dia</h3>
+					<h3 style="font-weight: bold; margin-top: -8px;">Lançamentos
+						por Dia</h3>
 
 					<p:panelGrid columns="4" id="painel" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-1">
 
 						<p:outputLabel value="Data de início" for="data01" />
-						<p:datePicker id="data01" value="#{relatorioLancamentosBean.dateStart}" readonlyInput="true"
-							pattern="dd/MM/yyyy" locale="pt" showIcon="true">
+						<p:datePicker id="data01"
+							value="#{relatorioLancamentosBean.dateStart}"
+							readonlyInput="true" pattern="dd/MM/yyyy" locale="pt"
+							showIcon="true">
 
 							<p:ajax event="dateSelect"
 								listener="#{relatorioLancamentosBean.createMixedModelPorDia}"
@@ -228,7 +236,8 @@
 
 
 						<p:outputLabel value="até" id="data02" />
-						<p:datePicker id="data-02" value="#{relatorioLancamentosBean.dateStop}" readonlyInput="true"
+						<p:datePicker id="data-02"
+							value="#{relatorioLancamentosBean.dateStop}" readonlyInput="true"
 							styleClass="dateStop" pattern="dd/MM/yyyy" locale="pt"
 							showIcon="true">
 
@@ -238,29 +247,32 @@
 						</p:datePicker>
 
 
-						<p:outputLabel value="Categoria" />						
+						<p:outputLabel value="Categoria" />
 						<p:selectCheckboxMenu id="categoria1" style="width: 100%"
-							showHeader="true" emptyLabel="" label=""
-							filter="true" filterMatchMode="startsWith"
+							showHeader="true" emptyLabel="" label="" filter="true"
+							filterMatchMode="startsWith"
 							value="#{relatorioLancamentosBean.categoriasPorDia}">
 
 							<f:selectItems
 								value="#{relatorioLancamentosBean.todasCategoriasLancamento}"
 								var="categoria" itemLabel="#{categoria.nome}"
-								itemValue="#{categoria}"></f:selectItems>
+								itemValue="#{categoria.nome}"></f:selectItems>
 						</p:selectCheckboxMenu>
-						
+
 						<p:commandButton icon="fa fa-refresh"
 							action="#{relatorioLancamentosBean.changeCategoriaPorDia}"
-							process="@this painel" styleClass="btn-pie"
-							title="Atualizar" onstart="start();" oncomplete="stop();"
+							process="@this painel" styleClass="btn-pie" title="Atualizar"
+							onstart="start();" oncomplete="stop();"
 							update="barChart-despesasPorDia" />
 					</p:panelGrid>
 
-					<p:commandButton rendered="false" icon="fa fa-pie-chart" actionListener="#{relatorioLancamentosBean.prepareDonutModelPorDia}" styleClass="btn-pie"
-						title="Despesas por Quantidade" oncomplete="PF('produtos-qty').show();" update="form-dialog:pieChart-despesasPorQuantidade"
+					<p:commandButton rendered="false" icon="fa fa-pie-chart"
+						actionListener="#{relatorioLancamentosBean.prepareDonutModelPorDia}"
+						styleClass="btn-pie" title="Despesas por Quantidade"
+						oncomplete="PF('produtos-qty').show();"
+						update="form-dialog:pieChart-despesasPorQuantidade"
 						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-right:10px" />
-					
+
 					<p:barChart id="barChart-despesasPorDia"
 						model="#{relatorioLancamentosBean.mixedModelPorDia}"
 						styleClass="barChart-01" />
@@ -269,8 +281,8 @@
 				<p:panel class="ui-lg-6  ui-fluid itens-add"
 					style="padding-bottom: 0px !important; margin-top:10px;width:100%">
 
-					<h3 style="font-weight: bold; margin-top: -8px;">Lançamentos por
-						Semana</h3>
+					<h3 style="font-weight: bold; margin-top: -8px;">Lançamentos
+						por Semana</h3>
 
 					<p:panelGrid columns="2" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
@@ -288,7 +300,7 @@
 						</p:selectOneMenu>
 
 					</p:panelGrid>
-					
+
 					<p:panelGrid columns="4" id="painel2" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-1, ui-grid-col-4">
@@ -324,38 +336,41 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLancamentosBean.changeCategoriaPorSemana}"
-								process="@this"
-								update="barChart-despesasPorSemana" />
+								process="@this" update="barChart-despesasPorSemana" />
 							<f:selectItems
 								value="#{relatorioLancamentosBean.todasCategoriasLancamento}"
 								var="categoria" itemLabel="#{categoria.nome}"
 								itemValue="#{categoria}"></f:selectItems>
 						</p:selectOneMenu>
 					</p:panelGrid>
-					
-					<p:commandButton rendered="false" icon="fa fa-pie-chart" actionListener="#{relatorioLancamentosBean.prepareDonutModelPorSemana}"
-						title="Despesas por Quantidade" oncomplete="PF('produtos-qty').show();" update="form-dialog:pieChart-despesasPorQuantidade"
+
+					<p:commandButton rendered="false" icon="fa fa-pie-chart"
+						actionListener="#{relatorioLancamentosBean.prepareDonutModelPorSemana}"
+						title="Despesas por Quantidade"
+						oncomplete="PF('produtos-qty').show();"
+						update="form-dialog:pieChart-despesasPorQuantidade"
 						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-top:5px;margin-right:10px" />
-										
-					<p:barChart id="barChart-despesasPorSemana" 
+
+					<p:barChart id="barChart-despesasPorSemana"
 						model="#{relatorioLancamentosBean.mixedModelPorSemana}"
 						styleClass="barChart-02" />
 				</p:panel>
 
 			</p:panelGrid>
-			
-			
-			
-			
-			<p:panelGrid columns="2" layout="grid" style="margin-top:10px;margin-bottom:20px"
+
+
+
+
+			<p:panelGrid columns="2" layout="grid"
+				style="margin-top:10px;margin-bottom:20px"
 				styleClass="panelgrid-noborder disabled disabled"
 				columnClasses="ui-grid-col-6, ui-grid-col-6">
 
 				<p:panel class="ui-lg-6 ui-fluid itens-add"
 					style="padding-bottom: 0px !important; margin-top:10px;width:100%">
 
-					<h3 style="font-weight: bold; margin-top: -8px;">Lançamentos por
-						Mês</h3>
+					<h3 style="font-weight: bold; margin-top: -8px;">Lançamentos
+						por Mês</h3>
 
 					<p:panelGrid columns="2" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
@@ -373,7 +388,7 @@
 						</p:selectOneMenu>
 
 					</p:panelGrid>
-					
+
 					<p:panelGrid columns="4" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-1,ui-grid-col-4">
@@ -385,8 +400,8 @@
 							<p:ajax event="change"
 								listener="#{relatorioLancamentosBean.createMixedModelPorMes}"
 								process="@this" update="barChart-despesasPorMes" />
-							<f:selectItems value="#{relatorioLancamentosBean.meses}" var="mes"
-								itemLabel="#{mes}" itemValue="#{mes}"></f:selectItems>
+							<f:selectItems value="#{relatorioLancamentosBean.meses}"
+								var="mes" itemLabel="#{mes}" itemValue="#{mes}"></f:selectItems>
 						</p:selectOneMenu>
 
 
@@ -397,8 +412,8 @@
 							<p:ajax event="change"
 								listener="#{relatorioLancamentosBean.createMixedModelPorMes}"
 								process="@this" update="barChart-despesasPorMes" />
-							<f:selectItems value="#{relatorioLancamentosBean.meses}" var="mes"
-								itemLabel="#{mes}" itemValue="#{mes}"></f:selectItems>
+							<f:selectItems value="#{relatorioLancamentosBean.meses}"
+								var="mes" itemLabel="#{mes}" itemValue="#{mes}"></f:selectItems>
 						</p:selectOneMenu>
 
 
@@ -410,20 +425,22 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLancamentosBean.changeCategoriaPorMes}"
-								process="@this"
-								update="barChart-despesasPorMes" />
+								process="@this" update="barChart-despesasPorMes" />
 							<f:selectItems
 								value="#{relatorioLancamentosBean.todasCategoriasLancamento}"
 								var="categoria" itemLabel="#{categoria.nome}"
 								itemValue="#{categoria}"></f:selectItems>
 						</p:selectOneMenu>
 					</p:panelGrid>
-			
 
-					<p:commandButton rendered="false" icon="fa fa-pie-chart" actionListener="#{relatorioLancamentosBean.prepareDonutModelPorMes}"
-						title="Despesas por Quantidade" oncomplete="PF('produtos-qty').show();" update="form-dialog:pieChart-despesasPorQuantidade"
+
+					<p:commandButton rendered="false" icon="fa fa-pie-chart"
+						actionListener="#{relatorioLancamentosBean.prepareDonutModelPorMes}"
+						title="Despesas por Quantidade"
+						oncomplete="PF('produtos-qty').show();"
+						update="form-dialog:pieChart-despesasPorQuantidade"
 						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-top:5px;margin-right:10px" />
-				
+
 					<p:barChart model="#{relatorioLancamentosBean.mixedModelPorMes}"
 						id="barChart-despesasPorMes" styleClass="barChart-02" />
 				</p:panel>
@@ -431,9 +448,9 @@
 				<p:panel class="ui-lg-6  ui-fluid itens-add"
 					style="padding-bottom: 0px !important; margin-top:10px;width:100%">
 
-					<h3 style="font-weight: bold; margin-top: -8px;">Lançamentos por
-						Ano</h3>
-					
+					<h3 style="font-weight: bold; margin-top: -8px;">Lançamentos
+						por Ano</h3>
+
 					<p:panelGrid columns="4" id="painel3" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-1, ui-grid-col-4">
@@ -441,7 +458,7 @@
 						<p:outputLabel value="Ano" for="ano3" />
 						<p:selectOneMenu id="ano3" style="width: 100%"
 							value="#{relatorioLancamentosBean.ano03}">
-							
+
 							<p:ajax event="change"
 								listener="#{relatorioLancamentosBean.createMixedModelPorAno}"
 								process="@this" update="barChart-despesasPorAno" />
@@ -452,7 +469,7 @@
 						<p:outputLabel value="Até" for="ano4" />
 						<p:selectOneMenu id="ano4" style="width: 100%"
 							value="#{relatorioLancamentosBean.ano04}">
-							
+
 							<p:ajax event="change"
 								listener="#{relatorioLancamentosBean.createMixedModelPorAno}"
 								process="@this" update="barChart-despesasPorAno" />
@@ -464,52 +481,56 @@
 						<p:outputLabel value="Categoria" for="categoria4" />
 						<p:selectOneMenu id="categoria4" style="width: 100%"
 							value="#{relatorioLancamentosBean.categoriaPorAno}">
-							
+
 							<f:selectItem itemLabel="Selecione" itemValue="" />
-							
+
 							<p:ajax event="change"
 								listener="#{relatorioLancamentosBean.changeCategoriaPorAno}"
 								process="@this" update="barChart-despesasPorAno" />
-							<f:selectItems value="#{relatorioLancamentosBean.todasCategoriasLancamento}"
-								var="categoria"
-								itemLabel="#{categoria.nome}"
+							<f:selectItems
+								value="#{relatorioLancamentosBean.todasCategoriasLancamento}"
+								var="categoria" itemLabel="#{categoria.nome}"
 								itemValue="#{categoria}"></f:selectItems>
 						</p:selectOneMenu>
 					</p:panelGrid>
 
-					<p:commandButton rendered="false" icon="fa fa-pie-chart" actionListener="#{relatorioLancamentosBean.prepareDonutModelPorAno}" styleClass="btn-pie"
-						title="Despesas por Quantidade" oncomplete="PF('produtos-qty').show();" update="form-dialog:pieChart-despesasPorQuantidade"
+					<p:commandButton rendered="false" icon="fa fa-pie-chart"
+						actionListener="#{relatorioLancamentosBean.prepareDonutModelPorAno}"
+						styleClass="btn-pie" title="Despesas por Quantidade"
+						oncomplete="PF('produtos-qty').show();"
+						update="form-dialog:pieChart-despesasPorQuantidade"
 						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-right:10px" />
-				
-					<p:barChart id="barChart-despesasPorAno" model="#{relatorioLancamentosBean.mixedModelPorAno}"
+
+					<p:barChart id="barChart-despesasPorAno"
+						model="#{relatorioLancamentosBean.mixedModelPorAno}"
 						styleClass="barChart-01" />
-						
+
 				</p:panel>
 
 			</p:panelGrid>
 
 		</h:form>
-		
-		<p:dialog
-			header="Despesas por Quantidade"
-			widgetVar="produtos-qty" id="produtos-qty" resizable="false"
-			modal="true" closeOnEscape="true" responsive="true" position="center"
-			styleClass="modal-donut" width="250px">
+
+		<p:dialog header="Despesas por Quantidade" widgetVar="produtos-qty"
+			id="produtos-qty" resizable="false" modal="true" closeOnEscape="true"
+			responsive="true" position="center" styleClass="modal-donut"
+			width="250px">
 
 			<h:form id="form-dialog">
 
 				<div class="ui-fluid">
 
 					<div class="card card-w-title ui-fluid"
-						style="padding: 0px 5px 0px 5px; padding-bottom: 0px !important;margin-bottom: 10px;text-align: center;">
+						style="padding: 0px 5px 0px 5px; padding-bottom: 0px !important; margin-bottom: 10px; text-align: center;">
 
-						<p:donutChart id="pieChart-despesasPorQuantidade" 
-						model="#{relatorioLancamentosBean.donutModel}" style="width: 100%; height: 320px;margin-top:10px" />
-						
-						
-						<p:commandButton icon="fa fa-fw fa-close" style="margin-top: 5px;font-weight: bold;width: 120px;background: #f3f3f3f0;color: #716c6c;border: 1px solid #484545;"
-							value="Fechar" 
-							oncomplete="PF('produtos-qty').hide();">
+						<p:donutChart id="pieChart-despesasPorQuantidade"
+							model="#{relatorioLancamentosBean.donutModel}"
+							style="width: 100%; height: 320px;margin-top:10px" />
+
+
+						<p:commandButton icon="fa fa-fw fa-close"
+							style="margin-top: 5px;font-weight: bold;width: 120px;background: #f3f3f3f0;color: #716c6c;border: 1px solid #484545;"
+							value="Fechar" oncomplete="PF('produtos-qty').hide();">
 						</p:commandButton>
 
 					</div>
@@ -533,7 +554,7 @@
 				PF('downloadLoading').hide();
 			}
 		</script>
-		
+
 	</ui:define>
 
 </ui:composition>
