@@ -420,7 +420,7 @@ public class RelatorioLancamentosBean implements Serializable {
 			data.addChartDataSet(dataSet);
 		}
 
-		if (categoriaPorDia == null || categoriaPorDia.getId() == null
+		if (categoriasPorDia == null || categoriasPorDia.length == 0
 				|| credito) {
 			dataSet2.setData(values2);
 			dataSet2.setLabel("Crédito");
