@@ -210,19 +210,23 @@
 						</p:datePicker>
 
 
-						<p:outputLabel value="Categoria" for="categoria1" />
-						<p:selectOneMenu id="categoria1" styleClass="categoria"
-							value="#{relatorioLancamentosBean.categoriaPorDia}">
-							<f:selectItem itemLabel="Selecione" itemValue="" />
+						<p:outputLabel value="Categoria" />						
+						<p:selectCheckboxMenu id="categoria1" style="width: 100%"
+							showHeader="true" emptyLabel="" label=""
+							filter="true" filterMatchMode="startsWith"
+							value="#{relatorioLancamentosBean.categoriasPorDia}">
 
-							<p:ajax event="change"
-								listener="#{relatorioLancamentosBean.changeCategoriaPorDia}"
-								process="@this painel" update="barChart-despesasPorDia" />
 							<f:selectItems
 								value="#{relatorioLancamentosBean.todasCategoriasLancamento}"
 								var="categoria" itemLabel="#{categoria.nome}"
 								itemValue="#{categoria}"></f:selectItems>
-						</p:selectOneMenu>
+						</p:selectCheckboxMenu>
+						
+						<p:commandButton icon="fa fa-refresh"
+							action="#{relatorioLancamentosBean.changeCategoriaPorDia}"
+							process="@this painel"
+							title="Atualizar" onstart="start();" oncomplete="stop();"
+							update="barChart-despesasPorDia" />
 					</p:panelGrid>
 
 					<p:commandButton rendered="false" icon="fa fa-pie-chart" actionListener="#{relatorioLancamentosBean.prepareDonutModelPorDia}" styleClass="btn-pie"

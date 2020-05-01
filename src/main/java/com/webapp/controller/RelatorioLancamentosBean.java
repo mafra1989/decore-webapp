@@ -117,6 +117,15 @@ public class RelatorioLancamentosBean implements Serializable {
 	private String mes02;
 
 	private DonutChartModel donutModel;
+	
+	
+	private String[] categoriasPorDia;
+
+	private String[] categoriasPorSemana;
+
+	private String[] categoriasPorMes;
+
+	private String[] categoriasPorAno;
 
 	@PostConstruct
 	public void init() {
@@ -316,11 +325,12 @@ public class RelatorioLancamentosBean implements Serializable {
 
 						Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[3].toString()));
 						if (lancamento != null) {
-							if (categoriaPorDia != null && categoriaPorDia.getId() != null) {
-								if (lancamento.getCategoriaLancamento().getId().intValue() == categoriaPorDia.getId()
-										.intValue()) {
-									valor += new BigDecimal(object[5].toString()).doubleValue();
-								}
+							if (categoriasPorDia != null || categoriasPorDia.length > 0) {
+								for (String categoria : categoriasPorDia) {
+									if (lancamento.getCategoriaLancamento().getNome().equalsIgnoreCase(categoria)) {
+										valor += new BigDecimal(object[5].toString()).doubleValue();
+									}
+								}								
 							} else {
 								valor += new BigDecimal(object[5].toString()).doubleValue();
 							}
@@ -377,7 +387,8 @@ public class RelatorioLancamentosBean implements Serializable {
 
 			} while (calendarStartTemp.before(calendarStop));
 		}
-
+		
+		boolean debito = false, credito = false;
 		String date = "";
 		for (Object[] object : result) {
 
@@ -388,9 +399,11 @@ public class RelatorioLancamentosBean implements Serializable {
 
 			if (object[4].toString().equals("DEBITO")) {
 				values.add((Number) object[5]);
+				debito = true;
 
 			} else if (object[4].toString().equals("CREDITO")) {
 				values2.add((Number) object[5]);
+				credito = true;
 
 			} else if (object[4].toString().equals("")) {
 				values.add((Number) object[5]);
@@ -398,8 +411,8 @@ public class RelatorioLancamentosBean implements Serializable {
 			}
 		}
 
-		if (categoriaPorDia == null || categoriaPorDia.getId() == null
-				|| categoriaPorDia.getTipoLancamento().getOrigem() == OrigemLancamento.DEBITO) {
+		if (categoriasPorDia == null || categoriasPorDia.length == 0
+				|| debito) {
 			dataSet.setData(values);
 			dataSet.setLabel("Débito");
 			dataSet.setBorderColor("rgba(54, 162, 235)");
@@ -408,7 +421,7 @@ public class RelatorioLancamentosBean implements Serializable {
 		}
 
 		if (categoriaPorDia == null || categoriaPorDia.getId() == null
-				|| categoriaPorDia.getTipoLancamento().getOrigem() == OrigemLancamento.CREDITO) {
+				|| credito) {
 			dataSet2.setData(values2);
 			dataSet2.setLabel("Crédito");
 			dataSet2.setBorderColor("rgba(255, 205, 86)");
@@ -1323,5 +1336,37 @@ public class RelatorioLancamentosBean implements Serializable {
 
 	public void setDonutModel(DonutChartModel donutModel) {
 		this.donutModel = donutModel;
+	}
+
+	public String[] getCategoriasPorDia() {
+		return categoriasPorDia;
+	}
+
+	public void setCategoriasPorDia(String[] categoriasPorDia) {
+		this.categoriasPorDia = categoriasPorDia;
+	}
+
+	public String[] getCategoriasPorSemana() {
+		return categoriasPorSemana;
+	}
+
+	public void setCategoriasPorSemana(String[] categoriasPorSemana) {
+		this.categoriasPorSemana = categoriasPorSemana;
+	}
+
+	public String[] getCategoriasPorMes() {
+		return categoriasPorMes;
+	}
+
+	public void setCategoriasPorMes(String[] categoriasPorMes) {
+		this.categoriasPorMes = categoriasPorMes;
+	}
+
+	public String[] getCategoriasPorAno() {
+		return categoriasPorAno;
+	}
+
+	public void setCategoriasPorAno(String[] categoriasPorAno) {
+		this.categoriasPorAno = categoriasPorAno;
 	}
 }
