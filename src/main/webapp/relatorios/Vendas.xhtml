@@ -311,7 +311,8 @@
 								listener="#{relatorioVendasBean.changeProdutoPorDia}"
 								process="@this" update="barChart-vendasPorDia" />
 							<f:selectItems value="#{relatorioVendasBean.produtosPorDia}"
-								var="produto" itemLabel="#{produto.nome}" itemValue="#{produto}"></f:selectItems>
+								var="produto" itemLabel="#{produto.codigo.concat(' | ').concat(produto.descricao)}"
+								itemValue="#{produto}"></f:selectItems>
 						</p:selectOneMenu>
 
 					</p:panelGrid>
@@ -568,7 +569,8 @@
 								listener="#{relatorioVendasBean.changeProdutoPorMes}"
 								process="@this" update="barChart-vendasPorMes" />
 							<f:selectItems value="#{relatorioVendasBean.produtosPorMes}"
-								var="produto" itemLabel="#{produto.nome}" itemValue="#{produto}"></f:selectItems>
+								var="produto" itemLabel="#{produto.codigo.concat(' | ').concat(produto.descricao)}"
+								itemValue="#{produto}"></f:selectItems>
 						</p:selectOneMenu>
 
 					</p:panelGrid>
@@ -670,7 +672,8 @@
 								listener="#{relatorioVendasBean.changeProdutoPorAno}"
 								process="@this" update="barChart-vendasPorAno" />
 							<f:selectItems value="#{relatorioVendasBean.produtosPorAno}"
-								var="produto" itemLabel="#{produto.nome}" itemValue="#{produto}"></f:selectItems>
+								var="produto" itemLabel="#{produto.codigo.concat(' | ').concat(produto.descricao)}"
+								itemValue="#{produto}"></f:selectItems>
 						</p:selectOneMenu>
 					</p:panelGrid>
 
