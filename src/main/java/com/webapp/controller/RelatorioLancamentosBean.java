@@ -337,7 +337,7 @@ public class RelatorioLancamentosBean implements Serializable {
 								valor += new BigDecimal(object[5].toString()).doubleValue();
 							}
 						}
-					}
+					}				
 
 					if (!tipos.contains("DEBITO")) {
 						Object[] object = new Object[6];
@@ -358,7 +358,6 @@ public class RelatorioLancamentosBean implements Serializable {
 						object[5] = 0;
 
 						result.add(object);
-						debito = true;
 					}
 
 					if (!tipos.contains("CREDITO")) {
@@ -380,7 +379,19 @@ public class RelatorioLancamentosBean implements Serializable {
 						object[5] = 0;
 
 						result.add(object);
-						credito = true;
+					}
+					
+					if (categoriasPorDia != null || categoriasPorDia.length > 0) {
+						for (String categoria : categoriasPorDia) {
+							
+							CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria);
+							if(categoriaLancamento.getTipoLancamento().getOrigem() == OrigemLancamento.DEBITO) {
+								debito = true;
+								
+							} else if(categoriaLancamento.getTipoLancamento().getOrigem() == OrigemLancamento.CREDITO) {
+								credito = true;
+							}
+						}								
 					}
 
 					objectTemp[5] = valor;
