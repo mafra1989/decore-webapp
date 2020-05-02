@@ -451,7 +451,7 @@ public class RelatorioVendasBean implements Serializable {
 
 		dataSet2.setData(values2);
 		dataSet2.setLabel("Target");
-		dataSet2.setYaxisID("right-y-axis");
+		//dataSet2.setYaxisID("right-y-axis");
 		dataSet2.setBorderColor("rgba(75, 192, 192)");
 
 		/*
@@ -581,7 +581,7 @@ public class RelatorioVendasBean implements Serializable {
 
 		dataSet2.setData(values2);
 		dataSet2.setLabel("Target");
-		dataSet2.setYaxisID("right-y-axis");
+		//dataSet2.setYaxisID("right-y-axis");
 		dataSet2.setBorderColor("rgba(75, 192, 192)");
 
 		/*
@@ -762,7 +762,7 @@ public class RelatorioVendasBean implements Serializable {
 
 		dataSet2.setData(values2);
 		dataSet2.setLabel("Target");
-		dataSet2.setYaxisID("right-y-axis");
+		//dataSet2.setYaxisID("right-y-axis");
 		dataSet2.setBorderColor("rgba(75, 192, 192)");
 
 		/*
@@ -874,7 +874,7 @@ public class RelatorioVendasBean implements Serializable {
 
 		dataSet2.setData(values2);
 		dataSet2.setLabel("Target");
-		dataSet2.setYaxisID("right-y-axis");
+		//dataSet2.setYaxisID("right-y-axis");
 		dataSet2.setBorderColor("rgba(75, 192, 192)");
 
 		/*
