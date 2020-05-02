@@ -276,7 +276,9 @@ public class RelatorioLancamentosBean implements Serializable {
 
 			do {
 				Calendar calendarStopTemp = (Calendar) calendarStartTemp.clone();
-				calendarStopTemp.add(Calendar.DAY_OF_MONTH, 1);
+				calendarStopTemp.set(Calendar.HOUR, 23);
+				calendarStopTemp.set(Calendar.MINUTE, 59);
+				calendarStopTemp.set(Calendar.SECOND, 59);
 
 				List<Object[]> resultTemp = contas.totalLancamentosPorData(calendarStartTemp, calendarStopTemp);
 
