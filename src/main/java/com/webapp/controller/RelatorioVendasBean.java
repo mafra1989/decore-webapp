@@ -488,20 +488,11 @@ public class RelatorioVendasBean implements Serializable {
 		linearAxes.setId("left-y-axis");
 		linearAxes.setPosition("left");
 
-		CartesianLinearAxes linearAxes2 = new CartesianLinearAxes();
-		linearAxes2.setId("right-y-axis");
-		linearAxes2.setPosition("right");
-
 		CartesianLinearTicks ticks = new CartesianLinearTicks();
 		ticks.setBeginAtZero(true);
 		linearAxes.setTicks(ticks);
 
-		CartesianLinearTicks ticks2 = new CartesianLinearTicks();
-		ticks2.setBeginAtZero(true);
-		linearAxes2.setTicks(ticks2);
-
 		cScales.addYAxesData(linearAxes);
-		cScales.addYAxesData(linearAxes2);
 		options.setScales(cScales);
 
 		mixedModelPorDia.setOptions(options);
@@ -618,20 +609,11 @@ public class RelatorioVendasBean implements Serializable {
 		linearAxes.setId("left-y-axis");
 		linearAxes.setPosition("left");
 
-		CartesianLinearAxes linearAxes2 = new CartesianLinearAxes();
-		linearAxes2.setId("right-y-axis");
-		linearAxes2.setPosition("right");
-
 		CartesianLinearTicks ticks = new CartesianLinearTicks();
 		ticks.setBeginAtZero(true);
 		linearAxes.setTicks(ticks);
 
-		CartesianLinearTicks ticks2 = new CartesianLinearTicks();
-		ticks2.setBeginAtZero(true);
-		linearAxes2.setTicks(ticks2);
-
 		cScales.addYAxesData(linearAxes);
-		cScales.addYAxesData(linearAxes2);
 		options.setScales(cScales);
 
 		mixedModelPorSemana.setOptions(options);
@@ -799,20 +781,11 @@ public class RelatorioVendasBean implements Serializable {
 		linearAxes.setId("left-y-axis");
 		linearAxes.setPosition("left");
 
-		CartesianLinearAxes linearAxes2 = new CartesianLinearAxes();
-		linearAxes2.setId("right-y-axis");
-		linearAxes2.setPosition("right");
-
 		CartesianLinearTicks ticks = new CartesianLinearTicks();
 		ticks.setBeginAtZero(true);
 		linearAxes.setTicks(ticks);
 
-		CartesianLinearTicks ticks2 = new CartesianLinearTicks();
-		ticks2.setBeginAtZero(true);
-		linearAxes2.setTicks(ticks2);
-
 		cScales.addYAxesData(linearAxes);
-		cScales.addYAxesData(linearAxes2);
 		options.setScales(cScales);
 
 		mixedModelPorMes.setOptions(options);
@@ -909,20 +882,11 @@ public class RelatorioVendasBean implements Serializable {
 		linearAxes.setId("left-y-axis");
 		linearAxes.setPosition("left");
 
-		CartesianLinearAxes linearAxes2 = new CartesianLinearAxes();
-		linearAxes2.setId("right-y-axis");
-		linearAxes2.setPosition("right");
-
 		CartesianLinearTicks ticks = new CartesianLinearTicks();
 		ticks.setBeginAtZero(true);
 		linearAxes.setTicks(ticks);
 
-		CartesianLinearTicks ticks2 = new CartesianLinearTicks();
-		ticks2.setBeginAtZero(true);
-		linearAxes2.setTicks(ticks2);
-
 		cScales.addYAxesData(linearAxes);
-		cScales.addYAxesData(linearAxes2);
 		options.setScales(cScales);
 
 		mixedModelPorAno.setOptions(options);
