@@ -461,8 +461,8 @@ public class RelatorioVendasBean implements Serializable {
 		 * dataSet2.setBorderColor("rgb(54, 162, 235)");
 		 */
 
-		data.addChartDataSet(dataSet);
 		data.addChartDataSet(dataSet2);
+		data.addChartDataSet(dataSet);
 
 		data.setLabels(labels);
 
@@ -582,8 +582,8 @@ public class RelatorioVendasBean implements Serializable {
 		 * dataSet2.setBorderColor("rgb(54, 162, 235)");
 		 */
 
-		data.addChartDataSet(dataSet);
 		data.addChartDataSet(dataSet2);
+		data.addChartDataSet(dataSet);
 
 		data.setLabels(labels);
 
@@ -754,8 +754,8 @@ public class RelatorioVendasBean implements Serializable {
 		 * dataSet2.setBorderColor("rgb(54, 162, 235)");
 		 */
 
-		data.addChartDataSet(dataSet);
 		data.addChartDataSet(dataSet2);
+		data.addChartDataSet(dataSet);
 
 		data.setLabels(labels);
 
@@ -857,8 +857,8 @@ public class RelatorioVendasBean implements Serializable {
 		 * dataSet2.setBorderColor("rgb(54, 162, 235)");
 		 */
 
-		data.addChartDataSet(dataSet);
 		data.addChartDataSet(dataSet2);
+		data.addChartDataSet(dataSet);
 
 		data.setLabels(labels);
 

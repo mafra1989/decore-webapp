@@ -518,9 +518,9 @@ public class RelatorioLucrosBean implements Serializable {
 		dataSet3.setLabel("Target");
 		dataSet3.setBorderColor("rgba(75, 192, 192)");
 
+		data.addChartDataSet(dataSet3);
 		data.addChartDataSet(dataSet2);
 		data.addChartDataSet(dataSet);
-		data.addChartDataSet(dataSet3);
 
 		data.setLabels(labels);
 
@@ -702,9 +702,9 @@ public class RelatorioLucrosBean implements Serializable {
 		dataSet3.setLabel("Target");
 		dataSet3.setBorderColor("rgba(75, 192, 192)");
 
+		data.addChartDataSet(dataSet3);
 		data.addChartDataSet(dataSet2);
 		data.addChartDataSet(dataSet);
-		data.addChartDataSet(dataSet3);
 
 		data.setLabels(labels);
 
@@ -973,9 +973,9 @@ public class RelatorioLucrosBean implements Serializable {
 		dataSet3.setLabel("Target");
 		dataSet3.setBorderColor("rgba(75, 192, 192)");
 
+		data.addChartDataSet(dataSet3);
 		data.addChartDataSet(dataSet2);
 		data.addChartDataSet(dataSet);
-		data.addChartDataSet(dataSet3);
 
 		data.setLabels(labels);
 
@@ -1128,9 +1128,9 @@ public class RelatorioLucrosBean implements Serializable {
 		dataSet3.setLabel("Target");
 		dataSet3.setBorderColor("rgba(75, 192, 192)");
 
+		data.addChartDataSet(dataSet3);
 		data.addChartDataSet(dataSet2);
 		data.addChartDataSet(dataSet);
-		data.addChartDataSet(dataSet3);
 
 		data.setLabels(labels);
 
