@@ -762,10 +762,10 @@
 					<div
 						style="width: 80%; margin: auto; border-top: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px"></div>
 
-					<p:commandButton
+					<p:commandButton widgetVar="btn-confirmar" id="btn-confirmar"
 						action="#{relatorioLucrosBean.confirmarTarget('1')}"
 						icon="fa fa-fw fa-check" process="@this form-target"
-						oncomplete="if (!args.validationFailed) {PF('target-dialog').hide();}"
+						oncomplete="if (!args.validationFailed) {PF('target-dialog').hide();PF('btn-confirmar').disable();}"
 						style="margin-bottom: 5px;font-weight: bold;float: right;width: 100px;margin-right: 5px;background:#147df0"
 						value="Confirmar" update="form-target form:msg">
 					</p:commandButton>
