@@ -10,6 +10,45 @@
 
 		<script type="text/javascript">
 			function percentExtender2() {
+
+				var options = $.extend(true, {}, this.cfg.config);
+
+				this.cfg.config.options = {
+					legend : {
+						display : true,
+					},
+
+					scales : {
+						xAxes : [ {
+							display : true,
+						} ]
+					},
+
+					tooltips : {
+						callbacks : {
+
+							label : function(tooltipItem, data) {
+								var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+
+								if (tooltipItem.datasetIndex == 1
+										|| tooltipItem.datasetIndex == 0) {
+									var valor = "R$ " + numberToReal(amount);
+									if (valor.includes("-.")) {
+										valor = valor.replace("-.", "-");
+									}
+									return valor;
+								} else {
+									return numberToReal(amount) + "%";
+								}
+							}
+						}
+					},
+				};
+
+				$.extend(true, this.cfg.config, options);
+			}
+			/*
+			function percentExtender2() {
 				var tickColor = "#666";
 				var gridlineColor = "rgba(0,0,0,0.1)";
 
@@ -29,7 +68,7 @@
 						}
 					},
 				};
-			}
+			}*/
 
 			function percentExtender3() {
 
@@ -97,16 +136,37 @@
 
 		<style>
 @media ( min-width :220px) {
+	#target-dialog .ui-inputtext {
+		text-align: center;
+	}
+	.target {
+		margin-top: 35px;
+	}
+	.target a {
+		color: #ababab;
+		text-decoration: none;
+		font-weight: bold;
+		font-size: 12px;
+	}
+	.swal2-popup {
+		width: 28em;
+		max-width: 100%;
+		padding: 0 0 0.4em 0;
+		font-size: 0.75rem;
+	}
+	.swal2-popup #swal2-content {
+		font-weight: 400;
+	}
 	.ui-selectonemenu-panel .ui-selectonemenu-list-item {
-	    /*border: 1px solid #e8e8e8;*/
-	    white-space: normal;
+		/*border: 1px solid #e8e8e8;*/
+		white-space: normal;
 	}
 	body .ui-selectonemenu-panel {
-	    width: 72%;
+		width: 72%;
 	}
 	.ui-fluid .ui-selectcheckboxmenu {
-   		height: 29px;
-    }
+		height: 29px;
+	}
 	.ui-fluid .ui-calendar, .ui-fluid .ui-calendar input {
 		width: 100%;
 	}
@@ -167,8 +227,11 @@
 }
 
 @media ( min-width :460px) {
+	.target {
+		margin-top: 0px;
+	}
 	body .ui-selectonemenu-panel {
-	    width: auto;
+		width: auto;
 	}
 	.ui-fluid .ui-calendar, .ui-fluid .ui-calendar input {
 		width: 90px;
@@ -203,8 +266,8 @@
 		float: left;
 		position: relative;
 		margin-left: -8px;
-	    height: 29px;
-	    margin-top: 4px;
+		height: 29px;
+		margin-top: 4px;
 	}
 }
 </style>
@@ -217,6 +280,9 @@
 		</div>
 
 		<h:form id="form">
+
+			<p:growl id="msg" closable="true" life="2000" showSummary="false"
+				showDetail="true" style="text-align: center" />
 
 			<p:panelGrid columns="2" layout="grid"
 				styleClass="panelgrid-noborder disabled disabled"
@@ -277,8 +343,8 @@
 
 						<p:outputLabel value="Categoria" />
 						<p:selectCheckboxMenu styleClass="categoria" label=""
-							showHeader="true" emptyLabel=""
-							filter="true" filterMatchMode="startsWith"
+							showHeader="true" emptyLabel="" filter="true"
+							filterMatchMode="startsWith"
 							value="#{relatorioVendasBean.categoriasPorDia}">
 
 							<f:selectItems
@@ -289,8 +355,8 @@
 
 						<p:commandButton icon="fa fa-refresh"
 							action="#{relatorioVendasBean.changeCategoriaPorDia}"
-							process="@this painel painel-categoria" styleClass="btn-pie" title="Atualizar"
-							onstart="start();" oncomplete="stop();"
+							process="@this painel painel-categoria" styleClass="btn-pie"
+							title="Atualizar" onstart="start();" oncomplete="stop();"
 							update="produto1 barChart-vendasPorDia" />
 
 					</p:panelGrid>
@@ -308,7 +374,8 @@
 								listener="#{relatorioVendasBean.changeProdutoPorDia}"
 								process="@this" update="barChart-vendasPorDia" />
 							<f:selectItems value="#{relatorioVendasBean.produtosPorDia}"
-								var="produto" itemLabel="#{produto.codigo.concat(' | ').concat(produto.descricao)}"
+								var="produto"
+								itemLabel="#{produto.codigo.concat(' | ').concat(produto.descricao)}"
 								itemValue="#{produto}"></f:selectItems>
 						</p:selectOneMenu>
 
@@ -324,6 +391,19 @@
 					<p:barChart id="barChart-vendasPorDia"
 						model="#{relatorioVendasBean.mixedModelPorDia}"
 						styleClass="barChart-01" />
+
+					<p:panelGrid columns="1" layout="grid" style="text-align: center"
+						styleClass="panelgrid-noborder disabled disabled target"
+						columnClasses="ui-grid-col-12">
+
+						<p:commandLink value="Definir target" process="@this"
+							actionListener="#{relatorioVendasBean.definirTargetDiario}"
+							onstart="start();" update="form-target"
+							oncomplete="stop();PF('target-dialog').show();">
+
+							<p:resetInput target="form-target" />
+						</p:commandLink>
+					</p:panelGrid>
 				</p:panel>
 
 				<p:panel class="ui-lg-6  ui-fluid itens-add"
@@ -400,8 +480,8 @@
 
 						<p:outputLabel value="Categoria" />
 						<p:selectCheckboxMenu style="width: 100%" label=""
-							showHeader="true" emptyLabel=""
-							filter="true" filterMatchMode="startsWith"
+							showHeader="true" emptyLabel="" filter="true"
+							filterMatchMode="startsWith"
 							value="#{relatorioVendasBean.categoriasPorSemana}">
 
 							<f:selectItems
@@ -412,9 +492,9 @@
 
 						<p:commandButton icon="fa fa-refresh"
 							action="#{relatorioVendasBean.changeCategoriaPorSemana}"
-							process="@this panel-semanal panel-semanal-categoria" styleClass="btn-pie"
-							title="Atualizar" onstart="start();" oncomplete="stop();"
-							update="produto2 barChart-vendasPorSemana" />
+							process="@this panel-semanal panel-semanal-categoria"
+							styleClass="btn-pie" title="Atualizar" onstart="start();"
+							oncomplete="stop();" update="produto2 barChart-vendasPorSemana" />
 					</p:panelGrid>
 
 					<p:panelGrid columns="2" layout="grid"
@@ -448,6 +528,19 @@
 					<p:barChart id="barChart-vendasPorSemana"
 						model="#{relatorioVendasBean.mixedModelPorSemana}"
 						styleClass="barChart-02" />
+
+					<p:panelGrid columns="1" layout="grid" style="text-align: center"
+						styleClass="panelgrid-noborder disabled disabled target"
+						columnClasses="ui-grid-col-12">
+
+						<p:commandLink value="Definir target" process="@this"
+							actionListener="#{relatorioVendasBean.definirTargetSemanal}"
+							onstart="start();" update="form-target"
+							oncomplete="stop();PF('target-dialog').show();">
+
+							<p:resetInput target="form-target" />
+						</p:commandLink>
+					</p:panelGrid>
 				</p:panel>
 
 			</p:panelGrid>
@@ -535,8 +628,8 @@
 
 						<p:outputLabel value="Categoria" />
 						<p:selectCheckboxMenu style="width: 100%" label=""
-							showHeader="true" emptyLabel=""
-							filter="true" filterMatchMode="startsWith"
+							showHeader="true" emptyLabel="" filter="true"
+							filterMatchMode="startsWith"
 							value="#{relatorioVendasBean.categoriasPorMes}">
 
 							<f:selectItems
@@ -547,9 +640,9 @@
 
 						<p:commandButton icon="fa fa-refresh"
 							action="#{relatorioVendasBean.changeCategoriaPorMes}"
-							process="@this panel-mensal panel-mensal-categoria" styleClass="btn-pie"
-							title="Atualizar" onstart="start();" oncomplete="stop();"
-							update="produto3 barChart-vendasPorMes" />
+							process="@this panel-mensal panel-mensal-categoria"
+							styleClass="btn-pie" title="Atualizar" onstart="start();"
+							oncomplete="stop();" update="produto3 barChart-vendasPorMes" />
 					</p:panelGrid>
 
 					<p:panelGrid columns="2" layout="grid"
@@ -566,7 +659,8 @@
 								listener="#{relatorioVendasBean.changeProdutoPorMes}"
 								process="@this" update="barChart-vendasPorMes" />
 							<f:selectItems value="#{relatorioVendasBean.produtosPorMes}"
-								var="produto" itemLabel="#{produto.codigo.concat(' | ').concat(produto.descricao)}"
+								var="produto"
+								itemLabel="#{produto.codigo.concat(' | ').concat(produto.descricao)}"
 								itemValue="#{produto}"></f:selectItems>
 						</p:selectOneMenu>
 
@@ -581,6 +675,19 @@
 
 					<p:barChart model="#{relatorioVendasBean.mixedModelPorMes}"
 						id="barChart-vendasPorMes" styleClass="barChart-02" />
+
+					<p:panelGrid columns="1" layout="grid" style="text-align: center"
+						styleClass="panelgrid-noborder disabled disabled target"
+						columnClasses="ui-grid-col-12">
+
+						<p:commandLink value="Definir target" process="@this"
+							actionListener="#{relatorioVendasBean.definirTargetMensal}"
+							onstart="start();" update="form-target"
+							oncomplete="stop();PF('target-dialog').show();">
+
+							<p:resetInput target="form-target" />
+						</p:commandLink>
+					</p:panelGrid>
 				</p:panel>
 
 				<p:panel class="ui-lg-6  ui-fluid itens-add"
@@ -639,8 +746,8 @@
 
 						<p:outputLabel value="Categoria" />
 						<p:selectCheckboxMenu style="width: 100%" label=""
-							showHeader="true" emptyLabel=""
-							filter="true" filterMatchMode="startsWith"
+							showHeader="true" emptyLabel="" filter="true"
+							filterMatchMode="startsWith"
 							value="#{relatorioVendasBean.categoriasPorAno}">
 
 							<f:selectItems
@@ -649,11 +756,11 @@
 								itemValue="#{categoria.nome}"></f:selectItems>
 						</p:selectCheckboxMenu>
 
-						<p:commandButton icon="fa fa-refresh" 
+						<p:commandButton icon="fa fa-refresh"
 							action="#{relatorioVendasBean.changeCategoriaPorAno}"
-							process="@this panel-anual panel-anual-categoria" styleClass="btn-pie" title="Atualizar"
-							onstart="start();" oncomplete="stop();"
-							update="produto4 barChart-vendasPorAno" />
+							process="@this panel-anual panel-anual-categoria"
+							styleClass="btn-pie" title="Atualizar" onstart="start();"
+							oncomplete="stop();" update="produto4 barChart-vendasPorAno" />
 					</p:panelGrid>
 
 					<p:panelGrid columns="2" layout="grid"
@@ -669,7 +776,8 @@
 								listener="#{relatorioVendasBean.changeProdutoPorAno}"
 								process="@this" update="barChart-vendasPorAno" />
 							<f:selectItems value="#{relatorioVendasBean.produtosPorAno}"
-								var="produto" itemLabel="#{produto.codigo.concat(' | ').concat(produto.descricao)}"
+								var="produto"
+								itemLabel="#{produto.codigo.concat(' | ').concat(produto.descricao)}"
 								itemValue="#{produto}"></f:selectItems>
 						</p:selectOneMenu>
 					</p:panelGrid>
@@ -684,6 +792,19 @@
 					<p:barChart id="barChart-vendasPorAno"
 						model="#{relatorioVendasBean.mixedModelPorAno}"
 						styleClass="barChart-01" />
+
+					<p:panelGrid columns="1" layout="grid" style="text-align: center"
+						styleClass="panelgrid-noborder disabled disabled target"
+						columnClasses="ui-grid-col-12">
+
+						<p:commandLink value="Definir target" process="@this"
+							actionListener="#{relatorioVendasBean.definirTargetAnual}"
+							onstart="start();" update="form-target"
+							oncomplete="stop();PF('target-dialog').show();">
+
+							<p:resetInput target="form-target" />
+						</p:commandLink>
+					</p:panelGrid>
 				</p:panel>
 
 			</p:panelGrid>
@@ -716,6 +837,46 @@
 			</h:form>
 		</p:dialog>
 
+		<p:dialog header="Definir target" widgetVar="target-dialog"
+			position="top" style="margin-top: 100px" id="target-dialog"
+			resizable="false" modal="true" closeOnEscape="true" responsive="true">
+
+			<h:form id="form-target">
+
+				<div class="ui-fluid" style="margin-top: 10px; text-align: center">
+
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-12">
+
+						<p:outputLabel value="#{relatorioVendasBean.targetMsg}"
+							for="target" style="font-weight: bold" />
+						<p:inputNumber id="target" decimalPlaces="2" autocomplete="off"
+							symbol="R$ " value="#{relatorioVendasBean.target}"
+							required="true" requiredMessage="Target deve ser informado." />
+					</p:panelGrid>
+
+					<div
+						style="width: 80%; margin: auto; border-top: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px"></div>
+
+					<p:commandButton widgetVar="btn-confirmar" id="btn-confirmar"
+						action="#{relatorioVendasBean.confirmarTarget}"
+						icon="fa fa-fw fa-check" process="@this form-target"
+						onstart="PF('downloadLoading').show(); PF('btn-confirmar').disable();"
+						onsuccess="PF('downloadLoading').hide(); PF('btn-confirmar').enable();"
+						oncomplete="if (!args.validationFailed) PF('target-dialog').hide();"
+						style="margin-bottom: 5px;font-weight: bold;float: right;width: 100px;margin-right: 5px;background:#147df0"
+						value="Confirmar" update="form-target form:msg">
+					</p:commandButton>
+
+					<p:commandButton icon="fa fa-fw fa-close"
+						style="margin-bottom: 5px;font-weight: bold;width: 100px;background:#e15e5ef0;"
+						value="Cancelar" onstart="start();"
+						oncomplete="stop();PF('target-dialog').hide();">
+					</p:commandButton>
+				</div>
+			</h:form>
+		</p:dialog>
 
 		<p:dialog id="downloadLoading" showHeader="false" modal="true"
 			widgetVar="downloadLoading" header="Status" draggable="false"

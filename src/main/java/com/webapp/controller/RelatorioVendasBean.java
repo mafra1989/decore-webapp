@@ -1,6 +1,7 @@
 package com.webapp.controller;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,6 +13,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.lang3.time.DateUtils;
+import org.primefaces.PrimeFaces;
 import org.primefaces.model.charts.ChartData;
 import org.primefaces.model.charts.axes.cartesian.CartesianScales;
 import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearAxes;
@@ -21,12 +23,15 @@ import org.primefaces.model.charts.bar.BarChartModel;
 import org.primefaces.model.charts.bar.BarChartOptions;
 import org.primefaces.model.charts.donut.DonutChartDataSet;
 import org.primefaces.model.charts.donut.DonutChartModel;
+import org.primefaces.model.charts.line.LineChartDataSet;
 
 import com.webapp.model.CategoriaProduto;
 import com.webapp.model.Produto;
+import com.webapp.model.Target;
 import com.webapp.model.Usuario;
 import com.webapp.repository.CategoriasProdutos;
 import com.webapp.repository.Produtos;
+import com.webapp.repository.Targets;
 import com.webapp.repository.Usuarios;
 import com.webapp.repository.Vendas;
 
@@ -44,6 +49,9 @@ public class RelatorioVendasBean implements Serializable {
 
 	@Inject
 	private Usuarios usuarios;
+
+	@Inject
+	private Targets targets;
 
 	private BarChartModel mixedModel;
 
@@ -142,9 +150,47 @@ public class RelatorioVendasBean implements Serializable {
 
 	private DonutChartModel donutModel;
 
+	private String targetMsg;
+
+	private Double target;
+	private String option;
+
+	private double targetDiario;
+	private double targetSemanal;
+	private double targetMensal;
+	private double targetAnual;
+
 	@PostConstruct
 	public void init() {
 		listarTodasCategoriasProdutos();
+
+		Target target = targets.porPeriodoTipo("DIARIO", "VENDA");
+		if (target == null) {
+			targetDiario = 0;
+		} else {
+			targetDiario = target.getValor().doubleValue();
+		}
+
+		target = targets.porPeriodoTipo("SEMANAL", "VENDA");
+		if (target == null) {
+			targetSemanal = 0;
+		} else {
+			targetSemanal = target.getValor().doubleValue();
+		}
+
+		target = targets.porPeriodoTipo("MENSAL", "VENDA");
+		if (target == null) {
+			targetMensal = 0;
+		} else {
+			targetMensal = target.getValor().doubleValue();
+		}
+
+		target = targets.porPeriodoTipo("ANUAL", "VENDA");
+		if (target == null) {
+			targetAnual = 0;
+		} else {
+			targetAnual = target.getValor().doubleValue();
+		}
 
 		todosVendedores = usuarios.todos();
 
@@ -324,6 +370,9 @@ public class RelatorioVendasBean implements Serializable {
 		BarChartDataSet dataSet = new BarChartDataSet();
 		List<Number> values = new ArrayList<>();
 
+		LineChartDataSet dataSet2 = new LineChartDataSet();
+		List<Number> values2 = new ArrayList<>();
+
 		Calendar calendarStart = Calendar.getInstance();
 		calendarStart.setTime(dateStart);
 		calendarStart = DateUtils.truncate(calendarStart, Calendar.DAY_OF_MONTH);
@@ -388,14 +437,22 @@ public class RelatorioVendasBean implements Serializable {
 
 		for (Object[] object : result) {
 			values.add((Number) object[3]);
+			values2.add(targetDiario);
+
 			labels.add(object[0] + "/" + object[1]/* + "/" + object[2] */);
 			System.out.println(object[3]);
 		}
 
 		dataSet.setData(values);
 		dataSet.setLabel("Valor Total");
+		dataSet.setYaxisID("left-y-axis");
 		dataSet.setBorderColor("rgb(54, 162, 235)");
 		dataSet.setBackgroundColor("rgba(54, 162, 235)");
+
+		dataSet2.setData(values2);
+		dataSet2.setLabel("Target");
+		dataSet2.setYaxisID("right-y-axis");
+		dataSet2.setBorderColor("rgba(75, 192, 192)");
 
 		/*
 		 * LineChartDataSet dataSet2 = new LineChartDataSet(); List<Object> values2 =
@@ -405,24 +462,49 @@ public class RelatorioVendasBean implements Serializable {
 		 */
 
 		data.addChartDataSet(dataSet);
-		// data.addChartDataSet(dataSet2);
+		data.addChartDataSet(dataSet2);
 
 		data.setLabels(labels);
 
 		mixedModelPorDia.setData(data);
 
 		// Options
+		/*
+		 * BarChartOptions options = new BarChartOptions(); CartesianScales cScales =
+		 * new CartesianScales(); CartesianLinearAxes linearAxes = new
+		 * CartesianLinearAxes(); CartesianLinearTicks ticks = new
+		 * CartesianLinearTicks(); ticks.setBeginAtZero(true);
+		 * linearAxes.setTicks(ticks);
+		 * 
+		 * cScales.addYAxesData(linearAxes); options.setScales(cScales);
+		 * mixedModelPorDia.setOptions(options);
+		 */
+
+		// Options
 		BarChartOptions options = new BarChartOptions();
 		CartesianScales cScales = new CartesianScales();
+
 		CartesianLinearAxes linearAxes = new CartesianLinearAxes();
+		linearAxes.setId("left-y-axis");
+		linearAxes.setPosition("left");
+
+		CartesianLinearAxes linearAxes2 = new CartesianLinearAxes();
+		linearAxes2.setId("right-y-axis");
+		linearAxes2.setPosition("right");
+
 		CartesianLinearTicks ticks = new CartesianLinearTicks();
 		ticks.setBeginAtZero(true);
 		linearAxes.setTicks(ticks);
 
-		cScales.addYAxesData(linearAxes);
-		options.setScales(cScales);
-		mixedModelPorDia.setOptions(options);
+		CartesianLinearTicks ticks2 = new CartesianLinearTicks();
+		ticks2.setBeginAtZero(true);
+		linearAxes2.setTicks(ticks2);
 
+		cScales.addYAxesData(linearAxes);
+		cScales.addYAxesData(linearAxes2);
+		options.setScales(cScales);
+
+		mixedModelPorDia.setOptions(options);
 		mixedModelPorDia.setExtender("percentExtender2");
 	}
 
@@ -432,6 +514,9 @@ public class RelatorioVendasBean implements Serializable {
 
 		BarChartDataSet dataSet = new BarChartDataSet();
 		List<Number> values = new ArrayList<>();
+		
+		LineChartDataSet dataSet2 = new LineChartDataSet();
+		List<Number> values2 = new ArrayList<>();
 
 		List<String> labels = new ArrayList<>();
 
@@ -476,6 +561,7 @@ public class RelatorioVendasBean implements Serializable {
 
 		for (Object[] object : result) {
 			values.add((Number) object[2]);
+			values2.add(targetSemanal);
 
 			long semana = Long.parseLong(object[0].toString());
 			String semanaTemp = String.valueOf(semana);
@@ -489,8 +575,14 @@ public class RelatorioVendasBean implements Serializable {
 
 		dataSet.setData(values);
 		dataSet.setLabel("Valor Total");
+		dataSet.setYaxisID("left-y-axis");
 		dataSet.setBorderColor("rgb(54, 162, 235)");
 		dataSet.setBackgroundColor("rgba(54, 162, 235)");
+
+		dataSet2.setData(values2);
+		dataSet2.setLabel("Target");
+		dataSet2.setYaxisID("right-y-axis");
+		dataSet2.setBorderColor("rgba(75, 192, 192)");
 
 		/*
 		 * LineChartDataSet dataSet2 = new LineChartDataSet(); List<Object> values2 =
@@ -500,24 +592,49 @@ public class RelatorioVendasBean implements Serializable {
 		 */
 
 		data.addChartDataSet(dataSet);
-		// data.addChartDataSet(dataSet2);
+		data.addChartDataSet(dataSet2);
 
 		data.setLabels(labels);
 
 		mixedModelPorSemana.setData(data);
 
 		// Options
+		/*
+		 * BarChartOptions options = new BarChartOptions(); CartesianScales cScales =
+		 * new CartesianScales(); CartesianLinearAxes linearAxes = new
+		 * CartesianLinearAxes(); CartesianLinearTicks ticks = new
+		 * CartesianLinearTicks(); ticks.setBeginAtZero(true);
+		 * linearAxes.setTicks(ticks);
+		 * 
+		 * cScales.addYAxesData(linearAxes); options.setScales(cScales);
+		 * mixedModelPorSemana.setOptions(options);
+		 */
+
+		// Options
 		BarChartOptions options = new BarChartOptions();
 		CartesianScales cScales = new CartesianScales();
+
 		CartesianLinearAxes linearAxes = new CartesianLinearAxes();
+		linearAxes.setId("left-y-axis");
+		linearAxes.setPosition("left");
+
+		CartesianLinearAxes linearAxes2 = new CartesianLinearAxes();
+		linearAxes2.setId("right-y-axis");
+		linearAxes2.setPosition("right");
+
 		CartesianLinearTicks ticks = new CartesianLinearTicks();
 		ticks.setBeginAtZero(true);
 		linearAxes.setTicks(ticks);
 
-		cScales.addYAxesData(linearAxes);
-		options.setScales(cScales);
-		mixedModelPorSemana.setOptions(options);
+		CartesianLinearTicks ticks2 = new CartesianLinearTicks();
+		ticks2.setBeginAtZero(true);
+		linearAxes2.setTicks(ticks2);
 
+		cScales.addYAxesData(linearAxes);
+		cScales.addYAxesData(linearAxes2);
+		options.setScales(cScales);
+
+		mixedModelPorSemana.setOptions(options);
 		mixedModelPorSemana.setExtender("percentExtender2");
 	}
 
@@ -591,6 +708,9 @@ public class RelatorioVendasBean implements Serializable {
 
 		BarChartDataSet dataSet = new BarChartDataSet();
 		List<Number> values = new ArrayList<>();
+		
+		LineChartDataSet dataSet2 = new LineChartDataSet();
+		List<Number> values2 = new ArrayList<>();
 
 		List<Object[]> result = new ArrayList<>();
 
@@ -603,8 +723,8 @@ public class RelatorioVendasBean implements Serializable {
 				if (i < 10) {
 					mes01 = "0" + i;
 				}
-				List<Object[]> resultTemp = vendas.totalVendasPorMes(ano02, mes01, mes01,
-						categoriaPorMes, categoriasPorMes, produto03, usuarioPorMes, true);
+				List<Object[]> resultTemp = vendas.totalVendasPorMes(ano02, mes01, mes01, categoriaPorMes,
+						categoriasPorMes, produto03, usuarioPorMes, true);
 
 				if (resultTemp.size() == 0) {
 
@@ -628,14 +748,22 @@ public class RelatorioVendasBean implements Serializable {
 
 		for (Object[] object : result) {
 			values.add((Number) object[2]);
+			values2.add(targetMensal);
+
 			labels.add(nameMes(Integer.parseInt(object[0].toString())));
 			System.out.println(object[2]);
 		}
 
 		dataSet.setData(values);
 		dataSet.setLabel("Valor Total");
+		dataSet.setYaxisID("left-y-axis");
 		dataSet.setBorderColor("rgb(54, 162, 235)");
 		dataSet.setBackgroundColor("rgba(54, 162, 235)");
+
+		dataSet2.setData(values2);
+		dataSet2.setLabel("Target");
+		dataSet2.setYaxisID("right-y-axis");
+		dataSet2.setBorderColor("rgba(75, 192, 192)");
 
 		/*
 		 * LineChartDataSet dataSet2 = new LineChartDataSet(); List<Object> values2 =
@@ -645,24 +773,49 @@ public class RelatorioVendasBean implements Serializable {
 		 */
 
 		data.addChartDataSet(dataSet);
-		// data.addChartDataSet(dataSet2);
+		data.addChartDataSet(dataSet2);
 
 		data.setLabels(labels);
 
 		mixedModelPorMes.setData(data);
 
 		// Options
+		/*
+		 * BarChartOptions options = new BarChartOptions(); CartesianScales cScales =
+		 * new CartesianScales(); CartesianLinearAxes linearAxes = new
+		 * CartesianLinearAxes(); CartesianLinearTicks ticks = new
+		 * CartesianLinearTicks(); ticks.setBeginAtZero(true);
+		 * linearAxes.setTicks(ticks);
+		 * 
+		 * cScales.addYAxesData(linearAxes); options.setScales(cScales);
+		 * mixedModelPorMes.setOptions(options);
+		 */
+
+		// Options
 		BarChartOptions options = new BarChartOptions();
 		CartesianScales cScales = new CartesianScales();
+
 		CartesianLinearAxes linearAxes = new CartesianLinearAxes();
+		linearAxes.setId("left-y-axis");
+		linearAxes.setPosition("left");
+
+		CartesianLinearAxes linearAxes2 = new CartesianLinearAxes();
+		linearAxes2.setId("right-y-axis");
+		linearAxes2.setPosition("right");
+
 		CartesianLinearTicks ticks = new CartesianLinearTicks();
 		ticks.setBeginAtZero(true);
 		linearAxes.setTicks(ticks);
 
-		cScales.addYAxesData(linearAxes);
-		options.setScales(cScales);
-		mixedModelPorMes.setOptions(options);
+		CartesianLinearTicks ticks2 = new CartesianLinearTicks();
+		ticks2.setBeginAtZero(true);
+		linearAxes2.setTicks(ticks2);
 
+		cScales.addYAxesData(linearAxes);
+		cScales.addYAxesData(linearAxes2);
+		options.setScales(cScales);
+
+		mixedModelPorMes.setOptions(options);
 		mixedModelPorMes.setExtender("percentExtender2");
 	}
 
@@ -673,46 +826,56 @@ public class RelatorioVendasBean implements Serializable {
 		BarChartDataSet dataSet = new BarChartDataSet();
 		List<Number> values = new ArrayList<>();
 		
+		LineChartDataSet dataSet2 = new LineChartDataSet();
+		List<Number> values2 = new ArrayList<>();
+
 		List<String> labels = new ArrayList<>();
-		
+
 		List<Object[]> result = new ArrayList<>();
-		if(Integer.parseInt(ano03) <= Integer.parseInt(ano04)) {
-			
+		if (Integer.parseInt(ano03) <= Integer.parseInt(ano04)) {
+
 			for (int i = Integer.parseInt(ano03); i <= Integer.parseInt(ano04); i++) {
-				
+
 				String ano03 = String.valueOf(i);
-				
-				List<Object[]> resultTemp = vendas.totalVendasPorAno(ano03, ano03, categoriaPorAno, categoriasPorAno, produto04,
-						usuarioPorAno, true);
-				
-				if(resultTemp.size() == 0) {
-					
+
+				List<Object[]> resultTemp = vendas.totalVendasPorAno(ano03, ano03, categoriaPorAno, categoriasPorAno,
+						produto04, usuarioPorAno, true);
+
+				if (resultTemp.size() == 0) {
+
 					Object[] object = new Object[2];
 
-					object[0] = i;				
+					object[0] = i;
 					object[1] = 0;
-					
+
 					result.add(object);
-					
+
 				} else {
 					for (Object[] object : resultTemp) {
 						result.add(object);
 					}
 				}
-			}		
+			}
 		}
 
 		for (Object[] object : result) {
 			values.add((Number) object[1]);
+			values2.add(targetAnual);
+
 			labels.add(String.valueOf(Integer.parseInt(object[0].toString())));
-			
 			System.out.println(object[1]);
 		}
 
 		dataSet.setData(values);
 		dataSet.setLabel("Valor Total");
+		dataSet.setYaxisID("left-y-axis");
 		dataSet.setBorderColor("rgb(54, 162, 235)");
 		dataSet.setBackgroundColor("rgba(54, 162, 235)");
+
+		dataSet2.setData(values2);
+		dataSet2.setLabel("Target");
+		dataSet2.setYaxisID("right-y-axis");
+		dataSet2.setBorderColor("rgba(75, 192, 192)");
 
 		/*
 		 * LineChartDataSet dataSet2 = new LineChartDataSet(); List<Object> values2 =
@@ -722,25 +885,48 @@ public class RelatorioVendasBean implements Serializable {
 		 */
 
 		data.addChartDataSet(dataSet);
-		// data.addChartDataSet(dataSet2);
+		data.addChartDataSet(dataSet2);
 
 		data.setLabels(labels);
 
 		mixedModelPorAno.setData(data);
 
 		// Options
+		/*
+		 * BarChartOptions options = new BarChartOptions(); CartesianScales cScales =
+		 * new CartesianScales(); CartesianLinearAxes linearAxes = new
+		 * CartesianLinearAxes(); CartesianLinearTicks ticks = new
+		 * CartesianLinearTicks(); ticks.setBeginAtZero(true);
+		 * linearAxes.setTicks(ticks); cScales.addYAxesData(linearAxes);
+		 * options.setScales(cScales); mixedModelPorAno.setOptions(options);
+		 */
+
+		// Options
 		BarChartOptions options = new BarChartOptions();
 		CartesianScales cScales = new CartesianScales();
+
 		CartesianLinearAxes linearAxes = new CartesianLinearAxes();
+		linearAxes.setId("left-y-axis");
+		linearAxes.setPosition("left");
+
+		CartesianLinearAxes linearAxes2 = new CartesianLinearAxes();
+		linearAxes2.setId("right-y-axis");
+		linearAxes2.setPosition("right");
+
 		CartesianLinearTicks ticks = new CartesianLinearTicks();
 		ticks.setBeginAtZero(true);
 		linearAxes.setTicks(ticks);
 
-		cScales.addYAxesData(linearAxes);
-		options.setScales(cScales);
-		mixedModelPorAno.setOptions(options);
+		CartesianLinearTicks ticks2 = new CartesianLinearTicks();
+		ticks2.setBeginAtZero(true);
+		linearAxes2.setTicks(ticks2);
 
-		mixedModelPorAno.setExtender("percentExtender4");
+		cScales.addYAxesData(linearAxes);
+		cScales.addYAxesData(linearAxes2);
+		options.setScales(cScales);
+
+		mixedModelPorAno.setOptions(options);
+		mixedModelPorAno.setExtender("percentExtender2");
 	}
 
 	public void prepareDonutModelPorDia() {
@@ -1089,5 +1275,134 @@ public class RelatorioVendasBean implements Serializable {
 
 	public void setCategoriasPorAno(String[] categoriasPorAno) {
 		this.categoriasPorAno = categoriasPorAno;
+	}
+
+	public void definirTargetDiario() {
+		targetMsg = "Target para venda diária";
+		target = targetDiario;
+		option = "1";
+	}
+
+	public void definirTargetSemanal() {
+		targetMsg = "Target para venda semanal";
+		target = targetSemanal;
+		option = "2";
+	}
+
+	public void definirTargetMensal() {
+		targetMsg = "Target para venda mensal";
+		target = targetMensal;
+		option = "3";
+	}
+
+	public void definirTargetAnual() {
+		targetMsg = "Target para venda anual";
+		target = targetAnual;
+		option = "4";
+	}
+
+	public String getTargetMsg() {
+		return targetMsg;
+	}
+
+	public void confirmarTarget() {
+		System.out.println("OPTION: " + option);
+		System.out.println("TARGET: " + target);
+
+		if (option.equalsIgnoreCase("1")) {
+
+			Target targetTemp = targets.porPeriodoTipo("DIARIO", "VENDA");
+			if (targetTemp == null) {
+				targetTemp = new Target();
+				targetTemp.setPeriodo("DIARIO");
+				targetTemp.setTipo("VENDA");
+				targetTemp.setValor(new BigDecimal(target));
+			} else {
+				targetTemp.setValor(new BigDecimal(target));
+			}
+
+			targetDiario = target;
+			createMixedModelPorDia();
+
+			targets.save(targetTemp);
+
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'success', title: 'Concluído!', text: 'Target diário salvo com sucesso!' });");
+			PrimeFaces.current().ajax().update("form:barChart-vendasPorDia");
+		}
+
+		if (option.equalsIgnoreCase("2")) {
+
+			Target targetTemp = targets.porPeriodoTipo("SEMANAL", "VENDA");
+			if (targetTemp == null) {
+				targetTemp = new Target();
+				targetTemp.setPeriodo("SEMANAL");
+				targetTemp.setTipo("VENDA");
+				targetTemp.setValor(new BigDecimal(target));
+			} else {
+				targetTemp.setValor(new BigDecimal(target));
+			}
+
+			targetSemanal = target;
+			createMixedModelPorSemana();
+
+			targets.save(targetTemp);
+
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'success', title: 'Concluído!', text: 'Target semanal salvo com sucesso!' });");
+			PrimeFaces.current().ajax().update("form:barChart-vendasPorSemana");
+		}
+
+		if (option.equalsIgnoreCase("3")) {
+
+			Target targetTemp = targets.porPeriodoTipo("MENSAL", "VENDA");
+			if (targetTemp == null) {
+				targetTemp = new Target();
+				targetTemp.setPeriodo("MENSAL");
+				targetTemp.setTipo("VENDA");
+				targetTemp.setValor(new BigDecimal(target));
+			} else {
+				targetTemp.setValor(new BigDecimal(target));
+			}
+
+			targetMensal = target;
+			createMixedModelPorMes();
+
+			targets.save(targetTemp);
+
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'success', title: 'Concluído!', text: 'Target mensal salvo com sucesso!' });");
+			PrimeFaces.current().ajax().update("form:barChart-vendasPorMes");
+		}
+
+		if (option.equalsIgnoreCase("4")) {
+
+			Target targetTemp = targets.porPeriodoTipo("ANUAL", "VENDA");
+			if (targetTemp == null) {
+				targetTemp = new Target();
+				targetTemp.setPeriodo("ANUAL");
+				targetTemp.setTipo("VENDA");
+				targetTemp.setValor(new BigDecimal(target));
+			} else {
+				targetTemp.setValor(new BigDecimal(target));
+			}
+
+			targetAnual = target;
+			createMixedModelPorAno();
+
+			targets.save(targetTemp);
+
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'success', title: 'Concluído!', text: 'Target anual salvo com sucesso!' });");
+			PrimeFaces.current().ajax().update("form:barChart-vendasPorAno");
+		}
+	}
+
+	public Double getTarget() {
+		return target;
+	}
+
+	public void setTarget(Double target) {
+		this.target = target;
 	}
 }
