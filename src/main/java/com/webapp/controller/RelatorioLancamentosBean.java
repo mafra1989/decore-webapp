@@ -447,6 +447,7 @@ public class RelatorioLancamentosBean implements Serializable {
 			if (!date.equals(object[0] + "/" + object[1])) {
 				date = object[0] + "/" + object[1];		
 				labels.add(object[0] + "/" + object[1]/* + "/" + object[2] */);
+				values3.add(targetDiario);
 			}
 
 			if (object[4].toString().equals("DEBITO")) {
@@ -459,8 +460,7 @@ public class RelatorioLancamentosBean implements Serializable {
 				values.add((Number) object[5]);
 				values2.add((Number) object[5]);
 			}
-			
-			values3.add(targetDiario);
+				
 		}
 		
 		if (categoriasPorDia != null && categoriasPorDia.length > 0) {
@@ -662,6 +662,7 @@ public class RelatorioLancamentosBean implements Serializable {
 			if (!week.equals(weekTemp)) {
 				labels.add(weekTemp);
 				week = weekTemp;
+				values3.add(targetSemanal);
 			}
 
 			if (object[3].toString().equals("DEBITO")) {
@@ -674,8 +675,7 @@ public class RelatorioLancamentosBean implements Serializable {
 				values.add((Number) object[4]);
 				values2.add((Number) object[4]);
 			}
-			
-			values3.add(targetSemanal);
+		
 		}
 
 		
@@ -935,6 +935,7 @@ public class RelatorioLancamentosBean implements Serializable {
 			if (!month.equals(monthTemp)) {
 				labels.add(nameMes(Integer.parseInt(object[0].toString())));
 				month = monthTemp;
+				values3.add(targetMensal);
 			}
 
 			if (object[3].toString().equals("DEBITO")) {
@@ -947,8 +948,7 @@ public class RelatorioLancamentosBean implements Serializable {
 				values.add((Number) object[4]);
 				values2.add((Number) object[4]);
 			}
-			
-			values3.add(targetMensal);
+	
 		}
 
 		if (categoriasPorMes != null && categoriasPorMes.length > 0) {
@@ -1133,6 +1133,7 @@ public class RelatorioLancamentosBean implements Serializable {
 			if (!year.equals(yearTemp)) {
 				labels.add(object[0].toString());
 				year = yearTemp;
+				values3.add(targetAnual);
 			}
 
 			if (object[2].toString().equals("DEBITO")) {
@@ -1146,7 +1147,6 @@ public class RelatorioLancamentosBean implements Serializable {
 				values2.add((Number) object[3]);
 			}
 			
-			values3.add(targetAnual);
 		}
 
 		if (categoriasPorAno != null && categoriasPorAno.length > 0) {
