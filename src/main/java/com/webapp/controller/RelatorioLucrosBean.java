@@ -141,6 +141,7 @@ public class RelatorioLucrosBean implements Serializable {
 	private String targetMsg;
 
 	private Double target;
+	private String option;
 	
 	private double targetDiario;
 	private double targetSemanal;
@@ -1500,21 +1501,25 @@ public class RelatorioLucrosBean implements Serializable {
 	public void definirTargetDiario() {
 		targetMsg = "Target para lucro diário";
 		target = targetDiario;
+		option = "1";
 	}
 
 	public void definirTargetSemanal() {
 		targetMsg = "Target para lucro semanal";
 		target = targetSemanal;
+		option = "2";
 	}
 
 	public void definirTargetMensal() {
 		targetMsg = "Target para lucro mensal";
 		target = targetMensal;
+		option = "3";
 	}
 
 	public void definirTargetAnual() {
 		targetMsg = "Target para lucro anual";
 		target = targetAnual;
+		option = "4";
 	}
 
 	public String getTargetMsg() {
@@ -1522,7 +1527,7 @@ public class RelatorioLucrosBean implements Serializable {
 	}
 
 
-	public void confirmarTarget(String option) {
+	public void confirmarTarget() {
 		System.out.println("OPTION: " + option);
 		System.out.println("TARGET: " + target);
 
