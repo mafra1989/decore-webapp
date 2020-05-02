@@ -447,12 +447,12 @@ public class RelatorioLucrosBean implements Serializable {
 				} else {
 					values2.add(0);
 				}
-				
-				values3.add(500);
 
 				labels.add(object[0] + "/" + object[1]/* + "/" + object[2] */);
 				// }
 			}
+			
+			values3.add(500);
 
 			System.out.println(object[3]);
 		}
@@ -629,8 +629,6 @@ public class RelatorioLucrosBean implements Serializable {
 					values2.add(0);
 				}				
 				
-				values3.add(500);
-				
 				long semana = Long.parseLong(object[0].toString());
 				String semanaTemp = String.valueOf(semana);
 				if (semana < 10) {
@@ -639,6 +637,8 @@ public class RelatorioLucrosBean implements Serializable {
 				labels.add("W" + semanaTemp);
 				// }
 			}
+			
+			values3.add(500);
 		}
 
 		dataSet.setData(values);
@@ -901,8 +901,6 @@ public class RelatorioLucrosBean implements Serializable {
 				} else {
 					values2.add(0);
 				}
-				
-				values3.add(500);
 
 				if (lucroPorLote != true) {
 					labels.add(nameMes((Integer.parseInt(object[0].toString()))));
@@ -910,6 +908,8 @@ public class RelatorioLucrosBean implements Serializable {
 					labels.add(nameMes((Integer.parseInt(object[4].toString()))));
 				}
 			}
+			
+			values3.add(500);
 		}
 
 		dataSet.setData(values);
@@ -1060,10 +1060,10 @@ public class RelatorioLucrosBean implements Serializable {
 					values2.add(0);
 				}
 				
-				values3.add(500);
-
 				labels.add(object[0].toString());
 			}
+			
+			values3.add(500);
 		}
 
 		dataSet.setData(values);
