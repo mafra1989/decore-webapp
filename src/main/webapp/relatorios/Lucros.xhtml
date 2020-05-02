@@ -765,7 +765,9 @@
 					<p:commandButton widgetVar="btn-confirmar" id="btn-confirmar"
 						action="#{relatorioLucrosBean.confirmarTarget('1')}"
 						icon="fa fa-fw fa-check" process="@this form-target"
-						oncomplete="if (!args.validationFailed) {PF('target-dialog').hide();PF('btn-confirmar').disable();}"
+						onstart="PF('downloadLoading').show(); PF('btn-confirmar').disable();"
+						onsuccess="PF('downloadLoading').hide(); PF('btn-confirmar').enable();"
+						oncomplete="if (!args.validationFailed) PF('target-dialog').hide();"
 						style="margin-bottom: 5px;font-weight: bold;float: right;width: 100px;margin-right: 5px;background:#147df0"
 						value="Confirmar" update="form-target form:msg">
 					</p:commandButton>
@@ -797,8 +799,8 @@
 				PF('downloadLoading').hide();
 			}
 		</script>
-		
-	
+
+
 
 	</ui:define>
 
