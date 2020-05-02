@@ -239,7 +239,7 @@
 
 							<p:ajax event="dateSelect"
 								listener="#{relatorioLucrosBean.createMixedModelPorDia}"
-								process="@this" update="barChart-lucrosPorDia" />
+								process="@this painel painel-categoria" update="barChart-lucrosPorDia" />
 						</p:datePicker>
 
 
@@ -250,7 +250,7 @@
 
 							<p:ajax event="dateSelect"
 								listener="#{relatorioLucrosBean.createMixedModelPorDia}"
-								process="@this" update="barChart-lucrosPorDia" />
+								process="@this painel painel-categoria" update="barChart-lucrosPorDia" />
 						</p:datePicker>
 					</p:panelGrid>
 
@@ -316,7 +316,7 @@
 					<h3 style="font-weight: bold; margin-top: -8px;">Lucro por
 						Semana</h3>
 
-					<p:panelGrid columns="2" layout="grid"
+					<p:panelGrid columns="2" layout="grid" id="painel-ano"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-5">
 
@@ -326,7 +326,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLucrosBean.createMixedModelPorSemana}"
-								process="@this" update="barChart-lucrosPorSemana" />
+								process="@this painel-ano panel-semanal panel-semanal-categoria" update="barChart-lucrosPorSemana" />
 							<f:selectItems value="#{relatorioLucrosBean.anos}" var="ano"
 								itemLabel="#{ano}" itemValue="#{ano}"></f:selectItems>
 						</p:selectOneMenu>
@@ -343,7 +343,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLucrosBean.createMixedModelPorSemana}"
-								process="@this" update="barChart-lucrosPorSemana" />
+								process="@this painel-ano panel-semanal panel-semanal-categoria" update="barChart-lucrosPorSemana" />
 							<f:selectItems value="#{relatorioLucrosBean.semanas}"
 								var="semana" itemLabel="#{semana}" itemValue="#{semana}"></f:selectItems>
 						</p:selectOneMenu>
@@ -354,7 +354,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLucrosBean.createMixedModelPorSemana}"
-								process="@this" update="barChart-lucrosPorSemana" />
+								process="@this painel-ano panel-semanal panel-semanal-categoria" update="barChart-lucrosPorSemana" />
 							<f:selectItems value="#{relatorioLucrosBean.semanas}"
 								var="semana" itemLabel="#{semana}" itemValue="#{semana}"></f:selectItems>
 						</p:selectOneMenu>
@@ -378,7 +378,7 @@
 
 						<p:commandButton icon="fa fa-refresh"
 							action="#{relatorioLucrosBean.changeCategoriaPorSemana}"
-							process="@this panel-semanal panel-semanal-categoria"
+							process="@this painel-ano panel-semanal panel-semanal-categoria"
 							styleClass="btn-pie" title="Atualizar"
 							onstart="start();" oncomplete="stop();"
 							update="produto2 barChart-lucrosPorSemana" />
@@ -432,7 +432,7 @@
 
 					<h3 style="font-weight: bold; margin-top: -8px;">Lucro por Mês</h3>
 
-					<p:panelGrid columns="2" layout="grid"
+					<p:panelGrid columns="2" layout="grid" id="painel-ano2"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-5">
 
@@ -442,7 +442,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLucrosBean.createMixedModelPorMes}"
-								process="@this" update="barChart-lucrosPorMes" />
+								process="@this painel-ano2 panel-mensal panel-mensal-categoria" update="barChart-lucrosPorMes" />
 							<f:selectItems value="#{relatorioLucrosBean.anos}" var="ano"
 								itemLabel="#{ano}" itemValue="#{ano}"></f:selectItems>
 						</p:selectOneMenu>
@@ -459,7 +459,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLucrosBean.createMixedModelPorMes}"
-								process="@this" update="barChart-lucrosPorMes" />
+								process="@this painel-ano2 panel-mensal panel-mensal-categoria" update="barChart-lucrosPorMes" />
 							<f:selectItems value="#{relatorioLucrosBean.meses}" var="mes"
 								itemLabel="#{mes}" itemValue="#{mes}"></f:selectItems>
 						</p:selectOneMenu>
@@ -471,7 +471,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLucrosBean.createMixedModelPorMes}"
-								process="@this" update="barChart-lucrosPorMes" />
+								process="@this painel-ano2 panel-mensal panel-mensal-categoria" update="barChart-lucrosPorMes" />
 							<f:selectItems value="#{relatorioLucrosBean.meses}" var="mes"
 								itemLabel="#{mes}" itemValue="#{mes}"></f:selectItems>
 						</p:selectOneMenu>
@@ -495,7 +495,7 @@
 
 						<p:commandButton icon="fa fa-refresh"
 							action="#{relatorioLucrosBean.changeCategoriaPorMes}"
-							process="@this panel-mensal panel-mensal-categoria"
+							process="@this painel-ano2 panel-mensal panel-mensal-categoria"
 							styleClass="btn-pie" title="Atualizar"
 							onstart="start();" oncomplete="stop();"
 							update="produto3 barChart-lucrosPorMes check-box" />
@@ -559,7 +559,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLucrosBean.createMixedModelPorAno}"
-								process="@this" update="barChart-lucrosPorAno" />
+								process="@this painel-anual painel-anual-categoria" update="barChart-lucrosPorAno" />
 							<f:selectItems value="#{relatorioLucrosBean.anos}" var="ano"
 								itemLabel="#{ano}" itemValue="#{ano}"></f:selectItems>
 						</p:selectOneMenu>
@@ -570,7 +570,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLucrosBean.createMixedModelPorAno}"
-								process="@this" update="barChart-lucrosPorAno" />
+								process="@this painel-anual painel-anual-categoria" update="barChart-lucrosPorAno" />
 							<f:selectItems value="#{relatorioLucrosBean.anos}" var="ano"
 								itemLabel="#{ano}" itemValue="#{ano}"></f:selectItems>
 						</p:selectOneMenu>
