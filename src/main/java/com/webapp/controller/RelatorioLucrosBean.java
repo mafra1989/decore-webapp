@@ -1566,7 +1566,7 @@ public class RelatorioLucrosBean implements Serializable {
 			}
 			
 			targetDiario = target;
-			createMixedModelPorDia();
+			createMixedModelPorSemana();
 			
 			targets.save(targetTemp);
 			
