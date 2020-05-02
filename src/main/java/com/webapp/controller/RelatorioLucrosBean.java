@@ -1544,7 +1544,7 @@ public class RelatorioLucrosBean implements Serializable {
 			targets.save(targetTemp);
 
 			PrimeFaces.current().executeScript(
-					"PF('downloadLoading').hide();swal({ type: 'success', title: 'Concluído!', text: 'Target diário salvo com sucesso!' });");
+					"swal({ type: 'success', title: 'Concluído!', text: 'Target diário salvo com sucesso!' });");
 			PrimeFaces.current().ajax().update("form:barChart-lucrosPorDia");
 		}
 		
@@ -1566,7 +1566,7 @@ public class RelatorioLucrosBean implements Serializable {
 			targets.save(targetTemp);
 			
 			PrimeFaces.current().executeScript(
-					"PF('downloadLoading').hide();swal({ type: 'success', title: 'Concluído!', text: 'Target semanal salvo com sucesso!' });");
+					"swal({ type: 'success', title: 'Concluído!', text: 'Target semanal salvo com sucesso!' });");
 			PrimeFaces.current().ajax().update("form:barChart-lucrosPorSemana");
 		}
 		
@@ -1588,7 +1588,7 @@ public class RelatorioLucrosBean implements Serializable {
 			targets.save(targetTemp);
 			
 			PrimeFaces.current().executeScript(
-					"PF('downloadLoading').hide();swal({ type: 'success', title: 'Concluído!', text: 'Target mensal salvo com sucesso!' });");
+					"swal({ type: 'success', title: 'Concluído!', text: 'Target mensal salvo com sucesso!' });");
 			PrimeFaces.current().ajax().update("form:barChart-lucrosPorMes");
 		}
 		
@@ -1610,7 +1610,7 @@ public class RelatorioLucrosBean implements Serializable {
 			targets.save(targetTemp);
 			
 			PrimeFaces.current().executeScript(
-					"PF('downloadLoading').hide();swal({ type: 'success', title: 'Concluído!', text: 'Target anual salvo com sucesso!' });");
+					"swal({ type: 'success', title: 'Concluído!', text: 'Target anual salvo com sucesso!' });");
 			PrimeFaces.current().ajax().update("form:barChart-lucrosPorAno");
 		}
 	}
