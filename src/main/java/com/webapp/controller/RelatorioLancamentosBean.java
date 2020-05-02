@@ -619,8 +619,8 @@ public class RelatorioLancamentosBean implements Serializable {
 		}
 
 		
-		if (categoriasPorDia != null) {
-			for (String categoria : categoriasPorDia) {
+		if (categoriasPorSemana != null) {
+			for (String categoria : categoriasPorSemana) {
 				
 				System.out.println(categoria);
 				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria);
@@ -755,6 +755,8 @@ public class RelatorioLancamentosBean implements Serializable {
 		List<Object[]> result = new ArrayList<>();
 
 		List<String> labels = new ArrayList<>();
+		
+		boolean debito = false, credito = false;
 
 		if (Integer.parseInt(numberMes(mes01)) <= Integer.parseInt(numberMes(mes02))) {
 
@@ -805,12 +807,13 @@ public class RelatorioLancamentosBean implements Serializable {
 						objectTemp[3] = object[3];
 
 						Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[2].toString()));
-						if (lancamento != null) {
-							if (categoriaPorMes != null && categoriaPorMes.getId() != null) {
-								if (lancamento.getCategoriaLancamento().getId().intValue() == categoriaPorMes.getId()
-										.intValue()) {
-									valor += new BigDecimal(object[4].toString()).doubleValue();
-								}
+						if (lancamento != null) {							
+							if (categoriasPorMes != null) {
+								for (String categoria : categoriasPorMes) {
+									if (lancamento.getCategoriaLancamento().getNome().equalsIgnoreCase(categoria)) {
+										valor += new BigDecimal(object[4].toString()).doubleValue();
+									}
+								}								
 							} else {
 								valor += new BigDecimal(object[4].toString()).doubleValue();
 							}
@@ -878,8 +881,23 @@ public class RelatorioLancamentosBean implements Serializable {
 			}
 		}
 
-		if (categoriaPorMes == null || categoriaPorMes.getId() == null
-				|| categoriaPorMes.getTipoLancamento().getOrigem() == OrigemLancamento.DEBITO) {
+		if (categoriasPorMes != null) {
+			for (String categoria : categoriasPorMes) {
+				
+				System.out.println(categoria);
+				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria);
+				System.out.println(categoriaLancamento.getTipoLancamento().getOrigem());
+				if(categoriaLancamento.getTipoLancamento().getOrigem() == OrigemLancamento.DEBITO) {
+					debito = true;
+					
+				} else if(categoriaLancamento.getTipoLancamento().getOrigem() == OrigemLancamento.CREDITO) {
+					credito = true;
+				}
+			}								
+		}
+
+		if (categoriasPorMes == null || categoriasPorMes.length == 0
+				|| debito) {
 			dataSet.setData(values);
 			dataSet.setLabel("Débito");
 			dataSet.setBorderColor("rgba(54, 162, 235)");
@@ -887,8 +905,8 @@ public class RelatorioLancamentosBean implements Serializable {
 			data.addChartDataSet(dataSet);
 		}
 
-		if (categoriaPorMes == null || categoriaPorMes.getId() == null
-				|| categoriaPorMes.getTipoLancamento().getOrigem() == OrigemLancamento.CREDITO) {
+		if (categoriasPorMes == null || categoriasPorMes.length == 0
+				|| credito) {
 			dataSet2.setData(values2);
 			dataSet2.setLabel("Crédito");
 			dataSet2.setBorderColor("rgba(255, 205, 86)");
@@ -937,6 +955,8 @@ public class RelatorioLancamentosBean implements Serializable {
 		
 		List<String> labels = new ArrayList<>();
 		
+		boolean debito = false, credito = false;
+		
 		List<Object[]> result = new ArrayList<>();
 		if(Integer.parseInt(ano03) <= Integer.parseInt(ano04)) {
 			
@@ -982,11 +1002,12 @@ public class RelatorioLancamentosBean implements Serializable {
 
 						Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[1].toString()));
 						if (lancamento != null) {
-							if (categoriaPorAno != null && categoriaPorAno.getId() != null) {
-								if (lancamento.getCategoriaLancamento().getId().intValue() == categoriaPorAno.getId()
-										.intValue()) {
-									valor += new BigDecimal(object[3].toString()).doubleValue();
-								}
+							if (categoriasPorAno != null) {
+								for (String categoria : categoriasPorAno) {
+									if (lancamento.getCategoriaLancamento().getNome().equalsIgnoreCase(categoria)) {
+										valor += new BigDecimal(object[3].toString()).doubleValue();
+									}
+								}								
 							} else {
 								valor += new BigDecimal(object[3].toString()).doubleValue();
 							}
@@ -1048,9 +1069,23 @@ public class RelatorioLancamentosBean implements Serializable {
 			}
 		}
 
-		
-		if (categoriaPorAno == null || categoriaPorAno.getId() == null
-				|| categoriaPorAno.getTipoLancamento().getOrigem() == OrigemLancamento.DEBITO) {
+		if (categoriasPorAno != null) {
+			for (String categoria : categoriasPorAno) {
+				
+				System.out.println(categoria);
+				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria);
+				System.out.println(categoriaLancamento.getTipoLancamento().getOrigem());
+				if(categoriaLancamento.getTipoLancamento().getOrigem() == OrigemLancamento.DEBITO) {
+					debito = true;
+					
+				} else if(categoriaLancamento.getTipoLancamento().getOrigem() == OrigemLancamento.CREDITO) {
+					credito = true;
+				}
+			}								
+		}
+
+		if (categoriasPorAno == null || categoriasPorAno.length == 0
+				|| debito) {
 			dataSet.setData(values);
 			dataSet.setLabel("Débito");
 			dataSet.setBorderColor("rgba(54, 162, 235)");
@@ -1058,8 +1093,8 @@ public class RelatorioLancamentosBean implements Serializable {
 			data.addChartDataSet(dataSet);
 		}
 
-		if (categoriaPorAno == null || categoriaPorAno.getId() == null
-				|| categoriaPorAno.getTipoLancamento().getOrigem() == OrigemLancamento.CREDITO) {
+		if (categoriasPorAno == null || categoriasPorAno.length == 0
+				|| credito) {
 			dataSet2.setData(values2);
 			dataSet2.setLabel("Crédito");
 			dataSet2.setBorderColor("rgba(255, 205, 86)");

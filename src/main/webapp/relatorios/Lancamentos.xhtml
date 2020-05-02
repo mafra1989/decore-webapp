@@ -284,7 +284,7 @@
 					<h3 style="font-weight: bold; margin-top: -8px;">Lançamentos
 						por Semana</h3>
 
-					<p:panelGrid columns="2" layout="grid"
+					<p:panelGrid columns="2" layout="grid" id="painel-ano"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-5">
 
@@ -301,7 +301,7 @@
 
 					</p:panelGrid>
 
-					<p:panelGrid columns="4" id="painel2" layout="grid"
+					<p:panelGrid columns="4" id="painel-semana" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-1, ui-grid-col-4">
 
@@ -328,7 +328,7 @@
 						</p:selectOneMenu>
 
 
-						<p:outputLabel value="Categoria" for="categoria2" />						
+						<p:outputLabel value="Categoria" />						
 						<p:selectCheckboxMenu id="categoria2" style="width: 100%"
 							showHeader="true" emptyLabel="" label="" filter="true"
 							filterMatchMode="startsWith"
@@ -342,7 +342,7 @@
 
 						<p:commandButton icon="fa fa-refresh"
 							action="#{relatorioLancamentosBean.changeCategoriaPorSemana}"
-							process="@this painel2" styleClass="btn-pie" title="Atualizar"
+							process="@this painel-ano painel-semana" styleClass="btn-pie" title="Atualizar"
 							onstart="start();" oncomplete="stop();"
 							update="barChart-despesasPorSemana" />
 					</p:panelGrid>
@@ -375,7 +375,7 @@
 					<h3 style="font-weight: bold; margin-top: -8px;">Lançamentos
 						por Mês</h3>
 
-					<p:panelGrid columns="2" layout="grid"
+					<p:panelGrid columns="2" layout="grid" id="painel-ano2"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-5">
 
@@ -392,7 +392,7 @@
 
 					</p:panelGrid>
 
-					<p:panelGrid columns="4" layout="grid"
+					<p:panelGrid columns="4" layout="grid" id="painel-mes"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-1,ui-grid-col-4">
 
@@ -420,20 +420,23 @@
 						</p:selectOneMenu>
 
 
-						<p:outputLabel value="Categoria" for="categoria3" />
-						<p:selectOneMenu id="categoria3" style="width: 100%"
-							value="#{relatorioLancamentosBean.categoriaPorMes}">
+						<p:outputLabel value="Categoria" />						
+						<p:selectCheckboxMenu id="categoria3" style="width: 100%"
+							showHeader="true" emptyLabel="" label="" filter="true"
+							filterMatchMode="startsWith"
+							value="#{relatorioLancamentosBean.categoriasPorMes}">
 
-							<f:selectItem itemLabel="Selecione" itemValue="" />
-
-							<p:ajax event="change"
-								listener="#{relatorioLancamentosBean.changeCategoriaPorMes}"
-								process="@this" update="barChart-despesasPorMes" />
 							<f:selectItems
 								value="#{relatorioLancamentosBean.todasCategoriasLancamento}"
 								var="categoria" itemLabel="#{categoria.nome}"
-								itemValue="#{categoria}"></f:selectItems>
-						</p:selectOneMenu>
+								itemValue="#{categoria.nome}"></f:selectItems>
+						</p:selectCheckboxMenu>
+
+						<p:commandButton icon="fa fa-refresh"
+							action="#{relatorioLancamentosBean.changeCategoriaPorMes}"
+							process="@this painel-ano2 painel-mes" styleClass="btn-pie" title="Atualizar"
+							onstart="start();" oncomplete="stop();"
+							update="barChart-despesasPorMes" />
 					</p:panelGrid>
 
 
@@ -481,20 +484,23 @@
 						</p:selectOneMenu>
 
 
-						<p:outputLabel value="Categoria" for="categoria4" />
-						<p:selectOneMenu id="categoria4" style="width: 100%"
-							value="#{relatorioLancamentosBean.categoriaPorAno}">
+						<p:outputLabel value="Categoria" />												
+						<p:selectCheckboxMenu id="categoria4" style="width: 100%"
+							showHeader="true" emptyLabel="" label="" filter="true"
+							filterMatchMode="startsWith"
+							value="#{relatorioLancamentosBean.categoriasPorAno}">
 
-							<f:selectItem itemLabel="Selecione" itemValue="" />
-
-							<p:ajax event="change"
-								listener="#{relatorioLancamentosBean.changeCategoriaPorAno}"
-								process="@this" update="barChart-despesasPorAno" />
 							<f:selectItems
 								value="#{relatorioLancamentosBean.todasCategoriasLancamento}"
 								var="categoria" itemLabel="#{categoria.nome}"
-								itemValue="#{categoria}"></f:selectItems>
-						</p:selectOneMenu>
+								itemValue="#{categoria.nome}"></f:selectItems>
+						</p:selectCheckboxMenu>
+
+						<p:commandButton icon="fa fa-refresh"
+							action="#{relatorioLancamentosBean.changeCategoriaPorAno}"
+							process="@this painel3" styleClass="btn-pie" title="Atualizar"
+							onstart="start();" oncomplete="stop();"
+							update="barChart-despesasPorAno" />
 					</p:panelGrid>
 
 					<p:commandButton rendered="false" icon="fa fa-pie-chart"
