@@ -1577,7 +1577,7 @@ public class RelatorioLancamentosBean implements Serializable {
 
 			PrimeFaces.current().executeScript(
 					"swal({ type: 'success', title: 'Concluído!', text: 'Target diário salvo com sucesso!' });");
-			PrimeFaces.current().ajax().update("form:barChart-vendasPorDia");
+			PrimeFaces.current().ajax().update("form:barChart-despesasPorDia");
 		}
 
 		if (option.equalsIgnoreCase("2")) {
@@ -1599,7 +1599,7 @@ public class RelatorioLancamentosBean implements Serializable {
 
 			PrimeFaces.current().executeScript(
 					"swal({ type: 'success', title: 'Concluído!', text: 'Target semanal salvo com sucesso!' });");
-			PrimeFaces.current().ajax().update("form:barChart-vendasPorSemana");
+			PrimeFaces.current().ajax().update("form:barChart-despesasPorSemana");
 		}
 
 		if (option.equalsIgnoreCase("3")) {
@@ -1621,7 +1621,7 @@ public class RelatorioLancamentosBean implements Serializable {
 
 			PrimeFaces.current().executeScript(
 					"swal({ type: 'success', title: 'Concluído!', text: 'Target mensal salvo com sucesso!' });");
-			PrimeFaces.current().ajax().update("form:barChart-vendasPorMes");
+			PrimeFaces.current().ajax().update("form:barChart-despesasPorMes");
 		}
 
 		if (option.equalsIgnoreCase("4")) {
@@ -1643,7 +1643,7 @@ public class RelatorioLancamentosBean implements Serializable {
 
 			PrimeFaces.current().executeScript(
 					"swal({ type: 'success', title: 'Concluído!', text: 'Target anual salvo com sucesso!' });");
-			PrimeFaces.current().ajax().update("form:barChart-vendasPorAno");
+			PrimeFaces.current().ajax().update("form:barChart-despesasPorAno");
 		}
 	}
 
