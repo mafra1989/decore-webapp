@@ -329,7 +329,7 @@ public class RelatorioLancamentosBean implements Serializable {
 
 						Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[3].toString()));
 						if (lancamento != null) {
-							if (categoriasPorDia != null) {
+							if (categoriasPorDia != null && categoriasPorDia.length > 0) {
 								for (String categoria : categoriasPorDia) {
 									if (lancamento.getCategoriaLancamento().getNome().equalsIgnoreCase(categoria)) {
 										valor += new BigDecimal(object[5].toString()).doubleValue();
@@ -413,7 +413,7 @@ public class RelatorioLancamentosBean implements Serializable {
 			}
 		}
 		
-		if (categoriasPorDia != null) {
+		if (categoriasPorDia != null && categoriasPorDia.length > 0) {
 			for (String categoria : categoriasPorDia) {
 				
 				System.out.println(categoria);
@@ -543,7 +543,7 @@ public class RelatorioLancamentosBean implements Serializable {
 
 						Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[2].toString()));
 						if (lancamento != null) {							
-							if (categoriasPorSemana != null) {
+							if (categoriasPorSemana != null && categoriasPorSemana.length > 0) {
 								for (String categoria : categoriasPorSemana) {
 									if (lancamento.getCategoriaLancamento().getNome().equalsIgnoreCase(categoria)) {
 										valor += new BigDecimal(object[4].toString()).doubleValue();
@@ -619,7 +619,7 @@ public class RelatorioLancamentosBean implements Serializable {
 		}
 
 		
-		if (categoriasPorSemana != null) {
+		if (categoriasPorSemana != null && categoriasPorSemana.length > 0) {
 			for (String categoria : categoriasPorSemana) {
 				
 				System.out.println(categoria);
@@ -808,7 +808,7 @@ public class RelatorioLancamentosBean implements Serializable {
 
 						Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[2].toString()));
 						if (lancamento != null) {							
-							if (categoriasPorMes != null) {
+							if (categoriasPorMes != null && categoriasPorMes.length > 0) {
 								for (String categoria : categoriasPorMes) {
 									if (lancamento.getCategoriaLancamento().getNome().equalsIgnoreCase(categoria)) {
 										valor += new BigDecimal(object[4].toString()).doubleValue();
@@ -881,7 +881,7 @@ public class RelatorioLancamentosBean implements Serializable {
 			}
 		}
 
-		if (categoriasPorMes != null) {
+		if (categoriasPorMes != null && categoriasPorMes.length > 0) {
 			for (String categoria : categoriasPorMes) {
 				
 				System.out.println(categoria);
@@ -1002,7 +1002,7 @@ public class RelatorioLancamentosBean implements Serializable {
 
 						Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[1].toString()));
 						if (lancamento != null) {
-							if (categoriasPorAno != null) {
+							if (categoriasPorAno != null && categoriasPorAno.length > 0) {
 								for (String categoria : categoriasPorAno) {
 									if (lancamento.getCategoriaLancamento().getNome().equalsIgnoreCase(categoria)) {
 										valor += new BigDecimal(object[3].toString()).doubleValue();
@@ -1069,7 +1069,7 @@ public class RelatorioLancamentosBean implements Serializable {
 			}
 		}
 
-		if (categoriasPorAno != null) {
+		if (categoriasPorAno != null && categoriasPorAno.length > 0) {
 			for (String categoria : categoriasPorAno) {
 				
 				System.out.println(categoria);

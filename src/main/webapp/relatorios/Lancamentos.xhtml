@@ -231,7 +231,7 @@
 
 							<p:ajax event="dateSelect"
 								listener="#{relatorioLancamentosBean.createMixedModelPorDia}"
-								process="@this" update="barChart-despesasPorDia" />
+								process="@this painel" update="barChart-despesasPorDia" />
 						</p:datePicker>
 
 
@@ -243,7 +243,7 @@
 
 							<p:ajax event="dateSelect"
 								listener="#{relatorioLancamentosBean.createMixedModelPorDia}"
-								process="@this" update="barChart-despesasPorDia" />
+								process="@this painel" update="barChart-despesasPorDia" />
 						</p:datePicker>
 
 
@@ -294,7 +294,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLancamentosBean.createMixedModelPorSemana}"
-								process="@this" update="barChart-despesasPorSemana" />
+								process="@this painel-ano painel-semana" update="barChart-despesasPorSemana" />
 							<f:selectItems value="#{relatorioLancamentosBean.anos}" var="ano"
 								itemLabel="#{ano}" itemValue="#{ano}"></f:selectItems>
 						</p:selectOneMenu>
@@ -311,7 +311,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLancamentosBean.createMixedModelPorSemana}"
-								process="@this" update="barChart-despesasPorSemana" />
+								process="@this painel-ano painel-semana" update="barChart-despesasPorSemana" />
 							<f:selectItems value="#{relatorioLancamentosBean.semanas}"
 								var="semana" itemLabel="#{semana}" itemValue="#{semana}"></f:selectItems>
 						</p:selectOneMenu>
@@ -322,7 +322,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLancamentosBean.createMixedModelPorSemana}"
-								process="@this" update="barChart-despesasPorSemana" />
+								process="@this painel-ano painel-semana" update="barChart-despesasPorSemana" />
 							<f:selectItems value="#{relatorioLancamentosBean.semanas}"
 								var="semana" itemLabel="#{semana}" itemValue="#{semana}"></f:selectItems>
 						</p:selectOneMenu>
@@ -385,7 +385,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLancamentosBean.createMixedModelPorMes}"
-								process="@this" update="barChart-despesasPorMes" />
+								process="@this painel-ano2 painel-mes" update="barChart-despesasPorMes" />
 							<f:selectItems value="#{relatorioLancamentosBean.anos}" var="ano"
 								itemLabel="#{ano}" itemValue="#{ano}"></f:selectItems>
 						</p:selectOneMenu>
@@ -402,7 +402,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLancamentosBean.createMixedModelPorMes}"
-								process="@this" update="barChart-despesasPorMes" />
+								process="@this painel-ano2 painel-mes" update="barChart-despesasPorMes" />
 							<f:selectItems value="#{relatorioLancamentosBean.meses}"
 								var="mes" itemLabel="#{mes}" itemValue="#{mes}"></f:selectItems>
 						</p:selectOneMenu>
@@ -414,7 +414,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLancamentosBean.createMixedModelPorMes}"
-								process="@this" update="barChart-despesasPorMes" />
+								process="@this painel-ano2 painel-mes" update="barChart-despesasPorMes" />
 							<f:selectItems value="#{relatorioLancamentosBean.meses}"
 								var="mes" itemLabel="#{mes}" itemValue="#{mes}"></f:selectItems>
 						</p:selectOneMenu>
@@ -467,7 +467,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLancamentosBean.createMixedModelPorAno}"
-								process="@this" update="barChart-despesasPorAno" />
+								process="@this painel3" update="barChart-despesasPorAno" />
 							<f:selectItems value="#{relatorioLancamentosBean.anos}" var="ano"
 								itemLabel="#{ano}" itemValue="#{ano}"></f:selectItems>
 						</p:selectOneMenu>
@@ -478,7 +478,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLancamentosBean.createMixedModelPorAno}"
-								process="@this" update="barChart-despesasPorAno" />
+								process="@this painel3" update="barChart-despesasPorAno" />
 							<f:selectItems value="#{relatorioLancamentosBean.anos}" var="ano"
 								itemLabel="#{ano}" itemValue="#{ano}"></f:selectItems>
 						</p:selectOneMenu>
