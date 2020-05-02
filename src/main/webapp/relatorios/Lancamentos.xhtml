@@ -328,20 +328,23 @@
 						</p:selectOneMenu>
 
 
-						<p:outputLabel value="Categoria" for="categoria2" />
-						<p:selectOneMenu id="categoria2" style="width: 100%"
-							value="#{relatorioLancamentosBean.categoriaPorSemana}">
+						<p:outputLabel value="Categoria" for="categoria2" />						
+						<p:selectCheckboxMenu id="categoria2" style="width: 100%"
+							showHeader="true" emptyLabel="" label="" filter="true"
+							filterMatchMode="startsWith"
+							value="#{relatorioLancamentosBean.categoriasPorSemana}">
 
-							<f:selectItem itemLabel="Selecione" itemValue="" />
-
-							<p:ajax event="change"
-								listener="#{relatorioLancamentosBean.changeCategoriaPorSemana}"
-								process="@this" update="barChart-despesasPorSemana" />
 							<f:selectItems
 								value="#{relatorioLancamentosBean.todasCategoriasLancamento}"
 								var="categoria" itemLabel="#{categoria.nome}"
-								itemValue="#{categoria}"></f:selectItems>
-						</p:selectOneMenu>
+								itemValue="#{categoria.nome}"></f:selectItems>
+						</p:selectCheckboxMenu>
+
+						<p:commandButton icon="fa fa-refresh"
+							action="#{relatorioLancamentosBean.changeCategoriaPorSemana}"
+							process="@this painel2" styleClass="btn-pie" title="Atualizar"
+							onstart="start();" oncomplete="stop();"
+							update="barChart-despesasPorSemana" />
 					</p:panelGrid>
 
 					<p:commandButton rendered="false" icon="fa fa-pie-chart"
