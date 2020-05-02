@@ -1,6 +1,7 @@
 package com.webapp.controller;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -13,6 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.lang3.time.DateUtils;
+import org.primefaces.PrimeFaces;
 import org.primefaces.model.charts.ChartData;
 import org.primefaces.model.charts.axes.cartesian.CartesianScales;
 import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearAxes;
@@ -26,9 +28,11 @@ import org.primefaces.model.charts.line.LineChartDataSet;
 
 import com.webapp.model.CategoriaProduto;
 import com.webapp.model.Produto;
+import com.webapp.model.Target;
 import com.webapp.repository.CategoriasProdutos;
 import com.webapp.repository.Contas;
 import com.webapp.repository.Produtos;
+import com.webapp.repository.Targets;
 import com.webapp.repository.Vendas;
 
 @Named
@@ -45,6 +49,9 @@ public class RelatorioLucrosBean implements Serializable {
 
 	@Inject
 	private Contas contas;
+	
+	@Inject
+	private Targets targets;
 
 	private BarChartModel mixedModel;
 
@@ -122,7 +129,7 @@ public class RelatorioLucrosBean implements Serializable {
 	private DonutChartModel donutModel;
 
 	private Boolean lucroPorLote = false;
-	
+
 	private String[] categoriasPorDia;
 
 	private String[] categoriasPorSemana;
@@ -131,9 +138,46 @@ public class RelatorioLucrosBean implements Serializable {
 
 	private String[] categoriasPorAno;
 
+	private String targetMsg;
+
+	private Double target;
+	
+	private double targetDiario;
+	private double targetSemanal;
+	private double targetMensal;
+	private double targetAnual;
+
 	@PostConstruct
 	public void init() {
 		listarTodasCategoriasProdutos();
+		
+		Target target = targets.porPeriodoTipo("DIARIO", "LUCRO");
+		if(target == null) {
+			targetDiario = 0;
+		} else {
+			targetDiario = target.getValor().doubleValue();
+		}
+		
+		target = targets.porPeriodoTipo("SEMANAL", "LUCRO");
+		if(target == null) {
+			targetSemanal = 0;
+		} else {
+			targetSemanal = target.getValor().doubleValue();
+		}
+		
+		target = targets.porPeriodoTipo("MENSAL", "LUCRO");
+		if(target == null) {
+			targetMensal = 0;
+		} else {
+			targetMensal = target.getValor().doubleValue();
+		}
+		
+		target = targets.porPeriodoTipo("ANUAL", "LUCRO");
+		if(target == null) {
+			targetAnual = 0;
+		} else {
+			targetAnual = target.getValor().doubleValue();
+		}
 
 		Calendar calendar = Calendar.getInstance();
 		Calendar calendarTemp = Calendar.getInstance();
@@ -262,7 +306,7 @@ public class RelatorioLucrosBean implements Serializable {
 	public void changeCategoriaPorMes() {
 		produtosPorMes = new ArrayList<Produto>();
 		produto03 = null;
-		
+
 		if (categoriasPorMes != null && categoriasPorMes.length > 0) {
 			produtosPorMes = produtos.porCategoria(categoriasPorMes);
 		} else {
@@ -367,7 +411,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 		LineChartDataSet dataSet2 = new LineChartDataSet();
 		List<Number> values2 = new ArrayList<>();
-		
+
 		LineChartDataSet dataSet3 = new LineChartDataSet();
 		List<Number> values3 = new ArrayList<>();
 
@@ -418,10 +462,10 @@ public class RelatorioLucrosBean implements Serializable {
 						&& (totalCompras + totalDeDespesas) == 0) {
 					values2.add(100.0);
 					System.out.println("Valor Percentual: 100.0");
-					
+
 				} else if (((totalDeVendas + totalDeReceitas) - totalDeDespesas == 0) && totalDeDespesas == 0) {
 					values2.add(0);
-					
+
 				} else {
 					values2.add(
 							(((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
@@ -441,8 +485,8 @@ public class RelatorioLucrosBean implements Serializable {
 			} else {
 				// if (totalDeVendas > 0 || totalCompras > 0) {
 				values.add(totalDeVendas/* - totalDeCompras */);
-				
-				if(totalDeVendas > 0) {
+
+				if (totalDeVendas > 0) {
 					values2.add((totalDeVendas / totalCompras) * 100);
 				} else {
 					values2.add(0);
@@ -451,8 +495,8 @@ public class RelatorioLucrosBean implements Serializable {
 				labels.add(object[0] + "/" + object[1]/* + "/" + object[2] */);
 				// }
 			}
-			
-			values3.add(500);
+
+			values3.add(targetDiario);
 
 			System.out.println(object[3]);
 		}
@@ -468,11 +512,11 @@ public class RelatorioLucrosBean implements Serializable {
 		dataSet2.setYaxisID("right-y-axis");
 		// dataSet2.setFill(false);
 		dataSet2.setBorderColor("rgba(255, 159, 64)");
-			
+
 		dataSet3.setData(values3);
 		dataSet3.setLabel("Target");
 		dataSet3.setBorderColor("rgba(75, 192, 192)");
-			
+
 		data.addChartDataSet(dataSet2);
 		data.addChartDataSet(dataSet);
 		data.addChartDataSet(dataSet3);
@@ -534,8 +578,8 @@ public class RelatorioLucrosBean implements Serializable {
 
 				System.out.println(semana01);
 
-				List<Object[]> resultTemp = vendas.totalLucrosPorSemana(ano01, semana01, semana01, categoriaPorSemana, categoriasPorSemana,
-						produto02, true);
+				List<Object[]> resultTemp = vendas.totalLucrosPorSemana(ano01, semana01, semana01, categoriaPorSemana,
+						categoriasPorSemana, produto02, true);
 
 				if (resultTemp.size() == 0) {
 
@@ -560,7 +604,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 		LineChartDataSet dataSet2 = new LineChartDataSet();
 		List<Number> values2 = new ArrayList<>();
-		
+
 		LineChartDataSet dataSet3 = new LineChartDataSet();
 		List<Number> values3 = new ArrayList<>();
 
@@ -598,10 +642,10 @@ public class RelatorioLucrosBean implements Serializable {
 						&& (totalCompras + totalDeDespesas) == 0) {
 					values2.add(100.0);
 					System.out.println("Valor Percentual: 100.0");
-					
+
 				} else if (((totalDeVendas + totalDeReceitas) - totalDeDespesas == 0) && totalDeDespesas == 0) {
 					values2.add(0);
-					
+
 				} else {
 					values2.add(
 							(((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
@@ -622,13 +666,13 @@ public class RelatorioLucrosBean implements Serializable {
 			} else {
 				// if (totalDeVendas > 0 || totalCompras > 0) {
 				values.add(totalDeVendas/* - totalDeCompras */);
-				
-				if(totalDeVendas > 0) {
+
+				if (totalDeVendas > 0) {
 					values2.add((totalDeVendas / totalCompras) * 100);
 				} else {
 					values2.add(0);
-				}				
-				
+				}
+
 				long semana = Long.parseLong(object[0].toString());
 				String semanaTemp = String.valueOf(semana);
 				if (semana < 10) {
@@ -637,8 +681,8 @@ public class RelatorioLucrosBean implements Serializable {
 				labels.add("W" + semanaTemp);
 				// }
 			}
-			
-			values3.add(500);
+
+			values3.add(targetSemanal);
 		}
 
 		dataSet.setData(values);
@@ -652,7 +696,7 @@ public class RelatorioLucrosBean implements Serializable {
 		dataSet2.setYaxisID("right-y-axis");
 		// dataSet2.setFill(false);
 		dataSet2.setBorderColor("rgba(255, 159, 64");
-		
+
 		dataSet3.setData(values3);
 		dataSet3.setLabel("Target");
 		dataSet3.setBorderColor("rgba(75, 192, 192)");
@@ -774,8 +818,8 @@ public class RelatorioLucrosBean implements Serializable {
 					if (i < 10) {
 						mes01 = "0" + i;
 					}
-					List<Object[]> resultTemp = vendas.totalLucrosPorMes(ano02, mes01, mes01, categoriaPorMes, categoriasPorMes,
-							produto03, true);
+					List<Object[]> resultTemp = vendas.totalLucrosPorMes(ano02, mes01, mes01, categoriaPorMes,
+							categoriasPorMes, produto03, true);
 
 					if (resultTemp.size() == 0) {
 
@@ -806,8 +850,8 @@ public class RelatorioLucrosBean implements Serializable {
 					if (i < 10) {
 						mes01 = "0" + i;
 					}
-					List<Object[]> resultTemp = vendas.totalLucrosPorLote(ano02, mes01, mes01, categoriaPorMes, categoriasPorMes, produto03,
-							true);
+					List<Object[]> resultTemp = vendas.totalLucrosPorLote(ano02, mes01, mes01, categoriaPorMes,
+							categoriasPorMes, produto03, true);
 
 					if (resultTemp.size() == 0) {
 
@@ -834,7 +878,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 		LineChartDataSet dataSet2 = new LineChartDataSet();
 		List<Number> values2 = new ArrayList<>();
-		
+
 		LineChartDataSet dataSet3 = new LineChartDataSet();
 		List<Number> values3 = new ArrayList<>();
 
@@ -873,10 +917,10 @@ public class RelatorioLucrosBean implements Serializable {
 						&& (totalCompras + totalDeDespesas) == 0) {
 					values2.add(100.0);
 					System.out.println("Valor Percentual: 100.0");
-				
+
 				} else if (((totalDeVendas + totalDeReceitas) - totalDeDespesas == 0) && totalDeDespesas == 0) {
 					values2.add(0);
-					
+
 				} else {
 					values2.add(
 							(((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
@@ -895,8 +939,8 @@ public class RelatorioLucrosBean implements Serializable {
 			} else {
 
 				values.add(totalDeVendas/* - totalDeCompras */);
-				
-				if(totalDeVendas > 0) {
+
+				if (totalDeVendas > 0) {
 					values2.add((totalDeVendas / totalCompras) * 100);
 				} else {
 					values2.add(0);
@@ -908,8 +952,8 @@ public class RelatorioLucrosBean implements Serializable {
 					labels.add(nameMes((Integer.parseInt(object[4].toString()))));
 				}
 			}
-			
-			values3.add(500);
+
+			values3.add(targetMensal);
 		}
 
 		dataSet.setData(values);
@@ -923,7 +967,7 @@ public class RelatorioLucrosBean implements Serializable {
 		dataSet2.setYaxisID("right-y-axis");
 		// dataSet2.setFill(false);
 		dataSet2.setBorderColor("rgba(255, 159, 64");
-		
+
 		dataSet3.setData(values3);
 		dataSet3.setLabel("Target");
 		dataSet3.setBorderColor("rgba(75, 192, 192)");
@@ -979,7 +1023,8 @@ public class RelatorioLucrosBean implements Serializable {
 
 				String ano03 = String.valueOf(i);
 
-				List<Object[]> resultTemp = vendas.totalLucrosPorAno(ano03, ano03, categoriaPorAno, categoriasPorAno, produto04, true);
+				List<Object[]> resultTemp = vendas.totalLucrosPorAno(ano03, ano03, categoriaPorAno, categoriasPorAno,
+						produto04, true);
 
 				if (resultTemp.size() == 0) {
 
@@ -1002,7 +1047,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 		LineChartDataSet dataSet2 = new LineChartDataSet();
 		List<Number> values2 = new ArrayList<>();
-		
+
 		LineChartDataSet dataSet3 = new LineChartDataSet();
 		List<Number> values3 = new ArrayList<>();
 
@@ -1036,10 +1081,10 @@ public class RelatorioLucrosBean implements Serializable {
 						&& (totalCompras + totalDeDespesas) == 0) {
 					values2.add(100.0);
 					System.out.println("Valor Percentual: 100.0");
-					
+
 				} else if (((totalDeVendas + totalDeReceitas) - totalDeDespesas == 0) && totalDeDespesas == 0) {
 					values2.add(0);
-					
+
 				} else {
 					values2.add(
 							(((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
@@ -1054,16 +1099,16 @@ public class RelatorioLucrosBean implements Serializable {
 
 				values.add(totalDeVendas/* - totalDeCompras */);
 
-				if(totalDeVendas > 0) {
+				if (totalDeVendas > 0) {
 					values2.add((totalDeVendas / totalCompras) * 100);
 				} else {
 					values2.add(0);
 				}
-				
+
 				labels.add(object[0].toString());
 			}
-			
-			values3.add(500);
+
+			values3.add(targetAnual);
 		}
 
 		dataSet.setData(values);
@@ -1077,7 +1122,7 @@ public class RelatorioLucrosBean implements Serializable {
 		dataSet2.setYaxisID("right-y-axis");
 		// dataSet2.setFill(false);
 		dataSet2.setBorderColor("rgba(255, 159, 64");
-		
+
 		dataSet3.setData(values3);
 		dataSet3.setLabel("Target");
 		dataSet3.setBorderColor("rgba(75, 192, 192)");
@@ -1131,31 +1176,32 @@ public class RelatorioLucrosBean implements Serializable {
 		Calendar calendarStop = Calendar.getInstance();
 		calendarStop.setTime(dateStop);
 
-		List<Object[]> result = vendas.totalLucrosPorData(calendarStart, calendarStop, categoriaPorDia, categoriasPorDia, produto01,
-				false);
+		List<Object[]> result = vendas.totalLucrosPorData(calendarStart, calendarStop, categoriaPorDia,
+				categoriasPorDia, produto01, false);
 
 		createDonutModel(result);
 	}
 
 	public void prepareDonutModelPorSemana() {
 
-		List<Object[]> result = vendas.totalLucrosPorSemana(ano01, semana01, semana02, categoriaPorSemana, categoriasPorSemana, produto02,
-				false);
+		List<Object[]> result = vendas.totalLucrosPorSemana(ano01, semana01, semana02, categoriaPorSemana,
+				categoriasPorSemana, produto02, false);
 
 		createDonutModel(result);
 	}
 
 	public void prepareDonutModelPorMes() {
 
-		List<Object[]> result = vendas.totalLucrosPorMes(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes, categoriasPorMes,
-				produto03, false);
+		List<Object[]> result = vendas.totalLucrosPorMes(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes,
+				categoriasPorMes, produto03, false);
 
 		createDonutModel(result);
 	}
 
 	public void prepareDonutModelPorAno() {
 
-		List<Object[]> result = vendas.totalLucrosPorAno(ano03, ano04, categoriaPorAno, categoriasPorAno, produto04, false);
+		List<Object[]> result = vendas.totalLucrosPorAno(ano03, ano04, categoriaPorAno, categoriasPorAno, produto04,
+				false);
 
 		createDonutModel(result);
 	}
@@ -1440,14 +1486,140 @@ public class RelatorioLucrosBean implements Serializable {
 
 	public void setCategoriasPorAno(String[] categoriasPorAno) {
 		this.categoriasPorAno = categoriasPorAno;
-	}  
-	
+	}
+
 	public Integer categoriasPorMesSize() {
-		
-		if(categoriasPorMes != null) {
+
+		if (categoriasPorMes != null) {
 			return categoriasPorMes.length;
 		}
-		
+
 		return 0;
+	}
+
+	public void definirTargetDiario() {
+		targetMsg = "Target para lucro diário";
+		target = targetDiario;
+	}
+
+	public void definirTargetSemanal() {
+		targetMsg = "Target para lucro semanal";
+		target = targetSemanal;
+	}
+
+	public void definirTargetMensal() {
+		targetMsg = "Target para lucro mensal";
+		target = targetMensal;
+	}
+
+	public void definirTargetAnual() {
+		targetMsg = "Target para lucro anual";
+		target = targetAnual;
+	}
+
+	public String getTargetMsg() {
+		return targetMsg;
+	}
+
+
+	public void confirmarTarget(String option) {
+		System.out.println("OPTION: " + option);
+		System.out.println("TARGET: " + target);
+
+		if (option.equalsIgnoreCase("1")) {
+			
+			Target targetTemp = targets.porPeriodoTipo("DIARIO", "LUCRO");
+			if(targetTemp == null) {
+				targetTemp = new Target();
+				targetTemp.setPeriodo("DIARIO");
+				targetTemp.setTipo("LUCRO");
+				targetTemp.setValor(new BigDecimal(target));
+			} else {
+				targetTemp.setValor(new BigDecimal(target));
+			}
+			
+			targetDiario = target;
+			createMixedModelPorDia();
+			
+			targets.save(targetTemp);
+
+			PrimeFaces.current().executeScript(
+					"PF('downloadLoading').hide();swal({ type: 'success', title: 'Concluído!', text: 'Target diário salvo com sucesso!' });");
+			PrimeFaces.current().ajax().update("form:barChart-lucrosPorDia");
+		}
+		
+		if (option.equalsIgnoreCase("2")) {
+			
+			Target targetTemp = targets.porPeriodoTipo("SEMANAL", "LUCRO");
+			if(targetTemp == null) {
+				targetTemp = new Target();
+				targetTemp.setPeriodo("SEMANAL");
+				targetTemp.setTipo("LUCRO");
+				targetTemp.setValor(new BigDecimal(target));
+			} else {
+				targetTemp.setValor(new BigDecimal(target));
+			}
+			
+			targetDiario = target;
+			createMixedModelPorDia();
+			
+			targets.save(targetTemp);
+			
+			PrimeFaces.current().executeScript(
+					"PF('downloadLoading').hide();swal({ type: 'success', title: 'Concluído!', text: 'Target semanal salvo com sucesso!' });");
+			PrimeFaces.current().ajax().update("form:barChart-lucrosPorSemana");
+		}
+		
+		if (option.equalsIgnoreCase("3")) {
+			
+			Target targetTemp = targets.porPeriodoTipo("MENSAL", "LUCRO");
+			if(targetTemp == null) {
+				targetTemp = new Target();
+				targetTemp.setPeriodo("MENSAL");
+				targetTemp.setTipo("LUCRO");
+				targetTemp.setValor(new BigDecimal(target));
+			} else {
+				targetTemp.setValor(new BigDecimal(target));
+			}
+			
+			targetMensal = target;
+			createMixedModelPorMes();
+			
+			targets.save(targetTemp);
+			
+			PrimeFaces.current().executeScript(
+					"PF('downloadLoading').hide();swal({ type: 'success', title: 'Concluído!', text: 'Target mensal salvo com sucesso!' });");
+			PrimeFaces.current().ajax().update("form:barChart-lucrosPorMes");
+		}
+		
+		if (option.equalsIgnoreCase("4")) {
+			
+			Target targetTemp = targets.porPeriodoTipo("ANUAL", "LUCRO");
+			if(targetTemp == null) {
+				targetTemp = new Target();
+				targetTemp.setPeriodo("ANUAL");
+				targetTemp.setTipo("LUCRO");
+				targetTemp.setValor(new BigDecimal(target));
+			} else {
+				targetTemp.setValor(new BigDecimal(target));
+			}
+			
+			targetAnual = target;
+			createMixedModelPorAno();
+			
+			targets.save(targetTemp);
+			
+			PrimeFaces.current().executeScript(
+					"PF('downloadLoading').hide();swal({ type: 'success', title: 'Concluído!', text: 'Target anual salvo com sucesso!' });");
+			PrimeFaces.current().ajax().update("form:barChart-lucrosPorAno");
+		}
+	}
+
+	public Double getTarget() {
+		return target;
+	}
+
+	public void setTarget(Double target) {
+		this.target = target;
 	}
 }

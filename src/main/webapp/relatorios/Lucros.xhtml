@@ -30,7 +30,8 @@
 							label : function(tooltipItem, data) {
 								var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
 
-								if (tooltipItem.datasetIndex == 1 || tooltipItem.datasetIndex == 2) {
+								if (tooltipItem.datasetIndex == 1
+										|| tooltipItem.datasetIndex == 2) {
 									var valor = "R$ " + numberToReal(amount);
 									if (valor.includes("-.")) {
 										valor = valor.replace("-.", "-");
@@ -92,15 +93,18 @@
 		<style>
 @media ( min-width :220px) {
 	.ui-selectonemenu-panel .ui-selectonemenu-list-item {
-	    /*border: 1px solid #e8e8e8;*/
-	    white-space: normal;
+		/*border: 1px solid #e8e8e8;*/
+		white-space: normal;
+	}
+	#target-dialog .ui-inputtext {
+		text-align: center;
 	}
 	body .ui-selectonemenu-panel {
-	    width: 72%;
+		width: 72%;
 	}
 	.ui-fluid .ui-selectcheckboxmenu {
-   		height: 29px;
-    }
+		height: 29px;
+	}
 	.ui-fluid .ui-calendar, .ui-fluid .ui-calendar input {
 		width: 100%;
 	}
@@ -121,13 +125,11 @@
 		width: 100%;
 		height: 150px;
 		margin-top: 17px;
-		margin-bottom: 20px;
 	}
 	.barChart-02 {
 		width: 100%;
 		height: 150px;
 		margin-top: 17px;
-		margin-bottom: 20px;
 	}
 	.barChart-02 {
 		width: 100%;
@@ -144,7 +146,7 @@
 		width: 32px;
 		float: right;
 		position: relative;
-    	margin-right: 10px;
+		margin-right: 10px;
 	}
 	.btn-pie2.ui-button {
 		margin-top: -4.6em !important;
@@ -158,15 +160,29 @@
 	.btn-pie.ui-button.ui-state-active {
 		background-color: #f2f2f200;
 	}
-	
 	.no-display.ui-panelgrid .ui-panelgrid-cell:nth-child(3) {
 		padding: 0;
+	}
+	.target a {
+		color: #ababab;
+		text-decoration: none;
+		font-weight: bold;
+		font-size: 12px;
+	}
+	.swal2-popup {
+		width: 28em;
+		max-width: 100%;
+		padding: 0 0 0.4em 0;
+		font-size: 0.75rem;
+	}
+	.swal2-popup #swal2-content {
+		font-weight: 400;
 	}
 }
 
 @media ( min-width :460px) {
 	body .ui-selectonemenu-panel {
-	    width: auto;
+		width: auto;
 	}
 	.ui-fluid .ui-calendar, .ui-fluid .ui-calendar input {
 		width: 90px;
@@ -201,8 +217,8 @@
 		float: left;
 		position: relative;
 		margin-top: 4px;
-	    margin-left: -8px;
-	    height: 29px;
+		margin-left: -8px;
+		height: 29px;
 	}
 	.btn-pie2.ui-button {
 		margin-top: 0.3em !important;
@@ -218,6 +234,9 @@
 		</div>
 
 		<h:form id="form">
+
+			<p:growl id="msg" closable="true" life="2000" showSummary="false"
+				showDetail="true" style="text-align: center" />
 
 			<p:panelGrid columns="2" layout="grid"
 				styleClass="panelgrid-noborder disabled disabled"
@@ -239,7 +258,8 @@
 
 							<p:ajax event="dateSelect"
 								listener="#{relatorioLucrosBean.createMixedModelPorDia}"
-								process="@this painel painel-categoria" update="barChart-lucrosPorDia" />
+								process="@this painel painel-categoria"
+								update="barChart-lucrosPorDia" />
 						</p:datePicker>
 
 
@@ -250,7 +270,8 @@
 
 							<p:ajax event="dateSelect"
 								listener="#{relatorioLucrosBean.createMixedModelPorDia}"
-								process="@this painel painel-categoria" update="barChart-lucrosPorDia" />
+								process="@this painel painel-categoria"
+								update="barChart-lucrosPorDia" />
 						</p:datePicker>
 					</p:panelGrid>
 
@@ -259,9 +280,8 @@
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-2">
 
 						<p:outputLabel value="Categoria" />
-						<p:selectCheckboxMenu id="categoria1" label=""
-							showHeader="true" emptyLabel=""
-							filter="true" filterMatchMode="startsWith"
+						<p:selectCheckboxMenu id="categoria1" label="" showHeader="true"
+							emptyLabel="" filter="true" filterMatchMode="startsWith"
 							value="#{relatorioLucrosBean.categoriasPorDia}">
 
 							<f:selectItems
@@ -308,6 +328,19 @@
 					<p:barChart id="barChart-lucrosPorDia" rendered="true"
 						model="#{relatorioLucrosBean.mixedModelPorDia}"
 						styleClass="barChart-01" />
+
+					<p:panelGrid columns="1" layout="grid" style="text-align: center"
+						styleClass="panelgrid-noborder disabled disabled target"
+						columnClasses="ui-grid-col-12">
+
+						<p:commandLink value="Definir target" process="@this"
+							actionListener="#{relatorioLucrosBean.definirTargetDiario}"
+							onstart="start();" update="form-target"
+							oncomplete="stop();PF('target-dialog').show();">
+
+							<p:resetInput target="form-target" />
+						</p:commandLink>
+					</p:panelGrid>
 				</p:panel>
 
 				<p:panel class="ui-lg-6  ui-fluid itens-add"
@@ -326,7 +359,8 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLucrosBean.createMixedModelPorSemana}"
-								process="@this painel-ano panel-semanal panel-semanal-categoria" update="barChart-lucrosPorSemana" />
+								process="@this painel-ano panel-semanal panel-semanal-categoria"
+								update="barChart-lucrosPorSemana" />
 							<f:selectItems value="#{relatorioLucrosBean.anos}" var="ano"
 								itemLabel="#{ano}" itemValue="#{ano}"></f:selectItems>
 						</p:selectOneMenu>
@@ -343,7 +377,8 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLucrosBean.createMixedModelPorSemana}"
-								process="@this painel-ano panel-semanal panel-semanal-categoria" update="barChart-lucrosPorSemana" />
+								process="@this painel-ano panel-semanal panel-semanal-categoria"
+								update="barChart-lucrosPorSemana" />
 							<f:selectItems value="#{relatorioLucrosBean.semanas}"
 								var="semana" itemLabel="#{semana}" itemValue="#{semana}"></f:selectItems>
 						</p:selectOneMenu>
@@ -354,7 +389,8 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLucrosBean.createMixedModelPorSemana}"
-								process="@this painel-ano panel-semanal panel-semanal-categoria" update="barChart-lucrosPorSemana" />
+								process="@this painel-ano panel-semanal panel-semanal-categoria"
+								update="barChart-lucrosPorSemana" />
 							<f:selectItems value="#{relatorioLucrosBean.semanas}"
 								var="semana" itemLabel="#{semana}" itemValue="#{semana}"></f:selectItems>
 						</p:selectOneMenu>
@@ -363,11 +399,11 @@
 					<p:panelGrid id="panel-semanal-categoria" columns="4" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled no-display"
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-2">
-						
+
 						<p:outputLabel value="Categoria" />
-						<p:selectCheckboxMenu id="categoria2" label=""
-							style="width: 100%" showHeader="true"
-							emptyLabel="" filter="true" filterMatchMode="startsWith"
+						<p:selectCheckboxMenu id="categoria2" label="" style="width: 100%"
+							showHeader="true" emptyLabel="" filter="true"
+							filterMatchMode="startsWith"
 							value="#{relatorioLucrosBean.categoriasPorSemana}">
 
 							<f:selectItems
@@ -379,9 +415,8 @@
 						<p:commandButton icon="fa fa-refresh"
 							action="#{relatorioLucrosBean.changeCategoriaPorSemana}"
 							process="@this painel-ano panel-semanal panel-semanal-categoria"
-							styleClass="btn-pie" title="Atualizar"
-							onstart="start();" oncomplete="stop();"
-							update="produto2 barChart-lucrosPorSemana" />
+							styleClass="btn-pie" title="Atualizar" onstart="start();"
+							oncomplete="stop();" update="produto2 barChart-lucrosPorSemana" />
 					</p:panelGrid>
 
 					<p:panelGrid columns="3" layout="grid"
@@ -415,6 +450,19 @@
 					<p:barChart id="barChart-lucrosPorSemana"
 						model="#{relatorioLucrosBean.mixedModelPorSemana}"
 						styleClass="barChart-02" />
+
+					<p:panelGrid columns="1" layout="grid" style="text-align: center"
+						styleClass="panelgrid-noborder disabled disabled target"
+						columnClasses="ui-grid-col-12">
+
+						<p:commandLink value="Definir target" process="@this"
+							actionListener="#{relatorioLucrosBean.definirTargetSemanal}"
+							onstart="start();" update="form-target"
+							oncomplete="stop();PF('target-dialog').show();">
+
+							<p:resetInput target="form-target" />
+						</p:commandLink>
+					</p:panelGrid>
 				</p:panel>
 
 			</p:panelGrid>
@@ -442,7 +490,8 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLucrosBean.createMixedModelPorMes}"
-								process="@this painel-ano2 panel-mensal panel-mensal-categoria" update="barChart-lucrosPorMes" />
+								process="@this painel-ano2 panel-mensal panel-mensal-categoria"
+								update="barChart-lucrosPorMes" />
 							<f:selectItems value="#{relatorioLucrosBean.anos}" var="ano"
 								itemLabel="#{ano}" itemValue="#{ano}"></f:selectItems>
 						</p:selectOneMenu>
@@ -459,7 +508,8 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLucrosBean.createMixedModelPorMes}"
-								process="@this painel-ano2 panel-mensal panel-mensal-categoria" update="barChart-lucrosPorMes" />
+								process="@this painel-ano2 panel-mensal panel-mensal-categoria"
+								update="barChart-lucrosPorMes" />
 							<f:selectItems value="#{relatorioLucrosBean.meses}" var="mes"
 								itemLabel="#{mes}" itemValue="#{mes}"></f:selectItems>
 						</p:selectOneMenu>
@@ -471,7 +521,8 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLucrosBean.createMixedModelPorMes}"
-								process="@this painel-ano2 panel-mensal panel-mensal-categoria" update="barChart-lucrosPorMes" />
+								process="@this painel-ano2 panel-mensal panel-mensal-categoria"
+								update="barChart-lucrosPorMes" />
 							<f:selectItems value="#{relatorioLucrosBean.meses}" var="mes"
 								itemLabel="#{mes}" itemValue="#{mes}"></f:selectItems>
 						</p:selectOneMenu>
@@ -480,11 +531,11 @@
 					<p:panelGrid columns="4" id="panel-mensal-categoria" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled no-display"
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-2">
-						
+
 						<p:outputLabel value="Categoria" />
-						<p:selectCheckboxMenu id="categoria3" label=""
-							style="width: 100%" showHeader="true"
-							emptyLabel="" filter="true" filterMatchMode="startsWith"
+						<p:selectCheckboxMenu id="categoria3" label="" style="width: 100%"
+							showHeader="true" emptyLabel="" filter="true"
+							filterMatchMode="startsWith"
 							value="#{relatorioLucrosBean.categoriasPorMes}">
 
 							<f:selectItems
@@ -496,8 +547,8 @@
 						<p:commandButton icon="fa fa-refresh"
 							action="#{relatorioLucrosBean.changeCategoriaPorMes}"
 							process="@this painel-ano2 panel-mensal panel-mensal-categoria"
-							styleClass="btn-pie" title="Atualizar"
-							onstart="start();" oncomplete="stop();"
+							styleClass="btn-pie" title="Atualizar" onstart="start();"
+							oncomplete="stop();"
 							update="produto3 barChart-lucrosPorMes check-box" />
 
 					</p:panelGrid>
@@ -542,6 +593,19 @@
 
 					<p:barChart model="#{relatorioLucrosBean.mixedModelPorMes}"
 						id="barChart-lucrosPorMes" styleClass="barChart-02" />
+
+					<p:panelGrid columns="1" layout="grid" style="text-align: center"
+						styleClass="panelgrid-noborder disabled disabled target"
+						columnClasses="ui-grid-col-12">
+
+						<p:commandLink value="Definir target" process="@this"
+							actionListener="#{relatorioLucrosBean.definirTargetMensal}"
+							onstart="start();" update="form-target"
+							oncomplete="stop();PF('target-dialog').show();">
+
+							<p:resetInput target="form-target" />
+						</p:commandLink>
+					</p:panelGrid>
 				</p:panel>
 
 				<p:panel class="ui-lg-6  ui-fluid itens-add"
@@ -559,7 +623,8 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLucrosBean.createMixedModelPorAno}"
-								process="@this painel-anual painel-anual-categoria" update="barChart-lucrosPorAno" />
+								process="@this painel-anual painel-anual-categoria"
+								update="barChart-lucrosPorAno" />
 							<f:selectItems value="#{relatorioLucrosBean.anos}" var="ano"
 								itemLabel="#{ano}" itemValue="#{ano}"></f:selectItems>
 						</p:selectOneMenu>
@@ -570,7 +635,8 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLucrosBean.createMixedModelPorAno}"
-								process="@this painel-anual painel-anual-categoria" update="barChart-lucrosPorAno" />
+								process="@this painel-anual painel-anual-categoria"
+								update="barChart-lucrosPorAno" />
 							<f:selectItems value="#{relatorioLucrosBean.anos}" var="ano"
 								itemLabel="#{ano}" itemValue="#{ano}"></f:selectItems>
 						</p:selectOneMenu>
@@ -582,8 +648,8 @@
 
 						<p:outputLabel value="Categoria" />
 						<p:selectCheckboxMenu id="categoria4" style="width: 100%"
-							showHeader="true" emptyLabel="" label=""
-							filter="true" filterMatchMode="startsWith"
+							showHeader="true" emptyLabel="" label="" filter="true"
+							filterMatchMode="startsWith"
 							value="#{relatorioLucrosBean.categoriasPorAno}">
 
 							<f:selectItems
@@ -594,9 +660,9 @@
 
 						<p:commandButton icon="fa fa-refresh"
 							action="#{relatorioLucrosBean.changeCategoriaPorAno}"
-							process="@this painel-anual painel-anual-categoria" styleClass="btn-pie"
-							title="Atualizar" onstart="start();" oncomplete="stop();"
-							update="produto4 barChart-lucrosPorAno" />
+							process="@this painel-anual painel-anual-categoria"
+							styleClass="btn-pie" title="Atualizar" onstart="start();"
+							oncomplete="stop();" update="produto4 barChart-lucrosPorAno" />
 					</p:panelGrid>
 
 					<p:panelGrid columns="2" layout="grid"
@@ -628,6 +694,19 @@
 					<p:barChart id="barChart-lucrosPorAno"
 						model="#{relatorioLucrosBean.mixedModelPorAno}"
 						styleClass="barChart-01" />
+
+					<p:panelGrid columns="1" layout="grid" style="text-align: center"
+						styleClass="panelgrid-noborder disabled disabled target"
+						columnClasses="ui-grid-col-12">
+
+						<p:commandLink value="Definir target" process="@this"
+							actionListener="#{relatorioLucrosBean.definirTargetAnual}"
+							onstart="start();" update="form-target"
+							oncomplete="stop();PF('target-dialog').show();">
+
+							<p:resetInput target="form-target" />
+						</p:commandLink>
+					</p:panelGrid>
 				</p:panel>
 
 			</p:panelGrid>
@@ -659,6 +738,47 @@
 				</div>
 			</h:form>
 		</p:dialog>
+
+
+		<p:dialog header="Definir target" widgetVar="target-dialog"
+			position="top" style="margin-top: 100px" id="target-dialog"
+			resizable="false" modal="true" closeOnEscape="true" responsive="true">
+
+			<h:form id="form-target">
+
+				<div class="ui-fluid" style="margin-top: 10px; text-align: center">
+
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-12">
+
+						<p:outputLabel value="#{relatorioLucrosBean.targetMsg}"
+							for="target" style="font-weight: bold" />
+						<p:inputNumber id="target" decimalPlaces="2" autocomplete="off"
+							symbol="R$ " value="#{relatorioLucrosBean.target}"
+							required="true" requiredMessage="Target deve ser informado." />
+					</p:panelGrid>
+
+					<div
+						style="width: 80%; margin: auto; border-top: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px"></div>
+
+					<p:commandButton
+						action="#{relatorioLucrosBean.confirmarTarget('1')}"
+						icon="fa fa-fw fa-check" process="@this form-target"
+						oncomplete="if (!args.validationFailed) {PF('target-dialog').hide();start();}"
+						style="margin-bottom: 5px;font-weight: bold;float: right;width: 100px;margin-right: 5px;background:#147df0"
+						value="Confirmar" update="form-target form:msg">
+					</p:commandButton>
+
+					<p:commandButton icon="fa fa-fw fa-close"
+						style="margin-bottom: 5px;font-weight: bold;width: 100px;background:#e15e5ef0;"
+						value="Cancelar" onstart="start();"
+						oncomplete="stop();PF('target-dialog').hide();">
+					</p:commandButton>
+				</div>
+			</h:form>
+		</p:dialog>
+
 
 
 		<p:dialog id="downloadLoading" showHeader="false" modal="true"
