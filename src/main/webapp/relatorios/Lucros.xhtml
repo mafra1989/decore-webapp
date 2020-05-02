@@ -30,7 +30,7 @@
 							label : function(tooltipItem, data) {
 								var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
 
-								if (tooltipItem.datasetIndex == 1) {
+								if (tooltipItem.datasetIndex == 1 || tooltipItem.datasetIndex == 2) {
 									var valor = "R$ " + numberToReal(amount);
 									if (valor.includes("-.")) {
 										valor = valor.replace("-.", "-");

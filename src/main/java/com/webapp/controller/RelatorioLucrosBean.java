@@ -367,6 +367,9 @@ public class RelatorioLucrosBean implements Serializable {
 
 		LineChartDataSet dataSet2 = new LineChartDataSet();
 		List<Number> values2 = new ArrayList<>();
+		
+		LineChartDataSet dataSet3 = new LineChartDataSet();
+		List<Number> values3 = new ArrayList<>();
 
 		List<String> labels = new ArrayList<>();
 
@@ -444,6 +447,8 @@ public class RelatorioLucrosBean implements Serializable {
 				} else {
 					values2.add(0);
 				}
+				
+				values3.add(500);
 
 				labels.add(object[0] + "/" + object[1]/* + "/" + object[2] */);
 				// }
@@ -462,10 +467,15 @@ public class RelatorioLucrosBean implements Serializable {
 		dataSet2.setLabel("Percentual");
 		dataSet2.setYaxisID("right-y-axis");
 		// dataSet2.setFill(false);
-		dataSet2.setBorderColor("rgba(255, 159, 64");
-
+		dataSet2.setBorderColor("rgba(255, 159, 64)");
+			
+		dataSet3.setData(values3);
+		dataSet3.setLabel("Target");
+		dataSet3.setBorderColor("rgba(75, 192, 192)");
+			
 		data.addChartDataSet(dataSet2);
 		data.addChartDataSet(dataSet);
+		data.addChartDataSet(dataSet3);
 
 		data.setLabels(labels);
 
@@ -550,6 +560,9 @@ public class RelatorioLucrosBean implements Serializable {
 
 		LineChartDataSet dataSet2 = new LineChartDataSet();
 		List<Number> values2 = new ArrayList<>();
+		
+		LineChartDataSet dataSet3 = new LineChartDataSet();
+		List<Number> values3 = new ArrayList<>();
 
 		for (Object[] object : result) {
 
@@ -616,7 +629,8 @@ public class RelatorioLucrosBean implements Serializable {
 					values2.add(0);
 				}				
 				
-
+				values3.add(500);
+				
 				long semana = Long.parseLong(object[0].toString());
 				String semanaTemp = String.valueOf(semana);
 				if (semana < 10) {
@@ -638,9 +652,14 @@ public class RelatorioLucrosBean implements Serializable {
 		dataSet2.setYaxisID("right-y-axis");
 		// dataSet2.setFill(false);
 		dataSet2.setBorderColor("rgba(255, 159, 64");
+		
+		dataSet3.setData(values3);
+		dataSet3.setLabel("Target");
+		dataSet3.setBorderColor("rgba(75, 192, 192)");
 
 		data.addChartDataSet(dataSet2);
 		data.addChartDataSet(dataSet);
+		data.addChartDataSet(dataSet3);
 
 		data.setLabels(labels);
 
@@ -815,6 +834,9 @@ public class RelatorioLucrosBean implements Serializable {
 
 		LineChartDataSet dataSet2 = new LineChartDataSet();
 		List<Number> values2 = new ArrayList<>();
+		
+		LineChartDataSet dataSet3 = new LineChartDataSet();
+		List<Number> values3 = new ArrayList<>();
 
 		List<String> labels = new ArrayList<>();
 
@@ -879,6 +901,8 @@ public class RelatorioLucrosBean implements Serializable {
 				} else {
 					values2.add(0);
 				}
+				
+				values3.add(500);
 
 				if (lucroPorLote != true) {
 					labels.add(nameMes((Integer.parseInt(object[0].toString()))));
@@ -899,9 +923,14 @@ public class RelatorioLucrosBean implements Serializable {
 		dataSet2.setYaxisID("right-y-axis");
 		// dataSet2.setFill(false);
 		dataSet2.setBorderColor("rgba(255, 159, 64");
+		
+		dataSet3.setData(values3);
+		dataSet3.setLabel("Target");
+		dataSet3.setBorderColor("rgba(75, 192, 192)");
 
 		data.addChartDataSet(dataSet2);
 		data.addChartDataSet(dataSet);
+		data.addChartDataSet(dataSet3);
 
 		data.setLabels(labels);
 
@@ -973,6 +1002,9 @@ public class RelatorioLucrosBean implements Serializable {
 
 		LineChartDataSet dataSet2 = new LineChartDataSet();
 		List<Number> values2 = new ArrayList<>();
+		
+		LineChartDataSet dataSet3 = new LineChartDataSet();
+		List<Number> values3 = new ArrayList<>();
 
 		List<String> labels = new ArrayList<>();
 
@@ -1027,6 +1059,8 @@ public class RelatorioLucrosBean implements Serializable {
 				} else {
 					values2.add(0);
 				}
+				
+				values3.add(500);
 
 				labels.add(object[0].toString());
 			}
@@ -1043,9 +1077,14 @@ public class RelatorioLucrosBean implements Serializable {
 		dataSet2.setYaxisID("right-y-axis");
 		// dataSet2.setFill(false);
 		dataSet2.setBorderColor("rgba(255, 159, 64");
+		
+		dataSet3.setData(values3);
+		dataSet3.setLabel("Target");
+		dataSet3.setBorderColor("rgba(75, 192, 192)");
 
 		data.addChartDataSet(dataSet2);
 		data.addChartDataSet(dataSet);
+		data.addChartDataSet(dataSet3);
 
 		data.setLabels(labels);
 
