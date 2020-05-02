@@ -1565,7 +1565,7 @@ public class RelatorioLucrosBean implements Serializable {
 				targetTemp.setValor(new BigDecimal(target));
 			}
 			
-			targetDiario = target;
+			targetSemanal = target;
 			createMixedModelPorSemana();
 			
 			targets.save(targetTemp);
