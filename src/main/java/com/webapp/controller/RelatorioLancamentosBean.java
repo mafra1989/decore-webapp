@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.lang3.time.DateUtils;
+import org.primefaces.PrimeFaces;
 import org.primefaces.model.charts.ChartData;
 import org.primefaces.model.charts.axes.cartesian.CartesianScales;
 import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearAxes;
@@ -22,14 +23,17 @@ import org.primefaces.model.charts.bar.BarChartModel;
 import org.primefaces.model.charts.bar.BarChartOptions;
 import org.primefaces.model.charts.donut.DonutChartDataSet;
 import org.primefaces.model.charts.donut.DonutChartModel;
+import org.primefaces.model.charts.line.LineChartDataSet;
 
 import com.webapp.model.CategoriaLancamento;
 import com.webapp.model.Lancamento;
 import com.webapp.model.OrigemLancamento;
 import com.webapp.model.Produto;
+import com.webapp.model.Target;
 import com.webapp.repository.CategoriasLancamentos;
 import com.webapp.repository.Contas;
 import com.webapp.repository.Lancamentos;
+import com.webapp.repository.Targets;
 
 @Named
 @ViewScoped
@@ -54,6 +58,9 @@ public class RelatorioLancamentosBean implements Serializable {
 
 	@Inject
 	private Contas contas;
+	
+	@Inject
+	private Targets targets;
 
 	@Inject
 	private CategoriasLancamentos categoriasLancamentos;
@@ -126,10 +133,48 @@ public class RelatorioLancamentosBean implements Serializable {
 	private String[] categoriasPorMes;
 
 	private String[] categoriasPorAno;
+	
+	private String targetMsg;
+
+	private Double target;
+	private String option;
+
+	private double targetDiario;
+	private double targetSemanal;
+	private double targetMensal;
+	private double targetAnual;
 
 	@PostConstruct
 	public void init() {
 		listarTodasCategoriasLancamentos();
+		
+		Target target = targets.porPeriodoTipo("DIARIO", "DESPESA");
+		if (target == null) {
+			targetDiario = 0;
+		} else {
+			targetDiario = target.getValor().doubleValue();
+		}
+
+		target = targets.porPeriodoTipo("SEMANAL", "DESPESA");
+		if (target == null) {
+			targetSemanal = 0;
+		} else {
+			targetSemanal = target.getValor().doubleValue();
+		}
+
+		target = targets.porPeriodoTipo("MENSAL", "DESPESA");
+		if (target == null) {
+			targetMensal = 0;
+		} else {
+			targetMensal = target.getValor().doubleValue();
+		}
+
+		target = targets.porPeriodoTipo("ANUAL", "DESPESA");
+		if (target == null) {
+			targetAnual = 0;
+		} else {
+			targetAnual = target.getValor().doubleValue();
+		}
 
 		Calendar calendar = Calendar.getInstance();
 		Calendar calendarTemp = Calendar.getInstance();
@@ -254,6 +299,9 @@ public class RelatorioLancamentosBean implements Serializable {
 
 		BarChartDataSet dataSet2 = new BarChartDataSet();
 		List<Number> values2 = new ArrayList<>();
+		
+		LineChartDataSet dataSet3 = new LineChartDataSet();
+		List<Number> values3 = new ArrayList<>();
 
 		Calendar calendarStart = Calendar.getInstance();
 		calendarStart.setTime(dateStart);
@@ -397,7 +445,7 @@ public class RelatorioLancamentosBean implements Serializable {
 		for (Object[] object : result) {
 
 			if (!date.equals(object[0] + "/" + object[1])) {
-				date = object[0] + "/" + object[1];
+				date = object[0] + "/" + object[1];		
 				labels.add(object[0] + "/" + object[1]/* + "/" + object[2] */);
 			}
 
@@ -411,6 +459,8 @@ public class RelatorioLancamentosBean implements Serializable {
 				values.add((Number) object[5]);
 				values2.add((Number) object[5]);
 			}
+			
+			values3.add(targetDiario);
 		}
 		
 		if (categoriasPorDia != null && categoriasPorDia.length > 0) {
@@ -427,6 +477,11 @@ public class RelatorioLancamentosBean implements Serializable {
 				}
 			}								
 		}
+		
+		dataSet3.setData(values3);
+		dataSet3.setLabel("Target");
+		dataSet3.setBorderColor("rgba(75, 192, 192)");
+		data.addChartDataSet(dataSet3);
 
 		if (categoriasPorDia == null || categoriasPorDia.length == 0
 				|| debito) {
@@ -481,6 +536,9 @@ public class RelatorioLancamentosBean implements Serializable {
 
 		BarChartDataSet dataSet2 = new BarChartDataSet();
 		List<Number> values2 = new ArrayList<>();
+		
+		LineChartDataSet dataSet3 = new LineChartDataSet();
+		List<Number> values3 = new ArrayList<>();
 
 		List<String> labels = new ArrayList<>();
 		
@@ -616,6 +674,8 @@ public class RelatorioLancamentosBean implements Serializable {
 				values.add((Number) object[4]);
 				values2.add((Number) object[4]);
 			}
+			
+			values3.add(targetSemanal);
 		}
 
 		
@@ -633,6 +693,11 @@ public class RelatorioLancamentosBean implements Serializable {
 				}
 			}								
 		}
+		
+		dataSet3.setData(values3);
+		dataSet3.setLabel("Target");
+		dataSet3.setBorderColor("rgba(75, 192, 192)");
+		data.addChartDataSet(dataSet3);
 
 		if (categoriasPorSemana == null || categoriasPorSemana.length == 0
 				|| debito) {
@@ -751,6 +816,9 @@ public class RelatorioLancamentosBean implements Serializable {
 
 		BarChartDataSet dataSet2 = new BarChartDataSet();
 		List<Number> values2 = new ArrayList<>();
+		
+		LineChartDataSet dataSet3 = new LineChartDataSet();
+		List<Number> values3 = new ArrayList<>();
 
 		List<Object[]> result = new ArrayList<>();
 
@@ -879,6 +947,8 @@ public class RelatorioLancamentosBean implements Serializable {
 				values.add((Number) object[4]);
 				values2.add((Number) object[4]);
 			}
+			
+			values3.add(targetMensal);
 		}
 
 		if (categoriasPorMes != null && categoriasPorMes.length > 0) {
@@ -895,6 +965,11 @@ public class RelatorioLancamentosBean implements Serializable {
 				}
 			}								
 		}
+		
+		dataSet3.setData(values3);
+		dataSet3.setLabel("Target");
+		dataSet3.setBorderColor("rgba(75, 192, 192)");
+		data.addChartDataSet(dataSet3);
 
 		if (categoriasPorMes == null || categoriasPorMes.length == 0
 				|| debito) {
@@ -952,6 +1027,9 @@ public class RelatorioLancamentosBean implements Serializable {
 		
 		BarChartDataSet dataSet2 = new BarChartDataSet();
 		List<Number> values2 = new ArrayList<>();
+		
+		LineChartDataSet dataSet3 = new LineChartDataSet();
+		List<Number> values3 = new ArrayList<>();
 		
 		List<String> labels = new ArrayList<>();
 		
@@ -1067,6 +1145,8 @@ public class RelatorioLancamentosBean implements Serializable {
 				values.add((Number) object[3]);
 				values2.add((Number) object[3]);
 			}
+			
+			values3.add(targetAnual);
 		}
 
 		if (categoriasPorAno != null && categoriasPorAno.length > 0) {
@@ -1083,6 +1163,11 @@ public class RelatorioLancamentosBean implements Serializable {
 				}
 			}								
 		}
+		
+		dataSet3.setData(values3);
+		dataSet3.setLabel("Target");
+		dataSet3.setBorderColor("rgba(75, 192, 192)");
+		data.addChartDataSet(dataSet3);
 
 		if (categoriasPorAno == null || categoriasPorAno.length == 0
 				|| debito) {
@@ -1439,5 +1524,134 @@ public class RelatorioLancamentosBean implements Serializable {
 
 	public void setCategoriasPorAno(String[] categoriasPorAno) {
 		this.categoriasPorAno = categoriasPorAno;
+	}
+	
+	public void definirTargetDiario() {
+		targetMsg = "Target para lançamento diário";
+		target = targetDiario;
+		option = "1";
+	}
+
+	public void definirTargetSemanal() {
+		targetMsg = "Target para lançamento semanal";
+		target = targetSemanal;
+		option = "2";
+	}
+
+	public void definirTargetMensal() {
+		targetMsg = "Target para lançamento mensal";
+		target = targetMensal;
+		option = "3";
+	}
+
+	public void definirTargetAnual() {
+		targetMsg = "Target para lançamento anual";
+		target = targetAnual;
+		option = "4";
+	}
+
+	public String getTargetMsg() {
+		return targetMsg;
+	}
+
+	public void confirmarTarget() {
+		System.out.println("OPTION: " + option);
+		System.out.println("TARGET: " + target);
+
+		if (option.equalsIgnoreCase("1")) {
+
+			Target targetTemp = targets.porPeriodoTipo("DIARIO", "DESPESA");
+			if (targetTemp == null) {
+				targetTemp = new Target();
+				targetTemp.setPeriodo("DIARIO");
+				targetTemp.setTipo("DESPESA");
+				targetTemp.setValor(new BigDecimal(target));
+			} else {
+				targetTemp.setValor(new BigDecimal(target));
+			}
+
+			targetDiario = target;
+			createMixedModelPorDia();
+
+			targets.save(targetTemp);
+
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'success', title: 'Concluído!', text: 'Target diário salvo com sucesso!' });");
+			PrimeFaces.current().ajax().update("form:barChart-vendasPorDia");
+		}
+
+		if (option.equalsIgnoreCase("2")) {
+
+			Target targetTemp = targets.porPeriodoTipo("SEMANAL", "DESPESA");
+			if (targetTemp == null) {
+				targetTemp = new Target();
+				targetTemp.setPeriodo("SEMANAL");
+				targetTemp.setTipo("DESPESA");
+				targetTemp.setValor(new BigDecimal(target));
+			} else {
+				targetTemp.setValor(new BigDecimal(target));
+			}
+
+			targetSemanal = target;
+			createMixedModelPorSemana();
+
+			targets.save(targetTemp);
+
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'success', title: 'Concluído!', text: 'Target semanal salvo com sucesso!' });");
+			PrimeFaces.current().ajax().update("form:barChart-vendasPorSemana");
+		}
+
+		if (option.equalsIgnoreCase("3")) {
+
+			Target targetTemp = targets.porPeriodoTipo("MENSAL", "DESPESA");
+			if (targetTemp == null) {
+				targetTemp = new Target();
+				targetTemp.setPeriodo("MENSAL");
+				targetTemp.setTipo("DESPESA");
+				targetTemp.setValor(new BigDecimal(target));
+			} else {
+				targetTemp.setValor(new BigDecimal(target));
+			}
+
+			targetMensal = target;
+			createMixedModelPorMes();
+
+			targets.save(targetTemp);
+
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'success', title: 'Concluído!', text: 'Target mensal salvo com sucesso!' });");
+			PrimeFaces.current().ajax().update("form:barChart-vendasPorMes");
+		}
+
+		if (option.equalsIgnoreCase("4")) {
+
+			Target targetTemp = targets.porPeriodoTipo("ANUAL", "DESPESA");
+			if (targetTemp == null) {
+				targetTemp = new Target();
+				targetTemp.setPeriodo("ANUAL");
+				targetTemp.setTipo("DESPESA");
+				targetTemp.setValor(new BigDecimal(target));
+			} else {
+				targetTemp.setValor(new BigDecimal(target));
+			}
+
+			targetAnual = target;
+			createMixedModelPorAno();
+
+			targets.save(targetTemp);
+
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'success', title: 'Concluído!', text: 'Target anual salvo com sucesso!' });");
+			PrimeFaces.current().ajax().update("form:barChart-vendasPorAno");
+		}
+	}
+
+	public Double getTarget() {
+		return target;
+	}
+
+	public void setTarget(Double target) {
+		this.target = target;
 	}
 }
