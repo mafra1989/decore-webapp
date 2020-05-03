@@ -322,7 +322,7 @@ public class ImportarDadosBean implements Serializable {
 							venda.setTipoVenda(tiposVendas.porId(3009L));// Producao
 						}
 						
-						
+						venda.setStatus(true);
 						venda.setBairro(bairros.porId(3008L));// Producao
 						//venda.setTipoVenda(tiposVendas.porId(859L)); // Teste
 						//venda.setBairro(bairros.porId(860L)); // Teste
