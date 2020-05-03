@@ -2,7 +2,7 @@ package com.webapp.model;
 
 public enum StatusPedido {
 
-	PENDENTE("Pendente"), ENTREGUE("Entregue"), CANCELADA("Cancelada");
+	PENDENTE("Pendente"), ENTREGUE("Entregue");
 
 	private String descricao;
 
