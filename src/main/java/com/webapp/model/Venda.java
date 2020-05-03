@@ -69,10 +69,10 @@ public class Venda implements Serializable {
 	@ManyToOne
 	@JoinColumn
 	private Bairro bairro;
-	
+	/*
 	@Type(type = "yes_no")
 	@Column(nullable = false)
-	private boolean status;
+	private boolean status;*/
 
 	/* Campos para relat�rio */
 	@Column(nullable = false)
@@ -217,14 +217,14 @@ public class Venda implements Serializable {
 	public void setBairro(Bairro bairro) {
 		this.bairro = bairro;
 	}
-
+/*
 	public boolean isStatus() {
 		return status;
 	}
 
 	public void setStatus(boolean status) {
 		this.status = status;
-	}
+	}*/
 
 	@Override
 	public int hashCode() {
