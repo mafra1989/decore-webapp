@@ -8,7 +8,7 @@
 
 	<f:metadata>
 		<f:viewAction action="#{registroVendasBean.inicializar}" />
-		
+
 		<f:viewParam name="id" value="#{registroVendasBean.venda.id}" />
 		<f:viewAction action="#{registroVendasBean.buscar}"
 			if="#{param.id ne null}" />
@@ -19,22 +19,26 @@
 		<style>
 @media ( min-width :220px) {
 	.ui-datatable tbody td {
-	    height: auto !important;
+		height: auto !important;
 	}
 	.btn-select.ui-button.ui-button-icon-only .ui-icon {
-	    margin-top: -8px;
-	    font-size: 18px;
-	    color: #0f5baf;
+		margin-top: -8px;
+		font-size: 18px;
+		color: #0f5baf;
 	}
 	.produtosTable .btn-select.ui-button {
-	    height: 30px;width: 30px;background-color: transparent;border: 1px solid #0f5baf;border-radius: 50px;
+		height: 30px;
+		width: 30px;
+		background-color: transparent;
+		border: 1px solid #0f5baf;
+		border-radius: 50px;
 	}
 	.produtosTable .btn-select.ui-button:hover {
-	 	background-color: #e0dada;
+		background-color: #e0dada;
 	}
 	.ui-datatable-scrollable-body {
-	    overflow: auto;
-	    max-height: 395px;
+		overflow: auto;
+		max-height: 395px;
 	}
 	.itens-add {
 		margin-top: -15px;
@@ -94,9 +98,29 @@
 	body .ui-datatable .ui-paginator {
 		padding: 2px 0px !important;
 	}
+	.ui-panelgrid .ui-widget a {
+		float: left !important;
+		margin-top: -29px !important;
+		margin-left: 80px;
+	}
+	.panel-entrega .ui-state-disabled {
+		float: left !important;
+		margin-top: -29px !important;
+		margin-left: 80px;
+	}
 }
 
 @media ( min-width :460px) {
+	.panel-entrega .ui-state-disabled {
+		float: left !important;
+		margin-top: 10px !important;
+		margin-left: 0px;
+	}
+	.ui-panelgrid .ui-widget a {
+		float: left !important;
+		margin-top: 10px !important;
+		margin-left: 0px;
+	}
 	.ui-slider .ui-slider-handle {
 		width: 1.7em;
 		height: 1.7em;
@@ -139,16 +163,18 @@
 		height: 28px !important;
 	}
 }
+
 @media ( min-width :641px) {
 	.ui-datatable-scrollable-body {
-	    overflow: auto;
-	    max-height: 365px;
+		overflow: auto;
+		max-height: 365px;
 	}
 }
 </style>
 
 		<div class="page-header">
-			<h1>#{registroVendasBean.venda.id == null ? 'Registrar Venda' : 'Informações da Venda'}</h1>
+			<h1>#{registroVendasBean.venda.id == null ? 'Registrar Venda' :
+				'Informações da Venda'}</h1>
 		</div>
 
 		<p:growl id="msg" closable="true" life="2000" showSummary="false"
@@ -169,10 +195,10 @@
 
 						<h3 style="font-weight: bold">Dados da Venda</h3>
 
-						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+						<p:panelGrid columns="2" layout="grid"
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-4, ui-grid-col-4">
-							
+
 							<p:outputLabel value="Venda N." />
 							<p:inputText value="#{registroVendasBean.venda.numeroVenda}"
 								readonly="true" placeholder="Gerado automaticamente." />
@@ -216,6 +242,25 @@
 									var="vendedor" itemLabel="#{vendedor.nome}"
 									itemValue="#{vendedor}" />
 							</p:selectOneMenu>
+						</p:panelGrid>
+
+						<p:panelGrid columns="3" layout="grid" style="margin-bottom: 5px"
+							id="panel-entrega"
+							styleClass="panelgrid-noborder disabled disabled panel-entrega"
+							columnClasses="ui-grid-col-4, ui-grid-col-2, ui-grid-col-4">
+
+							<p:outputLabel value="Venda para entrega?" for="entrega" />
+							<p:inputSwitch offLabel="Não" onLabel="Sim" id="entrega"
+								value="#{registroVendasBean.entrega}">
+
+								<p:ajax process="@this" update="@parent" />
+							</p:inputSwitch>
+
+							<p:commandLink styleClass="btn-new entrega" id="localizacao" update="entrega-dialog"
+								value="Dados da entrega" onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();PF('entrega-dialog').show()"
+								process="@this" disabled="#{not registroVendasBean.entrega}" />
+
 
 						</p:panelGrid>
 
@@ -239,7 +284,8 @@
 						<p:commandButton styleClass="btn-new" icon="fa fa-fw fa-cubes"
 							title="Buscar produto" onstart="PF('downloadLoading').show();"
 							oncomplete="PF('downloadLoading').hide();PF('item-dialog').show()"
-							process="@this" disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
+							process="@this"
+							disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
 							style="position: relative; float: right; margin-top: -38px; margin-right: 8px; width: 40px" />
 
 						<p:inputText id="id" type="hidden"
@@ -266,7 +312,8 @@
 								readonly="true" />
 						</p:panelGrid>
 
-						<p:panelGrid id="panel-lote" columns="2" layout="grid" style="margin-bottom: 5px"
+						<p:panelGrid id="panel-lote" columns="2" layout="grid"
+							style="margin-bottom: 5px"
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-4, ui-grid-col-6">
 
@@ -316,7 +363,8 @@
 
 							<p:outputLabel />
 							<p:commandButton id="btn-adicionar" value="Adicionar"
-								onstart="PF('downloadLoading').show();" disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
+								onstart="PF('downloadLoading').show();"
+								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
 								onsuccess="PF('downloadLoading').hide();" icon="fa fa-plus"
 								update="msg codigo descricao fornecedor total-venda id valor-unitario quantidade valor-total panel-table lote "
 								action="#{registroVendasBean.adicionarItem}"
@@ -336,22 +384,20 @@
 							columnClasses="ui-grid-col-12">
 
 							<p:panelGrid columns="2" style="margin-top:-15px;"
-							styleClass="panelgrid-noborder disabled disabled">
-								<p:outputLabel value="Total: "/>
+								styleClass="panelgrid-noborder disabled disabled">
+								<p:outputLabel value="Total: " />
 								<p:outputLabel id="total-venda"
 									value="#{registroVendasBean.venda.valorTotal}"
 									style="margin-bottom:5px; font-weight:bold;margin-left:8px;color:#5b5656">
-	
+
 									<f:convertNumber type="currency" />
 								</p:outputLabel>
 							</p:panelGrid>
 
 							<p:dataTable id="itensTable" paginatorAlwaysVisible="false"
-								scrollable="true" 
-								value="#{registroVendasBean.itensVenda}" var="item"
-								emptyMessage="Nenhum item adicionado."  reflow="true"
-								paginator="false"
-								rowKey="#{item.code}"
+								scrollable="true" value="#{registroVendasBean.itensVenda}"
+								var="item" emptyMessage="Nenhum item adicionado." reflow="true"
+								paginator="false" rowKey="#{item.code}"
 								selection="#{registroVendasBean.itemSelecionado}"
 								selectionMode="single">
 
@@ -402,7 +448,7 @@
 								oncomplete="stop();" icon="fa fa-fw fa-trash"
 								disabled="#{registroVendasBean.itensVendaSize eq 0}" />
 
-							<p:menuitem value="Editar Item" id="btn-editar" 
+							<p:menuitem value="Editar Item" id="btn-editar"
 								update="panel-table form:id form:codigo form:total-venda form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote "
 								process="@this panel-table"
 								action="#{registroVendasBean.editarItem}" onstart="start();"
@@ -417,10 +463,12 @@
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-4, ui-grid-col-3">
 
-							<p:commandButton id="btn-calcular" value="#{registroVendasBean.venda.id == null ? 'Finalizar Venda' : 'Salvar Venda'}"
+							<p:commandButton id="btn-calcular"
+								value="#{registroVendasBean.venda.id == null ? 'Finalizar Venda' : 'Salvar Venda'}"
 								onstart="PF('downloadLoading').show();" icon="fa fa-save"
-								onsuccess="PF('downloadLoading').hide();" disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
-								update="msg data-venda tipo-venda vendedor bairro panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote"
+								onsuccess="PF('downloadLoading').hide();"
+								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
+								update="msg data-venda tipo-venda panel-entrega vendedor bairro panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote"
 								action="#{registroVendasBean.salvar}"
 								process="@this panel-table data-venda vendedor bairro tipo-venda"
 								style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;" />
@@ -433,9 +481,10 @@
 
 		</div>
 
-		<p:dialog header="Buscar produto" widgetVar="item-dialog"  position="top" style="margin-top: 100px"
-			id="item-dialog" resizable="false" modal="true" closeOnEscape="true"
-			responsive="true" width="350px">
+		<p:dialog header="Buscar produto" widgetVar="item-dialog"
+			position="top" style="margin-top: 100px" id="item-dialog"
+			resizable="false" modal="true" closeOnEscape="true" responsive="true"
+			width="350px">
 
 			<h:form id="form-dialog">
 
@@ -459,8 +508,8 @@
 						<p:dataTable id="produtosTable" paginatorAlwaysVisible="false"
 							scrollable="true" scrollHeight="337"
 							value="#{registroVendasBean.produtosFiltrados}" var="produto"
-							emptyMessage="Nenhum produto encontrado." 
-							paginator="false" styleClass="produtosTable" 
+							emptyMessage="Nenhum produto encontrado." paginator="false"
+							styleClass="produtosTable"
 							style="margin-top: 10px;border: 1px solid #147df0;">
 
 							<p:column headerText="Código" width="30%">
@@ -485,6 +534,53 @@
 					</p:panel>
 				</div>
 
+			</h:form>
+		</p:dialog>
+
+		<p:dialog id="entrega-dialog" header="Dados da entrega" modal="true"
+			widgetVar="entrega-dialog" draggable="true" width="300"
+			closable="false" resizable="false" position="top"
+			style="margin-top: 100px">
+
+			<h:form id="form-entrega">
+
+				<p:panel class="card card-w-title ui-fluid"
+					style="padding-bottom: 0px;">
+
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-12">
+
+						<p:outputLabel value="Entregar para:" />
+						<p:inputText id="nome"
+							value="#{registroVendasBean.entregaVenda.nome}" placeholder="" />
+
+						<p:outputLabel value="Localização para entrega" />
+						<p:inputTextarea id="localizacao-whatsapp"
+							value="#{registroVendasBean.entregaVenda.localizacao}"
+							placeholder="" />
+
+						<p:outputLabel value="Observações gerais" />
+						<p:inputTextarea id="observacao"
+							value="#{registroVendasBean.entregaVenda.observacao}"
+							placeholder="" />
+					</p:panelGrid>
+				</p:panel>
+
+				<p:panel styleClass="panelgrid-noborder disabled disabled">
+					<p:commandButton icon="fa fa-fw fa-check"
+						style="float: right;font-weight: bold;font-size: 13px;margin-top: -12px;margin-bottom:8px;background-color: #089a29c7;position: relative;margin-right: 10px;"
+						value="Confirmar" process="@this entrega-dialog form-entrega"
+						onstart="start();"
+						oncomplete="stop();PF('entrega-dialog').hide();">
+					</p:commandButton>
+
+					<p:commandButton icon="fa fa-fw fa-close"
+						style="float: right;font-weight: bold;font-size: 13px;margin-top: -12px;margin-bottom:8px;background-color: #ab3705b5;position: relative;margin-right: 3px;"
+						value="Cancelar" onstart="start();"
+						oncomplete="PF('entrega-dialog').hide();stop();">
+					</p:commandButton>
+				</p:panel>
 			</h:form>
 		</p:dialog>
 

@@ -156,7 +156,6 @@ public class Contas implements Serializable {
 		}
 
 		if (origemConta.length > 0) {
-			conditionOrigemConta = "AND c.tipo = :tipoOperacao in (:origemConta) ";
 			q.setParameter("origemConta",
 					Arrays.asList(Arrays.toString(origemConta).replace("[", "").replace("]", "").trim().split(",")));
 		}

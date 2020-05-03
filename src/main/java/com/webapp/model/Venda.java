@@ -16,6 +16,8 @@ import javax.persistence.Transient;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Type;
+
 @Entity
 @Table(name = "vendas_fix_v3")
 public class Venda implements Serializable {
@@ -67,6 +69,10 @@ public class Venda implements Serializable {
 	@ManyToOne
 	@JoinColumn
 	private Bairro bairro;
+	
+	@Type(type = "yes_no")
+	@Column(nullable = false)
+	private boolean status;
 
 	/* Campos para relat�rio */
 	@Column(nullable = false)
@@ -210,6 +216,14 @@ public class Venda implements Serializable {
 
 	public void setBairro(Bairro bairro) {
 		this.bairro = bairro;
+	}
+
+	public boolean isStatus() {
+		return status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
 	}
 
 	@Override

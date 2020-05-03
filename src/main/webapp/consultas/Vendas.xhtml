@@ -16,14 +16,16 @@
 		<style>
 @media ( min-width :220px) {
 	body .ui-button.ui-button-text-icon-left .ui-button-text {
-	    font-weight: bold;
+		font-weight: bold;
 	}
 	.panel-total.ui-panel .ui-panel-content {
-	    border: none;
-	    padding: 0px;
+		border: none;
+		padding: 0px;
 	}
 	.fotoDialog {
-		max-height: 380px !important;width: 240px !important;margin-top: -50px;
+		max-height: 380px !important;
+		width: 240px !important;
+		margin-top: -50px;
 	}
 	.categoria-field {
 		width: 100%;
@@ -113,7 +115,9 @@
 		float: none;
 	}
 	.fotoDialog {
-		max-height: 500px !important;width: 240px !important;margin-top: -50px;
+		max-height: 500px !important;
+		width: 240px !important;
+		margin-top: -50px;
 	}
 }
 </style>
@@ -128,7 +132,7 @@
 
 
 		<h:form id="form" prependId="false">
-		
+
 			<p:remoteCommand name="setarItemID" process="@this vendasTable"
 				update="form" action="#{consultaVendasBean.excluir}"
 				onstart="PF('downloadLoading').show();"
@@ -150,7 +154,7 @@
 
 				<p:panel class="card card-w-title ui-fluid itens-add"
 					style="padding-bottom: 0px !important; margin-top:10px">
-					
+
 					<p:panelGrid columns="2" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-2, ui-grid-col-3">
@@ -160,35 +164,48 @@
 							value="#{consultaVendasBean.numeroVenda}">
 						</p:inputNumber>
 					</p:panelGrid>
-					
+
 					<p:panelGrid columns="4" id="painel" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-1, ui-grid-col-2">
 
 						<p:outputLabel value="Data da venda" for="data01" />
-						<p:datePicker id="data01" value="#{consultaVendasBean.dateStart}" readonlyInput="true"
-							pattern="dd/MM/yyyy" locale="pt" showIcon="true">
+						<p:datePicker id="data01" value="#{consultaVendasBean.dateStart}"
+							readonlyInput="true" pattern="dd/MM/yyyy" locale="pt"
+							showIcon="true">
 						</p:datePicker>
 
 
 						<p:outputLabel value="até" id="data02" />
-						<p:datePicker id="data-02" value="#{consultaVendasBean.dateStop}" readonlyInput="true"
-							styleClass="dateStop" pattern="dd/MM/yyyy" locale="pt"
-							showIcon="true">
+						<p:datePicker id="data-02" value="#{consultaVendasBean.dateStop}"
+							readonlyInput="true" styleClass="dateStop" pattern="dd/MM/yyyy"
+							locale="pt" showIcon="true">
 						</p:datePicker>
 
 
 						<p:outputLabel value="Vendedor" for="vendedor" />
 						<p:selectOneMenu id="vendedor"
-								value="#{consultaVendasBean.usuario}"
-								placeholder="selecione">
+							value="#{consultaVendasBean.usuario}" placeholder="selecione">
 
-								<f:selectItem itemLabel="Selecione" />
+							<f:selectItem itemLabel="Selecione" />
 
-								<f:selectItems value="#{consultaVendasBean.todosUsuarios}"
-									var="vendedor" itemLabel="#{vendedor.nome}"
-									itemValue="#{vendedor}" />
-							</p:selectOneMenu>
+							<f:selectItems value="#{consultaVendasBean.todosUsuarios}"
+								var="vendedor" itemLabel="#{vendedor.nome}"
+								itemValue="#{vendedor}" />
+						</p:selectOneMenu>
+					</p:panelGrid>
+					
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-4">
+
+						<p:outputLabel value="Vendas para entrega" />
+						<p:selectManyCheckbox unselectable="true"
+							value="#{consultaVendasBean.statusPedido}">
+							<f:selectItems value="#{consultaVendasBean.statusPedidos}"
+								var="statusPedido" itemLabel="#{statusPedido.descricao}"
+								itemValue="#{statusPedido}" />
+						</p:selectManyCheckbox>
 					</p:panelGrid>
 
 				</p:panel>
@@ -198,7 +215,7 @@
 					style="padding-bottom: 0px !important;margin-top:-10px">
 
 					<h3 style="font-weight: bold">Resultado da consulta</h3>
-					
+
 					<p:menuButton id="menu-btn" value="Opções"
 						style="width: 80px;float: right;margin-top: -40px;margin-right: 10px"
 						disabled="#{(consultaVendasBean.vendasFiltradasSize eq 0) or consultaVendasBean.vendaSelecionada.id == null}">
@@ -222,35 +239,36 @@
 						<p:dataTable id="vendasTable" paginatorAlwaysVisible="false"
 							scrollable="true" scrollHeight="500"
 							value="#{consultaVendasBean.vendasFiltradas}" var="venda"
-							emptyMessage="Nenhum resultado encontrado." 
-							reflow="true" paginator="false" 
-							rowKey="#{venda.id}"
+							emptyMessage="Nenhum resultado encontrado." reflow="true"
+							paginator="false" rowKey="#{venda.id}"
 							selection="#{consultaVendasBean.vendaSelecionada}"
 							selectionMode="single">
 
-							<p:ajax process="@this" event="rowSelect" update="menu-btn" onstart="PF('downloadLoading').show();"
+							<p:ajax process="@this" event="rowSelect" update="menu-btn"
+								onstart="PF('downloadLoading').show();"
 								oncomplete="PF('downloadLoading').hide();" />
-							<p:ajax process="@this" event="rowUnselect" update="menu-btn" onstart="PF('downloadLoading').show();"
+							<p:ajax process="@this" event="rowUnselect" update="menu-btn"
+								onstart="PF('downloadLoading').show();"
 								oncomplete="PF('downloadLoading').hide();" />
-								
+
 							<p:column headerText="N. Venda" width="10%">
 								<h:outputText value="#{venda.numeroVenda}" />
 							</p:column>
-							
+
 							<p:column headerText="Data da venda" width="10%">
 								<h:outputText value="#{venda.dataVenda}">
 									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt" />
 								</h:outputText>
 							</p:column>
-							
+
 							<p:column headerText="Tipo de venda" width="10%">
 								<h:outputText value="#{venda.tipoVenda.descricao}" />
 							</p:column>
-							
+
 							<p:column headerText="Bairro" width="10%">
 								<h:outputText value="#{venda.bairro.nome}" />
 							</p:column>
-							
+
 							<p:column headerText="Vendedor" width="10%">
 								<h:outputText value="#{venda.usuario.nome}" />
 							</p:column>
@@ -266,18 +284,21 @@
 							</p:column>
 
 						</p:dataTable>
-						
-						<p:panel styleClass="panelgrid-noborder disabled disabled panel-total">
 
-							<p:outputLabel value="Total de Vendas: R$ #{consultaVendasBean.totalVendas}"
+						<p:panel
+							styleClass="panelgrid-noborder disabled disabled panel-total">
+
+							<p:outputLabel
+								value="Total de Vendas: R$ #{consultaVendasBean.totalVendas}"
 								style="float:left;margin-top:10px;margin-bottom:5px;margin-left:-10px;font-size: 13px;font-family: inherit;" />
 
-							<p:outputLabel value="Total de Itens: #{consultaVendasBean.totalItens}"
+							<p:outputLabel
+								value="Total de Itens: #{consultaVendasBean.totalItens}"
 								style="float:right;margin-top:10px;margin-bottom:5px;margin-right:0px;font-size: 13px;font-family: inherit;" />
 
 						</p:panel>
 					</p:panelGrid>
-					
+
 				</p:panel>
 
 			</div>

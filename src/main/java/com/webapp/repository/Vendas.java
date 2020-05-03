@@ -13,6 +13,7 @@ import javax.persistence.Query;
 
 import com.webapp.model.CategoriaProduto;
 import com.webapp.model.Produto;
+import com.webapp.model.StatusPedido;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
 import com.webapp.util.jpa.Transacional;
@@ -44,7 +45,7 @@ public class Vendas implements Serializable {
 	public List<Venda> todas() {
 		return this.manager.createQuery("from Venda order by numeroVenda desc", Venda.class).getResultList();
 	}
-	
+
 	public Venda ultimoNVenda() {
 
 		try {
@@ -55,30 +56,28 @@ public class Vendas implements Serializable {
 		}
 
 	}
-	
+
 	public Venda porNumeroVenda(Long numeroVenda) {
 		try {
-			return this.manager
-				.createQuery("from Venda e where e.numeroVenda = :numeroVenda", Venda.class)
-				.setParameter("numeroVenda", numeroVenda).getSingleResult();
-		} catch(NoResultException e) {
-			
+			return this.manager.createQuery("from Venda e where e.numeroVenda = :numeroVenda", Venda.class)
+					.setParameter("numeroVenda", numeroVenda).getSingleResult();
+		} catch (NoResultException e) {
+
 		}
-		
+
 		return null;
 	}
 
 	public List<Venda> porVendedor(Usuario usuario) {
-		return this.manager
-				.createQuery("from Venda e where e.usuario.nome = :nome order by id", Venda.class)
+		return this.manager.createQuery("from Venda e where e.usuario.nome = :nome order by id", Venda.class)
 				.setParameter("nome", usuario.getNome()).getResultList();
 	}
-	
-	
-	@SuppressWarnings("unchecked")
-	public List<Venda> vendasFiltradas(Long numeroVenda, Date dateStart, Date dateStop, Usuario usuario) {
 
-		String condition = "";
+	@SuppressWarnings("unchecked")
+	public List<Venda> vendasFiltradas(Long numeroVenda, Date dateStart, Date dateStop, StatusPedido[] statusPedido,
+			Usuario usuario) {
+
+		String condition = "", conditionStatusPedido = "";
 		if (usuario != null && usuario.getId() != null) {
 			condition = "AND i.usuario.id = :idUsuario ";
 		}
@@ -88,121 +87,150 @@ public class Vendas implements Serializable {
 			conditionNumeroVenda = "AND i.numeroVenda = :numeroVenda ";
 		}
 
-		String jpql = "SELECT i FROM Venda i "
+		String jpql = "SELECT i FROM Entrega e right outer join e.venda i "
 				+ "WHERE i.dataVenda between :dateStart and :dateStop " + condition + conditionNumeroVenda
-				+ " order by i.numeroVenda desc";
-		Query q = manager.createQuery(jpql).setParameter("dateStart", dateStart)
-				.setParameter("dateStop", dateStop);
+				+ conditionStatusPedido + " order by i.numeroVenda desc";
+		
+		if (statusPedido.length > 0 && statusPedido.length == 1) {
+			if(statusPedido[0] == StatusPedido.PENDENTE) {
+				conditionStatusPedido = "AND e.status in (:statusPedido) ";
+				
+				jpql = "SELECT i FROM Entrega e right outer join e.venda i "
+						+ "WHERE i.dataVenda between :dateStart and :dateStop " + condition + conditionNumeroVenda
+						+ conditionStatusPedido + " order by i.numeroVenda desc";
+				
+			} else if(statusPedido[0] == StatusPedido.ENTREGUE) {
+				conditionStatusPedido = "AND e.status not in (:statusPedido) ";
+				
+				jpql = "SELECT i FROM Entrega e left join e.venda i "
+						+ "WHERE i.dataVenda between :dateStart and :dateStop " + condition + conditionNumeroVenda
+						+ conditionStatusPedido + " order by i.numeroVenda desc";
+				
+			}
+		}
+		
+		Query q = manager.createQuery(jpql).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
 
 		if (usuario != null && usuario.getId() != null) {
 			q.setParameter("idUsuario", usuario.getId());
 		}
-		
+
+		if (statusPedido.length > 0 && statusPedido.length == 1) {
+			if(statusPedido[0] == StatusPedido.PENDENTE) {
+				q.setParameter("statusPedido",
+						Arrays.asList(Arrays.toString(statusPedido).replace("[", "").replace("]", "").trim().split(",")));
+			} else if(statusPedido[0] == StatusPedido.ENTREGUE) {
+				q.setParameter("statusPedido", StatusPedido.PENDENTE.name());
+			}
+		}
+
 		if (numeroVenda != null) {
 			q.setParameter("numeroVenda", numeroVenda);
 		}
 
 		return q.getResultList();
 	}
-	
-	
-	public Number totalVendas() {		
+
+	public Number totalVendas() {
 		String jpql = "SELECT sum(i.valorTotal) FROM Venda i";
 		Query q = manager.createQuery(jpql);
-		
-                Number count = 0;
+
+		Number count = 0;
 		try {
-		    count = (Number) q.getSingleResult();
-			
-		} catch(NoResultException e) {
-			
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
 		}
 
-		if(count == null) {
+		if (count == null) {
 			count = 0;
 		}
-		
+
 		return count;
 	}
-	
-	
-	public Number totalVendasPorDiaDaSemana(Long nomeDia) {		
-		
+
+	public Number totalVendasPorDiaDaSemana(Long nomeDia) {
+
 		String jpql = "SELECT sum(i.valorTotal) FROM Venda i WHERE i.nomeDia = :nomeDia";
 		Query q = manager.createQuery(jpql).setParameter("nomeDia", nomeDia);
-		
+
 		Number count = (Number) q.getSingleResult();
-		
-		if(count == null) {
+
+		if (count == null) {
 			count = 0;
 		}
-		
+
 		return count;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalVendasPorProduto(String categoriaProduto) {		
-		
+	public List<Object[]> totalVendasPorProduto(String categoriaProduto) {
+
 		String jpql = "SELECT p.descricao, SUM(i.total), SUM(i.quantidade), p.codigo FROM ItemVenda i JOIN i.produto p where p.categoriaProduto.nome = :categoriaProduto GROUP BY p.codigo, p.descricao ORDER BY SUM(i.total) DESC";
 		Query q = manager.createQuery(jpql).setParameter("categoriaProduto", categoriaProduto);
 		List<Object[]> result = q.getResultList();
-		
+
 		return result;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalVendasPorCategoria() {		
-		
+	public List<Object[]> totalVendasPorCategoria() {
+
 		String jpql = "SELECT p.categoriaProduto.nome, SUM(i.total), SUM(i.quantidade) FROM ItemVenda i JOIN i.produto p GROUP BY p.categoriaProduto.nome ORDER BY SUM(i.total) DESC";
 		Query q = manager.createQuery(jpql);
 		List<Object[]> result = q.getResultList();
-		
+
 		return result;
 	}
-	
-	
+
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalParaVendasPorCategoria() {		
-		
+	public List<Object[]> totalParaVendasPorCategoria() {
+
 		String jpql = "SELECT i.produto.categoriaProduto.nome, sum(i.quantidadeDisponivel * i.valorUnitario * (1+(i.produto.margemLucro/100))), SUM(i.quantidadeDisponivel) from ItemCompra i where i.quantidadeDisponivel > 0 group by i.produto.categoriaProduto.nome order by sum(i.quantidadeDisponivel * i.valorUnitario * (1+(i.produto.margemLucro/100))) desc";
 		Query q = manager.createQuery(jpql);
 		List<Object[]> result = q.getResultList();
-		
+
 		return result;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalParaVendasPorProduto(String categoriaProduto) {		
-		
+	public List<Object[]> totalParaVendasPorProduto(String categoriaProduto) {
+
 		String jpql = "SELECT i.produto.descricao, sum(i.quantidadeDisponivel * i.valorUnitario * (1+(i.produto.margemLucro/100))), SUM(i.quantidadeDisponivel), i.produto.codigo from ItemCompra i where i.quantidadeDisponivel > 0 AND i.produto.categoriaProduto.nome = :categoriaProduto group by i.produto.codigo, i.produto.descricao order by sum(i.quantidadeDisponivel * i.valorUnitario * (1+(i.produto.margemLucro/100))) desc";
 		Query q = manager.createQuery(jpql).setParameter("categoriaProduto", categoriaProduto);
 		List<Object[]> result = q.getResultList();
-		
+
 		return result;
 	}
-		
-	
+
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalVendasPorData(Calendar calendarStart, Calendar calendarStop, CategoriaProduto categoriaProduto, String[] categorias, Produto produto, Usuario usuario, boolean chartCondition) {		
-		
-		String condition = ""; String select_Condition = ""; String sum_Condition = ""; String groupBy_Condition = ""; String orderBy_Condition = ""; 
-		if(categoriaProduto != null && categoriaProduto.getId() != null) {
+	public List<Object[]> totalVendasPorData(Calendar calendarStart, Calendar calendarStop,
+			CategoriaProduto categoriaProduto, String[] categorias, Produto produto, Usuario usuario,
+			boolean chartCondition) {
+
+		String condition = "";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+		if (categoriaProduto != null && categoriaProduto.getId() != null) {
 			condition = "AND i.produto.categoriaProduto.nome = :categoriaProduto ";
 		}
-		
-		if(categorias != null && categorias.length > 0) {
+
+		if (categorias != null && categorias.length > 0) {
 			condition = "AND i.produto.categoriaProduto.nome in (:categorias) ";
 		}
-		
-		if(produto != null && produto.getId() != null) {
+
+		if (produto != null && produto.getId() != null) {
 			condition += "AND i.produto.id = :id ";
 		}
-		
-		if(usuario != null && usuario.getId() != null) {
+
+		if (usuario != null && usuario.getId() != null) {
 			condition += "AND p.usuario.id = :userID ";
 		}
-		
-		if(chartCondition != false) {
+
+		if (chartCondition != false) {
 			select_Condition = "p.dia, p.mes, p.ano, ";
 			sum_Condition = "sum(i.total)";
 			groupBy_Condition = "p.dia, p.mes, p.ano ";
@@ -213,69 +241,73 @@ public class Vendas implements Serializable {
 			groupBy_Condition = "i.produto.nome ";
 			orderBy_Condition = "sum(i.quantidade) asc";
 		}
-		
+
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.dataVenda BETWEEN :dataInicio AND :dataFim "
-				+ condition
-				+ "group by " + groupBy_Condition + " order by " + orderBy_Condition;
-		Query q = manager.createQuery(jpql)
-				.setParameter("dataInicio", calendarStart.getTime())
-				.setParameter("dataFim", calendarStop.getTime());
-		
-		if(categoriaProduto != null && categoriaProduto.getId() != null) {
+				+ "WHERE p.dataVenda BETWEEN :dataInicio AND :dataFim " + condition + "group by " + groupBy_Condition
+				+ " order by " + orderBy_Condition;
+		Query q = manager.createQuery(jpql).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
+				calendarStop.getTime());
+
+		if (categoriaProduto != null && categoriaProduto.getId() != null) {
 			q.setParameter("categoriaProduto", categoriaProduto.getNome());
 		}
-		
-		if(categorias != null && categorias.length > 0) {
+
+		if (categorias != null && categorias.length > 0) {
 			q.setParameter("categorias", Arrays.asList(categorias));
 		}
-		
-		if(produto != null && produto.getId() != null) {
+
+		if (produto != null && produto.getId() != null) {
 			q.setParameter("id", produto.getId());
 		}
-		
-		if(usuario != null && usuario.getId() != null) {
+
+		if (usuario != null && usuario.getId() != null) {
 			q.setParameter("userID", usuario.getId());
 		}
-		
+
 		List<Object[]> result = q.getResultList();
-		
-		if(chartCondition != false) {
+
+		if (chartCondition != false) {
 			for (Object[] object : result) {
-				if((long)object[0] < 10) {
+				if ((long) object[0] < 10) {
 					object[0] = "0" + object[0];
 				}
-				
-				if((long)object[1] < 10) {
+
+				if ((long) object[1] < 10) {
 					object[1] = "0" + object[1];
 				}
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalVendasPorSemana(String ano, String semana01, String semana02, CategoriaProduto categoriaProduto, String[] categorias, Produto produto, Usuario usuario, boolean chartCondition) {		
-		
-		String condition = ""; String select_Condition = ""; String sum_Condition = ""; String groupBy_Condition = ""; String orderBy_Condition = "";
-		if(categoriaProduto != null && categoriaProduto.getId() != null) {
+	public List<Object[]> totalVendasPorSemana(String ano, String semana01, String semana02,
+			CategoriaProduto categoriaProduto, String[] categorias, Produto produto, Usuario usuario,
+			boolean chartCondition) {
+
+		String condition = "";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+		if (categoriaProduto != null && categoriaProduto.getId() != null) {
 			condition = "AND i.produto.categoriaProduto.nome = :categoriaProduto ";
 		}
-		
-		if(categorias != null && categorias.length > 0) {
+
+		if (categorias != null && categorias.length > 0) {
 			condition = "AND i.produto.categoriaProduto.nome in (:categorias) ";
 		}
-		
-		if(produto != null && produto.getId() != null) {
+
+		if (produto != null && produto.getId() != null) {
 			condition += "AND i.produto.id = :id ";
 		}
-		
-		if(usuario != null && usuario.getId() != null) {
+
+		if (usuario != null && usuario.getId() != null) {
 			condition += "AND p.usuario.id = :userID ";
 		}
-		
-		if(chartCondition != false) {
+
+		if (chartCondition != false) {
 			select_Condition = "p.semana, p.ano, ";
 			sum_Condition = "sum(i.total)";
 			groupBy_Condition = "p.semana, p.ano";
@@ -286,59 +318,61 @@ public class Vendas implements Serializable {
 			groupBy_Condition = "i.produto.nome ";
 			orderBy_Condition = "sum(i.quantidade) asc";
 		}
-		
+
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.semana BETWEEN :semanaInicio AND :semanaFim "
-				+ "AND p.ano = :ano "
-				+ condition
-				+ "group by " + groupBy_Condition + " order by " + orderBy_Condition;
+				+ "WHERE p.semana BETWEEN :semanaInicio AND :semanaFim " + "AND p.ano = :ano " + condition + "group by "
+				+ groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("semanaInicio", Long.parseLong(semana01.replace("W", "")))
 				.setParameter("semanaFim", Long.parseLong(semana02.replace("W", "")))
 				.setParameter("ano", Long.parseLong(ano));
-		
-		if(categoriaProduto != null && categoriaProduto.getId() != null) {
+
+		if (categoriaProduto != null && categoriaProduto.getId() != null) {
 			q.setParameter("categoriaProduto", categoriaProduto.getNome());
 		}
-		
-		if(categorias != null && categorias.length > 0) {
+
+		if (categorias != null && categorias.length > 0) {
 			q.setParameter("categorias", Arrays.asList(categorias));
 		}
-		
-		if(produto != null && produto.getId() != null) {
+
+		if (produto != null && produto.getId() != null) {
 			q.setParameter("id", produto.getId());
 		}
-		
-		if(usuario != null && usuario.getId() != null) {
+
+		if (usuario != null && usuario.getId() != null) {
 			q.setParameter("userID", usuario.getId());
 		}
-		
+
 		List<Object[]> result = q.getResultList();
-		
+
 		return result;
 	}
-	
-	
+
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalVendasPorMes(String ano, String mes01, String mes02, CategoriaProduto categoriaProduto, String[] categorias, Produto produto, Usuario usuario, boolean chartCondition) {		
-		
-		String condition = ""; String select_Condition = ""; String sum_Condition = ""; String groupBy_Condition = ""; String orderBy_Condition = "";
-		if(categoriaProduto != null && categoriaProduto.getId() != null) {
+	public List<Object[]> totalVendasPorMes(String ano, String mes01, String mes02, CategoriaProduto categoriaProduto,
+			String[] categorias, Produto produto, Usuario usuario, boolean chartCondition) {
+
+		String condition = "";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+		if (categoriaProduto != null && categoriaProduto.getId() != null) {
 			condition = "AND i.produto.categoriaProduto.nome = :categoriaProduto ";
 		}
-		
-		if(categorias != null && categorias.length > 0) {
+
+		if (categorias != null && categorias.length > 0) {
 			condition = "AND i.produto.categoriaProduto.nome in (:categorias) ";
 		}
-		
-		if(produto != null && produto.getId() != null) {
+
+		if (produto != null && produto.getId() != null) {
 			condition += "AND i.produto.id = :id ";
 		}
-		
-		if(usuario != null && usuario.getId() != null) {
+
+		if (usuario != null && usuario.getId() != null) {
 			condition += "AND p.usuario.id = :userID ";
 		}
-		
-		if(chartCondition != false) {
+
+		if (chartCondition != false) {
 			select_Condition = "p.mes, p.ano, ";
 			sum_Condition = "sum(i.total)";
 			groupBy_Condition = "p.mes, p.ano";
@@ -349,58 +383,60 @@ public class Vendas implements Serializable {
 			groupBy_Condition = "i.produto.nome ";
 			orderBy_Condition = "sum(i.quantidade) asc";
 		}
-		
+
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.mes BETWEEN :mesInicio AND :mesFim "
-				+ "AND p.ano = :ano "
-				+ condition
-				+ "group by " + groupBy_Condition + " order by " + orderBy_Condition;
+				+ "WHERE p.mes BETWEEN :mesInicio AND :mesFim " + "AND p.ano = :ano " + condition + "group by "
+				+ groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("mesInicio", Long.parseLong(mes01))
-				.setParameter("mesFim", Long.parseLong(mes02))
-				.setParameter("ano", Long.parseLong(ano));
-		
-		if(categoriaProduto != null && categoriaProduto.getId() != null) {
+				.setParameter("mesFim", Long.parseLong(mes02)).setParameter("ano", Long.parseLong(ano));
+
+		if (categoriaProduto != null && categoriaProduto.getId() != null) {
 			q.setParameter("categoriaProduto", categoriaProduto.getNome());
 		}
-		
-		if(categorias != null && categorias.length > 0) {
+
+		if (categorias != null && categorias.length > 0) {
 			q.setParameter("categorias", Arrays.asList(categorias));
 		}
-		
-		if(produto != null && produto.getId() != null) {
+
+		if (produto != null && produto.getId() != null) {
 			q.setParameter("id", produto.getId());
 		}
-		
-		if(usuario != null && usuario.getId() != null) {
+
+		if (usuario != null && usuario.getId() != null) {
 			q.setParameter("userID", usuario.getId());
 		}
-		
+
 		List<Object[]> result = q.getResultList();
-		
+
 		return result;
-	}	
-	
+	}
+
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalVendasPorAno(String ano01, String ano02, CategoriaProduto categoriaProduto, String[] categorias, Produto produto, Usuario usuario, boolean chartCondition) {		
-		
-		String condition = ""; String select_Condition = ""; String sum_Condition = ""; String groupBy_Condition = ""; String orderBy_Condition = "";
-		if(categoriaProduto != null && categoriaProduto.getId() != null) {
+	public List<Object[]> totalVendasPorAno(String ano01, String ano02, CategoriaProduto categoriaProduto,
+			String[] categorias, Produto produto, Usuario usuario, boolean chartCondition) {
+
+		String condition = "";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+		if (categoriaProduto != null && categoriaProduto.getId() != null) {
 			condition = "AND i.produto.categoriaProduto.nome = :categoriaProduto ";
 		}
-		
-		if(categorias != null && categorias.length > 0) {
+
+		if (categorias != null && categorias.length > 0) {
 			condition = "AND i.produto.categoriaProduto.nome in (:categorias) ";
 		}
-		
-		if(produto != null && produto.getId() != null) {
+
+		if (produto != null && produto.getId() != null) {
 			condition += "AND i.produto.id = :id ";
 		}
-		
-		if(usuario != null && usuario.getId() != null) {
+
+		if (usuario != null && usuario.getId() != null) {
 			condition += "AND p.usuario.id = :userID ";
 		}
-		
-		if(chartCondition != false) {
+
+		if (chartCondition != false) {
 			select_Condition = "p.ano, ";
 			sum_Condition = "sum(i.total)";
 			groupBy_Condition = "p.ano";
@@ -411,54 +447,56 @@ public class Vendas implements Serializable {
 			groupBy_Condition = "i.produto.nome ";
 			orderBy_Condition = "sum(i.quantidade) asc";
 		}
-		
+
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.ano BETWEEN :anoInicio AND :anoFim "
-				+ condition
-				+ "group by " + groupBy_Condition + " order by " + orderBy_Condition;
-		Query q = manager.createQuery(jpql).setParameter("anoInicio", Long.parseLong(ano01))
-				.setParameter("anoFim", Long.parseLong(ano02));
-		
-		if(categoriaProduto != null && categoriaProduto.getId() != null) {
+				+ "WHERE p.ano BETWEEN :anoInicio AND :anoFim " + condition + "group by " + groupBy_Condition
+				+ " order by " + orderBy_Condition;
+		Query q = manager.createQuery(jpql).setParameter("anoInicio", Long.parseLong(ano01)).setParameter("anoFim",
+				Long.parseLong(ano02));
+
+		if (categoriaProduto != null && categoriaProduto.getId() != null) {
 			q.setParameter("categoriaProduto", categoriaProduto.getNome());
 		}
-		
-		if(categorias != null && categorias.length > 0) {
+
+		if (categorias != null && categorias.length > 0) {
 			q.setParameter("categorias", Arrays.asList(categorias));
 		}
-		
-		if(produto != null && produto.getId() != null) {
+
+		if (produto != null && produto.getId() != null) {
 			q.setParameter("id", produto.getId());
 		}
-		
-		if(usuario != null && usuario.getId() != null) {
+
+		if (usuario != null && usuario.getId() != null) {
 			q.setParameter("userID", usuario.getId());
 		}
-		
+
 		List<Object[]> result = q.getResultList();
-		
+
 		return result;
 	}
-	
-	
-	
+
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalLucrosPorData(Calendar calendarStart, Calendar calendarStop, CategoriaProduto categoriaProduto, String[] categorias, Produto produto, boolean chartCondition) {		
-		
-		String condition = ""; String select_Condition = ""; String sum_Condition = ""; String groupBy_Condition = ""; String orderBy_Condition = ""; 
-		if(categoriaProduto != null && categoriaProduto.getId() != null) {
+	public List<Object[]> totalLucrosPorData(Calendar calendarStart, Calendar calendarStop,
+			CategoriaProduto categoriaProduto, String[] categorias, Produto produto, boolean chartCondition) {
+
+		String condition = "";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+		if (categoriaProduto != null && categoriaProduto.getId() != null) {
 			condition = "AND i.produto.categoriaProduto.nome = :categoriaProduto ";
 		}
-		
-		if(categorias != null && categorias.length > 0) {
+
+		if (categorias != null && categorias.length > 0) {
 			condition = "AND i.produto.categoriaProduto.nome in (:categorias) ";
 		}
-		
-		if(produto != null && produto.getId() != null) {
+
+		if (produto != null && produto.getId() != null) {
 			condition += "AND i.produto.id = :id ";
 		}
-		
-		if(chartCondition != false) {
+
+		if (chartCondition != false) {
 			select_Condition = "p.dia, p.mes, p.ano, ";
 			sum_Condition = "sum(i.lucro), sum(i.valorCompra)";
 			groupBy_Condition = "p.dia, p.mes, p.ano ";
@@ -470,72 +508,84 @@ public class Vendas implements Serializable {
 			groupBy_Condition = "i.produto.nome ";
 			orderBy_Condition = "sum(i.quantidade) asc";
 		}
-		
+
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
 				+ "WHERE p.dataVenda BETWEEN :dataInicio AND :dataFim "
-				/*+ "WHERE p.ano BETWEEN :anoInicio AND :anoFim "
-				+ "AND p.mes BETWEEN :mesInicio AND :mesFim "
-				+ "AND p.dia BETWEEN :diaInicio AND :diaFim "*/
-				+ condition
-				+ "group by " + groupBy_Condition + " order by " + orderBy_Condition;
-		
-		Query q = manager.createQuery(jpql)
-				.setParameter("dataInicio", calendarStart.getTime())//calendarStart.getTime()
-				.setParameter("dataFim", calendarStop.getTime());//calendarStop.getTime()
-				/*.setParameter("diaInicio", Long.parseLong(String.valueOf(calendarStart.get(Calendar.DAY_OF_MONTH))))
-				.setParameter("diaFim", Long.parseLong(String.valueOf(calendarStop.get(Calendar.DAY_OF_MONTH))))
-				.setParameter("mesInicio", Long.parseLong(String.valueOf(calendarStart.get(Calendar.MONTH) + 1)))
-				.setParameter("mesFim", Long.parseLong(String.valueOf(calendarStop.get(Calendar.MONTH) + 1)))
-				.setParameter("anoInicio", Long.parseLong(String.valueOf(calendarStart.get(Calendar.YEAR))))
-				.setParameter("anoFim", Long.parseLong(String.valueOf(calendarStop.get(Calendar.YEAR))));*/
-		
-		if(categoriaProduto != null && categoriaProduto.getId() != null) {
+				/*
+				 * + "WHERE p.ano BETWEEN :anoInicio AND :anoFim " +
+				 * "AND p.mes BETWEEN :mesInicio AND :mesFim " +
+				 * "AND p.dia BETWEEN :diaInicio AND :diaFim "
+				 */
+				+ condition + "group by " + groupBy_Condition + " order by " + orderBy_Condition;
+
+		Query q = manager.createQuery(jpql).setParameter("dataInicio", calendarStart.getTime())// calendarStart.getTime()
+				.setParameter("dataFim", calendarStop.getTime());// calendarStop.getTime()
+		/*
+		 * .setParameter("diaInicio",
+		 * Long.parseLong(String.valueOf(calendarStart.get(Calendar.DAY_OF_MONTH))))
+		 * .setParameter("diaFim",
+		 * Long.parseLong(String.valueOf(calendarStop.get(Calendar.DAY_OF_MONTH))))
+		 * .setParameter("mesInicio",
+		 * Long.parseLong(String.valueOf(calendarStart.get(Calendar.MONTH) + 1)))
+		 * .setParameter("mesFim",
+		 * Long.parseLong(String.valueOf(calendarStop.get(Calendar.MONTH) + 1)))
+		 * .setParameter("anoInicio",
+		 * Long.parseLong(String.valueOf(calendarStart.get(Calendar.YEAR))))
+		 * .setParameter("anoFim",
+		 * Long.parseLong(String.valueOf(calendarStop.get(Calendar.YEAR))));
+		 */
+
+		if (categoriaProduto != null && categoriaProduto.getId() != null) {
 			q.setParameter("categoriaProduto", categoriaProduto.getNome());
 		}
-		
-		if(categorias != null && categorias.length > 0) {
+
+		if (categorias != null && categorias.length > 0) {
 			q.setParameter("categorias", Arrays.asList(categorias));
 		}
-		
-		if(produto != null && produto.getId() != null) {
+
+		if (produto != null && produto.getId() != null) {
 			q.setParameter("id", produto.getId());
 		}
-		
+
 		List<Object[]> result = q.getResultList();
-		
-		if(chartCondition != false) {
+
+		if (chartCondition != false) {
 			for (Object[] object : result) {
-				if((long)object[0] < 10) {
+				if ((long) object[0] < 10) {
 					object[0] = "0" + object[0];
 				}
-				
-				if((long)object[1] < 10) {
+
+				if ((long) object[1] < 10) {
 					object[1] = "0" + object[1];
 				}
 			}
-		} 
-		
+		}
+
 		return result;
 	}
 
-	
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalLucrosPorSemana(String ano, String semana01, String semana02, CategoriaProduto categoriaProduto, String[] categorias, Produto produto, boolean chartCondition) {		
-		
-		String condition = ""; String select_Condition = ""; String sum_Condition = ""; String groupBy_Condition = ""; String orderBy_Condition = "";
-		if(categorias != null && categorias.length > 0) {
+	public List<Object[]> totalLucrosPorSemana(String ano, String semana01, String semana02,
+			CategoriaProduto categoriaProduto, String[] categorias, Produto produto, boolean chartCondition) {
+
+		String condition = "";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+		if (categorias != null && categorias.length > 0) {
 			condition = "AND i.produto.categoriaProduto.nome in (:categorias) ";
 		}
-		
-		if(categoriaProduto != null && categoriaProduto.getId() != null) {
+
+		if (categoriaProduto != null && categoriaProduto.getId() != null) {
 			condition = "AND i.produto.categoriaProduto.nome = :categoriaProduto ";
 		}
-		
-		if(produto != null && produto.getId() != null) {
+
+		if (produto != null && produto.getId() != null) {
 			condition += "AND i.produto.id = :id ";
 		}
-		
-		if(chartCondition != false) {
+
+		if (chartCondition != false) {
 			select_Condition = "p.semana, p.ano, ";
 			sum_Condition = "sum(i.lucro), sum(i.valorCompra)";
 			groupBy_Condition = "p.semana, p.ano";
@@ -546,50 +596,52 @@ public class Vendas implements Serializable {
 			groupBy_Condition = "i.produto.nome ";
 			orderBy_Condition = "sum(i.quantidade) asc";
 		}
-		
+
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.semana = :semanaInicio "
-				+ "AND p.ano = :ano "
-				+ condition
-				+ "group by " + groupBy_Condition + " order by " + orderBy_Condition;
+				+ "WHERE p.semana = :semanaInicio " + "AND p.ano = :ano " + condition + "group by " + groupBy_Condition
+				+ " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("semanaInicio", Long.parseLong(semana01.replace("W", "")))
 				.setParameter("ano", Long.parseLong(ano));
-		
-		if(categoriaProduto != null && categoriaProduto.getId() != null) {
+
+		if (categoriaProduto != null && categoriaProduto.getId() != null) {
 			q.setParameter("categoriaProduto", categoriaProduto.getNome());
 		}
-		
-		if(categorias != null && categorias.length > 0) {
+
+		if (categorias != null && categorias.length > 0) {
 			q.setParameter("categorias", Arrays.asList(categorias));
 		}
-		
-		if(produto != null && produto.getId() != null) {
+
+		if (produto != null && produto.getId() != null) {
 			q.setParameter("id", produto.getId());
 		}
-		
+
 		List<Object[]> result = q.getResultList();
-		
+
 		return result;
 	}
-	
-	
+
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalLucrosPorMes(String ano, String mes01, String mes02, CategoriaProduto categoriaProduto, String[] categorias, Produto produto, boolean chartCondition) {		
-		
-		String condition = ""; String select_Condition = ""; String sum_Condition = ""; String groupBy_Condition = ""; String orderBy_Condition = "";
-		if(categorias != null && categorias.length > 0) {
+	public List<Object[]> totalLucrosPorMes(String ano, String mes01, String mes02, CategoriaProduto categoriaProduto,
+			String[] categorias, Produto produto, boolean chartCondition) {
+
+		String condition = "";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+		if (categorias != null && categorias.length > 0) {
 			condition = "AND i.produto.categoriaProduto.nome in (:categorias) ";
 		}
-		
-		if(categoriaProduto != null && categoriaProduto.getId() != null) {
+
+		if (categoriaProduto != null && categoriaProduto.getId() != null) {
 			condition = "AND i.produto.categoriaProduto.nome = :categoriaProduto ";
 		}
-		
-		if(produto != null && produto.getId() != null) {
+
+		if (produto != null && produto.getId() != null) {
 			condition += "AND i.produto.id = :id ";
 		}
-		
-		if(chartCondition != false) {
+
+		if (chartCondition != false) {
 			select_Condition = "p.mes, p.ano, ";
 			sum_Condition = "sum(i.lucro), sum(i.valorCompra)";
 			groupBy_Condition = "p.mes, p.ano";
@@ -600,52 +652,55 @@ public class Vendas implements Serializable {
 			groupBy_Condition = "i.produto.nome ";
 			orderBy_Condition = "sum(i.quantidade) asc";
 		}
-		
+
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.mes = :mesInicio "
-				+ "AND p.ano = :ano "
-				+ condition
-				+ "group by " + groupBy_Condition + " order by " + orderBy_Condition;
-		Query q = manager.createQuery(jpql).setParameter("mesInicio", Long.parseLong(mes01))
-				.setParameter("ano", Long.parseLong(ano));
-		
-		if(categorias != null && categorias.length > 0) {
+				+ "WHERE p.mes = :mesInicio " + "AND p.ano = :ano " + condition + "group by " + groupBy_Condition
+				+ " order by " + orderBy_Condition;
+		Query q = manager.createQuery(jpql).setParameter("mesInicio", Long.parseLong(mes01)).setParameter("ano",
+				Long.parseLong(ano));
+
+		if (categorias != null && categorias.length > 0) {
 			q.setParameter("categorias", Arrays.asList(categorias));
 		}
-		
-		if(categoriaProduto != null && categoriaProduto.getId() != null) {
+
+		if (categoriaProduto != null && categoriaProduto.getId() != null) {
 			q.setParameter("categoriaProduto", categoriaProduto.getNome());
 		}
-		
-		if(produto != null && produto.getId() != null) {
+
+		if (produto != null && produto.getId() != null) {
 			q.setParameter("id", produto.getId());
 		}
-		
+
 		List<Object[]> result = q.getResultList();
-		
+
 		return result;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalLucrosPorLote(String ano, String mes01, String mes02, CategoriaProduto categoriaProduto, String[] categorias, Produto produto, boolean chartCondition) {		
-		
-		String condition = ""; String select_Condition = ""; String sum_Condition = ""; String groupBy_Condition = ""; String orderBy_Condition = "";
-		if(categoriaProduto != null && categoriaProduto.getId() != null) {
+	public List<Object[]> totalLucrosPorLote(String ano, String mes01, String mes02, CategoriaProduto categoriaProduto,
+			String[] categorias, Produto produto, boolean chartCondition) {
+
+		String condition = "";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+		if (categoriaProduto != null && categoriaProduto.getId() != null) {
 			condition = "AND i.produto.categoriaProduto.nome = :categoriaProduto ";
 		}
-		
-		if(categorias != null && categorias.length > 0) {
+
+		if (categorias != null && categorias.length > 0) {
 			condition = "AND i.produto.categoriaProduto.nome in (:categorias) ";
 		}
-		
-		if(produto != null && produto.getId() != null) {
+
+		if (produto != null && produto.getId() != null) {
 			condition += "AND i.produto.id = :id ";
 		}
-		
-		if(chartCondition != false) {
-			select_Condition = "i.compra.mes, p.ano, ";//p.mes
+
+		if (chartCondition != false) {
+			select_Condition = "i.compra.mes, p.ano, ";// p.mes
 			sum_Condition = "sum(i.lucro), sum(i.valorCompra), i.compra.mes";
-			groupBy_Condition = "i.compra.mes, p.ano "; //i.produto.categoriaProduto.nome
+			groupBy_Condition = "i.compra.mes, p.ano "; // i.produto.categoriaProduto.nome
 			orderBy_Condition = "i.compra.mes asc";
 		} else {
 			select_Condition = "i.produto.nome, ";
@@ -653,52 +708,52 @@ public class Vendas implements Serializable {
 			groupBy_Condition = "i.produto.nome ";
 			orderBy_Condition = "sum(i.quantidade) asc";
 		}
-		
+
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE i.compra.mes BETWEEN :mesInicio AND :mesFim "
-				+ "AND i.compra.ano = :ano "
-				+ condition
+				+ "WHERE i.compra.mes BETWEEN :mesInicio AND :mesFim " + "AND i.compra.ano = :ano " + condition
 				+ "group by " + groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("mesInicio", Long.parseLong(mes01))
-				.setParameter("mesFim", Long.parseLong(mes02))
-				.setParameter("ano", Long.parseLong(ano));
-		
-		if(categoriaProduto != null && categoriaProduto.getId() != null) {
+				.setParameter("mesFim", Long.parseLong(mes02)).setParameter("ano", Long.parseLong(ano));
+
+		if (categoriaProduto != null && categoriaProduto.getId() != null) {
 			q.setParameter("categoriaProduto", categoriaProduto.getNome());
 		}
-		
-		if(categorias != null && categorias.length > 0) {
+
+		if (categorias != null && categorias.length > 0) {
 			q.setParameter("categorias", Arrays.asList(categorias));
 		}
-		
-		if(produto != null && produto.getId() != null) {
+
+		if (produto != null && produto.getId() != null) {
 			q.setParameter("id", produto.getId());
 		}
-		
+
 		List<Object[]> result = q.getResultList();
-		
+
 		return result;
 	}
-	
-	
+
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalLucrosPorAno(String ano01, String ano02, CategoriaProduto categoriaProduto, String[] categorias, Produto produto, boolean chartCondition) {		
-		
-		String condition = ""; String select_Condition = ""; String sum_Condition = ""; String groupBy_Condition = ""; String orderBy_Condition = "";
-		if(categoriaProduto != null && categoriaProduto.getId() != null) {
+	public List<Object[]> totalLucrosPorAno(String ano01, String ano02, CategoriaProduto categoriaProduto,
+			String[] categorias, Produto produto, boolean chartCondition) {
+
+		String condition = "";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+		if (categoriaProduto != null && categoriaProduto.getId() != null) {
 			condition = "AND i.produto.categoriaProduto.nome = :categoriaProduto ";
 		}
-		
-		if(categorias != null && categorias.length > 0) {
+
+		if (categorias != null && categorias.length > 0) {
 			condition = "AND i.produto.categoriaProduto.nome in (:categorias) ";
 		}
-		
-		
-		if(produto != null && produto.getId() != null) {
+
+		if (produto != null && produto.getId() != null) {
 			condition += "AND i.produto.id = :id ";
 		}
-		
-		if(chartCondition != false) {
+
+		if (chartCondition != false) {
 			select_Condition = "p.ano, ";
 			sum_Condition = "sum(i.lucro), sum(i.valorCompra)";
 			groupBy_Condition = "p.ano";
@@ -709,28 +764,27 @@ public class Vendas implements Serializable {
 			groupBy_Condition = "i.produto.nome ";
 			orderBy_Condition = "sum(i.quantidade) asc";
 		}
-		
+
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.ano = :anoInicio "
-				+ condition
-				+ "group by " + groupBy_Condition + " order by " + orderBy_Condition;
+				+ "WHERE p.ano = :anoInicio " + condition + "group by " + groupBy_Condition + " order by "
+				+ orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("anoInicio", Long.parseLong(ano01));
-		
-		if(categoriaProduto != null && categoriaProduto.getId() != null) {
+
+		if (categoriaProduto != null && categoriaProduto.getId() != null) {
 			q.setParameter("categoriaProduto", categoriaProduto.getNome());
 		}
-		
-		if(categorias != null && categorias.length > 0) {
+
+		if (categorias != null && categorias.length > 0) {
 			q.setParameter("categorias", Arrays.asList(categorias));
 		}
-		
-		if(produto != null && produto.getId() != null) {
+
+		if (produto != null && produto.getId() != null) {
 			q.setParameter("id", produto.getId());
 		}
-		
+
 		List<Object[]> result = q.getResultList();
-		
+
 		return result;
 	}
-	
+
 }

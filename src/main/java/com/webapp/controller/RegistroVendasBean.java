@@ -20,6 +20,7 @@ import javax.validation.constraints.NotNull;
 import org.primefaces.PrimeFaces;
 
 import com.webapp.model.Bairro;
+import com.webapp.model.Entrega;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.Produto;
@@ -27,6 +28,7 @@ import com.webapp.model.TipoVenda;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
 import com.webapp.repository.Bairros;
+import com.webapp.repository.Entregas;
 import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
 import com.webapp.repository.Produtos;
@@ -62,6 +64,9 @@ public class RegistroVendasBean implements Serializable {
 
 	@Inject
 	private ItensVendas itensVendas;
+	
+	@Inject
+	private Entregas entregas;
 
 	@Inject
 	private ItensCompras itensCompras;
@@ -96,7 +101,12 @@ public class RegistroVendasBean implements Serializable {
 	private static final DecimalFormatSymbols REAL = new DecimalFormatSymbols(BRAZIL);
 
 	private NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
+	
+	private boolean entrega;
 
+	@Inject
+	private Entrega entregaVenda;
+	
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
 			todosUsuarios = usuarios.todos();
@@ -237,8 +247,16 @@ public class RegistroVendasBean implements Serializable {
 			venda.setLucro(BigDecimal.valueOf(lucro));
 			venda.setPercentualLucro(BigDecimal.valueOf(percentualLucro / itensVenda.size()));
 			venda = vendas.save(venda);
+						
 
 			if (!edit) {
+				
+				if(entrega) {
+					entregaVenda.setStatus("PENDENTE");
+					entregaVenda.setVenda(venda);
+					entregaVenda = entregas.save(entregaVenda);
+				}
+				
 				PrimeFaces.current().executeScript(
 						"swal({ type: 'success', title: 'Concluído!', text: 'Venda N." + venda.getNumeroVenda() + " registrada com sucesso!' });");
 
@@ -249,8 +267,16 @@ public class RegistroVendasBean implements Serializable {
 				
 				itensCompra = new ArrayList<>();
 				itemCompra = new ItemCompra();
+				
+				entregaVenda = new Entrega();
+				entrega = false;
 
 			} else {
+				
+				if(entrega) {
+					entregaVenda = entregas.save(entregaVenda);
+				}
+				
 				PrimeFaces.current().executeScript(
 						"swal({ type: 'success', title: 'Concluído!', text: 'Venda N." + venda.getNumeroVenda() + " atualizada com sucesso!' });");
 			}
@@ -636,5 +662,21 @@ public class RegistroVendasBean implements Serializable {
 
 	public List<TipoVenda> getTodosTiposVendas() {
 		return todosTiposVendas;
+	}
+
+	public boolean isEntrega() {
+		return entrega;
+	}
+
+	public void setEntrega(boolean entrega) {
+		this.entrega = entrega;
+	}
+
+	public Entrega getEntregaVenda() {
+		return entregaVenda;
+	}
+
+	public void setEntregaVenda(Entrega entregaVenda) {
+		this.entregaVenda = entregaVenda;
 	}
 }

@@ -17,6 +17,7 @@ import org.primefaces.PrimeFaces;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.Produto;
+import com.webapp.model.StatusPedido;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
 import com.webapp.repository.ItensCompras;
@@ -67,6 +68,8 @@ public class ConsultaVendasBean implements Serializable {
 	private String totalVendas = "0,00";
 
 	private Integer totalItens = 0;
+	
+	private StatusPedido[] statusPedido;
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -81,7 +84,7 @@ public class ConsultaVendasBean implements Serializable {
 		calendarioTemp.set(Calendar.MINUTE, 59);
 		calendarioTemp.set(Calendar.SECOND, 59);
 
-		vendasFiltradas = vendas.vendasFiltradas(numeroVenda, dateStart, calendarioTemp.getTime(), usuario);
+		vendasFiltradas = vendas.vendasFiltradas(numeroVenda, dateStart, calendarioTemp.getTime(), statusPedido, usuario);
 
 		double totalVendasTemp = 0;
 		totalItens = 0;
@@ -232,6 +235,18 @@ public class ConsultaVendasBean implements Serializable {
 
 	public void setNumeroVenda(Long numeroVenda) {
 		this.numeroVenda = numeroVenda;
+	}
+
+	public StatusPedido[] getStatusPedidos() {
+		return StatusPedido.values();
+	}
+
+	public StatusPedido[] getStatusPedido() {
+		return statusPedido;
+	}
+
+	public void setStatusPedido(StatusPedido[] statusPedido) {
+		this.statusPedido = statusPedido;
 	}
 
 }
