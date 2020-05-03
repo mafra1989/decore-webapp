@@ -112,6 +112,8 @@ public class RegistroLancamentosBean implements Serializable {
 	private Double valorEntrada;
 	
 	private boolean renderFavorecido;
+	
+	private String option;
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -125,6 +127,12 @@ public class RegistroLancamentosBean implements Serializable {
 			receita.setDataLancamento(calendar.getTime());
 			
 			todosUsuarios = usuarios.todos();
+			
+			if(option.equalsIgnoreCase("despesa")) {
+				activeIndex = 0;
+			} else if(option.equalsIgnoreCase("receita")) {
+				activeIndex = 1;
+			}
 		}
 	}
 
@@ -741,5 +749,13 @@ public class RegistroLancamentosBean implements Serializable {
 
 	public void setRenderFavorecido(boolean renderFavorecido) {
 		this.renderFavorecido = renderFavorecido;
+	}
+
+	public String getOption() {
+		return option;
+	}
+
+	public void setOption(String option) {
+		this.option = option;
 	}
 }

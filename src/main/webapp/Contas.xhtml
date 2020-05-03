@@ -15,9 +15,20 @@
 
 		<style>
 @media ( min-width :220px) {
+	#pagamento-dialog .ui-panel .ui-panel-content {
+		border: none;
+		padding: 0px;
+	}
+	body .ui-datepicker {
+		width: auto;
+		text-align: center;
+	}
+	.ui-datepicker a {
+		font-weight: bold;
+	}
 	body .ui-state-disabled {
-	    opacity: .7;
-    }
+		opacity: .7;
+	}
 	.pagar {
 		margin-top: -6px;
 	}
@@ -79,6 +90,16 @@
 	}
 	.swal2-popup #swal2-content {
 		font-weight: 400;
+	}
+	#contasPagas .ui-state-active, .pagar .ui-state-active, #contasPagas .ui-state-highlight,
+		.pagar .ui-state-highlight {
+		background-color: #46bb68;
+	}
+	#contasTable .ui-inputswitch .ui-inputswitch-off {
+		background-color: #f15b5b;
+	}
+	.pagar.ui-state-disabled {
+		opacity: 1;
 	}
 }
 
@@ -142,6 +163,11 @@
 
 		<h:form id="form" prependId="false">
 
+			<p:remoteCommand name="setarItemID" process="@this contasTable"
+				update="form" action="#{consultaContasBean.estornar}"
+				onstart="PF('downloadLoading').show();"
+				oncomplete="PF('downloadLoading').hide();" />
+
 			<p:toolbar id="toolbar">
 				<f:facet name="left">
 					<p:commandButton icon="fa fa-fw fa-search" value="Pesquisar"
@@ -179,6 +205,12 @@
 								var="tipoOperacao" itemLabel="#{tipoOperacao.descricao}"
 								itemValue="#{tipoOperacao}" />
 						</p:selectOneMenu>
+
+						<p:outputLabel value="Mês" for="mes" />
+						<p:datePicker id="mes" view="month" locale="pt"
+							readonlyInput="true" value="#{consultaContasBean.mes}"
+							pattern="MM/yyyy" yearNavigator="false" yearRange="2018:2030" />
+
 					</p:panelGrid>
 
 					<p:panelGrid columns="4" id="painel" layout="grid"
@@ -217,11 +249,29 @@
 
 				</p:panel>
 
+
 				<p:panel class="card card-w-title ui-fluid itens-add"
 					id="panel-table"
 					style="padding-bottom: 0px !important;margin-top:-10px">
 
 					<h3 style="font-weight: bold">Resultado da consulta</h3>
+
+					<p:menuButton id="menu-btn" value="Opções"
+						style="width: 80px;float: right;margin-top: -40px;margin-right: 10px"
+						disabled="#{(consultaContasBean.contasFiltradasSize eq 0) or consultaContasBean.contaSelecionada.id == null}">
+
+						<p:menuitem value="Pagar" icon="fa fa-fw fa-money"
+							onstart="start();"
+							oncomplete="PF('pagamento-dialog').show();stop();"
+							update="pagamento-dialog"
+							rendered="#{not consultaContasBean.contaSelecionada.status}">
+						</p:menuitem>
+						<p:separator />
+						<p:menuitem icon="fa fa-fw fa-undo" value="Estornar"
+							process="@this"
+							rendered="#{consultaContasBean.contaSelecionada.status}"
+							onclick="estornarConta(#{consultaContasBean.contaSelecionada.id});" />
+					</p:menuButton>
 
 					<p:panelGrid columns="1" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
@@ -231,7 +281,16 @@
 							scrollable="true" scrollHeight="505"
 							value="#{consultaContasBean.contasFiltradas}" var="conta"
 							emptyMessage="Nenhum resultado encontrado." reflow="true"
-							paginator="false">
+							paginator="false" rowKey="#{conta.id}"
+							selection="#{consultaContasBean.contaSelecionada}"
+							selectionMode="single">
+
+							<p:ajax process="@this" event="rowSelect"
+								onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();" update="menu-btn" />
+							<p:ajax process="@this" event="rowUnselect"
+								onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();" update="menu-btn" />
 
 							<p:column headerText="Código" width="20%">
 								<h:outputText value="#{conta.codigoOperacao}" />
@@ -243,9 +302,10 @@
 									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt" />
 								</h:outputText>
 							</p:column>
-							
+
 							<p:column headerText="Tipo" width="20%">
-								<h:outputText value="#{conta.tipo == 'CREDITO' ? 'Crédito' : (conta.tipo == 'DEBITO' ? 'Débito' : '-')}" />
+								<h:outputText
+									value="#{conta.tipo == 'CREDITO' ? 'Crédito' : (conta.tipo == 'DEBITO' ? 'Débito' : '-')}" />
 							</p:column>
 
 							<p:column headerText="Parcela" width="20%">
@@ -264,21 +324,17 @@
 									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt" />
 								</h:outputText>
 							</p:column>
-							
+
 							<p:column headerText="Pagamento" width="20%">
-								<h:outputText value="#{conta.pagamento == null ? '-' : conta.pagamento}">
-									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt"  />
+								<h:outputText
+									value="#{conta.pagamento == null ? '-' : conta.pagamento}">
+									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt" />
 								</h:outputText>
 							</p:column>
 
 							<p:column headerText="PAGO" width="20%">
 								<p:inputSwitch offLabel="Não" onLabel="Sim" styleClass="pagar"
-									value="#{conta.status}"
-									disabled="#{not seguranca.acessoAdministrador()}">
-
-									<p:ajax process="@this" update="contasTable"
-										listener="#{consultaContasBean.pagar(conta)}"
-										onstart="start();" oncomplete="stop();" />
+									value="#{conta.status}" disabled="true">
 								</p:inputSwitch>
 							</p:column>
 
@@ -300,6 +356,34 @@
 
 		</h:form>
 
+
+		<p:dialog id="pagamento-dialog" showHeader="false" modal="true"
+			widgetVar="pagamento-dialog" draggable="false" width="300"
+			closable="false" resizable="false" position="top"
+			style="margin-top: 100px">
+
+			<h:form id="form-pagamento">
+				<p:calendar id="inline" mode="inline"
+					value="#{consultaContasBean.contaSelecionada.vencimento}"
+					locale="pt" pattern="dd/MM/yyyy" />
+
+				<p:panel styleClass="panelgrid-noborder disabled disabled">
+					<p:commandButton icon="fa fa-fw fa-check"
+						style="float: right;font-weight: bold;font-size: 13px;background-color: #089a29c7;position: relative;margin-top: 8px;margin-right: 0px;"
+						value="Confirmar"
+						process="@this pagamento-dialog inline form-pagamento"
+						action="#{consultaContasBean.pagar}" onstart="start();"
+						update="form" oncomplete="stop();PF('pagamento-dialog').hide();">
+					</p:commandButton>
+
+					<p:commandButton icon="fa fa-fw fa-close"
+						style="float: right;font-weight: bold;margin-top: 8px;font-size: 13px;background-color: #ab3705b5;position: relative;margin-right: 3px;"
+						value="Cancelar" onstart="start();"
+						oncomplete="PF('pagamento-dialog').hide();stop();">
+					</p:commandButton>
+				</p:panel>
+			</h:form>
+		</p:dialog>
 
 
 		<p:dialog id="downloadLoading" showHeader="false" modal="true"

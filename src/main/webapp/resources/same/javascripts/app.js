@@ -56,3 +56,32 @@ function deleteItem(itemID) {
 		})
 		
 }
+
+function estornarConta(itemID) {
+	
+	const swalWithBootstrapButtons = swal.mixin({
+		  confirmButtonClass: 'btn btn-success',
+		  cancelButtonClass: 'btn btn-danger',
+		  buttonsStyling: false,
+		})
+
+		swalWithBootstrapButtons({
+		  title: 'Atenção!',
+		  text: "Deseja realmente desfazer o pagamento?",
+		  type: 'warning',
+		  showCancelButton: true,
+		  confirmButtonText: 'Sim, estorne!',
+		  cancelButtonText: 'Não, cancele!',
+		  reverseButtons: true
+		}).then((result) => {
+		  if (result.value) {
+			  
+			  setarItemID([ {
+					name : 'itemID',
+					value : itemID
+				} ]);
+			  		 
+		  }
+		})
+		
+}

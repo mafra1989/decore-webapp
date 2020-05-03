@@ -43,7 +43,7 @@ public class Contas implements Serializable {
 	public List<Conta> todas() {
 		return this.manager.createQuery("from Conta order by id", Conta.class).getResultList();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalDespesasPorCategoriaMesAtual() {
 		Calendar calendar = Calendar.getInstance();
@@ -111,7 +111,7 @@ public class Contas implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Conta> contasFiltradas(Long codigo, TipoOperacao tipoOperacao, Calendar vencimento,
+	public List<Conta> contasFiltradas(Long codigo, TipoOperacao tipoOperacao, Date mes, Calendar vencimento,
 			OrigemConta[] origemConta, Date vencimento2, boolean contasPagas) {
 
 		String conditionCodigo = "";
@@ -137,10 +137,15 @@ public class Contas implements Serializable {
 			conditionContasPagas = "AND c.status = 'N' ";
 		}
 
-		String jpql = "SELECT c FROM Conta c " + "WHERE c.id > 0 " + conditionCodigo + conditionTipoOperacao
-				+ conditionOrigemConta + conditionContasPagas + "order by c.pagamento ASC, c.id asc";
+		Calendar calendario = Calendar.getInstance();
+		calendario.setTime(mes);
 
-		Query q = manager.createQuery(jpql);/* setParameter("vencimento", vencimento.getTime()); */
+		String jpql = "SELECT c FROM Conta c " + "WHERE c.id > 0 AND c.mes = :mes AND c.ano = :ano " + conditionCodigo
+				+ conditionTipoOperacao + conditionOrigemConta + conditionContasPagas
+				+ "order by c.vencimento ASC, c.id asc";
+
+		Query q = manager.createQuery(jpql).setParameter("mes", (long) calendario.get(Calendar.MONTH) + 1).setParameter("ano",
+				(long) calendario.get(Calendar.YEAR));/* setParameter("vencimento", vencimento.getTime()); */
 
 		if (codigo != null) {
 			q.setParameter("codigo", codigo);
@@ -205,7 +210,7 @@ public class Contas implements Serializable {
 
 		return value;
 	}
-	
+
 	public Number totalDespesasPorData(Number dia, Number mes, Number ano) {
 
 		String condition = "";
@@ -374,7 +379,7 @@ public class Contas implements Serializable {
 
 		return value;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalLancamentosPorData(Calendar calendarStart, Calendar calendarStop) {
 
@@ -391,32 +396,31 @@ public class Contas implements Serializable {
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i "
 				+ "WHERE i.pagamento BETWEEN :dataInicio AND :dataFim "
-				+ "AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' " + condition + "group by "
-				+ groupBy_Condition + " order by " + orderBy_Condition;
-		Query q = manager.createQuery(jpql)
-				.setParameter("dataInicio", calendarStart.getTime())
-				.setParameter("dataFim", calendarStop.getTime());
-		
+				+ "AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' " + condition + "group by " + groupBy_Condition
+				+ " order by " + orderBy_Condition;
+		Query q = manager.createQuery(jpql).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
+				calendarStop.getTime());
+
 		System.out.println(jpql);
-		
+
 		List<Object[]> result = q.getResultList();
-		
+
 		for (Object[] object : result) {
-			if((long)object[0] < 10) {
+			if ((long) object[0] < 10) {
 				object[0] = "0" + object[0];
 			}
-			
-			if((long)object[1] < 10) {
+
+			if ((long) object[1] < 10) {
 				object[1] = "0" + object[1];
 			}
 		}
 
 		return result;
 	}
-	
-	
+
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalLancamentosPorSemana(String ano, String semana01, String semana02, boolean chartCondition) {
+	public List<Object[]> totalLancamentosPorSemana(String ano, String semana01, String semana02,
+			boolean chartCondition) {
 
 		String condition = "";
 		String select_Condition = "";
@@ -438,8 +442,8 @@ public class Contas implements Serializable {
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i "
 				+ "WHERE i.semana = :semanaInicio " + "AND i.ano = :ano "
-				+ "AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' " + condition + "group by "
-				+ groupBy_Condition + " order by " + orderBy_Condition;
+				+ "AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' " + condition + "group by " + groupBy_Condition
+				+ " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("semanaInicio", Long.parseLong(semana01.replace("W", "")))
 				.setParameter("ano", Long.parseLong(ano));
 
@@ -447,7 +451,7 @@ public class Contas implements Serializable {
 
 		return result;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalDespesasPorMes(String ano, String mes01, String mes02, boolean chartCondition) {
 
@@ -471,8 +475,8 @@ public class Contas implements Serializable {
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i "
 				+ "WHERE i.mes BETWEEN :mesInicio AND :mesFim " + "AND i.ano = :ano "
-				+ "AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' " + condition + "group by "
-				+ groupBy_Condition + " order by " + orderBy_Condition;
+				+ "AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' " + condition + "group by " + groupBy_Condition
+				+ " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("mesInicio", Long.parseLong(mes01))
 				.setParameter("mesFim", Long.parseLong(mes02)).setParameter("ano", Long.parseLong(ano));
 
@@ -480,7 +484,7 @@ public class Contas implements Serializable {
 
 		return result;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalDespesasPorAno(String ano01, String ano02, boolean chartCondition) {
 
@@ -502,10 +506,9 @@ public class Contas implements Serializable {
 			orderBy_Condition = "count(i.categoriaLancamento.tipoLancamento.descricao) asc";
 		}
 
-		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i "
-				+ "WHERE i.ano = :anoInicio "
-				+ "AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' " + condition + "group by "
-				+ groupBy_Condition + " order by " + orderBy_Condition;
+		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i " + "WHERE i.ano = :anoInicio "
+				+ "AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' " + condition + "group by " + groupBy_Condition
+				+ " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("anoInicio", Long.parseLong(ano01));
 
 		List<Object[]> result = q.getResultList();

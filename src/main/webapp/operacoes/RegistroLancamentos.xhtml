@@ -14,6 +14,9 @@
 			value="#{registroLancamentosBean.lancamento.id}" />
 		<f:viewAction action="#{registroLancamentosBean.buscar}"
 			if="#{param.id ne null}" />
+
+		<f:viewParam name="opt"
+			value="#{registroLancamentosBean.option}" />
 	</f:metadata>
 
 	<ui:define name="content">
@@ -21,8 +24,8 @@
 		<style>
 @media ( min-width :220px) {
 	.ui-fluid .ui-selectonemenu {
-	    min-width: max-content !important;
-    }
+		min-width: max-content !important;
+	}
 	.entrada .ui-inputtext {
 		/*text-align: end !important;*/
 		color: #2d5db3;
