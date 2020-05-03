@@ -64,7 +64,7 @@ public class RegistroVendasBean implements Serializable {
 
 	@Inject
 	private ItensVendas itensVendas;
-	
+
 	@Inject
 	private Entregas entregas;
 
@@ -101,12 +101,12 @@ public class RegistroVendasBean implements Serializable {
 	private static final DecimalFormatSymbols REAL = new DecimalFormatSymbols(BRAZIL);
 
 	private NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
-	
+
 	private boolean entrega;
 
 	@Inject
 	private Entrega entregaVenda;
-	
+
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
 			todosUsuarios = usuarios.todos();
@@ -171,8 +171,10 @@ public class RegistroVendasBean implements Serializable {
 					List<ItemCompra> itensCompraTemp = itensCompras.porProduto(itemVenda.getProduto());
 					for (ItemCompra itemCompraTemp : itensCompraTemp) {
 
-						if (itemCompraTemp.getCompra().getId().longValue() == itemVenda.getCompra().getId().longValue()) {
-							if (itemCompraTemp.getProduto().getId().longValue() == itemVenda.getProduto().getId().longValue()) {
+						if (itemCompraTemp.getCompra().getId().longValue() == itemVenda.getCompra().getId()
+								.longValue()) {
+							if (itemCompraTemp.getProduto().getId().longValue() == itemVenda.getProduto().getId()
+									.longValue()) {
 								System.out.println(itemCompraTemp.getQuantidadeDisponivel());
 								System.out.println(itemVenda.getQuantidade());
 								itemCompraTemp.setQuantidadeDisponivel(
@@ -190,7 +192,7 @@ public class RegistroVendasBean implements Serializable {
 			venda.setSemana(Long.valueOf((calendarioTemp.get(Calendar.WEEK_OF_YEAR))));
 			venda.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
 			venda.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
-			
+
 			Venda vendaTemp = vendas.ultimoNVenda();
 
 			if (vendaTemp == null) {
@@ -211,7 +213,6 @@ public class RegistroVendasBean implements Serializable {
 				Produto produto = produtos.porId(itemVenda.getProduto().getId());
 				produto.setQuantidadeAtual(produto.getQuantidadeAtual() - itemVenda.getQuantidade());
 				produtos.save(produto);
-				
 
 				totalDeItens += itemVenda.getQuantidade();
 				valorTotal += itemVenda.getTotal().doubleValue();
@@ -222,23 +223,32 @@ public class RegistroVendasBean implements Serializable {
 
 				List<ItemCompra> itensCompraTemp = itensCompras.porProduto(itemVenda.getProduto());
 				for (ItemCompra itemCompraTemp : itensCompraTemp) {
-					
+
 					System.out.println(itemCompraTemp.getCompra().getId() + " == " + itemVenda.getCompra().getId());
 					System.out.println(itemCompraTemp.getProduto().getId() + " == " + itemVenda.getProduto().getId());
-					
+
 					if (itemCompraTemp.getCompra().getId().longValue() == itemVenda.getCompra().getId().longValue()) {
-						if (itemCompraTemp.getProduto().getId().longValue() == itemVenda.getProduto().getId().longValue()) {
+						if (itemCompraTemp.getProduto().getId().longValue() == itemVenda.getProduto().getId()
+								.longValue()) {
 							// if(itemVenda.getId() == null) {
 							System.out.println("itemVenda.getQuantidade(): " + itemVenda.getQuantidade());
-							System.out.println("itemCompraTemp.getQuantidadeDisponivel(): " + itemCompraTemp.getQuantidadeDisponivel());
+							System.out.println("itemCompraTemp.getQuantidadeDisponivel(): "
+									+ itemCompraTemp.getQuantidadeDisponivel());
 							itemCompraTemp.setQuantidadeDisponivel(
 									itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());
-							System.out.println("Nova QuantidadeDisponivel: " + itemCompraTemp.getQuantidadeDisponivel());
+							System.out
+									.println("Nova QuantidadeDisponivel: " + itemCompraTemp.getQuantidadeDisponivel());
 							itensCompras.save(itemCompraTemp);
 							// }
 						}
 					}
 				}
+			}
+
+			if (entrega) {
+				venda.setStatus(false);
+			} else {
+				venda.setStatus(true);
 			}
 
 			venda.setValorCompra(BigDecimal.valueOf(valorCompra));
@@ -247,38 +257,37 @@ public class RegistroVendasBean implements Serializable {
 			venda.setLucro(BigDecimal.valueOf(lucro));
 			venda.setPercentualLucro(BigDecimal.valueOf(percentualLucro / itensVenda.size()));
 			venda = vendas.save(venda);
-						
 
 			if (!edit) {
-				
-				if(entrega) {
+
+				if (entrega) {
 					entregaVenda.setStatus("PENDENTE");
 					entregaVenda.setVenda(venda);
 					entregaVenda = entregas.save(entregaVenda);
 				}
-				
-				PrimeFaces.current().executeScript(
-						"swal({ type: 'success', title: 'Concluído!', text: 'Venda N." + venda.getNumeroVenda() + " registrada com sucesso!' });");
+
+				PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda N."
+						+ venda.getNumeroVenda() + " registrada com sucesso!' });");
 
 				venda = new Venda();
 				itensVenda = new ArrayList<ItemVenda>();
 				itemVenda = new ItemVenda();
 				itemSelecionado = null;
-				
+
 				itensCompra = new ArrayList<>();
 				itemCompra = new ItemCompra();
-				
+
 				entregaVenda = new Entrega();
 				entrega = false;
 
 			} else {
-				
-				if(entrega) {
+
+				if (entrega) {
 					entregaVenda = entregas.save(entregaVenda);
 				}
-				
-				PrimeFaces.current().executeScript(
-						"swal({ type: 'success', title: 'Concluído!', text: 'Venda N." + venda.getNumeroVenda() + " atualizada com sucesso!' });");
+
+				PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda N."
+						+ venda.getNumeroVenda() + " atualizada com sucesso!' });");
 			}
 
 		} else {
@@ -302,8 +311,8 @@ public class RegistroVendasBean implements Serializable {
 
 			boolean produtoNaLista = false;
 			for (ItemVenda itemVenda : itensVenda) {
-				if (itemCompraTemp.getCompra().getId().longValue() == itemVenda.getCompra().getId().longValue() ) {
-					if (itemCompraTemp.getProduto().getId().longValue()  == itemVenda.getProduto().getId().longValue() ) {
+				if (itemCompraTemp.getCompra().getId().longValue() == itemVenda.getCompra().getId().longValue()) {
+					if (itemCompraTemp.getProduto().getId().longValue() == itemVenda.getProduto().getId().longValue()) {
 
 						produtoNaLista = true;
 						if (itemVenda.getId() == null && venda.getId() == null) {
@@ -348,13 +357,13 @@ public class RegistroVendasBean implements Serializable {
 	public void adicionarItem() {
 
 		if (venda.getId() == null) {
-			
+
 			Long quantidadeDisponivel = itemCompra.getQuantidadeDisponivel();
-			
+
 			for (ItemVenda itemVenda : itensVenda) {
 				if (itemCompra.getCompra().getId().longValue() == itemVenda.getCompra().getId().longValue()) {
 					if (itemCompra.getProduto().getId().longValue() == itemVenda.getProduto().getId().longValue()) {
-						if (itemVenda.getId() == null && venda.getId() == null) {						
+						if (itemVenda.getId() == null && venda.getId() == null) {
 							quantidadeDisponivel -= itemVenda.getQuantidade();
 						}
 					}
@@ -363,7 +372,6 @@ public class RegistroVendasBean implements Serializable {
 
 			System.out.println("itemVenda.getQuantidade(): " + itemVenda.getQuantidade());
 			System.out.println("quantidadeDisponivel: " + quantidadeDisponivel);
-			
 
 			if (itemVenda.getQuantidade() <= quantidadeDisponivel) {
 				if (itemVenda.getValorUnitario().doubleValue() >= itemCompra.getValorUnitario().doubleValue()) {
@@ -391,25 +399,26 @@ public class RegistroVendasBean implements Serializable {
 					itemVenda.setCode(itemVenda.getProduto().getCodigo().concat("_" + new Date().getTime()));
 					itensVenda.add(itemVenda);
 
-
-
 					String code = itemVenda.getCode();
 					Produto produto = itemVenda.getProduto();
-					
+
 					itemVenda = new ItemVenda();
 					itemVenda.setCode(code);
 					itemVenda.setProduto(produto);
-					
+
 					itensCompra = new ArrayList<ItemCompra>();
-					
+
 					List<ItemCompra> itensCompraTemp = itensCompras.porProduto(produto);
 					for (ItemCompra itemCompraTemp : itensCompraTemp) {
-						itemCompraTemp.getCompra().setDataCompraFormatada(sdf.format(itemCompraTemp.getCompra().getDataCompra()));
+						itemCompraTemp.getCompra()
+								.setDataCompraFormatada(sdf.format(itemCompraTemp.getCompra().getDataCompra()));
 
 						boolean produtoNaLista = false;
 						for (ItemVenda itemVenda : itensVenda) {
-							if (itemCompraTemp.getCompra().getId().longValue() == itemVenda.getCompra().getId().longValue() ) {
-								if (itemCompraTemp.getProduto().getId().longValue()  == itemVenda.getProduto().getId().longValue() ) {
+							if (itemCompraTemp.getCompra().getId().longValue() == itemVenda.getCompra().getId()
+									.longValue()) {
+								if (itemCompraTemp.getProduto().getId().longValue() == itemVenda.getProduto().getId()
+										.longValue()) {
 
 									produtoNaLista = true;
 									if (itemVenda.getId() == null && venda.getId() == null) {
@@ -433,7 +442,7 @@ public class RegistroVendasBean implements Serializable {
 							}
 						}
 					}
-					
+
 					itensCompraTemp = new ArrayList<>();
 					for (int i = itensCompra.size() - 1; i >= 0; i--) {
 						itensCompra.get(i).setValorUnitarioFormatado(
@@ -443,7 +452,7 @@ public class RegistroVendasBean implements Serializable {
 
 					itensCompra = new ArrayList<>();
 					itensCompra.addAll(itensCompraTemp);
-					
+
 				} else {
 					PrimeFaces.current().executeScript(
 							"swal({ type: 'error', title: 'Erro!', text: 'Valor unitário menor que o valor de compra!' });");
@@ -462,24 +471,25 @@ public class RegistroVendasBean implements Serializable {
 	public void removeItem() {
 
 		if (venda.getId() == null) {
-			
-			//itemVenda = itemSelecionado;
+
+			// itemVenda = itemSelecionado;
 			venda.setValorTotal(
 					BigDecimal.valueOf(venda.getValorTotal().doubleValue() - itemSelecionado.getTotal().doubleValue()));
 			itensVenda.remove(itemSelecionado);
 
-					
-			List<ItemCompra> itensCompraTemp =  itensCompras.porProduto(itemVenda.getProduto());	
-			
+			List<ItemCompra> itensCompraTemp = itensCompras.porProduto(itemVenda.getProduto());
+
 			itensCompra = new ArrayList<ItemCompra>();
-			
+
 			for (ItemCompra itemCompraTemp : itensCompraTemp) {
-				itemCompraTemp.getCompra().setDataCompraFormatada(sdf.format(itemCompraTemp.getCompra().getDataCompra()));
+				itemCompraTemp.getCompra()
+						.setDataCompraFormatada(sdf.format(itemCompraTemp.getCompra().getDataCompra()));
 
 				boolean produtoNaLista = false;
 				for (ItemVenda itemVenda : itensVenda) {
-					if (itemCompraTemp.getCompra().getId().longValue() == itemVenda.getCompra().getId().longValue() ) {
-						if (itemCompraTemp.getProduto().getId().longValue()  == itemVenda.getProduto().getId().longValue() ) {
+					if (itemCompraTemp.getCompra().getId().longValue() == itemVenda.getCompra().getId().longValue()) {
+						if (itemCompraTemp.getProduto().getId().longValue() == itemVenda.getProduto().getId()
+								.longValue()) {
 
 							produtoNaLista = true;
 							if (itemVenda.getId() == null && venda.getId() == null) {
@@ -503,7 +513,7 @@ public class RegistroVendasBean implements Serializable {
 					}
 				}
 			}
-			
+
 			itensCompraTemp = new ArrayList<>();
 			for (int i = itensCompra.size() - 1; i >= 0; i--) {
 				itensCompra.get(i).setValorUnitarioFormatado(
@@ -513,11 +523,11 @@ public class RegistroVendasBean implements Serializable {
 
 			itensCompra = new ArrayList<>();
 			itensCompra.addAll(itensCompraTemp);
-			
+
 			itemSelecionado = null;
-			
-			//itemVenda = new ItemVenda();
-			//itemCompra = new ItemCompra();	
+
+			// itemVenda = new ItemVenda();
+			// itemCompra = new ItemCompra();
 
 		} else {
 			PrimeFaces.current().executeScript(
@@ -534,23 +544,24 @@ public class RegistroVendasBean implements Serializable {
 					BigDecimal.valueOf(venda.getValorTotal().doubleValue() - itemSelecionado.getTotal().doubleValue()));
 			itensVenda.remove(itemSelecionado);
 
-					
-			List<ItemCompra> itensCompraTemp =  itensCompras.porProduto(itemVenda.getProduto());	
-			
+			List<ItemCompra> itensCompraTemp = itensCompras.porProduto(itemVenda.getProduto());
+
 			itensCompra = new ArrayList<ItemCompra>();
-			
+
 			for (ItemCompra itemCompraTemp : itensCompraTemp) {
-				itemCompraTemp.getCompra().setDataCompraFormatada(sdf.format(itemCompraTemp.getCompra().getDataCompra()));
+				itemCompraTemp.getCompra()
+						.setDataCompraFormatada(sdf.format(itemCompraTemp.getCompra().getDataCompra()));
 
 				boolean produtoNaLista = false;
 				for (ItemVenda itemVenda : itensVenda) {
-					if (itemCompraTemp.getCompra().getId().longValue() == itemVenda.getCompra().getId().longValue() ) {
-						if (itemCompraTemp.getProduto().getId().longValue()  == itemVenda.getProduto().getId().longValue() ) {
+					if (itemCompraTemp.getCompra().getId().longValue() == itemVenda.getCompra().getId().longValue()) {
+						if (itemCompraTemp.getProduto().getId().longValue() == itemVenda.getProduto().getId()
+								.longValue()) {
 
 							produtoNaLista = true;
 							if (itemVenda.getId() == null && venda.getId() == null) {
 								itemCompraTemp.setQuantidadeDisponivel(
-										itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());								
+										itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());
 							}
 
 						}
@@ -569,7 +580,7 @@ public class RegistroVendasBean implements Serializable {
 					}
 				}
 			}
-			
+
 			itensCompraTemp = new ArrayList<>();
 			for (int i = itensCompra.size() - 1; i >= 0; i--) {
 				itensCompra.get(i).setValorUnitarioFormatado(
@@ -579,11 +590,11 @@ public class RegistroVendasBean implements Serializable {
 
 			itensCompra = new ArrayList<>();
 			itensCompra.addAll(itensCompraTemp);
-			
+
 			itemSelecionado = null;
-			
-			//itemVenda = new ItemVenda();
-			//itemCompra = new ItemCompra();
+
+			// itemVenda = new ItemVenda();
+			// itemCompra = new ItemCompra();
 
 		} else {
 			PrimeFaces.current().executeScript(
