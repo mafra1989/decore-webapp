@@ -198,21 +198,24 @@
 								itemValue="#{vendedor}" />
 						</p:selectOneMenu>
 					</p:panelGrid>
-					
+
 					<p:panelGrid columns="2" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-2, ui-grid-col-4">
 
 						<p:outputLabel value="Vendas normais" />
-						<p:selectBooleanCheckbox value="#{selectBooleanView.value1}" style="margin-left: 3px;" />
-						
+						<p:selectBooleanCheckbox
+							value="#{consultaVendasBean.vendasNormais}"
+							style="margin-left: 3px;" />
+
 					</p:panelGrid>
-					
+
 					<p:panelGrid columns="2" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-2, ui-grid-col-4">
 
-						<p:outputLabel value="Vendas para entrega" styleClass="venda-entrega"/>
+						<p:outputLabel value="Vendas para entrega"
+							styleClass="venda-entrega" />
 						<p:selectManyCheckbox unselectable="true"
 							value="#{consultaVendasBean.statusPedido}">
 							<f:selectItems value="#{consultaVendasBean.statusPedidos}"
@@ -230,7 +233,8 @@
 					<h3 style="font-weight: bold">Resultado da consulta</h3>
 
 					<p:menuButton id="menu-btn" value="Opções"
-						style="width: 80px;float: right;margin-top: -40px;margin-right: 10px">
+						style="width: 80px;float: right;margin-top: -40px;margin-right: 10px"
+						disabled="#{(consultaVendasBean.vendasFiltradasSize eq 0) or consultaVendasBean.vendaSelecionada.id == null}">
 
 						<p:menuitem value="Visualizar" icon="fa fa-fw fa-eye"
 							id="btn-view" outcome="/operacoes/RegistroVendas.xhtml"
@@ -242,7 +246,28 @@
 						<p:menuitem icon="fa fa-fw fa-trash" id="btn-trash"
 							value="Excluir" process="@this"
 							onclick="deleteItem(#{consultaVendasBean.vendaSelecionada.id});" />
+						<p:separator />
+
+						<p:menuitem value="Entregar venda" icon="fa fa-fw fa-money"
+							onstart="start();" oncomplete="stop();"
+							action="#{consultaVendasBean.entregarVenda}" update="form"
+							process="@this"
+							rendered="#{consultaVendasBean.entrega.id != null and consultaVendasBean.entrega.status == 'PENDENTE'}">
+						</p:menuitem>
+						<p:separator />
+						<p:menuitem value="Desfazer entrega" icon="fa fa-fw fa-undo"
+							onstart="start();" oncomplete="stop();"
+							action="#{consultaVendasBean.desfazerEntrega}" update="form"
+							process="@this"
+							rendered="#{consultaVendasBean.entrega.id != null and consultaVendasBean.entrega.status == 'ENTREGUE'}">
+						</p:menuitem>
+						<p:menuitem value="Ver localização" icon="fa fa-fw fa-map-marker"
+							onstart="start();" oncomplete="stop();"
+							url="https://maps.google.com/maps?daddr=#{consultaVendasBean.entrega.localizacao}" target="_blank"
+							rendered="#{consultaVendasBean.entrega.id != null}">
+						</p:menuitem>
 					</p:menuButton>
+
 
 					<p:panelGrid columns="1" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
@@ -258,6 +283,7 @@
 
 							<p:ajax process="@this" event="rowSelect" update="menu-btn"
 								onstart="PF('downloadLoading').show();"
+								listener="#{consultaVendasBean.prepararEntrega}"
 								oncomplete="PF('downloadLoading').hide();" />
 							<p:ajax process="@this" event="rowUnselect" update="menu-btn"
 								onstart="PF('downloadLoading').show();"

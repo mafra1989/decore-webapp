@@ -1,6 +1,7 @@
 package com.webapp.repository;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,6 +13,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import com.webapp.model.CategoriaProduto;
+import com.webapp.model.Entrega;
 import com.webapp.model.Produto;
 import com.webapp.model.StatusPedido;
 import com.webapp.model.Usuario;
@@ -74,61 +76,102 @@ public class Vendas implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Venda> vendasFiltradas(Long numeroVenda, Date dateStart, Date dateStop, StatusPedido[] statusPedido,
-			Usuario usuario) {
+	public List<Venda> vendasFiltradas(Long numeroVenda, Date dateStart, Date dateStop, boolean vendasNormais,
+			StatusPedido[] statusPedido, Usuario usuario) {
 
-		String condition = "", conditionStatusPedido = "";
+		List<Venda> vendas = new ArrayList<>();
+
+		String condition = "";
 		if (usuario != null && usuario.getId() != null) {
 			condition = "AND i.usuario.id = :idUsuario ";
 		}
-		
+
 		String conditionNumeroVenda = "";
 		if (numeroVenda != null) {
 			conditionNumeroVenda = "AND i.numeroVenda = :numeroVenda ";
 		}
-
-		String jpql = "SELECT i FROM Entrega e right outer join e.venda i "
-				+ "WHERE i.dataVenda between :dateStart and :dateStop " + condition + conditionNumeroVenda
-				+ conditionStatusPedido + " order by i.numeroVenda desc";
 		
-		if (statusPedido.length > 0 && statusPedido.length == 1) {
-			if(statusPedido[0] == StatusPedido.PENDENTE) {
-				conditionStatusPedido = "AND e.status in (:statusPedido) ";
-				
-				jpql = "SELECT i FROM Entrega e right outer join e.venda i "
-						+ "WHERE i.dataVenda between :dateStart and :dateStop " + condition + conditionNumeroVenda
-						+ conditionStatusPedido + " order by i.numeroVenda desc";
-				
-			} else if(statusPedido[0] == StatusPedido.ENTREGUE) {
-				conditionStatusPedido = "AND e.status not in (:statusPedido) ";
-				
-				jpql = "SELECT i FROM Entrega e left join e.venda i "
-						+ "WHERE i.dataVenda between :dateStart and :dateStop " + condition + conditionNumeroVenda
-						+ conditionStatusPedido + " order by i.numeroVenda desc";
-				
+		String orderBy = " order by i.numeroVenda desc";
+		if (!vendasNormais & statusPedido.length == 1) {			
+			if (statusPedido[0] == StatusPedido.PENDENTE) {
+				orderBy = " order by i.numeroVenda asc";
 			}
 		}
-		
+
+		String jpql = "SELECT i, (select e from Entrega e where e.venda.id = i.id) FROM Venda i "
+				+ "WHERE i.dataVenda between :dateStart and :dateStop " + condition + conditionNumeroVenda
+				+ orderBy;
+
 		Query q = manager.createQuery(jpql).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
 
 		if (usuario != null && usuario.getId() != null) {
 			q.setParameter("idUsuario", usuario.getId());
 		}
 
-		if (statusPedido.length > 0 && statusPedido.length == 1) {
-			if(statusPedido[0] == StatusPedido.PENDENTE) {
-				q.setParameter("statusPedido",
-						Arrays.asList(Arrays.toString(statusPedido).replace("[", "").replace("]", "").trim().split(",")));
-			} else if(statusPedido[0] == StatusPedido.ENTREGUE) {
-				q.setParameter("statusPedido", StatusPedido.PENDENTE.name());
-			}
-		}
-
 		if (numeroVenda != null) {
 			q.setParameter("numeroVenda", numeroVenda);
 		}
 
-		return q.getResultList();
+		List<Object[]> objects = q.getResultList();
+		System.out.println(objects.size() + " - " + jpql);
+
+		for (Object[] objectTemp : objects) {
+			System.out.println(Arrays.toString(objectTemp));
+
+			if (vendasNormais & statusPedido.length == 2) {
+				vendas.add((Venda) objectTemp[0]);
+
+			} else if (vendasNormais & statusPedido.length == 1) {
+
+				if (vendasNormais & statusPedido[0] == StatusPedido.ENTREGUE) {
+
+					if (objectTemp[1] == null
+							|| ((Entrega) objectTemp[1]).getStatus().equalsIgnoreCase(StatusPedido.ENTREGUE.name())) {
+						vendas.add((Venda) objectTemp[0]);
+					}
+
+				} else if (vendasNormais & statusPedido[0] == StatusPedido.PENDENTE) {
+
+					if (objectTemp[1] == null
+							|| ((Entrega) objectTemp[1]).getStatus().equalsIgnoreCase(StatusPedido.PENDENTE.name())) {
+						vendas.add((Venda) objectTemp[0]);
+					}
+				}
+
+			} if (!vendasNormais & statusPedido.length == 2) {
+				if(objectTemp[1] != null) {
+					vendas.add((Venda) objectTemp[0]);
+				}
+				
+			} else if (!vendasNormais & statusPedido.length == 1) {
+				
+				if (!vendasNormais & statusPedido[0] == StatusPedido.ENTREGUE) {
+
+					if (objectTemp[1] != null
+							&& ((Entrega) objectTemp[1]).getStatus().equalsIgnoreCase(StatusPedido.ENTREGUE.name())) {
+						vendas.add((Venda) objectTemp[0]);
+					}
+
+				} else if (!vendasNormais & statusPedido[0] == StatusPedido.PENDENTE) {
+
+					if (objectTemp[1] != null
+							&& ((Entrega) objectTemp[1]).getStatus().equalsIgnoreCase(StatusPedido.PENDENTE.name())) {
+						vendas.add((Venda) objectTemp[0]);
+					}
+				}
+				
+			} else if(vendasNormais & statusPedido.length == 0) {
+				if(objectTemp[1] == null) {
+					vendas.add((Venda) objectTemp[0]);
+				}
+				
+			} else if(!vendasNormais & statusPedido.length == 0) {
+				vendas.add((Venda) objectTemp[0]);
+			}
+		}
+
+		return vendas;
+
 	}
 
 	public Number totalVendas() {

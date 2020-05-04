@@ -1,5 +1,6 @@
 package com.webapp.controller;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -8,18 +9,22 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
 
+import com.webapp.model.Entrega;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.Produto;
 import com.webapp.model.StatusPedido;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
+import com.webapp.repository.Entregas;
 import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
 import com.webapp.repository.Produtos;
@@ -47,6 +52,12 @@ public class ConsultaVendasBean implements Serializable {
 	private Vendas vendas;
 
 	@Inject
+	private Entregas entregas;
+
+	@Inject
+	private Entrega entrega;
+
+	@Inject
 	private ItensVendas itensVendas;
 
 	@Inject
@@ -68,7 +79,9 @@ public class ConsultaVendasBean implements Serializable {
 	private String totalVendas = "0,00";
 
 	private Integer totalItens = 0;
-	
+
+	private boolean vendasNormais;
+
 	private StatusPedido[] statusPedido;
 
 	public void inicializar() {
@@ -84,7 +97,8 @@ public class ConsultaVendasBean implements Serializable {
 		calendarioTemp.set(Calendar.MINUTE, 59);
 		calendarioTemp.set(Calendar.SECOND, 59);
 
-		vendasFiltradas = vendas.vendasFiltradas(numeroVenda, dateStart, calendarioTemp.getTime(), statusPedido, usuario);
+		vendasFiltradas = vendas.vendasFiltradas(numeroVenda, dateStart, calendarioTemp.getTime(), vendasNormais,
+				statusPedido, usuario);
 
 		double totalVendasTemp = 0;
 		totalItens = 0;
@@ -94,6 +108,46 @@ public class ConsultaVendasBean implements Serializable {
 		}
 
 		totalVendas = nf.format(totalVendasTemp);
+
+		vendaSelecionada = null;
+	}
+
+	public void prepararEntrega() {
+		entrega = entregas.porVenda(vendaSelecionada);
+	}
+
+	public void entregarVenda() {
+		entrega.setStatus(StatusPedido.ENTREGUE.name());
+		entregas.save(entrega);
+
+		PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda N."
+				+ vendaSelecionada.getNumeroVenda() + " entregue com sucesso!' });");
+
+		pesquisar();
+	}
+
+	public void desfazerEntrega() {
+		entrega.setStatus(StatusPedido.PENDENTE.name());
+		entregas.save(entrega);
+
+		PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Entrega da venda N."
+				+ vendaSelecionada.getNumeroVenda() + " desfeita com sucesso!' });");
+
+		pesquisar();
+	}
+
+	public void verLocalizacao() {
+		if (entrega.getLocalizacao() != null && !entrega.getLocalizacao().trim().equals("")) {
+			ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+			try {
+				externalContext.redirect("https://maps.google.com/maps?daddr=" + entrega.getLocalizacao());
+			} catch (IOException e) {
+
+			}
+		} else {
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'warning', title: 'Atenção!', text: 'Não existe informação de localização de entrega para esta venda!' });");
+		}
 	}
 
 	public void excluir() {
@@ -123,6 +177,10 @@ public class ConsultaVendasBean implements Serializable {
 				itensVendas.remove(itemVenda);
 			}
 
+			if (entrega.getId() != null) {
+				entregas.remove(entrega);
+			}
+
 			vendas.remove(vendaSelecionada);
 
 			vendaSelecionada = null;
@@ -144,12 +202,13 @@ public class ConsultaVendasBean implements Serializable {
 					produto = produtos.porId(produto.getId());
 					produto.setQuantidadeAtual(produto.getQuantidadeAtual() + itemVenda.getQuantidade());
 					produtos.save(produto);
-					
+
 					List<ItemCompra> itensCompra = itensCompras.porProduto(itemVenda.getProduto());
 					for (ItemCompra itemCompra : itensCompra) {
 
 						if (itemCompra.getCompra().getId().longValue() == itemVenda.getCompra().getId().longValue()) {
-							if (itemCompra.getProduto().getId().longValue() == itemVenda.getProduto().getId().longValue()) {
+							if (itemCompra.getProduto().getId().longValue() == itemVenda.getProduto().getId()
+									.longValue()) {
 								System.out.println(itemCompra.getQuantidadeDisponivel());
 								System.out.println(itemVenda.getQuantidade());
 								itemCompra.setQuantidadeDisponivel(
@@ -237,6 +296,14 @@ public class ConsultaVendasBean implements Serializable {
 		this.numeroVenda = numeroVenda;
 	}
 
+	public boolean isVendasNormais() {
+		return vendasNormais;
+	}
+
+	public void setVendasNormais(boolean vendasNormais) {
+		this.vendasNormais = vendasNormais;
+	}
+
 	public StatusPedido[] getStatusPedidos() {
 		return StatusPedido.values();
 	}
@@ -247,6 +314,14 @@ public class ConsultaVendasBean implements Serializable {
 
 	public void setStatusPedido(StatusPedido[] statusPedido) {
 		this.statusPedido = statusPedido;
+	}
+
+	public Entrega getEntrega() {
+		return entrega;
+	}
+
+	public void setEntrega(Entrega entrega) {
+		this.entrega = entrega;
 	}
 
 }

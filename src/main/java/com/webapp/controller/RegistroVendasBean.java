@@ -131,6 +131,9 @@ public class RegistroVendasBean implements Serializable {
 			} catch (InterruptedException e) {
 			}
 		}
+		
+		entregaVenda = entregas.porVenda(venda);
+		entrega = entregaVenda.getId() != null;
 	}
 
 	public void salvar() {
@@ -245,11 +248,7 @@ public class RegistroVendasBean implements Serializable {
 				}
 			}
 
-			if (entrega) {
-				venda.setStatus(false);
-			} else {
-				venda.setStatus(true);
-			}
+			venda.setStatus(entrega);
 
 			venda.setValorCompra(BigDecimal.valueOf(valorCompra));
 			venda.setValorTotal(BigDecimal.valueOf(valorTotal));
@@ -283,7 +282,18 @@ public class RegistroVendasBean implements Serializable {
 			} else {
 
 				if (entrega) {
-					entregaVenda = entregas.save(entregaVenda);
+					if(entregaVenda.getId() == null) {
+						entregaVenda.setStatus("PENDENTE");
+						entregaVenda.setVenda(venda);
+						entregaVenda = entregas.save(entregaVenda);
+					} else {
+						entregaVenda = entregas.save(entregaVenda);
+					}
+				} else {
+					if(entregaVenda.getId() != null) {
+						entregas.remove(entregaVenda);
+						entregaVenda = new Entrega();
+					}
 				}
 
 				PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda N."
