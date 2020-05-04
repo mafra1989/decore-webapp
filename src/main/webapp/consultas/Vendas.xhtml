@@ -199,7 +199,16 @@
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-2, ui-grid-col-4">
 
-						<p:outputLabel value="Vendas para entrega" />
+						<p:outputLabel value="Vendas normais" />
+						<p:selectBooleanCheckbox value="#{selectBooleanView.value1}" style="margin-left: 3px;" />
+						
+					</p:panelGrid>
+					
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-4">
+
+						<p:outputLabel value="Vendas para entrega" style="margin-top: 7px;float: left;"/>
 						<p:selectManyCheckbox unselectable="true"
 							value="#{consultaVendasBean.statusPedido}">
 							<f:selectItems value="#{consultaVendasBean.statusPedidos}"

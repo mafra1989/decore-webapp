@@ -102,11 +102,16 @@
 		float: left !important;
 		margin-top: -29px !important;
 		margin-left: 80px;
+		font-size: 13px;
 	}
 	.panel-entrega .ui-state-disabled {
 		float: left !important;
 		margin-top: -29px !important;
 		margin-left: 80px;
+		font-size: 13px;
+	}
+	#entrega-dialog .ui-panel .ui-panel-content {
+	    padding: 0px;
 	}
 }
 
@@ -115,11 +120,13 @@
 		float: left !important;
 		margin-top: 10px !important;
 		margin-left: 0px;
+		font-size: 13px;
 	}
 	.ui-panelgrid .ui-widget a {
 		float: left !important;
 		margin-top: 10px !important;
 		margin-left: 0px;
+		font-size: 13px;
 	}
 	.ui-slider .ui-slider-handle {
 		width: 1.7em;
@@ -538,14 +545,14 @@
 		</p:dialog>
 
 		<p:dialog id="entrega-dialog" header="Dados da entrega" modal="true"
-			widgetVar="entrega-dialog" draggable="true" width="300"
+			widgetVar="entrega-dialog" draggable="true" width="260"
 			closable="false" resizable="false" position="top"
 			style="margin-top: 100px">
 
 			<h:form id="form-entrega">
 
 				<p:panel class="card card-w-title ui-fluid"
-					style="padding-bottom: 0px;">
+					style="padding-bottom: 0px; margin-top: 5px;">
 
 					<p:panelGrid columns="1" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
@@ -569,14 +576,14 @@
 
 				<p:panel styleClass="panelgrid-noborder disabled disabled">
 					<p:commandButton icon="fa fa-fw fa-check"
-						style="float: right;font-weight: bold;font-size: 13px;margin-top: -12px;margin-bottom:8px;background-color: #089a29c7;position: relative;margin-right: 10px;"
+						style="float: right;font-weight: bold;font-size: 13px;margin-top: -12px;margin-bottom:5px;background-color: #089a29c7;position: relative;margin-right: 10px;"
 						value="Confirmar" process="@this entrega-dialog form-entrega"
 						onstart="start();"
 						oncomplete="stop();PF('entrega-dialog').hide();">
 					</p:commandButton>
 
 					<p:commandButton icon="fa fa-fw fa-close"
-						style="float: right;font-weight: bold;font-size: 13px;margin-top: -12px;margin-bottom:8px;background-color: #ab3705b5;position: relative;margin-right: 3px;"
+						style="float: right;font-weight: bold;font-size: 13px;margin-top: -12px;margin-bottom:5px;background-color: #ab3705b5;position: relative;margin-right: 3px;"
 						value="Cancelar" onstart="start();"
 						oncomplete="PF('entrega-dialog').hide();stop();">
 					</p:commandButton>
