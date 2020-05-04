@@ -98,7 +98,7 @@
 	body .ui-datatable .ui-paginator {
 		padding: 2px 0px !important;
 	}
-	.ui-panelgrid .ui-widget a {
+	.panel-entrega.ui-widget a {
 		float: left !important;
 		margin-top: -29px !important;
 		margin-left: 80px;
@@ -471,7 +471,7 @@
 							columnClasses="ui-grid-col-4, ui-grid-col-3">
 
 							<p:commandButton id="btn-calcular"
-								value="#{registroVendasBean.venda.id == null ? 'Finalizar Venda' : 'Salvar Venda'}"
+								value="Salvar Venda"
 								onstart="PF('downloadLoading').show();" icon="fa fa-save"
 								onsuccess="PF('downloadLoading').hide();"
 								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"

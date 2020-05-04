@@ -118,7 +118,11 @@ public class ConsultaVendasBean implements Serializable {
 
 	public void entregarVenda() {
 		entrega.setStatus(StatusPedido.ENTREGUE.name());
-		entregas.save(entrega);
+		entrega = entregas.save(entrega);
+		
+		Venda venda = entrega.getVenda();
+		venda.setStatus(true);
+		vendas.save(venda);
 
 		PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda N."
 				+ vendaSelecionada.getNumeroVenda() + " entregue com sucesso!' });");
@@ -128,7 +132,11 @@ public class ConsultaVendasBean implements Serializable {
 
 	public void desfazerEntrega() {
 		entrega.setStatus(StatusPedido.PENDENTE.name());
-		entregas.save(entrega);
+		entrega = entregas.save(entrega);
+		
+		Venda venda = entrega.getVenda();
+		venda.setStatus(false);
+		vendas.save(venda);
 
 		PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Entrega da venda N."
 				+ vendaSelecionada.getNumeroVenda() + " desfeita com sucesso!' });");

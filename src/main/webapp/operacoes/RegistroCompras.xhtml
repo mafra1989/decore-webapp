@@ -417,7 +417,7 @@
 							columnClasses="ui-grid-col-4, ui-grid-col-3">
 
 							<p:commandButton id="btn-calcular"
-								value="#{registroComprasBean.compra.id == null ? 'Finalizar Compra' : 'Salvar Compra'}"
+								value="Salvar Compra"
 								onstart="PF('downloadLoading').show();" icon="fa fa-save"
 								onsuccess="PF('downloadLoading').hide();"
 								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"

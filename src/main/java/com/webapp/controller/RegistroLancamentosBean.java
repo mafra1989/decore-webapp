@@ -128,11 +128,13 @@ public class RegistroLancamentosBean implements Serializable {
 			
 			todosUsuarios = usuarios.todos();
 			
-			if(option.equalsIgnoreCase("despesa")) {
-				activeIndex = 0;
-			} else if(option.equalsIgnoreCase("receita")) {
-				activeIndex = 1;
-			}
+			if(option != null) {
+				if(option.equalsIgnoreCase("despesa")) {
+					activeIndex = 0;
+				} else if(option.equalsIgnoreCase("receita")) {
+					activeIndex = 1;
+				}
+			}		
 		}
 	}
 

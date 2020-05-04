@@ -248,22 +248,23 @@ public class RegistroVendasBean implements Serializable {
 				}
 			}
 
-			venda.setStatus(entrega);
-
-			venda.setValorCompra(BigDecimal.valueOf(valorCompra));
-			venda.setValorTotal(BigDecimal.valueOf(valorTotal));
-			venda.setQuantidadeItens(totalDeItens);
-			venda.setLucro(BigDecimal.valueOf(lucro));
-			venda.setPercentualLucro(BigDecimal.valueOf(percentualLucro / itensVenda.size()));
-			venda = vendas.save(venda);
 
 			if (!edit) {
+				
+				venda.setStatus(!entrega);
 
 				if (entrega) {
 					entregaVenda.setStatus("PENDENTE");
 					entregaVenda.setVenda(venda);
 					entregaVenda = entregas.save(entregaVenda);
 				}
+				
+				venda.setValorCompra(BigDecimal.valueOf(valorCompra));
+				venda.setValorTotal(BigDecimal.valueOf(valorTotal));
+				venda.setQuantidadeItens(totalDeItens);
+				venda.setLucro(BigDecimal.valueOf(lucro));
+				venda.setPercentualLucro(BigDecimal.valueOf(percentualLucro / itensVenda.size()));
+				venda = vendas.save(venda);
 
 				PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda N."
 						+ venda.getNumeroVenda() + " registrada com sucesso!' });");
@@ -283,6 +284,8 @@ public class RegistroVendasBean implements Serializable {
 
 				if (entrega) {
 					if(entregaVenda.getId() == null) {
+						venda.setStatus(!entrega);
+						
 						entregaVenda.setStatus("PENDENTE");
 						entregaVenda.setVenda(venda);
 						entregaVenda = entregas.save(entregaVenda);
@@ -293,9 +296,18 @@ public class RegistroVendasBean implements Serializable {
 					if(entregaVenda.getId() != null) {
 						entregas.remove(entregaVenda);
 						entregaVenda = new Entrega();
+						
+						venda.setStatus(!entrega);
 					}
 				}
 
+				venda.setValorCompra(BigDecimal.valueOf(valorCompra));
+				venda.setValorTotal(BigDecimal.valueOf(valorTotal));
+				venda.setQuantidadeItens(totalDeItens);
+				venda.setLucro(BigDecimal.valueOf(lucro));
+				venda.setPercentualLucro(BigDecimal.valueOf(percentualLucro / itensVenda.size()));
+				venda = vendas.save(venda);
+				
 				PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda N."
 						+ venda.getNumeroVenda() + " atualizada com sucesso!' });");
 			}
