@@ -90,6 +90,10 @@
 		.ui-datatable tfoot th {
 		font-size: 14px;
 	}
+	.venda-entrega {
+		margin-top: 7px;
+		float: left;
+	}
 }
 
 @media ( min-width :640px) {
@@ -208,7 +212,7 @@
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-2, ui-grid-col-4">
 
-						<p:outputLabel value="Vendas para entrega" style="margin-top: 7px;float: left;"/>
+						<p:outputLabel value="Vendas para entrega" styleClass="venda-entrega"/>
 						<p:selectManyCheckbox unselectable="true"
 							value="#{consultaVendasBean.statusPedido}">
 							<f:selectItems value="#{consultaVendasBean.statusPedidos}"
