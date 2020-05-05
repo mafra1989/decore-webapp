@@ -133,11 +133,6 @@
 		<mime-type>image/svg+xml</mime-type>
 	</mime-mapping>
 	
-
-	<mime-mapping>
-		<extension>ttf</extension>
-		<mime-type>fonts/poppins</mime-type>
-	</mime-mapping>
 	
 
 	<session-config>
