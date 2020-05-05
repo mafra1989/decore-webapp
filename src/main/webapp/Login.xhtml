@@ -39,21 +39,22 @@ body .ui-inputfield {
 	border: none;
 }
 
-body .ui-inputfield.ui-state-hover:not(.ui-state-error){
-border:none;
-}
-body .ui-inputfield.ui-state-focus:not(.ui-state-error){
+body .ui-inputfield.ui-state-hover:not (.ui-state-error ){
 	border: none;
-	box-shadow:none;
+}
+
+body .ui-inputfield.ui-state-focus:not (.ui-state-error ){
+	border: none;
+	box-shadow: none;
 }
 
 .ui-growl-message p {
 	font-family: verdana !important;
 }
-body .ui-panel .ui-panel-content {
-    padding: 0px;
-}
 
+body .ui-panel .ui-panel-content {
+	padding: 0px;
+}
 
 @media ( min-width :220px) {
 	.input100 {
@@ -61,46 +62,47 @@ body .ui-panel .ui-panel-content {
 		padding: 0px;
 	}
 	.wrap-login100 {
-	    border-radius: 0px;
+		border-radius: 0px;
 	}
 	.login100-form {
-	    padding: 16px 35px 22px 35px;
+		padding: 16px 35px 22px 35px;
 	}
 	.m-b-26 {
-	    margin-bottom: 15px;
+		margin-bottom: 15px;
 	}
 	input.input100 {
-	    height: 38px;
+		height: 38px;
 	}
 	.container-login100 {
 		font-family: verdana;
 		font-weight: bold;
 	}
 	.limiter {
-	    height: 100%;
+		height: 100%;
 	}
 	.container-login100 {
-    	height: 100%;
-    }
-    .wrap-login100 {
-	    margin-top: -200px;
+		height: 100%;
+	}
+	.wrap-login100 {
+		margin-top: -200px;
 	}
 }
+
 @media ( min-width :460px) {
 	.input100 {
 		margin-top: 13px;
 	}
 	.wrap-login100 {
-	    margin-top: 0px;
+		margin-top: 0px;
 	}
 	.login100-form {
-	    padding: 25px 100px 50px 150px;
+		padding: 25px 100px 50px 150px;
 	}
 	img {
 		max-height: 120px;
 	}
 	.wrap-login100 {
-	    border-radius: 10px;
+		border-radius: 10px;
 	}
 }
 </style>
@@ -115,38 +117,38 @@ body .ui-panel .ui-panel-content {
 			<div class="wrap-login100">
 				<div class="login100-form-title">
 					<p:graphicImage library="login" name="images/bg-01.jpg"
-						style="width: inherit;" />	
+						style="width: inherit;" />
 				</div>
-				
-				<p:panel id="progressPanel" 
-						widgetVar="progressPanel" visible="false"
-						style="border:none; background-color:transparent; border:none; padding-bottom:1px;width: 100%;float: right;position: absolute;"
-						closable="true" toggleable="true">
-						<p:progressBar style="height:4px;" mode="indeterminate" animationDuration="3" interval="3" />
-					</p:panel>
+
+				<p:panel id="progressPanel" widgetVar="progressPanel"
+					visible="false"
+					style="border:none; background-color:transparent; border:none; padding-bottom:1px;width: 100%;float: right;position: absolute;"
+					closable="true" toggleable="true">
+					<p:progressBar style="height:4px;" mode="indeterminate"
+						animationDuration="3" interval="3" />
+				</p:panel>
 
 				<h:form id="form" prependId="false"
 					styleClass="login100-form validate-form">
-					
-					<p:growl id="msgs" closable="true" life="3000" showDetail="true"
-		style="font-family: verdana;" />
 
-					<div class="wrap-input100 validate-input m-b-26 input100" 
+					<p:growl id="msgs" closable="true" life="3000" showDetail="true"
+						style="font-family: verdana;" />
+
+					<div class="wrap-input100 validate-input m-b-26 input100"
 						data-validate="Username is required">
-						<span
-							class="label-input100">Username</span>
-						<p:inputText id="j_username" placeholder="Enter username" style="font-family: verdana;"
-							name="username" styleClass="input100" autocomplete="off" />
+						<span class="label-input100">Username</span>
+						<p:inputText id="j_username" placeholder="Enter username"
+							style="font-family: verdana;" name="username"
+							styleClass="input100" autocomplete="off" />
 						<span class="focus-input100"></span>
 					</div>
 
 					<div class="wrap-input100 validate-input m-b-18"
 						data-validate="Password is required">
-						<span 
-							class="label-input100">Password</span>
-						<p:password style="font-family: verdana;"	
-							id="j_password" name="pass" styleClass="input100"
-							placeholder="Enter password" feedback="false"></p:password>
+						<span class="label-input100">Password</span>
+						<p:password style="font-family: verdana;" id="j_password"
+							name="pass" styleClass="input100" placeholder="Enter password"
+							feedback="false"></p:password>
 						<span class="focus-input100"></span>
 					</div>
 
@@ -156,21 +158,11 @@ body .ui-panel .ui-panel-content {
 							action="#{loginBean.acessar}" styleClass="login100-form-btn"
 							ajax="false">
 
-							<p:ajax 
-								onstart="PF('progressPanel').show();"
-								oncomplete="PF('progressPanel').close();" />
+							<p:ajax onstart="PF('progressPanel').show();start();" onerror="stop();" 
+								oncomplete="PF('progressPanel').close();stop();" onsuccess="stop();" />
 						</p:commandButton>
-						
+
 					</div>
-
-
-					<p:dialog id="downloadLoading" showHeader="false" modal="true"
-						position="center" widgetVar="downloadLoading" header="Status"
-						draggable="false" closable="false" resizable="false">
-						<p:graphicImage name="images/loadingbar.gif"
-							library="manhattan-layout" width="50" />
-					</p:dialog>
-
 
 				</h:form>
 
@@ -179,8 +171,24 @@ body .ui-panel .ui-panel-content {
 	</div>
 
 
-	
 	<h:outputScript target="body" library="login" name="js/main.js" />
+
+	<p:dialog id="downloadLoading" showHeader="false" modal="true"
+		widgetVar="downloadLoading" header="Status" draggable="false"
+		closable="false" resizable="false">
+		<p:graphicImage name="images/loadingbar.gif"
+			library="manhattan-layout" width="50" />
+	</p:dialog>
+
+	<script type="text/javascript">
+		function start() {
+			PF('downloadLoading').show();
+		}
+
+		function stop() {
+			PF('downloadLoading').hide();
+		}
+	</script>
 
 
 </h:body>
