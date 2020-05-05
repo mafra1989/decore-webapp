@@ -61,7 +61,8 @@ public class JsfLoginUrlAuthenticationEntryPoint implements AuthenticationEntryP
 
     //~ Methods ========================================================================================================
 
-    public void afterPropertiesSet() throws Exception {
+    @Override
+	public void afterPropertiesSet() throws Exception {
         Assert.isTrue(StringUtils.hasText(loginFormUrl) && UrlUtils.isValidRedirectUrl(loginFormUrl),
                 "loginFormUrl must be specified and must be a valid redirect URL");
         if (useForward && UrlUtils.isAbsoluteUrl(loginFormUrl)) {
@@ -88,7 +89,8 @@ public class JsfLoginUrlAuthenticationEntryPoint implements AuthenticationEntryP
     /**
      * Performs the redirect (or forward) to the login form URL.
      */
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
+    @Override
+	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
             throws IOException, ServletException {
 
         String redirectUrl = null;

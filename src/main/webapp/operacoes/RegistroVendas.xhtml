@@ -111,7 +111,7 @@
 		font-size: 13px;
 	}
 	#entrega-dialog .ui-panel .ui-panel-content {
-	    padding: 0px;
+		padding: 0px;
 	}
 }
 
@@ -263,8 +263,9 @@
 								<p:ajax process="@this" update="@parent" />
 							</p:inputSwitch>
 
-							<p:commandLink styleClass="btn-new entrega" id="localizacao" update="entrega-dialog"
-								value="Dados da entrega" onstart="PF('downloadLoading').show();"
+							<p:commandLink styleClass="btn-new entrega" id="localizacao"
+								update="entrega-dialog" value="Dados da entrega"
+								onstart="PF('downloadLoading').show();"
 								oncomplete="PF('downloadLoading').hide();PF('entrega-dialog').show()"
 								process="@this" disabled="#{not registroVendasBean.entrega}" />
 
@@ -390,16 +391,7 @@
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-12">
 
-							<p:panelGrid columns="2" style="margin-top:-15px;"
-								styleClass="panelgrid-noborder disabled disabled">
-								<p:outputLabel value="Total: " />
-								<p:outputLabel id="total-venda"
-									value="#{registroVendasBean.venda.valorTotal}"
-									style="margin-bottom:5px; font-weight:bold;margin-left:8px;color:#5b5656">
 
-									<f:convertNumber type="currency" />
-								</p:outputLabel>
-							</p:panelGrid>
 
 							<p:dataTable id="itensTable" paginatorAlwaysVisible="false"
 								scrollable="true" value="#{registroVendasBean.itensVenda}"
@@ -463,15 +455,25 @@
 								disabled="#{registroVendasBean.itensVendaSize eq 0}" />
 						</p:contextMenu>
 
+						<p:panelGrid columns="2" style="margin-top: 5px;float: right; margin-right: 10px;margin-bottom: 10px;"
+							styleClass="panelgrid-noborder disabled disabled">
+							<p:outputLabel value="Total: " />
+							<p:outputLabel id="total-venda"
+								value="#{registroVendasBean.venda.valorTotal}"
+								style="margin-bottom:5px; font-weight:bold;margin-left:8px;color:#5b5656">
+
+								<f:convertNumber type="currency" />
+							</p:outputLabel>
+						</p:panelGrid>
+
 						<div
-							style="width: 80%; margin-left: 10%; margin-top: 15px; margin-bottom: 10px; border-top: 1px solid #ccc"></div>
+							style="width: 80%; margin-left: 10%; margin-top: 18px; margin-bottom: 10px; border-top: 1px solid #ccc"></div>
 
 						<p:panelGrid columns="2" layout="grid"
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-4, ui-grid-col-3">
 
-							<p:commandButton id="btn-calcular"
-								value="Salvar Venda"
+							<p:commandButton id="btn-calcular" value="Salvar Venda"
 								onstart="PF('downloadLoading').show();" icon="fa fa-save"
 								onsuccess="PF('downloadLoading').hide();"
 								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"

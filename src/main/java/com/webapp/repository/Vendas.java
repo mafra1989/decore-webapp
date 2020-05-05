@@ -23,9 +23,11 @@ import com.webapp.util.jpa.Transacional;
 public class Vendas implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
 
 	@Inject
 	private EntityManager manager;
+	
 
 	public Venda porId(Long id) {
 		return this.manager.find(Venda.class, id);
@@ -829,5 +831,5 @@ public class Vendas implements Serializable {
 
 		return result;
 	}
-
+	
 }

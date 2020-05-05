@@ -15,9 +15,6 @@
  */
 package org.primefaces.manhattan.view;
 
-import javax.annotation.PostConstruct;
-import java.util.Map;
-import java.util.HashMap;
 import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;

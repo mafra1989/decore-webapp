@@ -37,7 +37,8 @@ public class JsfAccessDeniedHandler implements AccessDeniedHandler {
     private String loginPath;
     private boolean contextRelative;
 
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+    @Override
+	public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         String redirectUrl = calculateRedirectUrl(request.getContextPath(), loginPath);
         redirectUrl = response.encodeRedirectURL(redirectUrl);
 

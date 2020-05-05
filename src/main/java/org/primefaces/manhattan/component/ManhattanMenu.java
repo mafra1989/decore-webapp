@@ -35,7 +35,8 @@ public class ManhattanMenu extends AbstractMenu implements Widget,ComponentSyste
         PropertyKeys() {
         }
 
-        public String toString() {
+        @Override
+		public String toString() {
             return ((this.toString != null) ? this.toString : super.toString());
         }
     }
@@ -44,7 +45,8 @@ public class ManhattanMenu extends AbstractMenu implements Widget,ComponentSyste
         setRendererType(DEFAULT_RENDERER);
     }
 
-    public String getFamily() {
+    @Override
+	public String getFamily() {
         return COMPONENT_FAMILY;
     }
 
@@ -56,7 +58,8 @@ public class ManhattanMenu extends AbstractMenu implements Widget,ComponentSyste
         getStateHelper().put(PropertyKeys.widgetVar, _widgetVar);
     }
 
-    public org.primefaces.model.menu.MenuModel getModel() {
+    @Override
+	public org.primefaces.model.menu.MenuModel getModel() {
         return (org.primefaces.model.menu.MenuModel) getStateHelper().eval(PropertyKeys.model, null);
     }
 
@@ -80,7 +83,8 @@ public class ManhattanMenu extends AbstractMenu implements Widget,ComponentSyste
         getStateHelper().put(PropertyKeys.styleClass, _styleClass);
     }
 
-    public String resolveWidgetVar() {
+    @Override
+	public String resolveWidgetVar() {
         FacesContext context = getFacesContext();
         String userWidgetVar = (String) getAttributes().get("widgetVar");
 
