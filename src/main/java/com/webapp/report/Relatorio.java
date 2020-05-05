@@ -36,7 +36,7 @@ public class Relatorio<T> {
 					.getResource("/com/webapp/report/decore-vendas.jasper").toString());
 */			
 			InputStream relatorioStream = context.getExternalContext().getResourceAsStream(
-	                "/relatorios/decore-vendas.jasper");
+	                "/resources/relatorios/decore-vendas.jasper");
 			
 			System.out.println(relatorioStream);
 
