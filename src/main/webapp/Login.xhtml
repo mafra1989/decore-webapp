@@ -20,7 +20,7 @@
 	</f:facet>
 	<title>Login</title>
 
-
+	<h:outputStylesheet name="css/main.css" library="login" />
 
 	<style type="text/css">
 .wrap-login100 {
@@ -157,8 +157,8 @@ body .ui-panel .ui-panel-content {
 							ajax="false">
 
 							<p:ajax 
-								onstart="PF('progressPanel').show(); PF('loginBtn').disable();"
-								oncomplete="PF('progressPanel').close(); PF('loginBtn').enable();" />
+								onstart="PF('progressPanel').show();"
+								oncomplete="PF('progressPanel').close();" />
 						</p:commandButton>
 						
 					</div>
