@@ -23,6 +23,14 @@
 	<h:outputStylesheet name="css/main.css" library="login" />
 
 	<style type="text/css">
+body .ui-inputfield.ui-state-focus:not(.ui-state-error) {
+    border: none !important;
+    box-shadow: none;
+}
+body .ui-inputfield.ui-state-hover:not(.ui-state-error) {
+   	border: none !important;
+   	box-shadow: none;
+}
 .wrap-login100 {
 	width: 580px !important;
 }
@@ -121,7 +129,7 @@ body .ui-panel .ui-panel-content {
 				</div>
 
 				<p:panel id="progressPanel" widgetVar="progressPanel"
-					visible="false"
+					visible="false" 
 					style="border:none; background-color:transparent; border:none; padding-bottom:1px;width: 100%;float: right;position: absolute;"
 					closable="true" toggleable="true">
 					<p:progressBar style="height:4px;" mode="indeterminate"
@@ -138,7 +146,7 @@ body .ui-panel .ui-panel-content {
 						data-validate="Username is required">
 						<span class="label-input100">Username</span>
 						<p:inputText id="j_username" placeholder="Enter username"
-							style="font-family: verdana;" name="username"
+							style="font-family: verdana;" name="username" required="true"
 							styleClass="input100" autocomplete="off" />
 						<span class="focus-input100"></span>
 					</div>
@@ -146,20 +154,20 @@ body .ui-panel .ui-panel-content {
 					<div class="wrap-input100 validate-input m-b-18"
 						data-validate="Password is required">
 						<span class="label-input100">Password</span>
-						<p:password style="font-family: verdana;" id="j_password"
+						<p:password style="font-family: verdana;" id="j_password" required="true"
 							name="pass" styleClass="input100" placeholder="Enter password"
 							feedback="false"></p:password>
 						<span class="focus-input100"></span>
 					</div>
 
 					<div class="container-login100-form-btn">
-						<p:commandButton value="Login" id="loginBtn"
+						<p:commandButton value="Login" id="loginBtn" widgetVar="loginBtn"
 							style="background: #a0800a;border-radius: 30px;margin-top: 15px;"
 							action="#{loginBean.acessar}" styleClass="login100-form-btn"
 							ajax="false">
 
-							<p:ajax onstart="PF('progressPanel').show();PF('downloadLoading').show();" onerror="PF('downloadLoading').hide();" 
-								oncomplete="PF('progressPanel').close();PF('downloadLoading').hide();" onsuccess="PF('downloadLoading').hide();" />
+							<p:ajax onstart="PF('progressPanel').show();" 
+								oncomplete="PF('progressPanel').close();" />
 						</p:commandButton>
 
 					</div>
@@ -172,24 +180,6 @@ body .ui-panel .ui-panel-content {
 
 
 	<h:outputScript target="body" library="login" name="js/main.js" />
-
-	<p:dialog id="downloadLoading" showHeader="false" modal="true"
-		widgetVar="downloadLoading" header="Status" draggable="false"
-		closable="false" resizable="false">
-		<p:graphicImage name="images/loadingbar.gif"
-			library="manhattan-layout" width="50" />
-	</p:dialog>
-
-	<script type="text/javascript">
-		function start() {
-			PF('downloadLoading').show();
-		}
-
-		function stop() {
-			PF('downloadLoading').hide();
-		}
-	</script>
-
 
 </h:body>
 </html>
