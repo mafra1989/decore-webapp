@@ -29,6 +29,11 @@ public class Relatorio<T> {
 
 			InputStream relatorioStream = this.getClass()
 					.getResourceAsStream("/com/webapp/report/decore-vendas.jasper");
+			
+			System.out.println(this.getClass()
+					.getResource("/com/webapp/report/decore-vendas.jasper").toString());
+			
+			System.out.println(relatorioStream);
 
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
