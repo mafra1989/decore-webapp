@@ -126,7 +126,6 @@
 		</dependency>
 
 
-		<!-- Inserir esses essas três bibliotecas para funcionar (commons-beanutils, jasperreports e jasperreports-fonts) -->
 		<!-- https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils -->
 		<dependency>
 			<groupId>commons-beanutils</groupId>
