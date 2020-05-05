@@ -20,34 +20,7 @@
 	</f:facet>
 	<title>Login</title>
 
-	<!--===============================================================================================-->
-	<h:outputStylesheet name="vendor/bootstrap/css/bootstrap.min.css"
-		library="login" />
-	<!--===============================================================================================-->
-	<h:outputStylesheet
-		name="fonts/font-awesome-4.7.0/css/font-awesome.min.css"
-		library="login" />
-	<!--===============================================================================================-->
-	<h:outputStylesheet
-		name="fonts/Linearicons-Free-v1.0.0/icon-font.min.css" library="login" />
-	<!--===============================================================================================-->
-	<h:outputStylesheet name="vendor/animate/animate.css" library="login" />
-	<!--===============================================================================================-->
-	<h:outputStylesheet name="vendor/css-hamburgers/hamburgers.min.css"
-		library="login" />
-	<!--===============================================================================================-->
-	<h:outputStylesheet name="vendor/animsition/css/animsition.min.css"
-		library="login" />
-	<!--===============================================================================================-->
-	<h:outputStylesheet name="vendor/select2/select2.min.css"
-		library="login" />
-	<!--===============================================================================================-->
-	<h:outputStylesheet name="vendor/daterangepicker/daterangepicker.css"
-		library="login" />
-	<!--===============================================================================================-->
-	<h:outputStylesheet name="css/util.css" library="login" />
-	<h:outputStylesheet name="css/main.css" library="login" />
-	<!--===============================================================================================-->
+
 
 	<style type="text/css">
 .wrap-login100 {
@@ -191,13 +164,6 @@ body .ui-panel .ui-panel-content {
 					</div>
 
 
-					<p:dialog id="downloadLoading" showHeader="false" modal="true"
-						position="center" widgetVar="downloadLoading" header="Status"
-						draggable="false" closable="false" resizable="false">
-						<p:graphicImage name="images/loadingbar.gif"
-							library="manhattan-layout" width="50" />
-					</p:dialog>
-
 
 				</h:form>
 
@@ -209,21 +175,6 @@ body .ui-panel .ui-panel-content {
 	
 	<h:outputScript target="body" library="login" name="js/main.js" />
 
-	<script type="text/javascript">
-		$(document).ready(function() {
-			$.removeCookie('manhattan_expandeditems', {
-				path : '/'
-			});
-		});
-
-		function start() {
-			PF('downloadLoading').show();
-		}
-
-		function stop() {
-			PF('downloadLoading').hide();
-		}
-	</script>
 
 
 </h:body>
