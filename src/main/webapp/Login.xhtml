@@ -158,8 +158,8 @@ body .ui-panel .ui-panel-content {
 							action="#{loginBean.acessar}" styleClass="login100-form-btn"
 							ajax="false">
 
-							<p:ajax onstart="PF('progressPanel').show();start();" onerror="stop();" 
-								oncomplete="PF('progressPanel').close();stop();" onsuccess="stop();" />
+							<p:ajax onstart="PF('progressPanel').show();PF('downloadLoading').show();" onerror="PF('downloadLoading').hide();" 
+								oncomplete="PF('progressPanel').close();PF('downloadLoading').hide();" onsuccess="PF('downloadLoading').hide();" />
 						</p:commandButton>
 
 					</div>
