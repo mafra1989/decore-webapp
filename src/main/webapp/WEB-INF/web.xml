@@ -134,6 +134,11 @@
 	</mime-mapping>
 	
 
+	<mime-mapping>
+		<extension>ttf</extension>
+		<mime-type>fonts/poppins</mime-type>
+	</mime-mapping>
+	
 
 	<session-config>
 		<session-timeout>600</session-timeout>

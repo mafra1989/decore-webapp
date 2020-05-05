@@ -27,16 +27,7 @@ public class Relatorio<T> {
 	public void getRelatorio(List<T> lista, String filename) throws SQLException {
 		try {
 
-			InputStream relatorioStream = this.getClass()
-					.getResourceAsStream("/com/webapp/report/decore-vendas.jasper");
-			
-			System.out.println(relatorioStream);
-			
-			System.out.println(this.getClass()
-					.getResource("/com/webapp/report/decore-vendas.jasper").toString());
-		
-			relatorioStream = context.getExternalContext().getResourceAsStream(
-	                "/relatorios/decore-vendas.jasper");
+			InputStream relatorioStream = this.getClass().getResourceAsStream("/relatorios/decore-vendas.jasper");
 			
 			System.out.println(relatorioStream);
 
