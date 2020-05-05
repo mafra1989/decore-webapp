@@ -132,6 +132,11 @@
 		<extension>svg#fontawesomeregular</extension>
 		<mime-type>image/svg+xml</mime-type>
 	</mime-mapping>
+	
+	<mime-mapping>
+		<extension>ico</extension>
+		<mime-type>images/icons</mime-type>
+	</mime-mapping>
 
 
 
