@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<f:metadata>
+	<f:viewParam name="dummy" />
+	<f:event listener="#{loginBean.preRender}" type="preRenderView" />
+</f:metadata>
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	<title>Login</title>
+
+	<style type="text/css">
+@media ( min-width :220px) {
+	body .ui-panel .ui-panel-content {
+		border: none;
+	}
+	.ui-panelgrid .ui-grid-responsive .ui-panelgrid-cell {
+    	background: #c7c7c7;
+    }
+    body .ui-widget-content {
+	   background-color: #c7c7c7;
+	   border: 1px solid #c7c7c7;
+	}
+	.logo {
+	 	width: 220px;
+	}
+}
+
+@media ( min-width :460px) {
+
+}
+</style>
+</h:head>
+
+
+<h:body style="background: #c7c7c7;">
+
+	<div style="text-align: center; margin-top: 50px;">
+
+		<h:form id="form" prependId="false"
+			styleClass="validate-form">
+
+			<p:panelGrid columns="1" layout="grid"
+				styleClass="panelgrid-noborder disabled disabled"
+				columnClasses="ui-grid-col-12">
+
+				<p:graphicImage library="login" name="images/decore.png"
+					styleClass="logo" />
+
+				<p:panel
+					style="text-align: center;width: 100%;background: #c7c7c7;margin-top: 10px">
+
+					<p:outputLabel value="Bem vindo ao Sistema Decore!"
+						style="font-size: 18px;" />
+				</p:panel>
+
+				<p:panel
+					style="text-align: center;width: 100%;background: #c7c7c7;margin-top: -20px">
+
+					<p:button value="Acesso ao sistema" style="margin-top: 20px"
+						href="http://decore-webapp.herokuapp.com/">
+					</p:button>
+				</p:panel>
+			</p:panelGrid>
+
+		</h:form>
+	</div>
+
+</h:body>
+</html>
