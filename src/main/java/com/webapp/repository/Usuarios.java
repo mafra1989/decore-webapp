@@ -47,11 +47,12 @@ public class Usuarios implements Serializable {
 	public Usuario porLogin(String login) {
 		Usuario usuario = null;
 		
+		System.out.println("buscando usuário . . .");
 		try {
 			usuario = this.manager.createQuery("from Usuario where lower(login) = :login", Usuario.class)
 				.setParameter("login", login.toLowerCase()).getSingleResult();
 		} catch (NoResultException e) {
-			// nenhum usuário encontrado com o login informado
+			System.out.println("nenhum usuário encontrado com o login informado");
 		}
 		
 		return usuario;

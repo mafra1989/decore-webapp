@@ -37,6 +37,7 @@
 		
 	<beans:bean id="successHandler" class="com.webapp.security.AcessoAutorizadoListener"/>
 
+	<http pattern="/index.xhtml" security="none" />
 	<http pattern="/Login.xhtml" security="none" />
 	<http pattern="/500.xhtml" security="none" />
 	<http pattern="/403.xhtml" security="none" />
