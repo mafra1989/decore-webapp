@@ -54,7 +54,7 @@ public class Usuarios implements Serializable {
 		} catch (NoResultException e) {
 			System.out.println("nenhum usuário encontrado com o login informado");
 		}
-		
+		System.out.println("usuário: " + usuario.getLogin());
 		return usuario;
 	}
 	
