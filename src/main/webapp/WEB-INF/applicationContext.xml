@@ -39,6 +39,7 @@
 
 	<http pattern="/index.xhtml" security="none" />
 	<http pattern="/Login.xhtml" security="none" />
+	<http pattern="/Dashboard.xhtml" security="none" />
 	<http pattern="/500.xhtml" security="none" />
 	<http pattern="/403.xhtml" security="none" />
 	<http pattern="/404.xhtml" security="none" />
@@ -48,9 +49,6 @@
 	<http auto-config="false" use-expressions="true">
 		<custom-filter ref="exceptionTranslationFilter"
 			before="FILTER_SECURITY_INTERCEPTOR" />
-
-		<intercept-url pattern="/Dashboard.xhtml"
-			access="isAuthenticated()" />
 			
 		<intercept-url pattern="/Contas.xhtml"
 			access="hasAnyRole('ADMINISTRADOR',	'USUARIO_AVANCADO', 'USUARIO_COMUM')" />
