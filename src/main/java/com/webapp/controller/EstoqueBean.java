@@ -206,7 +206,7 @@ public class EstoqueBean implements Serializable {
 	}
 
 	public void prepareFoto() {
-		fileContent = produtoSelecionado.getFoto();
+		//fileContent = produtoSelecionado.getFoto();
 		produtoId = produtoSelecionado.getId();
 	}
 
@@ -278,7 +278,7 @@ public class EstoqueBean implements Serializable {
 		
 		for (Produto produto : produtosFiltrados) {
 			
-			if(produto.getFoto() != null) {
+			//if(produto.getFoto() != null) {
 				try {
 					
 					//File file = new File("c:/upload/" + produto.getCodigo() + ".dat"); //Criamos um nome para o arquivo
@@ -301,7 +301,7 @@ public class EstoqueBean implements Serializable {
 				} catch(WebException e) {
 					System.out.println("Erro ao enviar o produto: " + produto.getCodigo());
 				}
-			}
+			//}
 					
 		}
 	}

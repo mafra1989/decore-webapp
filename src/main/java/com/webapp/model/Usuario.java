@@ -4,16 +4,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
@@ -40,7 +37,7 @@ public class Usuario implements Serializable {
 	
 	private String contato;
 
-	private byte[] foto;
+	//private byte[] foto;
 	
 	@Column
 	private String urlImagem;
@@ -93,7 +90,7 @@ public class Usuario implements Serializable {
 	public void setContato(String telefone) {
 		this.contato = telefone;
 	}
-
+/*
 	@Lob @Basic(fetch = FetchType.LAZY)
 	@Column(length=100000)
 	public byte[] getFoto() {
@@ -103,7 +100,7 @@ public class Usuario implements Serializable {
 	public void setFoto(byte[] foto) {
 		this.foto = foto;
 	}
-
+*/
 	public String getUrlImagem() {
 		return urlImagem;
 	}

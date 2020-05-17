@@ -74,7 +74,7 @@ public class CadastroProdutoBean implements Serializable {
 	
 	public void buscar() {
 		produto = produtos.porId(produto.getId());
-		fileContent = produto.getFoto();
+		//fileContent = produto.getFoto();
 		
 		Double quantidadeItensComprados = 0D;
 		Long totalItensComprados = 0L;

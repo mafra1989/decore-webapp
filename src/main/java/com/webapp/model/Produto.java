@@ -3,14 +3,11 @@ package com.webapp.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -43,11 +40,13 @@ public class Produto implements Serializable {
 
 	@Column
 	private String locacao;
-
+	
+	/*
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
 	@Column
 	private byte[] foto;
+	*/
 
 	@Column
 	private String urlImagem;
@@ -121,7 +120,7 @@ public class Produto implements Serializable {
 	public void setLocacao(String locacao) {
 		this.locacao = locacao;
 	}
-
+/*
 	public byte[] getFoto() {
 		return foto;
 	}
@@ -129,7 +128,7 @@ public class Produto implements Serializable {
 	public void setFoto(byte[] foto) {
 		this.foto = foto;
 	}
-
+*/
 	public String getUrlImagem() {
 		return urlImagem;
 	}
