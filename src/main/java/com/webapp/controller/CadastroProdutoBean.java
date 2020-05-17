@@ -30,6 +30,7 @@ import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
 import com.webapp.repository.Produtos;
 import com.webapp.upload.Uploader;
+import com.webapp.upload.WebException;
 import com.webapp.util.jsf.FacesUtil;
 
 @Named
@@ -210,16 +211,25 @@ public class CadastroProdutoBean implements Serializable {
 	
 	public void upload() {
 		if(file != null && file.getFileName() != null) {
-			fileContent = file.getContents();	
-							
-			String json = Uploader.upload(fileContent);
-			//System.out.println(json);
 			
-			JSONObject jObj = new JSONObject(json);
-			jObj = new JSONObject(jObj.get("data").toString());
-			System.out.println(jObj.get("link"));
-			
-			produto.setUrlImagem(jObj.get("link").toString());
+			try {
+				
+				//fileContent = file.getContents();	
+								
+				String json = Uploader.upload(file);
+				//System.out.println(json);
+				
+				JSONObject jObj = new JSONObject(json);
+				jObj = new JSONObject(jObj.get("data").toString());
+				System.out.println(jObj.get("link"));
+				
+				produto.setUrlImagem(jObj.get("link").toString());
+				
+			} catch(WebException e) {
+				
+				PrimeFaces.current().executeScript(
+						"swal({ type: 'error', title: 'Erro!', text: 'Erro ao enviar imagem do produto: " + produto.getCodigo() + "!' });");
+			}
 						
 		} else {
 			PrimeFaces.current().executeScript(

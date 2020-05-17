@@ -28,6 +28,8 @@ import java.util.List;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.primefaces.model.UploadedFile;
+
 /**
  * Controls all interface with the web and the Imgur API.
  * 
@@ -53,10 +55,10 @@ public class Uploader
      * @return
      *          The JSON response from Imgur.
      */
-    public static String upload(byte[] byteImage)
+    public static String upload(UploadedFile file)
     {
         HttpURLConnection conn = getHttpConnection(UPLOAD_API_URL);
-        writeToConnection(conn, "image=" + toBase64(byteImage));
+        writeToConnection(conn, "image=" + toBase64(file));
         return getResponse(conn);
     }
 
@@ -93,11 +95,11 @@ public class Uploader
      * @return
      *          The file as a Base64 String.
      */
-    private static String toBase64(byte[] byteImage)
+    private static String toBase64(UploadedFile file)
     {
         try
         {
-            return URLEncoder.encode(DatatypeConverter.printBase64Binary(byteImage), "UTF-8");
+            return URLEncoder.encode(DatatypeConverter.printBase64Binary(file.getContents()), "UTF-8");
         }
         catch (IOException e)
         {

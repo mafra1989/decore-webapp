@@ -23,6 +23,7 @@ import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.filter.ProdutoFilter;
+import com.webapp.upload.WebException;
 import com.webapp.util.jsf.FacesUtil;
 
 @Named
@@ -32,41 +33,41 @@ public class EstoqueBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private List<CategoriaProduto> todasCategoriasProdutos;
-	
+
 	@Inject
 	private CategoriasProdutos categoriasProdutos;
-	
+
 	private List<Produto> produtosFiltrados;
-	
+
 	@Inject
 	private Produtos produtos;
-	
+
 	@Inject
 	private ItensVendas itensVendas;
-	
+
 	@Inject
 	private Produto produtoSelecionado;
-	
+
 	private ProdutoFilter filter = new ProdutoFilter();
-	
+
 	private String estoqueTotal = "0";
-	
+
 	private byte[] fileContent;
-	
+
 	private boolean pedido;
-	
+
 	private Long quantidadePedido;
-	
+
 	private NumberFormat nf = new DecimalFormat("###,##0.00");
 
 	private Long produtoId;
-        
-    @Inject
+
+	@Inject
 	private ItensCompras itensCompras;
-	
+
 	@Inject
 	private Compras compras;
-	
+
 	private boolean loop = true;
 
 	public void inicializar() {
@@ -74,146 +75,149 @@ public class EstoqueBean implements Serializable {
 			todasCategoriasProdutos();
 		}
 	}
-	
+
 	public void pesquisar() {
-		
+
 		boolean zerarEstoque = false;
-		if(filter.getDescricao().equalsIgnoreCase("ZerarEstoque")) {
+		if (filter.getDescricao().equalsIgnoreCase("ZerarEstoque")) {
 			zerarEstoque = true;
 			filter.setDescricao("");
 		}
-		
+
 		boolean estoqueDisponivel = false;
-		if(filter.getDescricao().equalsIgnoreCase("EstoqueDisponivel")) {
+		if (filter.getDescricao().equalsIgnoreCase("EstoqueDisponivel")) {
 			estoqueDisponivel = true;
 			filter.setDescricao("");
 		}
-		
-		produtosFiltrados = produtos.filtrados(filter);	
-		
+
+		produtosFiltrados = produtos.filtrados(filter);
+
 		long value = 0;
 		for (Produto produto : produtosFiltrados) {
 			value += produto.getQuantidadeAtual();
 		}
-		
+
 		estoqueTotal = String.valueOf(value);
-		
+
 		produtoSelecionado = null;
-		
-		if(pedido) {
-			
+
+		if (pedido) {
+
 			Long totalItensVendidos = 0L;
 			for (Produto produto : produtosFiltrados) {
-								
+
 				List<ItemVenda> itensVenda = itensVendas.porProduto(produto);
 				for (ItemVenda itemVenda : itensVenda) {
 					totalItensVendidos += itemVenda.getQuantidade();
 				}
 			}
-			
+
 			for (Produto produto : produtosFiltrados) {
-				
+
 				Long totalItemVendido = 0L;
-				
+
 				List<ItemVenda> itensVenda = itensVendas.porProduto(produto);
 				for (ItemVenda itemVenda : itensVenda) {
 					totalItemVendido += itemVenda.getQuantidade();
 				}
-				
-				if(totalItemVendido > 0) {
-					
-					produto.setPercentualVenda(nf.format((totalItemVendido * 100) / totalItensVendidos.doubleValue()) + "%");
+
+				if (totalItemVendido > 0) {
+
+					produto.setPercentualVenda(
+							nf.format((totalItemVendido * 100) / totalItensVendidos.doubleValue()) + "%");
 				} else {
 					produto.setPercentualVenda(nf.format(0D) + "%");
-				}			
-				
-				if(quantidadePedido == null) {
-					produto.setQuantidadePedido((long) ((totalItemVendido * 100) / totalItensVendidos.doubleValue()) * 0);
+				}
+
+				if (quantidadePedido == null) {
+					produto.setQuantidadePedido(
+							(long) ((totalItemVendido * 100) / totalItensVendidos.doubleValue()) * 0);
 				} else {
-					produto.setQuantidadePedido((long) (((totalItemVendido * 100) / totalItensVendidos.doubleValue()) * quantidadePedido)/100);
+					produto.setQuantidadePedido(
+							(long) (((totalItemVendido * 100) / totalItensVendidos.doubleValue()) * quantidadePedido)
+									/ 100);
 				}
 			}
-			
+
 		} else {
 			quantidadePedido = null;
 		}
-		
-		
-		if(zerarEstoque) {
-			
+
+		if (zerarEstoque) {
+
 			for (Produto produto : produtosFiltrados) {
 				produto = produtos.porId(produto.getId());
 				produto.setQuantidadeAtual(0L);
-				
+
 				produto = produtos.save(produto);
 			}
-			
-			//produtosFiltrados = produtos.filtrados(filter);
+
+			// produtosFiltrados = produtos.filtrados(filter);
 		}
-		
-		if(filter.getDescricao().contains("Ajuste")) {
+
+		if (filter.getDescricao().contains("Ajuste")) {
 			String[] dados = filter.getDescricao().replace("Ajuste", "").split(",");
-			
+
 			Compra compra = compras.porNumeroCompra(Long.parseLong(dados[0]));
 			Produto produto = produtos.porCodigo(dados[1]);
-			
+
 			ItemCompra itemCompra = itensCompras.porCompra(compra, produto);
-			if(itemCompra != null) {
+			if (itemCompra != null) {
 				itemCompra.setQuantidadeDisponivel(Long.parseLong(dados[2]));
 				itensCompras.save(itemCompra);
-				
+
 				PrimeFaces.current().executeScript(
-						"swal({ type: 'success', title: 'Concluído!', text: 'Ajuste realizado com sucesso! Compra N. " 
-				+ compra.getNumeroCompra() + ", Produto: " + produto.getCodigo() + ", Quantidade Disponível: "
-								+ itemCompra.getQuantidadeDisponivel() + " ' });");
-			}		
-		}	
-		
-		if(estoqueDisponivel && loop) {
-			
+						"swal({ type: 'success', title: 'Concluído!', text: 'Ajuste realizado com sucesso! Compra N. "
+								+ compra.getNumeroCompra() + ", Produto: " + produto.getCodigo()
+								+ ", Quantidade Disponível: " + itemCompra.getQuantidadeDisponivel() + " ' });");
+			}
+		}
+
+		if (estoqueDisponivel && loop) {
+
 			Long totalDisponivel = 0L;
-			
+
 			loop = false;
 			for (Produto produto : produtosFiltrados) {
 				List<ItemCompra> itensCompra = itensCompras.porProduto(produto);
-				
+
 				Long disponivel = 0L;
-				
+
 				for (ItemCompra itemCompra : itensCompra) {
 					Number totalVendido = itensVendas.vendasPorCompra(itemCompra.getCompra(), produto);
 					itemCompra.setQuantidadeDisponivel(itemCompra.getQuantidade() - totalVendido.longValue());
-					
+
 					disponivel += itemCompra.getQuantidadeDisponivel();
-					
+
 					totalDisponivel += itemCompra.getQuantidadeDisponivel();
-					System.out.println("Produto: " + itemCompra.getProduto().getCodigo() + " Quantidade: " + itemCompra.getQuantidade() + " Disponível: " + itemCompra.getQuantidadeDisponivel());
-					
+					System.out.println("Produto: " + itemCompra.getProduto().getCodigo() + " Quantidade: "
+							+ itemCompra.getQuantidade() + " Disponível: " + itemCompra.getQuantidadeDisponivel());
+
 					itensCompras.save(itemCompra);
 				}
-				
+
 				produto.setQuantidadeAtual(disponivel);
 				produtos.save(produto);
 			}
-			
+
 			loop = true;
 			System.out.println("Total Disponível: " + totalDisponivel);
 		}
 	}
-	
-	
+
 	public void prepareFoto() {
 		fileContent = produtoSelecionado.getFoto();
-                produtoId = produtoSelecionado.getId();
-	} 
-
-        public void prepareId() {
-               produtoId = produtoSelecionado.getId();
-        }
-	
-	public String getImageContentsAsBase64() {
-	    return Base64.getEncoder().encodeToString(fileContent);
+		produtoId = produtoSelecionado.getId();
 	}
-	
+
+	public void prepareId() {
+		produtoId = produtoSelecionado.getId();
+	}
+
+	public String getImageContentsAsBase64() {
+		return Base64.getEncoder().encodeToString(fileContent);
+	}
+
 	private void todasCategoriasProdutos() {
 		todasCategoriasProdutos = categoriasProdutos.todos();
 	}
@@ -266,10 +270,40 @@ public class EstoqueBean implements Serializable {
 		this.quantidadePedido = quantidadePedido;
 	}
 
-        public Long getProdutoId() {
-              return produtoId;
-        }
-
-
+	public Long getProdutoId() {
+		return produtoId;
+	}
+	
+	public void metotoParaUpload() {
+		
+		for (Produto produto : produtosFiltrados) {
+			
+			if(produto.getFoto() != null) {
+				try {
+					
+					//File file = new File("c:/upload/" + produto.getCodigo() + ".dat"); //Criamos um nome para o arquivo
+					//BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file)); //Criamos o arquivo
+					//bos.write(produto.getFoto()); //Gravamos os bytes lá
+					//bos.close(); //Fechamos o stream.
+					
+					//String json = Uploader.upload(produto.getFoto());
+					//System.out.println(json);
+					
+					/*
+					JSONObject jObj = new JSONObject(json);
+					jObj = new JSONObject(jObj.get("data").toString());
+					System.out.println(jObj.get("link"));
+					
+					produto.setUrlImagem(jObj.get("link").toString());
+					produtos.save(produto);
+					*/
+					
+				} catch(WebException e) {
+					System.out.println("Erro ao enviar o produto: " + produto.getCodigo());
+				}
+			}
+					
+		}
+	}
 
 }
