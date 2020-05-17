@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
-@Table(name = "categoria_lancamentos_fix")
+@Table(name = "categoria_lancamentos")
 public class CategoriaLancamento implements Serializable {
 
 	private static final long serialVersionUID = 1L;

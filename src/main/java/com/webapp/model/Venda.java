@@ -19,7 +19,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "vendas_fix_v4")
+@Table(name = "vendas")
 public class Venda implements Serializable {
 
 	private static final long serialVersionUID = 1L;

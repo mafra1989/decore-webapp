@@ -14,7 +14,7 @@ import javax.validation.constraints.Digits;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "conta_fix_v3")
+@Table(name = "conta")
 public class Conta implements Serializable {
 
 	private static final long serialVersionUID = 1L;

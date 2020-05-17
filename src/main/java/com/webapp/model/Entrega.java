@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
-@Table(name = "entregas_fix_v2")
+@Table(name = "entregas")
 public class Entrega implements Serializable {
 
 	private static final long serialVersionUID = 1L;
