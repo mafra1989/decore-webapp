@@ -41,6 +41,9 @@ public class Usuario implements Serializable {
 	private String contato;
 
 	private byte[] foto;
+	
+	@Column
+	private String urlImagem;
 
 	private String login;
 	private String senha;
@@ -99,6 +102,14 @@ public class Usuario implements Serializable {
 
 	public void setFoto(byte[] foto) {
 		this.foto = foto;
+	}
+
+	public String getUrlImagem() {
+		return urlImagem;
+	}
+
+	public void setUrlImagem(String urlImagem) {
+		this.urlImagem = urlImagem;
 	}
 
 	@Column(length = 60)

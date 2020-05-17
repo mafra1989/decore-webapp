@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
+import org.primefaces.json.JSONObject;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
@@ -28,6 +29,7 @@ import com.webapp.repository.Fornecedores;
 import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
 import com.webapp.repository.Produtos;
+import com.webapp.upload.Uploader;
 import com.webapp.util.jsf.FacesUtil;
 
 @Named
@@ -115,7 +117,7 @@ public class CadastroProdutoBean implements Serializable {
 	public void salvar() {
 
 		if(fileContent != null) {
-			produto.setFoto(fileContent);
+			//produto.setFoto(fileContent);
 		}
 
 		if (produto.getId() == null) {
@@ -208,8 +210,17 @@ public class CadastroProdutoBean implements Serializable {
 	
 	public void upload() {
 		if(file != null && file.getFileName() != null) {
-			fileContent = file.getContents();						
+			fileContent = file.getContents();	
+							
+			String json = Uploader.upload(fileContent);
+			//System.out.println(json);
 			
+			JSONObject jObj = new JSONObject(json);
+			jObj = new JSONObject(jObj.get("data").toString());
+			System.out.println(jObj.get("link"));
+			
+			produto.setUrlImagem(jObj.get("link").toString());
+						
 		} else {
 			PrimeFaces.current().executeScript(
 					"swal({ type: 'error', title: 'Erro!', text: 'Selecione uma imagem com até 200KB!' });");

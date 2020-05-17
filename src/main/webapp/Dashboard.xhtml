@@ -763,9 +763,9 @@ body .ui-datatable .ui-datatable-data>tr td {
 
 				<div class="ui-fluid" style="margin-top: 10px; text-align: center">
 					<ui:fragment id="photo"
-						rendered="#{dashboardBean.fileContent != null}">
+						rendered="#{dashboardBean.produto.urlImagem != null}">
 						<img
-							src="data:image/png;base64,#{dashboardBean.imageContentsAsBase64}"
+							src="#{dashboardBean.produto.urlImagem}"
 							style="width: 200px; height: 250px;" />
 					</ui:fragment>
 

@@ -214,10 +214,9 @@
 					<h3 style="font-weight: bold">Resultado da consulta</h3>
 
 					<p:commandButton icon="fa fa-fw fa-image" value="Visualizar"
-						id="foto-button" update="produto-dialog"
+						id="foto-button" update="produto-dialog form-dialog"
 						actionListener="#{estoqueBean.prepareFoto}"
 						style="margin-right:10px;font-weight:bold; float:right;width:100px;margin-top: -40px;"
-						process="form" action="#{estoqueBean.pesquisar}"
 						disabled="#{estoqueBean.produtoSelecionado.id == null}"
 						onstart="PF('downloadLoading').show();"
 						oncomplete="PF('downloadLoading').hide();PF('produto-dialog').show();"></p:commandButton>
@@ -294,9 +293,9 @@
 
 				<div class="ui-fluid" style="margin-top: 10px; text-align: center">
 					<ui:fragment id="photo"
-						rendered="#{estoqueBean.fileContent != null}">
+						rendered="#{estoqueBean.produtoSelecionado.urlImagem != null}">
 						<img
-							src="data:image/png;base64,#{estoqueBean.imageContentsAsBase64}"
+							src="#{estoqueBean.produtoSelecionado.urlImagem}"
 							style="width: 200px; height: 250px;" />
 					</ui:fragment>
 

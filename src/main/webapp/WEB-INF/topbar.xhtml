@@ -37,13 +37,13 @@ body #pecaDialog .ui-datatable .ui-datatable-data>tr td {
 				<li class="profile-item"><a href="#">  
 				
     				<ui:fragment id="photo"
-						rendered="#{seguranca.fileContent != null}">
+						rendered="#{seguranca.urlImagem != null}">
 						<img 
-							src="data:image/png;base64,#{seguranca.imageContentsAsBase64}"
+							src="#{seguranca.urlImagem}"
 							style="width: 40px;height: 40px;border-radius: 100px;" />
 					</ui:fragment>
 				
-						<p:graphicImage rendered="#{seguranca.fileContent == null}" style="width: 40px;height: 40px;border-radius: 100px;"
+						<p:graphicImage rendered="#{seguranca.urlImagem == null}" style="width: 40px;height: 40px;border-radius: 100px;"
 							name="images/user-icon.png" library="manhattan-layout" /> 
 							
 							<span
@@ -72,13 +72,13 @@ body #pecaDialog .ui-datatable .ui-datatable-data>tr td {
 			</ul>
 			
 			<ui:fragment id="photo-mobile"
-						rendered="#{seguranca.fileContent != null}">
+						rendered="#{seguranca.urlImagem != null}">
 						<img class="topbar-menu-btn"
-							src="data:image/png;base64,#{seguranca.imageContentsAsBase64}"
+							src="#{seguranca.urlImagem}"
 							style="width: 40px;height: 40px;border-radius: 100px;" />
 					</ui:fragment>
 			
-			<p:graphicImage rendered="#{seguranca.fileContent == null}" styleClass="topbar-menu-btn"
+			<p:graphicImage rendered="#{seguranca.urlImagem == null}" styleClass="topbar-menu-btn"
 					style="width: 40px;height: 40px;border-radius: 100px;"
 							name="images/user-icon.png" library="manhattan-layout" />
 		</div>

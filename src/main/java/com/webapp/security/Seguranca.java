@@ -1,7 +1,5 @@
 package com.webapp.security;
 
-import java.util.Base64;
-
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import javax.faces.context.ExternalContext;
@@ -18,7 +16,7 @@ public class Seguranca {
 	@Inject
 	private ExternalContext externalContext;
 
-	private byte[] fileContent;
+	private String urlImagem;
 
 	public String getNomeUsuario() {
 		String nome = null;
@@ -28,8 +26,8 @@ public class Seguranca {
 		if (usuarioLogado != null) {
 			nome = usuarioLogado.getUsuario().getNome();
 
-			if (usuarioLogado.getUsuario().getFoto() != null) {
-				fileContent = getUsuarioLogado().getUsuario().getFoto();
+			if (usuarioLogado.getUsuario().getUrlImagem() != null) {
+				urlImagem = getUsuarioLogado().getUsuario().getUrlImagem();
 			}
 		}
 
@@ -81,17 +79,17 @@ public class Seguranca {
 		return externalContext.isUserInRole("USUARIO_COMUM");
 	}
 
-	public String getImageContentsAsBase64() {
+	/*public String getImageContentsAsBase64() {
 		return Base64.getEncoder().encodeToString(fileContent);
-	}
+	}*/
 
-	public byte[] getFileContent() {
-
-		if (getUsuarioLogado().getUsuario().getFoto() != null) {
-			fileContent = getUsuarioLogado().getUsuario().getFoto();
+	public String getUrlImagem() {
+		
+		if (getUsuarioLogado().getUsuario().getUrlImagem() != null) {
+			urlImagem = getUsuarioLogado().getUsuario().getUrlImagem();
 		}
 
-		return fileContent;
+		return urlImagem;
 	}
 
 }

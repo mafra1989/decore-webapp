@@ -17,10 +17,13 @@
 
 	<ui:define name="content">
 
+		<h:outputStylesheet name="css/mobile-style.css" library="upload" />
+		<h:outputStylesheet name="css/style.css" library="upload" />
+
 		<style>
 @media ( min-width :220px) {
 	body .ui-inputfield {
-	    width: 96%;
+		width: 96%;
 	}
 	.ui-fileupload-simple {
 		display: block;
@@ -90,7 +93,6 @@
 		width: 1.7em;
 		height: 1.7em;
 	}
-	
 	.ui-slider-horizontal {
 		height: 1.2em;
 	}
@@ -104,7 +106,6 @@
 }
 
 @media ( min-width :640px) {
-	
 	.ui-slider-handle {
 		width: 1.2em !important;
 		height: 1.2em !important;
@@ -127,9 +128,10 @@
 		width: 64% !important;
 	}
 }
+
 @media ( min-width :641px) {
 	body .ui-inputfield {
-	    width: auto;
+		width: auto;
 	}
 }
 </style>
@@ -265,21 +267,20 @@
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-2, ui-grid-col-2">
 
-							<p:outputLabel value="Foto" />												
-							<p:commandButton  value="Adicionar" styleClass="btn-upload"
+							<p:outputLabel value="Foto" />
+							<p:commandButton value="Adicionar" styleClass="btn-upload"
 								onstart="PF('downloadLoading').show();"
-								oncomplete="PF('downloadLoading').hide();PF('anexo-dialog').show();" 
+								oncomplete="PF('downloadLoading').hide();PF('anexo-dialog').show();"
 								disabled="#{not seguranca.acessoAdministrador()}"
 								onsuccess="PF('downloadLoading').hide();" update="anexo-dialog"
-								icon="fa fa-plus"
-								style="font-weight:bold" />
+								icon="fa fa-plus" style="font-weight:bold" />
 
 							<p:outputLabel value=""
-								rendered="#{cadastroProdutoBean.fileContent != null}" />
+								rendered="#{cadastroProdutoBean.produto.urlImagem != null}" />
 							<ui:fragment id="photo-edit"
-								rendered="#{cadastroProdutoBean.fileContent != null}">
+								rendered="#{cadastroProdutoBean.produto.urlImagem != null}">
 								<img
-									src="data:image/png;base64,#{cadastroProdutoBean.imageContentsAsBase64}"
+									src="#{cadastroProdutoBean.produto.urlImagem}"
 									style="width: 100%;" />
 							</ui:fragment>
 
@@ -297,19 +298,21 @@
 
 							<p:outputLabel />
 							<p:commandButton id="btn-calcular" value="Salvar"
-								onstart="PF('downloadLoading').show();" disabled="#{not seguranca.acessoAdministrador()}"
+								onstart="PF('downloadLoading').show();"
+								disabled="#{not seguranca.acessoAdministrador()}"
 								styleClass="btn-calcular"
-								onsuccess="PF('downloadLoading').hide();" update="msg panel-cadastro"
+								onsuccess="PF('downloadLoading').hide();"
+								update="msg panel-cadastro"
 								action="#{cadastroProdutoBean.salvar}"
 								process="@this form panel-upload" icon="fa fa-save"
 								style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;" />
 						</p:panelGrid>
 					</p:panel>
-					
+
 					<p:spacer />
 
 					<p:panel rendered="#{cadastroProdutoBean.produto.id != null}"
-						style="margin-bottom: 20px">	
+						style="margin-bottom: 20px">
 
 						<h3 style="font-weight: bold">Informações importantes</h3>
 
@@ -338,7 +341,8 @@
 									<p:outputLabel value="" />
 									<p:outputLabel value="Quantidade de Itens Comprados"
 										for="totalComprados" />
-									<p:inputNumber id="totalComprados" readonly="true" decimalPlaces="0"
+									<p:inputNumber id="totalComprados" readonly="true"
+										decimalPlaces="0"
 										value="#{cadastroProdutoBean.produto.quantidadeItensComprados}" />
 
 									<p:outputLabel value="Valor Total de Compras"
@@ -360,7 +364,8 @@
 									<p:outputLabel value="" />
 									<p:outputLabel value="Quantidade de Itens Vendidos"
 										for="totalVendidos" />
-									<p:inputNumber id="totalVendidos" readonly="true" decimalPlaces="0"
+									<p:inputNumber id="totalVendidos" readonly="true"
+										decimalPlaces="0"
 										value="#{cadastroProdutoBean.produto.quantidadeItensVendidos}" />
 
 									<p:outputLabel value="Valor Total de Vendas" for="totalVendas" />
@@ -375,7 +380,8 @@
 
 									<p:outputLabel value="Preço Médio de Venda"
 										for="preco-medio-venda" />
-									<p:inputNumber id="preco-medio-venda" readonly="true" symbol="R$ "
+									<p:inputNumber id="preco-medio-venda" readonly="true"
+										symbol="R$ "
 										value="#{cadastroProdutoBean.produto.precoMedioVenda}" />
 								</p:panelGrid>
 							</p:panel>
@@ -385,32 +391,38 @@
 				</p:panel>
 			</h:form>
 
+
 		</div>
-		
-		<p:dialog header="Adicionar foto" widgetVar="anexo-dialog"  position="top" style="margin-top: 100px"
-			id="anexo-dialog" resizable="false" modal="true" closeOnEscape="true"
-			responsive="true" width="350px">
+
+		<p:dialog header="Adicionar foto" widgetVar="anexo-dialog"
+			position="top" style="margin-top: 100px" id="anexo-dialog"
+			resizable="false" modal="true" closeOnEscape="true" responsive="true"
+			width="350px">
 
 			<h:form id="form-anexo" enctype="multipart/form-data">
 
 				<p:fileUpload styleClass="btn-upload" sizeLimit="200000"
-							value="#{cadastroProdutoBean.file}" 
-							label="Anexar" process="@this" style="margin-left:8px;margin-top:5px"
-							mode="simple" skinSimple="true">
-						</p:fileUpload>
-						
+					value="#{cadastroProdutoBean.file}" label="Anexar" process="@this"
+					style="margin-left:8px;margin-top:5px" mode="simple"
+					skinSimple="true">
+				</p:fileUpload>
+
+
+
 				<div class="ui-g-12 ui-lg-12">
-				
+
 					<p:panel class="card card-w-title ui-fluid"
 						style="padding-bottom: 0px;margin-bottom: 0px;">
 
-						<p:commandButton icon="fa fa-fw fa-cloud-upload" value="Upload" 
-							action="#{cadastroProdutoBean.upload}"  ajax="false" process="@this"
+						<p:commandButton icon="fa fa-fw fa-cloud-upload" value="Upload"
+							action="#{cadastroProdutoBean.upload}" ajax="false"
+							process="@this"
 							onclick="PrimeFaces.monitorDownload(start, stop);"
-							update="form:panel-upload" style="background-color: #147df0; font-weight: bold; float: rifht; width: 140px">
+							update="form:panel-upload"
+							style="background-color: #147df0; font-weight: bold; float: rifht; width: 140px">
 
 						</p:commandButton>
-						
+
 						<p:commandButton icon="fa fa-fw fa-close" value="Fechar"
 							onclick="PF('anexo-dialog').hide();"
 							style="background-color: #e15e5ef0; font-weight: bold; float: left; width: 140px">
@@ -438,6 +450,9 @@
 				PF('downloadLoading').hide();
 			}
 		</script>
+
+		<h:outputScript target="body" library="upload" name="js/imgur.js" />
+		<h:outputScript target="body" library="upload" name="js/upload.js" />
 
 	</ui:define>
 

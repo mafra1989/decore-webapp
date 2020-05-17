@@ -15,6 +15,7 @@ import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.PrimeFaces;
+import org.primefaces.json.JSONObject;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
@@ -25,6 +26,7 @@ import com.webapp.model.Usuario;
 import com.webapp.repository.Grupos;
 import com.webapp.repository.Usuarios;
 import com.webapp.repository.filter.UsuarioFilter;
+import com.webapp.upload.Uploader;
 import com.webapp.util.jsf.FacesUtil;
 
 @Named
@@ -246,10 +248,20 @@ public class CadastroEquipeBean implements Serializable {
 	
 	public void upload() {
 		if(file != null && file.getFileName() != null) {
-			fileContent = file.getContents();
+			fileContent = file.getContents();			
 			
-			membroSelecionado.setFoto(fileContent);
+			String json = Uploader.upload(fileContent);
+			//System.out.println(json);
+			
+			JSONObject jObj = new JSONObject(json);
+			jObj = new JSONObject(jObj.get("data").toString());
+			System.out.println(jObj.get("link"));
+			
+			membroSelecionado.setUrlImagem(jObj.get("link").toString());
+			
+			//membroSelecionado.setFoto(fileContent);
 			usuarios.save(membroSelecionado);
+			
 			
 			PrimeFaces.current().executeScript(
 					"swal({ type: 'success', title: 'Concluído!', text: 'Foto adicionada com sucesso!' });");

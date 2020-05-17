@@ -103,6 +103,9 @@ public class DashboardBean implements Serializable {
 	private String totalItensEstoque = "0";
 
 	private String totalDespesasTop5 = "0,00";
+	
+	@Inject
+	private Produto produto;
 
 	private byte[] fileContent;
 	
@@ -532,7 +535,7 @@ public class DashboardBean implements Serializable {
 	}
 
 	public void carregarProduto(String codigo) {
-		Produto produto = produtos.porCodigo(codigo);
+		produto = produtos.porCodigo(codigo);
 		fileContent = produto.getFoto();
 		produtoId = produto.getId();
 	}
@@ -666,6 +669,14 @@ public class DashboardBean implements Serializable {
 
 	public Long getProdutoId() {
 		return produtoId;
+	}
+
+	public Produto getProduto() {
+		return produto;
+	}
+
+	public void setProduto(Produto produto) {
+		this.produto = produto;
 	}
 
 }
