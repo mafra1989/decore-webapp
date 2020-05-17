@@ -20,7 +20,7 @@ public class EntityManagerProducer {
 
     @PostConstruct
     public void postConstruct() {
-        this.factory = Persistence.createEntityManagerFactory("SmartBankingPU", properties.get());
+        this.factory = Persistence.createEntityManagerFactory("AppPU", properties.get());
     }
 
     @Produces
