@@ -71,3 +71,10 @@ INSERT INTO bairros(id,nome,zona) VALUES (61,'Vila Buriti','SUL');
 INSERT INTO bairros(id,nome,zona) VALUES (62,'Vila da Prata','OESTE');
 INSERT INTO bairros(id,nome,zona) VALUES (63,'Zumbi dos Palmares','LESTE');
 INSERT INTO bairros(id,nome,zona) VALUES (64,'Não Informado','NORTE');
+
+INSERT INTO destino_lancamentos(id,descricao) VALUES (43,'Empresa');
+INSERT INTO destino_lancamentos(id,descricao) VALUES (45,'Nilton Dantas');
+INSERT INTO destino_lancamentos(id,descricao) VALUES (44,'Tiago Dantas');
+INSERT INTO destino_lancamentos(id,descricao) VALUES (46,'Risonildo Dantas');
+INSERT INTO destino_lancamentos(id,descricao) VALUES (47,'Tácito Dantas');
+INSERT INTO destino_lancamentos(id,descricao) VALUES (35913,'Adriana');
