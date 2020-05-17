@@ -5,7 +5,10 @@ INSERT INTO usuarios(id,contato,cpf,foto,funcao,login,nome,senha) VALUES (37570,
 
 INSERT INTO grupos (id, nome, descricao) VALUES (1, 'ADMINISTRADOR', 'Administrador'), (2, 'USUARIO_AVANCADO','Usuário Avançado'), (3, 'USUARIO_COMUM','Usuário Comum'); 
 
-INSERT INTO usuario_grupo (usuario_id, grupo_id) VALUES (1, 1);
+INSERT INTO usuario_grupo(usuario_id,grupo_id) VALUES (32,3);
+INSERT INTO usuario_grupo(usuario_id,grupo_id) VALUES (1,1);
+INSERT INTO usuario_grupo(usuario_id,grupo_id) VALUES (37569,3);
+INSERT INTO usuario_grupo(usuario_id,grupo_id) VALUES (37570,3);
 
 INSERT INTO categoria_produtos(id,nome) VALUES (1,'Porta');
 INSERT INTO categoria_produtos(id,nome) VALUES (3,'Fechadura');
@@ -7784,3 +7787,17 @@ INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parce
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37562,2019,508,15,8,5,'LANCAMENTO','2019-08-15 00:00:00','AVISTA',33,'Y','CREDITO',20.00,'2019-08-15 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37568,2019,509,31,3,1,'LANCAMENTO','2019-03-31 04:10:06','AVISTA',14,'Y','CREDITO',43667.84,'2019-03-31 04:10:06');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37324,2020,215,4,4,7,'LANCAMENTO','2020-04-04 00:00:00','AVISTA',14,'Y','DEBITO',200.00,'2020-04-04 00:00:00');
+
+INSERT INTO entregas(id,latitude,localizacao,longitude,nome,observacao,status,venda_id) VALUES (44958,NULL,'Rua são paulo, 04 são josé operario',NULL,'Paulo','passar no debito','ENTREGUE',44952);
+INSERT INTO entregas(id,latitude,localizacao,longitude,nome,observacao,status,venda_id) VALUES (44965,NULL,'Rua Joviania, 12 novo aleixo',NULL,'Alexandre','Parcelar no Crédito em 3x','PENDENTE',44959);
+
+INSERT INTO target(id,periodo,tipo,valor) VALUES (37574,'ANUAL','LUCRO',30000.00);
+INSERT INTO target(id,periodo,tipo,valor) VALUES (37573,'MENSAL','LUCRO',8000.00);
+INSERT INTO target(id,periodo,tipo,valor) VALUES (37571,'DIARIO','LUCRO',300.00);
+INSERT INTO target(id,periodo,tipo,valor) VALUES (37572,'SEMANAL','LUCRO',3000.00);
+INSERT INTO target(id,periodo,tipo,valor) VALUES (37579,'MENSAL','DESPESA',12500.00);
+INSERT INTO target(id,periodo,tipo,valor) VALUES (37580,'ANUAL','DESPESA',150000.00);
+INSERT INTO target(id,periodo,tipo,valor) VALUES (37577,'MENSAL','VENDA',60000.00);
+INSERT INTO target(id,periodo,tipo,valor) VALUES (37578,'ANUAL','VENDA',720000.00);
+INSERT INTO target(id,periodo,tipo,valor) VALUES (37575,'DIARIO','VENDA',2500.00);
+INSERT INTO target(id,periodo,tipo,valor) VALUES (37576,'SEMANAL','VENDA',15000.00);
