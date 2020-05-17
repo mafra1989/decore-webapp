@@ -7,69 +7,67 @@ INSERT INTO fornecedores (id, nome) VALUES (1, 'Acer'), (2, 'Samsung');
 
 INSERT INTO tipos_vendas (id, descricao) VALUES (1, 'Olx'), (2, 'Face');
 
-COPY bairros (id, nome, zona) FROM stdin;
-1	Adrianápolis	CENTRO_SUL
-2	Aleixo	CENTRO_SUL
-3	Alvorada	CENTRO_OESTE
-4	Armando Mendes	LESTE
-5	Betânia	SUL
-6	Cachoeirinha	SUL
-7	Centro	SUL
-8	Chapada	CENTRO_SUL
-9	Cidade de Deus	NORTE
-10	Cidade Nova	NORTE
-11	Colônia Antônio Aleixo	LESTE
-12	Colônia Oliveira Machado	SUL
-13	Colônia Santo Antônio	NORTE
-14	Colônia Terra Nova	NORTE
-15	Compensa	OESTE
-16	Coroado	LESTE
-17	Crespo	SUL
-18	Da Paz	CENTRO_OESTE
-19	Distrito Industrial I	SUL
-20	Distrito Industrial II	LESTE
-21	Dom Pedro	CENTRO_OESTE
-22	Educandos	SUL
-23	Flores	CENTRO_SUL
-24	Gilberto Mestrinho	LESTE
-25	Glória	OESTE
-26	Japiim	SUL
-27	Jorge Teixeira	LESTE
-28	Lago Azul	NORTE
-29	Lírio do Vale	OESTE
-30	Mauazinho	LESTE
-31	Monte das Oliveiras	NORTE
-32	Morro da Liberdade	SUL
-33	Nossa Senhora Aparecida	SUL
-34	Nossa Senhora das Graças	CENTRO_SUL
-35	Nova Cidade	NORTE
-36	Nova Esperança	OESTE
-37	Novo Aleixo	NORTE
-38	Novo Israel	NORTE
-39	Parque 10 de Novembro	CENTRO_SUL
-40	Petrópolis	SUL
-41	Planalto	CENTRO_OESTE
-42	Ponta Negra	OESTE
-43	Praça 14 de Janeiro	SUL
-44	Presidente Vargas	SUL
-45	Puraquequara	LESTE
-46	Raiz	SUL
-47	Redençao	CENTRO_OESTE
-48	Santa Etelvina	NORTE
-49	Santa Luzia	SUL
-50	Santo Agostinho	OESTE
-51	Santo Antônio	OESTE
-52	Sao Francisco	SUL
-53	Sao Geraldo	CENTRO_SUL
-54	Sao Jorge	OESTE
-55	Sao José Operário	LESTE
-56	Sao Lázaro	SUL
-57	Sao Raimundo	OESTE
-58	Tancredo Neves	LESTE
-59	Taruma	OESTE
-60	Taruma-Açu	OESTE
-61	Vila Buriti	SUL
-62	Vila da Prata	OESTE
-63	Zumbi dos Palmares	LESTE
-3008	Não Informado	NORTE
-\.
+INSERT INTO bairros(id,nome,zona) VALUES (1,'Adrianápolis','CENTRO_SUL');
+INSERT INTO bairros(id,nome,zona) VALUES (2,'Aleixo','CENTRO_SUL');
+INSERT INTO bairros(id,nome,zona) VALUES (3,'Alvorada','CENTRO_OESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (4,'Armando Mendes','LESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (5,'Betânia','SUL');
+INSERT INTO bairros(id,nome,zona) VALUES (6,'Cachoeirinha','SUL');
+INSERT INTO bairros(id,nome,zona) VALUES (7,'Centro','SUL');
+INSERT INTO bairros(id,nome,zona) VALUES (8,'Chapada','CENTRO_SUL');
+INSERT INTO bairros(id,nome,zona) VALUES (9,'Cidade de Deus','NORTE');
+INSERT INTO bairros(id,nome,zona) VALUES (10,'Cidade Nova','NORTE');
+INSERT INTO bairros(id,nome,zona) VALUES (11,'Colônia Antônio Aleixo','LESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (12,'Colônia Oliveira Machado','SUL');
+INSERT INTO bairros(id,nome,zona) VALUES (13,'Colônia Santo Antônio','NORTE');
+INSERT INTO bairros(id,nome,zona) VALUES (14,'Colônia Terra Nova','NORTE');
+INSERT INTO bairros(id,nome,zona) VALUES (15,'Compensa','OESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (16,'Coroado','LESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (17,'Crespo','SUL');
+INSERT INTO bairros(id,nome,zona) VALUES (18,'Da Paz','CENTRO_OESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (19,'Distrito Industrial I','SUL');
+INSERT INTO bairros(id,nome,zona) VALUES (20,'Distrito Industrial II','LESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (21,'Dom Pedro','CENTRO_OESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (22,'Educandos','SUL');
+INSERT INTO bairros(id,nome,zona) VALUES (23,'Flores','CENTRO_SUL');
+INSERT INTO bairros(id,nome,zona) VALUES (24,'Gilberto Mestrinho','LESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (25,'Glória','OESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (26,'Japiim','SUL');
+INSERT INTO bairros(id,nome,zona) VALUES (27,'Jorge Teixeira','LESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (28,'Lago Azul','NORTE');
+INSERT INTO bairros(id,nome,zona) VALUES (29,'Lírio do Vale','OESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (30,'Mauazinho','LESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (31,'Monte das Oliveiras','NORTE');
+INSERT INTO bairros(id,nome,zona) VALUES (32,'Morro da Liberdade','SUL');
+INSERT INTO bairros(id,nome,zona) VALUES (33,'Nossa Senhora Aparecida','SUL');
+INSERT INTO bairros(id,nome,zona) VALUES (34,'Nossa Senhora das Graças','CENTRO_SUL');
+INSERT INTO bairros(id,nome,zona) VALUES (35,'Nova Cidade','NORTE');
+INSERT INTO bairros(id,nome,zona) VALUES (36,'Nova Esperança','OESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (37,'Novo Aleixo','NORTE');
+INSERT INTO bairros(id,nome,zona) VALUES (38,'Novo Israel','NORTE');
+INSERT INTO bairros(id,nome,zona) VALUES (39,'Parque 10 de Novembro','CENTRO_SUL');
+INSERT INTO bairros(id,nome,zona) VALUES (40,'Petrópolis','SUL');
+INSERT INTO bairros(id,nome,zona) VALUES (41,'Planalto','CENTRO_OESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (42,'Ponta Negra','OESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (43,'Praça 14 de Janeiro','SUL');
+INSERT INTO bairros(id,nome,zona) VALUES (44,'Presidente Vargas','SUL');
+INSERT INTO bairros(id,nome,zona) VALUES (45,'Puraquequara','LESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (46,'Raiz','SUL');
+INSERT INTO bairros(id,nome,zona) VALUES (47,'Redençao','CENTRO_OESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (48,'Santa Etelvina','NORTE');
+INSERT INTO bairros(id,nome,zona) VALUES (49,'Santa Luzia','SUL');
+INSERT INTO bairros(id,nome,zona) VALUES (50,'Santo Agostinho','OESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (51,'Santo Antônio','OESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (52,'Sao Francisco','SUL');
+INSERT INTO bairros(id,nome,zona) VALUES (53,'Sao Geraldo','CENTRO_SUL');
+INSERT INTO bairros(id,nome,zona) VALUES (54,'Sao Jorge','OESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (55,'Sao José Operário','LESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (56,'Sao Lázaro','SUL');
+INSERT INTO bairros(id,nome,zona) VALUES (57,'Sao Raimundo','OESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (58,'Tancredo Neves','LESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (59,'Taruma','OESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (60,'Taruma-Açu','OESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (61,'Vila Buriti','SUL');
+INSERT INTO bairros(id,nome,zona) VALUES (62,'Vila da Prata','OESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (63,'Zumbi dos Palmares','LESTE');
+INSERT INTO bairros(id,nome,zona) VALUES (64,'Não Informado','NORTE');
