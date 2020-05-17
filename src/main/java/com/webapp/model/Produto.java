@@ -26,13 +26,13 @@ public class Produto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue//(strategy = GenerationType.IDENTITY)
+	@GeneratedValue // (strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@NotBlank
 	@Column(nullable = false, length = 120)
 	private String codigo;
-	
+
 	@NotBlank
 	@Column(nullable = false, length = 120)
 	private String nome;
@@ -49,10 +49,13 @@ public class Produto implements Serializable {
 	@Column
 	private byte[] foto;
 
+	@Column
+	private String urlImagem;
+
 	@NotNull
 	@Column
 	private Long quantidadeAtual = 0L;
-	
+
 	@Column
 	@Digits(integer = 10 /* precision */, fraction = 0 /* scale */)
 	private BigDecimal margemLucro = BigDecimal.valueOf(20);
@@ -73,7 +76,7 @@ public class Produto implements Serializable {
 	@ManyToOne
 	@JoinColumn
 	private CategoriaProduto categoriaProduto;
-	
+
 	@NotNull
 	@ManyToOne
 	@JoinColumn
@@ -127,6 +130,14 @@ public class Produto implements Serializable {
 		this.foto = foto;
 	}
 
+	public String getUrlImagem() {
+		return urlImagem;
+	}
+
+	public void setUrlImagem(String urlImagem) {
+		this.urlImagem = urlImagem;
+	}
+
 	public Long getQuantidadeAtual() {
 		return quantidadeAtual;
 	}
@@ -140,7 +151,8 @@ public class Produto implements Serializable {
 	}
 
 	public void setMargemLucro(BigDecimal margemLucro) {
-		this.margemLucro = margemLucro.setScale(0, BigDecimal.ROUND_HALF_EVEN);;
+		this.margemLucro = margemLucro.setScale(0, BigDecimal.ROUND_HALF_EVEN);
+		;
 	}
 
 	public BigDecimal getTotalAcumulado() {
@@ -148,7 +160,8 @@ public class Produto implements Serializable {
 	}
 
 	public void setTotalAcumulado(BigDecimal totalAcumulado) {
-		this.totalAcumulado = totalAcumulado.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
+		this.totalAcumulado = totalAcumulado.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+		;
 	}
 
 	public BigDecimal getTotalCompras() {
@@ -156,7 +169,8 @@ public class Produto implements Serializable {
 	}
 
 	public void setTotalCompras(BigDecimal totalCompras) {
-		this.totalCompras = totalCompras.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
+		this.totalCompras = totalCompras.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+		;
 	}
 
 	public BigDecimal getTotalVendas() {
@@ -164,7 +178,8 @@ public class Produto implements Serializable {
 	}
 
 	public void setTotalVendas(BigDecimal totalVendas) {
-		this.totalVendas = totalVendas.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
+		this.totalVendas = totalVendas.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+		;
 	}
 
 	public CategoriaProduto getCategoriaProduto() {
@@ -207,26 +222,24 @@ public class Produto implements Serializable {
 			return false;
 		return true;
 	}
-	
+
 	@Transient
 	private BigDecimal precoMedioVenda = BigDecimal.ZERO;
-	
+
 	@Transient
 	private Long quantidadeItensComprados = 0L;
-	
+
 	@Transient
 	private Long quantidadeItensVendidos = 0L;
-	
+
 	@Transient
 	private String percentualVenda = "0";
-	
+
 	@Transient
 	private Long quantidadePedido = 0L;
-	
+
 	@Transient
 	private String codeTemp;
-	
-	
 
 	public BigDecimal getPrecoMedioVenda() {
 		return precoMedioVenda;
