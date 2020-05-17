@@ -536,7 +536,7 @@ public class DashboardBean implements Serializable {
 
 	public void carregarProduto(String codigo) {
 		produto = produtos.porCodigo(codigo);
-		fileContent = produto.getFoto();
+		//fileContent = produto.getFoto();
 		produtoId = produto.getId();
 	}
 

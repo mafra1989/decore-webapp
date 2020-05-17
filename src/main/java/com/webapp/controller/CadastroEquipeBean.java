@@ -294,7 +294,7 @@ public class CadastroEquipeBean implements Serializable {
 	}
 	
 	public void prepareFoto() {
-		fileContent = membroSelecionado.getFoto();
+		//fileContent = membroSelecionado.getFoto();
 	}
 
 }
