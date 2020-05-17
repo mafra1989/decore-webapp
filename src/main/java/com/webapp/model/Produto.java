@@ -64,11 +64,11 @@ public class Produto implements Serializable {
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
 	private BigDecimal totalAcumulado = BigDecimal.ZERO;
 
-	@Column
+	@Transient
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
 	private BigDecimal totalCompras = BigDecimal.ZERO;
 
-	@Column
+	@Transient
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
 	private BigDecimal totalVendas = BigDecimal.ZERO;
 
