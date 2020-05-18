@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.webapp.upload;
+package com.webapp.uploader;
 
 /**
  * Custom exception class that handles Web Exceptions.

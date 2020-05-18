@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.webapp.upload;
+package com.webapp.uploader;
 
 /**
  * Enum that holds the Http Status Codes that we are concerned about when

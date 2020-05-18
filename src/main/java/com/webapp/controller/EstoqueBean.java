@@ -23,7 +23,7 @@ import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.filter.ProdutoFilter;
-import com.webapp.upload.WebException;
+import com.webapp.uploader.WebException;
 import com.webapp.util.jsf.FacesUtil;
 
 @Named

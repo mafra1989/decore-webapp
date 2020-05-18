@@ -26,8 +26,8 @@ import com.webapp.model.Usuario;
 import com.webapp.repository.Grupos;
 import com.webapp.repository.Usuarios;
 import com.webapp.repository.filter.UsuarioFilter;
-import com.webapp.upload.Uploader;
-import com.webapp.upload.WebException;
+import com.webapp.uploader.Uploader;
+import com.webapp.uploader.WebException;
 import com.webapp.util.jsf.FacesUtil;
 
 @Named

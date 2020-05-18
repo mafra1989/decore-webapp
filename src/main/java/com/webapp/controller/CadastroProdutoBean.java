@@ -29,8 +29,8 @@ import com.webapp.repository.Fornecedores;
 import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
 import com.webapp.repository.Produtos;
-import com.webapp.upload.Uploader;
-import com.webapp.upload.WebException;
+import com.webapp.uploader.Uploader;
+import com.webapp.uploader.WebException;
 import com.webapp.util.jsf.FacesUtil;
 
 @Named
