@@ -1848,8 +1848,6 @@ INSERT INTO vendas(id,ano,datavenda,dia,lucro,mes,nomedia,numerovenda,percentual
 INSERT INTO vendas(id,ano,datavenda,dia,lucro,mes,nomedia,numerovenda,percentuallucro,quantidadeitens,semana,status,valorcompra,valortotal,bairro_id,tipovenda_id,usuario_id) VALUES (42690,2019,'2019-12-07 00:00:00',7,183.38,12,7,737,183.38,10,49,'Y',336.62,520.00,3008,1,1);
 INSERT INTO vendas(id,ano,datavenda,dia,lucro,mes,nomedia,numerovenda,percentuallucro,quantidadeitens,semana,status,valorcompra,valortotal,bairro_id,tipovenda_id,usuario_id) VALUES (42697,2019,'2019-12-07 00:00:00',7,98.29,12,7,738,98.29,5,49,'Y',176.71,275.00,3008,1,1);
 INSERT INTO vendas(id,ano,datavenda,dia,lucro,mes,nomedia,numerovenda,percentuallucro,quantidadeitens,semana,status,valorcompra,valortotal,bairro_id,tipovenda_id,usuario_id) VALUES (42703,2019,'2019-12-07 00:00:00',7,96.69,12,7,739,96.69,5,49,'Y',168.31,265.00,3008,1,1);
-INSERT INTO vendas(id,ano,datavenda,dia,lucro,mes,nomedia,numerovenda,percentuallucro,quantidadeitens,semana,status,valorcompra,valortotal,bairro_id,tipovenda_id,usuario_id) VALUES (44946,2020,'2020-05-05 01:02:56',5,101.69,5,3,1125,93.12,5,19,'Y',163.31,265.00,2,34,1);
-INSERT INTO vendas(id,ano,datavenda,dia,lucro,mes,nomedia,numerovenda,percentuallucro,quantidadeitens,semana,status,valorcompra,valortotal,bairro_id,tipovenda_id,usuario_id) VALUES (44959,2020,'2020-05-05 01:15:50',5,101.69,5,3,1127,93.12,5,19,'N',163.31,265.00,2,34,32);
 INSERT INTO vendas(id,ano,datavenda,dia,lucro,mes,nomedia,numerovenda,percentuallucro,quantidadeitens,semana,status,valorcompra,valortotal,bairro_id,tipovenda_id,usuario_id) VALUES (42555,2019,'2019-12-04 00:00:00',4,223.38,12,4,715,223.38,12,49,'Y',546.62,770.00,3008,1,1);
 INSERT INTO vendas(id,ano,datavenda,dia,lucro,mes,nomedia,numerovenda,percentuallucro,quantidadeitens,semana,status,valorcompra,valortotal,bairro_id,tipovenda_id,usuario_id) VALUES (42595,2019,'2019-12-05 00:00:00',5,76.14,12,5,721,76.14,4,49,'Y',213.86,290.00,3008,1,1);
 INSERT INTO vendas(id,ano,datavenda,dia,lucro,mes,nomedia,numerovenda,percentuallucro,quantidadeitens,semana,status,valorcompra,valortotal,bairro_id,tipovenda_id,usuario_id) VALUES (42627,2019,'2019-12-06 00:00:00',6,91.69,12,6,727,91.69,5,49,'Y',173.31,265.00,3008,1,1);
@@ -1998,7 +1996,6 @@ INSERT INTO vendas(id,ano,datavenda,dia,lucro,mes,nomedia,numerovenda,percentual
 INSERT INTO vendas(id,ano,datavenda,dia,lucro,mes,nomedia,numerovenda,percentuallucro,quantidadeitens,semana,status,valorcompra,valortotal,bairro_id,tipovenda_id,usuario_id) VALUES (43435,2020,'2020-01-14 00:00:00',14,101.37,1,3,874,101.37,6,3,'Y',248.63,350.00,3008,1,1);
 INSERT INTO vendas(id,ano,datavenda,dia,lucro,mes,nomedia,numerovenda,percentuallucro,quantidadeitens,semana,status,valorcompra,valortotal,bairro_id,tipovenda_id,usuario_id) VALUES (43441,2020,'2020-01-14 00:00:00',14,89.01,1,3,875,89.01,5,3,'Y',185.99,275.00,3008,1,1);
 INSERT INTO vendas(id,ano,datavenda,dia,lucro,mes,nomedia,numerovenda,percentuallucro,quantidadeitens,semana,status,valorcompra,valortotal,bairro_id,tipovenda_id,usuario_id) VALUES (43447,2020,'2020-01-14 00:00:00',14,225.38,1,3,876,225.38,10,3,'Y',344.62,570.00,3008,1,1);
-INSERT INTO vendas(id,ano,datavenda,dia,lucro,mes,nomedia,numerovenda,percentuallucro,quantidadeitens,semana,status,valorcompra,valortotal,bairro_id,tipovenda_id,usuario_id) VALUES (44952,2020,'2020-05-05 01:08:44',5,101.69,5,3,1126,93.12,5,19,'Y',163.31,265.00,2,34,37570);
 INSERT INTO vendas(id,ano,datavenda,dia,lucro,mes,nomedia,numerovenda,percentuallucro,quantidadeitens,semana,status,valorcompra,valortotal,bairro_id,tipovenda_id,usuario_id) VALUES (43430,2020,'2020-01-13 00:00:00',13,65.07,1,2,873,65.07,4,3,'Y',194.93,260.00,3008,1,1);
 INSERT INTO vendas(id,ano,datavenda,dia,lucro,mes,nomedia,numerovenda,percentuallucro,quantidadeitens,semana,status,valorcompra,valortotal,bairro_id,tipovenda_id,usuario_id) VALUES (43453,2020,'2020-01-14 00:00:00',14,45.00,1,3,877,45.00,1,3,'Y',100.00,145.00,3008,1,1);
 INSERT INTO vendas(id,ano,datavenda,dia,lucro,mes,nomedia,numerovenda,percentuallucro,quantidadeitens,semana,status,valorcompra,valortotal,bairro_id,tipovenda_id,usuario_id) VALUES (43455,2020,'2020-01-14 00:00:00',14,191.63,1,3,878,191.63,12,3,'Y',368.37,560.00,3008,1,1);
@@ -3374,14 +3371,6 @@ INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,va
 INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (40819,11.48,134.74,2,20.00,8.52,10.00,28782,160,40813);
 INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (40821,70.00,31.82,2,290.00,220.00,145.00,28792,14,40820);
 INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (40823,35.00,31.82,1,145.00,110.00,145.00,28792,14,40822);
-INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (44947,35.00,36.84,1,130.00,95.00,130.00,29315,65,44946);
-INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (44949,23.00,135.29,1,40.00,17.00,40.00,29255,18,44946);
-INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (44951,5.74,134.74,1,10.00,4.26,10.00,29413,160,44946);
-INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (44954,25.00,100.00,1,50.00,25.00,50.00,29394,17,44952);
-INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (44956,12.95,58.73,1,35.00,22.05,35.00,29334,91,44952);
-INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (44960,35.00,36.84,1,130.00,95.00,130.00,29416,14,44959);
-INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (44962,23.00,135.29,1,40.00,17.00,40.00,29255,18,44959);
-INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (44964,5.74,134.74,1,10.00,4.26,10.00,29413,160,44959);
 INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (40747,10.74,44.27,1,35.00,24.26,35.00,28712,91,40743);
 INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (40751,30.00,120.00,1,55.00,25.00,55.00,28708,17,40749);
 INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (40753,12.17,53.31,1,35.00,22.83,35.00,28712,16,40749);
@@ -3649,13 +3638,6 @@ INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,va
 INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (41134,44.00,78.57,2,100.00,56.00,50.00,28839,17,41132);
 INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (41136,21.48,44.27,2,70.00,48.52,35.00,28712,91,41132);
 INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (41140,22.00,78.57,1,50.00,28.00,50.00,28839,17,41138);
-INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (44948,25.00,100.00,1,50.00,25.00,50.00,29394,17,44946);
-INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (44950,12.95,58.73,1,35.00,22.05,35.00,29334,91,44946);
-INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (44953,35.00,36.84,1,130.00,95.00,130.00,29347,65,44952);
-INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (44955,23.00,135.29,1,40.00,17.00,40.00,29255,18,44952);
-INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (44957,5.74,134.74,1,10.00,4.26,10.00,29413,160,44952);
-INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (44961,25.00,100.00,1,50.00,25.00,50.00,29394,17,44959);
-INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (44963,12.95,58.73,1,35.00,22.05,35.00,29334,91,44959);
 INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (41113,5.74,134.74,1,10.00,4.26,10.00,28782,160,41110);
 INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (41115,70.00,35.00,2,270.00,200.00,135.00,28847,65,41114);
 INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (41117,21.48,44.27,2,70.00,48.52,35.00,28712,91,41114);
@@ -7787,9 +7769,6 @@ INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parce
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37562,2019,508,15,8,5,'LANCAMENTO','2019-08-15 00:00:00','AVISTA',33,'Y','CREDITO',20.00,'2019-08-15 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37568,2019,509,31,3,1,'LANCAMENTO','2019-03-31 04:10:06','AVISTA',14,'Y','CREDITO',43667.84,'2019-03-31 04:10:06');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37324,2020,215,4,4,7,'LANCAMENTO','2020-04-04 00:00:00','AVISTA',14,'Y','DEBITO',200.00,'2020-04-04 00:00:00');
-
-INSERT INTO entregas(id,latitude,localizacao,longitude,nome,observacao,status,venda_id) VALUES (44958,NULL,'Rua são paulo, 04 são josé operario',NULL,'Paulo','passar no debito','ENTREGUE',44952);
-INSERT INTO entregas(id,latitude,localizacao,longitude,nome,observacao,status,venda_id) VALUES (44965,NULL,'Rua Joviania, 12 novo aleixo',NULL,'Alexandre','Parcelar no Crédito em 3x','PENDENTE',44959);
 
 INSERT INTO target(id,periodo,tipo,valor) VALUES (37574,'ANUAL','LUCRO',30000.00);
 INSERT INTO target(id,periodo,tipo,valor) VALUES (37573,'MENSAL','LUCRO',8000.00);
