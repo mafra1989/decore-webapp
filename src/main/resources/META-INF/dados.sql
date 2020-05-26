@@ -129,12 +129,6 @@ INSERT INTO produtos(id,codigo,descricao,locacao,margemlucro,nome,quantidadeatua
 INSERT INTO produtos(id,codigo,descricao,locacao,margemlucro,nome,quantidadeatual,categoriaproduto_id,fornecedor_id,urlimagem) VALUES (79,36760,'36760 - FECHADURA 803/21 ROSETA QUADRADA GORJE EXTERNA OXIDADO','Loja',40,'EXTERNA OXIDADA',37,3,2,'https://i.imgur.com/lhzt5FF.png');
 INSERT INTO produtos(id,codigo,descricao,locacao,margemlucro,nome,quantidadeatual,categoriaproduto_id,fornecedor_id,urlimagem) VALUES (15,36806,'36806 - FECHADURA 803/25 ROSETA QUADRADA GORJE EXTERNA INOX','Loja',60,'EXTERNA INOX',0,3,2,'https://i.imgur.com/gGh8RI1.png');
 
-INSERT INTO produtos(id,codigo,descricao,locacao,margemlucro,nome,quantidadeatual,categoriaproduto_id,fornecedor_id,urlimagem) VALUES (165,500,'850','Loja',20,'PORTAS',4,1,1,NULL);
-INSERT INTO produtos(id,codigo,descricao,locacao,margemlucro,nome,quantidadeatual,categoriaproduto_id,fornecedor_id,urlimagem) VALUES (17,101,'1000','Loja',20,'PORTAS',4,1,1,NULL);
-INSERT INTO produtos(id,codigo,descricao,locacao,margemlucro,nome,quantidadeatual,categoriaproduto_id,fornecedor_id,urlimagem) VALUES (78,38403,'1420','Loja',20,'PORTAS',4,1,1,NULL);
-INSERT INTO produtos(id,codigo,descricao,locacao,margemlucro,nome,quantidadeatual,categoriaproduto_id,fornecedor_id,urlimagem) VALUES (79,36760,'1421','Loja',20,'PORTAS',4,1,1,NULL);
-INSERT INTO produtos(id,codigo,descricao,locacao,margemlucro,nome,quantidadeatual,categoriaproduto_id,fornecedor_id,urlimagem) VALUES (15,36806,'1422','Loja',20,'ADUELAS',0,2,11,null);
-
 
 INSERT INTO bairros(id,nome,zona) VALUES (1,'Adrianápolis','CENTRO_SUL');
 INSERT INTO bairros(id,nome,zona) VALUES (2,'Aleixo','CENTRO_SUL');
