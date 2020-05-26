@@ -187,9 +187,11 @@ public class EstoqueBean implements Serializable {
 					Number totalVendido = itensVendas.vendasPorCompra(itemCompra.getCompra(), produto);
 					itemCompra.setQuantidadeDisponivel(itemCompra.getQuantidade() - totalVendido.longValue());
 
-					disponivel += itemCompra.getQuantidadeDisponivel();
-
-					totalDisponivel += itemCompra.getQuantidadeDisponivel();
+					if(itemCompra.getQuantidadeDisponivel() > 0) {
+						disponivel += itemCompra.getQuantidadeDisponivel();
+						totalDisponivel += itemCompra.getQuantidadeDisponivel();
+					}
+					
 					System.out.println("Produto: " + itemCompra.getProduto().getCodigo() + " Quantidade: "
 							+ itemCompra.getQuantidade() + " Disponível: " + itemCompra.getQuantidadeDisponivel());
 
