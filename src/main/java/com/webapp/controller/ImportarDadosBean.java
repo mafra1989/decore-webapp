@@ -34,6 +34,7 @@ import com.webapp.model.Conta;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.Lancamento;
+import com.webapp.model.OrigemLancamento;
 import com.webapp.model.Produto;
 import com.webapp.model.TipoVenda;
 import com.webapp.model.Usuario;
@@ -242,7 +243,28 @@ public class ImportarDadosBean implements Serializable {
 						produtosRepository.save(produto);
 
 						itensComprasRepository.save(itemCompraTemp);
-					}				
+					}	
+					
+					Conta conta = new Conta();
+					conta.setOperacao("COMPRA");
+					conta.setCodigoOperacao(compraTemp.getNumeroCompra());
+					conta.setVencimento(compraTemp.getDataCompra());
+					conta.setPagamento(compraTemp.getDataCompra());
+					conta.setValor(compraTemp.getValorTotal());
+					conta.setParcela("AVISTA");
+					conta.setTipo(OrigemLancamento.DEBITO.name());
+					conta.setStatus(true);
+					 
+					Calendar calendario = Calendar.getInstance();
+					calendario.setTime(compraTemp.getDataCompra());
+					
+					conta.setDia(Long.valueOf((calendario.get(Calendar.DAY_OF_MONTH))));
+					conta.setNomeDia(Long.valueOf((calendario.get(Calendar.DAY_OF_WEEK))));
+					conta.setSemana(Long.valueOf((calendario.get(Calendar.WEEK_OF_YEAR))));
+					conta.setMes(Long.valueOf((calendario.get(Calendar.MONTH))) + 1);
+					conta.setAno(Long.valueOf((calendario.get(Calendar.YEAR))));
+					
+					contasRepository.save(conta);
 				}
 
 				System.out.println("Total de Compras: " + compras.size());
