@@ -7259,7 +7259,6 @@ INSERT INTO lancamentos(id,ano,datalancamento,descricao,dia,mes,nomedia,numerola
 
 UPDATE lancamentos SET ajuste = 'N';
 
-INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37043,2020,496,2,4,5,'LANCAMENTO','2020-04-02 00:00:00','AVISTA',14,'Y','DEBITO',30.00,'2020-04-02 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37044,2020,495,20,3,6,'LANCAMENTO','2020-03-20 00:00:00','AVISTA',12,'Y','DEBITO',50.00,'2020-03-20 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37045,2020,494,3,3,3,'LANCAMENTO','2020-03-03 00:00:00','AVISTA',10,'Y','DEBITO',30.00,'2020-03-03 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37046,2020,493,21,2,6,'LANCAMENTO','2020-02-21 00:00:00','AVISTA',8,'Y','DEBITO',30.00,'2020-02-21 00:00:00');
@@ -7281,8 +7280,6 @@ INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parce
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37062,2019,477,11,6,3,'LANCAMENTO','2019-06-11 00:00:00','AVISTA',24,'Y','DEBITO',50.00,'2019-06-11 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37063,2019,476,7,4,1,'LANCAMENTO','2019-04-07 00:00:00','AVISTA',15,'Y','DEBITO',197.00,'2019-04-07 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37064,2019,475,31,3,1,'LANCAMENTO','2019-03-31 00:00:00','AVISTA',14,'Y','DEBITO',347.00,'2019-03-31 00:00:00');
-INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37065,2020,474,2,4,5,'LANCAMENTO','2020-04-02 00:00:00','AVISTA',14,'Y','DEBITO',72.00,'2020-04-02 00:00:00');
-INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37066,2020,473,2,4,5,'LANCAMENTO','2020-04-02 00:00:00','AVISTA',14,'Y','DEBITO',15.00,'2020-04-02 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37067,2020,472,25,3,4,'LANCAMENTO','2020-03-25 00:00:00','AVISTA',13,'Y','DEBITO',15.00,'2020-03-25 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37068,2020,471,17,3,3,'LANCAMENTO','2020-03-17 00:00:00','AVISTA',12,'Y','DEBITO',15.00,'2020-03-17 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37069,2020,470,9,3,2,'LANCAMENTO','2020-03-09 00:00:00','AVISTA',11,'Y','DEBITO',30.00,'2020-03-09 00:00:00');
@@ -7343,9 +7340,6 @@ INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parce
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37124,2020,415,14,1,3,'LANCAMENTO','2020-01-14 00:00:00','AVISTA',3,'Y','DEBITO',50.00,'2020-01-14 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37125,2019,414,12,12,5,'LANCAMENTO','2019-12-12 00:00:00','AVISTA',50,'Y','DEBITO',50.00,'2019-12-12 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37126,2019,413,12,11,3,'LANCAMENTO','2019-11-12 00:00:00','AVISTA',46,'Y','DEBITO',50.00,'2019-11-12 00:00:00');
-INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37127,2020,412,4,4,7,'LANCAMENTO','2020-04-04 00:00:00','AVISTA',14,'Y','DEBITO',180.00,'2020-04-04 00:00:00');
-INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37128,2020,411,2,4,5,'LANCAMENTO','2020-04-02 00:00:00','AVISTA',14,'Y','DEBITO',850.00,'2020-04-02 00:00:00');
-INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37129,2020,410,2,4,5,'LANCAMENTO','2020-04-02 00:00:00','AVISTA',14,'Y','DEBITO',515.00,'2020-04-02 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37130,2020,409,31,3,3,'LANCAMENTO','2020-03-31 00:00:00','AVISTA',14,'Y','DEBITO',1200.00,'2020-03-31 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37131,2020,408,30,3,2,'LANCAMENTO','2020-03-30 00:00:00','AVISTA',14,'Y','DEBITO',835.00,'2020-03-30 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37132,2020,407,24,3,3,'LANCAMENTO','2020-03-24 00:00:00','AVISTA',13,'Y','DEBITO',220.00,'2020-03-24 00:00:00');
@@ -7567,7 +7561,6 @@ INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parce
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37349,2019,190,21,5,3,'LANCAMENTO','2019-05-21 00:00:00','AVISTA',21,'Y','DEBITO',630.00,'2019-05-21 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37350,2019,189,21,5,3,'LANCAMENTO','2019-05-21 00:00:00','AVISTA',21,'Y','DEBITO',920.00,'2019-05-21 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37351,2019,188,11,5,7,'LANCAMENTO','2019-05-11 00:00:00','AVISTA',19,'Y','DEBITO',130.00,'2019-05-11 00:00:00');
-INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37352,2020,187,2,4,5,'LANCAMENTO','2020-04-02 00:00:00','AVISTA',14,'Y','DEBITO',20.00,'2020-04-02 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37353,2020,186,31,3,3,'LANCAMENTO','2020-03-31 00:00:00','AVISTA',14,'Y','DEBITO',65.00,'2020-03-31 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37354,2020,185,2,3,2,'LANCAMENTO','2020-03-02 00:00:00','AVISTA',10,'Y','DEBITO',30.00,'2020-03-02 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37355,2020,184,6,2,5,'LANCAMENTO','2020-02-06 00:00:00','AVISTA',6,'Y','DEBITO',15.00,'2020-02-06 00:00:00');
@@ -7743,7 +7736,6 @@ INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parce
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37525,2019,14,6,8,3,'LANCAMENTO','2019-08-06 00:00:00','AVISTA',32,'Y','DEBITO',45.00,'2019-08-06 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37526,2019,13,21,5,3,'LANCAMENTO','2019-05-21 00:00:00','AVISTA',21,'Y','DEBITO',10450.00,'2019-05-21 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37527,2019,12,31,3,1,'LANCAMENTO','2019-03-31 00:00:00','AVISTA',14,'Y','DEBITO',1495.00,'2019-03-31 00:00:00');
-INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37528,2020,11,2,4,5,'LANCAMENTO','2020-04-02 00:00:00','AVISTA',14,'Y','DEBITO',200.00,'2020-04-02 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37529,2020,10,29,2,7,'LANCAMENTO','2020-02-29 00:00:00','AVISTA',9,'Y','DEBITO',200.00,'2020-02-29 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37530,2020,9,1,2,7,'LANCAMENTO','2020-02-01 00:00:00','AVISTA',5,'Y','DEBITO',200.00,'2020-02-01 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37531,2019,8,31,12,3,'LANCAMENTO','2019-12-31 00:00:00','AVISTA',1,'Y','DEBITO',200.00,'2019-12-31 00:00:00');
@@ -7767,7 +7759,6 @@ INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parce
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37560,2019,507,2,8,6,'LANCAMENTO','2019-08-02 00:00:00','AVISTA',31,'Y','CREDITO',40.00,'2019-08-02 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37562,2019,508,15,8,5,'LANCAMENTO','2019-08-15 00:00:00','AVISTA',33,'Y','CREDITO',20.00,'2019-08-15 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37568,2019,509,31,3,1,'LANCAMENTO','2019-03-31 04:10:06','AVISTA',14,'Y','CREDITO',43667.84,'2019-03-31 04:10:06');
-INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37324,2020,215,4,4,7,'LANCAMENTO','2020-04-04 00:00:00','AVISTA',14,'Y','DEBITO',200.00,'2020-04-04 00:00:00');
 
 UPDATE conta SET ajuste = 'N';
 
