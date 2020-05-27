@@ -245,6 +245,7 @@ public class ImportarDadosBean implements Serializable {
 						itensComprasRepository.save(itemCompraTemp);
 					}	
 					
+					/*
 					Conta conta = new Conta();
 					conta.setOperacao("COMPRA");
 					conta.setCodigoOperacao(compraTemp.getNumeroCompra());
@@ -265,6 +266,7 @@ public class ImportarDadosBean implements Serializable {
 					conta.setAno(Long.valueOf((calendario.get(Calendar.YEAR))));
 					
 					contasRepository.save(conta);
+					*/
 				}
 
 				System.out.println("Total de Compras: " + compras.size());
