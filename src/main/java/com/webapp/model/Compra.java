@@ -16,6 +16,8 @@ import javax.persistence.Transient;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Type;
+
 @Entity
 @Table(name = "compras")
 public class Compra implements Serializable {
@@ -52,6 +54,10 @@ public class Compra implements Serializable {
 	@JoinColumn
 	private FormaPagamento formaPagamento;
 	*/
+	
+	@Type(type = "yes_no")
+	@Column(nullable = true)
+	private boolean ajuste;
 
 	/* Campos para relat�rio */
 	@Column(nullable = false)
@@ -127,6 +133,14 @@ public class Compra implements Serializable {
 		this.formaPagamento = formaPagamento;
 	}
 	*/
+
+	public boolean isAjuste() {
+		return ajuste;
+	}
+
+	public void setAjuste(boolean ajuste) {
+		this.ajuste = ajuste;
+	}
 
 	public Long getDia() {
 		return dia;

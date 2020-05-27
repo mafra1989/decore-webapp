@@ -121,13 +121,109 @@ public class RegistroComprasBean implements Serializable {
 	public void salvar() {
 
 		if (itensCompra.size() > 0) {
+			
+			if(compra.isAjuste()) {
+				
+				Long totalDeItens = 0L;
+				double valorTotal = 0;
+				
+				if (compra.getId() != null) {
+					List<Conta> contasTemp = contas.porCodigoOperacao(compra.getNumeroCompra(), "COMPRA");
+					for (Conta conta : contasTemp) {
+						contas.remove(conta);
+					}
+				}
+				
+				Calendar calendario = Calendar.getInstance();
+				Calendar calendarioTemp = Calendar.getInstance();
+				calendarioTemp.setTime(compra.getDataCompra());
+				calendarioTemp.set(Calendar.HOUR, calendario.get(Calendar.HOUR));
+				calendarioTemp.set(Calendar.MINUTE, calendario.get(Calendar.MINUTE));
+				calendarioTemp.set(Calendar.SECOND, calendario.get(Calendar.SECOND));
+				compra.setDataCompra(calendarioTemp.getTime());
 
-			todasContas = new ArrayList<>();
-			
-			entradas = new ArrayList<>();
-			valorEntrada = null;
-			
-			PrimeFaces.current().executeScript("PF('confirmDialog').show();");
+				boolean edit = false;
+				if (compra.getId() != null) {
+					edit = true;
+
+					List<ItemCompra> itemCompraTemp = itensCompras.porCompra(compra);
+
+					for (ItemCompra itemCompra : itemCompraTemp) {
+						Produto produto = produtos.porId(itemCompra.getProduto().getId());
+						produto.setQuantidadeAtual(produto.getQuantidadeAtual() - itemCompra.getQuantidade());
+						produtos.save(produto);
+
+						itensCompras.remove(itemCompra);
+					}
+				}
+
+				compra.setDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_MONTH))));
+				compra.setNomeDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_WEEK))));
+				compra.setSemana(Long.valueOf((calendarioTemp.get(Calendar.WEEK_OF_YEAR))));
+				compra.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
+				compra.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
+
+				Compra compraTemp = compras.ultimoNCompra();
+
+				if (compraTemp == null) {
+					compra.setNumeroCompra(1L);
+				} else {
+					if (compra.getId() == null) {
+						compra.setNumeroCompra(compraTemp.getNumeroCompra() + 1);
+					}
+				}
+
+				compra = compras.save(compra);
+
+				for (ItemCompra itemCompra : itensCompra) {
+					itemCompra.setCompra(compra);
+					itensCompras.save(itemCompra);
+
+					Produto produto = produtos.porId(itemCompra.getProduto().getId());
+					produto.setQuantidadeAtual(produto.getQuantidadeAtual() + itemCompra.getQuantidade());
+					produtos.save(produto);
+
+					totalDeItens += itemCompra.getQuantidade();
+					valorTotal += itemCompra.getTotal().doubleValue();
+				}
+
+				compra.setValorTotal(BigDecimal.valueOf(valorTotal));
+				compra.setQuantidadeItens(totalDeItens);
+				compra = compras.save(compra);
+				
+				if (!edit) {
+					PrimeFaces.current().executeScript(
+							"stop();PF('confirmDialog').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Compra N."
+									+ compra.getNumeroCompra() + " registrada com sucesso!' });");
+
+					compra = new Compra();
+					itensCompra = new ArrayList<ItemCompra>();
+					itemCompra = new ItemCompra();
+					itemSelecionado = null;
+					todasContas = new ArrayList<>();
+					tipoPagamento = TipoPagamento.AVISTA;
+					parcelas = 2L;
+					periodoPagamento = PeriodoPagamento.MESES;
+					contaAPagar = false;
+					compraPaga = true;
+					
+					entradas = new ArrayList<>();
+					valorEntrada = null;
+
+				} else {
+					PrimeFaces.current().executeScript(
+							"stop();PF('confirmDialog').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Compra N."
+									+ compra.getNumeroCompra() + " atualizada com sucesso!' });");
+				}
+				
+			} else {
+				todasContas = new ArrayList<>();
+				
+				entradas = new ArrayList<>();
+				valorEntrada = null;
+				
+				PrimeFaces.current().executeScript("PF('confirmDialog').show();");
+			}
 
 		} else {
 			PrimeFaces.current().executeScript(

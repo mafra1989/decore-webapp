@@ -71,7 +71,7 @@ public class Compras implements Serializable {
 	}
 
 	public Number totalCompras() {
-		String jpql = "SELECT sum(i.valorTotal) FROM Compra i";
+		String jpql = "SELECT sum(i.valorTotal) FROM Compra i Where i.ajuste = 'N'";
 		Query q = manager.createQuery(jpql);
 
 		Number count = 0;
@@ -146,7 +146,7 @@ public class Compras implements Serializable {
 		}
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemCompra i join i.compra p "
-				+ "WHERE p.dia = :dia " + "AND p.mes = :mes " + "AND p.ano = :ano " + condition + "group by "
+				+ "WHERE p.dia = :dia " + "AND p.mes = :mes " + "AND p.ano = :ano AND p.ajuste = 'N' " + condition + "group by "
 				+ groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("dia", Long.parseLong(String.valueOf(dia)))
 				.setParameter("mes", Long.parseLong(String.valueOf(mes)))
@@ -204,7 +204,7 @@ public class Compras implements Serializable {
 		}
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemCompra i join i.compra p "
-				+ "WHERE p.mes = :mes AND p.ano = :ano " + condition + "group by " + groupBy_Condition + " order by "
+				+ "WHERE p.mes = :mes AND p.ano = :ano AND p.ajuste = 'N'" + condition + "group by " + groupBy_Condition + " order by "
 				+ orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("mes", Long.parseLong(String.valueOf(mes))).setParameter("ano",
 				Long.parseLong(String.valueOf(ano)));
@@ -261,7 +261,7 @@ public class Compras implements Serializable {
 		}
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemCompra i join i.compra p "
-				+ "WHERE p.semana = :semana AND p.ano = :ano " + condition + "group by " + groupBy_Condition
+				+ "WHERE p.semana = :semana AND p.ano = :ano AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition
 				+ " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("semana", Long.parseLong(String.valueOf(semana)))
 				.setParameter("ano", Long.parseLong(String.valueOf(ano)));
@@ -318,7 +318,7 @@ public class Compras implements Serializable {
 		}
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemCompra i join i.compra p "
-				+ "WHERE p.ano = :ano " + condition + "group by " + groupBy_Condition + " order by "
+				+ "WHERE p.ano = :ano AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition + " order by "
 				+ orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("ano", Long.parseLong(String.valueOf(ano)));
 

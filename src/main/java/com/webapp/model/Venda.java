@@ -73,6 +73,11 @@ public class Venda implements Serializable {
 	@Type(type = "yes_no")
 	@Column(nullable = false)
 	private boolean status;
+		
+	@Type(type = "yes_no")
+	@Column(nullable = true)
+	private boolean ajuste;
+	
 
 	/* Campos para relat�rio */
 	@Column(nullable = false)
@@ -224,6 +229,14 @@ public class Venda implements Serializable {
 
 	public void setStatus(boolean status) {
 		this.status = status;
+	}
+
+	public boolean isAjuste() {
+		return ajuste;
+	}
+
+	public void setAjuste(boolean ajuste) {
+		this.ajuste = ajuste;
 	}
 
 	@Override

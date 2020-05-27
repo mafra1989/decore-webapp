@@ -15,8 +15,7 @@
 		<f:viewAction action="#{registroLancamentosBean.buscar}"
 			if="#{param.id ne null}" />
 
-		<f:viewParam name="opt"
-			value="#{registroLancamentosBean.option}" />
+		<f:viewParam name="opt" value="#{registroLancamentosBean.option}" />
 	</f:metadata>
 
 	<ui:define name="content">
@@ -382,7 +381,6 @@
 								</p:panelGrid>
 
 								<p:panelGrid columns="2" layout="grid"
-									style="margin-bottom: 5px"
 									styleClass="panelgrid-noborder disabled disabled"
 									columnClasses="ui-grid-col-4, ui-grid-col-6">
 
@@ -402,6 +400,19 @@
 											itemValue="#{destinoLancamento}" />
 									</p:selectOneMenu>
 
+								</p:panelGrid>
+
+								<p:panelGrid columns="2" layout="grid" id="panel-ajuste-despesa"
+									style="margin-bottom: 5px"
+									styleClass="panelgrid-noborder disabled disabled panel-ajuste-despesa"
+									columnClasses="ui-grid-col-4, ui-grid-col-6">
+
+									<p:outputLabel value="Ajuste de despesas" for="ajuste-despesa" />
+									<p:selectBooleanCheckbox id="ajuste-despesa"
+										value="#{registroLancamentosBean.despesa.ajuste}">
+
+										<p:ajax process="@this" update="@parent" />
+									</p:selectBooleanCheckbox>
 								</p:panelGrid>
 
 								<p:panelGrid columns="1" layout="grid"
@@ -527,7 +538,6 @@
 								</p:panelGrid>
 
 								<p:panelGrid columns="2" layout="grid"
-									style="margin-bottom: 5px"
 									styleClass="panelgrid-noborder disabled disabled"
 									columnClasses="ui-grid-col-4, ui-grid-col-6">
 
@@ -546,7 +556,19 @@
 											itemLabel="#{destinoLancamento.descricao}"
 											itemValue="#{destinoLancamento}" />
 									</p:selectOneMenu>
+								</p:panelGrid>
+								
+								<p:panelGrid columns="2" layout="grid" id="panel-ajuste-receita"
+									style="margin-bottom: 5px"
+									styleClass="panelgrid-noborder disabled disabled panel-ajuste-receita"
+									columnClasses="ui-grid-col-4, ui-grid-col-6">
 
+									<p:outputLabel value="Ajuste de receitas" for="ajuste-receita" />
+									<p:selectBooleanCheckbox id="ajuste-receita"
+										value="#{registroLancamentosBean.receita.ajuste}">
+
+										<p:ajax process="@this" update="@parent" />
+									</p:selectBooleanCheckbox>
 								</p:panelGrid>
 
 								<p:panelGrid columns="1" layout="grid"

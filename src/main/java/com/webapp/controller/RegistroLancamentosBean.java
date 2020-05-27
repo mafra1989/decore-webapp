@@ -367,13 +367,21 @@ public class RegistroLancamentosBean implements Serializable {
 	public void salvarDespesa() {
 
 		if (categoriaLancamentoDespesa != null) {
-			lancamento = despesa;
-			PrimeFaces.current().executeScript("PF('confirmDialog').show();");
-			todasContas = new ArrayList<>();
-			todasContas_ = new ArrayList<>();
 			
-			entradas = new ArrayList<>();
-			valorEntrada = null;
+			lancamento = despesa;
+			
+			if(lancamento.isAjuste()) {		
+				
+				salvarAjuste();
+				
+			} else {
+				PrimeFaces.current().executeScript("PF('confirmDialog').show();");
+				todasContas = new ArrayList<>();
+				todasContas_ = new ArrayList<>();
+				
+				entradas = new ArrayList<>();
+				valorEntrada = null;
+			}		
 
 		} else {
 			PrimeFaces.current().executeScript(
@@ -384,16 +392,105 @@ public class RegistroLancamentosBean implements Serializable {
 	public void salvarReceita() {
 
 		if (categoriaLancamentoReceita != null) {
-			lancamento = receita;
-			PrimeFaces.current().executeScript("PF('confirmDialog').show();");
-			todasContas = new ArrayList<>();
-			todasContas_ = new ArrayList<>();
+			
+			lancamento = receita;			
+			
+			if(lancamento.isAjuste()) {
+				
+				salvarAjuste();
+				
+			} else {
+				PrimeFaces.current().executeScript("PF('confirmDialog').show();");
+				todasContas = new ArrayList<>();
+				todasContas_ = new ArrayList<>();
+			}
 
 		} else {
 			PrimeFaces.current().executeScript(
 					"swal({ type: 'warning', title: 'Atenção!', text: 'Informe uma categoria de receita!' });");
 		}
 	}
+	
+	
+	private void salvarAjuste() {
+		
+		if (lancamento.getId() != null) {					
+			List<Conta> contasTemp = contas.porCodigoOperacao(lancamento.getNumeroLancamento(), "LANCAMENTO");
+			for (Conta conta : contasTemp) {
+				contas.remove(conta);
+			}				
+		}
+		
+		Lancamento lancamentoTemp = lancamentos.ultimoNLancamento();
+
+		if (lancamentoTemp == null) {
+			lancamento.setNumeroLancamento(1L);
+		} else {
+			if (lancamento.getId() == null) {
+				lancamento.setNumeroLancamento(lancamentoTemp.getNumeroLancamento() + 1);
+			}
+		}
+
+		Calendar calendario = Calendar.getInstance();
+		Calendar calendarioTemp = Calendar.getInstance();
+		calendarioTemp.setTime(lancamento.getDataLancamento());
+		calendarioTemp.set(Calendar.HOUR, calendario.get(Calendar.HOUR));
+		calendarioTemp.set(Calendar.MINUTE, calendario.get(Calendar.MINUTE));
+		calendarioTemp.set(Calendar.SECOND, calendario.get(Calendar.SECOND));
+		lancamento.setDataLancamento(calendarioTemp.getTime());
+
+		lancamento.setDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_MONTH))));
+		lancamento.setNomeDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_WEEK))));
+		lancamento.setSemana(Long.valueOf((calendarioTemp.get(Calendar.WEEK_OF_YEAR))));
+		lancamento.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
+		lancamento.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
+		
+		if(activeIndex == 0) {
+			lancamento.setUsuario(renderFavorecido ? usuario : null);
+		}
+
+		lancamentos.save(lancamento);
+		
+		if (lancamento.getId() == null) {
+
+			if (lancamento.getCategoriaLancamento().getTipoLancamento().getOrigem() == OrigemLancamento.DEBITO) {
+
+				PrimeFaces.current()
+						.executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Lançamento N."
+								+ lancamento.getNumeroLancamento() + " registrado com sucesso!' });");
+				PrimeFaces.current().ajax().update("form:tabView:panel-despesa");
+
+				despesa = new Lancamento();
+				categoriaLancamentoDespesa = new CategoriaLancamento();
+				
+				usuario = new Usuario();	
+				renderFavorecido = false;
+				PrimeFaces.current().executeScript("ocultarFavorecido();");
+
+			} else {
+				PrimeFaces.current()
+						.executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Lançamento N."
+								+ lancamento.getNumeroLancamento() + " registrado com sucesso!' });");
+				PrimeFaces.current().ajax().update("form:tabView:panel-receita");
+
+				receita = new Lancamento();
+				categoriaLancamentoReceita = new CategoriaLancamento();
+			}
+
+			tipoPagamento = TipoPagamento.AVISTA;
+			lancamentoPago = true;
+			repetirLancamento = false;
+			
+			entradas = new ArrayList<>();
+			valorEntrada = null;
+
+		} else {
+
+			PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Lançamento N."
+					+ lancamento.getNumeroLancamento() + " atualizado com sucesso!' });");
+		}
+	}
+	
 
 	public void confirmarLancamento() {
 

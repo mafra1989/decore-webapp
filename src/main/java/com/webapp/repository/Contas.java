@@ -47,7 +47,7 @@ public class Contas implements Serializable {
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalDespesasPorCategoriaMesAtual() {
 		Calendar calendar = Calendar.getInstance();
-		String jpql = "SELECT i.codigoOperacao, sum(i.valor) FROM Conta i WHERE i.operacao = 'LANCAMENTO' and i.tipo = 'DEBITO' and i.status = 'Y' and i.mes = :mesAtual and i.ano = :anoAtual GROUP BY i.codigoOperacao order by sum(i.valor) desc";
+		String jpql = "SELECT i.codigoOperacao, sum(i.valor) FROM Conta i WHERE i.operacao = 'LANCAMENTO' and i.tipo = 'DEBITO' and i.status = 'Y' and i.mes = :mesAtual and i.ano = :anoAtual AND i.ajuste = 'N' GROUP BY i.codigoOperacao order by sum(i.valor) desc";
 		Query q = manager.createQuery(jpql)
 				.setParameter("mesAtual", Long.parseLong(String.valueOf(calendar.get(Calendar.MONTH) + 1)))
 				.setParameter("anoAtual", Long.parseLong(String.valueOf(calendar.get(Calendar.YEAR))));
@@ -58,7 +58,7 @@ public class Contas implements Serializable {
 
 	public Number porContasPagas(String tipo, String operacao) {
 
-		String jpql = "SELECT sum(c.valor) FROM Conta c WHERE c.tipo = :tipo AND c.operacao = :operacao AND c.status = 'Y'";
+		String jpql = "SELECT sum(c.valor) FROM Conta c WHERE c.tipo = :tipo AND c.operacao = :operacao AND c.status = 'Y' AND c.ajuste = 'N'";
 		Query q = manager.createQuery(jpql).setParameter("tipo", tipo).setParameter("operacao", operacao);
 
 		Number count = 0;
@@ -78,7 +78,7 @@ public class Contas implements Serializable {
 
 	public Number porContasPagas(String tipo) {
 
-		String jpql = "SELECT sum(c.valor) FROM Conta c WHERE c.tipo = :tipo AND c.status = 'Y'";
+		String jpql = "SELECT sum(c.valor) FROM Conta c WHERE c.tipo = :tipo AND c.status = 'Y' AND c.ajuste = 'N'";
 		Query q = manager.createQuery(jpql).setParameter("tipo", tipo);
 
 		Number count = 0;
@@ -98,14 +98,14 @@ public class Contas implements Serializable {
 
 	public List<Conta> porContasPagas(Long codigoOperacao, String operacao) {
 		return this.manager.createQuery(
-				"from Conta i where i.codigoOperacao = :codigoOperacao and operacao = :operacao and i.status = 'Y'",
+				"from Conta i where i.codigoOperacao = :codigoOperacao and operacao = :operacao and i.status = 'Y' AND i.ajuste = 'N'",
 				Conta.class).setParameter("codigoOperacao", codigoOperacao).setParameter("operacao", operacao)
 				.getResultList();
 	}
 
 	public List<Conta> porCodigoOperacao(Long codigoOperacao, String operacao) {
 		return this.manager
-				.createQuery("from Conta i where i.codigoOperacao = :codigoOperacao and operacao = :operacao",
+				.createQuery("from Conta i where i.codigoOperacao = :codigoOperacao and operacao = :operacao AND i.ajuste = 'N'",
 						Conta.class)
 				.setParameter("codigoOperacao", codigoOperacao).setParameter("operacao", operacao).getResultList();
 	}
@@ -190,7 +190,7 @@ public class Contas implements Serializable {
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i " + "WHERE i.dia = :dia "
 				+ "AND i.mes = :mes " + "AND i.ano = :ano "
-				+ "AND i.tipo = 'DEBITO' AND i.operacao = 'COMPRA' AND i.status = 'Y' " + condition + "group by "
+				+ "AND i.tipo = 'DEBITO' AND i.operacao = 'COMPRA' AND i.status = 'Y' AND i.ajuste = 'N' " + condition + "group by "
 				+ groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("dia", Long.parseLong(String.valueOf(dia)))
 				.setParameter("mes", Long.parseLong(String.valueOf(mes)))
@@ -225,7 +225,7 @@ public class Contas implements Serializable {
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i " + "WHERE i.dia = :dia "
 				+ "AND i.mes = :mes " + "AND i.ano = :ano "
-				+ "AND i.tipo = 'DEBITO' AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' " + condition + "group by "
+				+ "AND i.tipo = 'DEBITO' AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' AND i.ajuste = 'N' " + condition + "group by "
 				+ groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("dia", Long.parseLong(String.valueOf(dia)))
 				.setParameter("mes", Long.parseLong(String.valueOf(mes)))
@@ -246,7 +246,7 @@ public class Contas implements Serializable {
 	}
 
 	public Number totalDeReceitasPorSemana(Long semana, Long ano) {
-		String jpql = "SELECT sum(i.valor) FROM Conta i WHERE i.tipo = 'CREDITO' AND i.status = 'Y' AND i.semana = :semana AND i.ano = :ano";
+		String jpql = "SELECT sum(i.valor) FROM Conta i WHERE i.tipo = 'CREDITO' AND i.status = 'Y' AND i.semana = :semana AND i.ano = :ano AND i.ajuste = 'N'";
 		Query q = manager.createQuery(jpql).setParameter("semana", semana).setParameter("ano", ano);
 		Number count = (Number) q.getSingleResult();
 
@@ -271,7 +271,7 @@ public class Contas implements Serializable {
 		orderBy_Condition = "i.semana asc, i.ano asc";
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i " + "WHERE " + "i.semana = :semana "
-				+ "AND i.ano = :ano " + "AND i.tipo = 'DEBITO' AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' "
+				+ "AND i.ano = :ano " + "AND i.tipo = 'DEBITO' AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' AND i.ajuste = 'N' "
 				+ condition + "group by " + groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("semana", Long.parseLong(String.valueOf(semana)))
 				.setParameter("ano", Long.parseLong(String.valueOf(ano)));
@@ -291,7 +291,7 @@ public class Contas implements Serializable {
 	}
 
 	public Number totalDeReceitasPorMes(Long mes, Long ano) {
-		String jpql = "SELECT sum(i.valor) FROM Conta i WHERE i.tipo = 'CREDITO' AND i.status = 'Y' AND i.mes = :mes AND i.ano = :ano";
+		String jpql = "SELECT sum(i.valor) FROM Conta i WHERE i.tipo = 'CREDITO' AND i.status = 'Y' AND i.mes = :mes AND i.ano = :ano AND i.ajuste = 'N'";
 		Query q = manager.createQuery(jpql).setParameter("mes", mes).setParameter("ano", ano);
 		Number count = (Number) q.getSingleResult();
 
@@ -316,7 +316,7 @@ public class Contas implements Serializable {
 		orderBy_Condition = "i.mes asc, i.ano asc";
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i " + "WHERE " + "i.mes = :mes "
-				+ "AND i.ano = :ano " + "AND i.tipo = 'DEBITO' AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' "
+				+ "AND i.ano = :ano " + "AND i.tipo = 'DEBITO' AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' AND i.ajuste = 'N' "
 				+ condition + "group by " + groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("mes", Long.parseLong(String.valueOf(mes))).setParameter("ano",
 				Long.parseLong(String.valueOf(ano)));
@@ -336,7 +336,7 @@ public class Contas implements Serializable {
 	}
 
 	public Number totalDeReceitasPorAno(Long ano) {
-		String jpql = "SELECT sum(i.valor) FROM Conta i WHERE i.tipo = 'CREDITO' AND i.status = 'Y' AND i.ano = :ano";
+		String jpql = "SELECT sum(i.valor) FROM Conta i WHERE i.tipo = 'CREDITO' AND i.status = 'Y' AND i.ano = :ano AND i.ajuste = 'N'";
 		Query q = manager.createQuery(jpql).setParameter("ano", ano);
 		Number count = (Number) q.getSingleResult();
 
@@ -361,7 +361,7 @@ public class Contas implements Serializable {
 		orderBy_Condition = "i.ano asc";
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i " + "WHERE " + "i.ano = :ano "
-				+ "AND i.tipo = 'DEBITO' AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' " + condition + "group by "
+				+ "AND i.tipo = 'DEBITO' AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' AND i.ajuste = 'N' " + condition + "group by "
 				+ groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("ano", Long.parseLong(String.valueOf(ano)));
 
@@ -395,7 +395,7 @@ public class Contas implements Serializable {
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i "
 				+ "WHERE i.pagamento BETWEEN :dataInicio AND :dataFim "
-				+ "AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' " + condition + "group by " + groupBy_Condition
+				+ "AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' AND i.ajuste = 'N' " + condition + "group by " + groupBy_Condition
 				+ " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
 				calendarStop.getTime());
@@ -441,7 +441,7 @@ public class Contas implements Serializable {
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i "
 				+ "WHERE i.semana = :semanaInicio " + "AND i.ano = :ano "
-				+ "AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' " + condition + "group by " + groupBy_Condition
+				+ "AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' AND i.ajuste = 'N' " + condition + "group by " + groupBy_Condition
 				+ " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("semanaInicio", Long.parseLong(semana01.replace("W", "")))
 				.setParameter("ano", Long.parseLong(ano));
@@ -474,7 +474,7 @@ public class Contas implements Serializable {
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i "
 				+ "WHERE i.mes BETWEEN :mesInicio AND :mesFim " + "AND i.ano = :ano "
-				+ "AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' " + condition + "group by " + groupBy_Condition
+				+ "AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' AND i.ajuste = 'N' " + condition + "group by " + groupBy_Condition
 				+ " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("mesInicio", Long.parseLong(mes01))
 				.setParameter("mesFim", Long.parseLong(mes02)).setParameter("ano", Long.parseLong(ano));
@@ -506,7 +506,7 @@ public class Contas implements Serializable {
 		}
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i " + "WHERE i.ano = :anoInicio "
-				+ "AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' " + condition + "group by " + groupBy_Condition
+				+ "AND i.operacao = 'LANCAMENTO' AND i.status = 'Y' AND i.ajuste = 'N'  " + condition + "group by " + groupBy_Condition
 				+ " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("anoInicio", Long.parseLong(ano01));
 

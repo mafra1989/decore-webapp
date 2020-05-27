@@ -113,9 +113,21 @@
 	#entrega-dialog .ui-panel .ui-panel-content {
 		padding: 0px;
 	}
+	.panel-entrega {
+		margin-top: 8px;
+	}
+	.panel-ajuste {
+		margin-top: -10px;
+	}
 }
 
 @media ( min-width :460px) {
+	.panel-entrega {
+		margin-top: 0px;
+	}
+	.panel-ajuste {
+		margin-top: 0px;
+	}
 	.panel-entrega .ui-state-disabled {
 		float: left !important;
 		margin-top: 10px !important;
@@ -251,8 +263,7 @@
 							</p:selectOneMenu>
 						</p:panelGrid>
 
-						<p:panelGrid columns="3" layout="grid" style="margin-bottom: 5px"
-							id="panel-entrega"
+						<p:panelGrid columns="3" layout="grid" id="panel-entrega"
 							styleClass="panelgrid-noborder disabled disabled panel-entrega"
 							columnClasses="ui-grid-col-4, ui-grid-col-2, ui-grid-col-4">
 
@@ -268,7 +279,18 @@
 								onstart="PF('downloadLoading').show();"
 								oncomplete="PF('downloadLoading').hide();PF('entrega-dialog').show()"
 								process="@this" disabled="#{not registroVendasBean.entrega}" />
+						</p:panelGrid>
 
+						<p:panelGrid columns="2" layout="grid" id="panel-ajuste"
+							styleClass="panelgrid-noborder disabled disabled panel-ajuste"
+							columnClasses="ui-grid-col-4, ui-grid-col-4">
+
+							<p:outputLabel value="Ajuste de estoque" for="ajuste" />
+							<p:selectBooleanCheckbox id="ajuste"
+								value="#{registroVendasBean.venda.ajuste}">
+								
+								<p:ajax process="@this" update="@parent" />
+							</p:selectBooleanCheckbox>	
 
 						</p:panelGrid>
 
@@ -455,7 +477,8 @@
 								disabled="#{registroVendasBean.itensVendaSize eq 0}" />
 						</p:contextMenu>
 
-						<p:panelGrid columns="2" style="margin-top: 5px;float: right; margin-right: 10px;margin-bottom: 10px;"
+						<p:panelGrid columns="2"
+							style="margin-top: 5px;float: right; margin-right: 10px;margin-bottom: 10px;"
 							styleClass="panelgrid-noborder disabled disabled">
 							<p:outputLabel value="Total: " />
 							<p:outputLabel id="total-venda"
@@ -477,7 +500,7 @@
 								onstart="PF('downloadLoading').show();" icon="fa fa-save"
 								onsuccess="PF('downloadLoading').hide();"
 								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
-								update="msg data-venda tipo-venda panel-entrega vendedor bairro panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote"
+								update="msg data-venda tipo-venda panel-entrega panel-ajuste vendedor bairro panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote"
 								action="#{registroVendasBean.salvar}"
 								process="@this panel-table data-venda vendedor bairro tipo-venda"
 								style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;" />

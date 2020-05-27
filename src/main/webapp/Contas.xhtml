@@ -275,7 +275,7 @@
 							rendered="#{not consultaContasBean.contaSelecionada.status}">
 						</p:menuitem>
 						<p:separator />
-						<p:menuitem icon="fa fa-fw fa-undo" value="Estornar"
+						<p:menuitem icon="fa fa-fw fa-undo" value="Desfazer pagamento"
 							process="@this"
 							rendered="#{consultaContasBean.contaSelecionada.status}"
 							onclick="estornarConta(#{consultaContasBean.contaSelecionada.id});" />

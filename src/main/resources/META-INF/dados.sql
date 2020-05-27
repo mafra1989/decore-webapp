@@ -443,6 +443,8 @@ INSERT INTO compras(id,ano,datacompra,dia,mes,nomedia,numerocompra,quantidadeite
 INSERT INTO compras(id,ano,datacompra,dia,mes,nomedia,numerocompra,quantidadeitens,semana,valortotal,usuario_id) VALUES (29416,2020,'2020-04-01 00:00:00',1,4,4,191,32,14,3140.00,1);
 INSERT INTO compras(id,ano,datacompra,dia,mes,nomedia,numerocompra,quantidadeitens,semana,valortotal,usuario_id) VALUES (29423,2020,'2020-04-01 00:00:00',1,4,4,192,2,14,230.00,1);
 
+UPDATE compras SET ajuste = 'N';
+
 INSERT INTO itens_compra(id,quantidade,quantidadedisponivel,total,valorunitario,compra_id,produto_id) VALUES (28597,5,0,550.00,110.00,28592,114);
 INSERT INTO itens_compra(id,quantidade,quantidadedisponivel,total,valorunitario,compra_id,produto_id) VALUES (28589,2,0,250.00,125.00,28588,116);
 INSERT INTO itens_compra(id,quantidade,quantidadedisponivel,total,valorunitario,compra_id,produto_id) VALUES (28678,5,0,148.90,29.78,28674,84);
@@ -2247,6 +2249,8 @@ INSERT INTO vendas(id,ano,datavenda,dia,lucro,mes,nomedia,numerovenda,percentual
 INSERT INTO vendas(id,ano,datavenda,dia,lucro,mes,nomedia,numerovenda,percentuallucro,quantidadeitens,semana,status,valorcompra,valortotal,bairro_id,tipovenda_id,usuario_id) VALUES (44855,2020,'2020-04-02 00:00:00',2,90.00,4,5,1115,90.00,2,14,'Y',190.00,280.00,3008,1,1);
 INSERT INTO vendas(id,ano,datavenda,dia,lucro,mes,nomedia,numerovenda,percentuallucro,quantidadeitens,semana,status,valorcompra,valortotal,bairro_id,tipovenda_id,usuario_id) VALUES (44902,2020,'2020-04-06 00:00:00',6,167.22,4,2,1123,167.22,9,15,'Y',162.78,330.00,3008,2,1);
 INSERT INTO vendas(id,ano,datavenda,dia,lucro,mes,nomedia,numerovenda,percentuallucro,quantidadeitens,semana,status,valorcompra,valortotal,bairro_id,tipovenda_id,usuario_id) VALUES (44906,2020,'2020-04-06 00:00:00',6,108.00,4,2,1124,108.00,4,15,'Y',137.00,245.00,3008,2,1);
+
+UPDATE vendas SET ajuste = 'N';
 
 INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (39283,50.00,45.45,1,160.00,110.00,160.00,28561,14,39282);
 INSERT INTO itens_venda(id,lucro,percentuallucro,quantidade,total,valorcompra,valorunitario,compra_id,produto_id,venda_id) VALUES (39285,15.00,60.00,1,40.00,25.00,40.00,28613,17,39284);
@@ -7262,6 +7266,8 @@ INSERT INTO lancamentos(id,ano,datalancamento,descricao,dia,mes,nomedia,numerola
 INSERT INTO lancamentos(id,ano,datalancamento,descricao,dia,mes,nomedia,numerolancamento,semana,valor,categorialancamento_id,destinolancamento_id,usuario_id) VALUES (36421,2020,'2020-02-21 00:00:00','UBER',21,2,6,493,8,30.00,25855,43,1);
 INSERT INTO lancamentos(id,ano,datalancamento,descricao,dia,mes,nomedia,numerolancamento,semana,valor,categorialancamento_id,destinolancamento_id,usuario_id) VALUES (36423,2020,'2020-03-20 00:00:00','COMBUSTÍVEL MOTO',20,3,6,495,12,50.00,25855,43,1);
 
+UPDATE lancamentos SET ajuste = 'N';
+
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37043,2020,496,2,4,5,'LANCAMENTO','2020-04-02 00:00:00','AVISTA',14,'Y','DEBITO',30.00,'2020-04-02 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37044,2020,495,20,3,6,'LANCAMENTO','2020-03-20 00:00:00','AVISTA',12,'Y','DEBITO',50.00,'2020-03-20 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37045,2020,494,3,3,3,'LANCAMENTO','2020-03-03 00:00:00','AVISTA',10,'Y','DEBITO',30.00,'2020-03-03 00:00:00');
@@ -7771,6 +7777,8 @@ INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parce
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37562,2019,508,15,8,5,'LANCAMENTO','2019-08-15 00:00:00','AVISTA',33,'Y','CREDITO',20.00,'2019-08-15 00:00:00');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37568,2019,509,31,3,1,'LANCAMENTO','2019-03-31 04:10:06','AVISTA',14,'Y','CREDITO',43667.84,'2019-03-31 04:10:06');
 INSERT INTO conta(id,ano,codigooperacao,dia,mes,nomedia,operacao,pagamento,parcela,semana,status,tipo,valor,vencimento) VALUES (37324,2020,215,4,4,7,'LANCAMENTO','2020-04-04 00:00:00','AVISTA',14,'Y','DEBITO',200.00,'2020-04-04 00:00:00');
+
+UPDATE conta SET ajuste = 'N';
 
 INSERT INTO target(id,periodo,tipo,valor) VALUES (37574,'ANUAL','LUCRO',30000.00);
 INSERT INTO target(id,periodo,tipo,valor) VALUES (37573,'MENSAL','LUCRO',8000.00);

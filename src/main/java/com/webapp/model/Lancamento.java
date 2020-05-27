@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
@@ -55,6 +56,10 @@ public class Lancamento implements Serializable {
 	@ManyToOne
 	@JoinColumn
 	private Usuario usuario;
+	
+	@Type(type = "yes_no")
+	@Column(nullable = true)
+	private boolean ajuste;
 
 	/* Campos para relat�rio */
 	@Column(nullable = false)
@@ -127,6 +132,14 @@ public class Lancamento implements Serializable {
 
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
+	}
+
+	public boolean isAjuste() {
+		return ajuste;
+	}
+
+	public void setAjuste(boolean ajuste) {
+		this.ajuste = ajuste;
 	}
 
 	public DestinoLancamento getDestinoLancamento() {

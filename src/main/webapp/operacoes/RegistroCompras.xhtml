@@ -248,7 +248,18 @@
 									var="vendedor" itemLabel="#{vendedor.nome}"
 									itemValue="#{vendedor}" />
 							</p:selectOneMenu>
+						</p:panelGrid>
+						
+						<p:panelGrid columns="2" layout="grid" id="panel-ajuste"
+							styleClass="panelgrid-noborder disabled disabled panel-ajuste"
+							columnClasses="ui-grid-col-4, ui-grid-col-4">
 
+							<p:outputLabel value="Ajuste de estoque" for="ajuste" />
+							<p:selectBooleanCheckbox id="ajuste"
+								value="#{registroComprasBean.compra.ajuste}">
+								
+								<p:ajax process="@this" update="@parent" />
+							</p:selectBooleanCheckbox>	
 						</p:panelGrid>
 
 						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
@@ -421,7 +432,7 @@
 								onstart="PF('downloadLoading').show();" icon="fa fa-save"
 								onsuccess="PF('downloadLoading').hide();"
 								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
-								update="msg confirmDialog data-compra comprador panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total"
+								update="msg confirmDialog panel-ajuste data-compra comprador panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total"
 								action="#{registroComprasBean.salvar}"
 								process="@this panel-table data-compra comprador"
 								style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;" />
