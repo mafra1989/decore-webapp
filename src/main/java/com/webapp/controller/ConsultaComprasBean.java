@@ -98,6 +98,7 @@ public class ConsultaComprasBean implements Serializable {
 			List<Conta> listaDeContas = contas.porCodigoOperacao(compra.getNumeroCompra(), "COMPRA");
 			if(listaDeContas.size() > 0) {
 				for (Conta conta : listaDeContas) {
+					conta = contas.porId(conta.getId());
 					contas.remove(conta);
 				}
 			}
