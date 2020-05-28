@@ -398,6 +398,7 @@ public class RelatorioVendasBean implements Serializable {
 						categoriaPorDia, categoriasPorDia, produto01, usuarioPorDia, true);
 
 				System.out.println("Data: " + calendarStartTemp.getTime() + " - " + resultTemp.size());
+				System.out.println("Data Stop: " + calendarStopTemp.getTime());
 
 				if (resultTemp.size() == 0) {
 
