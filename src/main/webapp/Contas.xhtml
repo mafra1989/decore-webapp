@@ -15,6 +15,9 @@
 
 		<style>
 @media ( min-width :220px) {
+	.ui-datatable tbody td {
+	    height: auto !important;
+	}
 	.ui-monthpicker .ui-monthpicker-month {
 	    width: 10%;
 	    padding: 0.95em;
@@ -306,6 +309,10 @@
 							
 							<p:column headerText="Descrição" width="35%" visible="#{consultaContasBean.tipoOperacao == 'LANCAMENTO'}">
 								<h:outputText value="#{conta.descricao}" />
+							</p:column>
+							
+							<p:column headerText="Vendedor" width="35%" visible="#{consultaContasBean.tipoOperacao == 'COMPRA'}">
+								<h:outputText value="#{conta.vendedor}" />
 							</p:column>
 
 							<p:column headerText="Operação" width="20%">

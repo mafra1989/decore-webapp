@@ -113,9 +113,11 @@ public class ConsultaVendasBean implements Serializable {
 
 		double totalVendasTemp = 0;
 		totalItens = 0;
-		for (Venda venda : vendasFiltradas) {
-			totalVendasTemp += venda.getValorTotal().doubleValue();
-			totalItens += venda.getQuantidadeItens().intValue();
+		for (Venda venda : vendasFiltradas) {		
+			if(!venda.isAjuste()) {
+				totalVendasTemp += venda.getValorTotal().doubleValue();
+				totalItens += venda.getQuantidadeItens().intValue();
+			}
 		}
 
 		totalVendas = nf.format(totalVendasTemp);

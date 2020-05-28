@@ -217,6 +217,9 @@ public class Conta implements Serializable {
 
 	@Transient
 	private String descricao;
+	
+	@Transient
+	private String vendedor;
 
 	public String getDescricao() {
 		return descricao;
@@ -224,6 +227,14 @@ public class Conta implements Serializable {
 
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
+	}
+
+	public String getVendedor() {
+		return vendedor;
+	}
+
+	public void setVendedor(String vendedor) {
+		this.vendedor = vendedor;
 	}
 	
 }

@@ -99,7 +99,10 @@ public class ConsultaLancamentosBean implements Serializable {
 
 		double totalLancamentosTemp = 0;
 		for (Lancamento lancamento : lancamentosFiltrados) {
-			totalLancamentosTemp += lancamento.getValor().doubleValue();
+				
+			if(!lancamento.isAjuste()) {
+				totalLancamentosTemp += lancamento.getValor().doubleValue();
+			}
 			
 			/*List<Conta> listaDeContas = contas.porCodigoOperacao(lancamento.getNumeroLancamento(), "LANCAMENTO");
 			if(listaDeContas.size() == 0) {

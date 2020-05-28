@@ -16,10 +16,12 @@ import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
 
+import com.webapp.model.Compra;
 import com.webapp.model.Conta;
 import com.webapp.model.Lancamento;
 import com.webapp.model.OrigemConta;
 import com.webapp.model.TipoOperacao;
+import com.webapp.repository.Compras;
 import com.webapp.repository.Contas;
 import com.webapp.repository.Lancamentos;
 import com.webapp.util.jsf.FacesUtil;
@@ -35,6 +37,9 @@ public class ConsultaContasBean implements Serializable {
 	
 	@Inject
 	private Lancamentos lancamentos;
+	
+	@Inject
+	private Compras compras;
 
 	private static final Locale BRAZIL = new Locale("pt", "BR");
 
@@ -85,6 +90,11 @@ public class ConsultaContasBean implements Serializable {
 			if(tipoOperacao == TipoOperacao.LANCAMENTO) {
 				Lancamento lancamento = lancamentos.porNumeroLancamento(conta.getCodigoOperacao());
 				conta.setDescricao(lancamento.getDescricao());
+			}
+			
+			if(tipoOperacao == TipoOperacao.COMPRA) {
+				Compra compra = compras.porNumeroCompra(conta.getCodigoOperacao());
+				conta.setVendedor(compra.getUsuario().getNome());
 			}
 			
 		}
