@@ -15,6 +15,11 @@
 
 		<style>
 @media ( min-width :220px) {
+	.inventario .ui-button {
+	    width: auto !important;;
+	    color: #000000 !important;;
+	    background-color: transparent !important;;
+    }
 	body .ui-button.ui-button-text-icon-left .ui-button-text {
 	    font-weight: bold;
 	}
@@ -250,7 +255,7 @@
 
 							<p:column headerText="N. Compra" width="10%">
 								<h:outputText value="#{compra.numeroCompra}" />
-								<p:commandButton icon="fa fa-fw fa-edit" rendered="#{compra.ajuste}" />
+								<p:commandButton icon="fa fa-fw fa-edit" styleClass="inventario" rendered="#{compra.ajuste}" />
 							</p:column>
 
 							<p:column headerText="Data da compra" width="10%">
