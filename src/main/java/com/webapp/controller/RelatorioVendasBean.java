@@ -389,7 +389,9 @@ public class RelatorioVendasBean implements Serializable {
 			Calendar calendarStartTemp = (Calendar) calendarStart.clone();
 
 			do {
-				Calendar calendarStopTemp = (Calendar) calendarStartTemp.clone();
+				Calendar calendarTemp = Calendar.getInstance();
+				calendarTemp.setTime(calendarStartTemp.getTime());
+				Calendar calendarStopTemp = calendarTemp;
 				calendarStopTemp.set(Calendar.HOUR, 23);
 				calendarStopTemp.set(Calendar.MINUTE, 59);
 				calendarStopTemp.set(Calendar.SECOND, 59);
