@@ -268,14 +268,14 @@
 						style="width: 80px;float: right;margin-top: -40px;margin-right: 10px"
 						disabled="#{(consultaContasBean.contasFiltradasSize eq 0) or consultaContasBean.contaSelecionada.id == null}">
 
-						<p:menuitem value="Pagar" icon="fa fa-fw fa-money"
+						<p:menuitem value="#{consultaContasBean.contaSelecionada.tipo == 'DEBITO' ? 'Pagar' : 'Receber'}" icon="fa fa-fw fa-money"
 							onstart="start();"
 							oncomplete="PF('pagamento-dialog').show();stop();"
 							update="pagamento-dialog"
 							rendered="#{not consultaContasBean.contaSelecionada.status}">
 						</p:menuitem>
 						<p:separator />
-						<p:menuitem icon="fa fa-fw fa-undo" value="Desfazer pagamento"
+						<p:menuitem icon="fa fa-fw fa-undo" value="#{consultaContasBean.contaSelecionada.tipo == 'DEBITO' ? 'Desfazer pagamento' : 'Desfazer recebimento'}"
 							process="@this"
 							rendered="#{consultaContasBean.contaSelecionada.status}"
 							onclick="estornarConta(#{consultaContasBean.contaSelecionada.id});" />
@@ -302,6 +302,10 @@
 
 							<p:column headerText="Código" width="20%">
 								<h:outputText value="#{conta.codigoOperacao}" />
+							</p:column>
+							
+							<p:column headerText="Descrição" width="35%" visible="#{consultaContasBean.tipoOperacao == 'LANCAMENTO'}">
+								<h:outputText value="#{conta.descricao}" />
 							</p:column>
 
 							<p:column headerText="Operação" width="20%">

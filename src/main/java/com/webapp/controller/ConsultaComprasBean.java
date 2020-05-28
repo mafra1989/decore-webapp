@@ -19,7 +19,6 @@ import com.webapp.model.Conta;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.Produto;
-import com.webapp.model.TipoPagamento;
 import com.webapp.model.Usuario;
 import com.webapp.repository.Compras;
 import com.webapp.repository.Contas;
@@ -89,12 +88,15 @@ public class ConsultaComprasBean implements Serializable {
 
 		comprasFiltradas = compras.comprasFiltradas(numeroCompra, dateStart, calendarioTemp.getTime(), usuario);
 
-		double totalComprasTemp = 0; double valorTotal = 0; double valorTotalTemp = 0;
+		double totalComprasTemp = 0; //double valorTotal = 0; double valorTotalTemp = 0;
 		totalItens = 0;
 		for (Compra compra : comprasFiltradas) {
-			totalComprasTemp += compra.getValorTotal().doubleValue();
-			totalItens += compra.getQuantidadeItens().intValue();
 			
+			if(!compra.isAjuste()) {
+				totalComprasTemp += compra.getValorTotal().doubleValue();
+				totalItens += compra.getQuantidadeItens().intValue();
+			}
+		/*	
 			if(compra.getNumeroCompra().intValue() == 12 && compra.getId() == 28592) {
 				compra.setNumeroCompra(7L);
 				compras.save(compra);
@@ -138,6 +140,7 @@ public class ConsultaComprasBean implements Serializable {
 				valorTotal += conta.getValor().doubleValue(); 
 				System.out.println(valorTotal);
 			}
+			*/
 					
 		}
 
