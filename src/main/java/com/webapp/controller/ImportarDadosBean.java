@@ -34,7 +34,6 @@ import com.webapp.model.Conta;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.Lancamento;
-import com.webapp.model.OrigemLancamento;
 import com.webapp.model.Produto;
 import com.webapp.model.TipoVenda;
 import com.webapp.model.Usuario;
