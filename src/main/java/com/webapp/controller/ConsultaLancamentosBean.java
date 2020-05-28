@@ -92,6 +92,8 @@ public class ConsultaLancamentosBean implements Serializable {
 		calendarioTemp.set(Calendar.HOUR, 23);
 		calendarioTemp.set(Calendar.MINUTE, 59);
 		calendarioTemp.set(Calendar.SECOND, 59);
+		
+		lancamentoSelecionado = null;
 
 		lancamentosFiltrados = new ArrayList<>();
 		lancamentosFiltrados = lancamentos.lancamentosFiltrados(numeroLancamento, dateStart, calendarioTemp.getTime(), origemLancamento,

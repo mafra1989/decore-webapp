@@ -87,6 +87,8 @@ public class ConsultaComprasBean implements Serializable {
 		calendarioTemp.set(Calendar.SECOND, 59);
 
 		comprasFiltradas = compras.comprasFiltradas(numeroCompra, dateStart, calendarioTemp.getTime(), usuario);
+		
+		compraSelecionada = null;
 
 		double totalComprasTemp = 0; //double valorTotal = 0; double valorTotalTemp = 0;
 		totalItens = 0;
