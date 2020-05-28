@@ -324,20 +324,20 @@ public class DashboardBean implements Serializable {
 		tabela.add(fluxoDeCaixa);
 
 		List<String> bgColor = new ArrayList<>();
-		bgColor.add("rgba(255, 99, 132, 0.2)");
-		bgColor.add("rgba(255, 159, 64, 0.2)");
-		bgColor.add("rgba(255, 205, 86, 0.2)");
 		bgColor.add("rgba(75, 192, 192, 0.2)");
+		bgColor.add("rgba(255, 159, 64, 0.2)");
+		bgColor.add("rgba(255, 205, 86, 0.2)");	
 		bgColor.add("rgba(54, 162, 235, 0.2)");
+		bgColor.add("rgba(255, 99, 132, 0.2)");
 		bgColor.add("rgba(201, 203, 207, 0.2)");
 		barDataSet.setBackgroundColor(bgColor);
 
 		List<String> borderColor = new ArrayList<>();
-		borderColor.add("rgb(255, 99, 132)");
-		borderColor.add("rgb(255, 159, 64)");
-		borderColor.add("rgb(255, 205, 86)");
 		borderColor.add("rgb(75, 192, 192)");
+		borderColor.add("rgb(255, 159, 64)");
+		borderColor.add("rgb(255, 205, 86)");	
 		borderColor.add("rgb(54, 162, 235)");
+		borderColor.add("rgb(255, 99, 132)");
 		borderColor.add("rgb(201, 203, 207)");
 		barDataSet.setBorderColor(borderColor);
 		barDataSet.setBorderWidth(1);
