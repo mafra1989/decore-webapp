@@ -396,7 +396,7 @@ public class RegistroVendasBean implements Serializable {
 			System.out.println("quantidadeDisponivel: " + quantidadeDisponivel);
 
 			if (itemVenda.getQuantidade() <= quantidadeDisponivel) {
-				if (itemVenda.getValorUnitario().doubleValue() >= itemCompra.getValorUnitario().doubleValue()) {
+				
 					itemVenda.setTotal(BigDecimal.valueOf(
 							itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().longValue()));
 					itemVenda.setVenda(venda);
@@ -475,10 +475,11 @@ public class RegistroVendasBean implements Serializable {
 					itensCompra = new ArrayList<>();
 					itensCompra.addAll(itensCompraTemp);
 
-				} else {
-					PrimeFaces.current().executeScript(
-							"swal({ type: 'error', title: 'Erro!', text: 'Valor unitário menor que o valor de compra!' });");
-				}
+					if (itemVenda.getValorUnitario().doubleValue() >= itemCompra.getValorUnitario().doubleValue()) {					
+						PrimeFaces.current().executeScript(
+								"swal({ type: 'warning', title: 'Atenção!', text: 'Produto adicionado com valor unitário menor que o valor de compra.' });");
+					}
+					
 			} else {
 				PrimeFaces.current().executeScript(
 						"swal({ type: 'error', title: 'Erro!', text: 'Quantidade maior que a disponível!' });");
