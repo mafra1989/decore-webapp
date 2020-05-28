@@ -256,9 +256,9 @@ public class DashboardBean implements Serializable {
 		Number totalVendas = vendas.totalVendas();
 		Number totalCompras = compras.totalCompras();
 
-		Number totalDespesasPagas = contas.porContasPagas("DEBITO", "LANCAMENTO");
+		Number totalDespesasPagas = contas.porContasPagas("DEBITO", "LANCAMENTO"); /* errado */
 
-		//Number totalDebitosPagos = contas.porContasPagas("DEBITO"); /* errado */
+		Number totalDebitosPagos = contas.porContasPagas("DEBITO"); 
 		Number totalCreditosPagos = contas.porContasPagas("CREDITO");
 
 		// Number totalDebitos = lancamentos.totalDebitos();
@@ -266,7 +266,7 @@ public class DashboardBean implements Serializable {
 
 		List<Number> values = new ArrayList<>();
 		values.add((totalVendas.doubleValue() + totalCreditosPagos.doubleValue())
-				- (totalDespesasPagas.doubleValue() + totalCompras.doubleValue()));// Em
+				- (totalDebitosPagos.doubleValue()/* + totalCompras.doubleValue()*/));// Em
 		// Caixa
 		values.add(totalVendas);// Vendas
 		values.add(totalCreditosPagos);// Receitas
@@ -283,11 +283,11 @@ public class DashboardBean implements Serializable {
 		FluxoDeCaixa fluxoDeCaixa = new FluxoDeCaixa();
 		fluxoDeCaixa.setItem("Caixa");
 		fluxoDeCaixa.setValue((totalVendas.doubleValue() + totalCreditosPagos.doubleValue())
-				- (totalDespesasPagas.doubleValue() + totalCompras.doubleValue()));
+				- (totalDebitosPagos.doubleValue()/* + totalCompras.doubleValue()*/));
 		tabela.add(fluxoDeCaixa);
 
 		double saldo = (totalVendas.doubleValue() + totalCreditosPagos.doubleValue())
-				- (totalDespesasPagas.doubleValue() + totalCompras.doubleValue());
+				- (totalDebitosPagos.doubleValue()/* + totalCompras.doubleValue()*/);
 		saldoGeral = nf.format(saldo);
 
 		fluxoDeCaixa = new FluxoDeCaixa();
