@@ -106,6 +106,12 @@ public class ConsultaLancamentosBean implements Serializable {
 				totalLancamentosTemp += lancamento.getValor().doubleValue();
 			}
 			
+			if(!lancamento.getCategoriaLancamento().getNome().contains("Salário")) {
+				
+				lancamento.setUsuario(null);
+				lancamentos.save(lancamento);
+			}
+			
 			/*List<Conta> listaDeContas = contas.porCodigoOperacao(lancamento.getNumeroLancamento(), "LANCAMENTO");
 			if(listaDeContas.size() == 0) {
 				

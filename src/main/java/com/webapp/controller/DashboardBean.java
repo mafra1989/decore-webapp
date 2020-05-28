@@ -229,11 +229,17 @@ public class DashboardBean implements Serializable {
 		dataSet.setData(values);
 
 		List<String> bgColors = new ArrayList<>();
+		//bgColors.add("rgb(255, 99, 132)");
+		//bgColors.add("rgb(75, 192, 192)");
+		//bgColors.add("rgb(255, 205, 86)");
+		//bgColors.add("rgb(201, 203, 207)");
+		//bgColors.add("rgb(249, 24, 24)");
 		bgColors.add("rgb(255, 99, 132)");
-		bgColors.add("rgb(75, 192, 192)");
+		bgColors.add("rgb(255, 159, 64)");
 		bgColors.add("rgb(255, 205, 86)");
+		bgColors.add("rgb(75, 192, 192)");
+		bgColors.add("rgb(54, 162, 235)");
 		bgColors.add("rgb(201, 203, 207)");
-		bgColors.add("rgb(249, 24, 24)");
 		dataSet.setBackgroundColor(bgColors);
 
 		cont = 0;
