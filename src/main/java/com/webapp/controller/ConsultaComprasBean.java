@@ -102,6 +102,7 @@ public class ConsultaComprasBean implements Serializable {
 				}
 			}
 				
+			int valorTotal = 0;
 			if(!compra.isAjuste()) {
 				
 				Conta conta = new Conta();
@@ -125,6 +126,9 @@ public class ConsultaComprasBean implements Serializable {
 				conta.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
 
 				contas.save(conta);	
+				
+				valorTotal += conta.getValor().intValue(); 
+				System.out.println(valorTotal);
 			}
 					
 		}
