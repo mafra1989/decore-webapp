@@ -19,7 +19,6 @@ import com.webapp.model.Conta;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.Produto;
-import com.webapp.model.TipoPagamento;
 import com.webapp.model.Usuario;
 import com.webapp.repository.Compras;
 import com.webapp.repository.Contas;
@@ -95,7 +94,7 @@ public class ConsultaComprasBean implements Serializable {
 			totalComprasTemp += compra.getValorTotal().doubleValue();
 			totalItens += compra.getQuantidadeItens().intValue();
 			
-			List<Conta> listaDeContas = contas.porCodigoOperacao(compra.getNumeroCompra(), "COMPRA");
+			/*List<Conta> listaDeContas = contas.porCodigoOperacao(compra.getNumeroCompra(), "COMPRA");
 			if(listaDeContas.size() == 0) {
 				
 				Conta conta = new Conta();
@@ -118,9 +117,8 @@ public class ConsultaComprasBean implements Serializable {
 				conta.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
 				conta.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
 
-				contas.save(conta);
-				
-			}
+				contas.save(conta);			
+			}*/
 		}
 
 		totalCompras = nf.format(totalComprasTemp);

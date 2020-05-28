@@ -19,6 +19,7 @@ import com.webapp.model.Conta;
 import com.webapp.model.DestinoLancamento;
 import com.webapp.model.Lancamento;
 import com.webapp.model.OrigemLancamento;
+import com.webapp.model.TipoPagamento;
 import com.webapp.model.Usuario;
 import com.webapp.repository.CategoriasLancamentos;
 import com.webapp.repository.Contas;
@@ -100,6 +101,32 @@ public class ConsultaLancamentosBean implements Serializable {
 		double totalLancamentosTemp = 0;
 		for (Lancamento lancamento : lancamentosFiltrados) {
 			totalLancamentosTemp += lancamento.getValor().doubleValue();
+			
+			List<Conta> listaDeContas = contas.porCodigoOperacao(lancamento.getNumeroLancamento(), "LANCAMENTO");
+			if(listaDeContas.size() == 0) {
+				
+				Conta conta = new Conta();
+				conta.setCodigoOperacao(lancamento.getNumeroLancamento());
+				conta.setOperacao("LANCAMENTO");
+				conta.setParcela(TipoPagamento.AVISTA.name());
+				conta.setTipo("DEBITO");
+				conta.setStatus(true);
+				conta.setValor(lancamento.getValor());
+				
+				conta.setVencimento(lancamento.getDataLancamento());
+				conta.setPagamento(lancamento.getDataLancamento());
+				
+				calendarioTemp = Calendar.getInstance();
+				calendarioTemp.setTime(conta.getVencimento());
+				
+				conta.setDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_MONTH))));
+				conta.setNomeDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_WEEK))));
+				conta.setSemana(Long.valueOf((calendarioTemp.get(Calendar.WEEK_OF_YEAR))));
+				conta.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
+				conta.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
+
+				contas.save(conta);			
+			}
 		}
 
 		totalLancamentos = nf.format(totalLancamentosTemp);
