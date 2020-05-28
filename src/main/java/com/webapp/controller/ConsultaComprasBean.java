@@ -89,7 +89,7 @@ public class ConsultaComprasBean implements Serializable {
 
 		comprasFiltradas = compras.comprasFiltradas(numeroCompra, dateStart, calendarioTemp.getTime(), usuario);
 
-		double totalComprasTemp = 0; double valorTotal = 0;
+		double totalComprasTemp = 0; double valorTotal = 0; double valorTotalTemp = 0;
 		totalItens = 0;
 		for (Compra compra : comprasFiltradas) {
 			totalComprasTemp += compra.getValorTotal().doubleValue();
@@ -97,9 +97,11 @@ public class ConsultaComprasBean implements Serializable {
 			
 			List<Conta> listaDeContas = contas.porCodigoOperacao(compra.getNumeroCompra(), "COMPRA");
 			if(listaDeContas.size() > 0) {
-				for (Conta conta : listaDeContas) {
-					conta = contas.porId(conta.getId());
-					contas.remove(conta);
+
+				for (Conta contaTemp : listaDeContas) {
+					valorTotalTemp += contaTemp.getValor().doubleValue(); 
+					System.out.println("Valor: " + valorTotalTemp);
+					contas.remove(contaTemp);
 				}
 			}
 				
@@ -126,8 +128,8 @@ public class ConsultaComprasBean implements Serializable {
 				conta.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
 				conta.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
 
-				contas.save(conta);	
-				
+				conta = contas.save(conta);	
+				System.out.println(conta.getId());
 				valorTotal += conta.getValor().doubleValue(); 
 				System.out.println(valorTotal);
 			}
