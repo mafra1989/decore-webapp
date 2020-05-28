@@ -89,7 +89,7 @@ public class ConsultaComprasBean implements Serializable {
 
 		comprasFiltradas = compras.comprasFiltradas(numeroCompra, dateStart, calendarioTemp.getTime(), usuario);
 
-		double totalComprasTemp = 0; int valorTotal = 0;
+		double totalComprasTemp = 0; double valorTotal = 0;
 		totalItens = 0;
 		for (Compra compra : comprasFiltradas) {
 			totalComprasTemp += compra.getValorTotal().doubleValue();
@@ -127,7 +127,7 @@ public class ConsultaComprasBean implements Serializable {
 
 				contas.save(conta);	
 				
-				valorTotal += conta.getValor().intValue(); 
+				valorTotal += conta.getValor().doubleValue(); 
 				System.out.println(valorTotal);
 			}
 					
