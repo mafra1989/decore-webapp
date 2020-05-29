@@ -6,6 +6,7 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,6 +31,7 @@ import org.primefaces.model.charts.polar.PolarAreaChartModel;
 
 import com.webapp.model.FluxoDeCaixa;
 import com.webapp.model.Lancamento;
+import com.webapp.model.OrdenaTop5;
 import com.webapp.model.Produto;
 import com.webapp.model.Top5Despesa;
 import com.webapp.model.VendaPorCategoria;
@@ -159,6 +161,7 @@ public class DashboardBean implements Serializable {
 		}
 
 		this.totalDespesasTop5 = nf.format(totalDespesasTop5);
+		Collections.sort(top5Despesas, new OrdenaTop5().reversed());
 
 		List<String> labels = new ArrayList<>();
 		for (Top5Despesa top5Despesa : top5Despesas) {
