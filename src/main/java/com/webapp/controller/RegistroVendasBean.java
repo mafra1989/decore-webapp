@@ -397,7 +397,7 @@ public class RegistroVendasBean implements Serializable {
 
 			if (itemVenda.getQuantidade() <= quantidadeDisponivel) {
 				
-					if (itemVenda.getValorUnitario().doubleValue() >= itemCompra.getValorUnitario().doubleValue()) {					
+					if (itemVenda.getValorUnitario().doubleValue() <= itemCompra.getValorUnitario().doubleValue()) {					
 						PrimeFaces.current().executeScript(
 								"swal({ type: 'warning', title: 'Atenção!', text: 'Produto adicionado com valor unitário menor que o valor de compra.' });");
 					}
