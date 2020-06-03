@@ -35,6 +35,7 @@ import com.webapp.repository.Produtos;
 import com.webapp.repository.TiposVendas;
 import com.webapp.repository.Usuarios;
 import com.webapp.repository.Vendas;
+import com.webapp.repository.filter.BairroFilter;
 import com.webapp.repository.filter.ProdutoFilter;
 import com.webapp.util.jsf.FacesUtil;
 
@@ -119,6 +120,16 @@ public class RegistroVendasBean implements Serializable {
 		produtosFiltrados = produtos.filtrados(filter);
 		System.out.println(produtosFiltrados.size());
 	}
+	
+	public List<Bairro> completeText(String query) {
+		
+        BairroFilter filtro = new BairroFilter();
+        filtro.setNome(query);
+        
+        List<Bairro> listaDeBairros = bairros.filtrados(filtro);       
+        
+        return listaDeBairros;
+    }
 
 	public void buscar() {
 		venda = vendas.porId(venda.getId());

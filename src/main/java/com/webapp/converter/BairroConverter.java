@@ -19,7 +19,7 @@ public class BairroConverter implements Converter {
 		Bairro retorno = null;
 
 		if (value != null) {
-			retorno = this.bairros.porId(new Long(value));
+			retorno = bairros.porId(new Long(value));
 		}
 
 		return retorno;

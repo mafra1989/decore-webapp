@@ -63,10 +63,6 @@
 	display: none;
 }
 
-.ui-autocomplete-input {
-	text-transform: uppercase;
-}
-
 /* AUTOCOMPLETE - CID 10 */
 .ui-autocomplete-panel {
 	width: 300px !important;

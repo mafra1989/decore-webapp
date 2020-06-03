@@ -38,9 +38,14 @@ public class Bairros implements Serializable {
 		return this.manager.createQuery("from Bairro order by nome", Bairro.class).getResultList();
 	}
 	
+	public Bairro porNome(String nome) {
+		return this.manager.createQuery("from Bairro i where i.nome = :nome", Bairro.class)
+				.setParameter("nome", nome).getSingleResult();
+	}
+	
 	public List<Bairro> filtrados(BairroFilter filter) {
-		return this.manager.createQuery("from Bairro i where i.nome like :nome order by nome", Bairro.class)
-				.setParameter("nome", "%" + filter.getNome() + "%").getResultList();
+		return this.manager.createQuery("from Bairro i where i.nome like upper(:nome) order by nome", Bairro.class)
+				.setParameter("nome", "%" + filter.getNome().toUpperCase() + "%").getResultList();
 	}
 	
 }

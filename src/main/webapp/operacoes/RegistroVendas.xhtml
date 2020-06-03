@@ -240,15 +240,10 @@
 							</p:selectOneMenu>
 
 							<p:outputLabel value="Bairro" for="bairro" />
-							<p:selectOneMenu id="bairro"
+							<p:autoComplete id="bairro" forceSelection="true" dropdown="true" scrollHeight="210"
 								value="#{registroVendasBean.venda.bairro}"
-								placeholder="selecione">
-
-								<f:selectItem itemLabel="Selecione" />
-
-								<f:selectItems value="#{registroVendasBean.todosBairros}"
-									var="bairro" itemLabel="#{bairro.nome}" itemValue="#{bairro}" />
-							</p:selectOneMenu>
+								var="bairro" itemLabel="#{bairro.nome}" itemValue="#{bairro}" 
+								completeMethod="#{registroVendasBean.completeText}" />
 
 							<p:outputLabel value="Vendedor" for="vendedor" />
 							<p:selectOneMenu id="vendedor"
