@@ -176,14 +176,14 @@
 						<p:outputLabel value="Data do lançamento" for="data01" />
 						<p:datePicker id="data01"
 							value="#{consultaLancamentosBean.dateStart}" readonlyInput="true"
-							pattern="dd/MM/yyyy" locale="pt" showIcon="true">
+							pattern="dd/MM/yyyy" locale="pt" timeZone="GMT-4" showIcon="true">
 						</p:datePicker>
 
 
 						<p:outputLabel value="até" id="data02" />
 						<p:datePicker id="data-02"
 							value="#{consultaLancamentosBean.dateStop}" readonlyInput="true"
-							styleClass="dateStop" pattern="dd/MM/yyyy" locale="pt"
+							styleClass="dateStop" pattern="dd/MM/yyyy" locale="pt" timeZone="GMT-4"
 							showIcon="true">
 						</p:datePicker>
 
@@ -284,9 +284,9 @@
 								<p:commandButton icon="fa fa-fw fa-edit" styleClass="inventario" rendered="#{lancamento.ajuste}" />
 							</p:column>
 							
-							<p:column headerText="Data do Lançamento" width="20%">
+							<p:column headerText="Data do Lançamento" width="20%">								
 								<h:outputText value="#{lancamento.dataLancamento}">
-									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt" />
+									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" dateStyle="short" timeZone="GMT-4" />
 								</h:outputText>
 							</p:column>
 

@@ -269,10 +269,16 @@
 										value="#{registroLancamentosBean.despesa.numeroLancamento}"
 										readonly="true" placeholder="Gerado automaticamente." />
 
-									<p:outputLabel value="Data" for="data-despesa" />
-									<p:datePicker
+									<p:outputLabel value="Data" for="data-despesa" rendered="#{registroLancamentosBean.despesa.id != null}" />
+									<p:datePicker rendered="#{registroLancamentosBean.despesa.id != null}"
 										value="#{registroLancamentosBean.despesa.dataLancamento}"
 										id="data-despesa" pattern="dd/MM/yyyy" locale="pt"
+										showIcon="true" />
+										
+									<p:outputLabel value="Data" for="data-despesa_" rendered="#{registroLancamentosBean.despesa.id == null}" />
+									<p:datePicker rendered="#{registroLancamentosBean.despesa.id == null}"
+										value="#{registroLancamentosBean.despesa.dataLancamento}" timeZone="GMT-4"
+										id="data-despesa_" pattern="dd/MM/yyyy" locale="pt"
 										showIcon="true" />
 
 								</p:panelGrid>
@@ -467,10 +473,17 @@
 										value="#{registroLancamentosBean.receita.numeroLancamento}"
 										readonly="true" placeholder="Gerado automaticamente." />
 
-									<p:outputLabel value="Data" for="data-receita" />
-									<p:datePicker
+									<p:outputLabel value="Data" for="data-receita" rendered="#{registroLancamentosBean.receita.id != null}" />
+									<p:datePicker rendered="#{registroLancamentosBean.receita.id != null}"
 										value="#{registroLancamentosBean.receita.dataLancamento}"
 										id="data-receita" pattern="dd/MM/yyyy" locale="pt"
+										showIcon="true" />
+										
+									<p:outputLabel value="Data" for="data-receita_" rendered="#{registroLancamentosBean.receita.id == null}" />
+									<p:datePicker
+										value="#{registroLancamentosBean.receita.dataLancamento}"
+										id="data-receita_" pattern="dd/MM/yyyy" locale="pt" timeZone="GMT-4"
+										rendered="#{registroLancamentosBean.receita.id == null}"
 										showIcon="true" />
 
 								</p:panelGrid>

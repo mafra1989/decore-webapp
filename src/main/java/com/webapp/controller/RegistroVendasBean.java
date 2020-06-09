@@ -280,6 +280,13 @@ public class RegistroVendasBean implements Serializable {
 				PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda N."
 						+ venda.getNumeroVenda() + " registrada com sucesso!' });");
 
+				Venda vendaTemp_ = new Venda();
+				vendaTemp_.setNumeroVenda(null);
+				vendaTemp_.setDataVenda(venda.getDataVenda());
+				vendaTemp_.setTipoVenda(venda.getTipoVenda());
+				vendaTemp_.setBairro(venda.getBairro());
+				vendaTemp_.setUsuario(venda.getUsuario());			
+				
 				venda = new Venda();
 				itensVenda = new ArrayList<ItemVenda>();
 				itemVenda = new ItemVenda();
@@ -290,6 +297,8 @@ public class RegistroVendasBean implements Serializable {
 
 				entregaVenda = new Entrega();
 				entrega = false;
+				
+				venda = vendaTemp_;
 
 			} else {
 

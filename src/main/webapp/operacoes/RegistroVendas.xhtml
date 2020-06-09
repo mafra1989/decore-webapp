@@ -222,10 +222,15 @@
 							<p:inputText value="#{registroVendasBean.venda.numeroVenda}"
 								readonly="true" placeholder="Gerado automaticamente." />
 
-							<p:outputLabel value="Data da Venda" for="data-venda" />
-							<p:datePicker value="#{registroVendasBean.venda.dataVenda}"
+							<p:outputLabel value="Data da Venda" for="data-venda" rendered="#{registroVendasBean.venda.id != null}" />
+							<p:datePicker value="#{registroVendasBean.venda.dataVenda}" rendered="#{registroVendasBean.venda.id != null}"
 								readonlyInput="true" id="data-venda" pattern="dd/MM/yyyy"
 								locale="pt" showIcon="true" />
+								
+							<p:outputLabel value="Data da Venda" for="data-venda_" rendered="#{registroVendasBean.venda.id == null}" />
+							<p:datePicker value="#{registroVendasBean.venda.dataVenda}" rendered="#{registroVendasBean.venda.id == null}"
+								readonlyInput="true" id="data-venda_" pattern="dd/MM/yyyy"
+								locale="pt" showIcon="true" timeZone="GMT-4" />
 
 							<p:outputLabel value="Tipo de Venda" for="tipo-venda" />
 							<p:selectOneMenu id="tipo-venda"

@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.enterprise.context.SessionScoped;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -27,7 +28,7 @@ import com.webapp.repository.Lancamentos;
 import com.webapp.util.jsf.FacesUtil;
 
 @Named
-@ViewScoped
+@SessionScoped
 public class ConsultaLancamentosBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;

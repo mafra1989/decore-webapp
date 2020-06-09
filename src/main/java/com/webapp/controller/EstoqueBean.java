@@ -6,6 +6,7 @@ import java.text.NumberFormat;
 import java.util.Base64;
 import java.util.List;
 
+import javax.enterprise.context.SessionScoped;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -27,7 +28,7 @@ import com.webapp.uploader.WebException;
 import com.webapp.util.jsf.FacesUtil;
 
 @Named
-@ViewScoped
+@SessionScoped
 public class EstoqueBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;

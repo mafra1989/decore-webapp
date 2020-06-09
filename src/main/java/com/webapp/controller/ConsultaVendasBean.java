@@ -13,9 +13,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -40,7 +40,7 @@ import com.webapp.repository.Vendas;
 import com.webapp.util.jsf.FacesUtil;
 
 @Named
-@ViewScoped
+@SessionScoped
 public class ConsultaVendasBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;

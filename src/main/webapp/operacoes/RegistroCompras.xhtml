@@ -232,9 +232,15 @@
 							<p:inputText value="#{registroComprasBean.compra.numeroCompra}"
 								readonly="true" placeholder="Gerado automaticamente." />
 
-							<p:outputLabel value="Data da Compra" for="data-compra" />
+							<p:outputLabel value="Data da Compra" for="data-compra" rendered="#{registroComprasBean.compra.id != null}" />
 							<p:datePicker value="#{registroComprasBean.compra.dataCompra}"
-								id="data-compra" pattern="dd/MM/yyyy" locale="pt"
+								id="data-compra" pattern="dd/MM/yyyy" locale="pt" rendered="#{registroComprasBean.compra.id != null}"
+								readonlyInput="true" showIcon="true" />
+								
+							<p:outputLabel value="Data da Compra" for="data-compra_" rendered="#{registroComprasBean.compra.id == null}" />
+							<p:datePicker value="#{registroComprasBean.compra.dataCompra}"
+								id="data-compra_" pattern="dd/MM/yyyy" locale="pt" timeZone="GMT-4"
+								rendered="#{registroComprasBean.compra.id == null}"
 								readonlyInput="true" showIcon="true" />
 
 							<p:outputLabel value="Comprador" for="comprador" />

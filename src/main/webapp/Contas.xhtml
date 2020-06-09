@@ -318,7 +318,6 @@
 							<p:column headerText="Operação" width="20%">
 								<h:outputText
 									value="#{conta.operacao == 'LANCAMENTO' ? 'Lançamento' : (conta.operacao == 'COMPRA' ? 'Compra' : conta.operacao)}">
-									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt" />
 								</h:outputText>
 							</p:column>
 
@@ -340,14 +339,14 @@
 
 							<p:column headerText="Vencimento" width="20%">
 								<h:outputText value="#{conta.vencimento}">
-									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt" />
+									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" dateStyle="short" timeZone="GMT-4" />
 								</h:outputText>
 							</p:column>
 
 							<p:column headerText="Pagamento" width="20%">
 								<h:outputText
 									value="#{conta.pagamento == null ? '-' : conta.pagamento}">
-									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt" />
+									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" dateStyle="short" timeZone="GMT-4" />
 								</h:outputText>
 							</p:column>
 

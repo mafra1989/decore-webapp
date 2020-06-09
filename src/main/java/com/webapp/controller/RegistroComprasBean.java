@@ -476,7 +476,11 @@ public class RegistroComprasBean implements Serializable {
 				PrimeFaces.current().executeScript(
 						"stop();PF('confirmDialog').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Compra N."
 								+ compra.getNumeroCompra() + " registrada com sucesso!' });");
-
+				
+				Compra compraTemp_ = new Compra();
+				compraTemp_.setDataCompra(compra.getDataCompra());
+				compraTemp_.setUsuario(compra.getUsuario());
+				
 				compra = new Compra();
 				itensCompra = new ArrayList<ItemCompra>();
 				itemCompra = new ItemCompra();
@@ -490,6 +494,8 @@ public class RegistroComprasBean implements Serializable {
 				
 				entradas = new ArrayList<>();
 				valorEntrada = null;
+				
+				compra = compraTemp_;
 
 			} else {
 				PrimeFaces.current().executeScript(
