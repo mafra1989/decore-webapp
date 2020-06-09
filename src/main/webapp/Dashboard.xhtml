@@ -188,7 +188,7 @@ body .ui-datatable .ui-datatable-data>tr.ui-state-hover {
 }
 
 body .ui-state-active, body .ui-state-highlight {
-    background-color: transparent !important;
+	background-color: transparent !important;
 }
 
 body .ui-datatable thead th {
@@ -238,14 +238,14 @@ body .ui-datatable .ui-datatable-data>tr td {
 
 @media ( min-width :220px) {
 	body .ui-datatable tfoot td {
-	    background-color: transparent;
-	    padding: 6px 10px;
-	    border-color: transparent;
-	    color: #0d4f98;
-	    font-size: 12px !important;
-	    /*font-weight: bold;*/
-	    border-bottom: none !important;
-	    width: 100% !important;
+		background-color: transparent;
+		padding: 6px 10px;
+		border-color: transparent;
+		color: #0d4f98;
+		font-size: 12px !important;
+		/*font-weight: bold;*/
+		border-bottom: none !important;
+		width: 100% !important;
 	}
 	.ui-grid-col-3 {
 		width: 25%;
@@ -260,7 +260,8 @@ body .ui-datatable .ui-datatable-data>tr td {
 		width: auto;
 	}
 	#info-detalhes.ui-widget-content, #info-detalhes-estoque.ui-widget-content,
-		#downloadLoading.ui-widget-content, #produto-dialog.ui-widget-content {
+		#downloadLoading.ui-widget-content, #produto-dialog.ui-widget-content
+		{
 		border: none;
 	}
 	.ui-grid-responsive .ui-grid-row {
@@ -342,14 +343,12 @@ body .ui-datatable .ui-datatable-data>tr td {
 		padding: 0em !important;
 		width: 100%;
 	}
-	
 	body .ui-datatable .ui-datatable-data>tr td {
-	    font-size: 14px !important;
-	    font-family: "Source Sans Pro", "Helvetica Neue", sans-serif !important;
+		font-size: 14px !important;
+		font-family: "Source Sans Pro", "Helvetica Neue", sans-serif !important;
 	}
-	
 	body .ui-datatable tfoot td {
-	    font-size: 14px !important;
+		font-size: 14px !important;
 	}
 }
 </style>
@@ -387,7 +386,8 @@ body .ui-datatable .ui-datatable-data>tr td {
 							rápido</label>
 						<div class="ui-g ui-g-12">
 
-							<p:link href="/operacoes/RegistroCompras.xhtml" onclick="start();"
+							<p:link href="/operacoes/RegistroCompras.xhtml"
+								onclick="start();"
 								style="width: 25%;text-align: center;border-radius: 5px;">
 								<div class="ui-lg-3">
 									<div class="overview-box-icon">
@@ -407,7 +407,8 @@ body .ui-datatable .ui-datatable-data>tr td {
 								</div>
 							</p:link>
 
-							<p:link href="/operacoes/RegistroLancamentos.xhtml?opt=despesa" onclick="start();"
+							<p:link href="/operacoes/RegistroLancamentos.xhtml?opt=despesa"
+								onclick="start();"
 								style="width: 25%;text-align: center;border-radius: 5px;">
 								<div class="ui-lg-3">
 									<div class="overview-box-icon">
@@ -417,7 +418,8 @@ body .ui-datatable .ui-datatable-data>tr td {
 								</div>
 							</p:link>
 
-							<p:link href="/operacoes/RegistroLancamentos.xhtml?opt=receita" onclick="start();"
+							<p:link href="/operacoes/RegistroLancamentos.xhtml?opt=receita"
+								onclick="start();"
 								style="width: 25%;text-align: center;border-radius: 5px;">
 								<div class="ui-lg-3">
 									<div class="overview-box-icon">
@@ -506,8 +508,10 @@ body .ui-datatable .ui-datatable-data>tr td {
 							<p:columnGroup type="footer">
 								<p:row>
 									<p:column style="text-align:right" footerText="Total:" />
-									<p:column style="text-align:right" footerText="R$ #{dashboardBean.totalValorVenda}" />
-									<p:column style="text-align:right" footerText="#{dashboardBean.totalItensVenda}" />
+									<p:column style="text-align:right"
+										footerText="R$ #{dashboardBean.totalValorVenda}" />
+									<p:column style="text-align:right"
+										footerText="#{dashboardBean.totalItensVenda}" />
 								</p:row>
 							</p:columnGroup>
 						</p:dataTable>
@@ -552,12 +556,14 @@ body .ui-datatable .ui-datatable-data>tr td {
 								<h:outputText value="#{estoque.quantidade}">
 								</h:outputText>
 							</p:column>
-							
+
 							<p:columnGroup type="footer">
 								<p:row>
 									<p:column style="text-align:right" footerText="Total:" />
-									<p:column style="text-align:right" footerText="R$ #{dashboardBean.totalValorEstoque}" />
-									<p:column style="text-align:right" footerText="#{dashboardBean.totalItensEstoque}" />
+									<p:column style="text-align:right"
+										footerText="R$ #{dashboardBean.totalValorEstoque}" />
+									<p:column style="text-align:right"
+										footerText="#{dashboardBean.totalItensEstoque}" />
 								</p:row>
 							</p:columnGroup>
 
@@ -582,11 +588,12 @@ body .ui-datatable .ui-datatable-data>tr td {
 									<f:convertNumber type="currency" />
 								</h:outputText>
 							</p:column>
-							
+
 							<p:columnGroup type="footer">
 								<p:row>
 									<p:column style="text-align:right" footerText="Total:" />
-									<p:column style="text-align:right" footerText="#{dashboardBean.totalDespesasTop5}" />
+									<p:column style="text-align:right"
+										footerText="#{dashboardBean.totalDespesasTop5}" />
 								</p:row>
 							</p:columnGroup>
 
@@ -641,12 +648,16 @@ body .ui-datatable .ui-datatable-data>tr td {
 							<p:outputLabel style="font-weight: bold" value="Produtos " />
 						</p:panelGrid>
 
-						<p:dataTable id="fluxoTable5" 
+						<p:dataTable id="fluxoTable5"
 							value="#{dashboardBean.detalhesVendasPorProduto}" var="produto"
 							scrollable="true" scrollHeight="337" styleClass="vendas-top5">
 
 							<p:column headerText="Produto" style="text-align:left;width:65%">
-								<p:commandLink value="#{produto.item}" process="@this" update="produto-dialog" style="color: #525252;" actionListener="#{dashboardBean.carregarProduto(produto.codigo)}" onstart="start();" oncomplete="PF('produto-dialog').show();stop();" />
+								<p:commandLink value="#{produto.item}" process="@this"
+									update="produto-dialog" style="color: #525252;"
+									actionListener="#{dashboardBean.carregarProduto(produto.codigo)}"
+									onstart="start();"
+									oncomplete="PF('produto-dialog').show();stop();" />
 							</p:column>
 
 							<p:column headerText="Valor" style="text-align:right;width:30%">
@@ -662,6 +673,10 @@ body .ui-datatable .ui-datatable-data>tr td {
 							</p:column>
 
 						</p:dataTable>
+
+						<p:commandButton process="@this" ajax="false" icon="fa fa-fw fa-file-pdf-o" style="width: 120px;background: #f9f9f9;border-radius: 2px;color: #0e71dc;float: left;margin-top: 15px;" value="Baixar lista">
+							<p:dataExporter type="pdf" target="fluxoTable5" fileName="#{dashboardBean.vendaPorCategoriaSelecionada.item}" />
+						</p:commandButton>
 
 						<p:commandButton icon="fa fa-fw fa-close"
 							style="margin-top: 15px; margin-bottom: 2px;float:right;font-weight: bold;width: 120px;background: #fd6161;color: #ffffff;"
@@ -725,7 +740,11 @@ body .ui-datatable .ui-datatable-data>tr td {
 							scrollable="true" scrollHeight="337" styleClass="vendas-top5">
 
 							<p:column headerText="Produto" style="text-align:left;width:65%">
-								<p:commandLink value="#{produto.item}" process="@this" update="produto-dialog" style="color: #525252;" actionListener="#{dashboardBean.carregarProduto(produto.codigo)}" onstart="start();" oncomplete="PF('produto-dialog').show();stop();" />
+								<p:commandLink value="#{produto.item}" process="@this"
+									update="produto-dialog" style="color: #525252;"
+									actionListener="#{dashboardBean.carregarProduto(produto.codigo)}"
+									onstart="start();"
+									oncomplete="PF('produto-dialog').show();stop();" />
 							</p:column>
 
 							<p:column headerText="Valor" style="text-align:right;width:30%">
@@ -741,6 +760,10 @@ body .ui-datatable .ui-datatable-data>tr td {
 							</p:column>
 
 						</p:dataTable>
+						
+						<p:commandButton process="@this" ajax="false" icon="fa fa-fw fa-file-pdf-o" style="width: 120px;background: #f9f9f9;border-radius: 2px;color: #0e71dc;float: left;margin-top: 15px;" value="Baixar lista">
+							<p:dataExporter type="pdf" target="fluxoTable6" fileName="#{dashboardBean.estoquePorCategoriaSelecionada.item}" />
+						</p:commandButton>
 
 						<p:commandButton icon="fa fa-fw fa-close"
 							style="margin-top: 15px; margin-bottom: 2px;float:right;font-weight: bold;width: 120px;background: #fd6161;color: #ffffff;"
@@ -752,11 +775,11 @@ body .ui-datatable .ui-datatable-data>tr td {
 				</div>
 			</h:form>
 		</p:dialog>
-		
-		
-		<p:dialog header="Produto selecionado" widgetVar="produto-dialog"  position="top" style="margin-top: 100px"
-			id="produto-dialog" resizable="false" modal="true"
-			closeOnEscape="true" responsive="true" 
+
+
+		<p:dialog header="Produto selecionado" widgetVar="produto-dialog"
+			position="top" style="margin-top: 100px" id="produto-dialog"
+			resizable="false" modal="true" closeOnEscape="true" responsive="true"
 			styleClass="fotoDialog">
 
 			<h:form id="form-dialogProduto">
@@ -764,8 +787,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 				<div class="ui-fluid" style="margin-top: 10px; text-align: center">
 					<ui:fragment id="photo"
 						rendered="#{dashboardBean.produto.urlImagem != null}">
-						<img
-							src="#{dashboardBean.produto.urlImagem}"
+						<img src="#{dashboardBean.produto.urlImagem}"
 							style="width: 200px; height: 250px;" />
 					</ui:fragment>
 
@@ -774,17 +796,15 @@ body .ui-datatable .ui-datatable-data>tr td {
 
 					<p:button icon="fa fa-fw fa-list"
 						style="margin-bottom: 5px;font-weight: bold;float: right;width: 100px;margin-right: 5px;background:#147df0"
-						value="Detalhes" id="foto-button" 
-						outcome="/cadastros/CadastroProdutos.xhtml"
-						onclick="start();">
+						value="Detalhes" id="foto-button"
+						outcome="/cadastros/CadastroProdutos.xhtml" onclick="start();">
 
 						<f:param name="id" value="#{dashboardBean.produtoId}" />
 					</p:button>
-					
+
 					<p:commandButton icon="fa fa-fw fa-close"
 						style="margin-bottom: 5px;font-weight: bold;width: 100px;background:#e15e5ef0;"
-						value="Fechar" 
-						onstart="start();"
+						value="Fechar" onstart="start();"
 						oncomplete="stop();PF('produto-dialog').hide();">
 					</p:commandButton>
 				</div>
