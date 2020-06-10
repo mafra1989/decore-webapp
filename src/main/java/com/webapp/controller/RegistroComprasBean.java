@@ -478,7 +478,6 @@ public class RegistroComprasBean implements Serializable {
 								+ compra.getNumeroCompra() + " registrada com sucesso!' });");
 				
 				Compra compraTemp_ = new Compra();
-				compraTemp_.setDataCompra(compra.getDataCompra());
 				compraTemp_.setUsuario(compra.getUsuario());
 				
 				compra = new Compra();

@@ -467,17 +467,10 @@
 										value="#{registroLancamentosBean.receita.numeroLancamento}"
 										readonly="true" placeholder="Gerado automaticamente." />
 
-									<p:outputLabel value="Data" for="data-receita" rendered="#{registroLancamentosBean.receita.id != null}" />
-									<p:datePicker rendered="#{registroLancamentosBean.receita.id != null}"
-										value="#{registroLancamentosBean.receita.dataLancamento}"
-										id="data-receita" pattern="dd/MM/yyyy" locale="pt"
-										showIcon="true" />
-										
-									<p:outputLabel value="Data" for="data-receita_" rendered="#{registroLancamentosBean.receita.id == null}" />
+									<p:outputLabel value="Data" for="data-receita" />
 									<p:datePicker
 										value="#{registroLancamentosBean.receita.dataLancamento}"
-										id="data-receita_" pattern="dd/MM/yyyy" locale="pt" timeZone="GMT-4"
-										rendered="#{registroLancamentosBean.receita.id == null}"
+										id="data-receita" pattern="dd/MM/yyyy" locale="pt"
 										showIcon="true" />
 
 								</p:panelGrid>

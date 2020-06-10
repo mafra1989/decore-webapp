@@ -339,14 +339,14 @@
 
 							<p:column headerText="Vencimento" width="20%">
 								<h:outputText value="#{conta.vencimento}">
-									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" dateStyle="short" timeZone="GMT-4" />
+									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" dateStyle="short" />
 								</h:outputText>
 							</p:column>
 
 							<p:column headerText="Pagamento" width="20%">
 								<h:outputText
 									value="#{conta.pagamento == null ? '-' : conta.pagamento}">
-									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" dateStyle="short" timeZone="GMT-4" />
+									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" dateStyle="short" />
 								</h:outputText>
 							</p:column>
 

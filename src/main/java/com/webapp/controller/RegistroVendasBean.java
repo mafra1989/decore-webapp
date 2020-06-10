@@ -282,7 +282,6 @@ public class RegistroVendasBean implements Serializable {
 
 				Venda vendaTemp_ = new Venda();
 				vendaTemp_.setNumeroVenda(null);
-				vendaTemp_.setDataVenda(venda.getDataVenda());
 				vendaTemp_.setTipoVenda(venda.getTipoVenda());
 				vendaTemp_.setBairro(venda.getBairro());
 				vendaTemp_.setUsuario(venda.getUsuario());			

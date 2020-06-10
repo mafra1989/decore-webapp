@@ -184,7 +184,7 @@
 
 						<p:outputLabel value="Data da compra" for="data01" />
 						<p:datePicker id="data01" value="#{consultaComprasBean.dateStart}"
-							readonlyInput="true" pattern="dd/MM/yyyy" locale="pt" timeZone="GMT-4"
+							readonlyInput="true" pattern="dd/MM/yyyy" locale="pt"
 							showIcon="true">
 						</p:datePicker>
 
@@ -192,7 +192,7 @@
 						<p:outputLabel value="até" id="data02" />
 						<p:datePicker id="data-02" value="#{consultaComprasBean.dateStop}"
 							readonlyInput="true" styleClass="dateStop" pattern="dd/MM/yyyy"
-							locale="pt" timeZone="GMT-4" showIcon="true">
+							locale="pt" showIcon="true">
 						</p:datePicker>
 
 
@@ -260,7 +260,7 @@
 
 							<p:column headerText="Data da compra" width="10%">
 								<h:outputText value="#{compra.dataCompra}">
-									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" dateStyle="short" timeZone="GMT-4" />
+									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" dateStyle="short" />
 								</h:outputText>
 							</p:column>
 
