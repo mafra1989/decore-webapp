@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="itens" pageWidth="556" pageHeight="842" columnWidth="556" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="fec26e42-79b7-4cba-b6f5-880441f51903">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="borda">
+		<box topPadding="0" leftPadding="0" rightPadding="0">
+			<pen lineWidth="1.0" lineColor="#666666"/>
+			<topPen lineWidth="1.0" lineColor="#666666"/>
+			<leftPen lineWidth="1.0" lineColor="#666666"/>
+			<bottomPen lineWidth="1.0" lineColor="#666666"/>
+			<rightPen lineWidth="1.0" lineColor="#666666"/>
+		</box>
+	</style>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="codigo" class="java.lang.String">
+		<property name="codigo" value=""/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="descricao" class="java.lang.String"/>
+	<field name="quantidade" class="java.lang.String"/>
+	<field name="valor" class="java.lang.String">
+		<fieldDescription><![CDATA[valor]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement style="borda" stretchType="RelativeToBandHeight" x="0" y="0" width="66" height="20" uuid="cf339614-2c3d-4b74-9654-1bcc68d7501d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="borda" stretchType="RelativeToBandHeight" x="66" y="0" width="308" height="20" uuid="bf89e981-5405-43ea-a5b3-241ba8d6ea1f"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["   " + $F{descricao}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="borda" stretchType="RelativeToBandHeight" x="374" y="0" width="97" height="20" uuid="920b2140-107c-4a39-97ff-7827e00a1e30"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["   R$ " + $F{valor}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="borda" stretchType="RelativeToBandHeight" x="471" y="0" width="85" height="20" uuid="01f089a6-cfbd-4b72-adf3-78b502a4404f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{quantidade}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

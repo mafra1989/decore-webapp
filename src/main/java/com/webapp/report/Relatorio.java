@@ -61,4 +61,42 @@ public class Relatorio<T> {
 		}
 
 	}
+	
+	public void getRelatorioEstoque(List<T> lista, String filename) throws SQLException {
+		try {
+
+			InputStream relatorioStream = this.getClass().getResourceAsStream("/relatorios/lista-itens.jasper");
+			
+			System.out.println(relatorioStream);
+
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+			JRDataSource jrds = new JRBeanCollectionDataSource(lista, false);
+
+			JasperPrint print = JasperFillManager.fillReport(relatorioStream, null, jrds);
+
+			JasperExportManager.exportReportToPdfStream(print, baos);
+
+			response.reset();
+
+			response.setContentType("application/pdf");
+
+			response.setContentLength(baos.size());
+
+			//response.setHeader("Content-disposition", "inline; filename=" + filename + ".pdf");
+			response.setHeader("Content-disposition", "attachment; filename=" + filename + ".pdf");
+
+			response.getOutputStream().write(baos.toByteArray());
+
+			response.getOutputStream().flush();
+
+			response.getOutputStream().close();
+
+			context.responseComplete();
+
+		} catch (Exception e) {
+			throw new SQLException("Erro ao executar relatório", e);
+		}
+
+	}
 }

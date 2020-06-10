@@ -1,6 +1,7 @@
 package com.webapp.controller;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -31,10 +32,12 @@ import org.primefaces.model.charts.polar.PolarAreaChartModel;
 
 import com.webapp.model.FluxoDeCaixa;
 import com.webapp.model.Lancamento;
+import com.webapp.model.ListaProduto;
 import com.webapp.model.OrdenaTop5;
 import com.webapp.model.Produto;
 import com.webapp.model.Top5Despesa;
 import com.webapp.model.VendaPorCategoria;
+import com.webapp.report.Relatorio;
 import com.webapp.repository.Compras;
 import com.webapp.repository.Contas;
 import com.webapp.repository.Lancamentos;
@@ -554,6 +557,37 @@ public class DashboardBean implements Serializable {
 		produto = produtos.porCodigo(codigo);
 		//fileContent = produto.getFoto();
 		produtoId = produto.getId();
+	}
+	
+	public void baixarLista() {
+
+		ListaProduto listaProduto = new ListaProduto();
+		listaProduto.setCategoria(estoquePorCategoriaSelecionada.getItem());
+		listaProduto.setValorEmEstoque(nf.format(estoquePorCategoriaSelecionada.getValue()));
+		listaProduto.setTotalDeItens(String.valueOf(estoquePorCategoriaSelecionada.getQuantidade()));
+		
+		for (VendaPorCategoria produto : detalhesEstoquePorProduto) {
+			
+			Produto produtoTemp = new Produto();
+			produtoTemp.setCodigo(produto.getCodigo());
+			produtoTemp.setDescricao(produto.getItem());
+			produtoTemp.setValor(nf.format(produto.getValue()));
+			produtoTemp.setQuantidade(String.valueOf(produto.getQuantidade()));
+			
+			listaProduto.getListaDeItens().add(produtoTemp);
+		}
+
+		List<ListaProduto> listaProdutos = new ArrayList<>();
+		listaProdutos.add(listaProduto);
+
+		Relatorio<ListaProduto> report = new Relatorio<ListaProduto>();
+		try {
+			report.getRelatorioEstoque(listaProdutos, estoquePorCategoriaSelecionada.getItem());
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public PieChartModel getPieModel() {
