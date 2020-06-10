@@ -272,13 +272,13 @@
 									<p:outputLabel value="Data" for="data-despesa" rendered="#{registroLancamentosBean.despesa.id != null}" />
 									<p:datePicker rendered="#{registroLancamentosBean.despesa.id != null}"
 										value="#{registroLancamentosBean.despesa.dataLancamento}"
-										id="data-despesa" pattern="dd/MM/yyyy" locale="pt"
+										id="data-despesa" pattern="dd/MM/yyyy" locale="pt_BR"
 										showIcon="true" />
 										
 									<p:outputLabel value="Data" for="data-despesa_" rendered="#{registroLancamentosBean.despesa.id == null}" />
 									<p:datePicker rendered="#{registroLancamentosBean.despesa.id == null}"
 										value="#{registroLancamentosBean.despesa.dataLancamento}" timeZone="GMT-4"
-										id="data-despesa_" pattern="dd/MM/yyyy" locale="pt"
+										id="data-despesa_" pattern="dd/MM/yyyy" locale="pt_BR"
 										showIcon="true" />
 
 								</p:panelGrid>
