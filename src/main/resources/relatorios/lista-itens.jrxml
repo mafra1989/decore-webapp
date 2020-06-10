@@ -105,7 +105,7 @@
 				<reportElement style="Column header" x="3" y="123" width="554" height="1" forecolor="#999999" uuid="20c14e21-1283-4099-9e93-f566560399d5"/>
 			</line>
 			<staticText>
-				<reportElement x="112" y="78" width="321" height="30" forecolor="#666666" uuid="f5d1d4cc-9f43-4aaf-85b5-0c8b42a594ab"/>
+				<reportElement x="125" y="78" width="321" height="30" forecolor="#666666" uuid="f5d1d4cc-9f43-4aaf-85b5-0c8b42a594ab"/>
 				<textElement>
 					<font fontName="SansSerif" size="20" isBold="true"/>
 				</textElement>
@@ -116,42 +116,42 @@
 	<columnHeader>
 		<band height="64" splitType="Stretch">
 			<staticText>
-				<reportElement x="11" y="6" width="96" height="20" uuid="7555f190-b9da-44d9-bfb7-22562111fbae"/>
+				<reportElement x="11" y="6" width="110" height="20" uuid="7555f190-b9da-44d9-bfb7-22562111fbae"/>
 				<textElement>
 					<font fontName="SansSerif" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Categoria:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="11" y="26" width="96" height="20" uuid="65af41d5-85be-400b-84b7-ef32a100bd55"/>
+				<reportElement x="11" y="26" width="110" height="20" uuid="65af41d5-85be-400b-84b7-ef32a100bd55"/>
 				<textElement>
 					<font fontName="SansSerif" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Valor em estoque:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="11" y="46" width="96" height="18" uuid="9444b17c-1ee2-449b-a6d6-7fb613075665"/>
+				<reportElement x="11" y="46" width="110" height="18" uuid="9444b17c-1ee2-449b-a6d6-7fb613075665"/>
 				<textElement>
 					<font fontName="SansSerif" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Total de itens:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement style="Detail" positionType="Float" x="112" y="3" width="167" height="20" forecolor="#666666" uuid="5aa50f4e-6fbd-439d-a496-3c97369df2f7"/>
+				<reportElement style="Detail" positionType="Float" x="125" y="3" width="167" height="20" forecolor="#666666" uuid="5aa50f4e-6fbd-439d-a496-3c97369df2f7"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{categoria}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement style="Detail" positionType="Float" x="112" y="23" width="167" height="20" forecolor="#666666" uuid="3924fcb8-4b51-46ba-8900-fa0acb0c3c37"/>
+				<reportElement style="Detail" positionType="Float" x="125" y="23" width="167" height="20" forecolor="#666666" uuid="3924fcb8-4b51-46ba-8900-fa0acb0c3c37"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{valorEmEstoque}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement style="Detail" positionType="Float" x="112" y="44" width="213" height="20" forecolor="#666666" uuid="b54e7c08-ee69-4621-875d-721bef725852"/>
+				<reportElement style="Detail" positionType="Float" x="125" y="44" width="213" height="20" forecolor="#666666" uuid="b54e7c08-ee69-4621-875d-721bef725852"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isPdfEmbedded="true"/>
 				</textElement>
