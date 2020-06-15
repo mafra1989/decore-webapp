@@ -339,7 +339,9 @@ public class RegistroLancamentosBean implements Serializable {
 			despesa.setCategoriaLancamento(categoriaLancamentoDespesa);
 			despesa.setDestinoLancamento(categoriaLancamentoDespesa.getDestinoLancamento());
 			
-			if(categoriaLancamentoDespesa.getId() == 25835L) {
+			if(categoriaLancamentoDespesa.getId() == 25835L || categoriaLancamentoDespesa.getId() == 5423L ||
+					categoriaLancamentoDespesa.getId() == 5424L || categoriaLancamentoDespesa.getId() == 5425L ||
+					categoriaLancamentoDespesa.getId() == 5426L || categoriaLancamentoDespesa.getId() == 5427L) {
 				PrimeFaces.current().executeScript("mostrarFavorecido();");
 				renderFavorecido = true;
 			} else {
