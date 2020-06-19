@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="decore-vendas" pageWidth="595" pageHeight="842" columnWidth="557" leftMargin="19" rightMargin="19" topMargin="0" bottomMargin="0" uuid="519bb040-d2f6-44c8-b08c-2225ab2837bc">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="89"/>
+	<property name="ireport.y" value="206"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -335,7 +335,7 @@
 				<textElement>
 					<font size="8" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Manaus - AM | CEP 69055-632]]></text>
+				<text><![CDATA[Manaus - AM | CEP 69086-632]]></text>
 			</staticText>
 			<line>
 				<reportElement x="231" y="81" width="97" height="1" forecolor="#999999" uuid="15b5cfe8-0d06-47d5-aa53-692eda094a70"/>

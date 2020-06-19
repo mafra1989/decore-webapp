@@ -213,7 +213,7 @@
 				<textElement>
 					<font size="8" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Manaus - AM | CEP 69055-632]]></text>
+				<text><![CDATA[Manaus - AM | CEP 69086-632]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="11" y="45" width="110" height="14" uuid="9a487a7a-cb3f-45f1-8ffa-90355e99f4a1"/>
