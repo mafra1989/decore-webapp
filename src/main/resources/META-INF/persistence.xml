@@ -37,8 +37,9 @@
 			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.format_sql" value="false" />
 			
-			<property name="hibernate.hbm2ddl.auto" value="none" /> 
-			 
+			<property name="javax.persistence.schema-generation.database.action" value="create" /> 	 
+      		<property name="javax.persistence.schema-generation.create-source" value="metadata" /> 
+      		<property name="javax.persistence.sql-load-script-source" value="META-INF/dados2.sql"/>  
 				 
 		</properties>
 	</persistence-unit>
