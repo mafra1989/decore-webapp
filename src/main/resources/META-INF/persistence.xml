@@ -39,7 +39,7 @@
 			
 			<property name="javax.persistence.schema-generation.database.action" value="create" /> 	 
       		<property name="javax.persistence.schema-generation.create-source" value="metadata" /> 
-      		<property name="javax.persistence.sql-load-script-source" value="META-INF/dados5.sql"/>  
+      		<property name="javax.persistence.sql-load-script-source" value="META-INF/dados6.sql"/>  
 				 
 		</properties>
 	</persistence-unit>
