@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.enterprise.context.SessionScoped;
-import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -25,6 +24,7 @@ import com.webapp.repository.CategoriasLancamentos;
 import com.webapp.repository.Contas;
 import com.webapp.repository.DestinosLancamentos;
 import com.webapp.repository.Lancamentos;
+import com.webapp.repository.Usuarios;
 import com.webapp.util.jsf.FacesUtil;
 
 @Named
@@ -42,6 +42,9 @@ public class ConsultaLancamentosBean implements Serializable {
 
 	@Inject
 	private Usuario usuario;
+	
+	@Inject
+	private Usuarios usuarios;
 
 	@Inject
 	private Lancamentos lancamentos;
@@ -78,10 +81,14 @@ public class ConsultaLancamentosBean implements Serializable {
 	private NumberFormat nf = new DecimalFormat("###,##0.00");
 
 	private String totalLancamentos = "0,00";
+	
+	private boolean renderFavorecido;
+	
+	private String[] categorias;
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
-			// todosUsuarios = usuarios.todos();
+			todosUsuarios = usuarios.todos();
 			todasCategoriasDespesas = categoriasDespesas.todos();
 			todosDestinosLancamentos = destinosLancamentos.todos();
 		}
@@ -95,10 +102,31 @@ public class ConsultaLancamentosBean implements Serializable {
 		calendarioTemp.set(Calendar.SECOND, 59);
 		
 		lancamentoSelecionado = null;
+		
+		boolean favorecido = false;
+		
+		for (String categoria : categorias) {
+			categoriaLancamento = categoriasDespesas.porNome(categoria);
+			if(categoriaLancamento.getId() == 25835L || categoriaLancamento.getId() == 5423L ||
+					categoriaLancamento.getId() == 5424L || categoriaLancamento.getId() == 5425L ||
+							categoriaLancamento.getId() == 5426L || categoriaLancamento.getId() == 5427L) {
+				favorecido = true;		
+			}
+		}	
+		
+		if(favorecido) {
+			PrimeFaces.current().executeScript("mostrarFavorecido();");
+			renderFavorecido = true;
+		} else {
+			PrimeFaces.current().executeScript("ocultarFavorecido();");
+			renderFavorecido = false;
+		}
+		
+		Usuario usuarioTemp = favorecido ? usuario : new Usuario();
 
 		lancamentosFiltrados = new ArrayList<>();
 		lancamentosFiltrados = lancamentos.lancamentosFiltrados(numeroLancamento, dateStart, calendarioTemp.getTime(), origemLancamento,
-				categoriaLancamento, destinoLancamento);
+				categoriaLancamento, destinoLancamento, usuarioTemp, categorias);
 
 		double totalLancamentosTemp = 0;
 		for (Lancamento lancamento : lancamentosFiltrados) {
@@ -170,14 +198,30 @@ public class ConsultaLancamentosBean implements Serializable {
 			}
 		}
 */
+		
 	}
 
 	public void changeCategoria() {
-		if (categoriaLancamento == null) {
-			destinoLancamento = null;
+		
+		boolean favorecido = false;
+		
+		for (String categoria : categorias) {
+			categoriaLancamento = categoriasDespesas.porNome(categoria);
+			if(categoriaLancamento.getId() == 25835L || categoriaLancamento.getId() == 5423L ||
+					categoriaLancamento.getId() == 5424L || categoriaLancamento.getId() == 5425L ||
+							categoriaLancamento.getId() == 5426L || categoriaLancamento.getId() == 5427L) {
+				favorecido = true;		
+			}
+		}	
+		
+		if(favorecido) {
+			PrimeFaces.current().executeScript("mostrarFavorecido();");
+			renderFavorecido = true;
 		} else {
-			destinoLancamento = categoriaLancamento.getDestinoLancamento();
+			PrimeFaces.current().executeScript("ocultarFavorecido();");
+			renderFavorecido = false;
 		}
+		
 	}
 
 	public void excluir() {
@@ -318,6 +362,22 @@ public class ConsultaLancamentosBean implements Serializable {
 
 	public void setNumeroLancamento(Long numeroLancamento) {
 		this.numeroLancamento = numeroLancamento;
+	}
+
+	public boolean isRenderFavorecido() {
+		return renderFavorecido;
+	}
+
+	public void setRenderFavorecido(boolean renderFavorecido) {
+		this.renderFavorecido = renderFavorecido;
+	}
+
+	public String[] getCategorias() {
+		return categorias;
+	}
+
+	public void setCategorias(String[] categorias) {
+		this.categorias = categorias;
 	}
 
 }

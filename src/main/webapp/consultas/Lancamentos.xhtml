@@ -15,17 +15,51 @@
 
 		<style>
 @media ( min-width :220px) {
+	.ui-fluid .ui-selectcheckboxmenu {
+	    height: 29px;
+	}
+	body .ui-selectcheckboxmenu-panel {
+	    width: 76% !important;
+	}
+	.btn-pie.ui-button {
+		color: #6a6565;
+		background-color: #f2f2f200;
+		border: 1px solid #a8a8a8;
+		width: 32px;
+		float: right;
+		position: relative;
+		margin-top: -4px;
+	}
+	.btn-pie.ui-button.ui-state-hover {
+		background-color: #e8e5e5;
+	}
+	.btn-pie.ui-button.ui-state-focus {
+		background-color: #e8e5e5;
+	}
+	.btn-pie.ui-button.ui-state-active {
+		background-color: #f2f2f200;
+	}
+	.panel-favorecido {
+		overflow: hidden;
+		max-height: 300px;
+		transition: max-height 1s ease-in-out;
+	}
+	.panel-favorecido.hide {
+		max-height: 0;
+		pointer-events: none;
+		margin-bottom: 0px;
+	}
 	.inventario.ui-button {
-	    width: auto !important;;
-	    color: #000000 !important;;
-	    background-color: transparent !important;;
-    }
+		width: auto !important;
+		color: #000000 !important;
+		background-color: transparent !important;
+	}
 	body .ui-button.ui-button-text-icon-left .ui-button-text {
-	    font-weight: bold;
+		font-weight: bold;
 	}
 	.panel-total.ui-panel .ui-panel-content {
-	    border: none;
-	    padding: 0px;
+		border: none;
+		padding: 0px;
 	}
 	.fotoDialog {
 		max-height: 380px !important;
@@ -81,6 +115,9 @@
 }
 
 @media ( min-width :460px) {
+	body .ui-selectcheckboxmenu-panel {
+		width: auto !important;
+	}
 	.ui-slider .ui-slider-handle {
 		width: 1.7em;
 		height: 1.7em;
@@ -94,6 +131,11 @@
 	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
 		.ui-datatable tfoot th {
 		font-size: 14px;
+	}
+	.btn-pie.ui-button {
+	    float: left;
+	    margin-left: -8px;
+	    margin-top: -1px;
 	}
 }
 
@@ -136,7 +178,7 @@
 
 
 		<h:form id="form" prependId="false">
-		
+
 			<p:remoteCommand name="setarItemID" process="@this lancamentosTable"
 				update="form" action="#{consultaLancamentosBean.excluir}"
 				onstart="PF('downloadLoading').show();"
@@ -156,9 +198,9 @@
 
 			<div class="ui-g-12 ui-lg-12">
 
-				<p:panel class="card card-w-title ui-fluid itens-add"
+				<p:panel id="filters" class="card card-w-title ui-fluid itens-add"
 					style="padding-bottom: 0px !important; margin-top:10px">
-					
+
 					<p:panelGrid columns="2" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-2, ui-grid-col-3">
@@ -168,7 +210,7 @@
 							value="#{consultaLancamentosBean.numeroLancamento}">
 						</p:inputNumber>
 					</p:panelGrid>
-					
+
 					<p:panelGrid columns="4" id="painel" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-1, ui-grid-col-2">
@@ -183,7 +225,7 @@
 						<p:outputLabel value="até" id="data02" />
 						<p:datePicker id="data-02"
 							value="#{consultaLancamentosBean.dateStop}" readonlyInput="true"
-							styleClass="dateStop" pattern="dd/MM/yyyy" locale="pt" 
+							styleClass="dateStop" pattern="dd/MM/yyyy" locale="pt"
 							showIcon="true">
 						</p:datePicker>
 
@@ -195,30 +237,51 @@
 								value="#{consultaLancamentosBean.origensLancamentos}"
 								var="origemLancamento" itemLabel="#{origemLancamento.descricao}"
 								itemValue="#{origemLancamento}" />
-						</p:selectManyCheckbox>	
+						</p:selectManyCheckbox>
+					</p:panelGrid>
+
+					<p:panelGrid columns="3" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-1">
+						
+						<p:outputLabel value="Categoria" />
+						<p:selectCheckboxMenu style="width: 100%"
+							showHeader="true" emptyLabel="" label="" filter="true"
+							filterMatchMode="startsWith"
+							value="#{consultaLancamentosBean.categorias}">
+
+							<f:selectItems
+								value="#{consultaLancamentosBean.todasCategoriasDespesas}"
+								var="categoria" itemLabel="#{categoria.nome}"
+								itemValue="#{categoria.nome}"></f:selectItems>
+						</p:selectCheckboxMenu>
+
+						<p:commandButton icon="fa fa-refresh"
+							action="#{consultaLancamentosBean.changeCategoria}"
+							process="@parent" styleClass="btn-pie"
+							title="Atualizar" onstart="start();" oncomplete="stop();"
+							update="favorecido" />
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" layout="grid" id="panel-favorecido"
+						styleClass="panelgrid-noborder disabled disabled panel-favorecido #{consultaLancamentosBean.renderFavorecido ? '' : 'hide'}"
+						columnClasses="ui-grid-col-2, ui-grid-col-3">
+
+						<p:outputLabel value="Funcionário Favorecido" for="favorecido" />
+						<p:selectOneMenu id="favorecido" styleClass="hide"
+							value="#{consultaLancamentosBean.usuario}">
+
+							<f:selectItem itemLabel="Selecione" />
+
+							<f:selectItems value="#{consultaLancamentosBean.todosUsuarios}"
+								var="usuario" itemLabel="#{usuario.nome}" itemValue="#{usuario}" />
+						</p:selectOneMenu>
+
 					</p:panelGrid>
 
 					<p:panelGrid columns="2" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-2, ui-grid-col-3">
-	
-						<p:outputLabel value="Categoria" for="categoria" />
-						<p:selectOneMenu id="categoria"
-							value="#{consultaLancamentosBean.categoriaLancamento}"
-							placeholder="selecione">
-
-							<f:selectItem itemLabel="Selecione" />
-
-							<p:ajax event="change"
-								listener="#{consultaLancamentosBean.changeCategoria}"
-								update="@this destino" />
-
-							<f:selectItems
-								value="#{consultaLancamentosBean.todasCategoriasDespesas}"
-								var="categoriaLancamento"
-								itemLabel="#{categoriaLancamento.nome}"
-								itemValue="#{categoriaLancamento}" />
-						</p:selectOneMenu>
 
 						<p:outputLabel value="Destino do Lançamento" for="destino" />
 						<p:selectOneMenu id="destino"
@@ -242,8 +305,8 @@
 					style="padding-bottom: 0px !important;margin-top:-10px">
 
 					<h3 style="font-weight: bold">Resultado da consulta</h3>
-				
-					
+
+
 					<p:menuButton id="menu-btn" value="Opções"
 						style="width: 80px;float: right;margin-top: -40px;margin-right: 10px"
 						disabled="#{(consultaLancamentosBean.lancamentosFiltradosSize eq 0) or consultaLancamentosBean.lancamentoSelecionado.id == null}">
@@ -268,25 +331,27 @@
 							scrollable="true" scrollHeight="505"
 							value="#{consultaLancamentosBean.lancamentosFiltrados}"
 							var="lancamento" emptyMessage="Nenhum resultado encontrado."
-							reflow="true" paginator="false"
-							rowKey="#{lancamento.id}"
+							reflow="true" paginator="false" rowKey="#{lancamento.id}"
 							selection="#{consultaLancamentosBean.lancamentoSelecionado}"
 							selectionMode="single">
 
-							<p:ajax process="@this" event="rowSelect" update="menu-btn" onstart="PF('downloadLoading').show();"
+							<p:ajax process="@this" event="rowSelect" update="menu-btn"
+								onstart="PF('downloadLoading').show();"
 								oncomplete="PF('downloadLoading').hide();" />
-							<p:ajax process="@this" event="rowUnselect" update="menu-btn" onstart="PF('downloadLoading').show();"
+							<p:ajax process="@this" event="rowUnselect" update="menu-btn"
+								onstart="PF('downloadLoading').show();"
 								oncomplete="PF('downloadLoading').hide();" />
 
 							<p:column headerText="N. Lançamento" width="15%">
-								<h:outputText
-									value="#{lancamento.numeroLancamento}" />
-								<p:commandButton icon="fa fa-fw fa-edit" styleClass="inventario" rendered="#{lancamento.ajuste}" />
+								<h:outputText value="#{lancamento.numeroLancamento}" />
+								<p:commandButton icon="fa fa-fw fa-edit" styleClass="inventario"
+									rendered="#{lancamento.ajuste}" />
 							</p:column>
-							
-							<p:column headerText="Data do Lançamento" width="20%">								
+
+							<p:column headerText="Data do Lançamento" width="20%">
 								<h:outputText value="#{lancamento.dataLancamento}">
-									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" dateStyle="short" />
+									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy"
+										dateStyle="short" />
 								</h:outputText>
 							</p:column>
 
@@ -314,10 +379,12 @@
 							</p:column>
 
 						</p:dataTable>
-						
-						<p:panel styleClass="panelgrid-noborder disabled disabled panel-total">
 
-							<p:outputLabel value="Total de Lançamentos: R$ #{consultaLancamentosBean.totalLancamentos}"
+						<p:panel
+							styleClass="panelgrid-noborder disabled disabled panel-total">
+
+							<p:outputLabel
+								value="Total de Lançamentos: R$ #{consultaLancamentosBean.totalLancamentos}"
 								style="float:left;margin-top:10px;margin-bottom:5px;margin-left:-10px;font-size: 13px;font-family: inherit;" />
 
 						</p:panel>
@@ -345,6 +412,14 @@
 
 			function stop() {
 				PF('downloadLoading').hide();
+			}
+			
+			function ocultarFavorecido() {
+				$(".panel-favorecido").addClass("hide");
+			}
+
+			function mostrarFavorecido() {
+				$(".panel-favorecido").removeClass("hide");
 			}
 		</script>
 

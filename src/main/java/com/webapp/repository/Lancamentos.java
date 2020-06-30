@@ -15,6 +15,7 @@ import com.webapp.model.CategoriaLancamento;
 import com.webapp.model.DestinoLancamento;
 import com.webapp.model.Lancamento;
 import com.webapp.model.OrigemLancamento;
+import com.webapp.model.Usuario;
 import com.webapp.util.jpa.Transacional;
 
 public class Lancamentos implements Serializable {
@@ -66,23 +67,24 @@ public class Lancamentos implements Serializable {
 	@SuppressWarnings("unchecked")
 	public List<Lancamento> lancamentosFiltrados(Long numeroLancamento, Date dateStart, Date dateStop,
 			OrigemLancamento[] origemLancamento, CategoriaLancamento categoriaLancamento,
-			DestinoLancamento destinoLancamento) {
+			DestinoLancamento destinoLancamento, Usuario usuario, String[] categorias) {
 
 		String conditionOrigem = "";
 		String conditionCategoria = "";
 		String conditionDestino = "";
 		String conditionNumeroLancamento = "";
-		/*
-		 * if (usuario != null && usuario.getId() != null) { condition =
-		 * "AND i.usuario.id = :idUsuario"; }
-		 */
+		String conditionUsuario = "";
 
 		if (origemLancamento.length > 0) {
 			conditionOrigem = "AND i.categoriaLancamento.tipoLancamento.origem in (:origemLancamento) ";
 		}
 
-		if (categoriaLancamento != null) {
-			conditionCategoria = "AND i.categoriaLancamento.id = :categoriaLancamento ";
+		if (categorias != null && categorias.length > 0) {
+			conditionCategoria = "AND i.categoriaLancamento.nome in (:categorias) ";
+		}
+		
+		if (usuario != null && usuario.getId() != null) { 
+			 conditionUsuario += "AND i.usuario.id = :idUsuario ";
 		}
 
 		if (destinoLancamento != null && destinoLancamento.getId() != null) {
@@ -94,7 +96,7 @@ public class Lancamentos implements Serializable {
 		}
 
 		String jpql = "SELECT i FROM Lancamento i " + "WHERE i.dataLancamento between :dateStart and :dateStop "
-				+ conditionOrigem + conditionCategoria + conditionDestino + conditionNumeroLancamento
+				+ conditionOrigem + conditionCategoria + conditionUsuario + conditionDestino + conditionNumeroLancamento
 				+ "order by i.numeroLancamento desc";
 
 		System.out.println(jpql);
@@ -105,8 +107,12 @@ public class Lancamentos implements Serializable {
 			q.setParameter("origemLancamento", Arrays.asList(origemLancamento));
 		}
 
-		if (categoriaLancamento != null) {
-			q.setParameter("categoriaLancamento", categoriaLancamento.getId());
+		if (categorias != null && categorias.length > 0) {
+			q.setParameter("categorias", Arrays.asList(categorias));
+		}
+		
+		if (usuario != null && usuario.getId() != null) { 
+			 q.setParameter("idUsuario", usuario.getId());
 		}
 
 		if (destinoLancamento != null && destinoLancamento.getId() != null) {
