@@ -30,10 +30,12 @@ import com.webapp.model.Lancamento;
 import com.webapp.model.OrigemLancamento;
 import com.webapp.model.Produto;
 import com.webapp.model.Target;
+import com.webapp.model.Usuario;
 import com.webapp.repository.CategoriasLancamentos;
 import com.webapp.repository.Contas;
 import com.webapp.repository.Lancamentos;
 import com.webapp.repository.Targets;
+import com.webapp.repository.Usuarios;
 
 @Named
 @ViewScoped
@@ -43,6 +45,21 @@ public class RelatorioLancamentosBean implements Serializable {
 
 	@Inject
 	private Lancamentos lancamentos;
+	
+	@Inject
+	private Usuario usuario01;
+	
+	@Inject
+	private Usuario usuario02;
+	
+	@Inject
+	private Usuario usuario03;
+	
+	@Inject
+	private Usuario usuario04;
+	
+	@Inject
+	private Usuarios usuarios;
 
 	private BarChartModel mixedModel;
 
@@ -144,8 +161,16 @@ public class RelatorioLancamentosBean implements Serializable {
 	private double targetMensal;
 	private double targetAnual;
 
+	private boolean renderFavorecido01;
+	private boolean renderFavorecido02;
+	private boolean renderFavorecido03;
+	private boolean renderFavorecido04;
+	
+	private List<Usuario> todosUsuarios;
+	
 	@PostConstruct
 	public void init() {
+		todosUsuarios = usuarios.todos();
 		listarTodasCategoriasLancamentos();
 		
 		Target target = targets.porPeriodoTipo("DIARIO", "DESPESA");
@@ -270,7 +295,7 @@ public class RelatorioLancamentosBean implements Serializable {
 		createMixedModelPorDia();
 	}
 
-	public void changeCategoriaPorSemana() {
+	public void changeCategoriaPorSemana() {	
 
 		createMixedModelPorSemana();
 	}
@@ -291,6 +316,29 @@ public class RelatorioLancamentosBean implements Serializable {
 	}
 
 	public void createMixedModelPorDia() {
+		
+		boolean favorecido = false;
+		
+		if (categoriasPorDia != null && categoriasPorDia.length > 0) {
+			
+			for (String categoria : categoriasPorDia) {
+				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria);
+				if(categoriaLancamento.getId() == 25835L || categoriaLancamento.getId() == 5423L ||
+						categoriaLancamento.getId() == 5424L || categoriaLancamento.getId() == 5425L ||
+								categoriaLancamento.getId() == 5426L || categoriaLancamento.getId() == 5427L) {
+					favorecido = true;		
+				}
+			}			
+		}	
+		
+		if(favorecido) {
+			PrimeFaces.current().executeScript("mostrarFavorecido01();");
+			renderFavorecido01 = true;
+		} else {
+			PrimeFaces.current().executeScript("ocultarFavorecido01();");
+			renderFavorecido01 = false;
+		}
+		
 		mixedModelPorDia = new BarChartModel();
 		ChartData data = new ChartData();
 
@@ -380,11 +428,33 @@ public class RelatorioLancamentosBean implements Serializable {
 						Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[3].toString()));
 						if (lancamento != null) {
 							if (categoriasPorDia != null && categoriasPorDia.length > 0) {
-								for (String categoria : categoriasPorDia) {
-									if (lancamento.getCategoriaLancamento().getNome().equalsIgnoreCase(categoria)) {
-										valor += new BigDecimal(object[5].toString()).doubleValue();
+									
+								if(favorecido) {
+									
+									if(usuario01 != null) {
+										if(usuario01.getId() != null) {
+											for (String categoria : categoriasPorDia) {
+												if (lancamento.getCategoriaLancamento().getNome().equalsIgnoreCase(categoria) && usuario01.getNome().equals(lancamento.getUsuario().getNome())) {
+													valor += new BigDecimal(object[5].toString()).doubleValue();
+												}
+											}
+										}
+									} else {
+										for (String categoria : categoriasPorDia) {
+											if (lancamento.getCategoriaLancamento().getNome().equalsIgnoreCase(categoria)) {
+												valor += new BigDecimal(object[5].toString()).doubleValue();
+											}
+										}
 									}
-								}								
+									
+								} else {
+									for (String categoria : categoriasPorDia) {
+										if (lancamento.getCategoriaLancamento().getNome().equalsIgnoreCase(categoria)) {
+											valor += new BigDecimal(object[5].toString()).doubleValue();
+										}
+									}
+								}
+								
 							} else {
 								valor += new BigDecimal(object[5].toString()).doubleValue();
 							}
@@ -530,6 +600,29 @@ public class RelatorioLancamentosBean implements Serializable {
 	}
 
 	public void createMixedModelPorSemana() {
+		
+		boolean favorecido = false;
+		
+		if (categoriasPorSemana != null && categoriasPorSemana.length > 0) {
+			
+			for (String categoria : categoriasPorSemana) {
+				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria);
+				if(categoriaLancamento.getId() == 25835L || categoriaLancamento.getId() == 5423L ||
+						categoriaLancamento.getId() == 5424L || categoriaLancamento.getId() == 5425L ||
+								categoriaLancamento.getId() == 5426L || categoriaLancamento.getId() == 5427L) {
+					favorecido = true;		
+				}
+			}			
+		}	
+		
+		if(favorecido) {
+			PrimeFaces.current().executeScript("mostrarFavorecido02();");
+			renderFavorecido02 = true;
+		} else {
+			PrimeFaces.current().executeScript("ocultarFavorecido02();");
+			renderFavorecido02 = false;
+		}
+		
 		mixedModelPorSemana = new BarChartModel();
 		ChartData data = new ChartData();
 
@@ -604,11 +697,34 @@ public class RelatorioLancamentosBean implements Serializable {
 						Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[2].toString()));
 						if (lancamento != null) {							
 							if (categoriasPorSemana != null && categoriasPorSemana.length > 0) {
-								for (String categoria : categoriasPorSemana) {
-									if (lancamento.getCategoriaLancamento().getNome().equalsIgnoreCase(categoria)) {
-										valor += new BigDecimal(object[4].toString()).doubleValue();
+					
+								if(favorecido) {
+									
+									if(usuario02 != null) {
+										if(usuario02.getId() != null) {
+										
+											for (String categoria : categoriasPorSemana) {
+												if (lancamento.getCategoriaLancamento().getNome().equalsIgnoreCase(categoria) && usuario02.getNome().equals(lancamento.getUsuario().getNome())) {
+													valor += new BigDecimal(object[4].toString()).doubleValue();
+												}
+											}										
+										}										
+									} else {
+										for (String categoria : categoriasPorSemana) {
+											if (lancamento.getCategoriaLancamento().getNome().equalsIgnoreCase(categoria)) {
+												valor += new BigDecimal(object[4].toString()).doubleValue();
+											}
+										}
 									}
-								}								
+									
+								} else {
+									for (String categoria : categoriasPorSemana) {
+										if (lancamento.getCategoriaLancamento().getNome().equalsIgnoreCase(categoria)) {
+											valor += new BigDecimal(object[4].toString()).doubleValue();
+										}
+									}
+								}
+								
 							} else {
 								valor += new BigDecimal(object[4].toString()).doubleValue();
 							}
@@ -810,6 +926,29 @@ public class RelatorioLancamentosBean implements Serializable {
 	}
 
 	public void createMixedModelPorMes() {
+		
+		boolean favorecido = false;
+		
+		if (categoriasPorMes != null && categoriasPorMes.length > 0) {
+			
+			for (String categoria : categoriasPorMes) {
+				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria);
+				if(categoriaLancamento.getId() == 25835L || categoriaLancamento.getId() == 5423L ||
+						categoriaLancamento.getId() == 5424L || categoriaLancamento.getId() == 5425L ||
+								categoriaLancamento.getId() == 5426L || categoriaLancamento.getId() == 5427L) {
+					favorecido = true;		
+				}
+			}			
+		}	
+		
+		if(favorecido) {
+			PrimeFaces.current().executeScript("mostrarFavorecido03();");
+			renderFavorecido03 = true;
+		} else {
+			PrimeFaces.current().executeScript("ocultarFavorecido03();");
+			renderFavorecido03 = false;
+		}
+		
 		mixedModelPorMes = new BarChartModel();
 		ChartData data = new ChartData();
 
@@ -879,11 +1018,34 @@ public class RelatorioLancamentosBean implements Serializable {
 						Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[2].toString()));
 						if (lancamento != null) {							
 							if (categoriasPorMes != null && categoriasPorMes.length > 0) {
-								for (String categoria : categoriasPorMes) {
-									if (lancamento.getCategoriaLancamento().getNome().equalsIgnoreCase(categoria)) {
-										valor += new BigDecimal(object[4].toString()).doubleValue();
+					
+								if(favorecido) {
+									
+									if(usuario03 != null) {
+										if(usuario03.getId() != null) {
+										
+											for (String categoria : categoriasPorMes) {
+												if (lancamento.getCategoriaLancamento().getNome().equalsIgnoreCase(categoria) && usuario03.getNome().equals(lancamento.getUsuario().getNome())) {
+													valor += new BigDecimal(object[4].toString()).doubleValue();
+												}
+											}
+										}										
+									} else {
+										for (String categoria : categoriasPorMes) {
+											if (lancamento.getCategoriaLancamento().getNome().equalsIgnoreCase(categoria)) {
+												valor += new BigDecimal(object[4].toString()).doubleValue();
+											}
+										}
 									}
-								}								
+									
+								} else {
+									for (String categoria : categoriasPorMes) {
+										if (lancamento.getCategoriaLancamento().getNome().equalsIgnoreCase(categoria)) {
+											valor += new BigDecimal(object[4].toString()).doubleValue();
+										}
+									}
+								}
+
 							} else {
 								valor += new BigDecimal(object[4].toString()).doubleValue();
 							}
@@ -1021,6 +1183,29 @@ public class RelatorioLancamentosBean implements Serializable {
 	}
 
 	public void createMixedModelPorAno() {
+		
+		boolean favorecido = false;
+		
+		if (categoriasPorAno != null && categoriasPorAno.length > 0) {
+			
+			for (String categoria : categoriasPorAno) {
+				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria);
+				if(categoriaLancamento.getId() == 25835L || categoriaLancamento.getId() == 5423L ||
+						categoriaLancamento.getId() == 5424L || categoriaLancamento.getId() == 5425L ||
+								categoriaLancamento.getId() == 5426L || categoriaLancamento.getId() == 5427L) {
+					favorecido = true;		
+				}
+			}			
+		}	
+		
+		if(favorecido) {
+			PrimeFaces.current().executeScript("mostrarFavorecido04();");
+			renderFavorecido04 = true;
+		} else {
+			PrimeFaces.current().executeScript("ocultarFavorecido04();");
+			renderFavorecido04 = false;
+		}
+		
 		mixedModelPorAno = new BarChartModel();
 		ChartData data = new ChartData();
 
@@ -1083,11 +1268,33 @@ public class RelatorioLancamentosBean implements Serializable {
 						Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[1].toString()));
 						if (lancamento != null) {
 							if (categoriasPorAno != null && categoriasPorAno.length > 0) {
-								for (String categoria : categoriasPorAno) {
-									if (lancamento.getCategoriaLancamento().getNome().equalsIgnoreCase(categoria)) {
-										valor += new BigDecimal(object[3].toString()).doubleValue();
+						
+								if(favorecido) {
+									
+									if(usuario04 != null) {
+										if(usuario04.getId() != null) {
+										
+											for (String categoria : categoriasPorAno) {
+												if (lancamento.getCategoriaLancamento().getNome().equalsIgnoreCase(categoria) && usuario04.getNome().equals(lancamento.getUsuario().getNome())) {
+													valor += new BigDecimal(object[3].toString()).doubleValue();
+												}
+											}
+										}										
+									} else {
+										for (String categoria : categoriasPorAno) {
+											if (lancamento.getCategoriaLancamento().getNome().equalsIgnoreCase(categoria)) {
+												valor += new BigDecimal(object[3].toString()).doubleValue();
+											}
+										}
 									}
-								}								
+									
+								} else {
+									for (String categoria : categoriasPorAno) {
+										if (lancamento.getCategoriaLancamento().getNome().equalsIgnoreCase(categoria)) {
+											valor += new BigDecimal(object[3].toString()).doubleValue();
+										}
+									}
+								}
 							} else {
 								valor += new BigDecimal(object[3].toString()).doubleValue();
 							}
@@ -1655,5 +1862,73 @@ public class RelatorioLancamentosBean implements Serializable {
 
 	public void setTarget(Double target) {
 		this.target = target;
+	}
+
+	public boolean isRenderFavorecido01() {
+		return renderFavorecido01;
+	}
+
+	public void setRenderFavorecido01(boolean renderFavorecido01) {
+		this.renderFavorecido01 = renderFavorecido01;
+	}
+
+	public Usuario getUsuario01() {
+		return usuario01;
+	}
+
+	public void setUsuario01(Usuario usuario01) {
+		this.usuario01 = usuario01;
+	}
+
+	public boolean isRenderFavorecido02() {
+		return renderFavorecido02;
+	}
+
+	public void setRenderFavorecido02(boolean renderFavorecido02) {
+		this.renderFavorecido02 = renderFavorecido02;
+	}
+
+	public Usuario getUsuario02() {
+		return usuario02;
+	}
+
+	public void setUsuario02(Usuario usuario02) {
+		this.usuario02 = usuario02;
+	}
+
+	public boolean isRenderFavorecido03() {
+		return renderFavorecido03;
+	}
+
+	public void setRenderFavorecido03(boolean renderFavorecido03) {
+		this.renderFavorecido03 = renderFavorecido03;
+	}
+
+	public Usuario getUsuario03() {
+		return usuario03;
+	}
+
+	public void setUsuario03(Usuario usuario03) {
+		this.usuario03 = usuario03;
+	}
+
+	public boolean isRenderFavorecido04() {
+		return renderFavorecido04;
+	}
+
+	public Usuario getUsuario04() {
+		return usuario04;
+	}
+
+	public void setUsuario04(Usuario usuario04) {
+		this.usuario04 = usuario04;
+	}
+
+	public void setRenderFavorecido04(boolean renderFavorecido04) {
+		this.renderFavorecido04 = renderFavorecido04;
+	}
+
+	public List<Usuario> getTodosUsuarios() {
+		return todosUsuarios;
 	}
 }

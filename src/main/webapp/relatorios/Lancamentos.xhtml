@@ -134,6 +134,54 @@
 
 		<style>
 @media ( min-width :220px) {
+	.panel-favorecido01 {
+		overflow: hidden;
+		max-height: 300px;
+		transition: max-height 1s ease-in-out;
+		width: 100%;
+	}
+	.panel-favorecido01.hide {
+		max-height: 0;
+		pointer-events: none;
+		padding-bottom: 4px;
+		margin-top: 0px;
+	}
+	.panel-favorecido02 {
+		overflow: hidden;
+		max-height: 300px;
+		transition: max-height 1s ease-in-out;
+		width: 100%;
+	}
+	.panel-favorecido02.hide {
+		max-height: 0;
+		pointer-events: none;
+		padding-bottom: 4px;
+		margin-top: 0px;
+	}
+	.panel-favorecido03 {
+		overflow: hidden;
+		max-height: 300px;
+		transition: max-height 1s ease-in-out;
+		width: 100%;
+	}
+	.panel-favorecido03.hide {
+		max-height: 0;
+		pointer-events: none;
+		padding-bottom: 4px;
+		margin-top: 0px;
+	}
+	.panel-favorecido04 {
+		overflow: hidden;
+		max-height: 300px;
+		transition: max-height 1s ease-in-out;
+		width: 100%;
+	}
+	.panel-favorecido04.hide {
+		max-height: 0;
+		pointer-events: none;
+		padding-bottom: 4px;
+		margin-top: 0px;
+	}
 	#target-dialog .ui-inputtext {
 		text-align: center;
 	}
@@ -283,7 +331,7 @@
 					<h3 style="font-weight: bold; margin-top: -8px;">Lançamentos
 						por Dia</h3>
 
-					<p:panelGrid columns="4" id="painel" layout="grid"
+					<p:panelGrid columns="4" id="painel" layout="grid" style="margin-bottom: -4px;"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-1">
 
@@ -295,7 +343,7 @@
 
 							<p:ajax event="dateSelect"
 								listener="#{relatorioLancamentosBean.createMixedModelPorDia}"
-								process="@this painel" update="barChart-despesasPorDia" />
+								process="@this painel panel-favorecido01" update="barChart-despesasPorDia" />
 						</p:datePicker>
 
 
@@ -307,7 +355,7 @@
 
 							<p:ajax event="dateSelect"
 								listener="#{relatorioLancamentosBean.createMixedModelPorDia}"
-								process="@this painel" update="barChart-despesasPorDia" />
+								process="@this painel panel-favorecido01" update="barChart-despesasPorDia" />
 						</p:datePicker>
 
 
@@ -325,9 +373,29 @@
 
 						<p:commandButton icon="fa fa-refresh"
 							action="#{relatorioLancamentosBean.changeCategoriaPorDia}"
-							process="@this painel" styleClass="btn-pie" title="Atualizar"
+							process="@parent" styleClass="btn-pie" title="Atualizar"
 							onstart="start();" oncomplete="stop();"
-							update="barChart-despesasPorDia" />
+							update="favorecido01 barChart-despesasPorDia" />
+					</p:panelGrid>
+					
+					<p:panelGrid columns="2" layout="grid" id="panel-favorecido01"
+						styleClass="panelgrid-noborder disabled disabled panel-favorecido01 #{relatorioLancamentosBean.renderFavorecido01 ? '' : 'hide'}"
+						columnClasses="ui-grid-col-3, ui-grid-col-6">
+
+						<p:outputLabel value="Funcionário Favorecido" for="favorecido01" />
+						<p:selectOneMenu id="favorecido01" styleClass="hide"
+							value="#{relatorioLancamentosBean.usuario01}">
+
+							<f:selectItem itemLabel="Selecione" />
+							
+							<p:ajax event="change"
+								listener="#{relatorioLancamentosBean.createMixedModelPorDia}"
+								process="@this panel-favorecido01 painel"
+								update="barChart-despesasPorDia" />
+
+							<f:selectItems value="#{relatorioLancamentosBean.todosUsuarios}"
+								var="usuario" itemLabel="#{usuario.nome}" itemValue="#{usuario}" />
+						</p:selectOneMenu>
 					</p:panelGrid>
 
 					<p:commandButton rendered="false" icon="fa fa-pie-chart"
@@ -371,7 +439,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLancamentosBean.createMixedModelPorSemana}"
-								process="@this painel-ano painel-semana"
+								process="@this painel-ano painel-semana panel-favorecido02"
 								update="barChart-despesasPorSemana" />
 							<f:selectItems value="#{relatorioLancamentosBean.anos}" var="ano"
 								itemLabel="#{ano}" itemValue="#{ano}"></f:selectItems>
@@ -380,7 +448,7 @@
 					</p:panelGrid>
 
 					<p:panelGrid columns="4" id="painel-semana" layout="grid"
-						styleClass="panelgrid-noborder disabled disabled"
+						styleClass="panelgrid-noborder disabled disabled" style="margin-bottom: -4px;"
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-1, ui-grid-col-4">
 
 						<p:outputLabel value="Nª Semana" for="num-semana1" />
@@ -389,7 +457,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLancamentosBean.createMixedModelPorSemana}"
-								process="@this painel-ano painel-semana"
+								process="@this painel-ano painel-semana panel-favorecido02"
 								update="barChart-despesasPorSemana" />
 							<f:selectItems value="#{relatorioLancamentosBean.semanas}"
 								var="semana" itemLabel="#{semana}" itemValue="#{semana}"></f:selectItems>
@@ -401,7 +469,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLancamentosBean.createMixedModelPorSemana}"
-								process="@this painel-ano painel-semana"
+								process="@this painel-ano painel-semana panel-favorecido02"
 								update="barChart-despesasPorSemana" />
 							<f:selectItems value="#{relatorioLancamentosBean.semanas}"
 								var="semana" itemLabel="#{semana}" itemValue="#{semana}"></f:selectItems>
@@ -422,9 +490,29 @@
 
 						<p:commandButton icon="fa fa-refresh"
 							action="#{relatorioLancamentosBean.changeCategoriaPorSemana}"
-							process="@this painel-ano painel-semana" styleClass="btn-pie"
+							process="@this painel-ano painel-semana panel-favorecido02" styleClass="btn-pie"
 							title="Atualizar" onstart="start();" oncomplete="stop();"
 							update="barChart-despesasPorSemana" />
+					</p:panelGrid>
+					
+					<p:panelGrid columns="2" layout="grid" id="panel-favorecido02"
+						styleClass="panelgrid-noborder disabled disabled panel-favorecido02 #{relatorioLancamentosBean.renderFavorecido02 ? '' : 'hide'}"
+						columnClasses="ui-grid-col-3, ui-grid-col-6">
+
+						<p:outputLabel value="Funcionário Favorecido" for="favorecido02" />
+						<p:selectOneMenu id="favorecido02" styleClass="hide"
+							value="#{relatorioLancamentosBean.usuario02}">
+
+							<f:selectItem itemLabel="Selecione" />
+							
+							<p:ajax event="change"
+								listener="#{relatorioLancamentosBean.createMixedModelPorSemana}"
+								process="@this panel-favorecido02 painel-ano painel-semana"
+								update="barChart-despesasPorSemana" />
+
+							<f:selectItems value="#{relatorioLancamentosBean.todosUsuarios}"
+								var="usuario" itemLabel="#{usuario.nome}" itemValue="#{usuario}" />
+						</p:selectOneMenu>
 					</p:panelGrid>
 
 					<p:commandButton rendered="false" icon="fa fa-pie-chart"
@@ -478,7 +566,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLancamentosBean.createMixedModelPorMes}"
-								process="@this painel-ano2 painel-mes"
+								process="@this painel-ano2 painel-mes panel-favorecido03"
 								update="barChart-despesasPorMes" />
 							<f:selectItems value="#{relatorioLancamentosBean.anos}" var="ano"
 								itemLabel="#{ano}" itemValue="#{ano}"></f:selectItems>
@@ -487,7 +575,7 @@
 					</p:panelGrid>
 
 					<p:panelGrid columns="4" layout="grid" id="painel-mes"
-						styleClass="panelgrid-noborder disabled disabled"
+						styleClass="panelgrid-noborder disabled disabled" style="margin-bottom: -4px;"
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-1,ui-grid-col-4">
 
 						<p:outputLabel value="Nº Mês" for="mes1" />
@@ -496,7 +584,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLancamentosBean.createMixedModelPorMes}"
-								process="@this painel-ano2 painel-mes"
+								process="@this painel-ano2 painel-mes panel-favorecido03"
 								update="barChart-despesasPorMes" />
 							<f:selectItems value="#{relatorioLancamentosBean.meses}"
 								var="mes" itemLabel="#{mes}" itemValue="#{mes}"></f:selectItems>
@@ -509,7 +597,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLancamentosBean.createMixedModelPorMes}"
-								process="@this painel-ano2 painel-mes"
+								process="@this painel-ano2 painel-mes panel-favorecido03"
 								update="barChart-despesasPorMes" />
 							<f:selectItems value="#{relatorioLancamentosBean.meses}"
 								var="mes" itemLabel="#{mes}" itemValue="#{mes}"></f:selectItems>
@@ -530,9 +618,29 @@
 
 						<p:commandButton icon="fa fa-refresh"
 							action="#{relatorioLancamentosBean.changeCategoriaPorMes}"
-							process="@this painel-ano2 painel-mes" styleClass="btn-pie"
+							process="@this painel-ano2 painel-mes panel-favorecido03" styleClass="btn-pie"
 							title="Atualizar" onstart="start();" oncomplete="stop();"
 							update="barChart-despesasPorMes" />
+					</p:panelGrid>
+					
+					<p:panelGrid columns="2" layout="grid" id="panel-favorecido03"
+						styleClass="panelgrid-noborder disabled disabled panel-favorecido03 #{relatorioLancamentosBean.renderFavorecido03 ? '' : 'hide'}"
+						columnClasses="ui-grid-col-3, ui-grid-col-6">
+
+						<p:outputLabel value="Funcionário Favorecido" for="favorecido03" />
+						<p:selectOneMenu id="favorecido03" styleClass="hide"
+							value="#{relatorioLancamentosBean.usuario03}">
+
+							<f:selectItem itemLabel="Selecione" />
+							
+							<p:ajax event="change"
+								listener="#{relatorioLancamentosBean.createMixedModelPorMes}"
+								process="@this panel-favorecido03 painel-ano2 painel-mes"
+								update="barChart-despesasPorMes" />
+
+							<f:selectItems value="#{relatorioLancamentosBean.todosUsuarios}"
+								var="usuario" itemLabel="#{usuario.nome}" itemValue="#{usuario}" />
+						</p:selectOneMenu>
 					</p:panelGrid>
 
 
@@ -567,7 +675,7 @@
 						por Ano</h3>
 
 					<p:panelGrid columns="4" id="painel3" layout="grid"
-						styleClass="panelgrid-noborder disabled disabled"
+						styleClass="panelgrid-noborder disabled disabled" style="margin-bottom: -4px;"
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-1, ui-grid-col-4">
 
 						<p:outputLabel value="Ano" for="ano3" />
@@ -576,7 +684,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLancamentosBean.createMixedModelPorAno}"
-								process="@this painel3" update="barChart-despesasPorAno" />
+								process="@this panel-favorecido04 painel3" update="barChart-despesasPorAno" />
 							<f:selectItems value="#{relatorioLancamentosBean.anos}" var="ano"
 								itemLabel="#{ano}" itemValue="#{ano}"></f:selectItems>
 						</p:selectOneMenu>
@@ -587,7 +695,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioLancamentosBean.createMixedModelPorAno}"
-								process="@this painel3" update="barChart-despesasPorAno" />
+								process="@this panel-favorecido04 painel3" update="barChart-despesasPorAno" />
 							<f:selectItems value="#{relatorioLancamentosBean.anos}" var="ano"
 								itemLabel="#{ano}" itemValue="#{ano}"></f:selectItems>
 						</p:selectOneMenu>
@@ -607,9 +715,29 @@
 
 						<p:commandButton icon="fa fa-refresh"
 							action="#{relatorioLancamentosBean.changeCategoriaPorAno}"
-							process="@this painel3" styleClass="btn-pie" title="Atualizar"
+							process="@this panel-favorecido04 painel3" styleClass="btn-pie" title="Atualizar"
 							onstart="start();" oncomplete="stop();"
 							update="barChart-despesasPorAno" />
+					</p:panelGrid>
+					
+					<p:panelGrid columns="2" layout="grid" id="panel-favorecido04"
+						styleClass="panelgrid-noborder disabled disabled panel-favorecido04 #{relatorioLancamentosBean.renderFavorecido04 ? '' : 'hide'}"
+						columnClasses="ui-grid-col-3, ui-grid-col-6">
+
+						<p:outputLabel value="Funcionário Favorecido" for="favorecido04" />
+						<p:selectOneMenu id="favorecido04" styleClass="hide"
+							value="#{relatorioLancamentosBean.usuario04}">
+
+							<f:selectItem itemLabel="Selecione" />
+							
+							<p:ajax event="change"
+								listener="#{relatorioLancamentosBean.createMixedModelPorAno}"
+								process="@this panel-favorecido04 painel3"
+								update="barChart-despesasPorAno" />
+
+							<f:selectItems value="#{relatorioLancamentosBean.todosUsuarios}"
+								var="usuario" itemLabel="#{usuario.nome}" itemValue="#{usuario}" />
+						</p:selectOneMenu>
 					</p:panelGrid>
 
 					<p:commandButton rendered="false" icon="fa fa-pie-chart"
@@ -724,6 +852,38 @@
 
 			function stop() {
 				PF('downloadLoading').hide();
+			}
+			
+			function ocultarFavorecido01() {
+				$(".panel-favorecido01").addClass("hide");
+			}
+
+			function mostrarFavorecido01() {
+				$(".panel-favorecido01").removeClass("hide");
+			}
+			
+			function ocultarFavorecido02() {
+				$(".panel-favorecido02").addClass("hide");
+			}
+
+			function mostrarFavorecido02() {
+				$(".panel-favorecido02").removeClass("hide");
+			}
+			
+			function ocultarFavorecido03() {
+				$(".panel-favorecido03").addClass("hide");
+			}
+
+			function mostrarFavorecido03() {
+				$(".panel-favorecido03").removeClass("hide");
+			}
+			
+			function ocultarFavorecido04() {
+				$(".panel-favorecido04").addClass("hide");
+			}
+
+			function mostrarFavorecido04() {
+				$(".panel-favorecido04").removeClass("hide");
 			}
 		</script>
 

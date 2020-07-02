@@ -44,7 +44,7 @@ public class Bairros implements Serializable {
 	}
 	
 	public List<Bairro> filtrados(BairroFilter filter) {
-		return this.manager.createQuery("from Bairro i where i.nome like upper(:nome) order by nome", Bairro.class)
+		return this.manager.createQuery("from Bairro i where upper(i.nome) like :nome order by nome", Bairro.class)
 				.setParameter("nome", "%" + filter.getNome().toUpperCase() + "%").getResultList();
 	}
 	
