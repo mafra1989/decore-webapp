@@ -279,11 +279,27 @@
 								process="@this painel painel-categoria"
 								update="barChart-lucrosPorDia" />
 						</p:datePicker>
+						
+						<p:outputLabel value="Vendedor" for="vendedor1" />
+						<p:selectOneMenu id="vendedor1"
+							value="#{relatorioLucrosBean.usuarioPorDia}"
+							placeholder="selecione">
+
+							<f:selectItem itemLabel="Selecione" />
+
+							<p:ajax event="change"
+								listener="#{relatorioLucrosBean.changeVendedorPorDia}"
+								process="@this painel painel-categoria" update="barChart-lucrosPorDia" />
+
+							<f:selectItems value="#{relatorioLucrosBean.todosVendedores}"
+								var="vendedor" itemLabel="#{vendedor.nome}"
+								itemValue="#{vendedor}" />
+						</p:selectOneMenu>
 					</p:panelGrid>
 
 					<p:panelGrid columns="3" id="painel-categoria" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled no-display"
-						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-2">
+						columnClasses="ui-grid-col-3, ui-grid-col-5, ui-grid-col-2">
 
 						<p:outputLabel value="Categoria" />
 						<p:selectCheckboxMenu id="categoria1" label="" showHeader="true"
@@ -400,11 +416,28 @@
 							<f:selectItems value="#{relatorioLucrosBean.semanas}"
 								var="semana" itemLabel="#{semana}" itemValue="#{semana}"></f:selectItems>
 						</p:selectOneMenu>
+						
+						<p:outputLabel value="Vendedor" for="vendedor2" />
+						<p:selectOneMenu id="vendedor2"
+							value="#{relatorioLucrosBean.usuarioPorSemana}"
+							placeholder="selecione">
+
+							<f:selectItem itemLabel="Selecione" />
+
+							<p:ajax event="change"
+								listener="#{relatorioLucrosBean.changeVendedorPorSemana}"
+								process="@this painel-ano panel-semanal panel-semanal-categoria"
+								update="barChart-lucrosPorSemana" />
+
+							<f:selectItems value="#{relatorioLucrosBean.todosVendedores}"
+								var="vendedor" itemLabel="#{vendedor.nome}"
+								itemValue="#{vendedor}" />
+						</p:selectOneMenu>
 					</p:panelGrid>
 
 					<p:panelGrid id="panel-semanal-categoria" columns="4" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled no-display"
-						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-2">
+						columnClasses="ui-grid-col-3, ui-grid-col-5, ui-grid-col-2">
 
 						<p:outputLabel value="Categoria" />
 						<p:selectCheckboxMenu id="categoria2" label="" style="width: 100%"
@@ -532,11 +565,28 @@
 							<f:selectItems value="#{relatorioLucrosBean.meses}" var="mes"
 								itemLabel="#{mes}" itemValue="#{mes}"></f:selectItems>
 						</p:selectOneMenu>
+						
+						<p:outputLabel value="Vendedor" for="vendedor3" />
+						<p:selectOneMenu id="vendedor3"
+							value="#{relatorioLucrosBean.usuarioPorMes}"
+							placeholder="selecione">
+
+							<f:selectItem itemLabel="Selecione" />
+
+							<p:ajax event="change"
+								listener="#{relatorioLucrosBean.changeVendedorPorMes}"
+								process="@this painel-ano2 panel-mensal panel-mensal-categoria"
+								update="barChart-lucrosPorMes" />
+
+							<f:selectItems value="#{relatorioLucrosBean.todosVendedores}"
+								var="vendedor" itemLabel="#{vendedor.nome}"
+								itemValue="#{vendedor}" />
+						</p:selectOneMenu>
 					</p:panelGrid>
 
 					<p:panelGrid columns="4" id="panel-mensal-categoria" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled no-display"
-						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-2">
+						columnClasses="ui-grid-col-3, ui-grid-col-5, ui-grid-col-2">
 
 						<p:outputLabel value="Categoria" />
 						<p:selectCheckboxMenu id="categoria3" label="" style="width: 100%"
@@ -646,11 +696,28 @@
 							<f:selectItems value="#{relatorioLucrosBean.anos}" var="ano"
 								itemLabel="#{ano}" itemValue="#{ano}"></f:selectItems>
 						</p:selectOneMenu>
+						
+						<p:outputLabel value="Vendedor" for="vendedor4" />
+						<p:selectOneMenu id="vendedor4"
+							value="#{relatorioLucrosBean.usuarioPorAno}"
+							placeholder="selecione">
+
+							<f:selectItem itemLabel="Selecione" />
+
+							<p:ajax event="change"
+								listener="#{relatorioLucrosBean.changeVendedorPorAno}"
+								process="@this painel-anual painel-anual-categoria"
+								update="barChart-lucrosPorAno" />
+
+							<f:selectItems value="#{relatorioLucrosBean.todosVendedores}"
+								var="vendedor" itemLabel="#{vendedor.nome}"
+								itemValue="#{vendedor}" />
+						</p:selectOneMenu>
 					</p:panelGrid>
 
 					<p:panelGrid columns="4" layout="grid" id="painel-anual-categoria"
 						styleClass="panelgrid-noborder disabled disabled no-display"
-						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-2">
+						columnClasses="ui-grid-col-3, ui-grid-col-5, ui-grid-col-2">
 
 						<p:outputLabel value="Categoria" />
 						<p:selectCheckboxMenu id="categoria4" style="width: 100%"
