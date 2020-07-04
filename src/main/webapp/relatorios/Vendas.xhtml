@@ -348,7 +348,7 @@
 
 							<p:ajax event="dateSelect"
 								listener="#{relatorioVendasBean.createMixedModelPorDia}"
-								process="@this painel" update="barChart-vendasPorDia" />
+								process="@this painel painel-categoria" update="barChart-vendasPorDia" />
 						</p:datePicker>
 
 
@@ -359,7 +359,7 @@
 
 							<p:ajax event="dateSelect"
 								listener="#{relatorioVendasBean.createMixedModelPorDia}"
-								process="@this painel" update="barChart-vendasPorDia" />
+								process="@this painel painel-categoria" update="barChart-vendasPorDia" />
 						</p:datePicker>
 
 						<p:outputLabel value="Vendedor" for="vendedor1" />
@@ -371,7 +371,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioVendasBean.changeVendedorPorDia}"
-								process="@this" update="produto1 barChart-vendasPorDia" />
+								process="@this painel painel-categoria" update="produto1 barChart-vendasPorDia" />
 
 							<f:selectItems value="#{relatorioVendasBean.todosVendedores}"
 								var="vendedor" itemLabel="#{vendedor.nome}"
@@ -455,7 +455,7 @@
 					<h3 style="font-weight: bold; margin-top: -8px;">Vendas por
 						Semana</h3>
 
-					<p:panelGrid columns="2" layout="grid"
+					<p:panelGrid columns="2" layout="grid" id="panel-ano01"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-5">
 
@@ -465,7 +465,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioVendasBean.createMixedModelPorSemana}"
-								process="@this" update="barChart-vendasPorSemana" />
+								process="@this panel-semanal panel-semanal-categoria" update="barChart-vendasPorSemana" />
 							<f:selectItems value="#{relatorioVendasBean.anos}" var="ano"
 								itemLabel="#{ano}" itemValue="#{ano}"></f:selectItems>
 						</p:selectOneMenu>
@@ -482,7 +482,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioVendasBean.createMixedModelPorSemana}"
-								process="@this" update="barChart-vendasPorSemana" />
+								process="@this panel-ano01  panel-semanal panel-semanal-categoria" update="barChart-vendasPorSemana" />
 							<f:selectItems value="#{relatorioVendasBean.semanas}"
 								var="semana" itemLabel="#{semana}" itemValue="#{semana}"></f:selectItems>
 						</p:selectOneMenu>
@@ -493,7 +493,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioVendasBean.createMixedModelPorSemana}"
-								process="@this" update="barChart-vendasPorSemana" />
+								process="@this panel-ano01  panel-semanal panel-semanal-categoria" update="barChart-vendasPorSemana" />
 							<f:selectItems value="#{relatorioVendasBean.semanas}"
 								var="semana" itemLabel="#{semana}" itemValue="#{semana}"></f:selectItems>
 						</p:selectOneMenu>
@@ -508,7 +508,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioVendasBean.changeVendedorPorSemana}"
-								process="@this" update="produto2 barChart-vendasPorSemana" />
+								process="@this panel-ano01  panel-semanal panel-semanal-categoria" update="produto2 barChart-vendasPorSemana" />
 
 							<f:selectItems value="#{relatorioVendasBean.todosVendedores}"
 								var="vendedor" itemLabel="#{vendedor.nome}"
@@ -535,7 +535,7 @@
 
 						<p:commandButton icon="fa fa-refresh"
 							action="#{relatorioVendasBean.changeCategoriaPorSemana}"
-							process="@this panel-semanal panel-semanal-categoria"
+							process="@this panel-ano01  panel-semanal panel-semanal-categoria"
 							styleClass="btn-pie" title="Atualizar" onstart="start();"
 							oncomplete="stop();" update="produto2 barChart-vendasPorSemana" />
 					</p:panelGrid>
@@ -602,7 +602,7 @@
 					<h3 style="font-weight: bold; margin-top: -8px;">Vendas por
 						Mês</h3>
 
-					<p:panelGrid columns="2" layout="grid"
+					<p:panelGrid columns="2" layout="grid" id="panel-ano02"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-5">
 
@@ -612,7 +612,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioVendasBean.createMixedModelPorMes}"
-								process="@this" update="barChart-vendasPorMes" />
+								process="@this panel-mensal panel-mensal-categoria" update="barChart-vendasPorMes" />
 							<f:selectItems value="#{relatorioVendasBean.anos}" var="ano"
 								itemLabel="#{ano}" itemValue="#{ano}"></f:selectItems>
 						</p:selectOneMenu>
@@ -629,7 +629,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioVendasBean.createMixedModelPorMes}"
-								process="@this" update="barChart-vendasPorMes" />
+								process="@this panel-ano02 panel-mensal panel-mensal-categoria" update="barChart-vendasPorMes" />
 							<f:selectItems value="#{relatorioVendasBean.meses}" var="mes"
 								itemLabel="#{mes}" itemValue="#{mes}"></f:selectItems>
 						</p:selectOneMenu>
@@ -641,7 +641,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioVendasBean.createMixedModelPorMes}"
-								process="@this" update="barChart-vendasPorMes" />
+								process="@this panel-ano02 panel-mensal panel-mensal-categoria" update="barChart-vendasPorMes" />
 							<f:selectItems value="#{relatorioVendasBean.meses}" var="mes"
 								itemLabel="#{mes}" itemValue="#{mes}"></f:selectItems>
 						</p:selectOneMenu>
@@ -655,7 +655,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioVendasBean.changeVendedorPorMes}"
-								process="@this" update="produto3 barChart-vendasPorMes" />
+								process="@this panel-ano02 panel-mensal panel-mensal-categoria" update="produto3 barChart-vendasPorMes" />
 
 							<f:selectItems value="#{relatorioVendasBean.todosVendedores}"
 								var="vendedor" itemLabel="#{vendedor.nome}"
@@ -683,7 +683,7 @@
 
 						<p:commandButton icon="fa fa-refresh"
 							action="#{relatorioVendasBean.changeCategoriaPorMes}"
-							process="@this panel-mensal panel-mensal-categoria"
+							process="@this panel-ano02 panel-mensal panel-mensal-categoria"
 							styleClass="btn-pie" title="Atualizar" onstart="start();"
 							oncomplete="stop();" update="produto3 barChart-vendasPorMes" />
 					</p:panelGrid>
@@ -749,7 +749,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioVendasBean.createMixedModelPorAno}"
-								process="@this" update="barChart-vendasPorAno" />
+								process="@this panel-anual panel-anual-categoria" update="barChart-vendasPorAno" />
 							<f:selectItems value="#{relatorioVendasBean.anos}" var="ano"
 								itemLabel="#{ano}" itemValue="#{ano}"></f:selectItems>
 						</p:selectOneMenu>
@@ -760,7 +760,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioVendasBean.createMixedModelPorAno}"
-								process="@this" update="barChart-vendasPorAno" />
+								process="@this panel-anual panel-anual-categoria" update="barChart-vendasPorAno" />
 							<f:selectItems value="#{relatorioVendasBean.anos}" var="ano"
 								itemLabel="#{ano}" itemValue="#{ano}"></f:selectItems>
 						</p:selectOneMenu>
@@ -774,7 +774,7 @@
 
 							<p:ajax event="change"
 								listener="#{relatorioVendasBean.changeVendedorPorAno}"
-								process="@this" update="produto4 barChart-vendasPorAno" />
+								process="@this panel-anual panel-anual-categoria" update="produto4 barChart-vendasPorAno" />
 
 							<f:selectItems value="#{relatorioVendasBean.todosVendedores}"
 								var="vendedor" itemLabel="#{vendedor.nome}"
