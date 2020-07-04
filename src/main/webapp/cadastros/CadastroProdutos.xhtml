@@ -350,13 +350,26 @@
 									<p:inputNumber id="totalCompras" readonly="true" symbol="R$ "
 										value="#{cadastroProdutoBean.produto.totalCompras}" />
 								</p:panelGrid>
+								
+								<p:panelGrid columns="2" layout="grid"
+									style="margin-bottom: 5px"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-6, ui-grid-col-2">
+
+									<p:outputLabel value="Ajustes de estoque" style="font-weight: bold" />
+									<p:outputLabel value="" />
+									<p:outputLabel value="Quantidade"
+										for="ajuste-totalComprados" />
+									<p:inputNumber id="ajuste-totalComprados" readonly="true"
+										decimalPlaces="0"
+										value="#{cadastroProdutoBean.produto.totalAjusteItensComprados}" />
+								</p:panelGrid>
 
 							</p:panel>
 
 							<p:panel>
 
 								<p:panelGrid columns="2" layout="grid"
-									style="margin-bottom: 5px"
 									styleClass="panelgrid-noborder disabled disabled"
 									columnClasses="ui-grid-col-6, ui-grid-col-2">
 
@@ -383,6 +396,20 @@
 									<p:inputNumber id="preco-medio-venda" readonly="true"
 										symbol="R$ "
 										value="#{cadastroProdutoBean.produto.precoMedioVenda}" />
+								</p:panelGrid>
+								
+								<p:panelGrid columns="2" layout="grid"
+									style="margin-bottom: 7px;margin-top: 8px;"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-6, ui-grid-col-2">
+
+									<p:outputLabel value="Ajustes de estoque" style="font-weight: bold" />
+									<p:outputLabel value="" />
+									<p:outputLabel value="Quantidade"
+										for="ajuste-totalVendidos" />
+									<p:inputNumber id="ajuste-totalVendidos" readonly="true"
+										decimalPlaces="0"
+										value="#{cadastroProdutoBean.produto.totalAjusteItensVendidos}" />
 								</p:panelGrid>
 							</p:panel>
 						</p:panelGrid>

@@ -654,7 +654,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 
 							<p:column headerText="Produto" style="text-align:left;width:65%">
 								<p:commandLink value="#{produto.item}" process="@this"
-									update="produto-dialog" style="color: #525252;"
+									update="produto-dialog" style="color: #023961;"
 									actionListener="#{dashboardBean.carregarProduto(produto.codigo)}"
 									onstart="start();"
 									oncomplete="PF('produto-dialog').show();stop();" />
@@ -676,7 +676,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 
 						<p:commandButton process="@this" ajax="false"
 							icon="fa fa-fw fa-file-pdf-o" rendered="false"
-							style="width: 120px;background: #f9f9f9;border-radius: 2px;color: #0e71dc;float: left;margin-top: 15px;"
+							style="width: 120px;background: #f9f9f9;border-radius: 2px;color: #0e71dc;float: left;margin-top: 15px;border: 1px solid #dcdcdc;"
 							value="Baixar lista">
 							<p:dataExporter type="pdf" target="fluxoTable5"
 								fileName="#{dashboardBean.vendaPorCategoriaSelecionada.item}" />
@@ -745,7 +745,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 
 							<p:column headerText="Produto" style="text-align:left;width:65%">
 								<p:commandLink value="#{produto.item}" process="@this"
-									update="produto-dialog" style="color: #525252;"
+									update="produto-dialog" style="color: #023961;"
 									actionListener="#{dashboardBean.carregarProduto(produto.codigo)}"
 									onstart="start();"
 									oncomplete="PF('produto-dialog').show();stop();" />
@@ -767,7 +767,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 
 						<p:commandButton process="@this" ajax="false"
 							icon="fa fa-fw fa-file-pdf-o" action="#{dashboardBean.baixarLista}" 
-							style="width: 120px;background: #f9f9f9;border-radius: 2px;color: #0e71dc;float: left;margin-top: 15px;"
+							style="width: 120px;background: #f9f9f9;border-radius: 2px;color: #0e71dc;float: left;margin-top: 15px;border: 1px solid #dcdcdc;"
 							value="Baixar lista">
 						</p:commandButton>
 

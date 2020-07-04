@@ -74,7 +74,7 @@
 
 				this.cfg.config.options = {
 					legend : {
-						display : true,
+						display : false,
 					},
 
 					title : {
@@ -93,12 +93,7 @@
 								var label = tooltipItem.yLabel;
 
 								return "QTY: "
-										+ amount
-										+ ' / '
-										+ total
-										+ ' ( '
-										+ parseFloat(amount * 100 / total)
-												.toFixed(2) + '% )';
+										+ amount;
 							}
 						}
 					},
@@ -136,6 +131,18 @@
 
 		<style>
 @media ( min-width :220px) {
+	.grid-dia {
+		margin-bottom: 4px;
+	}
+	.vendas-top5 tr td:nth-child(2n-1) {
+		border-bottom: 1.3px solid rebeccapurple;
+	}
+	.vendas-top5 tr td:nth-child(2) {
+		border-bottom: 1px solid #0e71dc;
+	}
+	#produtos-qty .ui-panelgrid .ui-panelgrid-cell:nth-child(2n) {
+		text-align: end;
+	}
 	#target-dialog .ui-inputtext {
 		text-align: center;
 	}
@@ -224,9 +231,41 @@
 	.no-display.ui-panelgrid .ui-panelgrid-cell:nth-child(3) {
 		padding: 0;
 	}
+	body .ui-datatable .ui-datatable-scrollable-header {
+	    display: none;
+	}
+	.header-produto .ui-grid-responsive {
+	    background-color: #f9f9f9;
+	}
+	body .ui-datatable .ui-datatable-data>tr.ui-datatable-even {
+	    background-color: transparent;
+	    border-bottom: 1px solid #afc7ff;
+	}
+	body .ui-datatable .ui-datatable-data>tr {
+	    border-color: transparent;
+	    background-color: #f1f1f1;
+	}
+	body .ui-datatable .ui-datatable-data>tr td {
+	    padding: 0px 10px;
+	}
+	.grid-ano {
+		margin-bottom: 4px;
+	}
 }
 
 @media ( min-width :460px) {
+	.target-dia {
+		margin-top: 7px !important;
+	}
+	.target-ano {
+		margin-top: 7px !important;
+	}
+	.grid-dia {
+		margin-bottom: 40px;
+	}
+	.grid-ano {
+		margin-bottom: 40px;
+	}
 	.target {
 		margin-top: 0px;
 	}
@@ -250,7 +289,7 @@
 	.barChart-01 {
 		width: 100%;
 		height: 270px;
-		margin-top: 47px;
+		margin-top: 0px;
 		margin-bottom: 0px;
 	}
 	.barChart-02 {
@@ -268,6 +307,10 @@
 		margin-left: -8px;
 		height: 29px;
 		margin-top: 4px;
+	}
+	body .ui-datatable .ui-datatable-data>tr td {
+	    font-size: 14px !important;
+	    font-family: "Source Sans Pro", "Helvetica Neue", sans-serif !important;
 	}
 }
 </style>
@@ -362,7 +405,7 @@
 					</p:panelGrid>
 
 					<p:panelGrid columns="3" layout="grid"
-						styleClass="panelgrid-noborder disabled disabled"
+						styleClass="panelgrid-noborder disabled disabled grid-dia"
 						columnClasses="ui-grid-col-3, ui-grid-col-5">
 
 						<p:outputLabel value="Produto" for="produto1" />
@@ -381,19 +424,19 @@
 
 					</p:panelGrid>
 
-					<p:commandButton rendered="false" icon="fa fa-pie-chart"
+					<p:commandButton rendered="true" icon="fa fa-pie-chart"
 						actionListener="#{relatorioVendasBean.prepareDonutModelPorDia}"
-						styleClass="btn-pie" title="Produtos por Quantidade"
-						oncomplete="PF('produtos-qty').show();"
-						update="form-dialog:pieChart-vendasPorQuantidade"
-						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-right:10px" />
+						styleClass="btn-pie" title="Produtos por Quantidade" onstart="start();"
+						oncomplete="PF('produtos-qty').show();stop();"
+						update="form-dialog"
+						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 32px;margin-right:10px" />
 
 					<p:barChart id="barChart-vendasPorDia"
 						model="#{relatorioVendasBean.mixedModelPorDia}"
 						styleClass="barChart-01" />
 
 					<p:panelGrid columns="1" layout="grid" style="text-align: center"
-						styleClass="panelgrid-noborder disabled disabled target"
+						styleClass="panelgrid-noborder disabled disabled target target-dia"
 						columnClasses="ui-grid-col-12">
 
 						<p:commandLink value="Definir target" process="@this"
@@ -518,12 +561,12 @@
 
 					</p:panelGrid>
 
-					<p:commandButton rendered="false" icon="fa fa-pie-chart"
+					<p:commandButton rendered="true" icon="fa fa-pie-chart"
 						actionListener="#{relatorioVendasBean.prepareDonutModelPorSemana}"
-						title="Produtos por Quantidade"
-						oncomplete="PF('produtos-qty').show();"
-						update="form-dialog:pieChart-vendasPorQuantidade"
-						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-top:5px;margin-right:10px" />
+						title="Produtos por Quantidade" onstart="start();"
+						oncomplete="PF('produtos-qty').show();stop();"
+						update="form-dialog"
+						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 32px;margin-top:5px;margin-right:10px" />
 
 					<p:barChart id="barChart-vendasPorSemana"
 						model="#{relatorioVendasBean.mixedModelPorSemana}"
@@ -666,12 +709,12 @@
 
 					</p:panelGrid>
 
-					<p:commandButton rendered="false" icon="fa fa-pie-chart"
+					<p:commandButton rendered="true" icon="fa fa-pie-chart"
 						actionListener="#{relatorioVendasBean.prepareDonutModelPorMes}"
-						title="Produtos por Quantidade"
-						oncomplete="PF('produtos-qty').show();"
-						update="form-dialog:pieChart-vendasPorQuantidade"
-						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-top:5px;margin-right:10px" />
+						title="Produtos por Quantidade" onstart="start();"
+						oncomplete="PF('produtos-qty').show();stop();"
+						update="form-dialog"
+						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 32px;margin-top:5px;margin-right:10px" />
 
 					<p:barChart model="#{relatorioVendasBean.mixedModelPorMes}"
 						id="barChart-vendasPorMes" styleClass="barChart-02" />
@@ -763,8 +806,8 @@
 							oncomplete="stop();" update="produto4 barChart-vendasPorAno" />
 					</p:panelGrid>
 
-					<p:panelGrid columns="2" layout="grid"
-						styleClass="panelgrid-noborder disabled disabled"
+					<p:panelGrid columns="2" layout="grid" 
+						styleClass="panelgrid-noborder disabled disabled grid-ano"
 						columnClasses="ui-grid-col-3, ui-grid-col-5">
 
 						<p:outputLabel value="Produto" for="produto4" />
@@ -782,19 +825,19 @@
 						</p:selectOneMenu>
 					</p:panelGrid>
 
-					<p:commandButton rendered="false" icon="fa fa-pie-chart"
+					<p:commandButton rendered="true" icon="fa fa-pie-chart"
 						actionListener="#{relatorioVendasBean.prepareDonutModelPorAno}"
-						styleClass="btn-pie" title="Produtos por Quantidade"
-						oncomplete="PF('produtos-qty').show();"
-						update="form-dialog:pieChart-vendasPorQuantidade"
-						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-right:10px" />
+						styleClass="btn-pie" title="Produtos por Quantidade" onstart="start();"
+						oncomplete="PF('produtos-qty').show();stop();"
+						update="form-dialog"
+						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 32px;margin-right:10px" />
 
 					<p:barChart id="barChart-vendasPorAno"
 						model="#{relatorioVendasBean.mixedModelPorAno}"
 						styleClass="barChart-01" />
 
-					<p:panelGrid columns="1" layout="grid" style="text-align: center"
-						styleClass="panelgrid-noborder disabled disabled target"
+					<p:panelGrid columns="1" layout="grid" style="text-align: center;"
+						styleClass="panelgrid-noborder disabled disabled target target-ano"
 						columnClasses="ui-grid-col-12">
 
 						<p:commandLink value="Definir target" process="@this"
@@ -810,26 +853,81 @@
 			</p:panelGrid>
 
 		</h:form>
+		
+		<p:dialog header="Produtos vs Quantidade"
+			widgetVar="produtos-qty" id="produtos-qty"
+			resizable="false" modal="true" position="top"
+			style="margin-top: 100px" closeOnEscape="true" responsive="true"
+			width="350px">
 
-		<p:dialog header="Produtos por Quantidade" widgetVar="produtos-qty"
-			id="produtos-qty" resizable="false" modal="true" closeOnEscape="true"
-			responsive="true" position="center" styleClass="modal-donut"
-			width="250px">
-
-			<h:form id="form-dialog">
+			<h:form id="form-dialog" style="margin-top: 10px;">
 
 				<div class="ui-fluid">
 
 					<div class="card card-w-title ui-fluid"
-						style="padding: 0px 5px 0px 5px; padding-bottom: 0px !important; margin-bottom: 10px; text-align: center">
-
+						style="padding: 0px 5px 0px 5px; padding-bottom: 0px !important; margin-bottom: 10px;">
+						
 						<p:donutChart id="pieChart-vendasPorQuantidade"
 							model="#{relatorioVendasBean.donutModel}"
-							style="width: 100%; height: 320px;margin-top:10px" />
+							style="width: 100%; height: 180px; margin-top: -8px" />
+
+						<p:panelGrid columns="2" layout="grid" style="margin-top: 15px"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-7, ui-grid-col-5">
+
+							<p:outputLabel style="font-weight: bold"
+								value="Valor total de vendas: " />
+							<p:outputLabel
+								value="R$ #{relatorioVendasBean.totalValorVenda}"
+								style="color: #0db130;font-weight: bold;font-size: 14px;">
+								<f:convertNumber type="currency" />
+							</p:outputLabel>
+
+							<p:outputLabel style="font-weight: bold" value="Total de itens: " />
+							<p:outputLabel
+								value="#{relatorioVendasBean.totalItensVenda}"
+								style="font-weight: bold;font-size: 14px;">
+							</p:outputLabel>
+						</p:panelGrid>
+
+						<p:panelGrid columns="1" layout="grid"
+							style="text-align:center;"
+							styleClass="panelgrid-noborder disabled disabled header-produto"
+							columnClasses="ui-grid-col-12">
+
+							<p:outputLabel style="font-weight: bold" value="Produtos " />
+						</p:panelGrid>
+
+						<p:dataTable id="fluxoTable6" 
+							value="#{relatorioVendasBean.detalhesVendasPorProduto}" var="produto"
+							scrollable="true" scrollHeight="190" styleClass="vendas-top5">
+
+							<p:column headerText="Descrição" style="text-align:left;width:65%">
+								<p:commandLink value="#{produto.item}" process="@this"
+									update="produto-dialog" style="color: #023961;"
+									actionListener="#{relatorioVendasBean.carregarProduto(produto.codigo)}"
+									onstart="start();"
+									oncomplete="PF('produto-dialog').show();stop();" />
+							</p:column>
+
+							<p:column headerText="Valor" style="text-align:right;width:30%">
+								<h:outputText value="#{produto.value}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Qty"
+								style="text-align:right;width:20%">
+								<h:outputText value="#{produto.quantidade}">
+								</h:outputText>
+							</p:column>
+
+						</p:dataTable>
 
 						<p:commandButton icon="fa fa-fw fa-close"
-							style="margin-top: 5px;font-weight: bold;width: 120px;background: #f3f3f3f0;color: #716c6c;border: 1px solid #484545;"
-							value="Fechar" oncomplete="PF('produtos-qty').hide();">
+							style="margin-top: 15px; margin-bottom: 2px;float:right;font-weight: bold;width: 120px;background: #fd6161;color: #ffffff;"
+							value="Fechar" onstart="start();"
+							oncomplete="stop();PF('produtos-qty').hide();">
 						</p:commandButton>
 
 					</div>
@@ -873,6 +971,40 @@
 						style="margin-bottom: 5px;font-weight: bold;width: 100px;background:#e15e5ef0;"
 						value="Cancelar" onstart="start();"
 						oncomplete="stop();PF('target-dialog').hide();">
+					</p:commandButton>
+				</div>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog header="Produto selecionado" widgetVar="produto-dialog"
+			position="top" style="margin-top: 100px" id="produto-dialog"
+			resizable="false" modal="true" closeOnEscape="true" responsive="true"
+			styleClass="fotoDialog">
+
+			<h:form id="form-dialogProduto">
+
+				<div class="ui-fluid" style="margin-top: 10px; text-align: center">
+					<ui:fragment id="photo"
+						rendered="#{relatorioVendasBean.produto.urlImagem != null}">
+						<img src="#{relatorioVendasBean.produto.urlImagem}"
+							style="width: 200px; height: 250px;" />
+					</ui:fragment>
+
+					<div
+						style="width: 80%; margin: auto; border-top: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px"></div>
+
+					<p:button icon="fa fa-fw fa-list"
+						style="margin-bottom: 5px;font-weight: bold;float: right;width: 100px;margin-right: 5px;background:#147df0"
+						value="Detalhes" id="foto-button"
+						outcome="/cadastros/CadastroProdutos.xhtml" onclick="start();">
+
+						<f:param name="id" value="#{relatorioVendasBean.produtoId}" />
+					</p:button>
+
+					<p:commandButton icon="fa fa-fw fa-close"
+						style="margin-bottom: 5px;font-weight: bold;width: 100px;background:#e15e5ef0;"
+						value="Fechar" onstart="start();"
+						oncomplete="stop();PF('produto-dialog').hide();">
 					</p:commandButton>
 				</div>
 			</h:form>

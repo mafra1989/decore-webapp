@@ -78,23 +78,42 @@ public class CadastroProdutoBean implements Serializable {
 		
 		Double quantidadeItensComprados = 0D;
 		Long totalItensComprados = 0L;
-		List<ItemCompra> itensCompra = itensCompras.porProduto(produto);
+		List<ItemCompra> itensCompra = itensCompras.porProduto(produto, false);
 		for (ItemCompra itemCompra : itensCompra) {
 			quantidadeItensComprados += itemCompra.getValorUnitario().doubleValue() * itemCompra.getQuantidade();
 			totalItensComprados += itemCompra.getQuantidade();
 		}
 		
 		produto.setTotalCompras(BigDecimal.valueOf(quantidadeItensComprados));
+		
+
+		Long totalAjusteItensComprados = 0L;
+		itensCompra = itensCompras.porProduto(produto, true);
+		for (ItemCompra itemCompra : itensCompra) {
+			totalAjusteItensComprados += itemCompra.getQuantidade();
+		}
+		
+		produto.setTotalAjusteItensComprados(totalAjusteItensComprados);
 			
 		Long totalItensVendidos = 0L;
 		Double quantidadeItensVendidos = 0D;
-		List<ItemVenda> itensVenda = itensVendas.porProduto(produto);
+		List<ItemVenda> itensVenda = itensVendas.porProduto(produto, false);
 		for (ItemVenda itemVenda : itensVenda) {
 			quantidadeItensVendidos += itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade();
 			totalItensVendidos += itemVenda.getQuantidade();
 		}
 		
 		produto.setTotalVendas(BigDecimal.valueOf(quantidadeItensVendidos));
+		
+		
+		Long totalAjusteItensVendidos = 0L;
+		itensVenda = itensVendas.porProduto(produto, true);
+		for (ItemVenda itemVenda : itensVenda) {
+			totalAjusteItensVendidos += itemVenda.getQuantidade();
+		}
+		
+		produto.setTotalAjusteItensVendidos(totalAjusteItensVendidos);
+		
 		
 		produto.setTotalAcumulado(BigDecimal.valueOf(itensCompras.aVender(produto).doubleValue() * (1 + (produto.getMargemLucro().doubleValue()/100))));
 		//produto.setTotalAcumulado(BigDecimal.valueOf(produto.getQuantidadeAtual() * produto.getLocalizacao().doubleValue()));

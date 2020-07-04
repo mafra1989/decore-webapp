@@ -68,11 +68,25 @@ public class ItensVendas implements Serializable {
 				ItemVenda.class).setParameter("id", compra.getId())
 				.setParameter("itemID", itemCompra.getProduto().getId()).getResultList();
 	}
-
+	
 	public List<ItemVenda> porProduto(Produto produto) {
 		return this.manager.createQuery(
 				"from ItemVenda e join fetch e.venda c where e.produto.id = :id order by e.venda.dataVenda desc",
 				ItemVenda.class).setParameter("id", produto.getId()).getResultList();
+	}
+
+	public List<ItemVenda> porProduto(Produto produto, boolean ajuste) {
+		
+		String statusCondition = "";
+		
+		if(!ajuste) {
+			//statusCondition = "c.status = 'Y' AND";
+		}
+		
+		return this.manager.createQuery(
+				"from ItemVenda e join fetch e.venda c where " + statusCondition + " c.ajuste = :ajuste AND e.produto.id = :id order by e.venda.dataVenda desc",
+				ItemVenda.class).setParameter("id", produto.getId())
+				.setParameter("ajuste", ajuste).getResultList();
 	}
 
 }

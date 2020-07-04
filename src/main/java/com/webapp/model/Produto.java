@@ -245,6 +245,12 @@ public class Produto implements Serializable {
 	
 	@Transient
 	private String valor;
+	
+	@Transient
+	private Long totalAjusteItensComprados = 0L;
+
+	@Transient
+	private Long totalAjusteItensVendidos = 0L;
 
 	public BigDecimal getPrecoMedioVenda() {
 		return precoMedioVenda;
@@ -309,5 +315,23 @@ public class Produto implements Serializable {
 	public void setValor(String valor) {
 		this.valor = valor;
 	}
+
+	public Long getTotalAjusteItensComprados() {
+		return totalAjusteItensComprados;
+	}
+
+	public void setTotalAjusteItensComprados(Long totalAjusteItensComprados) {
+		this.totalAjusteItensComprados = totalAjusteItensComprados;
+	}
+
+	public Long getTotalAjusteItensVendidos() {
+		return totalAjusteItensVendidos;
+	}
+
+	public void setTotalAjusteItensVendidos(Long totalAjusteItensVendidos) {
+		this.totalAjusteItensVendidos = totalAjusteItensVendidos;
+	}
+
+	
 
 }

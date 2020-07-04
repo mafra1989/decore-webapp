@@ -44,11 +44,17 @@ public class ItensCompras implements Serializable {
 				.setParameter("id", compra.getId()).getResultList();
 	}
 	
-	
-	public List<ItemCompra> porProduto(Produto produto) {
+	public List<ItemCompra> porProduto(Produto produto) { 
 		return this.manager
 				.createQuery("from ItemCompra e join fetch e.compra c where e.produto.id = :id order by e.compra.dataCompra asc", ItemCompra.class)
 				.setParameter("id", produto.getId()).getResultList();
+	}	
+	
+	public List<ItemCompra> porProduto(Produto produto, boolean ajuste) { 
+		return this.manager
+				.createQuery("from ItemCompra e join fetch e.compra c where c.ajuste = :ajuste AND e.produto.id = :id order by e.compra.dataCompra asc", ItemCompra.class)
+				.setParameter("id", produto.getId())
+				.setParameter("ajuste", ajuste).getResultList();
 	}
 	
 	

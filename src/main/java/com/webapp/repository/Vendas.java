@@ -175,7 +175,7 @@ public class Vendas implements Serializable {
 		return vendas;
 
 	}
-
+	// i.status = 'Y' AND 
 	public Number totalVendas() {
 		String jpql = "SELECT sum(i.valorTotal) FROM Venda i WHERE i.status = 'Y' AND i.ajuste = 'N'";
 		Query q = manager.createQuery(jpql);
@@ -194,10 +194,10 @@ public class Vendas implements Serializable {
 
 		return count;
 	}
-
+	// i.status = 'Y' AND 
 	public Number totalVendasPorDiaDaSemana(Long nomeDia) {
 
-		String jpql = "SELECT sum(i.valorTotal) FROM Venda i WHERE i.nomeDia = :nomeDia AND i.status = 'Y' AND i.ajuste = 'N'";
+		String jpql = "SELECT sum(i.valorTotal) FROM Venda i WHERE i.nomeDia = :nomeDia AND i.ajuste = 'N'";
 		Query q = manager.createQuery(jpql).setParameter("nomeDia", nomeDia);
 
 		Number count = (Number) q.getSingleResult();
@@ -208,22 +208,22 @@ public class Vendas implements Serializable {
 
 		return count;
 	}
-
+	
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalVendasPorProduto(String categoriaProduto) {
-
-		String jpql = "SELECT p.descricao, SUM(i.total), SUM(i.quantidade), p.codigo FROM ItemVenda i JOIN i.produto p where p.categoriaProduto.nome = :categoriaProduto AND i.venda.status = 'Y' AND i.venda.ajuste = 'N' GROUP BY p.codigo, p.descricao ORDER BY SUM(i.total) DESC";
-		Query q = manager.createQuery(jpql).setParameter("categoriaProduto", categoriaProduto);
+	public List<Object[]> totalVendasPorCategoria() {
+		//  i.venda.status = 'Y' AND
+		String jpql = "SELECT p.categoriaProduto.nome, SUM(i.total), SUM(i.quantidade) FROM ItemVenda i JOIN i.produto p WHERE i.venda.ajuste = 'N' GROUP BY p.categoriaProduto.nome ORDER BY SUM(i.total) DESC";
+		Query q = manager.createQuery(jpql);
 		List<Object[]> result = q.getResultList();
 
 		return result;
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalVendasPorCategoria() {
-
-		String jpql = "SELECT p.categoriaProduto.nome, SUM(i.total), SUM(i.quantidade) FROM ItemVenda i JOIN i.produto p WHERE i.venda.status = 'Y' AND i.venda.ajuste = 'N' GROUP BY p.categoriaProduto.nome ORDER BY SUM(i.total) DESC";
-		Query q = manager.createQuery(jpql);
+	public List<Object[]> totalVendasPorProduto(String categoriaProduto) {
+		//  i.venda.status = 'Y' AND
+		String jpql = "SELECT p.descricao, SUM(i.total), SUM(i.quantidade), p.codigo FROM ItemVenda i JOIN i.produto p where p.categoriaProduto.nome = :categoriaProduto AND i.venda.ajuste = 'N' GROUP BY p.codigo, p.descricao ORDER BY SUM(i.total) DESC";
+		Query q = manager.createQuery(jpql).setParameter("categoriaProduto", categoriaProduto);
 		List<Object[]> result = q.getResultList();
 
 		return result;
@@ -282,14 +282,14 @@ public class Vendas implements Serializable {
 			groupBy_Condition = "p.dia, p.mes, p.ano ";
 			orderBy_Condition = "p.ano asc,p.mes asc,p.dia asc ";
 		} else {
-			select_Condition = "i.produto.nome, ";
-			sum_Condition = "sum(i.quantidade)";
-			groupBy_Condition = "i.produto.nome ";
-			orderBy_Condition = "sum(i.quantidade) asc";
+			select_Condition = "i.produto.descricao, ";
+			sum_Condition = "sum(i.total), sum(i.quantidade), i.produto.codigo";
+			groupBy_Condition = "i.produto.id, i.produto.codigo, i.produto.descricao ";
+			orderBy_Condition = "sum(i.quantidade) desc, sum(i.total) desc";
 		}
-
+		//  AND p.status = 'Y'
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.dataVenda BETWEEN :dataInicio AND :dataFim AND p.status = 'Y' AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition
+				+ "WHERE p.dataVenda BETWEEN :dataInicio AND :dataFim AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition
 				+ " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
 				calendarStop.getTime());
@@ -359,14 +359,14 @@ public class Vendas implements Serializable {
 			groupBy_Condition = "p.semana, p.ano";
 			orderBy_Condition = "p.semana asc, p.ano asc";
 		} else {
-			select_Condition = "i.produto.nome, ";
-			sum_Condition = "sum(i.quantidade)";
-			groupBy_Condition = "i.produto.nome ";
-			orderBy_Condition = "sum(i.quantidade) asc";
+			select_Condition = "i.produto.descricao, ";
+			sum_Condition = "sum(i.total), sum(i.quantidade), i.produto.codigo";
+			groupBy_Condition = "i.produto.id, i.produto.codigo, i.produto.descricao ";
+			orderBy_Condition = "sum(i.quantidade) desc, sum(i.total) desc";
 		}
-
+		//  AND p.status = 'Y'
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.semana BETWEEN :semanaInicio AND :semanaFim AND p.status = 'Y' AND p.ajuste = 'N' " + "AND p.ano = :ano " + condition + "group by "
+				+ "WHERE p.semana BETWEEN :semanaInicio AND :semanaFim AND p.ajuste = 'N' " + "AND p.ano = :ano " + condition + "group by "
 				+ groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("semanaInicio", Long.parseLong(semana01.replace("W", "")))
 				.setParameter("semanaFim", Long.parseLong(semana02.replace("W", "")))
@@ -424,14 +424,14 @@ public class Vendas implements Serializable {
 			groupBy_Condition = "p.mes, p.ano";
 			orderBy_Condition = "p.mes asc, p.ano asc";
 		} else {
-			select_Condition = "i.produto.nome, ";
-			sum_Condition = "sum(i.quantidade)";
-			groupBy_Condition = "i.produto.nome ";
-			orderBy_Condition = "sum(i.quantidade) asc";
+			select_Condition = "i.produto.descricao, ";
+			sum_Condition = "sum(i.total), sum(i.quantidade), i.produto.codigo";
+			groupBy_Condition = "i.produto.id, i.produto.codigo, i.produto.descricao ";
+			orderBy_Condition = "sum(i.quantidade) desc, sum(i.total) desc";
 		}
-
+		//  AND p.status = 'Y'
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.mes BETWEEN :mesInicio AND :mesFim AND p.status = 'Y' AND p.ajuste = 'N' " + "AND p.ano = :ano " + condition + "group by "
+				+ "WHERE p.mes BETWEEN :mesInicio AND :mesFim AND p.ajuste = 'N' " + "AND p.ano = :ano " + condition + "group by "
 				+ groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("mesInicio", Long.parseLong(mes01))
 				.setParameter("mesFim", Long.parseLong(mes02)).setParameter("ano", Long.parseLong(ano));
@@ -488,14 +488,14 @@ public class Vendas implements Serializable {
 			groupBy_Condition = "p.ano";
 			orderBy_Condition = "p.ano asc";
 		} else {
-			select_Condition = "i.produto.nome, ";
-			sum_Condition = "sum(i.quantidade)";
-			groupBy_Condition = "i.produto.nome ";
-			orderBy_Condition = "sum(i.quantidade) asc";
+			select_Condition = "i.produto.descricao, ";
+			sum_Condition = "sum(i.total), sum(i.quantidade), i.produto.codigo";
+			groupBy_Condition = "i.produto.id, i.produto.codigo, i.produto.descricao ";
+			orderBy_Condition = "sum(i.quantidade) desc, sum(i.total) desc";
 		}
-
+		//  AND p.status = 'Y'
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.ano BETWEEN :anoInicio AND :anoFim AND p.status = 'Y' AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition
+				+ "WHERE p.ano BETWEEN :anoInicio AND :anoFim AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition
 				+ " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("anoInicio", Long.parseLong(ano01)).setParameter("anoFim",
 				Long.parseLong(ano02));
@@ -559,9 +559,9 @@ public class Vendas implements Serializable {
 			groupBy_Condition = "i.produto.nome ";
 			orderBy_Condition = "sum(i.quantidade) asc";
 		}
-
+		// AND p.status = 'Y'
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.dataVenda BETWEEN :dataInicio AND :dataFim AND p.status = 'Y' AND p.ajuste = 'N' "
+				+ "WHERE p.dataVenda BETWEEN :dataInicio AND :dataFim AND p.ajuste = 'N' "
 				/*
 				 * + "WHERE p.ano BETWEEN :anoInicio AND :anoFim " +
 				 * "AND p.mes BETWEEN :mesInicio AND :mesFim " +
@@ -657,9 +657,9 @@ public class Vendas implements Serializable {
 			groupBy_Condition = "i.produto.nome ";
 			orderBy_Condition = "sum(i.quantidade) asc";
 		}
-
+		// AND p.status = 'Y' 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.semana = :semanaInicio " + "AND p.ano = :ano AND p.status = 'Y' AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition
+				+ "WHERE p.semana = :semanaInicio " + "AND p.ano = :ano AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition
 				+ " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("semanaInicio", Long.parseLong(semana01.replace("W", "")))
 				.setParameter("ano", Long.parseLong(ano));
@@ -723,9 +723,9 @@ public class Vendas implements Serializable {
 			groupBy_Condition = "i.produto.nome ";
 			orderBy_Condition = "sum(i.quantidade) asc";
 		}
-
+		// AND p.status = 'Y' 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.mes = :mesInicio " + "AND p.ano = :ano AND p.status = 'Y' AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition
+				+ "WHERE p.mes = :mesInicio " + "AND p.ano = :ano AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition
 				+ " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("mesInicio", Long.parseLong(mes01)).setParameter("ano",
 				Long.parseLong(ano));
@@ -783,9 +783,9 @@ public class Vendas implements Serializable {
 			groupBy_Condition = "i.produto.nome ";
 			orderBy_Condition = "sum(i.quantidade) asc";
 		}
-
+		//  AND p.status = 'Y'
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE i.compra.mes BETWEEN :mesInicio AND :mesFim " + "AND i.compra.ano = :ano AND p.status = 'Y' AND p.ajuste = 'N' " + condition
+				+ "WHERE i.compra.mes BETWEEN :mesInicio AND :mesFim " + "AND i.compra.ano = :ano AND p.ajuste = 'N' " + condition
 				+ "group by " + groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("mesInicio", Long.parseLong(mes01))
 				.setParameter("mesFim", Long.parseLong(mes02)).setParameter("ano", Long.parseLong(ano));
@@ -845,9 +845,9 @@ public class Vendas implements Serializable {
 			groupBy_Condition = "i.produto.nome ";
 			orderBy_Condition = "sum(i.quantidade) asc";
 		}
-
+		// AND p.status = 'Y' 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.ano = :anoInicio AND p.status = 'Y' AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition + " order by "
+				+ "WHERE p.ano = :anoInicio AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition + " order by "
 				+ orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("anoInicio", Long.parseLong(ano01));
 

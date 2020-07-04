@@ -2,10 +2,14 @@ package com.webapp.controller;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -29,6 +33,7 @@ import com.webapp.model.CategoriaProduto;
 import com.webapp.model.Produto;
 import com.webapp.model.Target;
 import com.webapp.model.Usuario;
+import com.webapp.model.VendaPorCategoria;
 import com.webapp.repository.CategoriasProdutos;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.Targets;
@@ -159,6 +164,22 @@ public class RelatorioVendasBean implements Serializable {
 	private double targetSemanal;
 	private double targetMensal;
 	private double targetAnual;
+	
+	private List<VendaPorCategoria> detalhesVendasPorProduto = new ArrayList<>();
+	
+	private static final Locale BRAZIL = new Locale("pt", "BR");
+
+	private static final DecimalFormatSymbols REAL = new DecimalFormatSymbols(BRAZIL);
+
+	private NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
+	
+	private String totalValorVenda = "0,00";
+	private String totalItensVenda = "0";
+	
+	@Inject
+	private Produto produto;
+	
+	private Long produtoId;
 
 	@PostConstruct
 	public void init() {
@@ -281,6 +302,11 @@ public class RelatorioVendasBean implements Serializable {
 
 	private void listarTodasCategoriasProdutos() {
 		todasCategoriasProduto = categoriasProdutos.todos();
+	}
+	
+	public void carregarProduto(String codigo) {
+		produto = produtos.porCodigo(codigo);
+		produtoId = produto.getId();
 	}
 
 	public void changeVendedorPorDia() {
@@ -940,10 +966,37 @@ public class RelatorioVendasBean implements Serializable {
 
 		DonutChartDataSet dataSet = new DonutChartDataSet();
 		List<Number> values = new ArrayList<>();
+		
+		detalhesVendasPorProduto = new ArrayList<>();
+
+		int cont = 0;
+		double totalValorVenda = 0;
+		long totalItensVenda = 0;
 
 		for (Object[] object : result) {
-			values.add((Number) object[1]);
+			
+			if (cont < 5) {
+				values.add((Number) object[2]);
+				cont++;
+			}
+
+			VendaPorCategoria vendaPorProduto = new VendaPorCategoria();
+
+			vendaPorProduto.setItem(object[0].toString());
+			vendaPorProduto.setValue((Number) object[1]);
+			vendaPorProduto.setQuantidade((Number) object[2]);
+			vendaPorProduto.setCodigo(object[3].toString());
+
+			totalValorVenda += vendaPorProduto.getValue().doubleValue();
+			totalItensVenda += vendaPorProduto.getQuantidade().doubleValue();
+
+			detalhesVendasPorProduto.add(vendaPorProduto);
 		}
+		
+		this.totalValorVenda = nf.format(totalValorVenda);
+		this.totalItensVenda = String.valueOf(totalItensVenda);
+		
+		System.out.println(totalItensVenda);
 
 		dataSet.setData(values);
 
@@ -955,11 +1008,16 @@ public class RelatorioVendasBean implements Serializable {
 		bgColors.add("rgb(54, 162, 235)");
 		bgColors.add("rgb(201, 203, 207)");
 		dataSet.setBackgroundColor(bgColors);
-
+		
+		cont = 0;
 		data.addChartDataSet(dataSet);
 		List<String> labels = new ArrayList<>();
 		for (Object[] object : result) {
-			labels.add((String) object[0]);
+
+			if (cont < 5) {
+				labels.add((String) object[0]);
+				cont++;
+			}
 		}
 		data.setLabels(labels);
 
@@ -1371,5 +1429,29 @@ public class RelatorioVendasBean implements Serializable {
 
 	public void setTarget(Double target) {
 		this.target = target;
+	}
+
+	public String getTotalValorVenda() {
+		return totalValorVenda;
+	}
+
+	public String getTotalItensVenda() {
+		return totalItensVenda;
+	}
+
+	public List<VendaPorCategoria> getDetalhesVendasPorProduto() {
+		return detalhesVendasPorProduto;
+	}
+
+	public Produto getProduto() {
+		return produto;
+	}
+
+	public void setProduto(Produto produto) {
+		this.produto = produto;
+	}
+
+	public Long getProdutoId() {
+		return produtoId;
 	}
 }

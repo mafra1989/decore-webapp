@@ -181,9 +181,16 @@
 	.swal2-popup #swal2-content {
 		font-weight: 400;
 	}
+	.ui-state-disabled ~ .ui-chkbox-label {
+	    opacity: .35 !important;
+	}
 }
 
 @media ( min-width :460px) {
+	body .ui-chkbox {
+	    float: left !important;
+	    margin-left: -6px !important;
+	}
 	.target {
 		margin-top: 0px;
 	}
