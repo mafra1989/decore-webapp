@@ -1,0 +1,262 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	template="/WEB-INF/template.xhtml">
+
+	<ui:define name="title">Cadastro de Empresa</ui:define>
+
+	<f:metadata>
+		<f:viewAction action="#{cadastroEmpresaBean.inicializar}" />
+	</f:metadata>
+
+	<ui:define name="content">
+
+		<style>
+@media ( min-width :220px) {
+	body .ui-toolbar {
+	    padding: 5px 5px;
+	}
+	.ui-slider .ui-slider-handle {
+		width: 1.7em;
+		height: 1.7em;
+	}
+	.ui-slider-horizontal {
+		height: 1.2em !important;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 28px !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+		width: 50% !important;
+		float: left !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-6 {
+		width: 50% !important;
+		float: left !important;
+	}
+	.qty-parcelas.ui-panelgrid .ui-panelgrid-cell:nth-child(1) {
+		margin-top: 10px !important;
+	}
+	.percentual-juros.ui-panelgrid .ui-panelgrid-cell:nth-child(1) {
+		margin-top: 8px !important;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+		.ui-datatable tfoot th {
+		font-size: 13px;
+	}
+	body .btn-new.ui-button {
+		color: #676363;
+		background-color: #f9f9f9;
+		border: 1px solid #8a8585;
+	}
+	.swal2-popup {
+		width: 28em;
+		max-width: 100%;
+		padding: 0 0 0.4em 0;
+		font-size: 0.75rem;
+	}
+	.swal2-popup #swal2-content {
+		font-weight: 400;
+	}
+	body .btn-anexo.ui-button {
+		background-color: #515452;
+	}
+	.btn-upload .ui-button {
+		width: unset !important;		
+	}
+}
+
+@media ( min-width :460px) {
+	.ui-slider .ui-slider-handle {
+		width: 1.7em;
+		height: 1.7em;
+	}
+	.ui-slider-horizontal {
+		height: 1.2em;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 27px !important;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+		.ui-datatable tfoot th {
+		font-size: 14px;
+	}
+}
+
+@media ( min-width :640px) {
+	.ui-slider-handle {
+		width: 1.2em !important;
+		height: 1.2em !important;
+	}
+	.ui-slider-horizontal {
+		height: 0.8em !important;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 27px !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+		width: 33.33333% !important;
+		float: none;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-6 {
+		width: auto !important;
+		float: none;
+	}
+}
+</style>
+
+		<div class="page-header">
+			<h1>Cadastro de Empresa</h1>
+		</div>
+
+		<p:growl id="msg" closable="true" life="500" showSummary="false"
+			showDetail="true" style="text-align: center" />
+
+
+
+		<h:form id="form">
+
+			<p:remoteCommand name="setarItemID" process="@this empresaTable"
+				update="form" action="#{cadastroEmpresaBean.excluir}"
+				onstart="PF('downloadLoading').show();"
+				oncomplete="PF('downloadLoading').hide();" />
+
+			<p:toolbar id="toolbar">
+				<f:facet name="left">
+					<p:commandButton value="Novo" icon="fa fa-fw fa-file-text-o"
+						action="#{cadastroEmpresaBean.prepararNovoCadastro}"
+						process="@this" update="empresa-dialog" 
+						oncomplete="PF('empresa-dialog').show()">
+
+						<p:resetInput target="empresa-dialog" />
+					</p:commandButton>
+
+					<p:separator />
+					<p:spacer />
+					<p:spacer />
+
+					<p:commandButton icon="fa fa-fw fa-pencil" value="Editar" id="btn"
+						action="#{cadastroEmpresaBean.prepararEditarCadastro}"
+						process="@this" update="empresa-dialog"
+						oncomplete="PF('empresa-dialog').show()"
+						disabled="#{cadastroEmpresaBean.empresaSelecionada == null}">
+
+						<p:resetInput target="empresa-dialog" />
+					</p:commandButton>
+
+				</f:facet>
+
+				<f:facet name="right">
+					<p:commandButton icon="fa fa-fw fa-trash" value="Excluir"
+						process="@this"
+						onclick="deleteItem(#{cadastroEmpresaBean.empresaSelecionada.id});"
+						disabled="#{cadastroEmpresaBean.empresaSelecionada == null}" />
+				</f:facet>
+			</p:toolbar>
+
+
+			<div class="ui-g-12 ui-lg-6">
+				<p:panel class="card card-w-title ui-fluid"
+					style="padding-bottom: 0px;">
+
+					<p:defaultCommand target="pesquisar-button" />
+
+					<p:inputText id="search" value="#{cadastroEmpresaBean.filtro.nome}"
+						placeholder="Buscar pelo nome" style="width: 180px" />
+					<p:commandButton icon="fa fa-fw fa-search" title="Pesquisar"
+						id="pesquisar-button" update="empresaTable toolbar"
+						style="margin-left: 3px; width: 40px" process="@parent"
+						action="#{cadastroEmpresaBean.pesquisar}">
+					</p:commandButton>
+
+					<p:dataTable id="empresaTable" reflow="true"
+						paginatorAlwaysVisible="false"
+						value="#{cadastroEmpresaBean.todasEmpresas}" var="empresa"
+						emptyMessage="Nenhuma empresa encontrada." rows="10"
+						paginator="true" paginatorPosition="bottom" selectionMode="single"
+						selection="#{cadastroEmpresaBean.empresaSelecionada}"
+						rowKey="#{empresa.id}" style="margin-top: 10px">
+
+						<p:ajax event="rowSelect" update="form:toolbar" />
+						<p:ajax event="rowUnselect" update="form:toolbar" />
+
+						<p:column headerText="Nome">
+							<h:outputText value="#{empresa.nome}" />
+						</p:column>
+
+					</p:dataTable>
+				</p:panel>
+			</div>
+
+		</h:form>
+
+
+
+
+		<p:dialog
+			header="#{cadastroEmpresaBean.empresa.id == null ? 'Nova empresa' : 'Editar empresa'}"
+			widgetVar="empresa-dialog" id="empresa-dialog" resizable="false"
+			modal="true" closeOnEscape="true" responsive="true" width="250px"
+			style="margin-top: 10px">
+
+			<h:form id="form-dialog">
+
+				<div class="ui-fluid">
+					<p:defaultCommand target="btn-salvar" />
+
+					<div class="card card-w-title ui-fluid"
+						style="padding: 0px 5px 0px 5px; padding-bottom: 0px !important">
+
+						<p:panelGrid columns="1" layout="grid"
+							style="margin-top: 15px; margin-bottom: 5px"
+							styleClass="panelgrid-noborder disabled disabled">
+
+							<p:outputLabel value="Nome" for="nome" />
+							<p:inputText id="nome"
+								value="#{cadastroEmpresaBean.empresa.nome}" />
+								
+						</p:panelGrid>
+
+						<p:spacer />
+
+						<p:panelGrid columns="1" layout="grid"
+							styleClass="panelgrid-noborder disabled disabled">
+
+							<p:outputLabel />
+							<p:commandButton id="btn-salvar" value="Salvar"
+								widgetVar="btn-save"
+								onstart="PF('downloadLoading').show(); PF('btn-save').disable();"
+								onsuccess="PF('downloadLoading').hide(); PF('btn-save').enable();"
+								oncomplete="if (!args.validationFailed) PF('empresa-dialog').hide();"
+								update="msg form-dialog form"
+								action="#{cadastroEmpresaBean.salvar}"
+								process="@this form-dialog" style="font-weight: bold" />
+						</p:panelGrid>
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog id="downloadLoading" showHeader="false" modal="true"
+			widgetVar="downloadLoading" header="Status" draggable="false"
+			closable="false" resizable="false">
+			<p:graphicImage name="images/loadingbar.gif"
+				library="manhattan-layout" width="50" />
+		</p:dialog>
+
+		<script type="text/javascript">
+			function start() {
+				PF('downloadLoading').show();
+			}
+
+			function stop() {
+				PF('downloadLoading').hide();
+			}
+		</script>
+
+	</ui:define>
+
+</ui:composition>

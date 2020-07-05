@@ -28,6 +28,11 @@ public class CategoriaLancamento implements Serializable {
 	
 	private DestinoLancamento destinoLancamento = new DestinoLancamento();
 	
+	@NotNull
+	@ManyToOne
+	@JoinColumn
+	private Empresa empresa_id;
+	
 	@Id
 	@GeneratedValue//(strategy = GenerationType.IDENTITY)
 	public Long getId() {
@@ -66,6 +71,14 @@ public class CategoriaLancamento implements Serializable {
 
 	public void setDestinoLancamento(DestinoLancamento destinoLancamento) {
 		this.destinoLancamento = destinoLancamento;
+	}
+
+	public Empresa getEmpresa_id() {
+		return empresa_id;
+	}
+
+	public void setEmpresa_id(Empresa empresa) {
+		this.empresa_id = empresa;
 	}
 
 	@Override

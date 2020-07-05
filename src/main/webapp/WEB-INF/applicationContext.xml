@@ -73,7 +73,8 @@
 			access="hasAnyRole('ADMINISTRADOR')" />
 		<intercept-url pattern="/cadastros/CadastroTipoVenda.xhtml"
 			access="hasAnyRole('ADMINISTRADOR')" />
-			
+		<intercept-url pattern="/cadastros/CadastroEmpresas.xhtml"
+			access="hasAnyRole('ADMINISTRADOR')" />
 
 		<intercept-url pattern="/operacoes/RegistroLancamentos.xhtml"
 			access="hasAnyRole('ADMINISTRADOR',	'USUARIO_AVANCADO', 'USUARIO_COMUM')" />
