@@ -21,8 +21,10 @@ import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.webapp.model.Empresa;
 import com.webapp.model.Grupo;
 import com.webapp.model.Usuario;
+import com.webapp.repository.Empresas;
 import com.webapp.repository.Grupos;
 import com.webapp.repository.Usuarios;
 import com.webapp.repository.filter.UsuarioFilter;
@@ -48,9 +50,14 @@ public class CadastroEquipeBean implements Serializable {
 	private Grupos grupos;
 	
 	@Inject
+	private Empresas empresas;
+	
+	@Inject
 	private Grupo grupo;
 
 	private List<Grupo> todosGrupos;
+	
+	private List<Empresa> todasEmpresas;
 
 	private Usuario membroSelecionado;
 
@@ -131,6 +138,7 @@ public class CadastroEquipeBean implements Serializable {
 				}
 			}
 
+			System.out.println(usuario.getEmpresa());
 			usuarios.save(usuario);
 
 			membroSelecionado = null;
@@ -169,6 +177,7 @@ public class CadastroEquipeBean implements Serializable {
 	private void listarTodos() {
 		todosUsuarios = usuarios.todos();
 		todosGrupos = grupos.todos();
+		todasEmpresas = empresas.todos();
 	}
 
 	public List<Usuario> getTodosUsuarios() {
@@ -295,6 +304,14 @@ public class CadastroEquipeBean implements Serializable {
 	
 	public void prepareFoto() {
 		//fileContent = membroSelecionado.getFoto();
+	}
+
+	public List<Empresa> getTodasEmpresas() {
+		return todasEmpresas;
+	}
+
+	public void setTodasEmpresas(List<Empresa> todasEmpresas) {
+		this.todasEmpresas = todasEmpresas;
 	}
 
 }

@@ -33,6 +33,10 @@ public class Usuario implements Serializable {
 	
 	@NotBlank
 	@Column
+	private String empresa;
+	
+	@NotBlank
+	@Column
 	private String cpf;
 	
 	private String contato;
@@ -72,6 +76,14 @@ public class Usuario implements Serializable {
 
 	public void setFuncao(String funcao) {
 		this.funcao = funcao;
+	}
+
+	public String getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(String empresa) {
+		this.empresa = empresa;
 	}
 
 	public String getCpf() {

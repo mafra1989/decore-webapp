@@ -206,6 +206,10 @@
 						<p:column headerText="Função">
 							<h:outputText value="#{membro.funcao}" />
 						</p:column>
+						
+						<p:column headerText="Empresa">
+							<h:outputText value="#{membro.empresa}" />
+						</p:column>
 
 						<p:column headerText="Contato">
 							<h:outputText value="#{membro.contato}" />
@@ -291,6 +295,17 @@
 									<p:outputLabel value="Função" for="funcao" />
 									<p:inputText id="funcao"
 										value="#{cadastroEquipeBean.usuario.funcao}" />
+										
+									<p:outputLabel value="Empresa" for="empresa" />
+									<p:selectOneMenu id="empresa" value="#{cadastroEquipeBean.usuario.empresa}"
+										placeholder="selecione">
+
+										<f:selectItem itemLabel="Selecione" />
+
+										<f:selectItems value="#{cadastroEquipeBean.todasEmpresas}"
+											var="empresa" itemLabel="#{empresa.nome}"
+											itemValue="#{empresa.nome}" />
+									</p:selectOneMenu>
 										
 									<p:outputLabel value="CPF" for="cpf" />
 									<p:inputMask id="cpf" style="margin-bottom: 5px"
