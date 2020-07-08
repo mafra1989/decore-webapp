@@ -57,6 +57,9 @@ public class RegistroLancamentosBean implements Serializable {
 	
 	@Inject
 	private Usuario usuario;
+	
+	@Inject
+	private Usuario usuario_;
 
 	@Inject
 	private CategoriasLancamentos categoriasLancamentos;
@@ -121,7 +124,7 @@ public class RegistroLancamentosBean implements Serializable {
 		if (FacesUtil.isNotPostback()) {
 			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			
-			usuario = usuarios.porNome(user.getUsername());
+			usuario_ = usuarios.porNome(user.getUsername());
 			
 			todasCategoriasDespesas = categoriasLancamentos.todasDespesas();
 			todasCategoriasReceitas = categoriasLancamentos.todasReceitas();
@@ -132,7 +135,7 @@ public class RegistroLancamentosBean implements Serializable {
 			despesa.setDataLancamento(calendar.getTime());
 			receita.setDataLancamento(calendar.getTime());
 			
-			todosUsuarios = usuarios.todos(usuario.getEmpresa());
+			todosUsuarios = usuarios.todos(usuario_.getEmpresa());
 			
 			if(option != null) {
 				if(option.equalsIgnoreCase("despesa")) {
@@ -529,8 +532,8 @@ public class RegistroLancamentosBean implements Serializable {
 		}
 
 		if (contasPagas != true) {
-
-			Lancamento lancamentoTemp = lancamentos.ultimoNLancamento(usuario.getEmpresa());
+			
+			Lancamento lancamentoTemp = lancamentos.ultimoNLancamento(usuario_.getEmpresa());
 
 			if (lancamentoTemp == null) {
 				lancamento.setNumeroLancamento(1L);
