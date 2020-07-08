@@ -31,7 +31,7 @@ public class Lancamento implements Serializable {
 	@Column
 	private Date dataLancamento = new Date();
 
-	@Column(unique = true)
+	@Column//(unique = true)
 	private Long numeroLancamento;
 
 	@NotBlank

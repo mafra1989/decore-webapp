@@ -426,13 +426,13 @@ public class RegistroLancamentosBean implements Serializable {
 	private void salvarAjuste() {
 		
 		if (lancamento.getId() != null) {					
-			List<Conta> contasTemp = contas.porCodigoOperacao(lancamento.getNumeroLancamento(), "LANCAMENTO", usuario.getEmpresa());
+			List<Conta> contasTemp = contas.porCodigoOperacao(lancamento.getNumeroLancamento(), "LANCAMENTO", usuario_.getEmpresa());
 			for (Conta conta : contasTemp) {
 				contas.remove(conta);
 			}				
 		}
 		
-		Lancamento lancamentoTemp = lancamentos.ultimoNLancamento(usuario.getEmpresa());
+		Lancamento lancamentoTemp = lancamentos.ultimoNLancamento(usuario_.getEmpresa());
 
 		if (lancamentoTemp == null) {
 			lancamento.setNumeroLancamento(1L);
@@ -460,7 +460,7 @@ public class RegistroLancamentosBean implements Serializable {
 			lancamento.setUsuario(renderFavorecido ? usuario : null);
 		}
 
-		lancamento.setEmpresa(usuario.getEmpresa());
+		lancamento.setEmpresa(usuario_.getEmpresa());
 		lancamentos.save(lancamento);
 		
 		if (lancamento.getId() == null) {
@@ -514,7 +514,7 @@ public class RegistroLancamentosBean implements Serializable {
 
 			// if (contasTemp.size() == 0) {
 
-			List<Conta> contasTemp = contas.porCodigoOperacao(lancamento.getNumeroLancamento(), "LANCAMENTO", usuario.getEmpresa());
+			List<Conta> contasTemp = contas.porCodigoOperacao(lancamento.getNumeroLancamento(), "LANCAMENTO", usuario_.getEmpresa());
 			for (Conta conta : contasTemp) {
 				contas.remove(conta);
 			}
