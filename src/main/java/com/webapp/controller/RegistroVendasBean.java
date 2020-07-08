@@ -227,6 +227,7 @@ public class RegistroVendasBean implements Serializable {
 				}
 			}
 
+			venda.setEmpresa(usuario.getEmpresa());
 			venda = vendas.save(venda);
 
 			for (ItemVenda itemVenda : itensVenda) {
