@@ -561,7 +561,7 @@ public class RegistroLancamentosBean implements Serializable {
 				lancamento.setUsuario(renderFavorecido ? usuario : null);
 			}
 
-			lancamento.setEmpresa(usuario.getEmpresa());
+			lancamento.setEmpresa(usuario_.getEmpresa());
 			lancamentos.save(lancamento);
 
 			if (tipoPagamento == TipoPagamento.AVISTA) {
@@ -594,7 +594,7 @@ public class RegistroLancamentosBean implements Serializable {
 				conta.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
 				conta.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
 
-				conta.setEmpresa(usuario.getEmpresa());
+				conta.setEmpresa(usuario_.getEmpresa());
 				contas.save(conta);
 
 				if (repetirLancamento) {
@@ -606,7 +606,7 @@ public class RegistroLancamentosBean implements Serializable {
 						contaTemp.setStatus(false);
 						contaTemp.setPagamento(null);
 
-						contaTemp.setEmpresa(usuario.getEmpresa());
+						contaTemp.setEmpresa(usuario_.getEmpresa());
 						contas.save(contaTemp);
 					}
 				}
@@ -620,7 +620,7 @@ public class RegistroLancamentosBean implements Serializable {
 					conta.setTipo(lancamento.getCategoriaLancamento().getTipoLancamento().getOrigem().name());
 					conta.setStatus(true);
 
-					conta.setEmpresa(usuario.getEmpresa());
+					conta.setEmpresa(usuario_.getEmpresa());
 					contas.save(conta);
 				}
 
@@ -632,7 +632,7 @@ public class RegistroLancamentosBean implements Serializable {
 					conta.setStatus(false);
 					conta.setPagamento(null);
 
-					conta.setEmpresa(usuario.getEmpresa());
+					conta.setEmpresa(usuario_.getEmpresa());
 					contas.save(conta);
 				}
 			}
