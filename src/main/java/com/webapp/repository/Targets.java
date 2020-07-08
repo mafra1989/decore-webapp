@@ -33,11 +33,11 @@ public class Targets implements Serializable {
 		this.manager.remove(targetTemp);
 	}
 	
-	public Target porPeriodoTipo(String periodo, String tipo) {
+	public Target porPeriodoTipo(String periodo, String tipo, String empresa) {
 		try {
 			return this.manager
-					.createQuery("from Target e where e.periodo = :periodo and e.tipo = :tipo", Target.class)
-					.setParameter("periodo", periodo).setParameter("tipo", tipo).getSingleResult();
+					.createQuery("from Target e where e.empresa = :empresa AND e.periodo = :periodo and e.tipo = :tipo", Target.class)
+					.setParameter("empresa", empresa).setParameter("periodo", periodo).setParameter("tipo", tipo).getSingleResult();
 		} catch(NoResultException e) {
 			return null;
 		}

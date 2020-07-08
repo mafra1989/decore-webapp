@@ -8,9 +8,13 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.Fornecedor;
+import com.webapp.model.Usuario;
 import com.webapp.repository.Fornecedores;
+import com.webapp.repository.Usuarios;
 import com.webapp.repository.filter.FornecedorFilter;
 import com.webapp.util.jsf.FacesUtil;
 
@@ -31,9 +35,20 @@ public class CadastroFornecedorBean implements Serializable {
 	private Fornecedor fornecedorSelecionado;
 
 	private FornecedorFilter filtro = new FornecedorFilter();
+	
+	@Inject
+	private Usuario usuario;
+	
+	@Inject
+	private Usuarios usuarios;
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
+			
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			
+			usuario = usuarios.porNome(user.getUsername());
+			
 			listarTodos();
 		}
 	}
@@ -47,6 +62,8 @@ public class CadastroFornecedorBean implements Serializable {
 	}
 
 	public void salvar() {
+		
+		fornecedor.setEmpresa(usuario.getEmpresa());
 
 		fornecedores.save(fornecedor);
 
@@ -72,12 +89,13 @@ public class CadastroFornecedorBean implements Serializable {
 	}
 
 	public void pesquisar() {
+		filtro.setEmpresa(usuario.getEmpresa());
 		todosFornecedores = fornecedores.filtrados(filtro);
 		fornecedorSelecionado = null;
 	}
 
 	private void listarTodos() {
-		todosFornecedores = fornecedores.todos();
+		todosFornecedores = fornecedores.todos(usuario.getEmpresa());
 	}
 
 	public List<Fornecedor> getTodosFornecedores() {

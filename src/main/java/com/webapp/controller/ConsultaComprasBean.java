@@ -9,11 +9,12 @@ import java.util.Date;
 import java.util.List;
 
 import javax.enterprise.context.SessionScoped;
-import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.Compra;
 import com.webapp.model.Conta;
@@ -44,6 +45,9 @@ public class ConsultaComprasBean implements Serializable {
 
 	@Inject
 	private Usuario usuario;
+	
+	@Inject
+	private Usuario usuario_;
 
 	@Inject
 	private Compras compras;
@@ -76,7 +80,11 @@ public class ConsultaComprasBean implements Serializable {
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
-			todosUsuarios = usuarios.todos();
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			
+			usuario_ = usuarios.porNome(user.getUsername());
+			
+			todosUsuarios = usuarios.todos(usuario_.getEmpresa());
 		}
 	}
 
@@ -87,7 +95,7 @@ public class ConsultaComprasBean implements Serializable {
 		calendarioTemp.set(Calendar.MINUTE, 59);
 		calendarioTemp.set(Calendar.SECOND, 59);
 
-		comprasFiltradas = compras.comprasFiltradas(numeroCompra, dateStart, calendarioTemp.getTime(), usuario);
+		comprasFiltradas = compras.comprasFiltradas(numeroCompra, dateStart, calendarioTemp.getTime(), usuario, usuario_.getEmpresa());
 		
 		compraSelecionada = null;
 
@@ -163,7 +171,7 @@ public class ConsultaComprasBean implements Serializable {
 
 				//if (contasTemp.size() == 0) {
 
-				List<Conta> contasTemp = contas.porCodigoOperacao(compraSelecionada.getNumeroCompra(), "COMPRA");
+				List<Conta> contasTemp = contas.porCodigoOperacao(compraSelecionada.getNumeroCompra(), "COMPRA", usuario_.getEmpresa());
 				for (Conta conta : contasTemp) {
 					contas.remove(conta);
 				}

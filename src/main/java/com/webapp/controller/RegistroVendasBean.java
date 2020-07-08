@@ -18,6 +18,8 @@ import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 
 import org.primefaces.PrimeFaces;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.Bairro;
 import com.webapp.model.Entrega;
@@ -107,16 +109,24 @@ public class RegistroVendasBean implements Serializable {
 
 	@Inject
 	private Entrega entregaVenda;
+	
+	@Inject
+	private Usuario usuario;
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
-			todosUsuarios = usuarios.todos();
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			
+			usuario = usuarios.porNome(user.getUsername());
+			
+			todosUsuarios = usuarios.todos(usuario.getEmpresa());
 			todosTiposVendas = tiposVendas.todos();
 			todosBairros = bairros.todos();
 		}
 	}
 
 	public void pesquisar() {
+		filter.setEmpresa(usuario.getEmpresa());
 		produtosFiltrados = produtos.filtrados(filter);
 		System.out.println(produtosFiltrados.size());
 	}
@@ -207,7 +217,7 @@ public class RegistroVendasBean implements Serializable {
 			venda.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
 			venda.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
 
-			Venda vendaTemp = vendas.ultimoNVenda();
+			Venda vendaTemp = vendas.ultimoNVenda(usuario.getEmpresa());
 
 			if (vendaTemp == null) {
 				venda.setNumeroVenda(1L);

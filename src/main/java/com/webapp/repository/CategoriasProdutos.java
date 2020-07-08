@@ -34,8 +34,9 @@ public class CategoriasProdutos implements Serializable {
 		this.manager.remove(categoriaProdutoTemp);
 	}
 
-	public List<CategoriaProduto> todos() {
-		return this.manager.createQuery("from CategoriaProduto order by nome", CategoriaProduto.class).getResultList();
+	public List<CategoriaProduto> todos(String empresa) {
+		return this.manager.createQuery("from CategoriaProduto c where c.empresa = :empresa order by c.nome", CategoriaProduto.class)
+				.setParameter("empresa", empresa).getResultList();
 	}
 	
 	public CategoriaProduto porNome(String nome) {
@@ -44,8 +45,9 @@ public class CategoriasProdutos implements Serializable {
 	}
 
 	public List<CategoriaProduto> filtrados(CategoriaProdutoFilter filter) {
-		return this.manager.createQuery("from CategoriaProduto i where i.nome like :nome order by nome", CategoriaProduto.class)
-				.setParameter("nome", "%" + filter.getNome() + "%").getResultList();
+		return this.manager.createQuery("from CategoriaProduto i where i.nome like :nome and empresa = :empresa order by nome", CategoriaProduto.class)
+				.setParameter("nome", "%" + filter.getNome() + "%")
+				.setParameter("empresa", filter.getEmpresa()).getResultList();
 	}
 
 }

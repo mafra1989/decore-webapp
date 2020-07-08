@@ -76,6 +76,12 @@ public class Lancamento implements Serializable {
 
 	@Column(nullable = false)
 	private Long ano;
+	
+	
+	@NotBlank
+	@Column
+	private String empresa;
+	
 
 	public Long getId() {
 		return id;
@@ -188,6 +194,14 @@ public class Lancamento implements Serializable {
 
 	public void setAno(Long ano) {
 		this.ano = ano;
+	}
+
+	public String getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(String empresa) {
+		this.empresa = empresa;
 	}
 
 	@Override

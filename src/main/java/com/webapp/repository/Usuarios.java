@@ -35,8 +35,9 @@ public class Usuarios implements Serializable {
 		this.manager.remove(usuarioTemp);
 	}
 	
-	public List<Usuario> todos() {
-		return this.manager.createQuery("from Usuario order by nome", Usuario.class).getResultList();
+	public List<Usuario> todos(String empresa) {
+		return this.manager.createQuery("from Usuario u WHERE u.empresa = :empresa order by u.nome", Usuario.class)
+				.setParameter("empresa", empresa).getResultList();
 	}
 
 	public List<Usuario> filtrados(UsuarioFilter filter) {
@@ -55,6 +56,19 @@ public class Usuarios implements Serializable {
 			System.out.println("nenhum usuário encontrado com o login informado");
 		}
 		System.out.println("usuário: " + usuario.getLogin());
+		return usuario;
+	}
+	
+	public Usuario porNome(String nome) {
+		Usuario usuario = null;
+		
+		try {
+			usuario = this.manager.createQuery("from Usuario where lower(nome) = :nome", Usuario.class)
+				.setParameter("nome", nome.toLowerCase()).getSingleResult();
+		} catch (NoResultException e) {
+			System.out.println("nenhum usuário encontrado com o nome informado");
+		}
+		
 		return usuario;
 	}
 	

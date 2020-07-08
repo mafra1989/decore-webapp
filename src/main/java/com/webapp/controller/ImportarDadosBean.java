@@ -28,6 +28,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.PrimeFaces;
 import org.primefaces.model.UploadedFile;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.Compra;
 import com.webapp.model.Conta;
@@ -101,10 +103,19 @@ public class ImportarDadosBean implements Serializable {
 	private String opcao = "";
 
 	private boolean upload = false;
+
+	@Inject
+	private Usuario usuario;
+	
+	@Inject
+	private Usuarios usuarios;
 	
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
 
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			
+			usuario = usuarios.porNome(user.getUsername());
 		}
 	}
 
@@ -183,7 +194,7 @@ public class ImportarDadosBean implements Serializable {
 
 						System.out.println(row.getCell(2).toString());
 						String codigo = ((long) Double.parseDouble(row.getCell(2).toString())) + "";
-						Produto produto = produtosRepository.porCodigo(codigo);
+						Produto produto = produtosRepository.porCodigo(codigo, usuario.getEmpresa());
 
 						if (produto != null) {
 							itemCompra.setProduto(produto);
@@ -216,7 +227,7 @@ public class ImportarDadosBean implements Serializable {
 				
 				for (Compra compraTemp : compras) {
 					
-					Compra compraTemp_ = comprasRepository.ultimoNCompra();
+					Compra compraTemp_ = comprasRepository.ultimoNCompra(usuario.getEmpresa());
 
 					if (compraTemp_ == null) {
 						compraTemp.setNumeroCompra(1L);
@@ -364,7 +375,7 @@ public class ImportarDadosBean implements Serializable {
 						System.out.println((long) Double.parseDouble(row.getCell(4).toString()) + " - "
 								+ Double.parseDouble(row.getCell(7).toString()));
 						String codigo = ((long) Double.parseDouble(row.getCell(4).toString())) + "";
-						Produto produto = produtosRepository.porCodigo(codigo);// Producao
+						Produto produto = produtosRepository.porCodigo(codigo, usuario.getEmpresa());// Producao
 						//Produto produto = produtosRepository.porCodigo("0"); // Teste
 						
 						long saldo = (long) Double.parseDouble(row.getCell(7).toString());
@@ -529,7 +540,7 @@ public class ImportarDadosBean implements Serializable {
 
 				for (Venda vendaTemp : vendas) {
 					
-					Venda vendaTemp_ = vendasRepository.ultimoNVenda();
+					Venda vendaTemp_ = vendasRepository.ultimoNVenda(usuario.getEmpresa());
 
 					if (vendaTemp_ == null) {
 						vendaTemp.setNumeroVenda(1L);
@@ -642,7 +653,7 @@ public class ImportarDadosBean implements Serializable {
 				
 			for (Lancamento lancamentoTemp : lancamentos) {
 				
-				Lancamento lancamentoTemp_ = lancamentosRepository.ultimoNLancamento();
+				Lancamento lancamentoTemp_ = lancamentosRepository.ultimoNLancamento(usuario.getEmpresa());
 
 				if (lancamentoTemp_ == null) {
 					lancamentoTemp.setNumeroLancamento(1L);

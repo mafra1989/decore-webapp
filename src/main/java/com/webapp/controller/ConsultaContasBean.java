@@ -11,20 +11,23 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.enterprise.context.SessionScoped;
-import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.Compra;
 import com.webapp.model.Conta;
 import com.webapp.model.Lancamento;
 import com.webapp.model.OrigemConta;
 import com.webapp.model.TipoOperacao;
+import com.webapp.model.Usuario;
 import com.webapp.repository.Compras;
 import com.webapp.repository.Contas;
 import com.webapp.repository.Lancamentos;
+import com.webapp.repository.Usuarios;
 import com.webapp.util.jsf.FacesUtil;
 
 @Named
@@ -41,6 +44,12 @@ public class ConsultaContasBean implements Serializable {
 	
 	@Inject
 	private Compras compras;
+	
+	@Inject
+	private Usuarios usuarios;
+
+	@Inject
+	private Usuario usuario;
 
 	private static final Locale BRAZIL = new Locale("pt", "BR");
 
@@ -69,7 +78,9 @@ public class ConsultaContasBean implements Serializable {
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
 			// todosUsuarios = usuarios.todos();
-
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			
+			usuario = usuarios.porNome(user.getUsername());
 		}
 	}
 
@@ -82,19 +93,19 @@ public class ConsultaContasBean implements Serializable {
 
 		contasFiltradas = new ArrayList<>();
 		contasFiltradas = contas.contasFiltradas(codigo, tipoOperacao, mes, calendarioTemp, origemConta, vencimento,
-				contasPagas);
+				contasPagas, usuario.getEmpresa());
 
 		double totalContasTemp = 0;
 		for (Conta conta : contasFiltradas) {
 			totalContasTemp += conta.getValor().doubleValue();
 			
 			if(tipoOperacao == TipoOperacao.LANCAMENTO) {
-				Lancamento lancamento = lancamentos.porNumeroLancamento(conta.getCodigoOperacao());
+				Lancamento lancamento = lancamentos.porNumeroLancamento(conta.getCodigoOperacao(), usuario.getEmpresa());
 				conta.setDescricao(lancamento.getDescricao());
 			}
 			
 			if(tipoOperacao == TipoOperacao.COMPRA) {
-				Compra compra = compras.porNumeroCompra(conta.getCodigoOperacao());
+				Compra compra = compras.porNumeroCompra(conta.getCodigoOperacao(), usuario.getEmpresa());
 				conta.setVendedor(compra.getUsuario().getNome());
 			}
 			

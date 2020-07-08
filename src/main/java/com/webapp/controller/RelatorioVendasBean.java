@@ -28,6 +28,8 @@ import org.primefaces.model.charts.bar.BarChartOptions;
 import org.primefaces.model.charts.donut.DonutChartDataSet;
 import org.primefaces.model.charts.donut.DonutChartModel;
 import org.primefaces.model.charts.line.LineChartDataSet;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.CategoriaProduto;
 import com.webapp.model.Produto;
@@ -180,40 +182,48 @@ public class RelatorioVendasBean implements Serializable {
 	private Produto produto;
 	
 	private Long produtoId;
+	
+	@Inject
+	private Usuario usuario;
 
 	@PostConstruct
 	public void init() {
+		
+		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		usuario = usuarios.porNome(user.getUsername());
+		
 		listarTodasCategoriasProdutos();
 
-		Target target = targets.porPeriodoTipo("DIARIO", "VENDA");
+		Target target = targets.porPeriodoTipo("DIARIO", "VENDA", usuario.getEmpresa());
 		if (target == null) {
 			targetDiario = 0;
 		} else {
 			targetDiario = target.getValor().doubleValue();
 		}
 
-		target = targets.porPeriodoTipo("SEMANAL", "VENDA");
+		target = targets.porPeriodoTipo("SEMANAL", "VENDA", usuario.getEmpresa());
 		if (target == null) {
 			targetSemanal = 0;
 		} else {
 			targetSemanal = target.getValor().doubleValue();
 		}
 
-		target = targets.porPeriodoTipo("MENSAL", "VENDA");
+		target = targets.porPeriodoTipo("MENSAL", "VENDA", usuario.getEmpresa());
 		if (target == null) {
 			targetMensal = 0;
 		} else {
 			targetMensal = target.getValor().doubleValue();
 		}
 
-		target = targets.porPeriodoTipo("ANUAL", "VENDA");
+		target = targets.porPeriodoTipo("ANUAL", "VENDA", usuario.getEmpresa());
 		if (target == null) {
 			targetAnual = 0;
 		} else {
 			targetAnual = target.getValor().doubleValue();
 		}
 
-		todosVendedores = usuarios.todos();
+		todosVendedores = usuarios.todos(usuario.getEmpresa());
 
 		Calendar calendar = Calendar.getInstance();
 		Calendar calendarTemp = Calendar.getInstance();
@@ -301,11 +311,11 @@ public class RelatorioVendasBean implements Serializable {
 	}
 
 	private void listarTodasCategoriasProdutos() {
-		todasCategoriasProduto = categoriasProdutos.todos();
+		todasCategoriasProduto = categoriasProdutos.todos(usuario.getEmpresa());
 	}
 	
 	public void carregarProduto(String codigo) {
-		produto = produtos.porCodigo(codigo);
+		produto = produtos.porCodigo(codigo, usuario.getEmpresa());
 		produtoId = produto.getId();
 	}
 
@@ -423,7 +433,7 @@ public class RelatorioVendasBean implements Serializable {
 				calendarStopTemp.set(Calendar.SECOND, 59);
 
 				List<Object[]> resultTemp = vendas.totalVendasPorData(calendarStartTemp, calendarStopTemp,
-						categoriaPorDia, categoriasPorDia, produto01, usuarioPorDia, true);
+						categoriaPorDia, categoriasPorDia, produto01, usuarioPorDia, true, usuario.getEmpresa());
 
 				System.out.println("Data: " + calendarStartTemp.getTime() + " - " + resultTemp.size());
 				System.out.println("Data Stop: " + calendarStopTemp.getTime());
@@ -557,7 +567,7 @@ public class RelatorioVendasBean implements Serializable {
 				System.out.println(semana01);
 
 				List<Object[]> resultTemp = vendas.totalVendasPorSemana(ano01, semana01, semana01, categoriaPorSemana,
-						categoriasPorSemana, produto02, usuarioPorSemana, true);
+						categoriasPorSemana, produto02, usuarioPorSemana, true, usuario.getEmpresa());
 
 				if (resultTemp.size() == 0) {
 
@@ -735,7 +745,7 @@ public class RelatorioVendasBean implements Serializable {
 					mes01 = "0" + i;
 				}
 				List<Object[]> resultTemp = vendas.totalVendasPorMes(ano02, mes01, mes01, categoriaPorMes,
-						categoriasPorMes, produto03, usuarioPorMes, true);
+						categoriasPorMes, produto03, usuarioPorMes, true, usuario.getEmpresa());
 
 				if (resultTemp.size() == 0) {
 
@@ -841,7 +851,7 @@ public class RelatorioVendasBean implements Serializable {
 				String ano03 = String.valueOf(i);
 
 				List<Object[]> resultTemp = vendas.totalVendasPorAno(ano03, ano03, categoriaPorAno, categoriasPorAno,
-						produto04, usuarioPorAno, true);
+						produto04, usuarioPorAno, true, usuario.getEmpresa());
 
 				if (resultTemp.size() == 0) {
 
@@ -931,7 +941,7 @@ public class RelatorioVendasBean implements Serializable {
 		calendarStop.setTime(dateStop);
 
 		List<Object[]> result = vendas.totalVendasPorData(calendarStart, calendarStop, categoriaPorDia,
-				categoriasPorDia, produto01, usuarioPorDia, false);
+				categoriasPorDia, produto01, usuarioPorDia, false, usuario.getEmpresa());
 
 		createDonutModel(result);
 	}
@@ -939,7 +949,7 @@ public class RelatorioVendasBean implements Serializable {
 	public void prepareDonutModelPorSemana() {
 
 		List<Object[]> result = vendas.totalVendasPorSemana(ano01, semana01, semana02, categoriaPorSemana,
-				categoriasPorSemana, produto02, usuarioPorSemana, false);
+				categoriasPorSemana, produto02, usuarioPorSemana, false, usuario.getEmpresa());
 
 		createDonutModel(result);
 	}
@@ -947,7 +957,7 @@ public class RelatorioVendasBean implements Serializable {
 	public void prepareDonutModelPorMes() {
 
 		List<Object[]> result = vendas.totalVendasPorMes(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes,
-				categoriasPorMes, produto03, usuarioPorMes, false);
+				categoriasPorMes, produto03, usuarioPorMes, false, usuario.getEmpresa());
 
 		createDonutModel(result);
 	}
@@ -955,7 +965,7 @@ public class RelatorioVendasBean implements Serializable {
 	public void prepareDonutModelPorAno() {
 
 		List<Object[]> result = vendas.totalVendasPorAno(ano03, ano04, categoriaPorAno, categoriasPorAno, produto04,
-				usuarioPorAno, false);
+				usuarioPorAno, false, usuario.getEmpresa());
 
 		createDonutModel(result);
 	}
@@ -1336,7 +1346,7 @@ public class RelatorioVendasBean implements Serializable {
 
 		if (option.equalsIgnoreCase("1")) {
 
-			Target targetTemp = targets.porPeriodoTipo("DIARIO", "VENDA");
+			Target targetTemp = targets.porPeriodoTipo("DIARIO", "VENDA", usuario.getEmpresa());
 			if (targetTemp == null) {
 				targetTemp = new Target();
 				targetTemp.setPeriodo("DIARIO");
@@ -1358,7 +1368,7 @@ public class RelatorioVendasBean implements Serializable {
 
 		if (option.equalsIgnoreCase("2")) {
 
-			Target targetTemp = targets.porPeriodoTipo("SEMANAL", "VENDA");
+			Target targetTemp = targets.porPeriodoTipo("SEMANAL", "VENDA", usuario.getEmpresa());
 			if (targetTemp == null) {
 				targetTemp = new Target();
 				targetTemp.setPeriodo("SEMANAL");
@@ -1380,7 +1390,7 @@ public class RelatorioVendasBean implements Serializable {
 
 		if (option.equalsIgnoreCase("3")) {
 
-			Target targetTemp = targets.porPeriodoTipo("MENSAL", "VENDA");
+			Target targetTemp = targets.porPeriodoTipo("MENSAL", "VENDA", usuario.getEmpresa());
 			if (targetTemp == null) {
 				targetTemp = new Target();
 				targetTemp.setPeriodo("MENSAL");
@@ -1402,7 +1412,7 @@ public class RelatorioVendasBean implements Serializable {
 
 		if (option.equalsIgnoreCase("4")) {
 
-			Target targetTemp = targets.porPeriodoTipo("ANUAL", "VENDA");
+			Target targetTemp = targets.porPeriodoTipo("ANUAL", "VENDA", usuario.getEmpresa());
 			if (targetTemp == null) {
 				targetTemp = new Target();
 				targetTemp.setPeriodo("ANUAL");

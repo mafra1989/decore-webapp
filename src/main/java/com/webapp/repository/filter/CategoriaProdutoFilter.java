@@ -7,6 +7,8 @@ public class CategoriaProdutoFilter implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String nome = "";
+	
+	private String empresa = "";
 
 	public String getNome() {
 		return nome;
@@ -14,6 +16,14 @@ public class CategoriaProdutoFilter implements Serializable {
 
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+
+	public String getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(String empresa) {
+		this.empresa = empresa;
 	}
 
 }

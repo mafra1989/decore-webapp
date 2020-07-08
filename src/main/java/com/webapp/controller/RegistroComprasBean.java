@@ -13,6 +13,8 @@ import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 
 import org.primefaces.PrimeFaces;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.Compra;
 import com.webapp.model.Conta;
@@ -87,14 +89,22 @@ public class RegistroComprasBean implements Serializable {
 	private Double valorEntrada;
 	
 	private List<Conta> entradas = new ArrayList<>();
+	
+	@Inject
+	private Usuario usuario;
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
-			todosUsuarios = usuarios.todos();
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			
+			usuario = usuarios.porNome(user.getUsername());
+			
+			todosUsuarios = usuarios.todos(usuario.getEmpresa());
 		}
 	}
 
 	public void pesquisar() {
+		filter.setEmpresa(usuario.getEmpresa());
 		produtosFiltrados = produtos.filtrados(filter);
 		System.out.println(produtosFiltrados.size());
 	}
@@ -128,7 +138,7 @@ public class RegistroComprasBean implements Serializable {
 				double valorTotal = 0;
 				
 				if (compra.getId() != null) {
-					List<Conta> contasTemp = contas.porCodigoOperacao(compra.getNumeroCompra(), "COMPRA");
+					List<Conta> contasTemp = contas.porCodigoOperacao(compra.getNumeroCompra(), "COMPRA", usuario.getEmpresa());
 					for (Conta conta : contasTemp) {
 						contas.remove(conta);
 					}
@@ -163,7 +173,7 @@ public class RegistroComprasBean implements Serializable {
 				compra.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
 				compra.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
 
-				Compra compraTemp = compras.ultimoNCompra();
+				Compra compraTemp = compras.ultimoNCompra(usuario.getEmpresa());
 
 				if (compraTemp == null) {
 					compra.setNumeroCompra(1L);
@@ -172,7 +182,8 @@ public class RegistroComprasBean implements Serializable {
 						compra.setNumeroCompra(compraTemp.getNumeroCompra() + 1);
 					}
 				}
-
+				
+				compra.setEmpresa(usuario.getEmpresa());
 				compra = compras.save(compra);
 
 				for (ItemCompra itemCompra : itensCompra) {
@@ -343,7 +354,7 @@ public class RegistroComprasBean implements Serializable {
 
 			// if (contasTemp.size() == 0) {
 
-			List<Conta> contasTemp = contas.porCodigoOperacao(compra.getNumeroCompra(), "COMPRA");
+			List<Conta> contasTemp = contas.porCodigoOperacao(compra.getNumeroCompra(), "COMPRA", usuario.getEmpresa());
 			for (Conta conta : contasTemp) {
 				contas.remove(conta);
 			}
@@ -390,7 +401,7 @@ public class RegistroComprasBean implements Serializable {
 			compra.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
 			compra.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
 
-			Compra compraTemp = compras.ultimoNCompra();
+			Compra compraTemp = compras.ultimoNCompra(usuario.getEmpresa());
 
 			if (compraTemp == null) {
 				compra.setNumeroCompra(1L);
@@ -400,9 +411,11 @@ public class RegistroComprasBean implements Serializable {
 				}
 			}
 
+			compra.setEmpresa(usuario.getEmpresa());
 			compra = compras.save(compra);
 
 			for (ItemCompra itemCompra : itensCompra) {
+				System.out.println(itemCompra.getId());
 				itemCompra.setCompra(compra);
 				itensCompras.save(itemCompra);
 
@@ -448,6 +461,7 @@ public class RegistroComprasBean implements Serializable {
 				conta.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
 				conta.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
 
+				conta.setEmpresa(usuario.getEmpresa());
 				contas.save(conta);
 
 			} else {
@@ -459,6 +473,7 @@ public class RegistroComprasBean implements Serializable {
 					conta.setTipo("DEBITO");
 					conta.setStatus(true);
 
+					conta.setEmpresa(usuario.getEmpresa());
 					contas.save(conta);
 				}
 				
@@ -468,6 +483,7 @@ public class RegistroComprasBean implements Serializable {
 					conta.setTipo("DEBITO");
 					conta.setPagamento(null);
 					
+					conta.setEmpresa(usuario.getEmpresa());
 					conta = contas.save(conta);
 				}
 			}

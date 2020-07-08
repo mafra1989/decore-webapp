@@ -29,6 +29,8 @@ import org.primefaces.model.charts.pie.PieChartDataSet;
 import org.primefaces.model.charts.pie.PieChartModel;
 import org.primefaces.model.charts.polar.PolarAreaChartDataSet;
 import org.primefaces.model.charts.polar.PolarAreaChartModel;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.FluxoDeCaixa;
 import com.webapp.model.Lancamento;
@@ -36,12 +38,14 @@ import com.webapp.model.ListaProduto;
 import com.webapp.model.OrdenaTop5;
 import com.webapp.model.Produto;
 import com.webapp.model.Top5Despesa;
+import com.webapp.model.Usuario;
 import com.webapp.model.VendaPorCategoria;
 import com.webapp.report.Relatorio;
 import com.webapp.repository.Compras;
 import com.webapp.repository.Contas;
 import com.webapp.repository.Lancamentos;
 import com.webapp.repository.Produtos;
+import com.webapp.repository.Usuarios;
 import com.webapp.repository.Vendas;
 import com.webapp.util.jsf.FacesUtil;
 
@@ -115,13 +119,24 @@ public class DashboardBean implements Serializable {
 	private byte[] fileContent;
 	
 	private Long produtoId;
+	
+	@Inject
+	private Usuario usuario;
+	
+	@Inject
+	private Usuarios usuarios;
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
+			
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			
+			usuario = usuarios.porNome(user.getUsername());
+			
 			createPieModel();
 			createPolarAreaModel();
 			createBarModel();
-			createMixedModel();
+			//createMixedModel();
 			createDonutModel();
 		}
 	}
@@ -140,7 +155,7 @@ public class DashboardBean implements Serializable {
 		top5Despesas = new ArrayList<>();
 		for (Object[] object : despesasTemp) {
 
-			Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[0].toString()));
+			Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[0].toString()), usuario.getEmpresa());
 			if (lancamento != null) {
 
 				Top5Despesa top5Despesa = new Top5Despesa();
@@ -210,7 +225,7 @@ public class DashboardBean implements Serializable {
 		int cont = 0;
 		double totalValorEstoque = 0;
 		long totalItensEstoque = 0;
-		List<Object[]> totalParaVendasPorCategoria = vendas.totalParaVendasPorCategoria();
+		List<Object[]> totalParaVendasPorCategoria = vendas.totalParaVendasPorCategoria(usuario.getEmpresa());
 		for (Object[] object : totalParaVendasPorCategoria) {
 
 			if (cont < 5) {
@@ -272,13 +287,13 @@ public class DashboardBean implements Serializable {
 		BarChartDataSet barDataSet = new BarChartDataSet();
 		barDataSet.setLabel("Valor Total");
 
-		Number totalVendas = vendas.totalVendas();
-		Number totalCompras = compras.totalCompras();
+		Number totalVendas = vendas.totalVendas(usuario.getEmpresa());
+		Number totalCompras = compras.totalCompras(usuario.getEmpresa());
 
-		Number totalDespesasPagas = contas.porContasPagas("DEBITO", "LANCAMENTO"); /* errado */
+		Number totalDespesasPagas = contas.porContasPagas("DEBITO", "LANCAMENTO", usuario.getEmpresa()); /* errado */
 
-		Number totalDebitosPagos = contas.porContasPagas("DEBITO"); 
-		Number totalCreditosPagos = contas.porContasPagas("CREDITO");
+		Number totalDebitosPagos = contas.porContasPagas("DEBITO", usuario.getEmpresa()); 
+		Number totalCreditosPagos = contas.porContasPagas("CREDITO", usuario.getEmpresa());
 
 		// Number totalDebitos = lancamentos.totalDebitos();
 		// Number totalCreditos = lancamentos.totalCreditos();
@@ -294,7 +309,8 @@ public class DashboardBean implements Serializable {
 		values.add(totalCompras);// Compras
 		values.add(totalDespesasPagas);// Despesas
 		// values.add(0);//Contas à Pagar
-		values.add(produtos.totalAVender());// À Vender
+		Number avender = produtos.totalAVender(usuario.getEmpresa());
+		values.add(avender);// À Vender
 
 		barDataSet.setData(values);
 
@@ -339,7 +355,7 @@ public class DashboardBean implements Serializable {
 
 		fluxoDeCaixa = new FluxoDeCaixa();
 		fluxoDeCaixa.setItem("À Vender");
-		fluxoDeCaixa.setValue(produtos.totalAVender().doubleValue());
+		fluxoDeCaixa.setValue(avender.doubleValue());
 		tabela.add(fluxoDeCaixa);
 
 		List<String> bgColor = new ArrayList<>();
@@ -409,13 +425,13 @@ public class DashboardBean implements Serializable {
 		BarChartDataSet dataSet = new BarChartDataSet();
 		List<Number> values = new ArrayList<>();
 
-		values.add(vendas.totalVendasPorDiaDaSemana(1L));
-		values.add(vendas.totalVendasPorDiaDaSemana(2L));
-		values.add(vendas.totalVendasPorDiaDaSemana(3L));
-		values.add(vendas.totalVendasPorDiaDaSemana(4L));
-		values.add(vendas.totalVendasPorDiaDaSemana(5L));
-		values.add(vendas.totalVendasPorDiaDaSemana(6L));
-		values.add(vendas.totalVendasPorDiaDaSemana(7L));
+		values.add(vendas.totalVendasPorDiaDaSemana(1L, usuario.getEmpresa()));
+		values.add(vendas.totalVendasPorDiaDaSemana(2L, usuario.getEmpresa()));
+		values.add(vendas.totalVendasPorDiaDaSemana(3L, usuario.getEmpresa()));
+		values.add(vendas.totalVendasPorDiaDaSemana(4L, usuario.getEmpresa()));
+		values.add(vendas.totalVendasPorDiaDaSemana(5L, usuario.getEmpresa()));
+		values.add(vendas.totalVendasPorDiaDaSemana(6L, usuario.getEmpresa()));
+		values.add(vendas.totalVendasPorDiaDaSemana(7L, usuario.getEmpresa()));
 
 		dataSet.setData(values);
 		dataSet.setLabel("Valor Total");
@@ -472,7 +488,7 @@ public class DashboardBean implements Serializable {
 		double totalValorVenda = 0;
 		long totalItensVenda = 0;
 
-		List<Object[]> result = vendas.totalVendasPorCategoria();
+		List<Object[]> result = vendas.totalVendasPorCategoria(usuario.getEmpresa());
 		for (Object[] object : result) {
 
 			if (cont < 5) {
@@ -526,7 +542,7 @@ public class DashboardBean implements Serializable {
 	public void buscarVendaPorCategoriaSelecionada() {
 		detalhesVendasPorProduto = new ArrayList<>();
 
-		List<Object[]> produtos = vendas.totalVendasPorProduto(vendaPorCategoriaSelecionada.getItem());
+		List<Object[]> produtos = vendas.totalVendasPorProduto(vendaPorCategoriaSelecionada.getItem(), usuario.getEmpresa());
 		for (Object[] object : produtos) {
 			VendaPorCategoria vendaPorCategoria = new VendaPorCategoria();
 			vendaPorCategoria.setItem(object[0].toString());
@@ -541,7 +557,7 @@ public class DashboardBean implements Serializable {
 	public void buscarEstoquePorCategoriaSelecionada() {
 		detalhesEstoquePorProduto = new ArrayList<>();
 
-		List<Object[]> produtos = vendas.totalParaVendasPorProduto(estoquePorCategoriaSelecionada.getItem());
+		List<Object[]> produtos = vendas.totalParaVendasPorProduto(estoquePorCategoriaSelecionada.getItem(), usuario.getEmpresa());
 		for (Object[] object : produtos) {
 			VendaPorCategoria vendaPorCategoria = new VendaPorCategoria();
 			vendaPorCategoria.setItem(object[0].toString());
@@ -554,7 +570,7 @@ public class DashboardBean implements Serializable {
 	}
 
 	public void carregarProduto(String codigo) {
-		produto = produtos.porCodigo(codigo);
+		produto = produtos.porCodigo(codigo, usuario.getEmpresa());
 		//fileContent = produto.getFoto();
 		produtoId = produto.getId();
 	}

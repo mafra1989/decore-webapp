@@ -42,22 +42,22 @@ public class Lancamentos implements Serializable {
 		this.manager.remove(despesaTemp);
 	}
 	
-	public Lancamento porNumeroLancamento(Long condigoOperacao) {
+	public Lancamento porNumeroLancamento(Long condigoOperacao, String empresa) {
 
 		try {
-			return this.manager.createQuery("from Lancamento e where e.numeroLancamento = :numeroLancamento", Lancamento.class)
-					.setParameter("numeroLancamento", condigoOperacao).setMaxResults(1).getSingleResult();
+			return this.manager.createQuery("from Lancamento e where e.empresa = :empresa AND e.numeroLancamento = :numeroLancamento", Lancamento.class)
+					.setParameter("empresa", empresa).setParameter("numeroLancamento", condigoOperacao).setMaxResults(1).getSingleResult();
 		} catch (NoResultException e) {
 			return null;
 		}
 
 	}
 
-	public Lancamento ultimoNLancamento() {
+	public Lancamento ultimoNLancamento(String empresa) {
 
 		try {
-			return this.manager.createQuery("from Lancamento e order by e.numeroLancamento desc", Lancamento.class)
-					.setMaxResults(1).getSingleResult();
+			return this.manager.createQuery("from Lancamento e WHERE e.empresa = :empresa order by e.numeroLancamento desc", Lancamento.class)
+					.setParameter("empresa", empresa).setMaxResults(1).getSingleResult();
 		} catch (NoResultException e) {
 			return null;
 		}
@@ -67,7 +67,7 @@ public class Lancamentos implements Serializable {
 	@SuppressWarnings("unchecked")
 	public List<Lancamento> lancamentosFiltrados(Long numeroLancamento, Date dateStart, Date dateStop,
 			OrigemLancamento[] origemLancamento, CategoriaLancamento categoriaLancamento,
-			DestinoLancamento destinoLancamento, Usuario usuario, String[] categorias) {
+			DestinoLancamento destinoLancamento, Usuario usuario, String[] categorias, String empresa) {
 
 		String conditionOrigem = "";
 		String conditionCategoria = "";
@@ -95,13 +95,13 @@ public class Lancamentos implements Serializable {
 			conditionNumeroLancamento = "AND i.numeroLancamento = :numeroLancamento ";
 		}
 
-		String jpql = "SELECT i FROM Lancamento i " + "WHERE i.dataLancamento between :dateStart and :dateStop "
+		String jpql = "SELECT i FROM Lancamento i WHERE i.empresa = :empresa AND i.dataLancamento between :dateStart and :dateStop "
 				+ conditionOrigem + conditionCategoria + conditionUsuario + conditionDestino + conditionNumeroLancamento
 				+ "order by i.numeroLancamento desc";
 
 		System.out.println(jpql);
 
-		Query q = manager.createQuery(jpql).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
 
 		if (origemLancamento.length > 0) {
 			q.setParameter("origemLancamento", Arrays.asList(origemLancamento));

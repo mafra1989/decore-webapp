@@ -35,13 +35,15 @@ public class Fornecedores implements Serializable {
 		this.manager.remove(fornecedorTemp);
 	}
 
-	public List<Fornecedor> todos() {
-		return this.manager.createQuery("from Fornecedor order by nome", Fornecedor.class).getResultList();
+	public List<Fornecedor> todos(String empresa) {
+		return this.manager.createQuery("from Fornecedor f WHERE f.empresa = :empresa order by f.nome", Fornecedor.class)
+				.setParameter("empresa", empresa).getResultList();
 	}
 
 	public List<Fornecedor> filtrados(FornecedorFilter filter) {
-		return this.manager.createQuery("from Fornecedor i where i.nome like :nome order by nome", Fornecedor.class)
-				.setParameter("nome", "%" + filter.getNome() + "%").getResultList();
+		return this.manager.createQuery("from Fornecedor i where i.nome like :nome AND i.empresa = :empresa order by i.nome", Fornecedor.class)
+				.setParameter("nome", "%" + filter.getNome() + "%")
+				.setParameter("empresa", filter.getEmpresa()).getResultList();
 	}
 	
 	

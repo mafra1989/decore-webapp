@@ -24,6 +24,10 @@ public class Fornecedor implements Serializable {
 	@Column(length = 20)
 	private String contato;
 	
+	@NotBlank
+	@Column
+	private String empresa;
+	
 	@Id
 	@GeneratedValue//(strategy = GenerationType.IDENTITY)
 	public Long getId() {
@@ -49,6 +53,14 @@ public class Fornecedor implements Serializable {
 
 	public void setContato(String contato) {
 		this.contato = contato;
+	}
+
+	public String getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(String empresa) {
+		this.empresa = empresa;
 	}
 
 	@Override

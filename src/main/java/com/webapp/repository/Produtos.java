@@ -27,11 +27,12 @@ public class Produtos implements Serializable {
 		return this.manager.find(Produto.class, id);
 	}
 	
-	public Produto porCodigo(String codigo) {
+	public Produto porCodigo(String codigo, String empresa) {
 		try {
 			return this.manager
-					.createQuery("from Produto e where e.codigo = :codigo", Produto.class)
-					.setParameter("codigo", codigo).getSingleResult();
+					.createQuery("from Produto e where e.codigo = :codigo AND e.categoriaProduto.empresa = :empresa", Produto.class)
+					.setParameter("codigo", codigo)
+					.setParameter("empresa", empresa).getSingleResult();
 		} catch(NoResultException e) {
 			return null;
 		}
@@ -88,23 +89,24 @@ public class Produtos implements Serializable {
 			}
 
 			typedQuery = manager.createQuery(
-					"select e from Produto e where " + condition + " (e.nome like :nomeUpper or e.nome like :nomeLower or e.descricao like :descricaoUpper or e.descricao like :descricaoLower or e.codigo = :codigoUpper or e.codigo = :codigoLower) order by e.codigo",
+					"select e from Produto e where " + condition + " (e.nome like :nomeUpper or e.nome like :nomeLower or e.descricao like :descricaoUpper or e.descricao like :descricaoLower or e.codigo = :codigoUpper or e.codigo = :codigoLower) AND e.categoriaProduto.empresa = :empresa order by e.codigo",
 					Produto.class)
 					.setParameter("nomeUpper", "%" + filter.getDescricao().toUpperCase() + "%")
 					.setParameter("nomeLower", "%" + filter.getDescricao().toLowerCase() + "%")
 					.setParameter("descricaoUpper", "%" + filter.getDescricao().toUpperCase() + "%")
 					.setParameter("descricaoLower", "%" + filter.getDescricao().toLowerCase() + "%")
 					.setParameter("codigoUpper", filter.getDescricao().toUpperCase())
-					.setParameter("codigoLower", filter.getDescricao().toLowerCase());
+					.setParameter("codigoLower", filter.getDescricao().toLowerCase())
+					.setParameter("empresa", filter.getEmpresa());
 			
 		} else {
 			
 			if(filter.getCategoriaProduto() != null) {
-				condition = "WHERE e.categoriaProduto.id = :id";
+				condition = "AND e.categoriaProduto.id = :id";
 			}
 			
-			typedQuery = manager.createQuery("select e from Produto e " + condition, Produto.class);
-
+			typedQuery = manager.createQuery("select e from Produto e Where e.categoriaProduto.empresa = :empresa " + condition, Produto.class);
+			typedQuery.setParameter("empresa", filter.getEmpresa());
 		}
 		
 		if(filter.getCategoriaProduto() != null) {
@@ -116,14 +118,14 @@ public class Produtos implements Serializable {
 	}
 	
 	
-	public Number totalAVender() {
+	public Number totalAVender(String empresa) {
 
                 Number count = 0;
 		
                 try {
 		    count = (Number) this.manager
-				.createQuery("SELECT sum((e.valorUnitario * e.quantidadeDisponivel) * (1 + (e.produto.margemLucro/100))) from ItemCompra e where e.quantidadeDisponivel > 0")
-				.getSingleResult();
+				.createQuery("SELECT sum((e.valorUnitario * e.quantidadeDisponivel) * (1 + (e.produto.margemLucro/100))) from ItemCompra e where e.compra.empresa = :empresa AND e.quantidadeDisponivel > 0")
+				.setParameter("empresa", empresa).getSingleResult();
 
 		} catch(NoResultException e) {
 			

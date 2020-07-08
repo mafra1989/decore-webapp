@@ -13,6 +13,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.CategoriaLancamento;
 import com.webapp.model.Conta;
@@ -42,6 +44,9 @@ public class ConsultaLancamentosBean implements Serializable {
 
 	@Inject
 	private Usuario usuario;
+	
+	@Inject
+	private Usuario usuario_;
 	
 	@Inject
 	private Usuarios usuarios;
@@ -88,7 +93,11 @@ public class ConsultaLancamentosBean implements Serializable {
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
-			todosUsuarios = usuarios.todos();
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			
+			usuario_ = usuarios.porNome(user.getUsername());
+			
+			todosUsuarios = usuarios.todos(usuario_.getEmpresa());
 			todasCategoriasDespesas = categoriasDespesas.todos();
 			todosDestinosLancamentos = destinosLancamentos.todos();
 		}
@@ -126,7 +135,7 @@ public class ConsultaLancamentosBean implements Serializable {
 
 		lancamentosFiltrados = new ArrayList<>();
 		lancamentosFiltrados = lancamentos.lancamentosFiltrados(numeroLancamento, dateStart, calendarioTemp.getTime(), origemLancamento,
-				categoriaLancamento, destinoLancamento, usuarioTemp, categorias);
+				categoriaLancamento, destinoLancamento, usuarioTemp, categorias, usuario_.getEmpresa());
 
 		double totalLancamentosTemp = 0;
 		for (Lancamento lancamento : lancamentosFiltrados) {
@@ -231,7 +240,7 @@ public class ConsultaLancamentosBean implements Serializable {
 
 		//if (contasTemp.size() == 0) {
 
-		List<Conta> contasTemp = contas.porCodigoOperacao(lancamentoSelecionado.getNumeroLancamento(), "LANCAMENTO");
+		List<Conta> contasTemp = contas.porCodigoOperacao(lancamentoSelecionado.getNumeroLancamento(), "LANCAMENTO", usuario_.getEmpresa());
 		for (Conta conta : contasTemp) {
 			contas.remove(conta);
 		}

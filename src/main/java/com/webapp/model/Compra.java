@@ -17,6 +17,7 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
+import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "compras")
@@ -25,7 +26,7 @@ public class Compra implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue//(strategy = GenerationType.IDENTITY)
+	@GeneratedValue//(strategy = GenerationType.AUTO)
 	private Long id;
 
 	@NotNull
@@ -47,6 +48,10 @@ public class Compra implements Serializable {
 	@ManyToOne
 	@JoinColumn
 	private Usuario usuario;
+	
+	@NotBlank
+	@Column
+	private String empresa;
 	
 	/*
 	@NotNull
@@ -133,6 +138,14 @@ public class Compra implements Serializable {
 		this.formaPagamento = formaPagamento;
 	}
 	*/
+
+	public String getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(String empresa) {
+		this.empresa = empresa;
+	}
 
 	public boolean isAjuste() {
 		return ajuste;

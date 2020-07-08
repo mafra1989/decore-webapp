@@ -11,6 +11,8 @@ public class ProdutoFilter implements Serializable {
 	private String descricao = "";
 	
 	private CategoriaProduto categoriaProduto;
+	
+	private String empresa = "";
 
 	public String getDescricao() {
 		return descricao;
@@ -26,6 +28,14 @@ public class ProdutoFilter implements Serializable {
 
 	public void setCategoriaProduto(CategoriaProduto categoriaProduto) {
 		this.categoriaProduto = categoriaProduto;
+	}
+
+	public String getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(String empresa) {
+		this.empresa = empresa;
 	}
 
 }

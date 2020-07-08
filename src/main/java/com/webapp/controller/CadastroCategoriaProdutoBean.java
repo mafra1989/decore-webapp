@@ -8,9 +8,13 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.CategoriaProduto;
+import com.webapp.model.Usuario;
 import com.webapp.repository.CategoriasProdutos;
+import com.webapp.repository.Usuarios;
 import com.webapp.repository.filter.CategoriaProdutoFilter;
 import com.webapp.util.jsf.FacesUtil;
 
@@ -25,6 +29,12 @@ public class CadastroCategoriaProdutoBean implements Serializable {
 
 	@Inject
 	private CategoriaProduto categoriaProduto;
+	
+	@Inject
+	private Usuario usuario;
+	
+	@Inject
+	private Usuarios usuarios;
 
 	private List<CategoriaProduto> todasCategoriasProduto;
 
@@ -34,6 +44,11 @@ public class CadastroCategoriaProdutoBean implements Serializable {
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
+			
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			
+			usuario = usuarios.porNome(user.getUsername());
+			
 			listarTodasCategoriasProdutos();
 		}
 	}
@@ -47,6 +62,8 @@ public class CadastroCategoriaProdutoBean implements Serializable {
 	}
 
 	public void salvar() {
+		
+		categoriaProduto.setEmpresa(usuario.getEmpresa());
 
 		categoriasProdutos.save(categoriaProduto);
 
@@ -72,12 +89,13 @@ public class CadastroCategoriaProdutoBean implements Serializable {
 	}
 
 	public void pesquisar() {
+		filtro.setEmpresa(usuario.getEmpresa());
 		todasCategoriasProduto = categoriasProdutos.filtrados(filtro);
 		categoriaProdutoSelecionado = null;
 	}
 
 	private void listarTodasCategoriasProdutos() {
-		todasCategoriasProduto = categoriasProdutos.todos();
+		todasCategoriasProduto = categoriasProdutos.todos(usuario.getEmpresa());
 	}
 
 	public List<CategoriaProduto> getTodasCategoriasProdutos() {

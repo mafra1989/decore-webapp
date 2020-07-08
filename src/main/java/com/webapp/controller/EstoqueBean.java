@@ -7,22 +7,25 @@ import java.util.Base64;
 import java.util.List;
 
 import javax.enterprise.context.SessionScoped;
-import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.CategoriaProduto;
 import com.webapp.model.Compra;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.Produto;
+import com.webapp.model.Usuario;
 import com.webapp.repository.CategoriasProdutos;
 import com.webapp.repository.Compras;
 import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
 import com.webapp.repository.Produtos;
+import com.webapp.repository.Usuarios;
 import com.webapp.repository.filter.ProdutoFilter;
 import com.webapp.uploader.WebException;
 import com.webapp.util.jsf.FacesUtil;
@@ -70,9 +73,20 @@ public class EstoqueBean implements Serializable {
 	private Compras compras;
 
 	private boolean loop = true;
+	
+	@Inject
+	private Usuario usuario;
+	
+	@Inject
+	private Usuarios usuarios;
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
+			
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			
+			usuario = usuarios.porNome(user.getUsername());
+			
 			todasCategoriasProdutos();
 		}
 	}
@@ -91,6 +105,7 @@ public class EstoqueBean implements Serializable {
 			filter.setDescricao("");
 		}
 
+		filter.setEmpresa(usuario.getEmpresa());
 		produtosFiltrados = produtos.filtrados(filter);
 
 		long value = 0;
@@ -159,8 +174,8 @@ public class EstoqueBean implements Serializable {
 		if (filter.getDescricao().contains("Ajuste")) {
 			String[] dados = filter.getDescricao().replace("Ajuste", "").split(",");
 
-			Compra compra = compras.porNumeroCompra(Long.parseLong(dados[0]));
-			Produto produto = produtos.porCodigo(dados[1]);
+			Compra compra = compras.porNumeroCompra(Long.parseLong(dados[0]), usuario.getEmpresa());
+			Produto produto = produtos.porCodigo(dados[1], usuario.getEmpresa());
 
 			ItemCompra itemCompra = itensCompras.porCompra(compra, produto);
 			if (itemCompra != null) {
@@ -222,7 +237,7 @@ public class EstoqueBean implements Serializable {
 	}
 
 	private void todasCategoriasProdutos() {
-		todasCategoriasProdutos = categoriasProdutos.todos();
+		todasCategoriasProdutos = categoriasProdutos.todos(usuario.getEmpresa());
 	}
 
 	public ProdutoFilter getFilter() {

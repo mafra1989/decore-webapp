@@ -26,10 +26,10 @@ public class Compras implements Serializable {
 		return this.manager.find(Compra.class, id);
 	}
 
-	public Compra porNumeroCompra(Long numeroCompra) {
+	public Compra porNumeroCompra(Long numeroCompra, String empresa) {
 		try {
-			return this.manager.createQuery("from Compra e where e.numeroCompra = :numeroCompra", Compra.class)
-					.setParameter("numeroCompra", numeroCompra).getSingleResult();
+			return this.manager.createQuery("from Compra e where e.empresa = :empresa AND e.numeroCompra = :numeroCompra", Compra.class)
+					.setParameter("empresa", empresa).setParameter("numeroCompra", numeroCompra).getSingleResult();
 		} catch (NoResultException e) {
 
 		}
@@ -54,11 +54,11 @@ public class Compras implements Serializable {
 		return this.manager.createQuery("from Compra order by numeroCompra desc", Compra.class).getResultList();
 	}
 
-	public Compra ultimoNCompra() {
+	public Compra ultimoNCompra(String empresa) {
 
 		try {
-			return this.manager.createQuery("from Compra e order by e.numeroCompra desc", Compra.class).setMaxResults(1)
-					.getSingleResult();
+			return this.manager.createQuery("from Compra e WHERE e.empresa = :empresa order by e.numeroCompra desc", Compra.class).setMaxResults(1)
+					.setParameter("empresa", empresa).getSingleResult();
 		} catch (NoResultException e) {
 			return null;
 		}
@@ -70,9 +70,10 @@ public class Compras implements Serializable {
 				.setParameter("nome", usuario.getNome()).getResultList();
 	}
 
-	public Number totalCompras() {
-		String jpql = "SELECT sum(i.valorTotal) FROM Compra i Where i.ajuste = 'N'";
-		Query q = manager.createQuery(jpql);
+	public Number totalCompras(String empresa) {
+		String jpql = "SELECT sum(i.valorTotal) FROM Compra i Where i.empresa = :empresa AND i.ajuste = 'N'";
+		
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa);
 
 		Number count = 0;
 		try {
@@ -90,7 +91,7 @@ public class Compras implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Compra> comprasFiltradas(Long numeroCompra, Date dateStart, Date dateStop, Usuario usuario) {
+	public List<Compra> comprasFiltradas(Long numeroCompra, Date dateStart, Date dateStop, Usuario usuario, String empresa) {
 
 		String condition = "";
 		if (usuario != null && usuario.getId() != null) {
@@ -102,7 +103,7 @@ public class Compras implements Serializable {
 			conditionNumeroCompra = "AND i.numeroCompra = :numeroCompra ";
 		}
 
-		String jpql = "SELECT i FROM Compra i " + "WHERE i.dataCompra between :dateStart and :dateStop " + condition
+		String jpql = "SELECT i FROM Compra i " + "WHERE i.empresa = :empresa AND i.dataCompra between :dateStart and :dateStop " + condition
 				+ conditionNumeroCompra + " order by i.numeroCompra desc";
 		Query q = manager.createQuery(jpql).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
 
@@ -113,6 +114,8 @@ public class Compras implements Serializable {
 		if (numeroCompra != null) {
 			q.setParameter("numeroCompra", numeroCompra);
 		}
+		
+		q.setParameter("empresa", empresa);
 
 		return q.getResultList();
 	}

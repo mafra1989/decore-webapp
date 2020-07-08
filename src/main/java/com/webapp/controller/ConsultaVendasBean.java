@@ -20,6 +20,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.Entrega;
 import com.webapp.model.ItemCompra;
@@ -54,6 +56,9 @@ public class ConsultaVendasBean implements Serializable {
 
 	@Inject
 	private Usuario usuario;
+	
+	@Inject
+	private Usuario usuario_;
 
 	@Inject
 	private Vendas vendas;
@@ -97,7 +102,11 @@ public class ConsultaVendasBean implements Serializable {
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
-			todosUsuarios = usuarios.todos();
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			
+			usuario_ = usuarios.porNome(user.getUsername());
+			
+			todosUsuarios = usuarios.todos(usuario_.getEmpresa());
 		}
 	}
 
@@ -109,7 +118,7 @@ public class ConsultaVendasBean implements Serializable {
 		calendarioTemp.set(Calendar.SECOND, 59);
 
 		vendasFiltradas = vendas.vendasFiltradas(numeroVenda, dateStart, calendarioTemp.getTime(), vendasNormais,
-				statusPedido, usuario);
+				statusPedido, usuario, usuario_.getEmpresa());
 
 		double totalVendasTemp = 0;
 		totalItens = 0;

@@ -18,17 +18,21 @@ import org.primefaces.json.JSONObject;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.CategoriaProduto;
 import com.webapp.model.Fornecedor;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.Produto;
+import com.webapp.model.Usuario;
 import com.webapp.repository.CategoriasProdutos;
 import com.webapp.repository.Fornecedores;
 import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
 import com.webapp.repository.Produtos;
+import com.webapp.repository.Usuarios;
 import com.webapp.uploader.Uploader;
 import com.webapp.uploader.WebException;
 import com.webapp.util.jsf.FacesUtil;
@@ -65,8 +69,19 @@ public class CadastroProdutoBean implements Serializable {
 	@Inject
 	private ItensVendas itensVendas;
 	
+	@Inject
+	private Usuario usuario;
+	
+	@Inject
+	private Usuarios usuarios;
+	
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
+			
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			
+			usuario = usuarios.porNome(user.getUsername());
+			
 			todasCategoriasProdutos();
 			todosFornecedores();
 		}
@@ -142,7 +157,7 @@ public class CadastroProdutoBean implements Serializable {
 
 		if (produto.getId() == null) {
 			
-			Produto produtoTemp = produtos.porCodigo(produto.getCodigo());
+			Produto produtoTemp = produtos.porCodigo(produto.getCodigo(), usuario.getEmpresa());
 			
 			if(produtoTemp == null) {
 				
@@ -178,11 +193,11 @@ public class CadastroProdutoBean implements Serializable {
 	}
 	
 	private void todasCategoriasProdutos() {
-		todasCategoriasProdutos = categoriasProdutos.todos();
+		todasCategoriasProdutos = categoriasProdutos.todos(usuario.getEmpresa());
 	}
 	
 	private void todosFornecedores() {
-		todosFornecedores = fornecedores.todos();
+		todosFornecedores = fornecedores.todos(usuario.getEmpresa());
 	}
 	
 	public UploadedFile getFile() {

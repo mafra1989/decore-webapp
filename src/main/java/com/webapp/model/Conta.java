@@ -13,6 +13,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.Digits;
 
 import org.hibernate.annotations.Type;
+import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "conta")
@@ -69,6 +70,10 @@ public class Conta implements Serializable {
 
 	@Column(nullable = false)
 	private Long ano;
+	
+	@NotBlank
+	@Column
+	private String empresa;
 
 	public Long getId() {
 		return id;
@@ -188,6 +193,14 @@ public class Conta implements Serializable {
 
 	public void setAno(Long ano) {
 		this.ano = ano;
+	}
+
+	public String getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(String empresa) {
+		this.empresa = empresa;
 	}
 
 	@Override

@@ -19,6 +19,8 @@ import org.primefaces.json.JSONObject;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.webapp.model.Empresa;
@@ -69,6 +71,11 @@ public class CadastroEquipeBean implements Serializable {
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
+			
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			
+			usuario = usuarios.porNome(user.getUsername());
+			
 			listarTodos();
 		}
 	}
@@ -175,7 +182,7 @@ public class CadastroEquipeBean implements Serializable {
 	}
 
 	private void listarTodos() {
-		todosUsuarios = usuarios.todos();
+		todosUsuarios = usuarios.todos(usuario.getEmpresa());
 		todosGrupos = grupos.todos();
 		todasEmpresas = empresas.todos();
 	}

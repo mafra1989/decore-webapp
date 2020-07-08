@@ -14,6 +14,8 @@ import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 
 import org.primefaces.PrimeFaces;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.CategoriaLancamento;
 import com.webapp.model.Conta;
@@ -117,6 +119,10 @@ public class RegistroLancamentosBean implements Serializable {
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			
+			usuario = usuarios.porNome(user.getUsername());
+			
 			todasCategoriasDespesas = categoriasLancamentos.todasDespesas();
 			todasCategoriasReceitas = categoriasLancamentos.todasReceitas();
 
@@ -126,7 +132,7 @@ public class RegistroLancamentosBean implements Serializable {
 			despesa.setDataLancamento(calendar.getTime());
 			receita.setDataLancamento(calendar.getTime());
 			
-			todosUsuarios = usuarios.todos();
+			todosUsuarios = usuarios.todos(usuario.getEmpresa());
 			
 			if(option != null) {
 				if(option.equalsIgnoreCase("despesa")) {
@@ -417,13 +423,13 @@ public class RegistroLancamentosBean implements Serializable {
 	private void salvarAjuste() {
 		
 		if (lancamento.getId() != null) {					
-			List<Conta> contasTemp = contas.porCodigoOperacao(lancamento.getNumeroLancamento(), "LANCAMENTO");
+			List<Conta> contasTemp = contas.porCodigoOperacao(lancamento.getNumeroLancamento(), "LANCAMENTO", usuario.getEmpresa());
 			for (Conta conta : contasTemp) {
 				contas.remove(conta);
 			}				
 		}
 		
-		Lancamento lancamentoTemp = lancamentos.ultimoNLancamento();
+		Lancamento lancamentoTemp = lancamentos.ultimoNLancamento(usuario.getEmpresa());
 
 		if (lancamentoTemp == null) {
 			lancamento.setNumeroLancamento(1L);
@@ -451,6 +457,7 @@ public class RegistroLancamentosBean implements Serializable {
 			lancamento.setUsuario(renderFavorecido ? usuario : null);
 		}
 
+		lancamento.setEmpresa(usuario.getEmpresa());
 		lancamentos.save(lancamento);
 		
 		if (lancamento.getId() == null) {
@@ -504,7 +511,7 @@ public class RegistroLancamentosBean implements Serializable {
 
 			// if (contasTemp.size() == 0) {
 
-			List<Conta> contasTemp = contas.porCodigoOperacao(lancamento.getNumeroLancamento(), "LANCAMENTO");
+			List<Conta> contasTemp = contas.porCodigoOperacao(lancamento.getNumeroLancamento(), "LANCAMENTO", usuario.getEmpresa());
 			for (Conta conta : contasTemp) {
 				contas.remove(conta);
 			}
@@ -523,7 +530,7 @@ public class RegistroLancamentosBean implements Serializable {
 
 		if (contasPagas != true) {
 
-			Lancamento lancamentoTemp = lancamentos.ultimoNLancamento();
+			Lancamento lancamentoTemp = lancamentos.ultimoNLancamento(usuario.getEmpresa());
 
 			if (lancamentoTemp == null) {
 				lancamento.setNumeroLancamento(1L);
@@ -551,6 +558,7 @@ public class RegistroLancamentosBean implements Serializable {
 				lancamento.setUsuario(renderFavorecido ? usuario : null);
 			}
 
+			lancamento.setEmpresa(usuario.getEmpresa());
 			lancamentos.save(lancamento);
 
 			if (tipoPagamento == TipoPagamento.AVISTA) {
@@ -583,6 +591,7 @@ public class RegistroLancamentosBean implements Serializable {
 				conta.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
 				conta.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
 
+				conta.setEmpresa(usuario.getEmpresa());
 				contas.save(conta);
 
 				if (repetirLancamento) {
@@ -594,6 +603,7 @@ public class RegistroLancamentosBean implements Serializable {
 						contaTemp.setStatus(false);
 						contaTemp.setPagamento(null);
 
+						contaTemp.setEmpresa(usuario.getEmpresa());
 						contas.save(contaTemp);
 					}
 				}
@@ -607,6 +617,7 @@ public class RegistroLancamentosBean implements Serializable {
 					conta.setTipo(lancamento.getCategoriaLancamento().getTipoLancamento().getOrigem().name());
 					conta.setStatus(true);
 
+					conta.setEmpresa(usuario.getEmpresa());
 					contas.save(conta);
 				}
 
@@ -618,6 +629,7 @@ public class RegistroLancamentosBean implements Serializable {
 					conta.setStatus(false);
 					conta.setPagamento(null);
 
+					conta.setEmpresa(usuario.getEmpresa());
 					contas.save(conta);
 				}
 			}

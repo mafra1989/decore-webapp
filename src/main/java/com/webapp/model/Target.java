@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 @Entity
 @Table(name = "target")
 public class Target implements Serializable {
@@ -29,6 +31,11 @@ public class Target implements Serializable {
 	
 	@Column(nullable = false)
 	private String tipo;
+	
+	@NotBlank
+	@Column
+	private String empresa;
+	
 
 	public Long getId() {
 		return id;
@@ -60,6 +67,14 @@ public class Target implements Serializable {
 
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
+	}
+
+	public String getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(String empresa) {
+		this.empresa = empresa;
 	}
 
 }

@@ -24,6 +24,8 @@ import org.primefaces.model.charts.bar.BarChartOptions;
 import org.primefaces.model.charts.donut.DonutChartDataSet;
 import org.primefaces.model.charts.donut.DonutChartModel;
 import org.primefaces.model.charts.line.LineChartDataSet;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.CategoriaLancamento;
 import com.webapp.model.Lancamento;
@@ -168,33 +170,40 @@ public class RelatorioLancamentosBean implements Serializable {
 	
 	private List<Usuario> todosUsuarios;
 	
+	@Inject
+	private Usuario usuario;
+	
 	@PostConstruct
 	public void init() {
-		todosUsuarios = usuarios.todos();
+		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		usuario = usuarios.porNome(user.getUsername());
+		
+		todosUsuarios = usuarios.todos(usuario.getEmpresa());
 		listarTodasCategoriasLancamentos();
 		
-		Target target = targets.porPeriodoTipo("DIARIO", "DESPESA");
+		Target target = targets.porPeriodoTipo("DIARIO", "DESPESA", usuario.getEmpresa());
 		if (target == null) {
 			targetDiario = 0;
 		} else {
 			targetDiario = target.getValor().doubleValue();
 		}
 
-		target = targets.porPeriodoTipo("SEMANAL", "DESPESA");
+		target = targets.porPeriodoTipo("SEMANAL", "DESPESA", usuario.getEmpresa());
 		if (target == null) {
 			targetSemanal = 0;
 		} else {
 			targetSemanal = target.getValor().doubleValue();
 		}
 
-		target = targets.porPeriodoTipo("MENSAL", "DESPESA");
+		target = targets.porPeriodoTipo("MENSAL", "DESPESA", usuario.getEmpresa());
 		if (target == null) {
 			targetMensal = 0;
 		} else {
 			targetMensal = target.getValor().doubleValue();
 		}
 
-		target = targets.porPeriodoTipo("ANUAL", "DESPESA");
+		target = targets.porPeriodoTipo("ANUAL", "DESPESA", usuario.getEmpresa());
 		if (target == null) {
 			targetAnual = 0;
 		} else {
@@ -378,7 +387,7 @@ public class RelatorioLancamentosBean implements Serializable {
 				calendarStopTemp.set(Calendar.MINUTE, 59);
 				calendarStopTemp.set(Calendar.SECOND, 59);
 
-				List<Object[]> resultTemp = contas.totalLancamentosPorData(calendarStartTemp, calendarStopTemp);
+				List<Object[]> resultTemp = contas.totalLancamentosPorData(calendarStartTemp, calendarStopTemp, usuario.getEmpresa());
 
 				if (resultTemp.size() == 0) {
 
@@ -420,12 +429,12 @@ public class RelatorioLancamentosBean implements Serializable {
 							tipos.add(tipo);
 						}
 
-						objectTemp[0] = object[0];
-						objectTemp[1] = object[1];
+						objectTemp[0] = (long) object[0] < 10 ? "0" + object[0] : object[0];
+						objectTemp[1] = (long) object[1] < 10 ? "0" + object[1] : object[1];
 						objectTemp[2] = object[2];
 						objectTemp[4] = object[4];
 
-						Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[3].toString()));
+						Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[3].toString()), usuario.getEmpresa());
 						if (lancamento != null) {
 							if (categoriasPorDia != null && categoriasPorDia.length > 0) {
 									
@@ -654,7 +663,7 @@ public class RelatorioLancamentosBean implements Serializable {
 
 				System.out.println(semana01);
 
-				List<Object[]> resultTemp = contas.totalLancamentosPorSemana(ano01, semana01, semana01, true);
+				List<Object[]> resultTemp = contas.totalLancamentosPorSemana(ano01, semana01, semana01, true, usuario.getEmpresa());
 
 				if (resultTemp.size() == 0) {
 
@@ -694,7 +703,7 @@ public class RelatorioLancamentosBean implements Serializable {
 						objectTemp[2] = object[2];
 						objectTemp[3] = object[3];
 
-						Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[2].toString()));
+						Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[2].toString()), usuario.getEmpresa());
 						if (lancamento != null) {							
 							if (categoriasPorSemana != null && categoriasPorSemana.length > 0) {
 					
@@ -975,7 +984,7 @@ public class RelatorioLancamentosBean implements Serializable {
 					mes01 = "0" + i;
 				}
 
-				List<Object[]> resultTemp = contas.totalDespesasPorMes(ano02, mes01, mes01, true);
+				List<Object[]> resultTemp = contas.totalDespesasPorMes(ano02, mes01, mes01, true, usuario.getEmpresa());
 
 				if (resultTemp.size() == 0) {
 
@@ -1015,7 +1024,7 @@ public class RelatorioLancamentosBean implements Serializable {
 						objectTemp[2] = object[2];
 						objectTemp[3] = object[3];
 
-						Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[2].toString()));
+						Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[2].toString()), usuario.getEmpresa());
 						if (lancamento != null) {							
 							if (categoriasPorMes != null && categoriasPorMes.length > 0) {
 					
@@ -1229,7 +1238,7 @@ public class RelatorioLancamentosBean implements Serializable {
 				
 				String ano03 = String.valueOf(i);
 				
-				List<Object[]> resultTemp = contas.totalDespesasPorAno(ano03, ano03, true);
+				List<Object[]> resultTemp = contas.totalDespesasPorAno(ano03, ano03, true, usuario.getEmpresa());
 				
 				if (resultTemp.size() == 0) {
 
@@ -1265,7 +1274,7 @@ public class RelatorioLancamentosBean implements Serializable {
 						objectTemp[1] = object[1];
 						objectTemp[2] = object[2];
 
-						Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[1].toString()));
+						Lancamento lancamento = lancamentos.porNumeroLancamento(Long.parseLong(object[1].toString()), usuario.getEmpresa());
 						if (lancamento != null) {
 							if (categoriasPorAno != null && categoriasPorAno.length > 0) {
 						
@@ -1769,7 +1778,7 @@ public class RelatorioLancamentosBean implements Serializable {
 
 		if (option.equalsIgnoreCase("1")) {
 
-			Target targetTemp = targets.porPeriodoTipo("DIARIO", "DESPESA");
+			Target targetTemp = targets.porPeriodoTipo("DIARIO", "DESPESA", usuario.getEmpresa());
 			if (targetTemp == null) {
 				targetTemp = new Target();
 				targetTemp.setPeriodo("DIARIO");
@@ -1791,7 +1800,7 @@ public class RelatorioLancamentosBean implements Serializable {
 
 		if (option.equalsIgnoreCase("2")) {
 
-			Target targetTemp = targets.porPeriodoTipo("SEMANAL", "DESPESA");
+			Target targetTemp = targets.porPeriodoTipo("SEMANAL", "DESPESA", usuario.getEmpresa());
 			if (targetTemp == null) {
 				targetTemp = new Target();
 				targetTemp.setPeriodo("SEMANAL");
@@ -1813,7 +1822,7 @@ public class RelatorioLancamentosBean implements Serializable {
 
 		if (option.equalsIgnoreCase("3")) {
 
-			Target targetTemp = targets.porPeriodoTipo("MENSAL", "DESPESA");
+			Target targetTemp = targets.porPeriodoTipo("MENSAL", "DESPESA", usuario.getEmpresa());
 			if (targetTemp == null) {
 				targetTemp = new Target();
 				targetTemp.setPeriodo("MENSAL");
@@ -1835,7 +1844,7 @@ public class RelatorioLancamentosBean implements Serializable {
 
 		if (option.equalsIgnoreCase("4")) {
 
-			Target targetTemp = targets.porPeriodoTipo("ANUAL", "DESPESA");
+			Target targetTemp = targets.porPeriodoTipo("ANUAL", "DESPESA", usuario.getEmpresa());
 			if (targetTemp == null) {
 				targetTemp = new Target();
 				targetTemp.setPeriodo("ANUAL");
