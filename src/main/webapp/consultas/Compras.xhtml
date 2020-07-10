@@ -15,6 +15,27 @@
 
 		<style>
 @media ( min-width :220px) {
+	.ui-fluid .ui-selectcheckboxmenu {
+	    height: 29px;
+	}
+	.btn-pie.ui-button {
+		color: #6a6565;
+		background-color: #f2f2f200;
+		border: 1px solid #a8a8a8;
+		width: 32px;
+		float: right;
+		position: relative;
+		margin-top: -4px;
+	}
+	.btn-pie.ui-button.ui-state-hover {
+		background-color: #e8e5e5;
+	}
+	.btn-pie.ui-button.ui-state-focus {
+		background-color: #e8e5e5;
+	}
+	.btn-pie.ui-button.ui-state-active {
+		background-color: #f2f2f200;
+	}
 	.inventario.ui-button {
 	    width: auto !important;;
 	    color: #000000 !important;;
@@ -102,6 +123,12 @@
 	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
 		.ui-datatable tfoot th {
 		font-size: 14px;
+	}
+	.btn-pie.ui-button {
+	    float: left;
+	    margin-left: -18px;
+	    margin-top: 0px;
+	    height: 29px;
 	}
 }
 
@@ -205,6 +232,46 @@
 							<f:selectItems value="#{consultaComprasBean.todosUsuarios}"
 								var="comprador" itemLabel="#{comprador.nome}"
 								itemValue="#{comprador}" />
+						</p:selectOneMenu>
+					</p:panelGrid>
+					
+					<p:panelGrid columns="3" layout="grid" style="margin-bottom: -4px;"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-1">
+						
+						<p:outputLabel value="Categoria" />
+						<p:selectCheckboxMenu style="width: 100%"
+							showHeader="true" emptyLabel="" label="" filter="true"
+							filterMatchMode="startsWith"
+							value="#{consultaComprasBean.categorias}">
+
+							<f:selectItems
+								value="#{consultaComprasBean.todasCategoriasProduto}"
+								var="categoria" itemLabel="#{categoria.nome}"
+								itemValue="#{categoria.nome}"></f:selectItems>
+						</p:selectCheckboxMenu>
+
+						<p:commandButton icon="fa fa-refresh"
+							action="#{consultaComprasBean.changeCategoria}"
+							process="@parent" styleClass="btn-pie"
+							title="Atualizar" onstart="start();" oncomplete="stop();"
+							update="produto" />
+					</p:panelGrid>
+					
+					<p:panelGrid columns="3" layout="grid" style="margin-bottom: -4px;"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-1">
+							 
+						<p:outputLabel value="Produto" for="produto" />
+						<p:selectOneMenu id="produto"
+							value="#{consultaComprasBean.produto}" placeholder="selecione">
+
+							<f:selectItem itemLabel="Selecione" />
+
+							<f:selectItems value="#{consultaComprasBean.todosProdutos}"
+								var="produto"
+								itemLabel="#{produto.codigo.concat(' | ').concat(produto.descricao)}"
+								itemValue="#{produto}" />
 						</p:selectOneMenu>
 					</p:panelGrid>
 

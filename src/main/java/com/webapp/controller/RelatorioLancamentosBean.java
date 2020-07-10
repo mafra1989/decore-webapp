@@ -311,7 +311,7 @@ public class RelatorioLancamentosBean implements Serializable {
 	}
 
 	private void listarTodasCategoriasLancamentos() {
-		todasCategoriasLancamento = categoriasLancamentos.todos();
+		todasCategoriasLancamento = categoriasLancamentos.todos(usuario.getEmpresa());
 	}
 
 	public void changeCategoriaPorDia() {
@@ -346,7 +346,7 @@ public class RelatorioLancamentosBean implements Serializable {
 		if (categoriasPorDia != null && categoriasPorDia.length > 0) {
 			
 			for (String categoria : categoriasPorDia) {
-				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria);
+				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria, usuario.getEmpresa());
 				if(categoriaLancamento.getId() == 25835L || categoriaLancamento.getId() == 5423L ||
 						categoriaLancamento.getId() == 5424L || categoriaLancamento.getId() == 5425L ||
 								categoriaLancamento.getId() == 5426L || categoriaLancamento.getId() == 5427L) {
@@ -563,7 +563,7 @@ public class RelatorioLancamentosBean implements Serializable {
 			for (String categoria : categoriasPorDia) {
 				
 				System.out.println(categoria);
-				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria);
+				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria, usuario.getEmpresa());
 				System.out.println(categoriaLancamento.getTipoLancamento().getOrigem());
 				if(categoriaLancamento.getTipoLancamento().getOrigem() == OrigemLancamento.DEBITO) {
 					debito = true;
@@ -630,7 +630,7 @@ public class RelatorioLancamentosBean implements Serializable {
 		if (categoriasPorSemana != null && categoriasPorSemana.length > 0) {
 			
 			for (String categoria : categoriasPorSemana) {
-				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria);
+				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria, usuario.getEmpresa());
 				if(categoriaLancamento.getId() == 25835L || categoriaLancamento.getId() == 5423L ||
 						categoriaLancamento.getId() == 5424L || categoriaLancamento.getId() == 5425L ||
 								categoriaLancamento.getId() == 5426L || categoriaLancamento.getId() == 5427L) {
@@ -825,7 +825,7 @@ public class RelatorioLancamentosBean implements Serializable {
 			for (String categoria : categoriasPorSemana) {
 				
 				System.out.println(categoria);
-				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria);
+				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria, usuario.getEmpresa());
 				System.out.println(categoriaLancamento.getTipoLancamento().getOrigem());
 				if(categoriaLancamento.getTipoLancamento().getOrigem() == OrigemLancamento.DEBITO) {
 					debito = true;
@@ -956,7 +956,7 @@ public class RelatorioLancamentosBean implements Serializable {
 		if (categoriasPorMes != null && categoriasPorMes.length > 0) {
 			
 			for (String categoria : categoriasPorMes) {
-				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria);
+				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria, usuario.getEmpresa());
 				if(categoriaLancamento.getId() == 25835L || categoriaLancamento.getId() == 5423L ||
 						categoriaLancamento.getId() == 5424L || categoriaLancamento.getId() == 5425L ||
 								categoriaLancamento.getId() == 5426L || categoriaLancamento.getId() == 5427L) {
@@ -1143,7 +1143,7 @@ public class RelatorioLancamentosBean implements Serializable {
 			for (String categoria : categoriasPorMes) {
 				
 				System.out.println(categoria);
-				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria);
+				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria, usuario.getEmpresa());
 				System.out.println(categoriaLancamento.getTipoLancamento().getOrigem());
 				if(categoriaLancamento.getTipoLancamento().getOrigem() == OrigemLancamento.DEBITO) {
 					debito = true;
@@ -1213,7 +1213,7 @@ public class RelatorioLancamentosBean implements Serializable {
 		if (categoriasPorAno != null && categoriasPorAno.length > 0) {
 			
 			for (String categoria : categoriasPorAno) {
-				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria);
+				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria, usuario.getEmpresa());
 				if(categoriaLancamento.getId() == 25835L || categoriaLancamento.getId() == 5423L ||
 						categoriaLancamento.getId() == 5424L || categoriaLancamento.getId() == 5425L ||
 								categoriaLancamento.getId() == 5426L || categoriaLancamento.getId() == 5427L) {
@@ -1386,7 +1386,7 @@ public class RelatorioLancamentosBean implements Serializable {
 			for (String categoria : categoriasPorAno) {
 				
 				System.out.println(categoria);
-				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria);
+				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria, usuario.getEmpresa());
 				System.out.println(categoriaLancamento.getTipoLancamento().getOrigem());
 				if(categoriaLancamento.getTipoLancamento().getOrigem() == OrigemLancamento.DEBITO) {
 					debito = true;

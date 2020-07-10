@@ -140,8 +140,8 @@ public class RegistroLancamentosBean implements Serializable {
 				}
 			}
 			
-			todasCategoriasDespesas = categoriasLancamentos.todasDespesas();
-			todasCategoriasReceitas = categoriasLancamentos.todasReceitas();
+			todasCategoriasDespesas = categoriasLancamentos.todasDespesas(usuario_.getEmpresa());
+			todasCategoriasReceitas = categoriasLancamentos.todasReceitas(usuario_.getEmpresa());
 
 			todosDestinosLancamentos = destinosLancamentos.todos();
 

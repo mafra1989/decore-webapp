@@ -190,8 +190,8 @@
 							<h:outputText value="#{categoriaDespesa.tipoLancamento.descricao}" />
 						</p:column>
 						
-						<p:column headerText="Destino">
-							<h:outputText value="#{categoriaDespesa.destinoLancamento != null ? categoriaDespesa.destinoLancamento.descricao : '-'}" />
+						<p:column headerText="Empresa">
+							<h:outputText value="#{categoriaDespesa.empresa != null ? categoriaDespesa.empresa : '-'}" />
 						</p:column>
 
 					</p:dataTable>
@@ -239,18 +239,15 @@
 									itemValue="#{tipoLancamento}" />
 							</p:selectOneMenu>
 							
-							<p:outputLabel value="Destino" for="destino-lancamento" />
-							<p:selectOneMenu id="destino-lancamento"
-								value="#{cadastroCategoriaLancamentoBean.categoriaDespesa.destinoLancamento}"
+							<p:outputLabel value="Empresa" for="empresa" />
+							<p:selectOneMenu id="empresa"
+								value="#{cadastroCategoriaLancamentoBean.categoriaDespesa.empresa}"
 								placeholder="selecione">
 
-								<f:selectItem itemLabel="Selecione" />
-
-								<f:selectItems
-									value="#{cadastroCategoriaLancamentoBean.todosDestinosLancamentos}"
-									var="destinoLancamento"
-									itemLabel="#{destinoLancamento.descricao}"
-									itemValue="#{destinoLancamento}" />
+								<f:selectItem itemLabel="Selecione" itemValue="" />
+								
+								<f:selectItem itemLabel="Decore" itemValue="Decore" />
+								<f:selectItem itemLabel="Havaianas" itemValue="Havaianas" />
 							</p:selectOneMenu>
 						</p:panelGrid>
 

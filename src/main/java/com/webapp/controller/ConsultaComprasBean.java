@@ -16,6 +16,7 @@ import org.primefaces.PrimeFaces;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
+import com.webapp.model.CategoriaProduto;
 import com.webapp.model.Compra;
 import com.webapp.model.Conta;
 import com.webapp.model.Grupo;
@@ -23,6 +24,7 @@ import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.Produto;
 import com.webapp.model.Usuario;
+import com.webapp.repository.CategoriasProdutos;
 import com.webapp.repository.Compras;
 import com.webapp.repository.Contas;
 import com.webapp.repository.ItensCompras;
@@ -78,6 +80,18 @@ public class ConsultaComprasBean implements Serializable {
 	private String totalCompras = "0,00";
 
 	private Integer totalItens = 0;
+	
+	@Inject
+	private CategoriasProdutos categoriasProdutos;
+	
+	private List<CategoriaProduto> todasCategoriasProduto = new ArrayList<CategoriaProduto>();
+	
+	private String[] categorias;
+	
+	private Produto produto;
+	
+	private List<Produto> todosProdutos;
+	
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -99,6 +113,20 @@ public class ConsultaComprasBean implements Serializable {
 			}
 			
 			todosUsuarios = usuarios.todos(usuario_.getEmpresa());
+			
+			listarTodasCategoriasProdutos();
+		}
+	}
+	
+	private void listarTodasCategoriasProdutos() {
+		todasCategoriasProduto = categoriasProdutos.todos(usuario_.getEmpresa());
+	}
+	
+	public void changeCategoria() {
+		todosProdutos = new ArrayList<Produto>();
+		produto = null;
+		if (categorias != null && categorias.length > 0) {
+			todosProdutos = produtos.porCategoria(categorias);
 		}
 	}
 
@@ -112,14 +140,41 @@ public class ConsultaComprasBean implements Serializable {
 		comprasFiltradas = compras.comprasFiltradas(numeroCompra, dateStart, calendarioTemp.getTime(), usuario, usuario_.getEmpresa());
 		
 		compraSelecionada = null;
+		
+		List<Compra> comprasFiltradasPorCategoria = new ArrayList<Compra>();
+		List<Compra> comprasFiltradasPorProduto = new ArrayList<Compra>();
 
 		double totalComprasTemp = 0; //double valorTotal = 0; double valorTotalTemp = 0;
 		totalItens = 0;
 		for (Compra compra : comprasFiltradas) {
 			
 			if(!compra.isAjuste()) {
-				totalComprasTemp += compra.getValorTotal().doubleValue();
-				totalItens += compra.getQuantidadeItens().intValue();
+				
+				if(produto != null) {					
+					ItemCompra itemCompra = itensCompras.porCompra(compra, produto);
+					if(itemCompra != null) {
+						comprasFiltradasPorProduto.add(compra);
+						totalComprasTemp += itemCompra.getTotal().doubleValue();
+						totalItens += itemCompra.getQuantidade().intValue();
+					}
+					
+				} else if (categorias != null && categorias.length > 0) {
+									
+					List<ItemCompra> itens = itensCompras.porCategoria(compra, categorias);
+					for (ItemCompra itemCompra : itens) {
+						
+						if(!comprasFiltradasPorCategoria.contains(compra)) {
+							comprasFiltradasPorCategoria.add(compra);
+						}						
+						
+						totalComprasTemp += itemCompra.getTotal().doubleValue();
+						totalItens += itemCompra.getQuantidade().intValue();
+					}
+					
+				} else {
+					totalComprasTemp += compra.getValorTotal().doubleValue();
+					totalItens += compra.getQuantidadeItens().intValue();
+				}
 			}
 		/*	
 			if(compra.getNumeroCompra().intValue() == 12 && compra.getId() == 28592) {
@@ -167,6 +222,14 @@ public class ConsultaComprasBean implements Serializable {
 			}
 			*/
 					
+		}
+		
+		if(produto != null) {					
+			comprasFiltradas = new ArrayList<Compra>();
+			comprasFiltradas.addAll(comprasFiltradasPorProduto);			
+		} else if (categorias != null && categorias.length > 0) {
+			comprasFiltradas = new ArrayList<Compra>();
+			comprasFiltradas.addAll(comprasFiltradasPorCategoria);
 		}
 
 		totalCompras = nf.format(totalComprasTemp);
@@ -309,6 +372,30 @@ public class ConsultaComprasBean implements Serializable {
 
 	public void setNumeroCompra(Long numeroCompra) {
 		this.numeroCompra = numeroCompra;
+	}
+
+	public List<CategoriaProduto> getTodasCategoriasProduto() {
+		return todasCategoriasProduto;
+	}
+
+	public String[] getCategorias() {
+		return categorias;
+	}
+
+	public void setCategorias(String[] categorias) {
+		this.categorias = categorias;
+	}
+
+	public Produto getProduto() {
+		return produto;
+	}
+
+	public void setProduto(Produto produto) {
+		this.produto = produto;
+	}
+
+	public List<Produto> getTodosProdutos() {
+		return todosProdutos;
 	}
 
 }

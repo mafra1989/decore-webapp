@@ -28,7 +28,6 @@ public class CategoriaLancamento implements Serializable {
 	
 	private DestinoLancamento destinoLancamento = new DestinoLancamento();
 	
-	@NotBlank
 	@Column
 	private String empresa;
 	

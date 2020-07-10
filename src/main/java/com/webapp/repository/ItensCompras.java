@@ -1,6 +1,7 @@
 package com.webapp.repository;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -69,6 +70,13 @@ public class ItensCompras implements Serializable {
 		}
 		
 		return null;
+	}
+
+	public List<ItemCompra> porCategoria(Compra compra, String[] categorias) {
+	
+		return this.manager
+				.createQuery("from ItemCompra e join fetch e.compra c where e.produto.categoriaProduto.nome in (:categorias) and c.id = :idCompra", ItemCompra.class)
+				.setParameter("categorias", Arrays.asList(categorias)).setParameter("idCompra", compra.getId()).getResultList();
 	}
 	
 	

@@ -36,11 +36,11 @@ public class CategoriasLancamentos implements Serializable {
 		this.manager.remove(categoriaLancamentoTemp);
 	}
 
-	public CategoriaLancamento porNome(String nome) {
+	public CategoriaLancamento porNome(String nome, String empresa) {
 		CategoriaLancamento categoriaLancamento = null;
 		try {
-			categoriaLancamento = this.manager.createQuery("from CategoriaLancamento i where lower(i.nome) like lower(:nome) order by nome", CategoriaLancamento.class)
-					.setParameter("nome", "%" + nome + "%").getSingleResult();
+			categoriaLancamento = this.manager.createQuery("from CategoriaLancamento i where (i.empresa is null OR i.empresa = :empresa) AND lower(i.nome) like lower(:nome) order by nome", CategoriaLancamento.class)
+					.setParameter("empresa", empresa).setParameter("nome", "%" + nome + "%").getSingleResult();
 			return categoriaLancamento;
 			
 		} catch (NoResultException e) {
@@ -48,33 +48,39 @@ public class CategoriasLancamentos implements Serializable {
 		}
 	}
 	
-	public List<CategoriaLancamento> todos() {
-		return this.manager.createQuery("from CategoriaLancamento order by nome", CategoriaLancamento.class)
-				.getResultList();
+	public List<CategoriaLancamento> todos(String empresa) {
+		return this.manager.createQuery("from CategoriaLancamento where (empresa is null OR empresa = :empresa) order by nome", CategoriaLancamento.class)
+				.setParameter("empresa", empresa).getResultList();
 	}
 
-	public List<CategoriaLancamento> todasDespesas() {
+	public List<CategoriaLancamento> todasDespesas(String empresa) {
 		return this.manager
-				.createQuery("from CategoriaLancamento c where c.tipoLancamento.origem = :origem order by nome",
+				.createQuery("from CategoriaLancamento c where (c.empresa is null OR c.empresa = :empresa) AND c.tipoLancamento.origem = :origem order by nome",
 						CategoriaLancamento.class)
+				.setParameter("empresa", empresa)
 				.setParameter("origem", OrigemLancamento.DEBITO).getResultList();
 	}
 
-	public List<CategoriaLancamento> todasReceitas() {
+	public List<CategoriaLancamento> todasReceitas(String empresa) {
 		return this.manager
-				.createQuery("from CategoriaLancamento c where c.tipoLancamento.origem = :origem order by nome",
+				.createQuery("from CategoriaLancamento c where (c.empresa is null OR c.empresa = :empresa) AND c.tipoLancamento.origem = :origem order by nome",
 						CategoriaLancamento.class)
+				.setParameter("empresa", empresa)
 				.setParameter("origem", OrigemLancamento.CREDITO).getResultList();
 	}
 
-	public List<CategoriaLancamento> porOrigem(OrigemLancamento origem) {
-		return this.manager.createQuery("from CategoriaLancamento c where c.origem = :origem order by c.nome",
-				CategoriaLancamento.class).setParameter("origem", origem).getResultList();
+	public List<CategoriaLancamento> porOrigem(OrigemLancamento origem, String empresa) {
+		return this.manager.createQuery("from CategoriaLancamento c where (c.empresa is null OR c.empresa = :empresa) AND c.origem = :origem order by c.nome",
+				CategoriaLancamento.class)
+				.setParameter("empresa", empresa)
+				.setParameter("origem", origem).getResultList();
 	}
 
 	public List<CategoriaLancamento> filtrados(CategoriaLancamentoFilter filter) {
-		return this.manager.createQuery("from CategoriaLancamento i where i.nome like :nome order by nome",
-				CategoriaLancamento.class).setParameter("nome", "%" + filter.getNome() + "%").getResultList();
+		return this.manager.createQuery("from CategoriaLancamento i where (i.empresa is null OR i.empresa = :empresa) AND i.nome like :nome order by nome",
+				CategoriaLancamento.class)
+				.setParameter("empresa", filter.getEmpresa())
+				.setParameter("nome", "%" + filter.getNome() + "%").getResultList();
 	}
 
 }
