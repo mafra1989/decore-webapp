@@ -17,7 +17,7 @@ public class EmpresaBean implements Serializable {
 
 	public void defineEmpresa(String empresa) throws IOException {
 		this.empresa = empresa;
-		FacesContext.getCurrentInstance().getExternalContext().redirect("/decore-wepapp/Dashboard.xhtml");
+		FacesContext.getCurrentInstance().getExternalContext().redirect("/Dashboard.xhtml");
 	}
 
 	public String getEmpresa() {
