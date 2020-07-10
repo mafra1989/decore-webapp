@@ -197,7 +197,7 @@ public class Vendas implements Serializable {
 	// i.status = 'Y' AND 
 	public Number totalVendasPorDiaDaSemana(Long nomeDia, String empresa) {
 
-		String jpql = "SELECT sum(i.valorTotal) FROM Venda i WHERE i.empresa = :empresa AND i.nomeDia = :nomeDia AND i.ajuste = 'N'";
+		String jpql = "SELECT sum(i.valorTotal) FROM Venda i WHERE i.empresa = :empresa AND i.nomeDia = :nomeDia AND i.status = 'Y' AND i.ajuste = 'N'";
 		Query q = manager.createQuery(jpql).setParameter("nomeDia", nomeDia).setParameter("empresa", empresa);
 
 		Number count = (Number) q.getSingleResult();
@@ -212,7 +212,7 @@ public class Vendas implements Serializable {
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalVendasPorCategoria(String empresa) {
 		//  i.venda.status = 'Y' AND
-		String jpql = "SELECT p.categoriaProduto.nome, SUM(i.total), SUM(i.quantidade) FROM ItemVenda i JOIN i.produto p WHERE i.venda.empresa = :empresa AND i.venda.ajuste = 'N' GROUP BY p.categoriaProduto.nome ORDER BY SUM(i.total) DESC";
+		String jpql = "SELECT p.categoriaProduto.nome, SUM(i.total), SUM(i.quantidade) FROM ItemVenda i JOIN i.produto p WHERE i.venda.empresa = :empresa AND i.venda.status = 'Y' AND i.venda.ajuste = 'N' GROUP BY p.categoriaProduto.nome ORDER BY SUM(i.total) DESC";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa);
 		List<Object[]> result = q.getResultList();
 
@@ -222,7 +222,7 @@ public class Vendas implements Serializable {
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalVendasPorProduto(String categoriaProduto, String empresa) {
 		//  i.venda.status = 'Y' AND
-		String jpql = "SELECT p.descricao, SUM(i.total), SUM(i.quantidade), p.codigo FROM ItemVenda i JOIN i.produto p where i.venda.empresa = :empresa AND p.categoriaProduto.nome = :categoriaProduto AND i.venda.ajuste = 'N' GROUP BY p.codigo, p.descricao ORDER BY SUM(i.total) DESC";
+		String jpql = "SELECT p.descricao, SUM(i.total), SUM(i.quantidade), p.codigo FROM ItemVenda i JOIN i.produto p where i.venda.empresa = :empresa AND p.categoriaProduto.nome = :categoriaProduto AND i.venda.status = 'Y' AND i.venda.ajuste = 'N' GROUP BY p.codigo, p.descricao ORDER BY SUM(i.total) DESC";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("categoriaProduto", categoriaProduto);
 		List<Object[]> result = q.getResultList();
 
@@ -291,7 +291,7 @@ public class Vendas implements Serializable {
 		}
 		//  AND p.status = 'Y'
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.empresa = :empresa AND p.dataVenda BETWEEN :dataInicio AND :dataFim AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition
+				+ "WHERE p.empresa = :empresa AND p.dataVenda BETWEEN :dataInicio AND :dataFim AND p.status = 'Y' AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition
 				+ " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
 				calendarStop.getTime());
@@ -368,7 +368,7 @@ public class Vendas implements Serializable {
 		}
 		//  AND p.status = 'Y'
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.empresa = :empresa AND p.semana BETWEEN :semanaInicio AND :semanaFim AND p.ajuste = 'N' " + "AND p.ano = :ano " + condition + "group by "
+				+ "WHERE p.empresa = :empresa AND p.semana BETWEEN :semanaInicio AND :semanaFim AND p.status = 'Y' AND p.ajuste = 'N' " + "AND p.ano = :ano " + condition + "group by "
 				+ groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("semanaInicio", Long.parseLong(semana01.replace("W", "")))
 				.setParameter("semanaFim", Long.parseLong(semana02.replace("W", "")))
@@ -433,7 +433,7 @@ public class Vendas implements Serializable {
 		}
 		//  AND p.status = 'Y'
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.empresa = :empresa AND p.mes BETWEEN :mesInicio AND :mesFim AND p.ajuste = 'N' " + "AND p.ano = :ano " + condition + "group by "
+				+ "WHERE p.empresa = :empresa AND p.mes BETWEEN :mesInicio AND :mesFim AND p.status = 'Y' AND p.ajuste = 'N' " + "AND p.ano = :ano " + condition + "group by "
 				+ groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("mesInicio", Long.parseLong(mes01))
 				.setParameter("mesFim", Long.parseLong(mes02)).setParameter("ano", Long.parseLong(ano));
@@ -497,7 +497,7 @@ public class Vendas implements Serializable {
 		}
 		//  AND p.status = 'Y'
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.empresa = :empresa AND p.ano BETWEEN :anoInicio AND :anoFim AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition
+				+ "WHERE p.empresa = :empresa AND p.ano BETWEEN :anoInicio AND :anoFim AND p.status = 'Y' AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition
 				+ " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("anoInicio", Long.parseLong(ano01)).setParameter("anoFim",
 				Long.parseLong(ano02));
@@ -564,7 +564,7 @@ public class Vendas implements Serializable {
 		}
 		// AND p.status = 'Y'
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.empresa = :empresa AND p.dataVenda BETWEEN :dataInicio AND :dataFim AND p.ajuste = 'N' "
+				+ "WHERE p.empresa = :empresa AND p.dataVenda BETWEEN :dataInicio AND :dataFim AND p.status = 'Y' AND p.ajuste = 'N' "
 				/*
 				 * + "WHERE p.ano BETWEEN :anoInicio AND :anoFim " +
 				 * "AND p.mes BETWEEN :mesInicio AND :mesFim " +
@@ -663,7 +663,7 @@ public class Vendas implements Serializable {
 		}
 		// AND p.status = 'Y' 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.empresa = :empresa AND p.semana = :semanaInicio " + "AND p.ano = :ano AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition
+				+ "WHERE p.empresa = :empresa AND p.semana = :semanaInicio " + "AND p.ano = :ano AND p.status = 'Y'  AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition
 				+ " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("semanaInicio", Long.parseLong(semana01.replace("W", "")))
 				.setParameter("ano", Long.parseLong(ano));
@@ -729,7 +729,7 @@ public class Vendas implements Serializable {
 		}
 		// AND p.status = 'Y' 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.empresa = :empresa AND p.mes = :mesInicio " + "AND p.ano = :ano AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition
+				+ "WHERE p.empresa = :empresa AND p.mes = :mesInicio " + "AND p.ano = :ano AND p.status = 'Y' AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition
 				+ " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("mesInicio", Long.parseLong(mes01)).setParameter("ano",
 				Long.parseLong(ano));
@@ -789,7 +789,7 @@ public class Vendas implements Serializable {
 		}
 		//  AND p.status = 'Y'
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.empresa = i.compra.empresa AND p.empresa = :empresa AND i.compra.mes BETWEEN :mesInicio AND :mesFim " + "AND i.compra.ano = :ano AND p.ajuste = 'N' " + condition
+				+ "WHERE p.empresa = i.compra.empresa AND p.empresa = :empresa AND i.compra.mes BETWEEN :mesInicio AND :mesFim " + "AND i.compra.ano = :ano AND p.status = 'Y' AND p.ajuste = 'N' " + condition
 				+ "group by " + groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("mesInicio", Long.parseLong(mes01))
 				.setParameter("mesFim", Long.parseLong(mes02)).setParameter("ano", Long.parseLong(ano));
@@ -851,7 +851,7 @@ public class Vendas implements Serializable {
 		}
 		// AND p.status = 'Y' 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.empresa = :empresa AND p.ano = :anoInicio AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition + " order by "
+				+ "WHERE p.empresa = :empresa AND p.ano = :anoInicio AND p.status = 'Y' AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition + " order by "
 				+ orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("anoInicio", Long.parseLong(ano01));
 

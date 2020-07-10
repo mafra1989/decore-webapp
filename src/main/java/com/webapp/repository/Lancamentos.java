@@ -126,6 +126,7 @@ public class Lancamentos implements Serializable {
 		return q.getResultList();
 	}
 
+	/* DEPRECIADO */
 	public Number totalDebitos() {
 		String jpql = "SELECT sum(i.valor) FROM Lancamento i WHERE i.categoriaLancamento.tipoLancamento.origem = :origemLancamento";
 		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.DEBITO);
@@ -145,6 +146,7 @@ public class Lancamentos implements Serializable {
 		return count;
 	}
 
+	/* DEPRECIADO */
 	public Number totalCreditos() {
 		String jpql = "SELECT sum(i.valor) FROM Lancamento i WHERE i.categoriaLancamento.tipoLancamento.origem = :origemLancamento";
 		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.CREDITO);
@@ -164,6 +166,7 @@ public class Lancamentos implements Serializable {
 		return count;
 	}
 
+	/* DEPRECIADO */
 	public Number totalDeReceitasPorDia(Long dia, Long mes, Long ano) {
 		String jpql = "SELECT sum(i.valor) FROM Lancamento i WHERE i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.dia = :dia AND i.mes = :mes AND i.ano = :ano AND UPPER(i.categoriaLancamento.tipoLancamento.descricao) = 'RECEITAS'";
 		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.CREDITO)
@@ -177,6 +180,7 @@ public class Lancamentos implements Serializable {
 		return count;
 	}
 
+	/* DEPRECIADO */
 	public Number totalDeReceitasPorSemana(Long semana, Long ano) {
 		String jpql = "SELECT sum(i.valor) FROM Lancamento i WHERE i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.semana = :semana AND i.ano = :ano AND UPPER(i.categoriaLancamento.tipoLancamento.descricao) = 'RECEITAS'";
 		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.CREDITO)
@@ -190,6 +194,7 @@ public class Lancamentos implements Serializable {
 		return count;
 	}
 
+	/* DEPRECIADO */
 	public Number totalDeReceitasPorAno(Long ano) {
 		String jpql = "SELECT sum(i.valor) FROM Lancamento i WHERE i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.ano = :ano AND UPPER(i.categoriaLancamento.tipoLancamento.descricao) = 'RECEITAS'";
 		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.CREDITO)
@@ -203,6 +208,7 @@ public class Lancamentos implements Serializable {
 		return count;
 	}
 
+	/* DEPRECIADO */
 	public Number totalDeReceitasPorMes(Long mes, Long ano) {
 		String jpql = "SELECT sum(i.valor) FROM Lancamento i WHERE i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.mes = :mes AND i.ano = :ano AND UPPER(i.categoriaLancamento.tipoLancamento.descricao) = 'RECEITAS'";
 		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.CREDITO)
@@ -216,6 +222,7 @@ public class Lancamentos implements Serializable {
 		return count;
 	}
 
+	/* DEPRECIADO */
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalDespesasPorData(Calendar calendarStart, Calendar calendarStop,
 			CategoriaLancamento categoriaLancamento, boolean chartCondition) {
@@ -277,6 +284,7 @@ public class Lancamentos implements Serializable {
 		return result;
 	}
 
+	/* DEPRECIADO */
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalDespesasPorSemana(String ano, String semana01, String semana02,
 			CategoriaLancamento categoriaLancamento, boolean chartCondition) {
@@ -319,6 +327,7 @@ public class Lancamentos implements Serializable {
 		return result;
 	}
 
+	/* DEPRECIADO */
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalDespesasPorMes(String ano, String mes01, String mes02,
 			CategoriaLancamento categoriaLancamento, boolean chartCondition) {
@@ -361,6 +370,7 @@ public class Lancamentos implements Serializable {
 		return result;
 	}
 
+	/* DEPRECIADO */
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalDespesasPorAno(String ano01, String ano02, CategoriaLancamento categoriaLancamento,
 			boolean chartCondition) {
@@ -403,6 +413,7 @@ public class Lancamentos implements Serializable {
 		return result;
 	}
 
+	/* DEPRECIADO */
 	public Number totalDespesasPorData(Number dia, Number mes, Number ano) {
 
 		String condition = "";
@@ -439,6 +450,7 @@ public class Lancamentos implements Serializable {
 		return value;
 	}
 
+	/* DEPRECIADO */
 	public Number totalDespesasPorSemana(Number semana, Number ano) {
 
 		String condition = "";
@@ -474,6 +486,7 @@ public class Lancamentos implements Serializable {
 		return value;
 	}
 
+	/* DEPRECIADO */
 	public Number totalDespesasPorMes(Number mes, Number ano) {
 
 		String condition = "";
@@ -508,6 +521,7 @@ public class Lancamentos implements Serializable {
 		return value;
 	}
 
+	/* DEPRECIADO */
 	public Number totalDespesasPorAno(Number ano) {
 
 		String condition = "";
