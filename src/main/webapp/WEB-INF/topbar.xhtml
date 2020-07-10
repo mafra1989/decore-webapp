@@ -62,7 +62,7 @@ body #pecaDialog .ui-datatable .ui-datatable-data>tr td {
 								</p:commandLink>
 							</h:form></li>
 						<li role="menuitem"><h:form>
-								<p:link href="/j_spring_security_logout">
+								<p:link href="/logout">
 									<i class="fa fa-fw fa-sign-out"></i> Sair
 								</p:link>
 							</h:form></li>
@@ -70,7 +70,7 @@ body #pecaDialog .ui-datatable .ui-datatable-data>tr td {
 
 				
 			</ul>
-			
+							
 			<ui:fragment id="photo-mobile"
 						rendered="#{seguranca.urlImagem != null}">
 						<img class="topbar-menu-btn"
@@ -81,6 +81,7 @@ body #pecaDialog .ui-datatable .ui-datatable-data>tr td {
 			<p:graphicImage rendered="#{seguranca.urlImagem == null}" styleClass="topbar-menu-btn"
 					style="width: 40px;height: 40px;border-radius: 100px;"
 							name="images/user-icon.png" library="manhattan-layout" />
+							
 		</div>
 	</div>
 

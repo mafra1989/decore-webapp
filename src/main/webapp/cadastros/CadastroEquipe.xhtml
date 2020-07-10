@@ -275,7 +275,6 @@
 			<h:form id="form-dialog">
 
 				<div class="ui-fluid">
-					<p:defaultCommand target="btn-salvar" />
 
 					<div class="card card-w-title ui-fluid"
 						style="padding: 0px 5px 0px 5px; padding-bottom: 0px !important">
@@ -296,9 +295,9 @@
 									<p:inputText id="funcao"
 										value="#{cadastroEquipeBean.usuario.funcao}" />
 										
-									<p:outputLabel value="Empresa" for="empresa" />
+									<p:outputLabel value="Empresa" for="empresa" rendered="false" />
 									<p:selectOneMenu id="empresa" value="#{cadastroEquipeBean.usuario.empresa}"
-										placeholder="selecione">
+										placeholder="selecione" rendered="false">
 
 										<f:selectItem itemLabel="Selecione" />
 

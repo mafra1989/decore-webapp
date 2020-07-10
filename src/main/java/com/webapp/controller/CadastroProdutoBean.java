@@ -23,6 +23,7 @@ import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.CategoriaProduto;
 import com.webapp.model.Fornecedor;
+import com.webapp.model.Grupo;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.Produto;
@@ -78,9 +79,21 @@ public class CadastroProdutoBean implements Serializable {
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
 			
-			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();		
 			usuario = usuarios.porNome(user.getUsername());
+			
+			List<Grupo> grupos = usuario.getGrupos();
+			
+			if(grupos.size() > 0) {
+				for (Grupo grupo : grupos) {
+					if(grupo.getNome().equals("ADMINISTRADOR")) {
+						EmpresaBean empresaBean = (EmpresaBean) FacesUtil.getObjectSession("empresaBean");
+						if(empresaBean != null && empresaBean.getEmpresa() != null) {
+							usuario.setEmpresa(empresaBean.getEmpresa());
+						}
+					}
+				}
+			}
 			
 			todasCategoriasProdutos();
 			todosFornecedores();

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<f:metadata>
+	<f:viewParam name="dummy" />
+	<f:event listener="#{loginBean.preRender}" type="preRenderView" />
+</f:metadata>
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	<title>Login</title>
+
+	<h:outputStylesheet name="css/main.css" library="login" />
+
+	<style type="text/css">
+body .ui-inputfield.ui-state-focus:not(.ui-state-error) {
+    border: none !important;
+    box-shadow: none;
+}
+body .ui-inputfield.ui-state-hover:not(.ui-state-error) {
+   	border: none !important;
+   	box-shadow: none;
+}
+.wrap-login100 {
+	width: 580px !important;
+}
+
+.login100-form-title {
+	padding: 0px !important;
+}
+
+.alert-validate::before {
+	font-family: verdana !important;
+}
+
+body .ui-inputfield {
+	border: none;
+}
+
+body .ui-inputfield.ui-state-hover:not (.ui-state-error ){
+	border: none;
+}
+
+body .ui-inputfield.ui-state-focus:not (.ui-state-error ){
+	border: none;
+	box-shadow: none;
+}
+
+.ui-growl-message p {
+	font-family: verdana !important;
+}
+
+body .ui-panel .ui-panel-content {
+	padding: 0px;
+}
+
+@media ( min-width :220px) {
+	.input100 {
+		margin-top: 5px;
+		padding: 0px;
+	}
+	.wrap-login100 {
+		border-radius: 0px;
+	}
+	.login100-form {
+		padding: 16px 35px 22px 35px;
+	}
+	.m-b-26 {
+		margin-bottom: 15px;
+	}
+	input.input100 {
+		height: 38px;
+	}
+	.container-login100 {
+		font-family: verdana;
+		font-weight: bold;
+	}
+	.limiter {
+		height: 100%;
+	}
+	.container-login100 {
+		height: 100%;
+	}
+	.wrap-login100 {
+		margin-top: -200px;
+	}
+}
+
+@media ( min-width :460px) {
+	.input100 {
+		margin-top: 13px;
+	}
+	.wrap-login100 {
+		margin-top: 0px;
+	}
+	.login100-form {
+		padding: 25px 100px 50px 150px;
+	}
+	img {
+		max-height: 120px;
+	}
+	.wrap-login100 {
+		border-radius: 10px;
+	}
+}
+</style>
+</h:head>
+
+
+<h:body>
+
+	<div class="limiter">
+		<div class="container-login100"
+			style="background: #363738d1 !important;">
+			<div class="wrap-login100">
+				<div class="login100-form-title">
+					<p:graphicImage library="login" name="images/bg-01.jpg"
+						style="width: inherit;" />
+				</div>
+
+				<p:panel id="progressPanel" widgetVar="progressPanel"
+					visible="false" 
+					style="border:none; background-color:transparent; border:none; padding-bottom:1px;width: 100%;float: right;position: absolute;"
+					closable="true" toggleable="true">
+					<p:progressBar style="height:4px;" mode="indeterminate"
+						animationDuration="3" interval="3" />
+				</p:panel>
+
+				<h:form id="form" prependId="false"
+					styleClass="login100-form validate-form">
+
+					<p:growl id="msgs" closable="true" life="3000" showDetail="true"
+						style="font-family: verdana;" />
+
+					<div class="wrap-input100 validate-input m-b-26 input100"
+						data-validate="Username is required">
+						<span class="label-input100">Username</span>
+						<p:inputText id="j_username" placeholder="Enter username"
+							style="font-family: verdana;" name="username" required="true"
+							styleClass="input100" autocomplete="off" />
+						<span class="focus-input100"></span>
+					</div>
+
+					<div class="wrap-input100 validate-input m-b-18"
+						data-validate="Password is required">
+						<span class="label-input100">Password</span>
+						<p:password style="font-family: verdana;" id="j_password" required="true"
+							name="pass" styleClass="input100" placeholder="Enter password"
+							feedback="false"></p:password>
+						<span class="focus-input100"></span>
+					</div>
+
+					<div class="container-login100-form-btn">
+						<p:commandButton value="Login" id="loginBtn" widgetVar="loginBtn"
+							style="background: #a0800a;border-radius: 30px;margin-top: 15px;"
+							action="#{loginBean.acessar}" styleClass="login100-form-btn"
+							ajax="false">
+
+							<p:ajax onstart="PF('progressPanel').show();" 
+								oncomplete="PF('progressPanel').close();" />
+						</p:commandButton>
+
+					</div>
+
+				</h:form>
+
+			</div>
+		</div>
+	</div>
+
+
+	<h:outputScript target="body" library="login" name="js/main.js" />
+
+</h:body>
+</html>

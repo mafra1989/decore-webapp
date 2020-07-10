@@ -46,6 +46,9 @@ public class CadastroEquipeBean implements Serializable {
 	@Inject
 	private Usuario usuario;
 	
+	@Inject
+	private Usuario usuario_;
+	
 	private List<Usuario> todosUsuarios;
 	
 	@Inject
@@ -72,9 +75,21 @@ public class CadastroEquipeBean implements Serializable {
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
 			
-			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();			
+			usuario_ = usuarios.porNome(user.getUsername());
 			
-			usuario = usuarios.porNome(user.getUsername());
+			List<Grupo> grupos = usuario_.getGrupos();
+			
+			if(grupos.size() > 0) {
+				for (Grupo grupo : grupos) {
+					if(grupo.getNome().equals("ADMINISTRADOR")) {
+						EmpresaBean empresaBean = (EmpresaBean) FacesUtil.getObjectSession("empresaBean");
+						if(empresaBean != null && empresaBean.getEmpresa() != null) {
+							usuario_.setEmpresa(empresaBean.getEmpresa());
+						}
+					}
+				}
+			}
 			
 			listarTodos();
 		}
@@ -102,6 +117,8 @@ public class CadastroEquipeBean implements Serializable {
 	}
 
 	public void salvar() {
+		
+		usuario.setEmpresa(usuario_.getEmpresa());
 
 		try {
 			
@@ -177,12 +194,13 @@ public class CadastroEquipeBean implements Serializable {
 	}
 
 	public void pesquisar() {
+		filtro.setEmpresa(usuario_.getEmpresa());
 		todosUsuarios = usuarios.filtrados(filtro);
 		membroSelecionado = null;
 	}
 
 	private void listarTodos() {
-		todosUsuarios = usuarios.todos(usuario.getEmpresa());
+		todosUsuarios = usuarios.todos(usuario_.getEmpresa());
 		todosGrupos = grupos.todos();
 		todasEmpresas = empresas.todos();
 	}

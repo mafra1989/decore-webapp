@@ -23,7 +23,9 @@ import javax.faces.bean.SessionScoped;
 @SessionScoped
 public class GuestPreferences implements Serializable {
         
-    private String theme = "blue";
+	private static final long serialVersionUID = 1L;
+	
+	private String theme = "blue";
                             
 	public String getTheme() {		
 		return theme;

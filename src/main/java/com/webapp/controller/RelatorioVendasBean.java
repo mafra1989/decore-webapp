@@ -32,6 +32,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.CategoriaProduto;
+import com.webapp.model.Grupo;
 import com.webapp.model.Produto;
 import com.webapp.model.Target;
 import com.webapp.model.Usuario;
@@ -41,6 +42,7 @@ import com.webapp.repository.Produtos;
 import com.webapp.repository.Targets;
 import com.webapp.repository.Usuarios;
 import com.webapp.repository.Vendas;
+import com.webapp.util.jsf.FacesUtil;
 
 @Named
 @ViewScoped
@@ -189,9 +191,21 @@ public class RelatorioVendasBean implements Serializable {
 	@PostConstruct
 	public void init() {
 		
-		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		
+		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();	
 		usuario = usuarios.porNome(user.getUsername());
+		
+		List<Grupo> grupos = usuario.getGrupos();
+		
+		if(grupos.size() > 0) {
+			for (Grupo grupo : grupos) {
+				if(grupo.getNome().equals("ADMINISTRADOR")) {
+					EmpresaBean empresaBean = (EmpresaBean) FacesUtil.getObjectSession("empresaBean");
+					if(empresaBean != null && empresaBean.getEmpresa() != null) {
+						usuario.setEmpresa(empresaBean.getEmpresa());
+					}
+				}
+			}
+		}
 		
 		listarTodasCategoriasProdutos();
 
@@ -933,12 +947,15 @@ public class RelatorioVendasBean implements Serializable {
 	}
 
 	public void prepareDonutModelPorDia() {
-
+		
 		Calendar calendarStart = Calendar.getInstance();
 		calendarStart.setTime(dateStart);
+		calendarStart = DateUtils.truncate(calendarStart, Calendar.DAY_OF_MONTH);
 
 		Calendar calendarStop = Calendar.getInstance();
 		calendarStop.setTime(dateStop);
+		calendarStop.add(Calendar.DAY_OF_MONTH, 1);
+		calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);
 
 		List<Object[]> result = vendas.totalVendasPorData(calendarStart, calendarStop, categoriaPorDia,
 				categoriasPorDia, produto01, usuarioPorDia, false, usuario.getEmpresa());

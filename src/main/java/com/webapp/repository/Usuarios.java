@@ -41,8 +41,8 @@ public class Usuarios implements Serializable {
 	}
 
 	public List<Usuario> filtrados(UsuarioFilter filter) {
-		return this.manager.createQuery("from Usuario i where i.nome like :nome order by nome", Usuario.class)
-				.setParameter("nome", "%" + filter.getNome() + "%").getResultList();
+		return this.manager.createQuery("from Usuario i where i.empresa = :empresa AND i.nome like :nome order by nome", Usuario.class)
+				.setParameter("empresa", filter.getEmpresa()).setParameter("nome", "%" + filter.getNome() + "%").getResultList();
 	}
 
 	public Usuario porLogin(String login) {

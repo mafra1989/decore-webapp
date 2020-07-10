@@ -20,6 +20,7 @@ import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.Compra;
 import com.webapp.model.Conta;
+import com.webapp.model.Grupo;
 import com.webapp.model.Lancamento;
 import com.webapp.model.OrigemConta;
 import com.webapp.model.TipoOperacao;
@@ -78,9 +79,21 @@ public class ConsultaContasBean implements Serializable {
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
 			// todosUsuarios = usuarios.todos();
-			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();	
 			usuario = usuarios.porNome(user.getUsername());
+			
+			List<Grupo> grupos = usuario.getGrupos();
+			
+			if(grupos.size() > 0) {
+				for (Grupo grupo : grupos) {
+					if(grupo.getNome().equals("ADMINISTRADOR")) {
+						EmpresaBean empresaBean = (EmpresaBean) FacesUtil.getObjectSession("empresaBean");
+						if(empresaBean != null && empresaBean.getEmpresa() != null) {
+							usuario.setEmpresa(empresaBean.getEmpresa());
+						}
+					}
+				}
+			}
 		}
 	}
 

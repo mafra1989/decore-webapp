@@ -1,0 +1,108 @@
+body .ui-inputfield.ui-state-focus:not(.ui-state-error) {
+    border: none !important;
+    box-shadow: none;
+}
+body .ui-inputfield.ui-state-hover:not(.ui-state-error) {
+   	border: none !important;
+   	box-shadow: none;
+}
+.wrap-login100 {
+	width: 580px !important;
+}
+
+.login100-form-title {
+	padding: 0px !important;
+}
+
+.alert-validate::before {
+	font-family: verdana !important;
+}
+
+body .ui-inputfield {
+	border: none;
+	box-shadow: none !important;;
+}
+
+body .ui-inputfield.ui-state-hover:not (.ui-state-error ){
+	border: none;
+}
+
+body .ui-inputfield.ui-state-focus:not (.ui-state-error ){
+	border: none;
+	box-shadow: none;
+}
+
+.ui-growl-message p {
+	font-family: verdana !important;
+}
+
+body .ui-panel .ui-panel-content {
+	padding: 0px;
+}
+
+@media ( min-width :220px) {
+	body .ui-messages .ui-messages-error {
+	    font-size: 11px !important;
+	    /*text-align: center;*/
+	}
+	
+	.ui-messages-info, .ui-messages-warn, .ui-messages-error, .ui-messages-fatal {
+    	margin: 0px !important;;
+	}
+
+	.input100 {
+		margin-top: 5px;
+		padding: 0px;
+		font-size: 12px;
+	}
+	.wrap-login100 {
+		border-radius: 0px;
+	}
+	.login100-form {
+		padding: 16px 35px 22px 35px;
+	}
+	.m-b-26 {
+		margin-bottom: 15px;
+	}
+	input.input100 {
+		height: 38px;
+		font-size: 12px;
+	}
+	.container-login100 {
+		font-family: verdana;
+		font-weight: bold;
+	}
+	.limiter {
+		height: 100%;
+	}
+	.container-login100 {
+		height: 100%;
+	}
+	.wrap-login100 {
+		margin-top: -20px;
+	}
+}
+
+@media ( min-width :460px) {
+	.input100 {
+		margin-top: 13px;
+	}
+	.wrap-login100 {
+		margin-top: 0px;
+	}
+	.login100-form {
+		padding: 25px 100px 50px 150px;
+	}
+	img {
+		max-height: 120px;
+	}
+	.wrap-login100 {
+		border-radius: 10px;
+	}
+	/*body .ui-messages .ui-messages-error {
+	    font-size: 11px !important;
+	    text-align: left;
+	}*/
+}
+
+

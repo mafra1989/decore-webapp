@@ -2,6 +2,8 @@ package com.webapp.util.jsf;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 public class FacesUtil {
 
@@ -26,6 +28,12 @@ public class FacesUtil {
 	public static void addInfoMessage(String message) {
 		FacesContext.getCurrentInstance().addMessage(null, 
 				new FacesMessage(FacesMessage.SEVERITY_INFO, message, message));
+	}
+	
+	public static <T> Object getObjectSession(String attribute){		
+		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();  
+		HttpSession session = request.getSession(true);  
+		return session.getAttribute(attribute);				
 	}
 	
 }

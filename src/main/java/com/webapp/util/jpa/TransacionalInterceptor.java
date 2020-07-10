@@ -2,7 +2,6 @@ package com.webapp.util.jpa;
 
 import java.io.Serializable;
 
-import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
@@ -12,7 +11,7 @@ import javax.persistence.EntityTransaction;
 
 @Interceptor
 @Transacional
-@Priority(Interceptor.Priority.APPLICATION)
+//@Priority(Interceptor.Priority.APPLICATION)
 public class TransacionalInterceptor implements Serializable {
 
     private static final long serialVersionUID = 1L;

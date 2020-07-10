@@ -28,6 +28,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.CategoriaLancamento;
+import com.webapp.model.Grupo;
 import com.webapp.model.Lancamento;
 import com.webapp.model.OrigemLancamento;
 import com.webapp.model.Produto;
@@ -38,6 +39,7 @@ import com.webapp.repository.Contas;
 import com.webapp.repository.Lancamentos;
 import com.webapp.repository.Targets;
 import com.webapp.repository.Usuarios;
+import com.webapp.util.jsf.FacesUtil;
 
 @Named
 @ViewScoped
@@ -175,9 +177,22 @@ public class RelatorioLancamentosBean implements Serializable {
 	
 	@PostConstruct
 	public void init() {
-		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		
+		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		usuario = usuarios.porNome(user.getUsername());
+		
+		List<Grupo> grupos = usuario.getGrupos();
+		
+		if(grupos.size() > 0) {
+			for (Grupo grupo : grupos) {
+				if(grupo.getNome().equals("ADMINISTRADOR")) {
+					EmpresaBean empresaBean = (EmpresaBean) FacesUtil.getObjectSession("empresaBean");
+					if(empresaBean != null && empresaBean.getEmpresa() != null) {
+						usuario.setEmpresa(empresaBean.getEmpresa());
+					}
+				}
+			}
+		}
 		
 		todosUsuarios = usuarios.todos(usuario.getEmpresa());
 		listarTodasCategoriasLancamentos();

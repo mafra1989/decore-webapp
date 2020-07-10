@@ -1,5 +1,7 @@
 package com.webapp.security;
 
+import java.util.List;
+
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import javax.faces.context.ExternalContext;
@@ -9,6 +11,10 @@ import javax.inject.Named;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
+import com.webapp.controller.EmpresaBean;
+import com.webapp.model.Grupo;
+import com.webapp.util.jsf.FacesUtil;
+
 @Named
 @RequestScoped
 public class Seguranca {
@@ -17,6 +23,7 @@ public class Seguranca {
 	private ExternalContext externalContext;
 
 	private String urlImagem;
+	
 
 	public String getNomeUsuario() {
 		String nome = null;
@@ -59,6 +66,19 @@ public class Seguranca {
 
 		if (auth != null && auth.getPrincipal() != null) {
 			usuario = (UsuarioSistema) auth.getPrincipal();
+		}
+		
+		List<Grupo> grupos = usuario.getUsuario().getGrupos();
+		
+		if(grupos.size() > 0) {
+			for (Grupo grupo : grupos) {
+				if(grupo.getNome().equals("ADMINISTRADOR")) {
+					EmpresaBean empresaBean = (EmpresaBean) FacesUtil.getObjectSession("empresaBean");
+					if(empresaBean != null && empresaBean.getEmpresa() != null) {
+						usuario.getUsuario().setEmpresa(empresaBean.getEmpresa());
+					}
+				}
+			}
 		}
 
 		return usuario;

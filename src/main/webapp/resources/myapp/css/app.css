@@ -1,0 +1,528 @@
+/* My configurations */
+.layout-wrapper .layout-main .layout-content {
+	padding: 60px 17px 24px 17px;
+}
+
+.layout-wrapper.layout-wrapper-static .layout-main .layout-topbar .layout-topbar-menu-wrapper .topbar-menu.topbar-menu-active
+	{
+	right: 0px;
+}
+
+.layout-wrapper .layout-main .layout-topbar .layout-topbar-menu-wrapper .topbar-menu>li:nth-child(1)>ul
+	{
+	right: 18px;
+}
+
+/* DASHBOARD */
+.aw-box {
+	padding: 20px;
+	border: 1px solid #eee;
+	border-bottom: 3px solid #1e94d2
+}
+
+.aw-box__icon {
+	color: #1e94d2;
+	float: left;
+}
+
+.aw-box__value {
+	font-size: 1.69em;
+	font-weight: 300;
+	text-align: right
+}
+
+.aw-box__title {
+	display: block;
+	font-size: 1em;
+	font-weight: 600;
+	text-align: right
+}
+
+/* LOGIN */
+.login-body .login-panel .right-side {
+	float: right;
+}
+
+.login-body .login-panel .ui-g-6 {
+	float: left;
+}
+
+@media ( max-width : 640px) {
+	.login-body .login-panel .right-side {
+		width: 100%;
+	}
+}
+
+/* PANELGRID */
+.ui-panelgrid.panelgrid-noborder .ui-grid-responsive {
+	border: none;
+}
+
+/* AUTOCOMPLETE - BAIRRO */
+.ui-outputlabel-rfi {
+	display: none;
+}
+
+.ui-autocomplete-input {
+	text-transform: uppercase;
+}
+
+/* AUTOCOMPLETE - CID 10 */
+.ui-autocomplete-panel {
+	width: 300px !important;
+}
+
+/* TABELA DIAGNOSTICO - CAMPO CID10 */
+.cid10:hover {
+	text-decoration: underline !important;
+}
+
+.ui-datatable tbody td {
+	border-color: inherit;
+	height: 28px;
+}
+
+/* MENSAGEM RESULTADO PESQUISA */
+.ui-growl {
+	margin-top: -11px;
+	margin-right: -3px;
+}
+
+/* COMPONENT DISABLE */ /*
+.disabled .ui-state-disabled {
+	opacity: 0.9 !important;
+}*/
+
+/* PÁGINAS 403, 404, 500 */
+.exception-body .exception-panel {
+	width: 400px;
+	text-align: center;
+	left: 50%;
+	top: 40%;
+}
+
+.ui-spinner-input {
+	text-align: left;
+	font-size: 14px;
+	font-family: "Source Sans Pro", "Helvetica Neue", sans-serif;
+}
+
+.aw-layout-loading {
+	position: fixed;
+	z-index: 9998;
+	display: none;
+	width: 100%;
+	height: 100%;
+	padding-bottom: 65px;
+	text-align: center;
+	margin-left: -160px;
+	margin-top: -150px;
+}
+
+.aw-layout-loading__container {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+/*--------------*\
+  Balls Spinner
+\*--------------*/
+@
+-moz-keyframes aw-balls-spinner { 0% {
+	-moz-transform: rotate(-720deg);
+	transform: rotate(-720deg);
+}
+
+50%
+{
+-moz-transform
+
+
+:
+
+ 
+
+rotate
+
+
+(720
+deg
+);
+
+
+    
+
+transform
+
+
+:
+
+ 
+
+rotate
+
+
+(720
+deg
+);
+
+
+  
+
+}
+}
+@
+-webkit-keyframes aw-balls-spinner { 0% {
+	-webkit-transform: rotate(-720deg);
+	transform: rotate(-720deg);
+}
+
+50%
+{
+-webkit-transform
+
+
+:
+
+ 
+
+rotate
+
+
+(720
+deg
+);
+
+
+    
+
+transform
+
+
+:
+
+ 
+
+rotate
+
+
+(720
+deg
+);
+
+
+  
+
+}
+}
+@
+keyframes aw-balls-spinner { 0% {
+	-moz-transform: rotate(-720deg);
+	-ms-transform: rotate(-720deg);
+	-webkit-transform: rotate(-720deg);
+	transform: rotate(-720deg);
+}
+
+50%
+{
+-moz-transform
+
+
+:
+
+ 
+
+rotate
+
+
+(720
+deg
+);
+
+
+    
+
+-ms-transform
+
+
+:
+
+ 
+
+rotate
+
+
+(720
+deg
+);
+
+
+    
+
+-webkit-transform
+
+
+:
+
+ 
+
+rotate
+
+
+(720
+deg
+);
+
+
+    
+
+transform
+
+
+:
+
+ 
+
+rotate
+
+
+(720
+deg
+);
+
+
+  
+
+}
+}
+
+/* :not(:required) hides this rule from IE9 and below */
+.aw-balls-spinner
+:not
+ 
+(
+:required
+ 
+)
+{
+position
+:
+ 
+relative
+;
+
+	
+display
+:
+ 
+inline-block
+;
+
+	
+width
+:
+ 
+65
+px
+;
+
+	
+height
+:
+ 
+65
+px
+;
+
+	
+opacity
+:
+ 
+0
+.8
+;
+
+	
+border-radius
+:
+ 
+100%;
+background
+:
+ 
+#1e94d2
+;
+
+	
+text-indent
+:
+ 
+-9999
+px
+;
+
+	
+-moz-animation
+:
+ 
+aw-balls-spinner
+ 
+3
+s
+ 
+infinite
+ 
+ease-in-out
+;
+
+	
+-webkit-animation
+:
+ 
+aw-balls-spinner
+ 
+3
+s
+ 
+infinite
+ 
+ease-in-out
+;
+
+	
+animation
+:
+ 
+aw-balls-spinner
+ 
+3
+s
+ 
+infinite
+ 
+ease-in-out
+;
+
+	
+-moz-transform-origin
+:
+ 
+50%
+100%;
+-ms-transform-origin
+:
+ 
+50%
+100%;
+-webkit-transform-origin
+:
+ 
+50%
+100%;
+transform-origin
+:
+ 
+50%
+100%;
+}
+.aw-balls-spinner:not (:required )::before {
+	position: absolute;
+	top: 48.75px;
+	left: -28.145832px;
+	opacity: 0.8;
+	border-radius: 100%;
+	width: 65px;
+	height: 65px;
+	background: #99d2f0;
+	content: '';
+}
+
+.aw-balls-spinner:not (:required )::after {
+	position: absolute;
+	top: 48.75px;
+	left: 28.145832px;
+	opacity: 0.8;
+	border-radius: 100%;
+	width: 65px;
+	height: 65px;
+	background: #1875a5;
+	content: '';
+}
+
+.card {
+	padding: 10px 0px 12px 10px;
+}
+
+.dashboard .overview-box {
+	margin-top: 10px;
+}
+
+@media ( min-width :220px) {
+	.dashboard .ui-panelgrid .ui-panelgrid-cell {
+		padding: 2px 5px;
+	}
+	body .ui-inputfield {
+		font-size: 13px;
+		padding: 5px;
+	}
+	.dashboard {
+		font-size: 13px;
+	}
+	.dashboard .overview-box .overview-box-content .overview-box-title {
+		font-size: 13px;
+		margin-bottom: 8px;
+	}
+	.dashboard .overview-box .overview-box-content .overview-box-stats {
+		font-size: 13px;
+	}
+	.dashboard .overview-box .overview-box-icon {
+		height: 35px;
+		width: 35px;
+	}
+	.dashboard .overview-box .overview-box-icon i {
+		line-height: initial;
+		font-size: 25px;
+	}
+	#password-dialog .ui-panelgrid .ui-panelgrid-cell {
+		padding: 5px 5px;
+	}
+	.swal2-popup .swal2-styled.swal2-cancel {
+		background-color: #dc3545;
+		border-color: #dc3545;
+	}
+	.swal2-popup .swal2-styled {
+		padding: 0.5em 0.8em !important;
+	}
+	.btn {
+		margin: 0 0 0.4em 0.5rem;
+    	padding: 0.5em 0.8em;
+		border: 0;
+		border-right-color: currentcolor;
+		border-left-color: currentcolor;
+		border-radius: .25em;
+		background: initial;
+		background-color: initial;
+		color: #fff;
+		font-size: 1.0625em;
+		cursor: pointer;
+	}
+	.btn:focus {
+		box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(50, 100, 150, .4);
+	}
+	.btn-success {
+		background-color: #28a745;
+	}
+	.btn-danger {
+		background-color: #dc3545;
+	}
+	.btn-success:hover {
+		background-color: #2d8f42;
+	}
+	.btn-danger:hover {
+		background-color: #ce3745;
+	}
+	
+	.reflow .ui-fluid .ui-button {
+    	visibility: hidden !important;
+	}
+}

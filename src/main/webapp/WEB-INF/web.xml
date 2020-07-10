@@ -4,34 +4,10 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
 	version="3.1">
 
-<!--
-	<context-param>
-		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
-		<param-value>server</param-value>
-	</context-param>
-	<context-param>
-		<param-name>javax.faces.PROJECT_STAGE</param-name>
-		<param-value>Development</param-value>
-	</context-param>
-	<context-param>
-		<param-name>javax.faces.FACELETS_REFRESH_PERIOD</param-name>
-		<param-value>0</param-value>
-	</context-param>
--->	
-	
-	<filter>
-		<filter-name>Character Encoding Filter</filter-name>
-		<filter-class>org.primefaces.manhattan.filter.CharacterEncodingFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>Character Encoding Filter</filter-name>
-		<servlet-name>Faces Servlet</servlet-name>
-	</filter-mapping>
-	
 
 	<context-param>
 		<param-name>primefaces.THEME</param-name>
-		<param-value>manhattan-#{guestPreferences.theme}</param-value>
+		<param-value>manhattan-blue</param-value>
 	</context-param>
 
 	<context-param>
@@ -39,22 +15,28 @@
 		<param-value>/WEB-INF/primefaces-manhattan.taglib.xml</param-value>
 	</context-param>
 
+
 	<context-param>
 		<param-name>primefaces.FONT_AWESOME</param-name>
 		<param-value>true</param-value>
 	</context-param>
 
 
-
-
 	<welcome-file-list>
 		<welcome-file>Login.xhtml</welcome-file>
 	</welcome-file-list>
+	
 
 	<error-page>
 		<error-code>404</error-code>
 		<location>/404.xhtml</location>
 	</error-page>
+
+	<error-page>
+		<exception-type>java.lang.Throwable</exception-type>
+		<location>/500.xhtml</location>
+	</error-page>
+
 
 	<resource-env-ref>
 		<resource-env-ref-name>BeanManager</resource-env-ref-name>
@@ -64,6 +46,7 @@
 	<listener>
 		<listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
 	</listener>
+	
 
 	<servlet>
 		<servlet-name>Faces Servlet</servlet-name>
@@ -74,18 +57,6 @@
 		<servlet-name>Faces Servlet</servlet-name>
 		<url-pattern>*.xhtml</url-pattern>
 	</servlet-mapping>
-
-	<mime-mapping>
-		<extension>woff</extension>
-		<mime-type>application/x-font-woff</mime-type>
-	</mime-mapping>
-
-	<mime-mapping>
-		<extension>woff2</extension>
-		<mime-type>application/x-font-woff2</mime-type>
-	</mime-mapping>
-
-
 
 
 	<mime-mapping>
@@ -132,32 +103,5 @@
 		<extension>svg#fontawesomeregular</extension>
 		<mime-type>image/svg+xml</mime-type>
 	</mime-mapping>
-	
-	
-
-	<session-config>
-		<session-timeout>600</session-timeout>
-	</session-config>
-
-
-
-	<listener>
-		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
-	<listener>
-		<listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
-	</listener>
-
-	<filter>
-		<filter-name>springSecurityFilterChain</filter-name>
-		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-	</filter>
-
-	<filter-mapping>
-		<filter-name>springSecurityFilterChain</filter-name>
-		<url-pattern>/*</url-pattern>
-		<dispatcher>FORWARD</dispatcher>
-		<dispatcher>REQUEST</dispatcher>
-	</filter-mapping>
 
 </web-app>

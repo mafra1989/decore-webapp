@@ -19,6 +19,7 @@ import org.springframework.security.core.userdetails.User;
 import com.webapp.model.CategoriaLancamento;
 import com.webapp.model.Conta;
 import com.webapp.model.DestinoLancamento;
+import com.webapp.model.Grupo;
 import com.webapp.model.Lancamento;
 import com.webapp.model.OrigemLancamento;
 import com.webapp.model.Usuario;
@@ -93,9 +94,22 @@ public class ConsultaLancamentosBean implements Serializable {
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
-			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();		
 			usuario_ = usuarios.porNome(user.getUsername());
+			
+			List<Grupo> grupos = usuario_.getGrupos();
+			
+			if(grupos.size() > 0) {
+				for (Grupo grupo : grupos) {
+					if(grupo.getNome().equals("ADMINISTRADOR")) {
+						EmpresaBean empresaBean = (EmpresaBean) FacesUtil.getObjectSession("empresaBean");
+						if(empresaBean != null && empresaBean.getEmpresa() != null) {
+							usuario_.setEmpresa(empresaBean.getEmpresa());
+						}
+					}
+				}
+			}
 			
 			todosUsuarios = usuarios.todos(usuario_.getEmpresa());
 			todasCategoriasDespesas = categoriasDespesas.todos();

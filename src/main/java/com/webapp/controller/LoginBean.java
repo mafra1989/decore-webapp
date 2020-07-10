@@ -3,8 +3,8 @@ package com.webapp.controller;
 import java.io.IOException;
 import java.io.Serializable;
 
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.RequestDispatcher;
@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.webapp.util.jsf.FacesUtil;
 
 @Named
-@ViewScoped
+@SessionScoped
 public class LoginBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -29,26 +29,27 @@ public class LoginBean implements Serializable {
 	@Inject
 	private HttpServletResponse response;
 	
+	private String username;
 
 	public void preRender() {
 		if ("true".equals(request.getParameter("invalid"))) {
-			FacesUtil.addErrorMessageLogin("Usuário ou senha inválido!");
+			FacesUtil.addErrorMessage("Usuário ou senha inválido!");
 		}
 	}
 	
-	public void acessar() throws ServletException, IOException {
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/j_spring_security_check");
+	public void login() throws ServletException, IOException {
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/Login.xhtml");
 		dispatcher.forward(request, response);
-
+		
 		facesContext.responseComplete();
 	}
-
-	public void sair() throws ServletException, IOException {
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/j_spring_security_logout");
-		dispatcher.forward(request, response);
-
-		facesContext.responseComplete();
+	
+	public String getUsername() {
+		return username;
 	}
 
+	public void setUsername(String username) {
+		this.username = username;
+	}
 	
 }
