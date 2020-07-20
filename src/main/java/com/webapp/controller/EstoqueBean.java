@@ -1,6 +1,7 @@
 package com.webapp.controller;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Base64;
@@ -131,6 +132,12 @@ public class EstoqueBean implements Serializable {
 			estoqueDisponivel = true;
 			filter.setDescricao("");
 		}
+		
+		boolean customedio = false;
+		if (filter.getDescricao().equalsIgnoreCase("Customedio")) {
+			customedio = true;
+			filter.setDescricao("");
+		}
 
 		filter.setEmpresa(usuario.getEmpresa());
 		produtosFiltrados = produtos.filtrados(filter);
@@ -247,6 +254,33 @@ public class EstoqueBean implements Serializable {
 
 			loop = true;
 			System.out.println("Total Disponível: " + totalDisponivel);
+		}
+		
+		
+		if (customedio && loop) {
+
+			loop = false;
+			for (Produto produto : produtosFiltrados) {
+				List<ItemCompra> itensCompra = itensCompras.porProduto(produto);
+
+				Long quantidadeDisponivel = 0L;
+				Double custo = 0D;
+
+				for (ItemCompra itemCompra : itensCompra) {
+
+					if(itemCompra.getQuantidadeDisponivel() > 0) {
+						quantidadeDisponivel += itemCompra.getQuantidadeDisponivel();
+						custo += itemCompra.getQuantidadeDisponivel().longValue() * itemCompra.getValorUnitario().doubleValue();
+					}
+
+				}
+
+				produto.setCustoTotal(new BigDecimal(custo));
+				produto.setCustoMedioUnitario(new BigDecimal(custo/quantidadeDisponivel));
+				produtos.save(produto);
+			}
+
+			loop = true;
 		}
 	}
 
