@@ -277,8 +277,11 @@ public class EstoqueBean implements Serializable {
 
 				}
 
-				produto.setCustoTotal(new BigDecimal(custo));
-				produto.setCustoMedioUnitario(new BigDecimal(custo/quantidadeDisponivel));
+				if(quantidadeDisponivel > 0) {
+					produto.setCustoTotal(new BigDecimal(custo));
+					produto.setCustoMedioUnitario(new BigDecimal(custo/quantidadeDisponivel));
+				}
+				
 				produtos.save(produto);
 				
 				System.out.println("Custo Médio Un.: " + produto.getCustoMedioUnitario());
