@@ -262,6 +262,8 @@ public class EstoqueBean implements Serializable {
 			loop = false;
 			for (Produto produto : produtosFiltrados) {
 				List<ItemCompra> itensCompra = itensCompras.porProduto(produto);
+				
+				System.out.println(produto.getCodigo());
 
 				Long quantidadeDisponivel = 0L;
 				Double custo = 0D;
@@ -278,6 +280,9 @@ public class EstoqueBean implements Serializable {
 				produto.setCustoTotal(new BigDecimal(custo));
 				produto.setCustoMedioUnitario(new BigDecimal(custo/quantidadeDisponivel));
 				produtos.save(produto);
+				
+				System.out.println("Custo Médio Un.: " + produto.getCustoMedioUnitario());
+				System.out.println("Custo Total: " + produto.getCustoTotal());
 			}
 
 			loop = true;
