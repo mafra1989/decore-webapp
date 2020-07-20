@@ -206,6 +206,20 @@ public class RegistroComprasBean implements Serializable {
 
 					Produto produto = produtos.porId(itemCompra.getProduto().getId());
 					produto.setQuantidadeAtual(produto.getQuantidadeAtual() + itemCompra.getQuantidade());
+					
+					System.out.println("Custo médio Un.: " + produto.getCustoMedioUnitario().doubleValue());
+					if(produto.getCustoMedioUnitario().doubleValue() > 0) {
+						/* Atualizar custo total */
+						produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemCompra.getQuantidade().longValue() * produto.getCustoMedioUnitario().doubleValue())));
+					} else {
+						/* Atualizar custo total e custo medio un. */
+						produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemCompra.getQuantidade().longValue() * itemCompra.getValorUnitario().doubleValue())));					
+						
+						Long saldo = (Long) itensCompras.saldoPorProduto(produto);
+						System.out.println(produto.getCustoTotal().doubleValue() + " / " + saldo.longValue());
+						produto.setCustoMedioUnitario(new BigDecimal(produto.getCustoTotal().doubleValue() / saldo.longValue()));
+					}
+					
 					produtos.save(produto);
 
 					totalDeItens += itemCompra.getQuantidade();
@@ -435,6 +449,31 @@ public class RegistroComprasBean implements Serializable {
 
 				Produto produto = produtos.porId(itemCompra.getProduto().getId());
 				produto.setQuantidadeAtual(produto.getQuantidadeAtual() + itemCompra.getQuantidade());
+						
+				System.out.println("Ajuste.: " + !compra.isAjuste());
+				if(!compra.isAjuste()) {
+					/* Atualizar custo total e custo medio un. */
+					produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemCompra.getQuantidade().longValue() * itemCompra.getValorUnitario().doubleValue())));					
+					
+					Long saldo = (Long) itensCompras.saldoPorProduto(produto);
+					System.out.println(produto.getCustoTotal().doubleValue() + " / " + saldo.longValue());
+					produto.setCustoMedioUnitario(new BigDecimal(produto.getCustoTotal().doubleValue() / saldo.longValue()));
+				
+				} else {
+					System.out.println("Custo médio Un.: " + produto.getCustoMedioUnitario().doubleValue());
+					if(produto.getCustoMedioUnitario().doubleValue() > 0) {
+						/* Atualizar custo total */
+						produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemCompra.getQuantidade().longValue() * produto.getCustoMedioUnitario().doubleValue())));
+					} else {
+						/* Atualizar custo total e custo medio un. */
+						produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemCompra.getQuantidade().longValue() * itemCompra.getValorUnitario().doubleValue())));					
+						
+						Long saldo = (Long) itensCompras.saldoPorProduto(produto);
+						System.out.println(produto.getCustoTotal().doubleValue() + " / " + saldo.longValue());
+						produto.setCustoMedioUnitario(new BigDecimal(produto.getCustoTotal().doubleValue() / saldo.longValue()));
+					}					
+				}
+				/**/
 				produtos.save(produto);
 
 				totalDeItens += itemCompra.getQuantidade();
@@ -541,24 +580,37 @@ public class RegistroComprasBean implements Serializable {
 	}
 
 	public void adicionarItem() {
-
+		
 		if (!itensCompra.contains(itemCompra)) {
-			itemCompra.setTotal(BigDecimal
-					.valueOf(itemCompra.getValorUnitario().doubleValue() * itemCompra.getQuantidade().longValue()));
-			itemCompra.setQuantidadeDisponivel(itemCompra.getQuantidade());
-			itemCompra.setCompra(compra);
-			itensCompra.add(itemCompra);
+			
+			if(itemCompra.getQuantidade() > 0) {
+				
+				if(itemCompra.getValorUnitario().doubleValue() >= 0) {
+					itemCompra.setTotal(BigDecimal
+							.valueOf(itemCompra.getValorUnitario().doubleValue() * itemCompra.getQuantidade().longValue()));
+					itemCompra.setQuantidadeDisponivel(itemCompra.getQuantidade());
+					itemCompra.setCompra(compra);
+					itensCompra.add(itemCompra);
 
-			compra.setValorTotal(
-					BigDecimal.valueOf(compra.getValorTotal().doubleValue() + itemCompra.getTotal().doubleValue()));
+					compra.setValorTotal(
+							BigDecimal.valueOf(compra.getValorTotal().doubleValue() + itemCompra.getTotal().doubleValue()));
 
-			itemCompra = new ItemCompra();
+					itemCompra = new ItemCompra();
+				} else {
+					
+					PrimeFaces.current()
+						.executeScript("swal({ type: 'error', title: 'Erro!', text: 'Valor unitário não pode ser menor que zero!' });");
+				}
+				
+			} else {
+				PrimeFaces.current()
+					.executeScript("swal({ type: 'error', title: 'Erro!', text: 'Quantidade não pode ser menor ou igual a zero!' });");
+			}
 
 		} else {
 			PrimeFaces.current()
 					.executeScript("swal({ type: 'error', title: 'Erro!', text: 'Produto já foi adicionado!' });");
 		}
-
 	}
 
 	public void removeItem() {

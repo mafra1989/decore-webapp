@@ -1,6 +1,7 @@
 package com.webapp.controller;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import com.webapp.model.Conta;
 import com.webapp.model.Grupo;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
+import com.webapp.model.ItemVendaCompra;
 import com.webapp.model.Produto;
 import com.webapp.model.Usuario;
 import com.webapp.repository.CategoriasProdutos;
@@ -29,6 +31,7 @@ import com.webapp.repository.Compras;
 import com.webapp.repository.Contas;
 import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
+import com.webapp.repository.ItensVendasCompras;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.Usuarios;
 import com.webapp.util.jsf.FacesUtil;
@@ -57,6 +60,9 @@ public class ConsultaComprasBean implements Serializable {
 
 	@Inject
 	private ItensVendas itensVendas;
+	
+	@Inject
+	private ItensVendasCompras itensVendasCompras;
 
 	@Inject
 	private ItensCompras itensCompras;
@@ -92,6 +98,8 @@ public class ConsultaComprasBean implements Serializable {
 	
 	private List<Produto> todosProdutos;
 	
+	private String empresa = "";
+	
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -115,6 +123,13 @@ public class ConsultaComprasBean implements Serializable {
 			todosUsuarios = usuarios.todos(usuario_.getEmpresa());
 			
 			listarTodasCategoriasProdutos();
+			
+			if(!empresa.equals(usuario_.getEmpresa())) {
+				
+				if(!empresa.equals("")) {
+					pesquisar();
+				} 
+			}
 		}
 	}
 	
@@ -131,6 +146,11 @@ public class ConsultaComprasBean implements Serializable {
 	}
 
 	public void pesquisar() {
+		
+		if(!empresa.equals(usuario_.getEmpresa())) {			
+			empresa = usuario_.getEmpresa();
+		}
+		
 		Calendar calendarioTemp = Calendar.getInstance();
 		calendarioTemp.setTime(dateStop);
 		calendarioTemp.set(Calendar.HOUR, 23);
@@ -240,8 +260,10 @@ public class ConsultaComprasBean implements Serializable {
 		if (compraSelecionada != null) {
 
 			List<ItemVenda> itensVenda = itensVendas.porCompra(compraSelecionada);
+			
+			List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porCompra(compraSelecionada);
 
-			if (itensVenda.size() == 0) {
+			if (itensVenda.size() == 0 && itensVendaCompra.size() == 0) {
 
 				boolean contasPagas = false;
 				//List<Conta> contasTemp = contas.porContasPagas(compraSelecionada.getNumeroCompra(), "COMP");
@@ -259,12 +281,21 @@ public class ConsultaComprasBean implements Serializable {
 							"stop();swal({ type: 'error', title: 'Erro!', text: 'Existe contas à pagar já registradas para essa compra!' });");
 				}*/
 
+
 				if (contasPagas != true) {
 					
 					List<ItemCompra> itensCompra = itensCompras.porCompra(compraSelecionada);
 					for (ItemCompra itemCompra : itensCompra) {
 						Produto produto = itemCompra.getProduto();
 						produto.setQuantidadeAtual(produto.getQuantidadeAtual() - itemCompra.getQuantidade());
+											
+						if(!compraSelecionada.isAjuste()) {
+							/* RE-CALCULAR CUSTO MEDIO UNITARIO DOS PRODUTOS DESSA COMPRA */
+							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - (itemCompra.getQuantidade().longValue() * itemCompra.getValorUnitario().doubleValue())));							
+						} else {
+							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - (itemCompra.getQuantidade().longValue() * produto.getCustoMedioUnitario().doubleValue())));							
+						}
+						
 						produtos.save(produto);
 
 						itensCompras.remove(itemCompra);
@@ -283,7 +314,7 @@ public class ConsultaComprasBean implements Serializable {
 						"swal({ type: 'error', title: 'Erro!', text: 'Existem itens dessa compra já vinculados a uma ou mais vendas!' });");
 			}
 
-		} else {
+		} /*else {
 
 			for (Compra compra : comprasFiltradas) {
 				List<ItemVenda> itensVenda = itensVendas.porCompra(compra);
@@ -306,7 +337,7 @@ public class ConsultaComprasBean implements Serializable {
 			pesquisar();
 			PrimeFaces.current().executeScript(
 					"swal({ type: 'success', title: 'Concluído!', text: 'Compras excluídas com sucesso!' });");
-		}
+		}*/
 
 	}
 

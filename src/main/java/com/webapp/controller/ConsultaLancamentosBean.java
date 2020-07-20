@@ -91,6 +91,9 @@ public class ConsultaLancamentosBean implements Serializable {
 	private boolean renderFavorecido;
 	
 	private String[] categorias;
+	
+	private String empresa = "";
+	
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -114,10 +117,22 @@ public class ConsultaLancamentosBean implements Serializable {
 			todosUsuarios = usuarios.todos(usuario_.getEmpresa());
 			todasCategoriasDespesas = categoriasDespesas.todos(usuario_.getEmpresa());
 			todosDestinosLancamentos = destinosLancamentos.todos();
+			
+			if(!empresa.equals(usuario_.getEmpresa())) {
+				
+				if(!empresa.equals("")) {
+					pesquisar();
+				} 
+			}
 		}
 	}
 
 	public void pesquisar() {
+		
+		if(!empresa.equals(usuario_.getEmpresa())) {			
+			empresa = usuario_.getEmpresa();
+		}
+		
 		Calendar calendarioTemp = Calendar.getInstance();
 		calendarioTemp.setTime(dateStop);
 		calendarioTemp.set(Calendar.HOUR, 23);

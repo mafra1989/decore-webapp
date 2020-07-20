@@ -1,0 +1,1200 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="title">PDV</ui:define>
+
+	<f:metadata>
+		<f:viewAction action="#{pDVBean.inicializar}" />
+
+		<f:viewParam name="id" value="#{pDVBean.venda.id}" />
+		<f:viewAction action="#{pDVBean.buscar}"
+			if="#{param.id ne null}" />
+	</f:metadata>
+
+	<ui:define name="content">
+
+		<style>
+@media ( min-width :220px) {
+	.panel-itenstable {
+	    margin-top: 4px;
+	    border: none;
+	}
+	.panel-totalpagar {
+		float: right;
+	}
+	.btn-finalizar {
+		font-weight: bold;
+	    margin-bottom: 18px;
+	    background-color: #0d8819b5 !important;
+	    width: 100%;
+	 }
+	.panel-itenstable .ui-widget-content {
+		border: none;
+	}
+	.panel-busca-leitor {
+		display: none;
+	}
+	.busca .ui-autocomplete-input {
+    	margin-top: 12px;
+    }
+	.ui-inputswitch {
+   		width: 60px !important;
+    }
+    .ui-inputswitch .ui-inputswitch-handle {
+    	width: 28px !important;
+    }
+    .ui-inputswitch .ui-inputswitch-off {
+    	width: 32px !important;
+    }
+    
+	.white-button.ui-state-disabled {
+    	opacity: 0.9;
+    }
+	.ui-autocomplete-panel {
+	    max-height: 200px !important;
+	    overflow: auto;
+	}
+	.busca .ui-autocomplete-input {
+		color: #868686 !important;
+	}
+	
+	.busca-por-leitor.ui-inputfield {
+	    color: #868686 !important;
+	}
+	
+	.data-venda .ui-widget-content {
+	    border: none;
+	}
+	
+	.data-venda .ui-state-disabled {
+    	opacity: 0.7;
+    }
+    
+    .vendedor.ui-state-disabled {
+    	opacity: 0.7;
+    }
+	
+	.descricao .ui-panelgrid-cell:nth-child(2) {
+	    padding-left: 0px !important;
+	}
+	
+	.descricao .ui-panelgrid-cell:nth-child(1) {
+    	padding-right: 4px 10px;
+    }
+	
+	.white-button.ui-button.ui-state-default {
+        background-color: #ffffff;
+        color: #222222;
+        border: 1px solid #b6b7c2;
+    }
+ 
+    .white-button.ui-button.ui-state-default:enabled:hover, 
+    .white-button.ui-button.ui-state-default:focus {
+        background-color: #f2f2f2;
+        border: 1px solid #b6b7c2;
+        color: #373a3c;
+    }
+	.valor-total .ui-widget-content {
+		background-color: transparent;
+	}
+	body .ui-button.ui-button-text-icon-right .ui-button-text {
+	    padding: 5px 5px 5px 8px;
+	}
+	.card h1:first-child {
+		margin-top: 7px;
+		margin-bottom: .82em;
+	}
+	body .ui-tabs.ui-tabs-top .ui-tabs-nav li a {
+		padding: 0.57em 12px;
+	}
+	body .ui-tabs.ui-tabs-top {
+		margin: 0px 3px 0px 1px;
+	}
+	.layout-wrapper .layout-main .layout-content {
+		padding: 60px 0px 0px 0px;
+	}
+	.panel-left {
+		border-right: none;
+	}
+	
+	
+	.panel-desc .ui-panelgrid-cell:nth-child(2) {
+	    padding-left: 10px !important;
+	}
+	
+	.quantidade .ui-inputfield {
+    	border: 1px solid #f28a8b;
+    }    
+    .quantidade .ui-inputfield.ui-state-hover:not(.ui-state-error) {
+    	border: 1px solid #f28a8b;
+    }
+    .quantidade .ui-inputfield.ui-state-focus:not(.ui-state-error) {
+    	border: 1px solid #f28a8b;
+    	box-shadow: 0 0 3px 0 #f28a8b;
+    }
+    
+    .campos-valor {
+    	width: 95%;
+    	margin: auto;
+    }
+    
+    .campos-percentual {
+    	width: 100%;
+    	margin: auto;
+    }
+    
+     .campos-percentual .ui-panelgrid-cell:nth-child(1) {
+		padding-left: 5px !important;
+	}
+	.campos-percentual .ui-panelgrid-cell:nth-child(2) {
+		padding-left: 5px !important;
+	}
+	.campos-percentual .ui-panelgrid-cell:nth-child(3) {
+		padding-left: 5px !important;
+	}
+	.campos-percentual .ui-panelgrid-cell:nth-child(1) {
+		padding-right: 0px !important;
+	}
+	.campos-percentual .ui-panelgrid-cell:nth-child(2) {
+		padding-right: 0px !important;
+	}
+	
+	
+	.campos-valor .ui-panelgrid-cell:nth-child(1) {
+		padding-left: 1px !important;
+	}
+	.campos-valor .ui-panelgrid-cell:nth-child(2) {
+		padding-left: 0px !important;
+	}
+	.campos-valor .ui-panelgrid-cell:nth-child(3) {
+		padding-left: 0px !important;
+	}
+	.campos-valor .ui-panelgrid-cell:nth-child(1) {
+		padding-right: 0px !important;
+		margin-right:1px;
+	}
+	.campos-valor .ui-panelgrid-cell:nth-child(2) {
+		padding-right: 0px !important;
+		margin-right:1px;
+	}
+	.campos-valor .ui-panelgrid-cell:nth-child(3) {
+		padding-right: 0px !important;
+	}
+	.subtotal .ui-panelgrid-cell {
+		padding-right: 0px !important;
+	}
+	
+	.ui-panelgrid .ui-grid-responsive .ui-panelgrid-cell {
+		padding: 4px 10px;
+	}
+	
+	body .ui-datatable thead th {
+		font-size: 13px;
+	}
+	body .ui-panel .ui-panel-content {
+		padding: 0;
+	}
+	.panel-right .ui-panel-content {
+		margin-left: -3px;
+	}
+	.panel-right .ui-widget-content {
+		border: none;
+		background: transparent;
+	}
+	.ui-datatable tbody td {
+		height: auto !important;
+	}
+	.btn-select.ui-button.ui-button-icon-only .ui-icon {
+		margin-top: -8px;
+		font-size: 18px;
+		color: #0f5baf;
+	}
+	.produtosTable .btn-select.ui-button {
+		height: 30px;
+		width: 30px;
+		background-color: transparent;
+		border: 1px solid #0f5baf;
+		border-radius: 50px;
+	}
+	.produtosTable .btn-select.ui-button:hover {
+		background-color: #e0dada;
+	}
+	.ui-datatable-scrollable-body {
+		overflow: auto;
+		max-height: 395px;
+	}
+	.itens-add {
+		margin-top: -15px;
+	}
+	body .ui-panel .ui-panel-content {
+		border: none;
+	}
+	.ui-blockui-content {
+		padding: 0.25em;
+	}
+	.ui-slider .ui-slider-handle {
+		width: 1.7em;
+		height: 1.7em;
+	}
+	.ui-slider-horizontal {
+		height: 1.2em !important;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 28px !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+		width: 50% !important;
+		float: left !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-6 {
+		width: 50% !important;
+		float: left !important;
+	}
+	.qty-parcelas.ui-panelgrid .ui-panelgrid-cell:nth-child(1) {
+		margin-top: 10px !important;
+	}
+	.percentual-juros.ui-panelgrid .ui-panelgrid-cell:nth-child(1) {
+		margin-top: 8px !important;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+		.ui-datatable tfoot th {
+		font-size: 13px;
+	}
+	body .btn-new.ui-button {
+		color: #676363;
+		background-color: #f9f9f9;
+		border: 1px solid #8a8585;
+	}
+	.swal2-popup {
+		width: 28em;
+		max-width: 100%;
+		padding: 0 0 0.4em 0;
+		font-size: 0.75rem;
+	}
+	.swal2-popup #swal2-content {
+		font-weight: 400;
+	}
+	body #item-dialog.ui-dialog .ui-dialog-content {
+		background-color: #ffffff;
+		padding: 10px 0px 0px 0px;
+	}
+	body .ui-datatable .ui-paginator {
+		padding: 2px 0px !important;
+	}
+	.panel-entrega.ui-widget a {
+		float: left !important;
+		margin-top: 10px !important;
+		margin-left: 80px;
+		font-size: 13px;
+	}
+	.panel-entrega .ui-state-disabled {
+		float: left !important;
+		margin-top: -29px !important;
+		margin-left: 80px;
+		font-size: 13px;
+	}
+	#entrega-dialog .ui-panel .ui-panel-content {
+		padding: 0px;
+	}
+	.panel-entrega {
+		margin-top: 8px;
+	}
+	.panel-ajuste {
+		margin-top: -10px;
+	}
+	.white-button.ui-button.ui-state-default {
+    	display: none;
+    }
+    .image-produto {
+    	width: 97%;
+    	height: 342px;
+    }
+    .line-total {
+		display:none;
+	}
+	.desconto {
+		text-align: center;
+		width: 97%;
+	}
+	
+	.margem {
+		text-align: center;
+		width: 97%;
+	}
+
+}
+
+@media ( min-width :460px) {
+	.desconto {
+		text-align: center;width: 95%;margin: auto;
+	}
+	
+	.margem {
+		text-align: center;width: 95%;margin: auto;
+	}
+	.campos-valor {
+    	width: 100%;
+    }
+    .campos-percentual .ui-panelgrid-cell:nth-child(1) {
+		padding-left: 1px !important;
+	}
+	.campos-percentual .ui-panelgrid-cell:nth-child(2) {
+		padding-left: 0px !important;
+	}
+	.campos-percentual .ui-panelgrid-cell:nth-child(3) {
+		padding-left: 0px !important;
+	}
+	.campos-percentual .ui-panelgrid-cell:nth-child(1) {
+		padding-right: 0px !important;
+		margin-right:1px;
+	}
+	.campos-percentual .ui-panelgrid-cell:nth-child(2) {
+		padding-right: 0px !important;
+		margin-right:1px;
+	}
+	.campos-percentual .ui-panelgrid-cell:nth-child(3) {
+		padding-right: 0px !important;
+	}
+	.line-total {
+		width: 30%;
+	    margin-bottom: 60px;
+	    border-top: 1px solid #ccc;
+	    position: absolute;
+	    bottom: 0;
+	    z-index: 1;
+	    display:block;
+	}
+	.panel-desc .ui-panelgrid-cell:nth-child(2) {
+		padding-left: 15px !important;
+	}
+	.descricao .ui-panelgrid-cell:nth-child(1) {
+	    padding-right: 0px !important;
+	    margin-right: -2px !important;
+	}
+	.panel-itenstable {
+	     margin-bottom: 0px;
+	}
+	.panel-finalizar {
+		float:left;
+		bottom:0;
+		position:absolute;
+	}
+	.btn-finalizar {
+		font-weight: bold;
+	    margin-bottom: 18px;
+	    background-color: #0d8819b5;
+	    width: 160px;
+	 }
+	.panel-finalizar .ui-widget-content {
+	    background: transparent;
+	}
+	.panel-totalpagar {
+		margin-right: 30px;
+	    margin-bottom: 13px;
+	    bottom: 0;
+	    position: absolute;
+	    z-index: 1;
+	    right: 0;
+	}
+	.ui-panelgrid .ui-grid-responsive .ui-panelgrid-cell {
+		padding: 2px;
+	}
+	.image-produto {
+		width: 100%;
+	    height: 160px;
+	}
+	.busca .ui-autocomplete-input {
+		margin-top: 0px;
+	}
+	.white-button.ui-button.ui-state-default {
+    	display: block;
+    }
+	.panel-busca-leitor {
+		display: block;
+		margin-top: 5px;
+	}
+	.panel-left {
+		border-right: 4px solid #21222d9e !important;
+		min-height: 562px;
+		padding: 0px;
+	}
+	.panel-entrega {
+		margin-top: 0px;
+	}
+	.panel-ajuste {
+		margin-top: 0px;
+	}
+	.panel-entrega .ui-state-disabled {
+		float: left !important;
+		margin-top: 10px !important;
+		margin-left: 0px;
+		font-size: 13px;
+	}
+	.ui-panelgrid .ui-widget a {
+		float: left !important;
+		margin-left: 0px;
+		font-size: 13px;
+	}
+	.ui-slider .ui-slider-handle {
+		width: 1.7em;
+		height: 1.7em;
+	}
+	.ui-slider-horizontal {
+		height: 1.2em;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 27px !important;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+		.ui-datatable tfoot th {
+		font-size: 14px;
+	}
+}
+
+@media ( min-width :640px) {
+	.ui-slider-handle {
+		width: 1.2em !important;
+		height: 1.2em !important;
+	}
+	.ui-slider-horizontal {
+		height: 0.8em !important;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 27px !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+		width: 33.33333% !important;
+		float: none;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-6 {
+		width: auto !important;
+		float: none;
+	}
+	.itens-add {
+		margin-top: 0px;
+	}
+	.ui-datatable tbody td {
+		height: 28px !important;
+	}
+}
+
+@media ( min-width :641px) {
+	.ui-datatable-scrollable-body {
+		overflow: auto;
+		max-height: 365px;
+	}
+}
+</style>
+
+		<p:growl id="msg" closable="true" life="3000" showSummary="false"
+			showDetail="true" style="text-align: center" />
+
+		<div class="ui-g-12 ui-lg-12">
+
+			<h:form id="form">
+
+				<p:defaultCommand target="btn-calcular" rendered="false" />
+
+				<p:panelGrid columns="2" layout="grid"
+					style="margin-bottom: 5px;margin-top:5px;"
+					styleClass="panelgrid-noborder disabled disabled"
+					columnClasses="ui-grid-col-6, ui-grid-col-6">
+
+					<p:panel class="card card-w-title ui-fluid panel-left"
+						id="panel-itens"
+						style="margin-bottom: 0px;margin-top: 0px; padding-bottom: 0px !important">
+
+						<h1>#{pDVBean.venda.id == null ? 'Registrar Venda - PDV'
+							: 'Informações da Venda'}</h1>
+
+						<p:tabView id="tabView"
+							activeIndex="#{pDVBean.activeIndex}">
+
+							<p:tab title="Produto" titleStyleClass="tabs" id="tab-receita">
+														
+								<p:focus for="busca" rendered="#{pDVBean.itemVenda.produto.id == null and not pDVBean.leitor}" />
+								
+								<p:focus for="busca-por-leitor" rendered="#{pDVBean.itemVenda.produto.id == null and pDVBean.leitor}" />
+								
+								<p:focus id="focus-qtde" for="quantidade" rendered="#{pDVBean.itemVenda.produto.id != null}"  />
+
+								<p:inputText id="id" type="hidden"
+									value="#{pDVBean.itemVenda.code}" required="true"
+									requiredMessage="Produto deve ser informado." />
+									
+								<p:defaultCommand scope="campos-valor" target="btn-adicionar" 
+									rendered="#{pDVBean.itemVenda.produto.id != null}" />								
+							
+
+								<p:panelGrid columns="3" layout="grid" 
+									styleClass="panelgrid-noborder disabled disabled panel-busca-leitor"
+									columnClasses="ui-grid-col-6, ui-grid-col-3, ui-grid-col-3">
+
+									<p:commandLink value="Pesquisa avançada" disabled="true"
+										style="font-size: 14px;margin-top: 7px;float:left;">
+										<i class="fa fa-fw fa-search"></i>
+									</p:commandLink>
+
+									<p:outputLabel value="Leitor de código de barras" for="leitor" />
+									<p:selectBooleanButton id="leitor"
+										value="#{pDVBean.leitor}" onLabel="ATIVADO"
+										offLabel="DESATIVADO" onIcon="fa fa-fw fa-check"
+										offIcon="fa fa-fw fa-close" style="font-size:11px;width:105px;float: right;">
+										
+										<p:ajax process="@this" update="tabView panel-busca" />										
+									</p:selectBooleanButton>
+
+								</p:panelGrid>
+
+								<p:panelGrid id="panel-busca" columns="2" layout="grid" style="margin-top: 5px;"
+									styleClass="panelgrid-noborder disabled disabled descricao"
+									columnClasses="ui-grid-col-11, ui-grid-col-1">
+
+									<p:autoComplete id="busca" value="#{pDVBean.produto}" 
+										placeholder="Digite o código ou descrição do produto"
+										var="produto" styleClass="busca" rendered="#{not pDVBean.leitor}"
+										itemLabel="#{produto.codigo.concat(' | ').concat(produto.descricao)}" itemValue="#{produto}"
+										completeMethod="#{pDVBean.completeText_Produto}">
+										
+										<p:ajax event="itemSelect" listener="#{pDVBean.onItemSelect}" 
+											update="tabView" />
+									</p:autoComplete>
+									
+									<p:inputText id="busca-por-leitor" value="#{pDVBean.filter.codigo}" styleClass="busca-por-leitor"
+										placeholder="Escaneie ou digite o código do produto" rendered="#{pDVBean.leitor}" />
+										
+									<p:commandButton id="btn-barcode" icon="fa fa-fw fa-barcode" 
+										action="#{pDVBean.pesquisar}" process="@this busca-por-leitor"
+										update="tabView"
+										style="width:38px;height:29px" styleClass="white-button"
+										disabled="#{not pDVBean.leitor}" />
+								</p:panelGrid>
+
+
+								<p:panelGrid id="panel-desc" columns="2" layout="grid" style="margin-top:15px;"
+									styleClass="panelgrid-noborder disabled disabled panel-desc"
+									columnClasses="ui-grid-col-4, ui-grid-col-8">
+
+									<p:graphicImage library="myapp" name="images/scan-icon.jpg"  
+										style="border: 5px solid #c5c5c5;border-radius:5px;" styleClass="image-produto"
+										rendered="#{pDVBean.itemVenda.produto.id == null}" />
+										
+									<p:graphicImage url="#{pDVBean.itemVenda.produto.urlImagem}" styleClass="image-produto"
+										style="border: 5px solid #c5c5c5;border-radius:5px;"
+										rendered="#{pDVBean.itemVenda.produto.id != null}" />
+								
+
+									<p:panelGrid columns="1" layout="grid" style="margin-top:15px;"
+										styleClass="panelgrid-noborder disabled disabled panel-desc"
+										columnClasses="ui-grid-col-12">
+
+										<p:outputLabel
+											value="0 Un."
+											style="font-size: 9px;font-weight: bold;float: left;background: #29b140;color: white;padding: 1px;margin-top: -13px; margin-right: -2px;"
+											rendered="#{pDVBean.itemVenda.produto.id == null}" />
+									
+										<p:outputLabel
+											value="#{pDVBean.itemVenda.produto.quantidadeAtual} Un."
+											style="font-size: 9px;font-weight: bold;float: left;background: #29b140;color: white;padding: 1px;margin-top: -13px; margin-right: -2px;"
+											rendered="#{pDVBean.itemVenda.produto.id != null}" />
+										
+											
+										<p:outputLabel
+											value="Leia o código de barras ou informe a descrição do produto."
+											style="font-size: 22px;font-weight: bold;"
+											rendered="#{pDVBean.itemVenda.produto.id == null}" />
+											
+										<p:outputLabel
+											value="#{pDVBean.itemVenda.produto.descricao}"
+											style="font-size: 22px;font-weight: bold;"
+											rendered="#{pDVBean.itemVenda.produto.id != null}" />
+											
+
+										<p:outputLabel value="cod.: 0000" rendered="#{pDVBean.itemVenda.produto.id == null}" />
+										
+										<p:outputLabel value="cod.: #{pDVBean.itemVenda.produto.codigo}" rendered="#{pDVBean.itemVenda.produto.id != null}" />
+
+										<p:spacer />
+
+										<p:outputLabel value="Valor unitário"
+											style="font-weight: bold;font-size: 12px;" />
+
+										<p:outputLabel value="R$ 0,00"
+											style="font-size: 28px;font-weight: bold;float: left;margin-top: -6px;"
+											rendered="#{pDVBean.itemVenda.produto.id == null}" />
+											
+										<p:outputLabel id="preco-unitario" value="#{pDVBean.itemVenda.produto.precoMedioUnitario}"
+											style="font-size: 28px;font-weight: bold;float: left;margin-top: -6px;"
+											rendered="#{pDVBean.itemVenda.produto.id != null}">
+											
+											<f:convertNumber type="currency" />
+										</p:outputLabel>
+
+									</p:panelGrid>
+
+								</p:panelGrid>
+
+								<p:panelGrid columns="2" layout="grid"
+									style="margin-bottom: 5px" rendered="false"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-4, ui-grid-col-4">
+
+									<p:outputLabel value="Código" for="codigo" />
+									<p:inputText id="codigo"
+										value="#{pDVBean.itemVenda.produto.codigo}"
+										readonly="true" />
+
+									<p:outputLabel value="Descrição" for="descricao" />
+									<p:inputText id="descricao"
+										value="#{pDVBean.itemVenda.produto.descricao}"
+										readonly="true" />
+
+									<p:outputLabel value="Fornecedor" for="fornecedor" />
+									<p:inputText id="fornecedor"
+										value="#{pDVBean.itemVenda.produto.fornecedor.nome}"
+										readonly="true" />
+								</p:panelGrid>
+
+								<p:panelGrid id="panel-lote" columns="2" layout="grid"
+									style="margin-bottom: 5px;display:none;" 
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-4, ui-grid-col-6">
+
+									<p:outputLabel value="Qtd. Disponível" for="lote" />
+									<p:selectOneMenu id="lote"
+										value="#{pDVBean.itemCompra}"
+										placeholder="selecione">
+
+										<f:selectItem itemLabel="Selecione" />
+
+										<p:ajax event="change" process="@this" />
+
+										<f:selectItems value="#{pDVBean.itensCompra}"
+											var="itemCompra"
+											itemLabel="#{itemCompra.quantidadeDisponivel ge 2 ? ''.concat(itemCompra.quantidadeDisponivel).concat(' Itens | Compra: ').concat(itemCompra.compra.dataCompraFormatada).concat(' | ').concat(itemCompra.valorUnitarioFormatado) : ''.concat(itemCompra.quantidadeDisponivel).concat(' Item | Compra: ').concat(itemCompra.compra.dataCompraFormatada).concat(' | ').concat(itemCompra.valorUnitarioFormatado) }"
+											itemValue="#{itemCompra}" />
+									</p:selectOneMenu>
+								</p:panelGrid>
+
+
+								<p:panelGrid columns="3" layout="grid"
+									style="margin-top:10px;" id="campos-valor"
+									styleClass="panelgrid-noborder disabled disabled campos-valor"
+									columnClasses="ui-grid-col-4, ui-grid-col-4">
+
+									<p:panelGrid columns="1" layout="grid"
+										style="margin-bottom: 5px"
+										styleClass="panelgrid-noborder disabled disabled"
+										columnClasses="ui-grid-col-12">
+
+										<p:outputLabel value="Quantidade" for="quantidade" />
+										<p:inputNumber id="quantidade" decimalPlaces="0"
+											placeholder="0" styleClass="quantidade"
+											value="#{pDVBean.itemVenda.quantidade}">
+
+											<p:ajax event="keyup" update="valor-total margemEmDinheiro descontoEmDinheiro lucroEmDinheiro sub-total btn-adicionar"></p:ajax>
+										</p:inputNumber>
+									</p:panelGrid>
+
+									<p:panelGrid columns="1" layout="grid"
+										style="margin-bottom: 5px"
+										styleClass="panelgrid-noborder disabled disabled"
+										columnClasses="ui-grid-col-12">
+
+										<p:outputLabel value="Valor Unitário" for="valor-unitario" />
+										<p:inputNumber id="valor-unitario" decimalPlaces="2"
+											placeholder="0" readonly="true"
+											value="#{pDVBean.itemVenda.produto.precoMedioUnitario}">
+										</p:inputNumber>
+									</p:panelGrid>
+
+									<p:panelGrid columns="1" layout="grid"
+										style="margin-bottom: 5px"
+										styleClass="panelgrid-noborder disabled disabled subtotal"
+										columnClasses="ui-grid-col-12">
+
+										<p:outputLabel value="Total sem Desconto" for="valor-total" />
+										<p:inputNumber id="valor-total" decimalPlaces="2"
+											readonly="true" placeholder="0"
+											value="#{pDVBean.itemVenda.produto.precoMedioUnitario * pDVBean.itemVenda.quantidade}" />
+
+									</p:panelGrid>
+
+								</p:panelGrid>
+								
+								<p:panelGrid columns="3" layout="grid"
+									style="margin-top:-5px;" id="margem-desconto"
+									styleClass="panelgrid-noborder disabled disabled campos-percentual"
+									columnClasses="ui-grid-col-4, ui-grid-col-4">
+
+									<p:panelGrid columns="1" layout="grid"
+										style="margin-bottom: 5px"
+										styleClass="panelgrid-noborder disabled disabled"
+										columnClasses="ui-grid-col-12">
+
+										<p:outputLabel value="Margem" />
+										<p:panel styleClass="margem">
+											<h:outputText id="margemEmDinheiro"
+												value="#{pDVBean.itemVenda.produto.margemLucroEmDinheiro * pDVBean.itemVenda.quantidade}"
+												style="font-weight: bold;font-size: 10px;float: right;margin-top: -17px;margin-right: 6px;color: #757575;">
+												
+												<f:convertNumber type="currency" />
+											</h:outputText>
+										
+											<h:outputText id="margem"
+												value="%#{pDVBean.itemVenda.produto.margemLucro}"
+												style="font-weight: bold; font-size: 18px" />
+											<h:inputHidden id="margem-lucro"
+												value="#{pDVBean.itemVenda.produto.margemLucro}" />
+											<p:slider for="margem-lucro" display="margem"
+												displayTemplate="%{value}" minValue="0" maxValue="300">
+			
+												<p:ajax event="slideEnd" update="preco-unitario margemEmDinheiro descontoEmDinheiro lucroEmDinheiro sub-total valor-unitario valor-total"
+													process="@this margem margem-lucro" />
+											</p:slider>
+										</p:panel>
+									</p:panelGrid>
+
+									<p:panelGrid columns="1" layout="grid"
+										style="margin-bottom: 5px"
+										styleClass="panelgrid-noborder disabled disabled"
+										columnClasses="ui-grid-col-12">
+
+										<p:outputLabel value="Desconto" />
+										<p:panel styleClass="desconto">
+											<h:outputText id="descontoEmDinheiro"
+												value="#{(pDVBean.itemVenda.produto.precoMedioUnitario * pDVBean.itemVenda.quantidade * pDVBean.itemVenda.desconto) / 100}"
+												style="font-weight: bold;font-size: 10px;float: right;margin-top: -17px;margin-right: 6px;color: #757575;">
+											
+												<f:convertNumber type="currency" />
+											</h:outputText>
+											
+											<h:outputText id="desconto"
+												value="%#{pDVBean.itemVenda.desconto}"
+												style="font-weight: bold; font-size: 18px" />
+											<h:inputHidden id="percentual-desconto"
+												value="#{pDVBean.itemVenda.desconto}" />
+											<p:slider for="percentual-desconto" display="desconto"
+												displayTemplate="%{value}" minValue="0" maxValue="100">
+			
+												<p:ajax event="slideEnd" update="descontoEmDinheiro sub-total lucroEmDinheiro"
+													process="@this desconto percentual-desconto margem margem-lucro" />
+											</p:slider>
+										</p:panel>
+									</p:panelGrid>
+
+									<p:panelGrid columns="1" layout="grid"
+										style="margin-bottom: 5px"
+										styleClass="panelgrid-noborder disabled disabled subtotal"
+										columnClasses="ui-grid-col-12">
+
+										<p:outputLabel value="Sub-Total" />
+										<p:panel>
+											<h:outputText id="lucroEmDinheiro"
+												value="#{(pDVBean.itemVenda.produto.margemLucroEmDinheiro * pDVBean.itemVenda.quantidade) - ((pDVBean.itemVenda.produto.precoMedioUnitario * pDVBean.itemVenda.quantidade * pDVBean.itemVenda.desconto) / 100)}"
+												style="font-weight: bold;font-size: 10px;float: right;margin-top: -17px;margin-right: 6px;color: #757575;">
+											
+												<f:convertNumber type="currency" />
+											</h:outputText>
+										
+											<h:outputText id="sub-total"
+													value="#{(pDVBean.itemVenda.produto.precoMedioUnitario * pDVBean.itemVenda.quantidade) - ((pDVBean.itemVenda.produto.precoMedioUnitario * pDVBean.itemVenda.quantidade * pDVBean.itemVenda.desconto) / 100)}"
+													style="font-weight: bold;font-size: 26px;float: right;margin-top: 2px;color: #0e6ace;border: 1px solid;padding: 0px 5px 0px 5px;border-radius: 2px;margin-right: 1px;">
+											
+												<f:convertNumber type="currency" />		
+											</h:outputText>		
+										</p:panel>								
+																						
+									</p:panelGrid>
+
+								</p:panelGrid>
+								
+								<p:panelGrid columns="1" layout="grid" id="panel-obs" rendered="false"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-12">
+
+									<p:inputTextarea id="observacao" placeholder="Observações"
+										value="#{pDVBean.itemVenda.observacoes}" />
+								</p:panelGrid>
+								
+								<p:panelGrid columns="2" layout="grid" 
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-8, ui-grid-col-4">
+
+									<p:outputLabel />
+									<p:commandButton id="btn-adicionar" value="Adicionar"
+										onstart="PF('downloadLoading').show();"
+										disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()) or pDVBean.itemVenda.quantidade le 0}"
+										onsuccess="PF('downloadLoading').hide();" icon="fa fa-arrow-right" iconPos="right"
+										update="msg tabView codigo descricao fornecedor form:total-venda id valor-unitario quantidade valor-total form:panel-table lote "
+										action="#{pDVBean.adicionarItem}"
+										process="@this codigo valor-unitario quantidade valor-total id lote percentual-desconto observacao"
+										style="font-weight: bold;">
+									</p:commandButton>
+								</p:panelGrid>
+
+							</p:tab>
+
+							<p:tab title="Dados da venda" titleStyleClass="tabs"
+								id="tab-despesa">
+
+								<h3 style="font-weight: bold">Dados da Venda</h3>
+
+								<p:panelGrid columns="2" layout="grid"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-4, ui-grid-col-4">
+
+									<p:outputLabel value="Venda N." />
+									<p:inputText value="#{pDVBean.venda.numeroVenda}"
+										readonly="true" placeholder="Gerado automaticamente." />
+
+									<p:outputLabel value="Data da Venda" for="data-venda" />
+									<p:datePicker value="#{pDVBean.venda.dataVenda}" styleClass="data-venda"
+										readonlyInput="true" id="data-venda" pattern="dd/MM/yyyy"
+										locale="pt" showIcon="true"
+										disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}" />
+
+									<p:outputLabel value="Tipo de Venda" for="tipo-venda" />
+									<p:selectOneMenu id="tipo-venda"
+										value="#{pDVBean.venda.tipoVenda}"
+										placeholder="selecione">
+
+										<f:selectItem itemLabel="Selecione" />
+
+										<f:selectItems value="#{pDVBean.todosTiposVendas}"
+											var="tipoVenda" itemLabel="#{tipoVenda.descricao}"
+											itemValue="#{tipoVenda}" />
+									</p:selectOneMenu>
+
+									<p:outputLabel value="Bairro" for="bairro" />
+									<p:autoComplete id="bairro" forceSelection="true"
+										dropdown="true" scrollHeight="210" styleClass="bairro"
+										value="#{pDVBean.venda.bairro}" var="bairro"
+										itemLabel="#{bairro.nome}" itemValue="#{bairro}"
+										completeMethod="#{pDVBean.completeText}" />
+
+									<p:outputLabel value="Vendedor" for="vendedor" />
+									<p:selectOneMenu id="vendedor" styleClass="vendedor"
+										disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
+										value="#{pDVBean.venda.usuario}"
+										placeholder="selecione">
+
+										<f:selectItem itemLabel="Selecione" />
+
+										<f:selectItems value="#{pDVBean.todosUsuarios}"
+											var="vendedor" itemLabel="#{vendedor.nome}"
+											itemValue="#{vendedor}" />
+									</p:selectOneMenu>
+								</p:panelGrid>
+
+								<p:panelGrid columns="3" layout="grid" id="panel-entrega"
+									styleClass="panelgrid-noborder disabled disabled panel-entrega"
+									columnClasses="ui-grid-col-4, ui-grid-col-2, ui-grid-col-4">
+
+									<p:outputLabel value="Venda para entrega?" for="entrega" />
+									<p:inputSwitch offLabel="Não" onLabel="Sim" id="entrega" style="width:150px"
+										value="#{pDVBean.entrega}">
+
+										<p:ajax process="@this" update="@parent" />
+									</p:inputSwitch>
+
+									<p:commandLink styleClass="btn-new entrega" id="localizacao"
+										update="entrega-dialog" value="Dados da entrega"
+										onstart="PF('downloadLoading').show();"
+										oncomplete="PF('downloadLoading').hide();PF('entrega-dialog').show()"
+										process="@this" disabled="#{not pDVBean.entrega}" />
+								</p:panelGrid>
+
+								<p:panelGrid columns="2" layout="grid" id="panel-ajuste"
+									rendered="#{seguranca.acessoAdministrador()}"
+									styleClass="panelgrid-noborder disabled disabled panel-ajuste"
+									columnClasses="ui-grid-col-4, ui-grid-col-8">
+
+									<p:outputLabel value="Ajuste de estoque" for="ajuste" />
+									<p:selectBooleanCheckbox id="ajuste" style="margin-bottom: 9px;"
+										value="#{pDVBean.venda.ajuste}" disabled="#{pDVBean.venda.id != null}">
+
+										<p:ajax process="@this" update="@parent" />
+									</p:selectBooleanCheckbox>
+									
+									<p:outputLabel value="Deseja recuperar os valores de custo médio dos produtos desta venda?" rendered="#{pDVBean.venda.ajuste}" />
+									<p:inputSwitch offLabel="Não" onLabel="Sim" id="recuperar" style="width:150px"
+										value="#{pDVBean.venda.recuperarValores}" rendered="#{pDVBean.venda.ajuste}"
+										disabled="#{pDVBean.venda.id != null}">
+
+										<p:ajax process="@this" update="@parent" />
+									</p:inputSwitch>
+									
+									<p:outputLabel rendered="#{pDVBean.venda.ajuste and pDVBean.venda.recuperarValores}" />
+									<p:outputLabel value="Ok, então os valores de custo médio de cada produto dessa venda poderão ser somados aos valores totais de custo de suas próximas entradas."
+										rendered="#{pDVBean.venda.ajuste and pDVBean.venda.recuperarValores}" />
+								
+									</p:panelGrid>
+				
+
+								<p:panelGrid columns="2" layout="grid"
+									style="margin-bottom: 5px"
+									styleClass="panelgrid-noborder disabled disabled"
+									rendered="false" columnClasses="ui-grid-col-4, ui-grid-col-4">
+
+									<p:outputLabel value="Quantidade de itens" for="itens" />
+									<p:inputNumber id="itens" decimalPlaces="0" readonly="true"
+										placeholder="0"
+										value="#{pDVBean.venda.quantidadeItens}" />
+
+									<p:outputLabel value="Valor total" for="total" />
+									<p:inputNumber id="total" decimalPlaces="0" readonly="true"
+										placeholder="0" value="#{pDVBean.venda.valorTotal}" />
+								</p:panelGrid>
+
+							</p:tab>
+						</p:tabView>
+
+					</p:panel>
+
+
+					<p:panel class="card card-w-title ui-fluid itens-add panel-right"
+						id="panel-table" style="padding-bottom: 0px !important;" styleClass="panel-itenstable">
+
+						<p style="font-weight: bold; margin-left: 4px;">Itens
+							adicionados</p>
+
+						<p:panelGrid columns="1" layout="grid"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-12">
+
+							<p:dataTable id="itensTable" paginatorAlwaysVisible="false"
+								scrollable="true" value="#{pDVBean.itensVenda}"
+								var="item" emptyMessage="Nenhum item adicionado." reflow="true"
+								paginator="false" rowKey="#{item.code}"
+								selection="#{pDVBean.itemSelecionado}"
+								selectionMode="single">
+
+								<p:column headerText="Nome do produto" width="30%">
+									<h:outputText value="#{item.produto.descricao}" />
+								</p:column>
+
+								<p:column headerText="Qtde." width="8%">
+									<h:outputText value="#{item.quantidade}" />
+								</p:column>
+
+								<p:column headerText="Preço Un." width="15%">
+									<h:outputText value="#{item.valorUnitario}">
+										<f:convertNumber type="currency" />
+									</h:outputText>
+								</p:column>
+
+								<p:column headerText="Sub-Total" width="15%">
+									<h:outputText value="#{item.total}">
+										<f:convertNumber type="currency" />
+									</h:outputText>
+								</p:column>
+								
+								<p:column headerText="Lucro" width="20%" rendered="false">
+									<h:outputText value="#{item.lucro}">
+										<f:convertNumber type="currency" />
+									</h:outputText>
+								</p:column>
+
+								<p:column headerText="Perc." width="20%" rendered="false">
+									<h:outputText value="#{item.percentualLucro}%">
+										<f:convertNumber pattern="#0.00" />
+									</h:outputText>
+								</p:column>
+								
+								<p:column headerText="Desc." width="20%" rendered="false">
+									<h:outputText value="#{item.desconto}%">
+										<f:convertNumber pattern="#0.00" />
+									</h:outputText>
+								</p:column>
+								
+								<p:column headerText="Obs." width="8%" rendered="false">
+									<h:outputText value="#{item.observacoes}" />
+								</p:column>
+
+							</p:dataTable>
+						</p:panelGrid>
+
+						<p:contextMenu id="menu-item" for="itensTable">
+							<p:menuitem value="Remover Item" id="btn-remove"
+								update="panel-table tabView tabView:id tabView:codigo tabView:descricao tabView:fornecedor tabView:lote total-venda"
+								process="@this panel-table"
+								action="#{pDVBean.removeItem}" onstart="start();"
+								oncomplete="stop();" icon="fa fa-fw fa-trash"
+								disabled="#{pDVBean.itensVendaSize eq 0}" />
+
+							<p:menuitem value="Editar Item" id="btn-editar"
+								update="panel-table tabView tabView:id tabView:codigo total-venda tabView:descricao tabView:fornecedor tabView:valor-unitario tabView:quantidade tabView:percentual-desconto tabView:valor-total tabView:lote "
+								process="@this panel-table"
+								action="#{pDVBean.editarItem}" onstart="start();"
+								oncomplete="stop();" icon="fa fa-fw fa-edit"
+								disabled="#{pDVBean.itensVendaSize eq 0}" />
+								
+							<p:menuitem value="Detalhar Item" id="btn-detalhe"
+								update="panel-table tabView tabView:id tabView:codigo total-venda tabView:descricao tabView:fornecedor tabView:valor-unitario tabView:quantidade tabView:percentual-desconto tabView:valor-total tabView:lote "
+								process="@this panel-table"
+								action="#{pDVBean.detalharItem}" onstart="start();"
+								oncomplete="stop();" icon="fa fa-fw fa-list"
+								rendered="#{pDVBean.venda.id != null}" />
+						</p:contextMenu>
+
+						<p:panelGrid columns="2"
+							styleClass="panelgrid-noborder disabled disabled valor-total panel-totalpagar">
+							<p:outputLabel value="Total: " />
+							<p:outputLabel id="total-venda"
+								value="#{pDVBean.venda.valorTotal}"
+								style="font-size: 36px;margin-bottom:5px; font-weight:bold;margin-left:8px;color:#5b5656">
+
+								<f:convertNumber type="currency" />
+							</p:outputLabel>
+						</p:panelGrid>
+
+						<div
+							class="line-total"></div>
+
+						<p:panelGrid columns="2" layout="grid"
+							styleClass="panelgrid-noborder disabled disabled panel-finalizar"
+							columnClasses="ui-grid-col-2, ui-grid-col-3">
+
+							<p:commandButton id="btn-calcular" value="Finalizar Venda"
+								onstart="PF('downloadLoading').show();" icon="fa fa-save"
+								onsuccess="PF('downloadLoading').hide();" styleClass="btn-finalizar"
+								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
+								update="msg tabView tabView:data-venda tabView:tipo-venda tabView:panel-entrega tabView:panel-ajuste tabView:vendedor tabView:bairro panel-table tabView:id tabView:codigo tabView:descricao tabView:fornecedor tabView:valor-unitario tabView:quantidade tabView:valor-total tabView:lote"
+								action="#{pDVBean.salvar}"
+								process="@this panel-table tabView:data-venda tabView:vendedor tabView:bairro tabView:tipo-venda tabView:panel-ajuste" />
+						</p:panelGrid>
+
+					</p:panel>
+
+				</p:panelGrid>
+			</h:form>
+
+		</div>
+
+		<p:dialog header="Buscar produto" widgetVar="item-dialog"
+			position="top" style="margin-top: 100px" id="item-dialog"
+			resizable="false" modal="true" closeOnEscape="true" responsive="true"
+			width="350px">
+
+			<h:form id="form-dialog">
+
+				<div class="ui-g-12 ui-lg-12">
+					<p:panel class="card card-w-title ui-fluid"
+						style="padding-bottom: 0px;">
+
+						<p:defaultCommand target="pesquisar-button" />
+
+						<p:inputText id="search"
+							value="#{pDVBean.filter.descricao}"
+							placeholder="Digite o código ou descrição" style="width: 180px" />
+						<p:commandButton icon="fa fa-fw fa-search" title="Pesquisar"
+							id="pesquisar-button" update="produtosTable"
+							style="margin-left: 3px; width: 40px" process="@parent"
+							action="#{pDVBean.pesquisar}"
+							onstart="PF('downloadLoading').show();"
+							oncomplete="PF('downloadLoading').hide();">
+						</p:commandButton>
+
+						<p:dataTable id="produtosTable" paginatorAlwaysVisible="false"
+							scrollable="true" scrollHeight="337"
+							value="#{pDVBean.produtosFiltrados}" var="produto"
+							emptyMessage="Nenhum produto encontrado." paginator="false"
+							styleClass="produtosTable"
+							style="margin-top: 10px;border: 1px solid #147df0;">
+
+							<p:column headerText="Código" width="30%">
+								<h:outputText value="#{produto.codigo}" />
+							</p:column>
+
+							<p:column headerText="Descrição" width="60%">
+								<h:outputText value="#{produto.descricao}" />
+							</p:column>
+
+							<p:column width="20%" style="text-align: center">
+								<p:commandButton icon="fa fa-fw fa-check"
+									action="#{pDVBean.selecionarProduto(produto)}"
+									title="Selecionar Produto" styleClass="btn-select"
+									update="form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote "
+									process="@this" onstart="PF('downloadLoading').show();"
+									oncomplete="PF('downloadLoading').hide();PF('item-dialog').hide();">
+								</p:commandButton>
+							</p:column>
+
+						</p:dataTable>
+					</p:panel>
+				</div>
+
+			</h:form>
+		</p:dialog>
+
+		<p:dialog id="entrega-dialog" header="Dados da entrega" modal="true"
+			widgetVar="entrega-dialog" draggable="true" width="260"
+			closable="false" resizable="false" position="top"
+			style="margin-top: 100px">
+
+			<h:form id="form-entrega">
+
+				<p:panel class="card card-w-title ui-fluid"
+					style="padding-bottom: 0px; margin-top: 5px;">
+
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-12">
+
+						<p:outputLabel value="Entregar para:" />
+						<p:inputText id="nome"
+							value="#{pDVBean.entregaVenda.nome}" placeholder="" />
+
+						<p:outputLabel value="Localização para entrega" style="margin-top: 5px;float: left;" />
+						<p:inputTextarea id="localizacao-whatsapp"
+							value="#{pDVBean.entregaVenda.localizacao}"
+							placeholder="" />
+
+						<p:outputLabel value="Observações gerais" />
+						<p:inputTextarea id="observacao"
+							value="#{pDVBean.entregaVenda.observacao}"
+							placeholder="" />
+					</p:panelGrid>
+				</p:panel>
+
+				<p:panel styleClass="panelgrid-noborder disabled disabled">
+					<p:commandButton icon="fa fa-fw fa-check"
+						style="float: right;font-weight: bold;font-size: 13px;margin-top: -6px;margin-bottom:5px;background-color: #089a29c7;position: relative;margin-right: 2px;"
+						value="Confirmar" process="@this entrega-dialog form-entrega"
+						onstart="start();"
+						oncomplete="stop();PF('entrega-dialog').hide();">
+					</p:commandButton>
+
+					<p:commandButton icon="fa fa-fw fa-close"
+						style="float: right;font-weight: bold;font-size: 13px;margin-top: -6px;margin-bottom:5px;background-color: #ab3705b5;position: relative;margin-right: 3px;"
+						value="Cancelar" onstart="start();"
+						oncomplete="PF('entrega-dialog').hide();stop();">
+					</p:commandButton>
+				</p:panel>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog id="downloadLoading" showHeader="false" modal="true"
+			widgetVar="downloadLoading" header="Status" draggable="false"
+			closable="false" resizable="false">
+			<p:graphicImage name="images/loadingbar.gif"
+				library="manhattan-layout" width="50" />
+		</p:dialog>
+
+		<script type="text/javascript">
+			function start() {
+				PF('downloadLoading').show();
+			}
+
+			function stop() {
+				PF('downloadLoading').hide();
+			}
+		</script>
+
+	</ui:define>
+
+</ui:composition>

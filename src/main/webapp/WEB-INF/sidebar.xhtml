@@ -54,6 +54,11 @@
 								icon="fa fa-folder-open-o" outcome="/Contas.xhtml" 
 								rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()}" />
 
+							<p:menuitem id="pm_PDV" value="PDV"
+								icon="fa fa-qrcode" outcome="/PDV.xhtml" 
+								rendered="#{seguranca.acessoAdministrador()}">
+							</p:menuitem>
+							
 							<p:submenu id="pm_consulta" label="Consultar" icon="fa fa-search"
 								rendered="#{seguranca.acessoAdministrador()  or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()}">
 

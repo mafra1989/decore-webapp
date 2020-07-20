@@ -45,11 +45,24 @@ public class ItensCompras implements Serializable {
 				.setParameter("id", compra.getId()).getResultList();
 	}
 	
+	public Number saldoPorProduto(Produto produto) { 
+		
+		Number count = (Number) this.manager
+				.createQuery("select sum(e.quantidadeDisponivel) from ItemCompra e where e.produto.id = :id and e.quantidadeDisponivel > 0")
+				.setParameter("id", produto.getId()).getSingleResult();
+		
+		if(count == null) {
+			count = 0;
+		}
+		
+		return count;
+	}
+	
 	public List<ItemCompra> porProduto(Produto produto) { 
-		return this.manager
+		return this.manager //and e.quantidadeDisponivel > 0
 				.createQuery("from ItemCompra e join fetch e.compra c where e.produto.id = :id order by e.compra.dataCompra asc", ItemCompra.class)
 				.setParameter("id", produto.getId()).getResultList();
-	}	
+	}
 	
 	public List<ItemCompra> porProduto(Produto produto, boolean ajuste) { 
 		return this.manager

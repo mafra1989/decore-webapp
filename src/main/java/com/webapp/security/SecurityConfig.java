@@ -45,6 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			
 			.antMatchers(
 					"/Contas.xhtml", 
+					"/PDV.xhtml", 
 					"/cadastros/CadastroProdutos.xhtml",
 					"/operacoes/RegistroCompras.xhtml",
 					"/operacoes/RegistroVendas.xhtml",

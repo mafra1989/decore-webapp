@@ -2,6 +2,7 @@ package com.webapp.controller;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -28,6 +29,7 @@ import com.webapp.model.Grupo;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemPedido;
 import com.webapp.model.ItemVenda;
+import com.webapp.model.ItemVendaCompra;
 import com.webapp.model.Pedido;
 import com.webapp.model.Produto;
 import com.webapp.model.StatusPedido;
@@ -37,6 +39,7 @@ import com.webapp.report.Relatorio;
 import com.webapp.repository.Entregas;
 import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
+import com.webapp.repository.ItensVendasCompras;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.Usuarios;
 import com.webapp.repository.Vendas;
@@ -72,6 +75,9 @@ public class ConsultaVendasBean implements Serializable {
 
 	@Inject
 	private ItensVendas itensVendas;
+	
+	@Inject
+	private ItensVendasCompras itensVendasCompras;
 
 	@Inject
 	private Produtos produtos;
@@ -100,6 +106,9 @@ public class ConsultaVendasBean implements Serializable {
 	private boolean vendasNormais;
 
 	private StatusPedido[] statusPedido;
+	
+	private String empresa = "";
+	
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -121,10 +130,22 @@ public class ConsultaVendasBean implements Serializable {
 			}
 			
 			todosUsuarios = usuarios.todos(usuario_.getEmpresa());
+			
+			if(!empresa.equals(usuario_.getEmpresa())) {
+				
+				if(!empresa.equals("")) {
+					pesquisar();
+				} 
+			}
 		}
 	}
 
 	public void pesquisar() {
+		
+		if(!empresa.equals(usuario_.getEmpresa())) {			
+			empresa = usuario_.getEmpresa();
+		}
+		
 		Calendar calendarioTemp = Calendar.getInstance();
 		calendarioTemp.setTime(dateStop);
 		calendarioTemp.set(Calendar.HOUR, 23);
@@ -244,28 +265,143 @@ public class ConsultaVendasBean implements Serializable {
 
 		if (vendaSelecionada != null) {
 
+			
 			List<ItemVenda> itensVenda = itensVendas.porVenda(vendaSelecionada);
 			for (ItemVenda itemVenda : itensVenda) {
+				
 				Produto produto = itemVenda.getProduto();
 				produto.setQuantidadeAtual(produto.getQuantidadeAtual() + itemVenda.getQuantidade());
+				
+				if(vendaSelecionada.isPdv()) {
+					
+					if(vendaSelecionada.isAjuste()) {
+						
+						if(!vendaSelecionada.isRecuperarValores()) {
+							
+							List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porItemVenda(itemVenda);
+							for (ItemVendaCompra itemVendaCompra : itensVendaCompra) {
+								//if(!itemVendaCompra.getCompra().isAjuste()) {
+									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemVendaCompra.getQuantidade().longValue() * itemVenda.getValorCompra().doubleValue())));					
+								//}
+							}
+						}
+												
+					} else {					
+					
+						if(itemVenda.getLucro().doubleValue() >= 0) {
+							
+							List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porItemVenda(itemVenda);
+							for (ItemVendaCompra itemVendaCompra : itensVendaCompra) {
+								//if(!itemVendaCompra.getCompra().isAjuste()) {
+									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemVendaCompra.getQuantidade().longValue() * itemVenda.getValorCompra().doubleValue())));					
+								//}
+							}
+						} else {
+							
+							List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porItemVenda(itemVenda);
+							for (ItemVendaCompra itemVendaCompra : itensVendaCompra) {
+								
+								//if(!itemVendaCompra.getCompra().isAjuste()) {					
+									
+									BigDecimal subtotal = BigDecimal.valueOf( 
+											itemVenda.getValorUnitario().doubleValue() * itemVendaCompra.getQuantidade().longValue());					
+									BigDecimal total = new BigDecimal(subtotal.doubleValue() - (subtotal.doubleValue() * (itemVenda.getDesconto().doubleValue() / 100)));		
+		
+									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + total.doubleValue()));					
+								//}
+							}
+						}
+					}
+					
+				} else {
+					
+					if(vendaSelecionada.isAjuste()) {
+						
+						if(!vendaSelecionada.isRecuperarValores()) {
+							//ItemCompra itemCompra = itensCompras.porCompra(itemVenda.getCompra(), itemVenda.getProduto());						
+							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemVenda.getQuantidade().longValue() * itemVenda.getValorCompra().doubleValue())));					
+						}
+												
+					} else {					
+					
+						/* Deseja recuperar esses valores ? Se sim, Então os valores sub-totais de cada produto dessa venda
+						 * serão somados 
+						 * aos valores totais das próximas entradas de cada um desses produtos. Obs: O custo médio
+						 * desses produtos sofrerão aumento proporcional aos seus respectivos valores sub-totais dessa venda. 
+						 * */
+						if(itemVenda.getLucro().doubleValue() >= 0) {
+							
+							//for (ItemVendaCompra itemVendaCompra : itemVenda.getItensVendaCompra()) {
+								//if(!itemVendaCompra.getCompra().isAjuste()) {
+									//ItemCompra itemCompra = itensCompras.porCompra(itemVenda.getCompra(), itemVenda.getProduto());										
+									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemVenda.getQuantidade().longValue() * itemVenda.getValorCompra().doubleValue())));					
+								//}
+							//}
+							
+						} else {
+							
+							//for (ItemVendaCompra itemVendaCompra : itemVenda.getItensVendaCompra()) {
+								
+								//if(!itemVendaCompra.getCompra().isAjuste()) {					
+									//ItemCompra itemCompra = itensCompras.porCompra(itemVenda.getCompra(), itemVenda.getProduto());
+									
+									BigDecimal total = BigDecimal.valueOf( 
+											itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().longValue());					
+									//BigDecimal total = new BigDecimal(subtotal.doubleValue() - itemVenda.getLucro().doubleValue());		
+	
+									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + total.doubleValue()));					
+								//}
+							//}											
+						}
+					}
+				}
+				
 				produtos.save(produto);
 
 				List<ItemCompra> itensCompra = itensCompras.porProduto(itemVenda.getProduto());
 				for (ItemCompra itemCompra : itensCompra) {
-
-					if (itemCompra.getCompra().getId().longValue() == itemVenda.getCompra().getId().longValue()) {
-						if (itemCompra.getProduto().getId().longValue() == itemVenda.getProduto().getId().longValue()) {
-							System.out.println(itemCompra.getQuantidadeDisponivel());
-							System.out.println(itemVenda.getQuantidade());
-							itemCompra.setQuantidadeDisponivel(
-									itemCompra.getQuantidadeDisponivel() + itemVenda.getQuantidade());
-							itensCompras.save(itemCompra);
+					
+					if(vendaSelecionada.isPdv()) {
+						
+						List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porItemVenda(itemVenda);
+						
+						for(ItemVendaCompra itemVendaCompra : itensVendaCompra) {	
+							
+							if (itemCompra.getCompra().getId().longValue() == itemVendaCompra.getCompra().getId().longValue()) {
+								if (itemCompra.getProduto().getId().longValue() == itemVenda.getProduto().getId().longValue()) {
+									System.out.println("Quantidade Disponivel: "+itemCompra.getQuantidadeDisponivel());
+									System.out.println("Quantidade Retornada: "+itemVenda.getQuantidade());
+									
+									itemCompra.setQuantidadeDisponivel(
+											itemCompra.getQuantidadeDisponivel() + itemVendaCompra.getQuantidade());
+									itensCompras.save(itemCompra);
+								}
+							}
+						}		
+						
+					} else {
+						
+						if (itemCompra.getCompra().getId().longValue() == itemVenda.getCompra().getId().longValue()) {
+							if (itemCompra.getProduto().getId().longValue() == itemVenda.getProduto().getId().longValue()) {
+								System.out.println(itemCompra.getQuantidadeDisponivel());
+								System.out.println(itemVenda.getQuantidade());
+								itemCompra.setQuantidadeDisponivel(
+										itemCompra.getQuantidadeDisponivel() + itemVenda.getQuantidade());
+								itensCompras.save(itemCompra);
+							}
 						}
 					}
+				}
+				
+				List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porItemVenda(itemVenda);
+				
+				for(ItemVendaCompra itemVendaCompra : itensVendaCompra) {
+					itensVendasCompras.remove(itemVendaCompra);
 				}
 
 				itensVendas.remove(itemVenda);
 			}
+			
 
 			if (entrega.getId() != null) {
 				entregas.remove(entrega);
@@ -279,7 +415,7 @@ public class ConsultaVendasBean implements Serializable {
 			PrimeFaces.current().executeScript(
 					"swal({ type: 'success', title: 'Concluído!', text: 'Venda excluída com sucesso!' });");
 
-		} else {
+		}/* else {
 
 			for (Venda venda : vendasFiltradas) {
 
@@ -318,7 +454,7 @@ public class ConsultaVendasBean implements Serializable {
 			PrimeFaces.current().executeScript(
 					"swal({ type: 'success', title: 'Concluído!', text: 'Venda excluída com sucesso!' });");
 
-		}
+		}*/
 
 	}
 

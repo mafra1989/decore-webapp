@@ -80,6 +80,9 @@ public class EstoqueBean implements Serializable {
 	
 	@Inject
 	private Usuarios usuarios;
+	
+	private String empresa = "";
+	
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -101,10 +104,21 @@ public class EstoqueBean implements Serializable {
 			}
 			
 			todasCategoriasProdutos();
+			
+			if(!empresa.equals(usuario.getEmpresa())) {
+				
+				if(!empresa.equals("")) {
+					pesquisar();
+				} 
+			}
 		}
 	}
 
 	public void pesquisar() {
+		
+		if(!empresa.equals(usuario.getEmpresa())) {			
+			empresa = usuario.getEmpresa();
+		}
 
 		boolean zerarEstoque = false;
 		if (filter.getDescricao().equalsIgnoreCase("ZerarEstoque")) {

@@ -75,6 +75,8 @@ public class ConsultaContasBean implements Serializable {
 	private Conta contaSelecionada;
 
 	private Date mes = new Date();
+	
+	private String empresa = "";
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -94,10 +96,23 @@ public class ConsultaContasBean implements Serializable {
 					}
 				}
 			}
+			
+			if(!empresa.equals(usuario.getEmpresa())) {
+				
+				if(!empresa.equals("")) {
+					pesquisar();
+				} 
+			}
+			
 		}
 	}
 
 	public void pesquisar() {
+		
+		if(!empresa.equals(usuario.getEmpresa())) {			
+			empresa = usuario.getEmpresa();
+		}
+		
 		Calendar calendarioTemp = Calendar.getInstance();
 		calendarioTemp.setTime(vencimento);
 		calendarioTemp.set(Calendar.HOUR, 23);

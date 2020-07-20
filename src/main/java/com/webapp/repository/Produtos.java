@@ -41,8 +41,10 @@ public class Produtos implements Serializable {
 	public Produto porCodigoCadastrado(Produto produto) {
 		try {
 			return this.manager
-					.createQuery("from Produto e where e.codigo = :codigo and e.id != :id", Produto.class)
-					.setParameter("codigo", produto.getCodigo()).setParameter("id", produto.getId()).getSingleResult();
+					.createQuery("from Produto e where e.codigo = :codigo and e.id != :id and e.categoriaProduto.empresa = :empresa", Produto.class)
+					.setParameter("codigo", produto.getCodigo())
+					.setParameter("id", produto.getId())
+					.setParameter("empresa", produto.getCategoriaProduto().getEmpresa()).getSingleResult();
 		} catch(NoResultException e) {
 			return null;
 		}
@@ -89,14 +91,11 @@ public class Produtos implements Serializable {
 			}
 
 			typedQuery = manager.createQuery(
-					"select e from Produto e where " + condition + " (e.nome like :nomeUpper or e.nome like :nomeLower or e.descricao like :descricaoUpper or e.descricao like :descricaoLower or e.codigo = :codigoUpper or e.codigo = :codigoLower) AND e.categoriaProduto.empresa = :empresa order by e.codigo",
+					"select e from Produto e where " + condition + " (upper(e.nome) like :nome or upper(e.descricao) like :descricao or upper(e.codigo) = :codigo) AND e.categoriaProduto.empresa = :empresa order by e.codigo",
 					Produto.class)
-					.setParameter("nomeUpper", "%" + filter.getDescricao().toUpperCase() + "%")
-					.setParameter("nomeLower", "%" + filter.getDescricao().toLowerCase() + "%")
-					.setParameter("descricaoUpper", "%" + filter.getDescricao().toUpperCase() + "%")
-					.setParameter("descricaoLower", "%" + filter.getDescricao().toLowerCase() + "%")
-					.setParameter("codigoUpper", filter.getDescricao().toUpperCase())
-					.setParameter("codigoLower", filter.getDescricao().toLowerCase())
+					.setParameter("nome", "%" + filter.getDescricao().toUpperCase() + "%")
+					.setParameter("descricao", "%" + filter.getDescricao().toUpperCase() + "%")
+					.setParameter("codigo", filter.getDescricao().toUpperCase())
 					.setParameter("empresa", filter.getEmpresa());
 			
 		} else {

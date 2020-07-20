@@ -294,8 +294,8 @@
 								value="#{consultaComprasBean.compraSelecionada.id}" />
 						</p:menuitem>
 						<p:separator />
-						<p:menuitem icon="fa fa-fw fa-trash" id="btn-trash"
-							value="Excluir" process="@this"
+						<p:menuitem icon="fa fa-fw fa-trash" id="btn-trash" 
+							value="Excluir" process="@this" disabled="#{not seguranca.acessoAdministrador()}"
 							onclick="deleteItem(#{consultaComprasBean.compraSelecionada.id});" />
 					</p:menuButton>
 

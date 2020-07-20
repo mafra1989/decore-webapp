@@ -267,19 +267,19 @@
 
 					<h3 style="font-weight: bold">Resultado da consulta</h3>
 
-					<p:menuButton id="menu-btn" value="Opções"
+					<p:menuButton id="menu-btn" value="Opções" 
 						style="width: 80px;float: right;margin-top: -40px;margin-right: 10px"
-						disabled="#{(consultaContasBean.contasFiltradasSize eq 0) or consultaContasBean.contaSelecionada.id == null}">
+						disabled="#{(consultaContasBean.contasFiltradasSize eq 0) or consultaContasBean.contaSelecionada.id == null or (not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado())}">
 
 						<p:menuitem value="#{consultaContasBean.contaSelecionada.tipo == 'DEBITO' ? 'Pagar' : 'Receber'}" icon="fa fa-fw fa-money"
 							onstart="start();"
 							oncomplete="PF('pagamento-dialog').show();stop();"
-							update="pagamento-dialog"
+							update="pagamento-dialog" 
 							rendered="#{not consultaContasBean.contaSelecionada.status}">
 						</p:menuitem>
 						<p:separator />
 						<p:menuitem icon="fa fa-fw fa-undo" value="#{consultaContasBean.contaSelecionada.tipo == 'DEBITO' ? 'Desfazer pagamento' : 'Desfazer recebimento'}"
-							process="@this"
+							process="@this" 
 							rendered="#{consultaContasBean.contaSelecionada.status}"
 							onclick="estornarConta(#{consultaContasBean.contaSelecionada.id});" />
 					</p:menuButton>

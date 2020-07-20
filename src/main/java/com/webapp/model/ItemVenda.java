@@ -2,6 +2,7 @@ package com.webapp.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -48,10 +49,15 @@ public class ItemVenda implements Serializable {
 	@Column
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
 	private BigDecimal valorCompra;
+	
+	@Column
+	@Digits(integer = 10 /* precision */, fraction = 0 /* scale */)
+	private BigDecimal desconto = BigDecimal.ZERO;
+	
 
 	@ManyToOne
 	@JoinColumn
-	private Produto produto;
+	private Produto produto = new Produto();
 
 	/*
 	 * @ManyToOne
@@ -66,6 +72,11 @@ public class ItemVenda implements Serializable {
 	@ManyToOne
 	@JoinColumn
 	private Compra compra;
+	
+	
+	@Column(columnDefinition="TEXT")
+	private String observacoes;
+	
 
 	public Long getId() {
 		return id;
@@ -123,6 +134,14 @@ public class ItemVenda implements Serializable {
 		this.valorCompra = valorCompra.setScale(2, BigDecimal.ROUND_HALF_EVEN);
 	}
 
+	public BigDecimal getDesconto() {
+		return desconto;
+	}
+
+	public void setDesconto(BigDecimal desconto) {
+		this.desconto = desconto;
+	}
+
 	public Produto getProduto() {
 		return produto;
 	}
@@ -151,6 +170,14 @@ public class ItemVenda implements Serializable {
 
 	public void setCompra(Compra compra) {
 		this.compra = compra;
+	}
+
+	public String getObservacoes() {
+		return observacoes;
+	}
+
+	public void setObservacoes(String observacoes) {
+		this.observacoes = observacoes;
 	}
 
 	@Override
@@ -186,6 +213,12 @@ public class ItemVenda implements Serializable {
 
 	@Transient
 	private String code;
+	
+	@Transient
+	private Long saldo;
+	
+	@Transient
+	private List<ItemVendaCompra> itensVendaCompra;
 
 	public String getCode() {
 		return code;
@@ -193,6 +226,22 @@ public class ItemVenda implements Serializable {
 
 	public void setCode(String code) {
 		this.code = code;
+	}
+
+	public Long getSaldo() {
+		return saldo;
+	}
+
+	public void setSaldo(Long saldo) {
+		this.saldo = saldo;
+	}
+
+	public List<ItemVendaCompra> getItensVendaCompra() {
+		return itensVendaCompra;
+	}
+
+	public void setItensVendaCompra(List<ItemVendaCompra> itensVendaCompra) {
+		this.itensVendaCompra = itensVendaCompra;
 	}
 
 }

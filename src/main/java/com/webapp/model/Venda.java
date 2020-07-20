@@ -101,6 +101,16 @@ public class Venda implements Serializable {
 	@Column
 	private String empresa;
 	
+	
+	@Type(type = "yes_no")
+	@Column(nullable = true)
+	private boolean pdv;
+	
+	
+	@Type(type = "yes_no")
+	@Column(nullable = true)
+	private boolean recuperarValores = false;
+	
 
 	public Long getId() {
 		return id;
@@ -228,6 +238,22 @@ public class Venda implements Serializable {
 
 	public void setEmpresa(String empresa) {
 		this.empresa = empresa;
+	}
+
+	public boolean isPdv() {
+		return pdv;
+	}
+
+	public void setPdv(boolean pdv) {
+		this.pdv = pdv;
+	}
+
+	public boolean isRecuperarValores() {
+		return recuperarValores;
+	}
+
+	public void setRecuperarValores(boolean recuperarValores) {
+		this.recuperarValores = recuperarValores;
 	}
 
 	public Bairro getBairro() {

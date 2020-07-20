@@ -80,6 +80,17 @@ public class Produto implements Serializable {
 	@ManyToOne
 	@JoinColumn
 	private Fornecedor fornecedor;
+	
+	
+	@Column
+	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	private BigDecimal custoTotal = BigDecimal.valueOf(20);
+		
+	
+	@Column
+	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	private BigDecimal custoMedioUnitario = BigDecimal.ZERO;
+	
 
 	public Long getId() {
 		return id;
@@ -197,6 +208,22 @@ public class Produto implements Serializable {
 		this.fornecedor = fornecedor;
 	}
 
+	public BigDecimal getCustoTotal() {
+		return custoTotal;
+	}
+
+	public void setCustoTotal(BigDecimal custoTotal) {
+		this.custoTotal = custoTotal.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
+	}
+
+	public BigDecimal getCustoMedioUnitario() {
+		return custoMedioUnitario;
+	}
+
+	public void setCustoMedioUnitario(BigDecimal custoMedioUnitario) {
+		this.custoMedioUnitario = custoMedioUnitario.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -221,7 +248,7 @@ public class Produto implements Serializable {
 			return false;
 		return true;
 	}
-
+	
 	@Transient
 	private BigDecimal precoMedioVenda = BigDecimal.ZERO;
 
@@ -251,13 +278,22 @@ public class Produto implements Serializable {
 
 	@Transient
 	private Long totalAjusteItensVendidos = 0L;
-
+	
+	
 	public BigDecimal getPrecoMedioVenda() {
 		return precoMedioVenda;
 	}
 
 	public void setPrecoMedioVenda(BigDecimal precoMedioVenda) {
 		this.precoMedioVenda = precoMedioVenda;
+	}
+
+	public BigDecimal getPrecoMedioUnitario() {
+		return new BigDecimal(custoMedioUnitario.doubleValue() * (1 + (margemLucro.doubleValue()/100))).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+	}
+
+	public BigDecimal getMargemLucroEmDinheiro() {
+		return new BigDecimal(custoMedioUnitario.doubleValue() * (margemLucro.doubleValue()/100)).setScale(2, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public Long getQuantidadeItensComprados() {
@@ -331,7 +367,5 @@ public class Produto implements Serializable {
 	public void setTotalAjusteItensVendidos(Long totalAjusteItensVendidos) {
 		this.totalAjusteItensVendidos = totalAjusteItensVendidos;
 	}
-
-	
 
 }

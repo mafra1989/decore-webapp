@@ -278,14 +278,26 @@
 
 						<p:panelGrid columns="2" layout="grid" id="panel-ajuste" rendered="#{seguranca.acessoAdministrador()}"
 							styleClass="panelgrid-noborder disabled disabled panel-ajuste"
-							columnClasses="ui-grid-col-4, ui-grid-col-4">
+							columnClasses="ui-grid-col-4, ui-grid-col-8">
 
 							<p:outputLabel value="Ajuste de estoque" for="ajuste" />
-							<p:selectBooleanCheckbox id="ajuste"
-								value="#{registroVendasBean.venda.ajuste}">
+							<p:selectBooleanCheckbox id="ajuste" style="margin-bottom: 9px;"
+								value="#{registroVendasBean.venda.ajuste}" disabled="#{registroVendasBean.venda.id != null}">
 								
 								<p:ajax process="@this" update="@parent" />
 							</p:selectBooleanCheckbox>	
+							
+							<p:outputLabel value="Deseja recuperar os valores de custo médio dos produtos desta venda?" rendered="#{registroVendasBean.venda.ajuste}" />
+							<p:inputSwitch offLabel="Não" onLabel="Sim" id="recuperar" style="width:150px"
+								value="#{registroVendasBean.venda.recuperarValores}" rendered="#{registroVendasBean.venda.ajuste}"
+								disabled="#{registroVendasBean.venda.id != null}"> 
+
+								<p:ajax process="@this" update="@parent" />
+							</p:inputSwitch>
+							
+							<p:outputLabel rendered="#{registroVendasBean.venda.ajuste and registroVendasBean.venda.recuperarValores}" />
+							<p:outputLabel value="Ok, então os valores de custo médio de cada produto dessa venda poderão ser somados aos valores totais de custo de suas próximas entradas."
+								rendered="#{registroVendasBean.venda.ajuste and registroVendasBean.venda.recuperarValores}" />	
 
 						</p:panelGrid>
 
@@ -317,7 +329,7 @@
 							value="#{registroVendasBean.itemVenda.code}" required="true"
 							requiredMessage="Produto deve ser informado." />
 
-						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+						<p:panelGrid columns="2" layout="grid" 
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-4, ui-grid-col-4">
 
@@ -325,11 +337,21 @@
 							<p:inputText id="codigo"
 								value="#{registroVendasBean.itemVenda.produto.codigo}"
 								readonly="true" />
+						</p:panelGrid>
+								
+						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 0px"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-4, ui-grid-col-6">
 
 							<p:outputLabel value="Descrição" for="descricao" />
-							<p:inputText id="descricao"
+							<p:inputTextarea id="descricao"
 								value="#{registroVendasBean.itemVenda.produto.descricao}"
 								readonly="true" />
+						</p:panelGrid>
+						
+						<p:panelGrid columns="2" layout="grid" style="margin-top:-4px"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-4, ui-grid-col-4">
 
 							<p:outputLabel value="Fornecedor" for="fornecedor" />
 							<p:inputText id="fornecedor"
@@ -338,11 +360,11 @@
 						</p:panelGrid>
 
 						<p:panelGrid id="panel-lote" columns="2" layout="grid"
-							style="margin-bottom: 5px"
+							style="margin-bottom: 0px"
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-4, ui-grid-col-6">
 
-							<p:outputLabel value="Qtd. Disponível" for="lote" />
+							<p:outputLabel value="Qtd. Disponível / Lote" for="lote" />
 							<p:selectOneMenu id="lote"
 								value="#{registroVendasBean.itemCompra}" placeholder="selecione">
 
@@ -366,14 +388,14 @@
 							<p:inputNumber id="valor-unitario" decimalPlaces="2"
 								placeholder="0"
 								value="#{registroVendasBean.itemVenda.valorUnitario}">
-								<p:ajax event="keyup" update="valor-total"></p:ajax>
+								<p:ajax event="keyup" update="valor-total btn-adicionar"></p:ajax>
 							</p:inputNumber>
 
 							<p:outputLabel value="Quantidade" for="quantidade" />
-							<p:inputNumber id="quantidade" decimalPlaces="0" placeholder="0"
+							<p:inputNumber id="quantidade" decimalPlaces="0" placeholder="0" 
 								value="#{registroVendasBean.itemVenda.quantidade}">
 
-								<p:ajax event="keyup" update="valor-total"></p:ajax>
+								<p:ajax event="keyup" update="valor-total btn-adicionar"></p:ajax>
 							</p:inputNumber>
 
 							<p:outputLabel value="Sub-Total" for="valor-total" />
@@ -389,7 +411,7 @@
 							<p:outputLabel />
 							<p:commandButton id="btn-adicionar" value="Adicionar"
 								onstart="PF('downloadLoading').show();"
-								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
+								disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()) or registroVendasBean.itemVenda.quantidade le 0 or registroVendasBean.itemVenda.valorUnitario le -0.001}"
 								onsuccess="PF('downloadLoading').hide();" icon="fa fa-plus"
 								update="msg codigo descricao fornecedor total-venda id valor-unitario quantidade valor-total panel-table lote "
 								action="#{registroVendasBean.adicionarItem}"

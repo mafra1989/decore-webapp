@@ -256,7 +256,8 @@
 
 							<p:outputLabel value="Ajuste de estoque" for="ajuste" />
 							<p:selectBooleanCheckbox id="ajuste"
-								value="#{registroComprasBean.compra.ajuste}">
+								value="#{registroComprasBean.compra.ajuste}"
+								disabled="#{registroComprasBean.compra.id != null}">
 								
 								<p:ajax process="@this" update="@parent" />
 							</p:selectBooleanCheckbox>	
@@ -298,12 +299,22 @@
 							<p:inputText id="codigo"
 								value="#{registroComprasBean.itemCompra.produto.codigo}"
 								readonly="true" />
+						</p:panelGrid>
+						
+						<p:panelGrid columns="2" layout="grid" style="margin-top:-4px;margin-bottom: 0px"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-4, ui-grid-col-6">
 
 							<p:outputLabel value="Descrição" for="descricao" />
-							<p:inputText id="descricao"
+							<p:inputTextarea id="descricao"
 								value="#{registroComprasBean.itemCompra.produto.descricao}"
 								readonly="true" />
-
+						</p:panelGrid>
+						
+						<p:panelGrid columns="2" layout="grid" style="margin-top:-4px;margin-bottom: 0px"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-4, ui-grid-col-4">
+							
 							<p:outputLabel value="Fornecedor" for="fornecedor" />
 							<p:inputText id="fornecedor"
 								value="#{registroComprasBean.itemCompra.produto.fornecedor.nome}"
@@ -319,14 +330,14 @@
 							<p:inputNumber id="valor-unitario" decimalPlaces="2"
 								placeholder="0"
 								value="#{registroComprasBean.itemCompra.valorUnitario}">
-								<p:ajax event="keyup" update="valor-total"></p:ajax>
+								<p:ajax event="keyup" update="valor-total btn-adicionar"></p:ajax>
 							</p:inputNumber>
 
 							<p:outputLabel value="Quantidade" for="quantidade" />
 							<p:inputNumber id="quantidade" decimalPlaces="0" placeholder="0"
 								value="#{registroComprasBean.itemCompra.quantidade}">
 
-								<p:ajax event="keyup" update="valor-total"></p:ajax>
+								<p:ajax event="keyup" update="valor-total btn-adicionar"></p:ajax>
 							</p:inputNumber>
 
 							<p:outputLabel value="Sub-Total" for="valor-total" />
@@ -343,7 +354,7 @@
 							<p:commandButton id="btn-adicionar" value="Adicionar"
 								onstart="PF('downloadLoading').show();" icon="fa fa-plus"
 								onsuccess="PF('downloadLoading').hide();"
-								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
+								disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()) or registroComprasBean.itemCompra.quantidade le 0 or registroComprasBean.itemCompra.valorUnitario le -0.001}"
 								update="msg codigo descricao fornecedor total-compra id valor-unitario quantidade valor-total panel-table"
 								action="#{registroComprasBean.adicionarItem}"
 								process="@this codigo valor-unitario quantidade valor-total id"
