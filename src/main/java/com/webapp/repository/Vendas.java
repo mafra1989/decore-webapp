@@ -315,7 +315,7 @@ public class Vendas implements Serializable {
 		List<Object[]> result = q.getResultList();
 
 		if (chartCondition != false) {
-			for (Object[] object : result) {
+			/*for (Object[] object : result) {
 				if ((long) object[0] < 10) {
 					object[0] = "0" + object[0];
 				}
@@ -323,7 +323,7 @@ public class Vendas implements Serializable {
 				if ((long) object[1] < 10) {
 					object[1] = "0" + object[1];
 				}
-			}
+			}*/
 		}
 
 		return result;

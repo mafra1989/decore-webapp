@@ -6,6 +6,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -472,6 +473,17 @@ public class RelatorioVendasBean implements Serializable {
 					result.add(object);
 				} else {
 					for (Object[] object : resultTemp) {
+						
+						System.out.println(Arrays.asList(object));
+						/* Transferido de Repository */
+						if ((long) object[0] < 10) {
+							object[0] = "0" + object[0];
+						}
+
+						if ((long) object[1] < 10) {
+							object[1] = "0" + object[1];
+						}
+						
 						result.add(object);
 					}
 				}
