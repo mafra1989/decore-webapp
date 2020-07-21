@@ -345,6 +345,7 @@
 									<p:outputLabel value="Valor Total" for="valor-despesa" />
 									<p:inputNumber id="valor-despesa" decimalPlaces="2"
 										autocomplete="off" styleClass="valor-numerico"
+										placeholder="R$ 0,00" symbol="R$ "
 										value="#{registroLancamentosBean.despesa.valor}" />
 
 								</p:panelGrid>
@@ -520,7 +521,7 @@
 
 									<p:outputLabel value="Valor Total" for="valor-receita" />
 									<p:inputNumber id="valor-receita" decimalPlaces="2"
-										autocomplete="off"
+										autocomplete="off" placeholder="R$ 0,00" symbol="R$ "
 										value="#{registroLancamentosBean.receita.valor}" />
 
 								</p:panelGrid>

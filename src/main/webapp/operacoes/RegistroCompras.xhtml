@@ -327,23 +327,25 @@
 							columnClasses="ui-grid-col-4, ui-grid-col-4">
 
 							<p:outputLabel value="Valor Unitário" for="valor-unitario" />
-							<p:inputNumber id="valor-unitario" decimalPlaces="2"
-								placeholder="0"
+							<p:inputNumber id="valor-unitario" decimalPlaces="2" onkeyup="ajaxDelay()"
+								placeholder="R$ 0,00" symbol="R$ " styleClass="valor-unitario"
 								value="#{registroComprasBean.itemCompra.valorUnitario}">
-								<p:ajax event="keyup" update="valor-total btn-adicionar"></p:ajax>
+								
+								<p:ajax event="keydown" update="btn-adicionar"></p:ajax>
 							</p:inputNumber>
 
 							<p:outputLabel value="Quantidade" for="quantidade" />
 							<p:inputNumber id="quantidade" decimalPlaces="0" placeholder="0"
+								styleClass="quantidade" onkeyup="ajaxDelay()"
 								value="#{registroComprasBean.itemCompra.quantidade}">
 
-								<p:ajax event="keyup" update="valor-total btn-adicionar"></p:ajax>
+								<p:ajax event="keydown" update="btn-adicionar"></p:ajax>
 							</p:inputNumber>
 
 							<p:outputLabel value="Sub-Total" for="valor-total" />
 							<p:inputNumber id="valor-total" decimalPlaces="2" readonly="true"
-								placeholder="0"
-								value="#{registroComprasBean.itemCompra.valorUnitario * registroComprasBean.itemCompra.quantidade}" />
+								styleClass="sub-total" placeholder="R$ 0,00" symbol="R$ "
+								value="#{registroComprasBean.itemCompra.total}" />
 						</p:panelGrid>
 
 						<p:panelGrid columns="2" layout="grid"
@@ -354,7 +356,7 @@
 							<p:commandButton id="btn-adicionar" value="Adicionar"
 								onstart="PF('downloadLoading').show();" icon="fa fa-plus"
 								onsuccess="PF('downloadLoading').hide();"
-								disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()) or registroComprasBean.itemCompra.quantidade le 0 or registroComprasBean.itemCompra.valorUnitario le -0.001}"
+								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
 								update="msg codigo descricao fornecedor total-compra id valor-unitario quantidade valor-total panel-table"
 								action="#{registroComprasBean.adicionarItem}"
 								process="@this codigo valor-unitario quantidade valor-total id"
@@ -737,6 +739,29 @@
 
 			function mostrar() {
 				$(".panel-parcelas").removeClass("hide");
+			}
+			
+			var delay = (function() {
+			    var timer = 0;
+			    return function(callback, ms) {
+			        clearTimeout (timer);
+			        timer = setTimeout(callback, ms);
+			    };
+			})();
+			
+			function ajaxDelay(){ 
+				var valorUnitario = $('.valor-unitario input').val();
+				var quantidade = $('.quantidade input').val(); 
+				var subtotal = parseFloat(valorUnitario.replace('R$ ','').replace('.','').replace(',','.')) * parseFloat(quantidade);
+				
+				if(subtotal.toString() != 'NaN') { 
+					var f = parseFloat(subtotal).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+					$('.sub-total input').val(f);
+				}
+				    
+				delay(function() { 
+					sendAjaxical(); 
+					}, 500);
 			}
 		</script>
 

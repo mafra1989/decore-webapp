@@ -206,10 +206,10 @@
 				<p:defaultCommand target="btn-calcular" />
 
 				<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
-					styleClass="panelgrid-noborder disabled disabled"
+					styleClass="panelgrid-noborder disabled disabled" 
 					columnClasses="ui-grid-col-6, ui-grid-col-6">
 
-					<p:panel class="card card-w-title ui-fluid" id="panel-itens"
+					<p:panel class="card card-w-title ui-fluid" id="panel-itens" 
 						style="margin-bottom: 0px;margin-top: 10px; padding-bottom: 0px !important">
 
 						<h3 style="font-weight: bold">Dados da Venda</h3>
@@ -287,7 +287,7 @@
 								<p:ajax process="@this" update="@parent" />
 							</p:selectBooleanCheckbox>	
 							
-							<p:outputLabel value="Deseja recuperar os valores de custo médio dos produtos desta venda?" rendered="#{registroVendasBean.venda.ajuste}" />
+							<p:outputLabel value="Deseja recuperar os valores de custo medio dos produtos desta venda?" rendered="#{registroVendasBean.venda.ajuste}" />
 							<p:inputSwitch offLabel="Não" onLabel="Sim" id="recuperar" style="width:150px"
 								value="#{registroVendasBean.venda.recuperarValores}" rendered="#{registroVendasBean.venda.ajuste}"
 								disabled="#{registroVendasBean.venda.id != null}"> 
@@ -381,27 +381,30 @@
 
 
 						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
-							styleClass="panelgrid-noborder disabled disabled"
+							styleClass="panelgrid-noborder disabled disabled" 
 							columnClasses="ui-grid-col-4, ui-grid-col-4">
 
 							<p:outputLabel value="Valor Unitário" for="valor-unitario" />
-							<p:inputNumber id="valor-unitario" decimalPlaces="2"
-								placeholder="0"
+							<p:inputNumber id="valor-unitario" decimalPlaces="2" placeholder="R$ 0,00" symbol="R$ "
+								onkeyup="ajaxDelay()" styleClass="valor-unitario"
 								value="#{registroVendasBean.itemVenda.valorUnitario}">
-								<p:ajax event="keyup" update="valor-total btn-adicionar"></p:ajax>
+								
+								<p:ajax event="keydown" process="@this" update="btn-adicionar"></p:ajax>
 							</p:inputNumber>
 
 							<p:outputLabel value="Quantidade" for="quantidade" />
 							<p:inputNumber id="quantidade" decimalPlaces="0" placeholder="0" 
+								onkeyup="ajaxDelay()" styleClass="quantidade"
 								value="#{registroVendasBean.itemVenda.quantidade}">
 
-								<p:ajax event="keyup" update="valor-total btn-adicionar"></p:ajax>
+								<p:ajax event="keydown" process="@this" update="btn-adicionar"></p:ajax>
 							</p:inputNumber>
 
 							<p:outputLabel value="Sub-Total" for="valor-total" />
 							<p:inputNumber id="valor-total" decimalPlaces="2" readonly="true"
-								placeholder="0"
-								value="#{registroVendasBean.itemVenda.valorUnitario * registroVendasBean.itemVenda.quantidade}" />
+								styleClass="sub-total" placeholder="R$ 0,00" symbol="R$ "
+								value="#{registroVendasBean.itemVenda.total}" />
+							
 						</p:panelGrid>
 
 						<p:panelGrid columns="2" layout="grid"
@@ -411,7 +414,7 @@
 							<p:outputLabel />
 							<p:commandButton id="btn-adicionar" value="Adicionar"
 								onstart="PF('downloadLoading').show();"
-								disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()) or registroVendasBean.itemVenda.quantidade le 0 or registroVendasBean.itemVenda.valorUnitario le -0.001}"
+								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
 								onsuccess="PF('downloadLoading').hide();" icon="fa fa-plus"
 								update="msg codigo descricao fornecedor total-venda id valor-unitario quantidade valor-total panel-table lote "
 								action="#{registroVendasBean.adicionarItem}"
@@ -647,6 +650,29 @@
 
 			function stop() {
 				PF('downloadLoading').hide();
+			}
+			
+			var delay = (function() {
+			    var timer = 0;
+			    return function(callback, ms) {
+			        clearTimeout (timer);
+			        timer = setTimeout(callback, ms);
+			    };
+			})();
+			
+			function ajaxDelay(){ 
+				var valorUnitario = $('.valor-unitario input').val();
+				var quantidade = $('.quantidade input').val(); 
+				var subtotal = parseFloat(valorUnitario.replace('R$ ','').replace('.','').replace(',','.')) * parseFloat(quantidade);
+				
+				if(subtotal.toString() != 'NaN') { 
+					var f = parseFloat(subtotal).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+					$('.sub-total input').val(f);
+				}
+				    
+				delay(function() { 
+					sendAjaxical(); 
+					}, 500);
 			}
 		</script>
 

@@ -178,6 +178,10 @@ public class RegistroVendasBean implements Serializable {
 		entregaVenda = entregas.porVenda(venda);
 		entrega = entregaVenda.getId() != null;
 	}
+	
+	public void calculaSubtotal() {
+		itemVenda.setTotal(new BigDecimal(itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().longValue()));
+	}
 
 	public void salvar() {
 
@@ -934,4 +938,5 @@ public class RegistroVendasBean implements Serializable {
 	public boolean isDisableAjuste() {
 		return disableAjuste;
 	}
+
 }

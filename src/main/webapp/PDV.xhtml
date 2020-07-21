@@ -18,6 +18,9 @@
 
 		<style>
 @media ( min-width :220px) {
+ 	.panel-desc .ui-grid-col-4:first-child {
+ 		text-align: center;
+ 	}
 	.panel-itenstable {
 	    margin-top: 4px;
 	    border: none;
@@ -309,8 +312,8 @@
     	display: none;
     }
     .image-produto {
-    	width: 97%;
-    	height: 342px;
+    	width: 75%;
+    	height: 190px;
     }
     .line-total {
 		display:none;
@@ -324,10 +327,22 @@
 		text-align: center;
 		width: 97%;
 	}
+	
+	.panel-body {
+		margin-bottom: 5px;
+		margin-top:5px;
+		padding:18px;
+	}
 
 }
 
 @media ( min-width :460px) {
+	.panel-body {
+		padding:0px;
+	}
+	.panel-desc .ui-grid-col-4:first-child {
+ 		text-align: none;
+ 	}
 	.desconto {
 		text-align: center;width: 95%;margin: auto;
 	}
@@ -499,8 +514,7 @@
 				<p:defaultCommand target="btn-calcular" rendered="false" />
 
 				<p:panelGrid columns="2" layout="grid"
-					style="margin-bottom: 5px;margin-top:5px;"
-					styleClass="panelgrid-noborder disabled disabled"
+					styleClass="panelgrid-noborder disabled disabled panel-body"
 					columnClasses="ui-grid-col-6, ui-grid-col-6">
 
 					<p:panel class="card card-w-title ui-fluid panel-left"
@@ -523,6 +537,10 @@
 
 								<p:inputText id="id" type="hidden"
 									value="#{pDVBean.itemVenda.code}" required="true"
+									requiredMessage="Produto deve ser informado." /> 
+									
+								<p:inputText id="customedio" type="hidden" styleClass="valor-custo"
+									value="#{pDVBean.itemVenda.produto.custoMedioUnitario}" required="true"
 									requiredMessage="Produto deve ser informado." />
 									
 								<p:defaultCommand scope="campos-valor" target="btn-adicionar" 
@@ -692,10 +710,10 @@
 
 										<p:outputLabel value="Quantidade" for="quantidade" />
 										<p:inputNumber id="quantidade" decimalPlaces="0"
-											placeholder="0" styleClass="quantidade"
+											placeholder="0" styleClass="quantidade" onkeyup="ajaxDelay()"
 											value="#{pDVBean.itemVenda.quantidade}">
 
-											<p:ajax event="keyup" update="valor-total margemEmDinheiro descontoEmDinheiro lucroEmDinheiro sub-total btn-adicionar"></p:ajax>
+											<p:ajax event="keyup" update="margemEmDinheiro descontoEmDinheiro lucroEmDinheiro sub-total btn-adicionar"></p:ajax>
 										</p:inputNumber>
 									</p:panelGrid>
 
@@ -705,8 +723,8 @@
 										columnClasses="ui-grid-col-12">
 
 										<p:outputLabel value="Valor Unitário" for="valor-unitario" />
-										<p:inputNumber id="valor-unitario" decimalPlaces="2"
-											placeholder="0" readonly="true"
+										<p:inputNumber id="valor-unitario" decimalPlaces="2" styleClass="valor-unitario"
+											placeholder="R$ 0,00" symbol="R$ " readonly="true"
 											value="#{pDVBean.itemVenda.produto.precoMedioUnitario}">
 										</p:inputNumber>
 									</p:panelGrid>
@@ -717,8 +735,8 @@
 										columnClasses="ui-grid-col-12">
 
 										<p:outputLabel value="Total sem Desconto" for="valor-total" />
-										<p:inputNumber id="valor-total" decimalPlaces="2"
-											readonly="true" placeholder="0"
+										<p:inputNumber id="valor-total" decimalPlaces="2" styleClass="sub-total"
+											readonly="true" placeholder="R$ 0,00" symbol="R$ "
 											value="#{pDVBean.itemVenda.produto.precoMedioUnitario * pDVBean.itemVenda.quantidade}" />
 
 									</p:panelGrid>
@@ -747,9 +765,9 @@
 											<h:outputText id="margem"
 												value="%#{pDVBean.itemVenda.produto.margemLucro}"
 												style="font-weight: bold; font-size: 18px" />
-											<h:inputHidden id="margem-lucro"
+											<h:inputHidden id="margem-lucro" 
 												value="#{pDVBean.itemVenda.produto.margemLucro}" />
-											<p:slider for="margem-lucro" display="margem"
+											<p:slider for="margem-lucro" display="margem" onSlideEnd="ajaxDelay();"
 												displayTemplate="%{value}" minValue="0" maxValue="300">
 			
 												<p:ajax event="slideEnd" update="preco-unitario margemEmDinheiro descontoEmDinheiro lucroEmDinheiro sub-total valor-unitario valor-total"
@@ -1192,6 +1210,43 @@
 
 			function stop() {
 				PF('downloadLoading').hide();
+			}
+			
+			var delay = (function() {
+			    var timer = 0;
+			    return function(callback, ms) {
+			        clearTimeout (timer);
+			        timer = setTimeout(callback, ms);
+			    };
+			})();
+			
+			function ajaxDelay(){ 
+				var quantidade = $('.quantidade input').val();
+				
+				var valorDeCusto = $('.valor-custo').val();
+				var margem = $('.campos-percentual .margem input').val();
+					
+				var valorUnitarioTemp = parseFloat(valorDeCusto.replace('R$ ','').replace(',','.'));				
+				var valorUnitario = valorUnitarioTemp * (1 + (parseFloat(margem)/100));	
+				
+				//alert(valorUnitario.toFixed(2));
+				
+				var totalSemDesconto = valorUnitario.toFixed(2) * parseFloat(quantidade);
+				//alert(totalSemDesconto.toFixed(2));
+				
+				if(totalSemDesconto.toString() != 'NaN') { 
+					var f = parseFloat(totalSemDesconto).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+					$('.sub-total input').val(f);
+				} else {
+					
+					var f = parseFloat('0').toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+					//alert(f);
+					$('.sub-total input').val(f);
+				}
+				    
+				delay(function() { 
+					sendAjaxical(); 
+					}, 500);
 			}
 		</script>
 
