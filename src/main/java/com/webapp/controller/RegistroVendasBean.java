@@ -201,6 +201,12 @@ public class RegistroVendasBean implements Serializable {
 			calendarioTemp.set(Calendar.SECOND, calendario.get(Calendar.SECOND));
 			venda.setDataVenda(calendarioTemp.getTime());
 			
+			venda.setDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_MONTH))));
+			venda.setNomeDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_WEEK))));
+			venda.setSemana(Long.valueOf((calendarioTemp.get(Calendar.WEEK_OF_YEAR))));
+			venda.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
+			venda.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
+			
 			if(!venda.isAjuste()) {
 				venda.setRecuperarValores(false);
 			}
@@ -341,13 +347,7 @@ public class RegistroVendasBean implements Serializable {
 			}
 			
 			
-			if (venda.getId() == null) {
-
-				venda.setDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_MONTH))));
-				venda.setNomeDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_WEEK))));
-				venda.setSemana(Long.valueOf((calendarioTemp.get(Calendar.WEEK_OF_YEAR))));
-				venda.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
-				venda.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
+			if (venda.getId() == null) {			
 	
 				Venda vendaTemp = vendas.ultimoNVenda(usuario.getEmpresa());
 	
