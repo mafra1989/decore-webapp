@@ -1134,6 +1134,7 @@ public class PDVBean implements Serializable {
 			itemVenda.setCode(itemSelecionado.getCode());
 			itemVenda.setProduto(itemSelecionado.getProduto());
 			itemVenda.setQuantidade(itemSelecionado.getQuantidade());
+			itemVenda.setTotal(itemSelecionado.getTotal());
 			itemVenda.setDesconto(itemSelecionado.getDesconto());
 			itemVenda.setObservacoes(itemSelecionado.getObservacoes());
 			

@@ -313,7 +313,7 @@
     }
     .image-produto {
     	width: 75%;
-    	height: 210px;
+    	height: 230px;
     }
     .line-total {
 		display:none;
@@ -713,7 +713,7 @@
 											placeholder="0" styleClass="quantidade" onkeyup="ajaxDelay()"
 											value="#{pDVBean.itemVenda.quantidade}">
 
-											<p:ajax event="keyup" update="margemEmDinheiro descontoEmDinheiro lucroEmDinheiro sub-total btn-adicionar"></p:ajax>
+											<p:ajax event="keyup" update="btn-adicionar"></p:ajax>
 										</p:inputNumber>
 									</p:panelGrid>
 
@@ -755,8 +755,8 @@
 
 										<p:outputLabel value="Margem" />
 										<p:panel styleClass="margem">
-											<h:outputText id="margemEmDinheiro"
-												value="#{pDVBean.itemVenda.produto.margemLucroEmDinheiro * pDVBean.itemVenda.quantidade}"
+											<h:outputText id="margemEmDinheiro" styleClass="margem-em-dinheiro"
+												value="#{(pDVBean.itemVenda.quantidade > 0) ? pDVBean.itemVenda.produto.margemLucroEmDinheiro * pDVBean.itemVenda.quantidade : pDVBean.itemVenda.produto.margemLucroEmDinheiro}"
 												style="font-weight: bold;font-size: 10px;float: right;margin-top: -17px;margin-right: 6px;color: #757575;">
 												
 												<f:convertNumber type="currency" />
@@ -770,7 +770,7 @@
 											<p:slider for="margem-lucro" display="margem" onSlideEnd="ajaxDelay();"
 												displayTemplate="%{value}" minValue="0" maxValue="300">
 			
-												<p:ajax event="slideEnd" update="preco-unitario margemEmDinheiro descontoEmDinheiro lucroEmDinheiro sub-total valor-unitario valor-total"
+												<p:ajax event="slideEnd" update="preco-unitario valor-unitario"
 													process="@this margem margem-lucro" />
 											</p:slider>
 										</p:panel>
@@ -783,7 +783,7 @@
 
 										<p:outputLabel value="Desconto" />
 										<p:panel styleClass="desconto">
-											<h:outputText id="descontoEmDinheiro"
+											<h:outputText id="descontoEmDinheiro" styleClass="desconto-em-dinheiro"
 												value="#{(pDVBean.itemVenda.produto.precoMedioUnitario * pDVBean.itemVenda.quantidade * pDVBean.itemVenda.desconto) / 100}"
 												style="font-weight: bold;font-size: 10px;float: right;margin-top: -17px;margin-right: 6px;color: #757575;">
 											
@@ -795,10 +795,10 @@
 												style="font-weight: bold; font-size: 18px" />
 											<h:inputHidden id="percentual-desconto"
 												value="#{pDVBean.itemVenda.desconto}" />
-											<p:slider for="percentual-desconto" display="desconto"
+											<p:slider for="percentual-desconto" display="desconto" onSlideEnd="ajaxDelay();"
 												displayTemplate="%{value}" minValue="0" maxValue="100">
 			
-												<p:ajax event="slideEnd" update="descontoEmDinheiro sub-total lucroEmDinheiro"
+												<p:ajax event="slideEnd" 
 													process="@this desconto percentual-desconto margem margem-lucro" />
 											</p:slider>
 										</p:panel>
@@ -811,18 +811,18 @@
 
 										<p:outputLabel value="Sub-Total" />
 										<p:panel>
-											<h:outputText id="lucroEmDinheiro"
+											<h:outputText id="lucroEmDinheiro" styleClass="lucro-em-dinheiro"
 												value="#{(pDVBean.itemVenda.produto.margemLucroEmDinheiro * pDVBean.itemVenda.quantidade) - ((pDVBean.itemVenda.produto.precoMedioUnitario * pDVBean.itemVenda.quantidade * pDVBean.itemVenda.desconto) / 100)}"
 												style="font-weight: bold;font-size: 10px;float: right;margin-top: -17px;margin-right: 6px;color: #757575;">
 											
 												<f:convertNumber type="currency" />
 											</h:outputText>
 										
-											<h:outputText id="sub-total"
-													value="#{(pDVBean.itemVenda.produto.precoMedioUnitario * pDVBean.itemVenda.quantidade) - ((pDVBean.itemVenda.produto.precoMedioUnitario * pDVBean.itemVenda.quantidade * pDVBean.itemVenda.desconto) / 100)}"
+											<h:outputText 
+													value="#{pDVBean.itemVenda.total}" styleClass="total-com-desconto"
 													style="font-weight: bold;font-size: 26px;float: right;margin-top: 2px;color: #0e6ace;border: 1px solid;padding: 0px 5px 0px 5px;border-radius: 2px;margin-right: 1px;">
-											
-												<f:convertNumber type="currency" />		
+												
+												<f:convertNumber type="currency" />
 											</h:outputText>		
 										</p:panel>								
 																						
@@ -847,7 +847,7 @@
 										onstart="PF('downloadLoading').show();"
 										disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()) or pDVBean.itemVenda.quantidade le 0}"
 										onsuccess="PF('downloadLoading').hide();" icon="fa fa-arrow-right" iconPos="right"
-										update="msg tabView codigo descricao fornecedor form:total-venda id valor-unitario quantidade valor-total form:panel-table lote "
+										update="msg tabView codigo lucroEmDinheiro descricao fornecedor form:total-venda id valor-unitario quantidade valor-total form:panel-table lote "
 										action="#{pDVBean.adicionarItem}"
 										process="@this codigo valor-unitario quantidade valor-total id lote percentual-desconto observacao"
 										style="font-weight: bold;">
@@ -995,7 +995,7 @@
 									<h:outputText value="#{item.produto.descricao}" />
 								</p:column>
 
-								<p:column headerText="Qtde." width="8%">
+								<p:column headerText="Qtde." width="10%">
 									<h:outputText value="#{item.quantidade}" />
 								</p:column>
 
@@ -1011,24 +1011,24 @@
 									</h:outputText>
 								</p:column>
 								
-								<p:column headerText="Lucro" width="20%" rendered="false">
-									<h:outputText value="#{item.lucro}">
-										<f:convertNumber type="currency" />
-									</h:outputText>
-								</p:column>
-
-								<p:column headerText="Perc." width="20%" rendered="false">
+								<p:column headerText="Margem" width="12%" rendered="true">
 									<h:outputText value="#{item.percentualLucro}%">
 										<f:convertNumber pattern="#0.00" />
 									</h:outputText>
 								</p:column>
+								
+								<p:column headerText="Lucro" width="15%" rendered="true">
+									<h:outputText value="#{item.lucro}">
+										<f:convertNumber type="currency" />
+									</h:outputText>
+								</p:column>			
 								
 								<p:column headerText="Desc." width="20%" rendered="false">
 									<h:outputText value="#{item.desconto}%">
 										<f:convertNumber pattern="#0.00" />
 									</h:outputText>
 								</p:column>
-								
+					
 								<p:column headerText="Obs." width="8%" rendered="false">
 									<h:outputText value="#{item.observacoes}" />
 								</p:column>
@@ -1229,19 +1229,83 @@
 				var valorUnitarioTemp = parseFloat(valorDeCusto.replace('R$ ','').replace(',','.'));				
 				var valorUnitario = valorUnitarioTemp * (1 + (parseFloat(margem)/100));	
 				
-				//alert(valorUnitario.toFixed(2));
+				var margemEmDinheiroTemp = (parseFloat(valorUnitario)) - (valorUnitarioTemp);	
+				var margemEmDinheiro = parseFloat(margemEmDinheiroTemp).toFixed(2) * parseFloat(quantidade);
+				
 				
 				var totalSemDesconto = valorUnitario.toFixed(2) * parseFloat(quantidade);
-				//alert(totalSemDesconto.toFixed(2));
 				
 				if(totalSemDesconto.toString() != 'NaN') { 
 					var f = parseFloat(totalSemDesconto).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
 					$('.sub-total input').val(f);
-				} else {
 					
-					var f = parseFloat('0').toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
-					//alert(f);
+					f = parseFloat(margemEmDinheiro).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+					var margemElement = document.querySelector(".margem-em-dinheiro");					
+					
+					if(totalSemDesconto > 0) {	
+						margemElement.innerText = f;
+					} else {						
+						margemEmDinheiro = valorDeCusto * (parseFloat(margem)/100);
+						f = parseFloat(margemEmDinheiro).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+						margemElement.innerText = f;
+					}
+					
+					var desconto = $('.campos-percentual .desconto input').val();
+									
+					var total = totalSemDesconto - (totalSemDesconto * parseFloat(desconto)/100);
+					
+					var descontoEmDinheiroTemp = totalSemDesconto * (parseFloat(desconto)/100);
+					
+
+					f = parseFloat(total.toFixed(2)).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+					var totalElement = document.querySelector(".total-com-desconto");
+					totalElement.innerText = f;
+					
+					
+					var descontoEmDinheiro = parseFloat(descontoEmDinheiroTemp).toFixed(2)
+					if(descontoEmDinheiroTemp.toString() == 'NaN') {
+						descontoEmDinheiro = 0;
+					}	
+					
+					
+					f = parseFloat(descontoEmDinheiro).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+					var descontoElement = document.querySelector(".desconto-em-dinheiro");
+					descontoElement.innerText = f;
+					
+			
+					var lucroEmDinheiro = margemEmDinheiro - descontoEmDinheiro;
+					f = parseFloat(lucroEmDinheiro.toFixed(2)).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+					var lucroElement = document.querySelector(".lucro-em-dinheiro");
+					lucroElement.innerText = f;
+					
+					if(totalSemDesconto > 0) {	
+						lucroElement.innerText = f;
+					} else {
+						f = parseFloat('0').toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+						lucroElement.innerText = f;
+					}
+					
+					
+				} else {
+						
+					margemEmDinheiro = parseFloat(valorDeCusto) * (parseFloat(margem)/100);	
+					
+					var f = parseFloat(margemEmDinheiro).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+					var margemElement = document.querySelector(".margem-em-dinheiro");
+					margemElement.innerText = f;
+					
+					f = parseFloat('0').toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+					
 					$('.sub-total input').val(f);
+					
+					var descontoElement = document.querySelector(".desconto-em-dinheiro");
+					descontoElement.innerText = f;
+									
+					var lucroElement = document.querySelector(".lucro-em-dinheiro");
+					lucroElement.innerText = f;
+					
+					var totalElement = document.querySelector(".total-com-desconto");
+					totalElement.innerText = f;
 				}
 				    
 				delay(function() { 
