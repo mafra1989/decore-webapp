@@ -713,7 +713,7 @@
 											placeholder="0" styleClass="quantidade" onkeyup="ajaxDelay()"
 											value="#{pDVBean.itemVenda.quantidade}">
 
-											<p:ajax event="keyup" update="btn-adicionar"></p:ajax>
+											<p:ajax event="keyup" process="@this" update="btn-adicionar"></p:ajax>
 										</p:inputNumber>
 									</p:panelGrid>
 
@@ -819,7 +819,7 @@
 											</h:outputText>
 										
 											<h:outputText 
-													value="#{pDVBean.itemVenda.total}" styleClass="total-com-desconto"
+													value="#{pDVBean.itemVenda.produto.precoMedioUnitario * pDVBean.itemVenda.quantidade - ((pDVBean.itemVenda.produto.precoMedioUnitario * pDVBean.itemVenda.quantidade * pDVBean.itemVenda.desconto) / 100)}" styleClass="total-com-desconto"
 													style="font-weight: bold;font-size: 26px;float: right;margin-top: 2px;color: #0e6ace;border: 1px solid;padding: 0px 5px 0px 5px;border-radius: 2px;margin-right: 1px;">
 												
 												<f:convertNumber type="currency" />
