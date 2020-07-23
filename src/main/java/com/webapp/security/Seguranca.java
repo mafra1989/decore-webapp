@@ -98,6 +98,11 @@ public class Seguranca {
 		System.out.println(externalContext.isUserInRole("USUARIO_COMUM"));
 		return externalContext.isUserInRole("USUARIO_COMUM");
 	}
+	
+	public boolean acessoVendedor() {
+		System.out.println(externalContext.isUserInRole("VENDEDOR"));
+		return externalContext.isUserInRole("VENDEDOR");
+	}
 
 	/*public String getImageContentsAsBase64() {
 		return Base64.getEncoder().encodeToString(fileContent);

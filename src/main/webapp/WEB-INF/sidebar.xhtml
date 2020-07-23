@@ -56,22 +56,22 @@
 
 							<p:menuitem id="pm_PDV" value="PDV"
 								icon="fa fa-qrcode" outcome="/PDV.xhtml" 
-								rendered="#{seguranca.acessoAdministrador()}">
+								rendered="#{seguranca.acessoAdministrador() or seguranca.acessoVendedor()}">
 							</p:menuitem>
 							
 							<p:submenu id="pm_consulta" label="Consultar" icon="fa fa-search"
-								rendered="#{seguranca.acessoAdministrador()  or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()}">
+								rendered="#{seguranca.acessoAdministrador()  or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum() or seguranca.acessoVendedor()}">
 
 								<p:menuitem id="pm_estoque" value="Estoque" icon="fa fa-cubes"
 									outcome="/consultas/Estoque.xhtml" />
 
-								<p:menuitem id="pm_compra" value="Compras"
+								<p:menuitem id="pm_compra" value="Compras" rendered="#{not seguranca.acessoVendedor()}"
 									icon="fa fa-shopping-cart" outcome="/consultas/Compras.xhtml" />
 
 								<p:menuitem id="pm_venda" value="Vendas" icon="fa fa-dollar"
 									outcome="/consultas/Vendas.xhtml" />
 
-								<p:menuitem id="pm_lancamento" value="Lançamentos"
+								<p:menuitem id="pm_lancamento" value="Lançamentos" rendered="#{not seguranca.acessoVendedor()}"
 									icon="fa fa-list-ol" outcome="/consultas/Lancamentos.xhtml" />
 
 							</p:submenu>

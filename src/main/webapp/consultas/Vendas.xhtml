@@ -275,7 +275,7 @@
 						</p:menuitem>
 						<p:menuitem value="Baixar PDF" icon="fa fa-fw fa-cloud-download"
 							action="#{consultaVendasBean.emitirPedido}" 
-							ajax="false" target="_blank">
+							ajax="false" target="_blank" disabled="#{seguranca.usuarioLogado.usuario.empresa eq 'Havaianas'}">
 						</p:menuitem>
 
 					</p:menuButton>

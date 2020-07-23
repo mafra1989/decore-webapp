@@ -540,8 +540,10 @@
 									requiredMessage="Produto deve ser informado." /> 
 									
 								<p:inputText id="customedio" type="hidden" styleClass="valor-custo"
-									value="#{pDVBean.itemVenda.produto.custoMedioUnitario}" required="true"
-									requiredMessage="Produto deve ser informado." />
+									value="#{pDVBean.itemVenda.produto.custoMedioUnitario}" />									
+									
+								<p:inputText id="preco-venda" type="hidden" styleClass="preco-venda"
+									value="#{pDVBean.itemVenda.produto.precoDeVenda}" />
 									
 								<p:defaultCommand scope="campos-valor" target="btn-adicionar" 
 									rendered="#{pDVBean.itemVenda.produto.id != null}" />								
@@ -562,7 +564,7 @@
 										offLabel="DESATIVADO" onIcon="fa fa-fw fa-check"
 										offIcon="fa fa-fw fa-close" style="font-size:11px;width:105px;float: right;">
 										
-										<p:ajax process="@this" update="tabView panel-busca" />										
+										<p:ajax process="@this" listener="#{pDVBean.ativarLeitor}" update="tabView panel-busca" />										
 									</p:selectBooleanButton>
 
 								</p:panelGrid>
@@ -644,7 +646,7 @@
 											style="font-size: 28px;font-weight: bold;float: left;margin-top: -6px;"
 											rendered="#{pDVBean.itemVenda.produto.id == null}" />
 											
-										<p:outputLabel id="preco-unitario" value="#{pDVBean.itemVenda.produto.precoMedioUnitario}"
+										<p:outputLabel id="preco-unitario" value="#{pDVBean.itemVenda.produto.precoDeVenda}"
 											style="font-size: 28px;font-weight: bold;float: left;margin-top: -6px;"
 											rendered="#{pDVBean.itemVenda.produto.id != null}">
 											
@@ -725,7 +727,7 @@
 										<p:outputLabel value="Valor Unitário" for="valor-unitario" />
 										<p:inputNumber id="valor-unitario" decimalPlaces="2" styleClass="valor-unitario"
 											placeholder="R$ 0,00" symbol="R$ " readonly="true"
-											value="#{pDVBean.itemVenda.produto.precoMedioUnitario}">
+											value="#{pDVBean.itemVenda.produto.precoDeVenda}">
 										</p:inputNumber>
 									</p:panelGrid>
 
@@ -737,7 +739,7 @@
 										<p:outputLabel value="Total sem Desconto" for="valor-total" />
 										<p:inputNumber id="valor-total" decimalPlaces="2" styleClass="sub-total"
 											readonly="true" placeholder="R$ 0,00" symbol="R$ "
-											value="#{pDVBean.itemVenda.produto.precoMedioUnitario * pDVBean.itemVenda.quantidade}" />
+											value="#{pDVBean.itemVenda.produto.precoDeVenda * pDVBean.itemVenda.quantidade}" />
 
 									</p:panelGrid>
 
@@ -747,9 +749,11 @@
 									style="margin-top:-5px;" id="margem-desconto"
 									styleClass="panelgrid-noborder disabled disabled campos-percentual"
 									columnClasses="ui-grid-col-4, ui-grid-col-4">
+									
+									
 
 									<p:panelGrid columns="1" layout="grid"
-										style="margin-bottom: 5px"
+										style="margin-bottom: 5px" rendered="false"
 										styleClass="panelgrid-noborder disabled disabled"
 										columnClasses="ui-grid-col-12">
 
@@ -784,7 +788,7 @@
 										<p:outputLabel value="Desconto" />
 										<p:panel styleClass="desconto">
 											<h:outputText id="descontoEmDinheiro" styleClass="desconto-em-dinheiro"
-												value="#{(pDVBean.itemVenda.produto.precoMedioUnitario * pDVBean.itemVenda.quantidade * pDVBean.itemVenda.desconto) / 100}"
+												value="#{(pDVBean.itemVenda.produto.precoDeVenda * pDVBean.itemVenda.quantidade * pDVBean.itemVenda.desconto) / 100}"
 												style="font-weight: bold;font-size: 10px;float: right;margin-top: -17px;margin-right: 6px;color: #757575;">
 											
 												<f:convertNumber type="currency" />
@@ -796,13 +800,15 @@
 											<h:inputHidden id="percentual-desconto"
 												value="#{pDVBean.itemVenda.desconto}" />
 											<p:slider for="percentual-desconto" display="desconto" onSlideEnd="ajaxDelay();"
-												displayTemplate="%{value}" minValue="0" maxValue="100">
+												displayTemplate="%{value}" minValue="0" maxValue="#{pDVBean.itemVenda.produto.descontoMaximo}">
 			
 												<p:ajax event="slideEnd" 
 													process="@this desconto percentual-desconto margem margem-lucro" />
 											</p:slider>
 										</p:panel>
 									</p:panelGrid>
+									
+									<p:outputLabel value="" />
 
 									<p:panelGrid columns="1" layout="grid"
 										style="margin-bottom: 5px"
@@ -812,14 +818,14 @@
 										<p:outputLabel value="Sub-Total" />
 										<p:panel>
 											<h:outputText id="lucroEmDinheiro" styleClass="lucro-em-dinheiro"
-												value="#{(pDVBean.itemVenda.produto.margemLucroEmDinheiro * pDVBean.itemVenda.quantidade) - ((pDVBean.itemVenda.produto.precoMedioUnitario * pDVBean.itemVenda.quantidade * pDVBean.itemVenda.desconto) / 100)}"
+												value="#{pDVBean.itemVenda.lucro == null ? 0 : pDVBean.itemVenda.lucro}"
 												style="font-weight: bold;font-size: 10px;float: right;margin-top: -17px;margin-right: 6px;color: #757575;">
 											
 												<f:convertNumber type="currency" />
 											</h:outputText>
 										
 											<h:outputText 
-													value="#{pDVBean.itemVenda.produto.precoMedioUnitario * pDVBean.itemVenda.quantidade - ((pDVBean.itemVenda.produto.precoMedioUnitario * pDVBean.itemVenda.quantidade * pDVBean.itemVenda.desconto) / 100)}" styleClass="total-com-desconto"
+													value="#{pDVBean.itemVenda.produto.precoDeVenda * pDVBean.itemVenda.quantidade - ((pDVBean.itemVenda.produto.precoDeVenda * pDVBean.itemVenda.quantidade * pDVBean.itemVenda.desconto) / 100)}" styleClass="total-com-desconto"
 													style="font-weight: bold;font-size: 26px;float: right;margin-top: 2px;color: #0e6ace;border: 1px solid;padding: 0px 5px 0px 5px;border-radius: 2px;margin-right: 1px;">
 												
 												<f:convertNumber type="currency" />
@@ -845,7 +851,7 @@
 									<p:outputLabel />
 									<p:commandButton id="btn-adicionar" value="Adicionar"
 										onstart="PF('downloadLoading').show();"
-										disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()) or pDVBean.itemVenda.quantidade le 0}"
+										disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado() and not seguranca.acessoVendedor()) or pDVBean.itemVenda.quantidade le 0}"
 										onsuccess="PF('downloadLoading').hide();" icon="fa fa-arrow-right" iconPos="right"
 										update="msg tabView codigo lucroEmDinheiro descricao fornecedor form:total-venda id valor-unitario quantidade valor-total form:panel-table lote "
 										action="#{pDVBean.adicionarItem}"
@@ -1011,13 +1017,13 @@
 									</h:outputText>
 								</p:column>
 								
-								<p:column headerText="Margem" width="12%" rendered="true">
+								<p:column headerText="Margem" width="12%" rendered="false">
 									<h:outputText value="#{item.percentualLucro}%">
 										<f:convertNumber pattern="#0.00" />
 									</h:outputText>
 								</p:column>
 								
-								<p:column headerText="Lucro" width="15%" rendered="true">
+								<p:column headerText="Lucro" width="15%" rendered="false">
 									<h:outputText value="#{item.lucro}">
 										<f:convertNumber type="currency" />
 									</h:outputText>
@@ -1080,7 +1086,7 @@
 							<p:commandButton id="btn-calcular" value="Finalizar Venda"
 								onstart="PF('downloadLoading').show();" icon="fa fa-save"
 								onsuccess="PF('downloadLoading').hide();" styleClass="btn-finalizar"
-								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
+								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado() and not seguranca.acessoVendedor()}"
 								update="msg tabView tabView:data-venda tabView:tipo-venda tabView:panel-entrega tabView:panel-ajuste tabView:vendedor tabView:bairro panel-table tabView:id tabView:codigo tabView:descricao tabView:fornecedor tabView:valor-unitario tabView:quantidade tabView:valor-total tabView:lote"
 								action="#{pDVBean.salvar}"
 								process="@this panel-table tabView:data-venda tabView:vendedor tabView:bairro tabView:tipo-venda tabView:panel-ajuste" />
@@ -1224,21 +1230,23 @@
 				var quantidade = $('.quantidade input').val();
 				
 				var valorDeCusto = $('.valor-custo').val();
+				var precoDeVenda = $('.preco-venda').val();
 				var margem = $('.campos-percentual .margem input').val();
 					
 				var valorUnitarioTemp = parseFloat(valorDeCusto.replace('R$ ','').replace(',','.'));				
 				var valorUnitario = valorUnitarioTemp * (1 + (parseFloat(margem)/100));	
 				
-				var margemEmDinheiroTemp = (parseFloat(valorUnitario)) - (valorUnitarioTemp);	
-				var margemEmDinheiro = parseFloat(margemEmDinheiroTemp).toFixed(2) * parseFloat(quantidade);
+				//var margemEmDinheiroTemp = (parseFloat(valorUnitario)) - (valorUnitarioTemp);	
+				//var margemEmDinheiro = parseFloat(margemEmDinheiroTemp).toFixed(2) * parseFloat(quantidade);
 				
 				
-				var totalSemDesconto = valorUnitario.toFixed(2) * parseFloat(quantidade);
+				var totalSemDesconto = parseFloat(precoDeVenda).toFixed(2) * parseFloat(quantidade);
 				
 				if(totalSemDesconto.toString() != 'NaN') { 
 					var f = parseFloat(totalSemDesconto).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
 					$('.sub-total input').val(f);
 					
+					/*
 					f = parseFloat(margemEmDinheiro).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
 					var margemElement = document.querySelector(".margem-em-dinheiro");					
 					
@@ -1248,7 +1256,7 @@
 						margemEmDinheiro = valorDeCusto * (parseFloat(margem)/100);
 						f = parseFloat(margemEmDinheiro).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
 						margemElement.innerText = f;
-					}
+					}*/
 					
 					var desconto = $('.campos-percentual .desconto input').val();
 									
@@ -1270,10 +1278,10 @@
 					
 					f = parseFloat(descontoEmDinheiro).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
 					var descontoElement = document.querySelector(".desconto-em-dinheiro");
-					descontoElement.innerText = f;
+					descontoElement.innerText = f; 
 					
 			
-					var lucroEmDinheiro = margemEmDinheiro - descontoEmDinheiro;
+					var lucroEmDinheiro = ((parseFloat(precoDeVenda) - (parseFloat(valorDeCusto)/parseFloat(precoDeVenda)) * parseFloat(precoDeVenda)) * parseFloat(quantidade)) - descontoEmDinheiro;
 					f = parseFloat(lucroEmDinheiro.toFixed(2)).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
 					var lucroElement = document.querySelector(".lucro-em-dinheiro");
 					lucroElement.innerText = f;
@@ -1288,11 +1296,11 @@
 					
 				} else {
 						
-					margemEmDinheiro = parseFloat(valorDeCusto) * (parseFloat(margem)/100);	
+					/*margemEmDinheiro = parseFloat(valorDeCusto) * (parseFloat(margem)/100);	
 					
 					var f = parseFloat(margemEmDinheiro).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
 					var margemElement = document.querySelector(".margem-em-dinheiro");
-					margemElement.innerText = f;
+					margemElement.innerText = f;*/
 					
 					f = parseFloat('0').toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
 					
@@ -1309,7 +1317,7 @@
 				}
 				    
 				delay(function() { 
-					sendAjaxical(); 
+					//sendAjaxical(); 
 					}, 500);
 			}
 		</script>

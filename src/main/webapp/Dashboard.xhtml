@@ -805,7 +805,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 					<div
 						style="width: 80%; margin: auto; border-top: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px"></div>
 
-					<p:button icon="fa fa-fw fa-list"
+					<p:button icon="fa fa-fw fa-list" disabled="#{seguranca.usuarioLogado.usuario.empresa eq 'Havaianas'}"
 						style="margin-bottom: 5px;font-weight: bold;float: right;width: 100px;margin-right: 5px;background:#147df0"
 						value="Detalhes" id="foto-button"
 						outcome="/cadastros/CadastroProdutos.xhtml" onclick="start();">

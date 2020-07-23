@@ -41,9 +41,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			
 		.authorizeRequests()
 			.antMatchers("/Login.xhtml", "/404.xhtml", "/500.xhtml", "/javax.faces.resource/**").permitAll()
-			.antMatchers("/Dashboard.xhtml", "/403.xhtml").authenticated()
+			.antMatchers("/403.xhtml").authenticated()
 			
 			.antMatchers(
+					"/Dashboard.xhtml",
 					"/Contas.xhtml", 
 					"/PDV.xhtml", 
 					"/cadastros/CadastroProdutos.xhtml",
@@ -58,6 +59,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					"/relatorios/Lucros.xhtml",
 					"/relatorios/Lancamentos.xhtml")
 			.hasAnyRole("ADMINISTRADOR", "USUARIO_AVANCADO", "USUARIO_COMUM")
+			
+			.antMatchers(
+					"/PDV.xhtml", 
+					"/cadastros/CadastroProdutos.xhtml",
+					"/consultas/Estoque.xhtml",
+					"/consultas/Vendas.xhtml")
+			.hasAnyRole("VENDEDOR")
 			
 			.antMatchers("/Empresas.xhtml", 
 					"/cadastros/CadastroBairros.xhtml", 

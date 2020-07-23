@@ -100,6 +100,20 @@ public class CadastroProdutoBean implements Serializable {
 		}
 	}
 	
+	public void calculaMargemLucroReal() {
+		if(produto.getCustoMedioUnitario().doubleValue() > 0) {
+			Double valorDeVendaEstimado = produto.getCustoMedioUnitario().doubleValue() + (produto.getCustoMedioUnitario().doubleValue() * produto.getMargemLucro().doubleValue()/100);
+			produto.setMargemLucroReal(new BigDecimal(((valorDeVendaEstimado.doubleValue() - produto.getCustoMedioUnitario().doubleValue()) / valorDeVendaEstimado.doubleValue()) * 100));
+		}
+	}
+	
+	public void calculaMargemContribuicao() {
+		Double valorDeCusto = produto.getCustoMedioUnitario().doubleValue();		
+		Double valorDeVendaEstimado = valorDeCusto / (1 - produto.getMargemLucroReal().doubleValue()/100);
+		
+		produto.setMargemLucro(new BigDecimal(((valorDeVendaEstimado.doubleValue() * 100) / valorDeCusto.doubleValue()) - 100));
+	}
+	
 	public void buscar() {
 		produto = produtos.porId(produto.getId());
 		//fileContent = produto.getFoto();
@@ -155,6 +169,8 @@ public class CadastroProdutoBean implements Serializable {
 		produto.setQuantidadeItensComprados(totalItensComprados);
 		
 		produto.setQuantidadeItensVendidos(totalItensVendidos);
+		
+		calculaMargemLucroReal();
 	}
 	
 	public void calculaAvender() {
@@ -174,14 +190,24 @@ public class CadastroProdutoBean implements Serializable {
 			
 			if(produtoTemp == null) {
 				
-				produto = produtos.save(produto);
+				produtoTemp = produtos.porCodigoDeBarras(produto.getCodigoDeBarras(), usuario.getEmpresa());
 				
-				produto = new Produto();
-				fileContent = null;
-				file = null;
+				if(produtoTemp == null) {
+					produto = produtos.save(produto);
+					
+					produto = new Produto();
+					fileContent = null;
+					file = null;
+					
+					PrimeFaces.current().executeScript(
+							"swal({ type: 'success', title: 'Concluído!', text: 'Produto cadastrado com sucesso!' });");
+				} else {
+					
+					PrimeFaces.current().executeScript(
+							"swal({ type: 'error', title: 'Erro!', text: 'Já existe um produto com o código de barras informado!' });");	
+				}
 				
-				PrimeFaces.current().executeScript(
-						"swal({ type: 'success', title: 'Concluído!', text: 'Produto cadastrado com sucesso!' });");			
+							
 			} else {
 				
 				PrimeFaces.current().executeScript(
@@ -193,9 +219,17 @@ public class CadastroProdutoBean implements Serializable {
 			
 			Produto produtoTemp = produtos.porCodigoCadastrado(produto);
 			if(produtoTemp == null) {
-				produto = produtos.save(produto);			
-				PrimeFaces.current().executeScript(
-						"swal({ type: 'success', title: 'Concluído!', text: 'Produto atualizado com sucesso!' });");
+				
+				produtoTemp = produtos.porCodigoDeBarrasCadastrado(produto);
+				if(produtoTemp == null) {
+					produto = produtos.save(produto);			
+					PrimeFaces.current().executeScript(
+							"swal({ type: 'success', title: 'Concluído!', text: 'Produto atualizado com sucesso!' });");
+				} else {
+					
+					PrimeFaces.current().executeScript(
+							"swal({ type: 'error', title: 'Erro!', text: 'Já existe um produto com o código de barras informado!' });");	
+				}
 				
 			} else {
 				PrimeFaces.current().executeScript(
@@ -286,6 +320,10 @@ public class CadastroProdutoBean implements Serializable {
 
 	public byte[] getFileContent() {
 		return fileContent;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
 	}
 		
 }

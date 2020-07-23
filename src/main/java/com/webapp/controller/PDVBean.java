@@ -159,9 +159,10 @@ public class PDVBean implements Serializable {
 	}
 
 	public void pesquisar() {
+		activeIndex = 0;
 		System.out.println("Código escaneado: " + filter.getCodigo());
 		
-		Produto produto = produtos.porCodigo(filter.getCodigo(), usuario.getEmpresa());	
+		Produto produto = produtos.porCodigoDeBarras(filter.getCodigo(), usuario.getEmpresa());	
 		
 		if(produto != null) {
 			filter = new ProdutoFilter();
@@ -227,6 +228,10 @@ public class PDVBean implements Serializable {
 		entrega = entregaVenda.getId() != null;
 		
 		activeIndex = 1;
+	}
+	
+	public void ativarLeitor() {
+		activeIndex = 0;
 	}
 
 	public void salvar() {
@@ -662,6 +667,8 @@ public class PDVBean implements Serializable {
 	public void selecionarProduto(Produto produto) {
 		
 		itemVenda = new ItemVenda();
+		produto.setDescontoMaximo(produto.getDesconto().longValue());
+		produto.setDesconto(new BigDecimal(0));
 		itemVenda.setProduto(produto);
 		itemVenda.setCode(produto.getCodigo().concat("_" + new Date().getTime()));
 		System.out.println(itemVenda.getCode());
@@ -773,11 +780,13 @@ public class PDVBean implements Serializable {
 	}
 
 	public void adicionarItem() {
+		
+		activeIndex = 0;
 
 		if (venda.getId() == null) {
 			
 			/* Método custo médio */
-			itemVenda.setValorUnitario(itemVenda.getProduto().getPrecoMedioUnitario());
+			itemVenda.setValorUnitario(itemVenda.getProduto().getPrecoDeVenda());
 
 			Long quantidadeDisponivel = itemVenda.getProduto().getQuantidadeAtual();//itemCompra.getQuantidadeDisponivel();
 
@@ -851,6 +860,7 @@ public class PDVBean implements Serializable {
 							}
 						}
 						
+						itemVenda.setPercentualLucro(new BigDecimal(itemVenda.getTotal().doubleValue() - (itemVenda.getProduto().getCustoMedioUnitario().doubleValue() * itemVenda.getQuantidade().doubleValue())/ itemVenda.getTotal().doubleValue() * 100).setScale(2, BigDecimal.ROUND_HALF_EVEN));
 						
 						itemVenda.setItensVendaCompra(itensVendaCompra);				
 						//itemVenda.setCompra(itemCompra.getCompra());
@@ -863,10 +873,11 @@ public class PDVBean implements Serializable {
 						.setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue();
 						
 					
-						itemVenda.setLucro(new BigDecimal(itemVenda.getTotal().doubleValue()
-								- valorDeCustoTotal.doubleValue()).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+						itemVenda.setLucro(new BigDecimal(((itemVenda.getValorUnitario().doubleValue() - valorDeCustoUnitario.doubleValue()) / itemVenda.getValorUnitario().doubleValue())
+								* (itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().intValue())
+								- (itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().doubleValue()) * itemVenda.getDesconto().doubleValue() / 100).setScale(2, BigDecimal.ROUND_HALF_EVEN));
 	
-						itemVenda.setPercentualLucro(itemVenda.getProduto().getMargemLucro());
+						itemVenda.setPercentualLucro(new BigDecimal(((itemVenda.getTotal().doubleValue() - (valorDeCustoUnitario.doubleValue() * itemVenda.getQuantidade())) / itemVenda.getTotal().doubleValue() * 100)));
 						itemVenda.setValorCompra(itemVenda.getProduto().getCustoMedioUnitario());
 	
 						System.out.println("ValorDeCustoTotal: " + valorDeCustoTotal);
@@ -1138,9 +1149,11 @@ public class PDVBean implements Serializable {
 			itensVenda.remove(itemSelecionado);
 			
 			
-			itemVenda.setCode(itemSelecionado.getCode());
+			itemVenda.setCode(itemSelecionado.getCode());		
 			itemVenda.setProduto(itemSelecionado.getProduto());
+			//itemVenda.getProduto().setPrecoDeVenda(itemVenda.getProduto().getCustoMedioUnitario());
 			itemVenda.setQuantidade(itemSelecionado.getQuantidade());
+			itemVenda.setLucro(itemSelecionado.getLucro());
 			itemVenda.setTotal(itemSelecionado.getTotal());
 			itemVenda.setDesconto(itemSelecionado.getDesconto());
 			itemVenda.setObservacoes(itemSelecionado.getObservacoes());
@@ -1278,7 +1291,11 @@ public class PDVBean implements Serializable {
 			itemVenda.setQuantidade(itemSelecionado.getQuantidade());
 			itemVenda.setDesconto(itemSelecionado.getDesconto());
 			itemVenda.setObservacoes(itemSelecionado.getObservacoes());
-			
+			itemVenda.setLucro(itemSelecionado.getLucro());
+			itemVenda.setTotal(itemSelecionado.getTotal());
+		
+			//itemVenda.getProduto().setPrecoDeVenda(itemSelecionado.getProduto().getCustoMedioUnitario());
+
 
 			List<ItemCompra> itensCompraTemp = itensCompras.porProduto(itemSelecionado.getProduto());
 

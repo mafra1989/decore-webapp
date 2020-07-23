@@ -38,11 +38,35 @@ public class Produtos implements Serializable {
 		}
 	}
 	
+	public Produto porCodigoDeBarras(String codigoDeBarras, String empresa) {
+		try {
+			return this.manager
+					.createQuery("from Produto e where e.codigoDeBarras = :codigoDeBarras AND e.categoriaProduto.empresa = :empresa", Produto.class)
+					.setParameter("codigoDeBarras", codigoDeBarras)
+					.setParameter("empresa", empresa).getSingleResult();
+		} catch(NoResultException e) {
+			return null;
+		}
+	}
+	
 	public Produto porCodigoCadastrado(Produto produto) {
 		try {
 			return this.manager
 					.createQuery("from Produto e where e.codigo = :codigo and e.id != :id and e.categoriaProduto.empresa = :empresa", Produto.class)
 					.setParameter("codigo", produto.getCodigo())
+					.setParameter("id", produto.getId())
+					.setParameter("empresa", produto.getCategoriaProduto().getEmpresa()).getSingleResult();
+		} catch(NoResultException e) {
+			return null;
+		}
+	}
+	
+	
+	public Produto porCodigoDeBarrasCadastrado(Produto produto) {
+		try {
+			return this.manager
+					.createQuery("from Produto e where e.codigoDeBarras = :codigoDeBarras and e.id != :id and e.categoriaProduto.empresa = :empresa", Produto.class)
+					.setParameter("codigoDeBarras", produto.getCodigoDeBarras())
 					.setParameter("id", produto.getId())
 					.setParameter("empresa", produto.getCategoriaProduto().getEmpresa()).getSingleResult();
 		} catch(NoResultException e) {
