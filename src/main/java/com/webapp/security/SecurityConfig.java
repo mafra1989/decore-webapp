@@ -65,7 +65,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					"/cadastros/CadastroProdutos.xhtml",
 					"/consultas/Estoque.xhtml",
 					"/consultas/Vendas.xhtml")
-			.hasAnyRole("VENDEDOR")
+			.hasAnyRole("VENDEDOR", "ADMINISTRADOR", "USUARIO_AVANCADO", "USUARIO_COMUM")
+			
+			.antMatchers(
+					"/PDV.xhtml")
+			.hasAnyRole("VENDEDOR", "ADMINISTRADOR")
 			
 			.antMatchers("/Empresas.xhtml", 
 					"/cadastros/CadastroBairros.xhtml", 
