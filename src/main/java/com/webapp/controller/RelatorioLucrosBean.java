@@ -441,7 +441,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 				if (resultTemp.size() == 0) {
 
-					Object[] object = new Object[5];
+					Object[] object = new Object[6];
 					object[0] = calendarStartTemp.get(Calendar.DAY_OF_MONTH);
 					if (calendarStartTemp.get(Calendar.DAY_OF_MONTH) < 10) {
 						object[0] = "0" + calendarStartTemp.get(Calendar.DAY_OF_MONTH);
@@ -456,6 +456,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 					object[3] = 0;
 					object[4] = 0;
+					object[5] = 0;
 
 					System.out.println("totalComprasPorData: " + object[4]);
 
@@ -491,6 +492,8 @@ public class RelatorioLucrosBean implements Serializable {
 
 			System.out.println("totalComprasPorData: " + object[4]);
 			Double totalCompras = ((Number) object[4]).doubleValue();
+			
+			Double totalVendasComPrecoVenda = ((Number) object[5]).doubleValue();
 
 			Double totalDeReceitas = 0D;
 			Double totalDeDespesas = 0D;
@@ -558,7 +561,8 @@ public class RelatorioLucrosBean implements Serializable {
 				values.add(totalDeVendas/* - totalDeCompras */);
 
 				if (totalDeVendas > 0) {
-					values2.add((totalDeVendas / totalCompras) * 100);
+					//values2.add((totalDeVendas / totalCompras) * 100);
+					values2.add((totalVendasComPrecoVenda - totalCompras)/totalVendasComPrecoVenda * 100);
 				} else {
 					values2.add(0);
 				}
@@ -654,13 +658,14 @@ public class RelatorioLucrosBean implements Serializable {
 
 				if (resultTemp.size() == 0) {
 
-					Object[] object = new Object[4];
+					Object[] object = new Object[5];
 
 					object[0] = i;
 					object[1] = ano01;
 
 					object[2] = 0;
 					object[3] = 0;
+					object[4] = 0;
 
 					result.add(object);
 				} else {
@@ -683,6 +688,8 @@ public class RelatorioLucrosBean implements Serializable {
 
 			Double totalDeVendas = ((Number) object[2]).doubleValue();
 			Double totalCompras = ((Number) object[3]).doubleValue();
+			
+			Double totalVendasComPrecoVenda = ((Number) object[4]).doubleValue();
 
 			Double totalDeReceitas = 0D;
 			Double totalDeDespesas = 0D;
@@ -739,7 +746,8 @@ public class RelatorioLucrosBean implements Serializable {
 				values.add(totalDeVendas/* - totalDeCompras */);
 
 				if (totalDeVendas > 0) {
-					values2.add((totalDeVendas / totalCompras) * 100);
+					//values2.add((totalDeVendas / totalCompras) * 100);
+					values2.add((totalVendasComPrecoVenda - totalCompras)/totalVendasComPrecoVenda * 100);
 				} else {
 					values2.add(0);
 				}
@@ -894,13 +902,14 @@ public class RelatorioLucrosBean implements Serializable {
 
 					if (resultTemp.size() == 0) {
 
-						Object[] object = new Object[4];
+						Object[] object = new Object[5];
 
 						object[0] = i;
 						object[1] = ano02;
 
 						object[2] = 0;
 						object[3] = 0;
+						object[4] = 0;
 
 						result.add(object);
 
@@ -926,7 +935,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 					if (resultTemp.size() == 0) {
 
-						Object[] object = new Object[5];
+						Object[] object = new Object[6];
 
 						object[0] = i;
 						object[1] = ano02;
@@ -934,6 +943,7 @@ public class RelatorioLucrosBean implements Serializable {
 						object[2] = 0;
 						object[3] = 0;
 						object[4] = i;
+						object[5] = 0;
 
 						result.add(object);
 
@@ -959,6 +969,13 @@ public class RelatorioLucrosBean implements Serializable {
 
 			Double totalDeVendas = ((Number) object[2]).doubleValue();
 			Double totalCompras = ((Number) object[3]).doubleValue();
+			
+			Double totalVendasComPrecoVenda = 0D;
+			if (lucroPorLote != true) {
+				totalVendasComPrecoVenda = ((Number) object[4]).doubleValue(); 
+			} else {
+				totalVendasComPrecoVenda = ((Number) object[5]).doubleValue(); 
+			}
 
 			Double totalDeReceitas = 0D;
 			Double totalDeDespesas = 0D;
@@ -1013,7 +1030,8 @@ public class RelatorioLucrosBean implements Serializable {
 				values.add(totalDeVendas/* - totalDeCompras */);
 
 				if (totalDeVendas > 0) {
-					values2.add((totalDeVendas / totalCompras) * 100);
+					//values2.add((totalDeVendas / totalCompras) * 100);
+					values2.add((totalVendasComPrecoVenda - totalCompras)/totalVendasComPrecoVenda * 100);
 				} else {
 					values2.add(0);
 				}
@@ -1100,12 +1118,13 @@ public class RelatorioLucrosBean implements Serializable {
 
 				if (resultTemp.size() == 0) {
 
-					Object[] object = new Object[3];
+					Object[] object = new Object[4];
 
 					object[0] = i;
 
 					object[1] = 0;
 					object[2] = 0;
+					object[3] = 0;
 
 					result.add(object);
 
@@ -1129,6 +1148,8 @@ public class RelatorioLucrosBean implements Serializable {
 
 			Double totalDeVendas = ((Number) object[1]).doubleValue();
 			Double totalCompras = ((Number) object[2]).doubleValue();
+			
+			Double totalVendasComPrecoVenda = ((Number) object[3]).doubleValue();
 
 			Double totalDeReceitas = 0D;
 			Double totalDeDespesas = 0D;
@@ -1174,7 +1195,8 @@ public class RelatorioLucrosBean implements Serializable {
 				values.add(totalDeVendas/* - totalDeCompras */);
 
 				if (totalDeVendas > 0) {
-					values2.add((totalDeVendas / totalCompras) * 100);
+					//values2.add((totalDeVendas / totalCompras) * 100);
+					values2.add((totalVendasComPrecoVenda - totalCompras)/totalVendasComPrecoVenda * 100);
 				} else {
 					values2.add(0);
 				}

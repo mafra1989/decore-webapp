@@ -41,20 +41,20 @@ public class Venda implements Serializable {
 	private Long quantidadeItens = 0L;
 
 	@Column(nullable = false)
-	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal valorTotal = BigDecimal.ZERO;
 
 	@Column
-	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
-	private BigDecimal lucro = BigDecimal.ZERO;;
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
+	private BigDecimal lucro = BigDecimal.ZERO;
 
 	@Column
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
-	private BigDecimal percentualLucro = BigDecimal.ZERO;;
+	private BigDecimal percentualLucro = BigDecimal.ZERO;
 
 	@Column
-	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
-	private BigDecimal valorCompra = BigDecimal.ZERO;;
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
+	private BigDecimal valorCompra = BigDecimal.ZERO;
 
 	@NotNull
 	@ManyToOne
@@ -149,7 +149,7 @@ public class Venda implements Serializable {
 	}
 
 	public void setValorTotal(BigDecimal valorTotal) {
-		this.valorTotal = valorTotal.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+		this.valorTotal = valorTotal.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public BigDecimal getLucro() {
@@ -157,7 +157,7 @@ public class Venda implements Serializable {
 	}
 
 	public void setLucro(BigDecimal lucro) {
-		this.lucro = lucro.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+		this.lucro = lucro.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public BigDecimal getPercentualLucro() {
@@ -173,7 +173,7 @@ public class Venda implements Serializable {
 	}
 
 	public void setValorCompra(BigDecimal valorCompra) {
-		this.valorCompra = valorCompra.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+		this.valorCompra = valorCompra.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public TipoVenda getTipoVenda() {

@@ -618,14 +618,25 @@ public class RegistroVendasBean implements Serializable {
 							itemVenda.setCompra(itemCompra.getCompra());
 		
 							/* Calculo do Lucro em valor e percentual */
-							itemVenda.setLucro(BigDecimal.valueOf((itemVenda.getQuantidade().doubleValue()
+							Double valorDeCustoUnitario = itemVenda.getProduto().getCustoMedioUnitario().doubleValue();	
+							
+							/*itemVenda.setLucro(BigDecimal.valueOf((itemVenda.getQuantidade().doubleValue()
 									* itemVenda.getValorUnitario().doubleValue())
 									- (itemVenda.getQuantidade().doubleValue() * itemVenda.getProduto().getCustoMedioUnitario().doubleValue())));
+							
 							itemVenda.setPercentualLucro(BigDecimal.valueOf((itemVenda.getLucro().doubleValue()
 									/ (itemVenda.getQuantidade().doubleValue() * itemVenda.getProduto().getCustoMedioUnitario().doubleValue()))
-									* 100));
-							itemVenda.setValorCompra(itemVenda.getProduto().getCustoMedioUnitario());
+									* 100));*/
+							
+							itemVenda.setLucro(new BigDecimal(((itemVenda.getValorUnitario().doubleValue() - valorDeCustoUnitario.doubleValue()) / itemVenda.getValorUnitario().doubleValue())
+									* (itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().intValue())
+									- (itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().doubleValue()) * itemVenda.getDesconto().doubleValue() / 100));
 		
+							itemVenda.setPercentualLucro(new BigDecimal(((itemVenda.getTotal().doubleValue() - (valorDeCustoUnitario.doubleValue() * itemVenda.getQuantidade())) / itemVenda.getTotal().doubleValue() * 100)));
+													
+							itemVenda.setValorCompra(itemVenda.getProduto().getCustoMedioUnitario());
+
+							
 							System.out.println(itemVenda.getLucro());
 							System.out.println(itemVenda.getPercentualLucro());
 		

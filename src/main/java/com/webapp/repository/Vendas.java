@@ -552,7 +552,7 @@ public class Vendas implements Serializable {
 
 		if (chartCondition != false) {
 			select_Condition = "p.dia, p.mes, p.ano, ";
-			sum_Condition = "sum(i.lucro), sum(i.valorCompra)";
+			sum_Condition = "sum(i.lucro), sum(i.valorCompra * i.quantidade), sum(i.valorUnitario * i.quantidade)";
 			groupBy_Condition = "p.dia, p.mes, p.ano ";
 			orderBy_Condition = "p.dataVenda asc";
 			orderBy_Condition = "p.ano asc, p.mes asc, p.dia asc";
@@ -652,7 +652,7 @@ public class Vendas implements Serializable {
 
 		if (chartCondition != false) {
 			select_Condition = "p.semana, p.ano, ";
-			sum_Condition = "sum(i.lucro), sum(i.valorCompra)";
+			sum_Condition = "sum(i.lucro), sum(i.valorCompra * i.quantidade), sum(i.valorUnitario * i.quantidade)";
 			groupBy_Condition = "p.semana, p.ano";
 			orderBy_Condition = "p.semana asc, p.ano asc";
 		} else {
@@ -718,7 +718,7 @@ public class Vendas implements Serializable {
 
 		if (chartCondition != false) {
 			select_Condition = "p.mes, p.ano, ";
-			sum_Condition = "sum(i.lucro), sum(i.valorCompra)";
+			sum_Condition = "sum(i.lucro), sum(i.valorCompra * i.quantidade), sum(i.valorUnitario * i.quantidade)";
 			groupBy_Condition = "p.mes, p.ano";
 			orderBy_Condition = "p.mes asc, p.ano asc";
 		} else {
@@ -778,7 +778,7 @@ public class Vendas implements Serializable {
 
 		if (chartCondition != false) {
 			select_Condition = "i.compra.mes, p.ano, ";// p.mes
-			sum_Condition = "sum(i.lucro), sum(i.valorCompra), i.compra.mes";
+			sum_Condition = "sum(i.lucro), sum(i.valorCompra * i.quantidade), i.compra.mes, sum(i.valorUnitario * i.quantidade)";
 			groupBy_Condition = "i.compra.mes, p.ano "; // i.produto.categoriaProduto.nome
 			orderBy_Condition = "i.compra.mes asc";
 		} else {
@@ -840,7 +840,7 @@ public class Vendas implements Serializable {
 
 		if (chartCondition != false) {
 			select_Condition = "p.ano, ";
-			sum_Condition = "sum(i.lucro), sum(i.valorCompra)";
+			sum_Condition = "sum(i.lucro), sum(i.valorCompra * i.quantidade), sum(i.valorUnitario * i.quantidade)";
 			groupBy_Condition = "p.ano";
 			orderBy_Condition = "p.ano asc";
 		} else {

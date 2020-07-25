@@ -41,7 +41,7 @@ public class Compra implements Serializable {
 	private Long quantidadeItens = 0L;
 
 	@Column(nullable = false)
-	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal valorTotal = BigDecimal.ZERO;
 
 	@NotNull
@@ -118,7 +118,7 @@ public class Compra implements Serializable {
 	}
 
 	public void setValorTotal(BigDecimal valorTotal) {
-		this.valorTotal = valorTotal.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
+		this.valorTotal = valorTotal.setScale(4, BigDecimal.ROUND_HALF_EVEN);;
 	}
 
 	public Usuario getUsuario() {

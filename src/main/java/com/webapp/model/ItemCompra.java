@@ -26,7 +26,7 @@ public class ItemCompra implements Serializable {
 
 	@NotNull
 	@Column(nullable = false)
-	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal valorUnitario;
 
 	@NotNull
@@ -34,7 +34,7 @@ public class ItemCompra implements Serializable {
 	private Long quantidade;
 
 	@Column(nullable = false)
-	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal total;
 
 	@Column(nullable = false)
@@ -67,8 +67,7 @@ public class ItemCompra implements Serializable {
 	}
 
 	public void setValorUnitario(BigDecimal valorUnitario) {
-		this.valorUnitario = valorUnitario.setScale(2, BigDecimal.ROUND_HALF_EVEN);
-		;
+		this.valorUnitario = valorUnitario.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public Long getQuantidade() {
@@ -84,8 +83,7 @@ public class ItemCompra implements Serializable {
 	}
 
 	public void setTotal(BigDecimal total) {
-		this.total = total.setScale(2, BigDecimal.ROUND_HALF_EVEN);
-		;
+		this.total = total.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public Long getQuantidadeDisponivel() {

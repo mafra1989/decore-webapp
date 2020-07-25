@@ -40,7 +40,7 @@ public class Lancamento implements Serializable {
 
 	@NotNull
 	@Column(nullable = false)
-	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal valor;
 
 	@NotNull
@@ -120,7 +120,7 @@ public class Lancamento implements Serializable {
 	}
 
 	public void setValor(BigDecimal valor) {
-		this.valor = valor.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+		this.valor = valor.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 		;
 	}
 

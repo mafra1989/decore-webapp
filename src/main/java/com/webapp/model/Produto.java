@@ -77,7 +77,7 @@ public class Produto implements Serializable {
 	
 	
 	@Column
-	@Digits(integer = 10 /* precision */, fraction = 0 /* scale */)
+	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
 	private BigDecimal margemContribuicao = BigDecimal.valueOf(20);
 	
 	@Column
@@ -99,15 +99,15 @@ public class Produto implements Serializable {
 	
 
 	@Transient
-	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal totalAcumulado = BigDecimal.ZERO;
 
 	@Transient
-	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal totalCompras = BigDecimal.ZERO;
 
 	@Transient
-	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal totalVendas = BigDecimal.ZERO;
 
 	@NotNull
@@ -122,12 +122,12 @@ public class Produto implements Serializable {
 	
 	
 	@Column
-	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal custoTotal = BigDecimal.ZERO;
 		
 	
 	@Column
-	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal custoMedioUnitario = BigDecimal.ZERO;
 	
 
@@ -201,7 +201,6 @@ public class Produto implements Serializable {
 
 	public void setMargemLucro(BigDecimal margemLucro) {
 		this.margemLucro = margemLucro.setScale(2, BigDecimal.ROUND_HALF_EVEN);
-		;
 	}
 
 	public BigDecimal getTotalAcumulado() {
@@ -209,8 +208,7 @@ public class Produto implements Serializable {
 	}
 
 	public void setTotalAcumulado(BigDecimal totalAcumulado) {
-		this.totalAcumulado = totalAcumulado.setScale(2, BigDecimal.ROUND_HALF_EVEN);
-		;
+		this.totalAcumulado = totalAcumulado.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public BigDecimal getTotalCompras() {
@@ -218,8 +216,7 @@ public class Produto implements Serializable {
 	}
 
 	public void setTotalCompras(BigDecimal totalCompras) {
-		this.totalCompras = totalCompras.setScale(2, BigDecimal.ROUND_HALF_EVEN);
-		;
+		this.totalCompras = totalCompras.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public BigDecimal getTotalVendas() {
@@ -227,8 +224,7 @@ public class Produto implements Serializable {
 	}
 
 	public void setTotalVendas(BigDecimal totalVendas) {
-		this.totalVendas = totalVendas.setScale(2, BigDecimal.ROUND_HALF_EVEN);
-		;
+		this.totalVendas = totalVendas.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public CategoriaProduto getCategoriaProduto() {
@@ -252,7 +248,7 @@ public class Produto implements Serializable {
 	}
 
 	public void setCustoTotal(BigDecimal custoTotal) {
-		this.custoTotal = custoTotal.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+		this.custoTotal = custoTotal.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public BigDecimal getCustoMedioUnitario() {
@@ -260,7 +256,7 @@ public class Produto implements Serializable {
 	}
 
 	public void setCustoMedioUnitario(BigDecimal custoMedioUnitario) {
-		this.custoMedioUnitario = custoMedioUnitario.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+		this.custoMedioUnitario = custoMedioUnitario.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public String getCodigoDeBarras() {
@@ -300,7 +296,7 @@ public class Produto implements Serializable {
 	}
 
 	public void setMargemContribuicao(BigDecimal margemContribuicao) {
-		this.margemContribuicao = margemContribuicao.setScale(0, BigDecimal.ROUND_HALF_EVEN);;
+		this.margemContribuicao = margemContribuicao.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
 	}
 
 	public BigDecimal getMargemContribuicaoEmDinheiro() {
@@ -308,7 +304,7 @@ public class Produto implements Serializable {
 	}
 
 	public void setMargemContribuicaoEmDinheiro(BigDecimal margemContribuicaoEmDinheiro) {
-		this.margemContribuicaoEmDinheiro = margemContribuicaoEmDinheiro.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
+		this.margemContribuicaoEmDinheiro = margemContribuicaoEmDinheiro.setScale(4, BigDecimal.ROUND_HALF_EVEN);;
 	}
 
 	public BigDecimal getMargemLucroReal() {
@@ -324,7 +320,7 @@ public class Produto implements Serializable {
 	}
 
 	public void setMargemLucroRealEmDinheiro(BigDecimal margemLucroRealEmDinheiro) {
-		this.margemLucroRealEmDinheiro = margemLucroRealEmDinheiro.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
+		this.margemLucroRealEmDinheiro = margemLucroRealEmDinheiro.setScale(4, BigDecimal.ROUND_HALF_EVEN);;
 	}
 
 	public BigDecimal getPrecoDeVenda() {

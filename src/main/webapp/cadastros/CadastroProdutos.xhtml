@@ -236,7 +236,7 @@
 									value="#{cadastroProdutoBean.produto.precoDeVenda * cadastroProdutoBean.produto.desconto/100}" 
 									style="font-weight: bold;font-size: 10px;float: right;margin-top: -17px;margin-right: 6px;color: #757575;">
 									
-									<f:convertNumber type="currency" />
+									<f:convertNumber type="currency" maxFractionDigits="2" />
 								</h:outputText>
 							
 								<h:outputText id="desconto"
@@ -248,7 +248,6 @@
 									displayTemplate="%{value}" minValue="0" maxValue="100">
 
 									<p:ajax event="slideEnd" update="a-vender totalAcumulado"
-										listener="#{cadastroProdutoBean.calculaAvender}"
 										process="@this margem-lucro" />
 								</p:slider>
 							</p:panel>
@@ -266,7 +265,7 @@
 									value="#{cadastroProdutoBean.produto.custoMedioUnitario * cadastroProdutoBean.produto.margemLucro/100}" 
 									style="font-weight: bold;font-size: 10px;float: right;margin-top: -17px;margin-right: 6px;color: #757575;">
 									
-									<f:convertNumber type="currency" />
+									<f:convertNumber type="currency" maxFractionDigits="4" />
 								</h:outputText>
 							
 								<h:outputText id="percentual"
@@ -295,7 +294,7 @@
 									value="#{cadastroProdutoBean.produto.custoMedioUnitario * cadastroProdutoBean.produto.margemLucro/100}" 
 									style="font-weight: bold;font-size: 10px;float: right;margin-top: -17px;margin-right: 6px;color: #757575;">
 									
-									<f:convertNumber type="currency" />
+									<f:convertNumber type="currency" maxFractionDigits="4" />
 								</h:outputText>
 								
 								<h:outputText id="margem-lucro2"
@@ -334,13 +333,13 @@
 							columnClasses="ui-grid-col-3, ui-grid-col-3, ui-grid-col-2, ui-grid-col-3">
 
 							<p:outputLabel value="Custo Médio Un." for="custo-medio" />
-							<p:inputNumber id="custo-medio" decimalPlaces="2" styleClass="custo-medio"
+							<p:inputNumber id="custo-medio" decimalPlaces="4" styleClass="custo-medio"
 								placeholder="R$ 0,00" symbol="R$ " autocomplete="off" readonly="true"
 								value="#{cadastroProdutoBean.produto.custoMedioUnitario}">
 							</p:inputNumber>
 								
 							<p:outputLabel value="Saldo" for="saldo" />
-							<p:inputNumber id="saldo" decimalPlaces="2" styleClass="saldo"
+							<p:inputNumber id="saldo" decimalPlaces="4" styleClass="saldo"
 								placeholder="R$ 0,00" symbol="R$ " autocomplete="off" readonly="true"
 								value="#{cadastroProdutoBean.produto.custoTotal}">
 							</p:inputNumber>
@@ -351,7 +350,7 @@
 							columnClasses="ui-grid-col-3, ui-grid-col-3">
 
 							<p:outputLabel value="Preço de Venda Estimado" for="preco-venda-estimado" />
-							<p:inputNumber id="preco-venda-estimado" decimalPlaces="2" styleClass="preco-venda-estimado"
+							<p:inputNumber id="preco-venda-estimado" decimalPlaces="4" styleClass="preco-venda-estimado"
 								placeholder="R$ 0,00" symbol="R$ " autocomplete="off" readonly="true" onkeyup="ajaxDelay()"
 								value="#{cadastroProdutoBean.produto.custoMedioUnitario + (cadastroProdutoBean.produto.custoMedioUnitario * cadastroProdutoBean.produto.margemLucro/100)}">
 								
@@ -477,7 +476,7 @@
 									columnClasses="ui-grid-col-6, ui-grid-col-4">
 
 									<p:outputLabel value="Estoque à vender R$" for="totalAcumulado" />
-									<p:inputNumber id="totalAcumulado" readonly="true" symbol="R$ "
+									<p:inputNumber id="totalAcumulado" readonly="true" symbol="R$ " decimalPlaces="4"
 										value="#{cadastroProdutoBean.produto.totalAcumulado}" />
 								</p:panelGrid>
 
@@ -496,7 +495,7 @@
 
 									<p:outputLabel value="Valor Total de Compras"
 										for="totalCompras" />
-									<p:inputNumber id="totalCompras" readonly="true" symbol="R$ "
+									<p:inputNumber id="totalCompras" decimalPlaces="4" readonly="true" symbol="R$ "
 										value="#{cadastroProdutoBean.produto.totalCompras}" />
 								</p:panelGrid>
 								
@@ -531,7 +530,7 @@
 										value="#{cadastroProdutoBean.produto.quantidadeItensVendidos}" />
 
 									<p:outputLabel value="Valor Total de Vendas" for="totalVendas" />
-									<p:inputNumber id="totalVendas" readonly="true" symbol="R$ "
+									<p:inputNumber id="totalVendas" readonly="true" symbol="R$ " decimalPlaces="4"
 										value="#{cadastroProdutoBean.produto.totalVendas}" />
 								</p:panelGrid>
 
@@ -543,7 +542,7 @@
 									<p:outputLabel value="Preço Médio de Venda"
 										for="preco-medio-venda" />
 									<p:inputNumber id="preco-medio-venda" readonly="true"
-										symbol="R$ "
+										symbol="R$ " decimalPlaces="4"
 										value="#{cadastroProdutoBean.produto.precoMedioVenda}" />
 								</p:panelGrid>
 								

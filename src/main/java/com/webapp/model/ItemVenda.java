@@ -27,7 +27,7 @@ public class ItemVenda implements Serializable {
 
 	@NotNull
 	@Column(nullable = false)
-	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal valorUnitario;
 
 	@NotNull
@@ -35,11 +35,11 @@ public class ItemVenda implements Serializable {
 	private Long quantidade;
 
 	@Column(nullable = false)
-	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal total = BigDecimal.ZERO;;
 	
 	@Column
-	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal lucro;
 	
 	@Column
@@ -47,7 +47,7 @@ public class ItemVenda implements Serializable {
 	private BigDecimal percentualLucro;
 	
 	@Column
-	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal valorCompra;
 	
 	@Column
@@ -91,7 +91,7 @@ public class ItemVenda implements Serializable {
 	}
 
 	public void setValorUnitario(BigDecimal valorUnitario) {
-		this.valorUnitario = valorUnitario.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
+		this.valorUnitario = valorUnitario.setScale(4, BigDecimal.ROUND_HALF_EVEN);;
 	}
 
 	public Long getQuantidade() {
@@ -107,7 +107,7 @@ public class ItemVenda implements Serializable {
 	}
 
 	public void setTotal(BigDecimal total) {
-		this.total = total.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
+		this.total = total.setScale(4, BigDecimal.ROUND_HALF_EVEN);;
 	}
 
 	public BigDecimal getLucro() {
@@ -115,7 +115,7 @@ public class ItemVenda implements Serializable {
 	}
 
 	public void setLucro(BigDecimal lucro) {
-		this.lucro = lucro.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
+		this.lucro = lucro.setScale(4, BigDecimal.ROUND_HALF_EVEN);;
 	}
 
 	public BigDecimal getPercentualLucro() {
@@ -131,7 +131,7 @@ public class ItemVenda implements Serializable {
 	}
 
 	public void setValorCompra(BigDecimal valorCompra) {
-		this.valorCompra = valorCompra.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+		this.valorCompra = valorCompra.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public BigDecimal getDesconto() {

@@ -21,6 +21,7 @@ import com.webapp.model.Conta;
 import com.webapp.model.Grupo;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
+import com.webapp.model.ItemVendaCompra;
 import com.webapp.model.PeriodoPagamento;
 import com.webapp.model.Produto;
 import com.webapp.model.TipoPagamento;
@@ -29,6 +30,7 @@ import com.webapp.repository.Compras;
 import com.webapp.repository.Contas;
 import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
+import com.webapp.repository.ItensVendasCompras;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.Usuarios;
 import com.webapp.repository.filter.ProdutoFilter;
@@ -70,6 +72,9 @@ public class RegistroComprasBean implements Serializable {
 
 	@Inject
 	private ItensVendas itensVendas;
+	
+	@Inject
+	private ItensVendasCompras itensVendasCompras;
 
 	@Inject
 	private Contas contas;
@@ -615,8 +620,10 @@ public class RegistroComprasBean implements Serializable {
 
 	public void removeItem() {
 		List<ItemVenda> itensVenda = itensVendas.porCompra(compra, itemSelecionado);
+		List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porCompra(itemSelecionado.getCompra());
 
-		if (itensVenda.size() == 0) {
+		if (itensVenda.size() == 0 && itensVendaCompra.size() == 0) {
+
 			compra.setValorTotal(BigDecimal
 					.valueOf(compra.getValorTotal().doubleValue() - itemSelecionado.getTotal().doubleValue()));
 			itensCompra.remove(itemSelecionado);
@@ -630,8 +637,10 @@ public class RegistroComprasBean implements Serializable {
 
 	public void editarItem() {
 		List<ItemVenda> itensVenda = itensVendas.porCompra(compra, itemSelecionado);
+		List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porCompra(itemSelecionado.getCompra());
 
-		if (itensVenda.size() == 0) {
+		if (itensVenda.size() == 0 && itensVendaCompra.size() == 0) {
+
 			itemCompra = itemSelecionado;
 			compra.setValorTotal(BigDecimal
 					.valueOf(compra.getValorTotal().doubleValue() - itemSelecionado.getTotal().doubleValue()));

@@ -860,7 +860,7 @@ public class PDVBean implements Serializable {
 							}
 						}
 						
-						itemVenda.setPercentualLucro(new BigDecimal(itemVenda.getTotal().doubleValue() - (itemVenda.getProduto().getCustoMedioUnitario().doubleValue() * itemVenda.getQuantidade().doubleValue())/ itemVenda.getTotal().doubleValue() * 100).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+						itemVenda.setPercentualLucro(new BigDecimal(itemVenda.getTotal().doubleValue() - (itemVenda.getProduto().getCustoMedioUnitario().doubleValue() * itemVenda.getQuantidade().doubleValue())/ itemVenda.getTotal().doubleValue() * 100));
 						
 						itemVenda.setItensVendaCompra(itensVendaCompra);				
 						//itemVenda.setCompra(itemCompra.getCompra());
@@ -870,12 +870,12 @@ public class PDVBean implements Serializable {
 						
 						Double valorDeCustoTotal = new BigDecimal(valorDeCustoUnitario
 								* itemVenda.getQuantidade().intValue())
-						.setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue();
+						.setScale(4, BigDecimal.ROUND_HALF_EVEN).doubleValue();
 						
 					
 						itemVenda.setLucro(new BigDecimal(((itemVenda.getValorUnitario().doubleValue() - valorDeCustoUnitario.doubleValue()) / itemVenda.getValorUnitario().doubleValue())
 								* (itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().intValue())
-								- (itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().doubleValue()) * itemVenda.getDesconto().doubleValue() / 100).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+								- (itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().doubleValue()) * itemVenda.getDesconto().doubleValue() / 100));
 	
 						itemVenda.setPercentualLucro(new BigDecimal(((itemVenda.getTotal().doubleValue() - (valorDeCustoUnitario.doubleValue() * itemVenda.getQuantidade())) / itemVenda.getTotal().doubleValue() * 100)));
 						itemVenda.setValorCompra(itemVenda.getProduto().getCustoMedioUnitario());

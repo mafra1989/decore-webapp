@@ -105,6 +105,8 @@ public class CadastroProdutoBean implements Serializable {
 			Double valorDeVendaEstimado = produto.getCustoMedioUnitario().doubleValue() + (produto.getCustoMedioUnitario().doubleValue() * produto.getMargemLucro().doubleValue()/100);
 			produto.setMargemLucroReal(new BigDecimal(((valorDeVendaEstimado.doubleValue() - produto.getCustoMedioUnitario().doubleValue()) / valorDeVendaEstimado.doubleValue()) * 100));
 		}
+		
+		calculaAvender();
 	}
 	
 	public void calculaMargemContribuicao() {
@@ -112,6 +114,8 @@ public class CadastroProdutoBean implements Serializable {
 		Double valorDeVendaEstimado = valorDeCusto / (1 - produto.getMargemLucroReal().doubleValue()/100);
 		
 		produto.setMargemLucro(new BigDecimal(((valorDeVendaEstimado.doubleValue() * 100) / valorDeCusto.doubleValue()) - 100));
+	
+		calculaAvender();
 	}
 	
 	public void buscar() {
@@ -174,8 +178,14 @@ public class CadastroProdutoBean implements Serializable {
 	}
 	
 	public void calculaAvender() {
-		produto.setTotalAcumulado(BigDecimal.valueOf(itensCompras.aVender(produto).doubleValue() * (1 + (produto.getMargemLucro().doubleValue()/100))));
-		System.out.println(produto.getTotalAcumulado());
+		
+		if(produto.getCustoMedioUnitario().doubleValue() > 0) {
+			Double valorDeVendaEstimado = produto.getCustoMedioUnitario().doubleValue() + (produto.getCustoMedioUnitario().doubleValue() * produto.getMargemLucro().doubleValue()/100);
+			
+			produto.setTotalAcumulado(BigDecimal.valueOf(valorDeVendaEstimado.doubleValue() * produto.getQuantidadeAtual()));
+			System.out.println(produto.getTotalAcumulado());
+		}
+		
 	}
 	
 	public void salvar() {
