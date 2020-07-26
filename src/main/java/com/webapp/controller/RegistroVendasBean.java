@@ -261,7 +261,7 @@ public class RegistroVendasBean implements Serializable {
 						
 						if(!vendaTemp.isRecuperarValores()) {
 							//ItemCompra itemCompra = itensCompras.porCompra(itemVenda.getCompra(), itemVenda.getProduto());						
-							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemVenda.getQuantidade().longValue() * itemVenda.getValorCompra().doubleValue())));					
+							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + itemVenda.getValorCompra().doubleValue()));					
 						}
 												
 					} else {					
@@ -276,7 +276,7 @@ public class RegistroVendasBean implements Serializable {
 							//for (ItemVendaCompra itemVendaCompra : itemVenda.getItensVendaCompra()) {
 								//if(!itemVendaCompra.getCompra().isAjuste()) {
 									//ItemCompra itemCompra = itensCompras.porCompra(itemVenda.getCompra(), itemVenda.getProduto());										
-									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemVenda.getQuantidade().longValue() * itemVenda.getValorCompra().doubleValue())));					
+									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + itemVenda.getValorCompra().doubleValue()));					
 								//}
 							//}
 							
@@ -287,8 +287,7 @@ public class RegistroVendasBean implements Serializable {
 								//if(!itemVendaCompra.getCompra().isAjuste()) {					
 									//ItemCompra itemCompra = itensCompras.porCompra(itemVenda.getCompra(), itemVenda.getProduto());
 									
-									BigDecimal total = BigDecimal.valueOf( 
-											itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().longValue());					
+									BigDecimal total = itemVenda.getTotal();					
 									//BigDecimal total = new BigDecimal(subtotal.doubleValue() - itemVenda.getLucro().doubleValue());		
 	
 									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + total.doubleValue()));					
@@ -303,7 +302,7 @@ public class RegistroVendasBean implements Serializable {
 						
 						if(!venda.isRecuperarValores()) {
 							//ItemCompra itemCompra = itensCompras.porCompra(itemVenda.getCompra(), itemVenda.getProduto());						
-							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - (itemVenda.getQuantidade().longValue() * itemVenda.getValorCompra().doubleValue())));					
+							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - itemVenda.getValorCompra().doubleValue()));					
 						}
 												
 					} else {					
@@ -318,7 +317,7 @@ public class RegistroVendasBean implements Serializable {
 							//for (ItemVendaCompra itemVendaCompra : itemVenda.getItensVendaCompra()) {
 								//if(!itemVendaCompra.getCompra().isAjuste()) {
 									//ItemCompra itemCompra = itensCompras.porCompra(itemVenda.getCompra(), itemVenda.getProduto());										
-									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - (itemVenda.getQuantidade().longValue() * itemVenda.getValorCompra().doubleValue())));					
+									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - itemVenda.getValorCompra().doubleValue()));					
 								//}
 							//}
 							
@@ -329,8 +328,7 @@ public class RegistroVendasBean implements Serializable {
 								//if(!itemVendaCompra.getCompra().isAjuste()) {					
 									//ItemCompra itemCompra = itensCompras.porCompra(itemVenda.getCompra(), itemVenda.getProduto());
 									
-									BigDecimal total = BigDecimal.valueOf( 
-											itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().longValue());					
+									BigDecimal total = itemVenda.getTotal();					
 									//BigDecimal total = new BigDecimal(subtotal.doubleValue() - itemVenda.getLucro().doubleValue());		
 	
 									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - total.doubleValue()));					
@@ -374,7 +372,7 @@ public class RegistroVendasBean implements Serializable {
 								
 						if(!venda.isRecuperarValores()) {
 							//ItemCompra itemCompra = itensCompras.porCompra(itemVenda.getCompra(), itemVenda.getProduto());						
-							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - (itemVenda.getQuantidade().longValue() * produto.getCustoMedioUnitario().doubleValue())));					
+							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - itemVenda.getValorCompra().doubleValue()));					
 						}
 												
 					} else {					
@@ -389,7 +387,7 @@ public class RegistroVendasBean implements Serializable {
 							//for (ItemVendaCompra itemVendaCompra : itemVenda.getItensVendaCompra()) {
 								//if(!itemVendaCompra.getCompra().isAjuste()) {
 									//ItemCompra itemCompra = itensCompras.porCompra(itemVenda.getCompra(), itemVenda.getProduto());										
-									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - (itemVenda.getQuantidade().longValue() * produto.getCustoMedioUnitario().doubleValue())));					
+									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - itemVenda.getValorCompra().doubleValue()));					
 								//}
 							//}
 							
@@ -400,8 +398,7 @@ public class RegistroVendasBean implements Serializable {
 								//if(!itemVendaCompra.getCompra().isAjuste()) {					
 									//ItemCompra itemCompra = itensCompras.porCompra(itemVenda.getCompra(), itemVenda.getProduto());
 									
-									BigDecimal total = BigDecimal.valueOf( 
-											itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().longValue());					
+									BigDecimal total = itemVenda.getTotal();					
 									//BigDecimal total = new BigDecimal(subtotal.doubleValue() - itemVenda.getLucro().doubleValue());		
 	
 									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - total.doubleValue()));					

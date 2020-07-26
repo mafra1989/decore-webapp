@@ -278,38 +278,33 @@ public class ConsultaVendasBean implements Serializable {
 						
 						if(!vendaSelecionada.isRecuperarValores()) {
 							
-							List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porItemVenda(itemVenda);
-							for (ItemVendaCompra itemVendaCompra : itensVendaCompra) {
-								//if(!itemVendaCompra.getCompra().isAjuste()) {
-									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemVendaCompra.getQuantidade().longValue() * itemVenda.getValorCompra().doubleValue())));					
-								//}
-							}
+							//List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porItemVenda(itemVenda);
+							//for (ItemVendaCompra itemVendaCompra : itensVendaCompra) {
+							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + itemVenda.getValorCompra().doubleValue()));					
+							//}
 						}
 												
 					} else {					
 					
 						if(itemVenda.getLucro().doubleValue() >= 0) {
 							
-							List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porItemVenda(itemVenda);
-							for (ItemVendaCompra itemVendaCompra : itensVendaCompra) {
-								//if(!itemVendaCompra.getCompra().isAjuste()) {
-									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemVendaCompra.getQuantidade().longValue() * itemVenda.getValorCompra().doubleValue())));					
-								//}
-							}
+							//List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porItemVenda(itemVenda);
+							//for (ItemVendaCompra itemVendaCompra : itensVendaCompra) {
+							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + itemVenda.getValorCompra().doubleValue()));					
+							//}
 						} else {
 							
-							List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porItemVenda(itemVenda);
-							for (ItemVendaCompra itemVendaCompra : itensVendaCompra) {
+							//List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porItemVenda(itemVenda);
+							//for (ItemVendaCompra itemVendaCompra : itensVendaCompra) {
 								
-								//if(!itemVendaCompra.getCompra().isAjuste()) {					
-									
-									BigDecimal subtotal = BigDecimal.valueOf( 
-											itemVenda.getValorUnitario().doubleValue() * itemVendaCompra.getQuantidade().longValue());					
-									BigDecimal total = new BigDecimal(subtotal.doubleValue() - (subtotal.doubleValue() * (itemVenda.getDesconto().doubleValue() / 100)));		
-		
-									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + total.doubleValue()));					
-								//}
-							}
+								//BigDecimal subtotal = BigDecimal.valueOf( 
+											//itemVenda.getValorUnitario().doubleValue() * itemVendaCompra.getQuantidade().longValue());					
+								//BigDecimal total = new BigDecimal(subtotal.doubleValue() - (subtotal.doubleValue() * (itemVenda.getDesconto().doubleValue() / 100)));		
+								
+								BigDecimal total = itemVenda.getTotal();
+								produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + total.doubleValue()));					
+								
+							//}
 						}
 					}
 					
@@ -319,7 +314,7 @@ public class ConsultaVendasBean implements Serializable {
 						
 						if(!vendaSelecionada.isRecuperarValores()) {
 							//ItemCompra itemCompra = itensCompras.porCompra(itemVenda.getCompra(), itemVenda.getProduto());						
-							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemVenda.getQuantidade().longValue() * itemVenda.getValorCompra().doubleValue())));					
+							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + itemVenda.getValorCompra().doubleValue()));					
 						}
 												
 					} else {					
@@ -331,27 +326,16 @@ public class ConsultaVendasBean implements Serializable {
 						 * */
 						if(itemVenda.getLucro().doubleValue() >= 0) {
 							
-							//for (ItemVendaCompra itemVendaCompra : itemVenda.getItensVendaCompra()) {
-								//if(!itemVendaCompra.getCompra().isAjuste()) {
-									//ItemCompra itemCompra = itensCompras.porCompra(itemVenda.getCompra(), itemVenda.getProduto());										
-									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemVenda.getQuantidade().longValue() * itemVenda.getValorCompra().doubleValue())));					
-								//}
-							//}
+							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + itemVenda.getValorCompra().doubleValue()));					
 							
 						} else {
 							
-							//for (ItemVendaCompra itemVendaCompra : itemVenda.getItensVendaCompra()) {
-								
-								//if(!itemVendaCompra.getCompra().isAjuste()) {					
-									//ItemCompra itemCompra = itensCompras.porCompra(itemVenda.getCompra(), itemVenda.getProduto());
-									
-									BigDecimal total = BigDecimal.valueOf( 
-											itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().longValue());					
-									//BigDecimal total = new BigDecimal(subtotal.doubleValue() - itemVenda.getLucro().doubleValue());		
-	
-									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + total.doubleValue()));					
-								//}
-							//}											
+							//BigDecimal total = BigDecimal.valueOf( 
+											//itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().longValue());					
+							
+							BigDecimal total = itemVenda.getTotal();
+							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + total.doubleValue()));					
+																		
 						}
 					}
 				}

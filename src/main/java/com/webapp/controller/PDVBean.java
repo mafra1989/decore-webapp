@@ -301,7 +301,7 @@ public class PDVBean implements Serializable {
 				
 				for (ItemVenda itemVenda : itensVenda) {
 	
-					List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porItemVenda(itemVenda);
+					//List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porItemVenda(itemVenda);
 	
 					Produto produto = produtos.porId(itemVenda.getProduto().getId());
 					
@@ -313,11 +313,9 @@ public class PDVBean implements Serializable {
 					if(vendaTemp.isAjuste()) {
 						
 						if(!vendaTemp.isRecuperarValores()) {
-							for (ItemVendaCompra itemVendaCompra : itensVendaCompra) {
-								//if(!itemVendaCompra.getCompra().isAjuste()) {
-									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemVendaCompra.getQuantidade().longValue() * itemVenda.getValorCompra().doubleValue())));					
-								//}
-							}
+							//for (ItemVendaCompra itemVendaCompra : itensVendaCompra) {								
+								produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + itemVenda.getValorCompra().doubleValue()));					
+							//}
 						}
 												
 					} else {					
@@ -329,27 +327,20 @@ public class PDVBean implements Serializable {
 						 * */
 						if(itemVenda.getLucro().doubleValue() >= 0) {
 							
-							for (ItemVendaCompra itemVendaCompra : itensVendaCompra) {
-								//if(!itemVendaCompra.getCompra().isAjuste()) {
-									//ItemCompra itemCompra = itensCompras.porCompra(itemVenda.getCompra(), itemVenda.getProduto());										
-									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemVendaCompra.getQuantidade().longValue() * itemVenda.getValorCompra().doubleValue())));					
-								//}
-							}
+							//for (ItemVendaCompra itemVendaCompra : itensVendaCompra) {
+								produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + itemVenda.getValorCompra().doubleValue()));					
+							//}
 							
 						} else {
 							
-							for (ItemVendaCompra itemVendaCompra : itensVendaCompra) {
+							//for (ItemVendaCompra itemVendaCompra : itensVendaCompra) {
 								
-								//if(!itemVendaCompra.getCompra().isAjuste()) {					
-									//ItemCompra itemCompra = itensCompras.porCompra(itemVenda.getCompra(), itemVenda.getProduto());
-									
-									BigDecimal total = BigDecimal.valueOf( 
-											itemVenda.getValorUnitario().doubleValue() * itemVendaCompra.getQuantidade().longValue());					
-									//BigDecimal total = new BigDecimal(subtotal.doubleValue() - itemVenda.getLucro().doubleValue());		
+								//BigDecimal total = BigDecimal.valueOf( 
+											//itemVenda.getValorUnitario().doubleValue() * itemVendaCompra.getQuantidade().longValue());
+								BigDecimal total = itemVenda.getTotal();
+								produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + total.doubleValue()));					
 	
-									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + total.doubleValue()));					
-								//}
-							}											
+							//}											
 						}
 					}
 
@@ -358,11 +349,9 @@ public class PDVBean implements Serializable {
 					if(venda.isAjuste()) {
 						
 						if(!vendaTemp.isRecuperarValores()) {
-							for (ItemVendaCompra itemVendaCompra : itensVendaCompra) {
-								//if(!itemVendaCompra.getCompra().isAjuste()) {
-									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - (itemVendaCompra.getQuantidade().longValue() * itemVenda.getValorCompra().doubleValue())));					
-								//}
-							}
+							//for (ItemVendaCompra itemVendaCompra : itensVendaCompra) {
+								produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - itemVenda.getValorCompra().doubleValue()));					
+							//}
 						}
 												
 					} else {					
@@ -374,27 +363,20 @@ public class PDVBean implements Serializable {
 						 * */
 						if(itemVenda.getLucro().doubleValue() >= 0) {
 							
-							for (ItemVendaCompra itemVendaCompra : itensVendaCompra) {
-								//if(!itemVendaCompra.getCompra().isAjuste()) {
-									//ItemCompra itemCompra = itensCompras.porCompra(itemVenda.getCompra(), itemVenda.getProduto());										
-									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - (itemVendaCompra.getQuantidade().longValue() * itemVenda.getValorCompra().doubleValue())));					
-								//}
-							}
+							//for (ItemVendaCompra itemVendaCompra : itensVendaCompra) {
+							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - itemVenda.getValorCompra().doubleValue()));					
+							//}
 							
 						} else {
 							
-							for (ItemVendaCompra itemVendaCompra : itensVendaCompra) {
+							//for (ItemVendaCompra itemVendaCompra : itensVendaCompra) {
 								
-								//if(!itemVendaCompra.getCompra().isAjuste()) {					
-									//ItemCompra itemCompra = itensCompras.porCompra(itemVenda.getCompra(), itemVenda.getProduto());
-									
-									BigDecimal total = BigDecimal.valueOf( 
-											itemVenda.getValorUnitario().doubleValue() * itemVendaCompra.getQuantidade().longValue());					
-									//BigDecimal total = new BigDecimal(subtotal.doubleValue() - itemVenda.getLucro().doubleValue());		
-	
-									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - total.doubleValue()));					
-								//}
-							}											
+								//BigDecimal total = BigDecimal.valueOf( 
+											//itemVenda.getValorUnitario().doubleValue() * itemVendaCompra.getQuantidade().longValue());
+							BigDecimal total = itemVenda.getTotal();
+							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - total.doubleValue()));					
+							
+							//}											
 						}
 					}
 							
@@ -438,12 +420,9 @@ public class PDVBean implements Serializable {
 					if(venda.isAjuste()) {
 						
 						if(!venda.isRecuperarValores()) {
-							//ItemCompra itemCompra = itensCompras.porCompra(itemVenda.getCompra(), itemVenda.getProduto());						
-							for (ItemVendaCompra itemVendaCompra : itemVenda.getItensVendaCompra()) {
-								//if(!itemVendaCompra.getCompra().isAjuste()) {
-									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - (itemVendaCompra.getQuantidade().longValue() * produto.getCustoMedioUnitario().doubleValue())));					
-								//}
-							}
+							//for (ItemVendaCompra itemVendaCompra : itemVenda.getItensVendaCompra()) {
+							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - itemVenda.getValorCompra().doubleValue()));								
+							//}
 						}
 												
 					} else {					
@@ -455,27 +434,22 @@ public class PDVBean implements Serializable {
 						 * */
 						if(itemVenda.getLucro().doubleValue() >= 0) {
 							
-							for (ItemVendaCompra itemVendaCompra : itemVenda.getItensVendaCompra()) {
-								//if(!itemVendaCompra.getCompra().isAjuste()) {
-									//ItemCompra itemCompra = itensCompras.porCompra(itemVenda.getCompra(), itemVenda.getProduto());										
-									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - (itemVendaCompra.getQuantidade().longValue() * produto.getCustoMedioUnitario().doubleValue())));					
-								//}
-							}
+							//for (ItemVendaCompra itemVendaCompra : itemVenda.getItensVendaCompra()) {
+							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - itemVenda.getValorCompra().doubleValue()));					
+							//}
 							
 						} else {
 							
-							for (ItemVendaCompra itemVendaCompra : itemVenda.getItensVendaCompra()) {
+							//for (ItemVendaCompra itemVendaCompra : itemVenda.getItensVendaCompra()) {
 								
-								//if(!itemVendaCompra.getCompra().isAjuste()) {					
-									//ItemCompra itemCompra = itensCompras.porCompra(itemVenda.getCompra(), itemVenda.getProduto());
-									
-									BigDecimal subtotal = BigDecimal.valueOf( 
+								/*BigDecimal subtotal = BigDecimal.valueOf( 
 											itemVenda.getValorUnitario().doubleValue() * itemVendaCompra.getQuantidade().longValue());					
-									BigDecimal total = new BigDecimal(subtotal.doubleValue() - (subtotal.doubleValue() * (itemVenda.getDesconto().doubleValue() / 100)));		
-									
-									produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - total.doubleValue()));					
-								//}
-							}											
+								BigDecimal total = new BigDecimal(subtotal.doubleValue() - (subtotal.doubleValue() * (itemVenda.getDesconto().doubleValue() / 100)));		
+								*/	
+								BigDecimal total = itemVenda.getTotal();
+								produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - total.doubleValue()));					
+								
+							//}											
 						}
 					}
 					
@@ -833,6 +807,8 @@ public class PDVBean implements Serializable {
 						
 						itemVenda.setSaldo(itemVenda.getQuantidade());
 						
+						Double valorDeCustoUnitario = itemVenda.getProduto().getCustoMedioUnitario().doubleValue();
+						
 						List<ItemVendaCompra> itensVendaCompra = new ArrayList<ItemVendaCompra>();				
 						Long saldo = itemVenda.getQuantidade();
 						for (int i = itensCompra.size() - 1; i >= 0; i--) {
@@ -843,6 +819,7 @@ public class PDVBean implements Serializable {
 									itemVendaCompra.setItemVenda(itemVenda);
 									itemVendaCompra.setCompra(itensCompra.get(i).getCompra());
 									itemVendaCompra.setQuantidade(saldo);
+									//itemVendaCompra.setTotal(new BigDecimal(valorDeCustoUnitario.doubleValue() * itemVendaCompra.getQuantidade().intValue()));
 									
 									itensVendaCompra.add(itemVendaCompra);
 									
@@ -853,6 +830,7 @@ public class PDVBean implements Serializable {
 									itemVendaCompra.setItemVenda(itemVenda);
 									itemVendaCompra.setCompra(itensCompra.get(i).getCompra());
 									itemVendaCompra.setQuantidade(itensCompra.get(i).getQuantidadeDisponivel());
+									//itemVendaCompra.setTotal(new BigDecimal(valorDeCustoUnitario.doubleValue() * itemVendaCompra.getQuantidade().intValue()));
 									
 									itensVendaCompra.add(itemVendaCompra);
 									
@@ -866,8 +844,7 @@ public class PDVBean implements Serializable {
 						itemVenda.setItensVendaCompra(itensVendaCompra);				
 						//itemVenda.setCompra(itemCompra.getCompra());
 	
-						/* Calculo do Lucro em valor e percentual */
-						Double valorDeCustoUnitario = itemVenda.getProduto().getCustoMedioUnitario().doubleValue();
+						/* Calculo do Lucro em valor e percentual */						
 						
 						Double valorDeCustoTotal = new BigDecimal(valorDeCustoUnitario
 								* itemVenda.getQuantidade().intValue())

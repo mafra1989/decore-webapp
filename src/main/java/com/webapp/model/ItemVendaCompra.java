@@ -24,6 +24,7 @@ public class ItemVendaCompra implements Serializable {
 	@NotNull
 	@Column(nullable = false)
 	private Long quantidade;
+	
 
 	@ManyToOne
 	@JoinColumn
@@ -48,6 +49,14 @@ public class ItemVendaCompra implements Serializable {
 	public void setQuantidade(Long quantidade) {
 		this.quantidade = quantidade;
 	}
+/*
+	public BigDecimal getTotal() {
+		return total;
+	}
+
+	public void setTotal(BigDecimal total) {
+		this.total = total.setScale(4, BigDecimal.ROUND_HALF_EVEN);;
+	}*/
 
 	public ItemVenda getItemVenda() {
 		return itemVenda;
