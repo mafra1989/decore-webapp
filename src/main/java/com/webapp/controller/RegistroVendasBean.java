@@ -190,7 +190,7 @@ public class RegistroVendasBean implements Serializable {
 			Long totalDeItens = 0L;
 			double valorTotal = 0;
 			double lucro = 0;
-			double percentualLucro = 0;
+			//double percentualLucro = 0;
 			double valorCompra = 0;
 
 			Calendar calendario = Calendar.getInstance();
@@ -418,7 +418,7 @@ public class RegistroVendasBean implements Serializable {
 					valorCompra += itemVenda.getValorCompra().doubleValue();
 	
 					lucro += itemVenda.getLucro().doubleValue();
-					percentualLucro += itemVenda.getPercentualLucro().doubleValue();
+					//percentualLucro += itemVenda.getPercentualLucro().doubleValue();
 	
 					List<ItemCompra> itensCompraTemp = itensCompras.porProduto(itemVenda.getProduto());
 					for (ItemCompra itemCompraTemp : itensCompraTemp) {
@@ -461,7 +461,9 @@ public class RegistroVendasBean implements Serializable {
 				venda.setValorTotal(BigDecimal.valueOf(valorTotal));
 				venda.setQuantidadeItens(totalDeItens);
 				venda.setLucro(BigDecimal.valueOf(lucro));
-				venda.setPercentualLucro(BigDecimal.valueOf(percentualLucro / itensVenda.size()));
+				
+				//venda.setPercentualLucro(BigDecimal.valueOf(percentualLucro / itensVenda.size()));				
+				venda.setPercentualLucro(new BigDecimal(((venda.getValorTotal().doubleValue() - venda.getValorCompra().doubleValue())/venda.getValorTotal().doubleValue())*100));
 				venda = vendas.save(venda);
 
 				PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda N."
@@ -632,9 +634,8 @@ public class RegistroVendasBean implements Serializable {
 									* (itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().intValue())
 									- (itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().doubleValue()) * itemVenda.getDesconto().doubleValue() / 100));
 		
-							itemVenda.setPercentualLucro(new BigDecimal(((itemVenda.getTotal().doubleValue() - (valorDeCustoUnitario.doubleValue() * itemVenda.getQuantidade())) / itemVenda.getTotal().doubleValue() * 100)));
-													
-							itemVenda.setValorCompra(itemVenda.getProduto().getCustoMedioUnitario());
+							itemVenda.setPercentualLucro(new BigDecimal(((itemVenda.getTotal().doubleValue() - (valorDeCustoUnitario.doubleValue() * itemVenda.getQuantidade())) / itemVenda.getTotal().doubleValue() * 100)));													
+							itemVenda.setValorCompra(new BigDecimal(valorDeCustoUnitario.doubleValue() * itemVenda.getQuantidade().intValue()));
 
 							
 							System.out.println(itemVenda.getLucro());

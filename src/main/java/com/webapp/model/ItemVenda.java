@@ -36,7 +36,7 @@ public class ItemVenda implements Serializable {
 
 	@Column(nullable = false)
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
-	private BigDecimal total = BigDecimal.ZERO;;
+	private BigDecimal total = BigDecimal.ZERO;
 	
 	@Column
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)

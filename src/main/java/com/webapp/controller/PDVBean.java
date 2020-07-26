@@ -241,7 +241,7 @@ public class PDVBean implements Serializable {
 			Long totalDeItens = 0L;
 			double valorTotal = 0;
 			double lucro = 0;
-			double percentualLucro = 0;
+			//double percentualLucro = 0;
 			double valorCompra = 0;
 			
 			Calendar calendario = Calendar.getInstance();
@@ -488,7 +488,7 @@ public class PDVBean implements Serializable {
 					valorCompra += itemVenda.getValorCompra().doubleValue();
 	
 					lucro += itemVenda.getLucro().doubleValue();
-					percentualLucro += itemVenda.getPercentualLucro().doubleValue();
+					//percentualLucro += itemVenda.getPercentualLucro().doubleValue();
 					
 					
 					//List<String> itens = new ArrayList<String>();
@@ -592,7 +592,8 @@ public class PDVBean implements Serializable {
 				venda.setValorTotal(BigDecimal.valueOf(valorTotal));
 				venda.setQuantidadeItens(totalDeItens);
 				venda.setLucro(BigDecimal.valueOf(lucro));
-				venda.setPercentualLucro(BigDecimal.valueOf(percentualLucro / itensVenda.size()));
+				
+				venda.setPercentualLucro(new BigDecimal(((venda.getValorTotal().doubleValue() - venda.getValorCompra().doubleValue())/venda.getValorTotal().doubleValue())*100));
 				venda = vendas.save(venda);
 
 				PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda N."
@@ -860,7 +861,7 @@ public class PDVBean implements Serializable {
 							}
 						}
 						
-						itemVenda.setPercentualLucro(new BigDecimal(itemVenda.getTotal().doubleValue() - (itemVenda.getProduto().getCustoMedioUnitario().doubleValue() * itemVenda.getQuantidade().doubleValue())/ itemVenda.getTotal().doubleValue() * 100));
+						//itemVenda.setPercentualLucro(new BigDecimal(itemVenda.getTotal().doubleValue() - (itemVenda.getProduto().getCustoMedioUnitario().doubleValue() * itemVenda.getQuantidade().doubleValue())/ itemVenda.getTotal().doubleValue() * 100));
 						
 						itemVenda.setItensVendaCompra(itensVendaCompra);				
 						//itemVenda.setCompra(itemCompra.getCompra());
@@ -878,7 +879,7 @@ public class PDVBean implements Serializable {
 								- (itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().doubleValue()) * itemVenda.getDesconto().doubleValue() / 100));
 	
 						itemVenda.setPercentualLucro(new BigDecimal(((itemVenda.getTotal().doubleValue() - (valorDeCustoUnitario.doubleValue() * itemVenda.getQuantidade())) / itemVenda.getTotal().doubleValue() * 100)));
-						itemVenda.setValorCompra(itemVenda.getProduto().getCustoMedioUnitario());
+						itemVenda.setValorCompra(new BigDecimal(valorDeCustoUnitario.doubleValue() * itemVenda.getQuantidade().intValue()));
 	
 						System.out.println("ValorDeCustoTotal: " + valorDeCustoTotal);
 						System.out.println("ValorDeCustoUnitario: " + valorDeCustoUnitario);
