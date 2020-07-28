@@ -200,7 +200,9 @@ public class CadastroProdutoBean implements Serializable {
 			
 			if(produtoTemp == null) {
 				
-				produtoTemp = produtos.porCodigoDeBarras(produto.getCodigoDeBarras(), usuario.getEmpresa());
+				if(!produto.getCodigoDeBarras().equals("") && produto.getCodigoDeBarras() != null) {
+					produtoTemp = produtos.porCodigoDeBarras(produto.getCodigoDeBarras(), usuario.getEmpresa());
+				}
 				
 				if(produtoTemp == null) {
 					produto = produtos.save(produto);
@@ -230,7 +232,10 @@ public class CadastroProdutoBean implements Serializable {
 			Produto produtoTemp = produtos.porCodigoCadastrado(produto);
 			if(produtoTemp == null) {
 				
-				produtoTemp = produtos.porCodigoDeBarrasCadastrado(produto);
+				if(!produto.getCodigoDeBarras().equals("") && produto.getCodigoDeBarras() != null) {
+					produtoTemp = produtos.porCodigoDeBarrasCadastrado(produto);
+				}
+				
 				if(produtoTemp == null) {
 					produto = produtos.save(produto);			
 					PrimeFaces.current().executeScript(
