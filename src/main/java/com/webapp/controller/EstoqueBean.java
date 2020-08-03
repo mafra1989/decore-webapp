@@ -468,6 +468,7 @@ public class EstoqueBean implements Serializable {
 		List<Object[]> produtosMaisVendidos = itensVendas.maisVendidos("2020", null, "Decore");
 		 for (Object[] object : produtosMaisVendidos) {
 			Produto produto = produtos.porId((Long) object[1]);
+			produto.setDescricao(convertToTitleCaseIteratingChars(produto.getDescricao()));
 			
 			Long totalItensVendidos = 0L;
 			Double quantidadeItensVendidos = 0D;
