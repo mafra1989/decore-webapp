@@ -14,6 +14,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
@@ -40,6 +41,10 @@ public class Produto implements Serializable {
 	@NotBlank
 	@Column(nullable = false, length = 120)
 	private String descricao;
+	
+
+	@Column(columnDefinition="TEXT")
+	private String informacaoExtra;
 
 	
 	@Column
@@ -130,6 +135,11 @@ public class Produto implements Serializable {
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal custoMedioUnitario = BigDecimal.ZERO;
 	
+	
+	@Type(type = "yes_no")
+	@Column
+	private boolean destaque;
+	
 
 	public Long getId() {
 		return id;
@@ -161,6 +171,14 @@ public class Produto implements Serializable {
 
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
+	}
+
+	public String getInformacaoExtra() {
+		return informacaoExtra;
+	}
+
+	public void setInformacaoExtra(String informacaoExtra) {
+		this.informacaoExtra = informacaoExtra;
 	}
 
 	public String getLocacao() {
@@ -312,7 +330,7 @@ public class Produto implements Serializable {
 	}
 
 	public void setMargemLucroReal(BigDecimal margemLucroReal) {
-		this.margemLucroReal = margemLucroReal.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
+		this.margemLucroReal = margemLucroReal.setScale(2, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public BigDecimal getMargemLucroRealEmDinheiro() {
@@ -329,6 +347,14 @@ public class Produto implements Serializable {
 
 	public void setPrecoDeVenda(BigDecimal precoDeVenda) {
 		this.precoDeVenda = precoDeVenda.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
+	}
+
+	public boolean isDestaque() {
+		return destaque;
+	}
+
+	public void setDestaque(boolean destaque) {
+		this.destaque = destaque;
 	}
 
 	@Override
@@ -484,6 +510,33 @@ public class Produto implements Serializable {
 
 	public void setDescontoMaximo(Long descontoMaximo) {
 		this.descontoMaximo = descontoMaximo;
+	}
+	
+	public String getDescricaoConvertida() {
+		return convertToTitleCaseIteratingChars(descricao);
+	}
+	
+	public String convertToTitleCaseIteratingChars(String text) {
+	    if (text == null || text.isEmpty()) {
+	        return text;
+	    }
+	 
+	    StringBuilder converted = new StringBuilder();
+	 
+	    boolean convertNext = true;
+	    for (char ch : text.toCharArray()) {
+	        if (Character.isSpaceChar(ch)) {
+	            convertNext = true;
+	        } else if (convertNext) {
+	            ch = Character.toTitleCase(ch);
+	            convertNext = false;
+	        } else {
+	            ch = Character.toLowerCase(ch);
+	        }
+	        converted.append(ch);
+	    }
+	 
+	    return converted.toString();
 	}
 
 }

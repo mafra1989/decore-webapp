@@ -88,5 +88,41 @@ public class ItensVendas implements Serializable {
 				ItemVenda.class).setParameter("id", produto.getId())
 				.setParameter("ajuste", ajuste).getResultList();
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> maisVendidos(String ano, Produto produto, String empresa) {
+
+		String condition = "";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+		
+		if (produto != null && produto.getId() != null) {
+			condition += "AND i.produto.id = :id ";
+		}
+		
+		select_Condition = "p.ano, i.produto.id, ";
+		sum_Condition = "sum(i.quantidade)";
+		groupBy_Condition = "p.ano, i.produto.id";
+		orderBy_Condition = "sum(i.quantidade) desc"; 
+		
+		// AND p.status = 'Y' 
+		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
+				+ "WHERE p.empresa = :empresa AND p.ano = :anoInicio AND p.status = 'Y' AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition + " order by "
+				+ orderBy_Condition;
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("anoInicio", Long.parseLong(ano));
+
+		if (produto != null && produto.getId() != null) {
+			q.setParameter("id", produto.getId());
+		}
+		
+		System.out.println(jpql);
+
+		
+		List<Object[]> result = q.setMaxResults(10).getResultList();
+
+		return result;
+	}
 
 }

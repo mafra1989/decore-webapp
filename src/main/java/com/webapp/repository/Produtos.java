@@ -125,7 +125,7 @@ public class Produtos implements Serializable {
 		} else {
 			
 			if(filter.getCategoriaProduto() != null) {
-				condition = "AND e.categoriaProduto.id = :id";
+				condition = "AND upper(e.categoriaProduto.nome) = upper(:nome)";
 			}
 			
 			typedQuery = manager.createQuery("select e from Produto e Where e.categoriaProduto.empresa = :empresa " + condition, Produto.class);
@@ -133,8 +133,20 @@ public class Produtos implements Serializable {
 		}
 		
 		if(filter.getCategoriaProduto() != null) {
-			typedQuery.setParameter("id", filter.getCategoriaProduto().getId());
+			typedQuery.setParameter("nome", filter.getCategoriaProduto().getNome());
 		}
+
+		return typedQuery.getResultList();
+
+	}
+	
+	
+	public List<Produto> produtosEmDestaque(ProdutoFilter filter) {
+		
+		TypedQuery<Produto> typedQuery = manager.createQuery(
+				"select e from Produto e where e.destaque = 'Y' AND e.categoriaProduto.empresa = :empresa order by e.codigo",
+				Produto.class)
+				.setParameter("empresa", filter.getEmpresa());
 
 		return typedQuery.getResultList();
 

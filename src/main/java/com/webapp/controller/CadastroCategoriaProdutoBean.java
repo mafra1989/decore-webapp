@@ -8,6 +8,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
+import org.primefaces.json.JSONObject;
+import org.primefaces.model.UploadedFile;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
@@ -17,6 +19,8 @@ import com.webapp.model.Usuario;
 import com.webapp.repository.CategoriasProdutos;
 import com.webapp.repository.Usuarios;
 import com.webapp.repository.filter.CategoriaProdutoFilter;
+import com.webapp.uploader.Uploader;
+import com.webapp.uploader.WebException;
 import com.webapp.util.jsf.FacesUtil;
 
 @Named
@@ -42,6 +46,9 @@ public class CadastroCategoriaProdutoBean implements Serializable {
 	private CategoriaProduto categoriaProdutoSelecionado;
 
 	private CategoriaProdutoFilter filtro = new CategoriaProdutoFilter();
+	
+	private UploadedFile file;
+	
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -140,4 +147,46 @@ public class CadastroCategoriaProdutoBean implements Serializable {
 		this.categoriaProduto = categoriaProduto;
 	}
 
+	public void upload() {
+		if(file != null && file.getFileName() != null) {
+			
+			try {
+				
+				//fileContent = file.getContents();	
+								
+				String json = Uploader.upload(file);
+				//System.out.println(json);
+				
+				JSONObject jObj = new JSONObject(json);
+				jObj = new JSONObject(jObj.get("data").toString());
+				System.out.println(jObj.get("link"));
+				
+				categoriaProduto.setUrlImagem(jObj.get("link").toString());
+				
+				PrimeFaces.current().executeScript("PF('categoriaProduto-dialog').show();");
+				
+			} catch(WebException e) {
+				
+				PrimeFaces.current().executeScript("PF('categoriaProduto-dialog').show();");
+				
+				PrimeFaces.current().executeScript(
+						"swal({ type: 'error', title: 'Erro!', text: 'Erro ao enviar imagem da categoria: " + categoriaProduto.getNome() + "!' });");
+			}
+						
+		} else {
+			
+			PrimeFaces.current().executeScript("PF('categoriaProduto-dialog').show();");
+			
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'error', title: 'Erro!', text: 'Selecione uma imagem com até 200KB!' });");
+		}
+	}
+
+	public UploadedFile getFile() {
+		return file;
+	}
+
+	public void setFile(UploadedFile file) {
+		this.file = file;
+	}
 }

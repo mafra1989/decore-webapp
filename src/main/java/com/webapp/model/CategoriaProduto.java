@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -20,6 +21,9 @@ public class CategoriaProduto implements Serializable {
 	
 	@NotBlank
 	private String nome;
+	
+	@Column
+	private String urlImagem;
 	
 	@NotBlank
 	@Column
@@ -42,6 +46,14 @@ public class CategoriaProduto implements Serializable {
 
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+
+	public String getUrlImagem() {
+		return urlImagem;
+	}
+
+	public void setUrlImagem(String urlImagem) {
+		this.urlImagem = urlImagem;
 	}
 
 	public String getEmpresa() {

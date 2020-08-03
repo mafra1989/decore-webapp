@@ -157,10 +157,9 @@
 
 		<div class="ui-g-12 ui-lg-12" style="padding-bottom: 20px;">
 
-			<h:form id="form" enctype="multipart/form-data">
+			<h:form id="form" styleClass="form" enctype="multipart/form-data">
 
 				<p:panel style="margin-top: -8px;">
-					<p:defaultCommand target="btn-calcular" />
 
 					<p:panel class="card card-w-title ui-fluid" id="panel-cadastro"
 						style="padding-bottom: 0px !important">
@@ -199,17 +198,31 @@
 							<p:inputTextarea id="descricao" autocomplete="off"
 								value="#{cadastroProdutoBean.produto.descricao}" />	
 								
-							
-			
 						</p:panelGrid>
 						
-						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 15px"
+						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 0px"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-3, ui-grid-col-9">
+
+							<p:outputLabel value="Outras Informações" for="info" />
+							
+								
+							<p:textEditor  id="info" widgetVar="info" value="#{cadastroProdutoBean.produto.informacaoExtra}" height="200"/>	
+								
+						</p:panelGrid>
+						
+						<p:panelGrid columns="4" layout="grid" style="margin-bottom: 15px"
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-3, ui-grid-col-3, ui-grid-col-2, ui-grid-col-3">
 			
 							<p:outputLabel value="Locação" for="locacao" />
 							<p:inputText id="locacao" autocomplete="off"
 								value="#{cadastroProdutoBean.produto.locacao}" />	
+								
+							<p:outputLabel value="Produto em destaque?"/>
+							<p:inputSwitch offLabel="Não" onLabel="Sim" id="entrega" style="width:150px"
+								value="#{cadastroProdutoBean.produto.destaque}">
+							</p:inputSwitch>	
 								
 							<p:outputLabel value="" />
     						<svg class="barcode">
@@ -221,7 +234,7 @@
 							styleClass="panelgrid-noborder disabled disabled pdv"
 							columnClasses="ui-grid-col-3, ui-grid-col-3, ui-grid-col-2, ui-grid-col-3">
 
-							<p:outputLabel value="Preço de Venda no PDV" for="preco-venda" />
+							<p:outputLabel value="Preço de Venda" for="preco-venda" />
 							<p:inputNumber id="preco-venda" decimalPlaces="2" styleClass="preco-venda"
 								placeholder="R$ 0,00" symbol="R$ "  onkeyup="ajaxDelay()"								
 								value="#{cadastroProdutoBean.produto.precoDeVenda}">
@@ -449,7 +462,7 @@
 							<p:commandButton id="btn-calcular" value="Salvar"
 								onstart="PF('downloadLoading').show();"
 								disabled="#{not seguranca.acessoAdministrador()}"
-								styleClass="btn-calcular" onsuccess="PF('downloadLoading').hide();"
+								styleClass="btn-calcular" onsuccess="stop();"
 								update="msg panel-cadastro"
 								action="#{cadastroProdutoBean.salvar}"
 								process="@this form panel-upload" icon="fa fa-save"
@@ -627,6 +640,11 @@
 
 			function stop() {
 				PF('downloadLoading').hide();
+				
+				$( document ).ready(function() {
+					JsBarcode(".barcode", "#{cadastroProdutoBean.produto.codigoDeBarras}");
+				});
+				
 			}
 			
 			var delay = (function() {
@@ -637,7 +655,7 @@
 			    };
 			})();
 			
-			function ajaxDelay(){ 
+			function ajaxDelay(){  
 				
 				var precoDeVenda = $('.preco-venda input').val();
 				var desconto = $('.pdv .panel-desconto input').val();
@@ -664,14 +682,18 @@
 			function updateBarcode(barcode) { 
 				JsBarcode(".barcode", barcode);
 			}
-
-		</script>
-		
-		<h:outputScript>
+			
 			$( document ).ready(function() {
 				JsBarcode(".barcode", "#{cadastroProdutoBean.produto.codigoDeBarras}");
 			});
-		</h:outputScript>
+			
+			$("form").keypress(function(e) {
+			  if (e.which == 13) {
+			    return false;
+			  }
+			});
+
+		</script>
 		
 		<script src="https://cdn.jsdelivr.net/jsbarcode/3.6.0/JsBarcode.all.min.js"></script>
 

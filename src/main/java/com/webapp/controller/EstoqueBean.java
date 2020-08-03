@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
@@ -84,6 +85,16 @@ public class EstoqueBean implements Serializable {
 	
 	private String empresa = "";
 	
+	
+	private List<Produto> portasFiltradas;
+	
+	private List<Produto> fechadurasFiltradas;
+	
+	private List<Produto> maisVendidos;
+	
+	private List<Produto> produtosEmDestaque;
+
+	
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -107,13 +118,14 @@ public class EstoqueBean implements Serializable {
 			todasCategoriasProdutos();
 			
 			if(!empresa.equals(usuario.getEmpresa())) {
-				
+				System.out.println(empresa + " " + usuario.getEmpresa());
 				if(!empresa.equals("")) {
 					pesquisar();
 				} 
 			}
 		}
 	}
+	
 
 	public void pesquisar() {
 		
@@ -306,7 +318,7 @@ public class EstoqueBean implements Serializable {
 	}
 
 	private void todasCategoriasProdutos() {
-		todasCategoriasProdutos = categoriasProdutos.todos(usuario.getEmpresa());
+		todasCategoriasProdutos = categoriasProdutos.todos("Decore");
 	}
 
 	public ProdutoFilter getFilter() {
@@ -391,6 +403,142 @@ public class EstoqueBean implements Serializable {
 			//}
 					
 		}
+	}
+	
+	public void buscarProdutos(String categoria) {
+		
+		filter.setDescricao("");
+		CategoriaProduto categoriaProduto = new CategoriaProduto();
+		categoriaProduto.setNome(categoria);
+		filter.setCategoriaProduto(categoriaProduto);		
+		filter.setEmpresa("Decore");
+		produtosFiltrados = produtos.filtrados(filter);
+		
+		
+		List<Produto> listaDeProdutos = new ArrayList<>();
+		for (Produto produto : produtosFiltrados) {
+			produto.setDescricao( convertToTitleCaseIteratingChars(produto.getDescricao()));
+			listaDeProdutos.add(produto);
+		}
+		
+		if(categoria.equals("PORTA")) {			
+			portasFiltradas = new ArrayList<>();
+			portasFiltradas.addAll(listaDeProdutos);
+		} 
+		
+		if(categoria.equals("FECHADURA")) {
+			if(categoria.equals("FECHADURA")) {			
+				fechadurasFiltradas = new ArrayList<>();
+				fechadurasFiltradas.addAll(listaDeProdutos);
+			}
+		}
+		
+	}
+	
+	
+	public void buscarProdutosEmDestaque() {
+				
+		filter.setEmpresa("Decore");
+		produtosEmDestaque = produtos.produtosEmDestaque(filter);
+		
+		for (Produto produto : produtosEmDestaque) {
+			produto.setDescricao(convertToTitleCaseIteratingChars(produto.getDescricao()));
+			
+			Long totalItensVendidos = 0L;
+			Double quantidadeItensVendidos = 0D;
+			List<ItemVenda> itensVenda = itensVendas.porProduto(produto, false);
+			for (ItemVenda itemVenda : itensVenda) {
+				quantidadeItensVendidos += itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade();
+				totalItensVendidos += itemVenda.getQuantidade();
+			}
+			
+			produto.setTotalVendas(BigDecimal.valueOf(quantidadeItensVendidos));
+
+			if(totalItensVendidos > 0) {
+				produto.setPrecoMedioVenda(BigDecimal.valueOf(produto.getTotalVendas().doubleValue() / BigDecimal.valueOf(totalItensVendidos).intValue()));
+			} else {
+				produto.setPrecoMedioVenda(BigDecimal.ZERO);
+			}
+		}		
+	}
+	
+	
+	public void buscarMaisVendidos() {
+		maisVendidos = new ArrayList<Produto>();
+		List<Object[]> produtosMaisVendidos = itensVendas.maisVendidos("2020", null, "Decore");
+		 for (Object[] object : produtosMaisVendidos) {
+			Produto produto = produtos.porId((Long) object[1]);
+			
+			Long totalItensVendidos = 0L;
+			Double quantidadeItensVendidos = 0D;
+			List<ItemVenda> itensVenda = itensVendas.porProduto(produto, false);
+			for (ItemVenda itemVenda : itensVenda) {
+				quantidadeItensVendidos += itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade();
+				totalItensVendidos += itemVenda.getQuantidade();
+			}
+			
+			produto.setTotalVendas(BigDecimal.valueOf(quantidadeItensVendidos));
+
+			if(totalItensVendidos > 0) {
+				produto.setPrecoMedioVenda(BigDecimal.valueOf(produto.getTotalVendas().doubleValue() / BigDecimal.valueOf(totalItensVendidos).intValue()));
+			} else {
+				produto.setPrecoMedioVenda(BigDecimal.ZERO);
+			}
+			
+			maisVendidos.add(produto);
+		}	
+		 
+		 
+		
+	}
+
+
+	public void buscarCategorias() {		
+		todasCategoriasProdutos = categoriasProdutos.todosEmDestaque("Decore");		
+	}
+	
+	
+	public String convertToTitleCaseIteratingChars(String text) {
+	    if (text == null || text.isEmpty()) {
+	        return text;
+	    }
+	 
+	    StringBuilder converted = new StringBuilder();
+	 
+	    boolean convertNext = true;
+	    for (char ch : text.toCharArray()) {
+	        if (Character.isSpaceChar(ch)) {
+	            convertNext = true;
+	        } else if (convertNext) {
+	            ch = Character.toTitleCase(ch);
+	            convertNext = false;
+	        } else {
+	            ch = Character.toLowerCase(ch);
+	        }
+	        converted.append(ch);
+	    }
+	 
+	    return converted.toString();
+	}
+
+
+	public List<Produto> getPortasFiltradas() {
+		return portasFiltradas;
+	}
+
+
+	public List<Produto> getFechadurasFiltradas() {
+		return fechadurasFiltradas;
+	}
+
+
+	public List<Produto> getMaisVendidos() {
+		return maisVendidos;
+	}
+
+
+	public List<Produto> getProdutosEmDestaque() {
+		return produtosEmDestaque;
 	}
 
 }

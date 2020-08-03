@@ -66,6 +66,13 @@
 	.btn-upload .ui-button {
 		width: unset !important;		
 	}
+	#categoriaProduto-dialog .card {
+	    margin-bottom: 5px;
+	}
+	.panel-btn.ui-panel .ui-panel-content {
+	    padding: 6px 8px !important;
+	    border: none;		
+	}
 }
 
 @media ( min-width :460px) {
@@ -197,9 +204,8 @@
 
 		<p:dialog
 			header="#{cadastroCategoriaProdutoBean.categoriaProduto.id == null ? 'Nova categoria de produto' : 'Editar categoria de produto'}"
-			widgetVar="categoriaProduto-dialog" id="categoriaProduto-dialog" resizable="false"
-			modal="true" closeOnEscape="true" responsive="true" width="250px"
-			style="margin-top: 10px">
+			widgetVar="categoriaProduto-dialog" id="categoriaProduto-dialog" resizable="false" position="top" style="margin-top: 100px"
+			modal="true" closeOnEscape="true" responsive="true" width="250px">
 
 			<h:form id="form-dialog">
 
@@ -217,25 +223,102 @@
 							<p:inputText id="nome"
 								value="#{cadastroCategoriaProdutoBean.categoriaProduto.nome}" />
 						</p:panelGrid>
+						
+						<p:panelGrid id="panel-upload" columns="1" layout="grid"
+							style="margin-bottom: 5px"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-12">
 
-						<p:spacer />
+							<p:outputLabel value="Foto" />
+							<p:commandButton value="Adicionar" styleClass="btn-upload"
+								onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();PF('anexo-dialog').show();"
+								onsuccess="PF('downloadLoading').hide();" update="anexo-dialog"
+								icon="fa fa-plus" style="font-weight:bold" />
 
-						<p:panelGrid columns="1" layout="grid"
-							styleClass="panelgrid-noborder disabled disabled">
+							<ui:fragment id="photo-edit" 
+								rendered="#{cadastroCategoriaProdutoBean.categoriaProduto.urlImagem != null}">
+								<img
+									src="#{cadastroCategoriaProdutoBean.categoriaProduto.urlImagem}"
+									style="width: 100%;max-height: 196px;" />
+							</ui:fragment>
+							
+						</p:panelGrid>
+						
 
-							<p:outputLabel />
+						<div
+							style="width: 100%; margin-left: -15px;
+    						padding-left: 32px;margin-bottom: 10px; 
+    						border-top: 1px solid #ccc"></div>
+						
+						
+						<p:panel class="card card-w-title ui-fluid panel-btn"
+								style="padding-bottom: 0px;margin-bottom: 0px;">
+		
 							<p:commandButton id="btn-salvar" value="Salvar"
-								widgetVar="btn-save"
+								widgetVar="btn-save" icon="fa fa-fw fa-save"
 								onstart="PF('downloadLoading').show(); PF('btn-save').disable();"
 								onsuccess="PF('downloadLoading').hide(); PF('btn-save').enable();"
 								oncomplete="if (!args.validationFailed) PF('categoriaProduto-dialog').hide();"
 								update="msg form-dialog form"
 								action="#{cadastroCategoriaProdutoBean.salvar}"
-								process="@this form-dialog" style="font-weight: bold" />
-						</p:panelGrid>
+								style="font-weight: bold;background-color: #0d8819b5; width: 97px">
+	
+							</p:commandButton>
+	
+							<p:commandButton icon="fa fa-fw fa-close" value="Fechar"
+								onclick="PF('categoriaProduto-dialog').hide();"
+								style="margin-left:1px;background-color: #e15e5ef0; font-weight: bold; float: left; width: 97px">
+	
+							</p:commandButton>
+						</p:panel>
+						
+						
 
 					</div>
 				</div>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog header="Adicionar foto" widgetVar="anexo-dialog"
+			position="top" style="margin-top: 100px" id="anexo-dialog"
+			resizable="false" modal="true" closeOnEscape="true" responsive="true"
+			width="250px">
+
+			<h:form id="form-anexo" enctype="multipart/form-data">
+
+				<p:fileUpload styleClass="btn-upload" sizeLimit="200000"
+					value="#{cadastroCategoriaProdutoBean.file}" label="Anexar" process="@this"
+					style="margin-left:8px;margin-top:5px" mode="simple"
+					skinSimple="true">
+				</p:fileUpload>
+
+
+
+				<div class="ui-g-12 ui-lg-12">
+
+					<p:panel class="card card-w-title ui-fluid"
+						style="padding-bottom: 0px;margin-bottom: 0px;">
+
+						<p:commandButton icon="fa fa-fw fa-cloud-upload" value="Upload"
+							action="#{cadastroCategoriaProdutoBean.upload}" ajax="false"
+							process="@this"
+							onclick="PrimeFaces.monitorDownload(start, stop);"
+							update="categoriaProduto-dialog"
+							style="background-color: #147df0; font-weight: bold; float: rifht; width: 92px">
+
+						</p:commandButton>
+
+						<p:commandButton icon="fa fa-fw fa-close" value="Fechar"
+							onclick="PF('anexo-dialog').hide();"
+							style="margin-left:1px;background-color: #e15e5ef0; font-weight: bold; float: left; width: 90px">
+
+						</p:commandButton>
+					</p:panel>
+				</div>
+				
+				
+
 			</h:form>
 		</p:dialog>
 
