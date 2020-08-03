@@ -427,7 +427,7 @@
 		    </p:column>
 		 
 		    <p:column headerText="Preço">
-		        <h:outputText value="#{produto.precoDeVenda}">
+		        <h:outputText value="#{produto.precoMedioVenda}">
 		        	<f:convertNumber type="currency" maxFractionDigits="2" />
 		        </h:outputText>
 		    </p:column>
@@ -440,7 +440,7 @@
 		    </p:column>
 		    
 		    <p:column headerText="Total">
-		        <h:outputText value="#{produto.precoDeVenda * produto.quantidadePedido}">
+		        <h:outputText value="#{produto.precoMedioVenda * produto.quantidadePedido}">
 		        	<f:convertNumber type="currency" maxFractionDigits="2" />
 		        </h:outputText>
 		    </p:column>
@@ -476,14 +476,14 @@
 							
 		<p:panel styleClass="continuar-comprando" style="text-align:center;"
 			rendered="#{carrinhoBean.totalDeItens ge 1}">
-			<p:link style="color: #bf5306;font-weight: normal;font-size:12px;" href="/decore-wepapp/webstore/decore/products.xhtml"
+			<p:link style="color: #bf5306;font-weight: normal;font-size:12px;" href="/webstore/decore/products.xhtml"
 								onclick="start();">
 								Clique aqui para adicionar mais itens ao seu pedido.</p:link>
 		</p:panel>	
 		
 		<p:panel styleClass="continuar-comprando" style="text-align:center;"
 			rendered="#{carrinhoBean.totalDeItens eq 0}">
-			<p:link style="color: #bf5306;font-weight: normal;font-size:12px;" href="/decore-wepapp/webstore/decore/products.xhtml"
+			<p:link style="color: #bf5306;font-weight: normal;font-size:12px;" href="/webstore/decore/products.xhtml"
 								onclick="start();">
 								Clique aqui e adicione itens ao seu pedido.</p:link>
 		</p:panel>					
