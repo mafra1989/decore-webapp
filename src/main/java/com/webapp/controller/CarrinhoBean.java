@@ -76,7 +76,7 @@ public class CarrinhoBean implements Serializable {
 		
 		try {
 			Thread.sleep(2000);
-			FacesContext.getCurrentInstance().getExternalContext().redirect("/decore-wepapp/webstore/decore/cart.xhtml");
+			FacesContext.getCurrentInstance().getExternalContext().redirect("/webstore/decore/cart.xhtml");
 			
 		} catch (InterruptedException e) {
 		}
