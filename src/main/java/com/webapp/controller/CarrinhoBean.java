@@ -3,10 +3,12 @@ package com.webapp.controller;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -28,7 +30,11 @@ public class CarrinhoBean implements Serializable {
 	@Inject
 	private Produtos produtos;
 
-	private NumberFormat nf = new DecimalFormat("###,##0.00");
+	private static final Locale BRAZIL = new Locale("pt", "BR");
+
+	private static final DecimalFormatSymbols REAL = new DecimalFormatSymbols(BRAZIL);
+
+	private NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
 	
 	private String totalGeralEmString = "R$ 0,00";
 	

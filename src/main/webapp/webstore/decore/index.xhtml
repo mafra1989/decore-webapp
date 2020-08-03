@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	
+	<title>Welcome | Decore Web Store</title>
+	
+    <link href="css/bootstrap.css" rel="stylesheet"/>
+    <!-- Custom CSS -->
+    <link href="css/style.css" rel="stylesheet"/>
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script> 
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+    
+    <style>
+    	@media ( min-width :220px) {
+	    	body {
+			    padding-top: 50px;
+			}
+	     	.badge-light {
+				float: right;
+			    margin-top: -8px;
+			    font-size: 11px;
+			    padding: 2px 4px;
+			    background-color: #FEB10F;
+			    color: #333333;
+			}
+			.pedido {
+				display:block;
+				color: #9d9d9d;
+			}
+			.pedido a {
+				color: #9d9d9d;
+				text-decoration:none;
+			}
+			.pedido a:hover {
+				color: white;
+			}
+			.pedido-menu {
+				display:none !important;
+			}
+		}
+		
+		@media ( min-width :640px) {
+			.pedido-menu {
+				display:block !important;
+			}
+		}
+     </style>
+</h:head>
+
+<h:body>
+
+<h:form id="form">
+
+        <!-- Header -->
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>                        
+                    </button>
+                    <a class="navbar-brand" href="index.xhtml">Decore Web Store</a>
+                </div>
+                
+                <div class="pedido" style="float: right;margin-top: -32px;margin-right: 56px;">
+					<a href="cart.xhtml">Meu Pedido<span class="badge badge-light">#{carrinhoBean.totalDeItens}</span></a>
+				</div>
+			
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav navbar-right">
+                    	<li class="pedido-menu"><a href="cart.xhtml"><span
+							class="glyphicon glyphicon-shopping-cart"></span>
+							 Meu Pedido 
+							 <span class="badge badge-light">#{carrinhoBean.totalDeItens}</span></a></li>
+							 
+                    	<li><a href="/Dashboard.xhtml"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!--Header end-->
+
+        <div id="content">
+            <!--Main banner image-->
+            <div id = "banner_image">
+                <div class="container">	
+                    <center>
+                        <div id="banner_content">
+                            <h1>Bem vindo à Decore Web Store. Nossa loja On-line!</h1>
+                            <p>Temos as melhores portas, fechaduras e móveis planejados para você.</p>
+                            <br/>
+                            <a  href="products.xhtml" class="btn btn-danger btn-lg active">Faça seu pedido!</a>
+                        </div>
+                    </center>
+                </div>
+            </div>
+            <!--Main banner image end-->
+
+            <!--Item categories listing-->
+            <div class="container">
+                <div class="row text-center" id="item_list">
+                    <div class="col-sm-4">
+                        <a href="products.html#cameras" >
+                            <div class="thumbnail">
+                                <img  src="img/portas04.jpg" alt="" />
+                                <div class="caption">
+                                    <h3>Portas de Madeira Frisada</h3>
+                                    <p>Escolha entre as melhores disponíveis no mercado.</p>
+                                </div>
+                            </div> 
+                        </a>
+                    </div>
+                    
+
+                    <div class="col-sm-4">
+                        <a href="products.html#shirts" >
+                            <div class="thumbnail">
+                                <img src="img/decorados02.jpg" alt="" />
+                                <div class="caption">
+                                    <h3>Móveis Planejados</h3>
+                                    <p>Móveis confeccionados sob encomenda, repeitamos sua preferência.</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    
+                    <div class="col-sm-4">
+                        <a href="products.html#watches" >
+                            <div class="thumbnail">
+                                <img src="img/fechaduras14.jpg" alt="" />
+                                <div class="caption">
+                                    <h3>Fechaduras</h3>
+                                    <p>Fechaduras originais das melhores marcas.</p>
+                                </div>
+                            </div> 
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!--Item categories listing end-->
+        </div>
+
+        <!--Footer-->
+        <footer>
+            <div class="container">
+                <center>
+                    <p>Copyright Decore Web Store. Todos os direitos reservados.  |  Contato: +55 92 98458-2975</p>	
+                </center>
+            </div>
+        </footer>
+        <!--Footer end-->
+</h:form>
+</h:body>
+</html>

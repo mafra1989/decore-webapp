@@ -3,11 +3,13 @@ package com.webapp.controller;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
@@ -81,7 +83,11 @@ public class ConsultaComprasBean implements Serializable {
 
 	private Date dateStop = new Date();
 
-	private NumberFormat nf = new DecimalFormat("###,##0.00");
+	private static final Locale BRAZIL = new Locale("pt", "BR");
+
+	private static final DecimalFormatSymbols REAL = new DecimalFormatSymbols(BRAZIL);
+
+	private NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
 
 	private String totalCompras = "0,00";
 
