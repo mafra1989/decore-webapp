@@ -15,10 +15,13 @@ import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.CategoriaProduto;
 import com.webapp.model.Grupo;
+import com.webapp.model.Produto;
 import com.webapp.model.Usuario;
 import com.webapp.repository.CategoriasProdutos;
+import com.webapp.repository.Produtos;
 import com.webapp.repository.Usuarios;
 import com.webapp.repository.filter.CategoriaProdutoFilter;
+import com.webapp.repository.filter.ProdutoFilter;
 import com.webapp.uploader.Uploader;
 import com.webapp.uploader.WebException;
 import com.webapp.util.jsf.FacesUtil;
@@ -48,6 +51,13 @@ public class CadastroCategoriaProdutoBean implements Serializable {
 	private CategoriaProdutoFilter filtro = new CategoriaProdutoFilter();
 	
 	private UploadedFile file;
+	
+	@Inject
+	private Produtos produtos;
+	
+	private List<Produto> produtosFiltrados;
+	
+	private ProdutoFilter filter = new ProdutoFilter();
 	
 
 	public void inicializar() {
@@ -188,5 +198,43 @@ public class CadastroCategoriaProdutoBean implements Serializable {
 
 	public void setFile(UploadedFile file) {
 		this.file = file;
+	}
+	
+	public void buscar() {
+		categoriaProduto = categoriasProdutos.porId(categoriaProduto.getId());
+		filter.setEmpresa("Decore");
+		filter.setCategoriaProduto(categoriaProduto);
+		produtosFiltrados = produtos.filtrados(filter);
+		
+		for (Produto produto : produtosFiltrados) {
+			produto.setDescricao(convertToTitleCaseIteratingChars(produto.getDescricao()));
+		}
+	}
+
+	public List<Produto> getProdutosFiltrados() {
+		return produtosFiltrados;
+	}
+	
+	public String convertToTitleCaseIteratingChars(String text) {
+	    if (text == null || text.isEmpty()) {
+	        return text;
+	    }
+	 
+	    StringBuilder converted = new StringBuilder();
+	 
+	    boolean convertNext = true;
+	    for (char ch : text.toCharArray()) {
+	        if (Character.isSpaceChar(ch)) {
+	            convertNext = true;
+	        } else if (convertNext) {
+	            ch = Character.toTitleCase(ch);
+	            convertNext = false;
+	        } else {
+	            ch = Character.toLowerCase(ch);
+	        }
+	        converted.append(ch);
+	    }
+	 
+	    return converted.toString();
 	}
 }

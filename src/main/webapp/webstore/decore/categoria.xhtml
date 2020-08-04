@@ -7,10 +7,9 @@
 	xmlns:p="http://primefaces.org/ui">
 	
 <f:metadata>
-	<f:viewAction action="#{estoqueBean.buscarCategorias}" />
-	<f:viewAction action="#{estoqueBean.buscarMaisVendidos}" />
-	<f:viewAction action="#{estoqueBean.buscarProdutosEmDestaque}" />
-	<f:viewAction action="#{estoqueBean.buscarProdutos('FECHADURA')}" /> 
+	<f:viewParam name="id" value="#{cadastroCategoriaProdutoBean.categoriaProduto.id}" />
+		<f:viewAction action="#{cadastroCategoriaProdutoBean.buscar}"
+			if="#{param.id ne null}" />
 </f:metadata>
 
 <h:head>
@@ -35,6 +34,12 @@
 		@media ( min-width :220px) {
 			.navbar-brand {
 			    padding: 15px 5px;
+			}
+			.ui-datagrid-content-empty {
+			    font-weight: normal
+			}
+			#myFooter .footer-copyright p {
+			    font-size: 12px;
 			}
 			.logo {
 				width:225px;
@@ -98,7 +103,7 @@
 			}
 			body .ui-panel .ui-panel-content {
 		    	border: none; 
-			    padding: 4px 4px;
+			    padding: 4px 0px;
 	    	}
 	    	body .ui-widget-content {
 			    border: none; 
@@ -270,7 +275,7 @@
 			}
 			
 			.panel-mais-vendidos.ui-widget-content {
-			    margin-top: 36px !important;
+			    margin-top: 18px !important;
 			}
 			
 			.panel-mais-vendidos .ui-carousel .ui-carousel-viewport {
@@ -280,12 +285,12 @@
 			    font-size: 12px;
 			}
 			.logotipo {
-					margin-left: 14px;
-				    width: 33px;
-				    height: 35px;
-				    margin-top: 8px;
-				    padding: 0px;
-				}
+				margin-left: 14px;
+			    width: 33px;
+			    height: 35px;
+			    margin-top: 8px;
+			    padding: 0px;
+			}
 		}
 		
 		@media ( min-width :640px) {			
@@ -401,9 +406,8 @@
 			}
 			
 			.panel-mais-vendidos.ui-widget-content {
-			    margin-top: 45px !important;
+			    margin-top: 15px !important;
 			}
-			
 		}
 	</style>
 
@@ -440,217 +444,19 @@
 			</div>
 		</div>
 	</div>
-	
-	
-	<p:galleria value="#{imagesViewBean.images}" autoPlay="true" effect="fade" transitionInterval="4000" showCaption="false" styleClass="anuncios" var="image">
-		    <p:graphicImage style="width: 100%;max-height:100%;" name="images/#{image}.png" library="myapp" alt="Image Description for #{image}"/>
-		</p:galleria>
-		
 
-	<div class="container" id="content" style="margin-top:40px;">
-
-		<!-- Jumbotron Header -->
-		<div style="display: none;" class="jumbotron home-spacer"
-			id="products-jumbotron">
-			<h1>Bem vindo à Decore Web Store. Nossa loja On-line!</h1>
-			<p>Temos as melhores portas, fechaduras e móveis planejados para
-				você. Você não precisa caçar, temos todos em um só lugar!</p>
-
-		</div>
-
-<p:panel styleClass="panel-categorias">			
-		<h2 style="font-size: 26px;font-weight: 300;color:#666;position: relative;width: 300px;
-    		top: 0;margin-top: -20px;z-index: 1;">Todas as categorias</h2>
-		
-		<p:carousel styleClass="carrosel-2" var="categoria" value="#{estoqueBean.todasCategoriasProdutos}" 		
-	        style="margin-top: -42px;" numVisible="3">
-	        <p:panel style="text-align:center">
-	                  	           
-				<div class="thumbnail">
-					
-					<ui:fragment id="photo"
-						rendered="#{categoria.urlImagem == null}">
-						<div class="panel-img">
-							<p:link href="categoria.xhtml?id=#{categoria.id}">
-									<img class="sem-foto"
-									src="img/sem-foto.png" alt="" />
-							</p:link>
-						</div>
-					</ui:fragment>
-					
-					<ui:fragment id="photo"
-						rendered="#{categoria.urlImagem != null}">
-						<div class="panel-img">
-							<p:link href="categoria.xhtml?id=#{categoria.id}">
-								<img class="tem-foto"
-									src="#{categoria.urlImagem}" />
-							</p:link>
-						</div>
-					</ui:fragment>
-					
-					<div class="caption">
-												
-						<h:outputText styleClass="item-preco" value="#{categoria.nome}">
-						</h:outputText>
-
-					</div>
-				</div>
-				
-	        </p:panel>	 
-	    </p:carousel>
-	    
-	    <p:carousel styleClass="carrosel-5" var="categoria" value="#{estoqueBean.todasCategoriasProdutos}" effect="explode"		
-	        style="margin-top: -42px;" numVisible="7" effectDuration="1000">
-	        <p:panel style="text-align:center">
-	           
-	           <p:link href="categoria.xhtml?id=#{categoria.id}">
-	           
-					<div class="thumbnail">
-						
-						<ui:fragment id="photo"
-							rendered="#{categoria.urlImagem == null}">
-							<div class="panel-img">
-								<img class="sem-foto"
-									src="img/sem-foto.png" alt="" />
-							</div>
-						</ui:fragment>
-						
-						<ui:fragment id="photo"
-							rendered="#{categoria.urlImagem != null}">
-							<div class="panel-img">
-								<img class="tem-foto"
-									src="#{categoria.urlImagem}" />
-							</div>
-						</ui:fragment>
-						
-						<div class="caption">
-													
-							<h:outputText styleClass="item-preco" value="#{categoria.nome}">
-								
-							</h:outputText>
+	<div class="container" id="content" style="margin-top:-15px;">
 	
-						</div>
-					</div>
-					
-				</p:link>
-				
-	        </p:panel>	 
-	    </p:carousel>
-</p:panel>
+	<p:breadCrumb>
+		<p:menuitem value="Home" url="index.xhtml" />
+	    <p:menuitem value="Categorias" url="products.xhtml" />
+	    <p:menuitem value="#{cadastroCategoriaProdutoBean.categoriaProduto.nome}" url="#" />
+	</p:breadCrumb>
 		
-		
-<p:panel styleClass="panel-produtos" style="margin-top: 10px;">		
-		<h2 style="font-size: 26px;font-weight: 300;color:#666;position: relative;width: 300px;
-    		top: 0;margin-top: -20px;z-index: 1;">Produtos em destaque <span style="display:none;font-size: 13px;"><p:link style="text-decoration:none;font-family: verdana;" href="produto.xhtml?id=#{produto.id}">Ver todos</p:link></span></h2>
-		
-		<p:carousel styleClass="carrosel-2" var="produto" value="#{estoqueBean.produtosEmDestaque}" 		
-	        style="margin-top: -42px;" numVisible="2">
-	        <p:panel style="text-align:center">
-	           
-	           <p:link href="produto.xhtml?id=#{produto.id}">
-	           
-					<div class="thumbnail box">
-						
-						<ui:fragment id="photo"
-							rendered="#{produto.urlImagem == null}">
-							<div class="panel-img">
-								<img class="sem-foto"
-									src="img/sem-foto.png" alt="" />
-							</div>
-						</ui:fragment>
-						
-						<ui:fragment id="photo"
-							rendered="#{produto.urlImagem != null}">
-							<div class="panel-img">
-								<img class="tem-foto"
-									src="#{produto.urlImagem}" />
-							</div>
-						</ui:fragment>
-						
-						<div class="caption">
-													
-							<h:outputText styleClass="item-preco" value="#{produto.precoMedioVenda}">
-								<f:convertNumber type="currency" />
-							</h:outputText>
-							
-							<br/>
-							
-							<h:outputText styleClass="item-descricao" style="font-weight:normal;" value="#{produto.descricao}" />
-							
-							<p:button icon="fa fa-fw fa-list" rendered="false"
-								style="margin-top:10px;margin-bottom: 5px;font-size:16px;font-weight: normal;width: 100%;background-color: #337ab7;border-color: #2e6da4;"
-								value="Saber Mais" id="foto-button" 
-								outcome="produto.xhtml">
-		
-								<f:param name="id" value="#{produto.id}" />
-							</p:button>
-	
-						</div>
-					</div>
-					
-				</p:link>
-				
-	        </p:panel>	 
-	    </p:carousel>
-	    
-	    <p:carousel styleClass="carrosel-5" var="produto" value="#{estoqueBean.produtosEmDestaque}" 
-	        style="margin-top: -42px;" numVisible="5" effectDuration="1000">
-	        <p:panel style="text-align:center">
-	           
-	           <p:link href="produto.xhtml?id=#{produto.id}">
-	           
-					<div class="thumbnail box">
-						
-						<ui:fragment id="photo"
-							rendered="#{produto.urlImagem == null}">
-							<div class="panel-img">
-								<img class="sem-foto"
-									src="img/sem-foto.png" alt="" />
-							</div>
-						</ui:fragment>
-						
-						<ui:fragment id="photo"
-							rendered="#{produto.urlImagem != null}">
-							<div class="panel-img">
-								<img class="tem-foto"
-									src="#{produto.urlImagem}" />
-							</div>
-						</ui:fragment>
-						
-						<div class="caption">
-													
-							<h:outputText styleClass="item-preco" value="#{produto.precoMedioVenda}">
-								<f:convertNumber type="currency" />
-							</h:outputText>
-							
-							<br/>
-							
-							<h:outputText styleClass="item-descricao" style="font-weight:normal;" value="#{produto.descricao}" />
-							
-							<p:button icon="fa fa-fw fa-list" rendered="false"
-								style="margin-top:10px;margin-bottom: 5px;font-size:16px;font-weight: normal;width: 100%;background-color: #337ab7;border-color: #2e6da4;"
-								value="Saber Mais" id="foto-button" 
-								outcome="produto.xhtml">
-		
-								<f:param name="id" value="#{produto.id}" />
-							</p:button>
-	
-						</div>
-					</div>
-					
-				</p:link>
-				
-	        </p:panel>	 
-	    </p:carousel>
-	</p:panel>    
-	
-	
 <p:panel styleClass="panel-mais-vendidos">		
-		<h2 style="font-size: 26px;font-weight: 300;color:#666;position: relative;width: 300px;
-    		top: 0;margin-top: -20px;z-index: 1;">Mais vendidos <span style="display:none;font-size: 13px;"><p:link style="text-decoration:none;font-family: verdana;" href="produto.xhtml?id=#{produto.id}">Ver todos</p:link></span></h2>
-		
-		<p:carousel styleClass="carrosel-2" var="produto" value="#{estoqueBean.maisVendidos}" 		
-	        style="margin-top: -42px;" numVisible="2">
+
+		<p:dataGrid styleClass="carrosel-2" var="produto" value="#{cadastroCategoriaProdutoBean.produtosFiltrados}" 		
+	        columns="2" emptyMessage="Não existem produtos para essa categoria.">
 	        <p:panel style="text-align:center">
 	           
 	           <p:link href="produto.xhtml?id=#{produto.id}">
@@ -697,10 +503,10 @@
 				</p:link>
 				
 	        </p:panel>	 
-	    </p:carousel>
+	    </p:dataGrid>
 	    
-	    <p:carousel styleClass="carrosel-5" var="produto" value="#{estoqueBean.maisVendidos}" 
-	        style="margin-top: -42px;" numVisible="5" effectDuration="1000">
+	    <p:dataGrid styleClass="carrosel-5"  var="produto" value="#{cadastroCategoriaProdutoBean.produtosFiltrados}" 
+	        columns="5" emptyMessage="Não existem produtos para essa categoria.">
 	        <p:panel style="text-align:center">
 	           
 	           <p:link href="produto.xhtml?id=#{produto.id}">
@@ -747,114 +553,8 @@
 				</p:link>
 				
 	        </p:panel>	 
-	    </p:carousel>
-	</p:panel>
-	    
-			
-<p:panel style="margin-top: 50px;" styleClass="panel-mais-vendidos" rendered="false">			
-		<h2 style="font-size: 26px;font-weight: 300;color:#666;position: relative;width: 300px;
-    		top: 0;margin-top: -20px;z-index: 1;">Fechaduras <span style="font-size: 13px;"><p:link style="text-decoration:none;font-family: verdana;" href="produto.xhtml?id=#{produto.id}">Ver todas</p:link></span></h2>
-		
-		<p:carousel styleClass="carrosel-2" var="produto" value="#{estoqueBean.fechadurasFiltradas}" effect="explode"		
-	        style="margin-top: -42px;" numVisible="2" effectDuration="1000">
-	        <p:panel style="text-align:center">
-	           
-	           <p:link href="produto.xhtml?id=#{produto.id}">
-	           
-					<div class="thumbnail box">
-						
-						<ui:fragment id="photo"
-							rendered="#{produto.urlImagem == null}">
-							<div class="panel-img">
-								<img class="sem-foto"
-									src="img/sem-foto.png" alt="" />
-							</div>
-						</ui:fragment>
-						
-						<ui:fragment id="photo"
-							rendered="#{produto.urlImagem != null}">
-							<div class="panel-img">
-								<img class="tem-foto"
-									src="#{produto.urlImagem}" />
-							</div>
-						</ui:fragment>
-						
-						<div class="caption">
-													
-							<h:outputText styleClass="item-preco" value="#{produto.precoDeVenda}">
-								<f:convertNumber type="currency" />
-							</h:outputText>
-							
-							<br/>
-							
-							<h:outputText styleClass="item-descricao" style="font-weight:normal;" value="#{produto.descricao}" />
-							
-							<p:button icon="fa fa-fw fa-list" rendered="false"
-								style="margin-top:10px;margin-bottom: 5px;font-size:16px;font-weight: normal;width: 100%;background-color: #337ab7;border-color: #2e6da4;"
-								value="Saber Mais" id="foto-button" 
-								outcome="produto.xhtml">
-		
-								<f:param name="id" value="#{produto.id}" />
-							</p:button>
-	
-						</div>
-					</div>
-					
-				</p:link>
-				
-	        </p:panel>	 
-	    </p:carousel>
-	    
-	    <p:carousel styleClass="carrosel-5" var="produto" value="#{estoqueBean.fechadurasFiltradas}" effect="explode"		
-	        style="margin-top: -42px;" numVisible="5">
-	        <p:panel style="text-align:center">
-	           
-	           <p:link href="produto.xhtml?id=#{produto.id}">
-	           
-					<div class="thumbnail box">
-						
-						<ui:fragment id="photo"
-							rendered="#{produto.urlImagem == null}">
-							<div class="panel-img">
-								<img class="sem-foto"
-									src="img/sem-foto.png" alt="" />
-							</div>
-						</ui:fragment>
-						
-						<ui:fragment id="photo"
-							rendered="#{produto.urlImagem != null}">
-							<div class="panel-img">
-								<img class="tem-foto"
-									src="#{produto.urlImagem}" />
-							</div>
-						</ui:fragment>
-						
-						<div class="caption">
-													
-							<h:outputText styleClass="item-preco" value="#{produto.precoDeVenda}">
-								<f:convertNumber type="currency" />
-							</h:outputText>
-							
-							<br/>
-							
-							<h:outputText styleClass="item-descricao" style="font-weight:normal;" value="#{produto.descricao}" />
-							
-							<p:button icon="fa fa-fw fa-list" rendered="false"
-								style="margin-top:10px;margin-bottom: 5px;font-size:16px;font-weight: normal;width: 100%;background-color: #337ab7;border-color: #2e6da4;"
-								value="Saber Mais" id="foto-button" 
-								outcome="produto.xhtml">
-		
-								<f:param name="id" value="#{produto.id}" />
-							</p:button>
-	
-						</div>
-					</div>
-					
-				</p:link>
-				
-	        </p:panel>	 
-	    </p:carousel>
-</p:panel>	    
+	    </p:dataGrid>
+	</p:panel>    
 	    
 	    
 		<hr />

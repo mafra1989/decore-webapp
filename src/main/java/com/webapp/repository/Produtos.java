@@ -125,7 +125,7 @@ public class Produtos implements Serializable {
 		} else {
 			
 			if(filter.getCategoriaProduto() != null) {
-				condition = "AND upper(e.categoriaProduto.nome) = upper(:nome)";
+				condition = "AND upper(e.categoriaProduto.nome) = :nome";
 			}
 			
 			typedQuery = manager.createQuery("select e from Produto e Where e.categoriaProduto.empresa = :empresa " + condition, Produto.class);
@@ -133,7 +133,7 @@ public class Produtos implements Serializable {
 		}
 		
 		if(filter.getCategoriaProduto() != null) {
-			typedQuery.setParameter("nome", filter.getCategoriaProduto().getNome());
+			typedQuery.setParameter("nome", filter.getCategoriaProduto().getNome().toUpperCase());
 		}
 
 		return typedQuery.getResultList();
