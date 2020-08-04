@@ -16,8 +16,8 @@ public class ImagesViewBean {
     @PostConstruct
     public void init() {
         images = new ArrayList<String>();
-        for (int i = 1; i <= 12; i++) {
-            images.add("sem-foto");
+        for (int i = 1; i <= 2; i++) {
+            images.add("decore"+i);
         }
     }
  
