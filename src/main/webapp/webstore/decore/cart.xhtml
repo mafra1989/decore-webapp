@@ -445,9 +445,15 @@
 	</div>
 	
     	
-    <div class="container" id="content" style="margin-bottom:50px;margin-top: -40px;">
+    <div class="container" id="content" style="margin-bottom:50px;margin-top: -30px;">
     
-    	<h2 style="color:#73716f;">Seu pedido</h2>	    	
+    	<p:breadCrumb>
+			<p:menuitem value="Home" url="products.xhtml" />
+		    <p:menuitem value="Categorias" url="products.xhtml" />
+		    <p:menuitem value="Meu pedido" url="#" />
+		</p:breadCrumb>
+    
+    	<h2 style="color:#73716f;">Meu pedido</h2>	    	
 	    <hr/>
 	    
 	    <p:commandButton value="Atualizar" icon="fa fa-fw fa-refresh" iconPos="right"  styleClass="remove-item atualizar-carrinho" 

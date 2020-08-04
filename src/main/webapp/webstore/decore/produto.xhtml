@@ -233,16 +233,16 @@
 		</div>
 	</div>
 
-	<div class="container" id="content" style="margin-bottom:50px;margin-top: -16px;">
+	<div class="container" id="content" style="margin-bottom:50px;margin-top: -30px;">
 
-		<!-- Jumbotron Header -->
-		<div style="display: none;" class="jumbotron home-spacer"
-			id="products-jumbotron">
-			<h1>Bem vindo à Decore Web Store. Nossa loja On-line!</h1>
-			<p>Temos as melhores portas, fechaduras e móveis planejados para
-				você. Você não precisa caçar, temos todos em um só lugar!</p>
-
-		</div>
+		<p:breadCrumb style="margin-bottom:16px;">
+			<p:menuitem value="Home" url="products.xhtml" />
+		    <p:menuitem value="Categorias" url="products.xhtml" />
+		    <p:menuitem value="#{cadastroProdutoBean.produto.categoriaProduto.nome}" outcome="categoria.xhtml">
+		    	<f:param name="id" value="#{cadastroProdutoBean.produto.categoriaProduto.id}" />
+		    </p:menuitem>
+		    <p:menuitem value="Produto" url="#" />
+		</p:breadCrumb>
 									
 
 		<p:panelGrid id="panel-desc" columns="2" layout="grid" 
@@ -376,7 +376,6 @@
 		function stop() {
 			PF('downloadLoading').hide();
 		}
-
 	</script>
 
 </h:body>

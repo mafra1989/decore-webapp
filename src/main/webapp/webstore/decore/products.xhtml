@@ -290,6 +290,83 @@
 			    margin-top: 8px;
 			    padding: 0px;
 			}
+			
+			.spinner {
+			  margin: 100px auto;
+			  width: 50px;
+			  height: 40px;
+			  text-align: center;
+			  font-size: 10px;
+			}
+			
+			.spinner > div {
+			  background-color: white;
+			  height: 100%;
+			  width: 6px;
+			  display: inline-block;
+			  
+			  -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+			  animation: sk-stretchdelay 1.2s infinite ease-in-out;
+			}
+			
+			.spinner .rect2 {
+			  -webkit-animation-delay: -1.1s;
+			  animation-delay: -1.1s;
+			}
+			
+			.spinner .rect3 {
+			  -webkit-animation-delay: -1.0s;
+			  animation-delay: -1.0s;
+			}
+			
+			.spinner .rect4 {
+			  -webkit-animation-delay: -0.9s;
+			  animation-delay: -0.9s;
+			}
+			
+			.spinner .rect5 {
+			  -webkit-animation-delay: -0.8s;
+			  animation-delay: -0.8s;
+			}
+			
+			@-webkit-keyframes sk-stretchdelay {
+			  0%, 40%, 100% { -webkit-transform: scaleY(0.4) }  
+			  20% { -webkit-transform: scaleY(1.0) }
+			}
+			
+			@keyframes sk-stretchdelay {
+			  0%, 40%, 100% { 
+			    transform: scaleY(0.4);
+			    -webkit-transform: scaleY(0.4);
+			  }  20% { 
+			    transform: scaleY(1.0);
+			    -webkit-transform: scaleY(1.0);
+			  }
+			}
+				
+			.loading-spinner {
+		        background: #2980b9b8;
+		        position: fixed;
+		        top: 0;
+		        right: 0;
+		        bottom: 0;
+		        left: 0;
+		        overflow: hidden;
+		        display: none;
+		        z-index: 99999;
+		    }
+		
+		    .loading-spinner.active {
+		        display: block;
+		        z-index: 99999;
+		    }
+		
+		    #hourglass { /* centraliza no meio da tela */
+		        position: absolute;
+		        top: 50%;
+		        left: 50%;
+		        margin: -32px 0 0 -32px;
+		    }
 		}
 		
 		@media ( min-width :640px) {			
@@ -481,7 +558,7 @@
 					<ui:fragment id="photo"
 						rendered="#{categoria.urlImagem == null}">
 						<div class="panel-img">
-							<p:link href="categoria.xhtml?id=#{categoria.id}">
+							<p:link onclick="start(this);" href="categoria.xhtml?id=#{categoria.id}">
 									<img class="sem-foto"
 									src="img/sem-foto.png" alt="" />
 							</p:link>
@@ -491,7 +568,7 @@
 					<ui:fragment id="photo"
 						rendered="#{categoria.urlImagem != null}">
 						<div class="panel-img">
-							<p:link href="categoria.xhtml?id=#{categoria.id}">
+							<p:link onclick="start(this);" href="categoria.xhtml?id=#{categoria.id}">
 								<img class="tem-foto"
 									src="#{categoria.urlImagem}" />
 							</p:link>
@@ -513,7 +590,7 @@
 	        style="margin-top: -42px;" numVisible="7" effectDuration="1000">
 	        <p:panel style="text-align:center">
 	           
-	           <p:link href="categoria.xhtml?id=#{categoria.id}">
+	           <p:link onclick="start(this);" href="categoria.xhtml?id=#{categoria.id}">
 	           
 					<div class="thumbnail">
 						
@@ -557,7 +634,7 @@
 	        style="margin-top: -42px;" numVisible="2">
 	        <p:panel style="text-align:center">
 	           
-	           <p:link href="produto.xhtml?id=#{produto.id}">
+	           <p:link onclick="start(this);" href="produto.xhtml?id=#{produto.id}">
 	           
 					<div class="thumbnail box">
 						
@@ -607,7 +684,7 @@
 	        style="margin-top: -42px;" numVisible="5" effectDuration="1000">
 	        <p:panel style="text-align:center">
 	           
-	           <p:link href="produto.xhtml?id=#{produto.id}">
+	           <p:link onclick="start(this);" href="produto.xhtml?id=#{produto.id}">
 	           
 					<div class="thumbnail box">
 						
@@ -663,7 +740,7 @@
 	        style="margin-top: -42px;" numVisible="2">
 	        <p:panel style="text-align:center">
 	           
-	           <p:link href="produto.xhtml?id=#{produto.id}">
+	           <p:link onclick="start(this);" href="produto.xhtml?id=#{produto.id}">
 	           
 					<div class="thumbnail box">
 						
@@ -713,7 +790,7 @@
 	        style="margin-top: -42px;" numVisible="5" effectDuration="1000">
 	        <p:panel style="text-align:center">
 	           
-	           <p:link href="produto.xhtml?id=#{produto.id}">
+	           <p:link onclick="start(this);" href="produto.xhtml?id=#{produto.id}">
 	           
 					<div class="thumbnail box">
 						
@@ -921,6 +998,38 @@
 					reservados.</p>
         </div>
     </footer>	
+    
+    
+    
+    <div class="loading-spinner">
+		<div id="hourglass" class="spinner">
+		  <div class="rect1"></div>
+		  <div class="rect2"></div>
+		  <div class="rect3"></div>
+		  <div class="rect4"></div>
+		  <div class="rect5"></div>
+		</div>
+	</div>
+	
+	
+	<script type="text/javascript">
+		var delay = (function() {
+		    var timer = 0;
+		    return function(callback, ms) {
+		        clearTimeout (timer);
+		        timer = setTimeout(callback, ms);
+		    };
+		})();
+		
+		function start(url) {
+			event.preventDefault();
+			jQuery(".loading-spinner").fadeIn("slow");
+			
+			delay(function() {     
+					$(location).attr('href',url);
+				}, 1500);
+		}		
+	</script>
 
 </h:body>
 </html>
