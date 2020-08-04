@@ -58,7 +58,7 @@ public class CarrinhoBean implements Serializable {
 				produtos.add(produtoTemp);
 			} else {
 				produtoTemp.setDescricao(convertToTitleCaseIteratingChars(produtoTemp.getDescricao()));
-				totalGeral += produtoTemp.getPrecoMedioVenda().doubleValue() * produtoTemp.getQuantidadePedido().intValue();
+				totalGeral += produtoTemp.getPrecoDeVenda().doubleValue() * produtoTemp.getQuantidadePedido().intValue();
 				totalDeItens += produtoTemp.getQuantidadePedido().intValue();
 			}
 		}
@@ -91,7 +91,7 @@ public class CarrinhoBean implements Serializable {
 		Double totalGeral = 0D;
 		for (Produto produtoTemp : listaDeProdutos) {
 			produtoTemp.setDescricao(convertToTitleCaseIteratingChars(produtoTemp.getDescricao()));
-			totalGeral += produtoTemp.getPrecoMedioVenda().doubleValue() * produtoTemp.getQuantidadePedido().intValue();
+			totalGeral += produtoTemp.getPrecoDeVenda().doubleValue() * produtoTemp.getQuantidadePedido().intValue();
 			totalDeItens += produtoTemp.getQuantidadePedido().intValue();
 		}
 		
@@ -106,7 +106,7 @@ public class CarrinhoBean implements Serializable {
 		Double totalGeral = 0D;
 		for (Produto produtoTemp_ : listaDeProdutos) {
 			produtoTemp_.setDescricao(convertToTitleCaseIteratingChars(produtoTemp_.getDescricao()));
-			totalGeral += produtoTemp_.getPrecoMedioVenda().doubleValue() * produtoTemp_.getQuantidadePedido().intValue();
+			totalGeral += produtoTemp_.getPrecoDeVenda().doubleValue() * produtoTemp_.getQuantidadePedido().intValue();
 			totalDeItens += produtoTemp_.getQuantidadePedido().intValue();
 		}
 		

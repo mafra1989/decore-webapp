@@ -28,6 +28,7 @@
 	
 	<link rel="stylesheet" href="css/footer-with-button-logo.css" />
 	
+	<script src="js/jquery.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	
 	<style>
@@ -408,6 +409,13 @@
 			.panel-mais-vendidos.ui-widget-content {
 			    margin-top: 15px !important;
 			}
+			
+			.navbar > .container .navbar-brand {
+			    margin-left: 0px;
+			}
+			#myFooter .footer-copyright p {
+			    font-size: 14px;
+			}
 		}
 	</style>
 
@@ -425,7 +433,7 @@
 				</button>
 										
 				<img class="navbar-brand logotipo" src="img/logo.png" />
-				<a class="navbar-brand" href="index.xhtml">Decore Web Store</a>
+				<a class="navbar-brand" href="products.xhtml">Decore Web Store</a>
 			</div>
 			
 			<div class="pedido" style="float: right;margin-top: -32px;margin-right: 56px;">
@@ -481,7 +489,7 @@
 						
 						<div class="caption">
 													
-							<h:outputText styleClass="item-preco" value="#{produto.precoMedioVenda}">
+							<h:outputText styleClass="item-preco" value="#{produto.precoDeVenda}">
 								<f:convertNumber type="currency" />
 							</h:outputText>
 							
@@ -531,7 +539,7 @@
 						
 						<div class="caption">
 													
-							<h:outputText styleClass="item-preco" value="#{produto.precoMedioVenda}">
+							<h:outputText styleClass="item-preco" value="#{produto.precoDeVenda}">
 								<f:convertNumber type="currency" />
 							</h:outputText>
 							
@@ -799,7 +807,7 @@ px
                 <div class="col-sm-2">
                     <h5>Contato</h5>
                     <ul>
-                        <li><a href="javascript:void(0);">+55 92 98458-2975</a></li>
+                        <li><a href="javascript:void(0);">+55 92 99427-9086</a></li>
                         <li><a href="javascript:void(0);">decoreportas@gmail.com</a></li>
                     </ul>
                 </div>

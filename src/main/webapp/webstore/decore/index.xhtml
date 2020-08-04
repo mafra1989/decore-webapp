@@ -21,6 +21,9 @@
     <link href="css/bootstrap.css" rel="stylesheet"/>
     <!-- Custom CSS -->
     <link href="css/style.css" rel="stylesheet"/>
+    
+    <link rel="stylesheet" href="css/footer-with-button-logo.css" />
+    
     <!-- jQuery -->
     <script src="js/jquery.js"></script> 
     <!-- Bootstrap Core JavaScript -->
@@ -28,6 +31,21 @@
     
     <style>
     	@media ( min-width :220px) {
+    		#myFooter .footer-copyright p {
+			    font-size: 12px;
+			}
+			.logo {
+				width:225px;
+			}
+			#myFooter .row {
+			    margin-bottom: 25px;
+			}
+			footer {
+	  			padding: 0px 0;
+	  		}
+	  		#myFooter ul {
+			    font-size: 12px;
+			}
 	    	body {
 			    padding-top: 50px;
 			}
@@ -65,11 +83,51 @@
 			.navbar a {
 				font-weight: bold;
 			}
+			.navbar-brand {
+			    padding: 15px 5px;
+			}
+			.logotipo {
+				margin-left: 14px;
+			    width: 33px;
+			    height: 35px;
+			    margin-top: 8px;
+			    padding: 0px;
+			}
 		}
 		
 		@media ( min-width :640px) {
+			.logotipo {
+				margin-left: 4px;
+				margin-top: 7px;
+			}
+			.navbar > .container .navbar-brand {
+			    margin-left: 0px;
+			}
 			.pedido-menu {
 				display:block !important;
+			}
+			.logotipo {
+				margin-left: 4px;
+				margin-top: 7px;
+			}
+			.navbar > .container .navbar-brand {
+			    margin-left: 0px;
+			}
+			.logo {
+				width:300px;
+			}
+			#myFooter .row {
+			    margin-bottom: 60px;
+			}
+			#myFooter ul {
+			    font-size: 14px;
+			}
+			#myFooter .footer-copyright p {
+			    font-size: 14px;
+			}
+			.container {
+			    padding-right: 0px;
+			    padding-left: 0px;
 			}
 		}
      </style>
@@ -88,6 +146,8 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>                        
                     </button>
+                    
+                    <img class="navbar-brand logotipo" src="img/logo.png" />
                     <a class="navbar-brand" href="index.xhtml">Decore Web Store</a>
                 </div>
                 
@@ -129,7 +189,7 @@
             <div class="container">
                 <div class="row text-center" id="item_list">
                     <div class="col-sm-4">
-                        <a href="products.html#cameras" >
+                        <a href="javascript:void(0);" >
                             <div class="thumbnail">
                                 <img  src="img/portas04.jpg" alt="" />
                                 <div class="caption">
@@ -142,7 +202,7 @@
                     
 
                     <div class="col-sm-4">
-                        <a href="products.html#shirts" >
+                        <a href="javascript:void(0);" >
                             <div class="thumbnail">
                                 <img src="img/decorados02.jpg" alt="" />
                                 <div class="caption">
@@ -155,7 +215,7 @@
                     
                     
                     <div class="col-sm-4">
-                        <a href="products.html#watches" >
+                        <a href="javascript:void(0);" >
                             <div class="thumbnail">
                                 <img src="img/fechaduras14.jpg" alt="" />
                                 <div class="caption">
@@ -171,13 +231,43 @@
         </div>
 
         <!--Footer-->
-        <footer>
-            <div class="container">
-                <center>
-                    <p>Copyright Decore Web Store. Todos os direitos reservados.  |  Contato: +55 92 98458-2975</p>	
-                </center>
-            </div>
-        </footer>
+        <footer id="myFooter">
+	        <div class="container">
+	            <div class="row">
+	                <div class="col-sm-5">
+	                    <a href="javascript:void(0);">
+	                    		<img class="logo" src="img/decore-logo.jpg" /></a>
+	                </div>
+	                <div class="col-sm-2">
+	                    <h5>Inicio</h5>
+	                    <ul>
+	                        <li><a href="index.xhtml">Home</a></li>
+	                    </ul>
+	                </div>
+	                <div class="col-sm-2">
+	                    <h5>Contato</h5>
+	                    <ul>
+	                        <li><a href="javascript:void(0);">+55 92 99427-9086</a></li>
+	                        <li><a href="javascript:void(0);">decoreportas@gmail.com</a></li>
+	                    </ul>
+	                </div>
+	                <div class="col-sm-3">
+	                    <div class="social-networks">
+	                        <a href="javascript:void(0);" class="twitter"><i class="fa fa-twitter"></i></a>
+	                        <a href="javascript:void(0);" class="facebook"><i class="fa fa-facebook"></i></a>
+	                        <a href="javascript:void(0);" class="instagram"><i class="fa fa-instagram"></i></a>
+	                    </div>
+	                    <a href="javascript:void(0);" style="display:none;">
+	                        <button type="button" class="btn btn-default">Contato</button>
+	                    </a>
+	                </div>
+	            </div>
+	        </div>
+	        <div class="footer-copyright">
+	            <p>Copyright © Decore Web Store. Todos os direitos
+						reservados.</p>
+	        </div>
+	    </footer>
         <!--Footer end-->
 </h:form>
 </h:body>

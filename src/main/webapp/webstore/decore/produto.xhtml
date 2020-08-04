@@ -28,12 +28,38 @@
 	<link href="css/bootstrap.css" rel="stylesheet" />
 	<link href="css/style.css" rel="stylesheet" />
 	
+	<link rel="stylesheet" href="css/footer-with-button-logo.css" />
+	
 	<script src="js/jquery.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	
 	<style>
 		@media ( min-width :220px) {
-			
+			.navbar-brand {
+			    padding: 15px 5px;
+			}
+			.logotipo {
+				margin-left: 14px;
+			    width: 33px;
+			    height: 35px;
+			    margin-top: 8px;
+			    padding: 0px;
+			}
+			#myFooter .footer-copyright p {
+			    font-size: 12px;
+			}
+			.logo {
+				width:225px;
+			}
+			#myFooter .row {
+			    margin-bottom: 25px;
+			}
+			footer {
+    			padding: 0px 0;
+    		}
+    		#myFooter ul {
+			    font-size: 12px;
+			}
 			.badge-light {
 				float: right;
 			    margin-top: -8px;
@@ -134,11 +160,37 @@
 		}
 		
 		@media ( min-width :640px) {
+			.logotipo {
+				margin-left: 4px;
+				margin-top: 7px;
+			}
+			.navbar > .container .navbar-brand {
+			    margin-left: 0px;
+			}
 			.pedido {
 				display:none;
 			}
 			.pedido-menu {
 				display:block !important;
+			}
+			#myFooter ul {
+			    font-size: 14px;
+			}
+			.logo {
+				width:300px;
+			}
+			#myFooter .row {
+			    margin-bottom: 60px;
+			}
+			#myFooter .footer-copyright p {
+			    font-size: 14px;
+			}
+			.container {
+			    padding-right: 0px;
+			    padding-left: 0px;
+			}
+			#myFooter .footer-copyright p {
+			    font-size: 14px;
 			}
 		}   
 	</style>
@@ -159,7 +211,9 @@
 					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
 						class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="index.xhtml">Decore Web Store</a>
+				
+				<img class="navbar-brand logotipo" src="img/logo.png" />
+				<a class="navbar-brand" href="products.xhtml">Decore Web Store</a>
 			</div>
 			
 			<div class="pedido" style="float: right;margin-top: -32px;margin-right: 56px;">
@@ -244,7 +298,7 @@
 					style="font-size: 22px;float: left;margin-top: -6px;"
 					rendered="#{cadastroProdutoBean.produto.id == null}" />
 					
-				<p:outputLabel id="preco-unitario" value="#{cadastroProdutoBean.produto.precoMedioVenda}"
+				<p:outputLabel id="preco-unitario" value="#{cadastroProdutoBean.produto.precoDeVenda}"
 					style="font-size: 22px;float: left;margin-top: -6px;"
 					rendered="#{cadastroProdutoBean.produto.id != null}">
 					
@@ -487,14 +541,43 @@ px
 </style>
 	</div>
 
-	<footer>
-		<div class="container">
-			<center>
-				<p>Copyright Decore Web Store. Todos os direitos
-					reservados. | Contato: +55 92 98458-2975</p>
-			</center>
-		</div>
-	</footer>
+	<footer id="myFooter">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-5">
+                    <a href="javascript:void(0);">
+                    		<img class="logo" src="img/decore-logo.jpg" /></a>
+                </div>
+                <div class="col-sm-2">
+                    <h5>Inicio</h5>
+                    <ul>
+                        <li><a href="index.xhtml">Home</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-2">
+                    <h5>Contato</h5>
+                    <ul>
+                        <li><a href="javascript:void(0);">+55 92 99427-9086</a></li>
+                        <li><a href="javascript:void(0);">decoreportas@gmail.com</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-3">
+                    <div class="social-networks">
+                        <a href="javascript:void(0);" class="twitter"><i class="fa fa-twitter"></i></a>
+                        <a href="javascript:void(0);" class="facebook"><i class="fa fa-facebook"></i></a>
+                        <a href="javascript:void(0);" class="instagram"><i class="fa fa-instagram"></i></a>
+                    </div>
+                    <a href="javascript:void(0);" style="display:none;">
+                        <button type="button" class="btn btn-default">Contato</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <p>Copyright © Decore Web Store. Todos os direitos
+					reservados.</p>
+        </div>
+    </footer>
 	
 	<div class="loading-spinner">
 		<div id="hourglass"  class="spinner" role="status"></div>
