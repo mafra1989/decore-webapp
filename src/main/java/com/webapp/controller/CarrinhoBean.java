@@ -40,10 +40,23 @@ public class CarrinhoBean implements Serializable {
 	
 	private Long totalDeItens = 0L;
 	
+	
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {			
-			System.out.println("Iniciou carrinho . . .");
 		}
+	}
+	
+	
+	public void finalizarPedido() throws IOException {
+		
+		atualizarCarrinho();
+
+		if(totalDeItens > 0) {
+			FacesContext.getCurrentInstance().getExternalContext().redirect("/decore-wepapp/webstore/decore/checkout.xhtml");
+		} else {
+			FacesContext.getCurrentInstance().getExternalContext().redirect("/decore-wepapp/webstore/decore/cart.xhtml");
+		}
+				
 	}
 	
 	public void atualizarCarrinho() {
@@ -68,16 +81,22 @@ public class CarrinhoBean implements Serializable {
 		}
 		
 		totalGeralEmString = nf.format(totalGeral.doubleValue());
+		
+		try {
+			Thread.sleep(2000);
+			
+		} catch (InterruptedException e) {
+		}
 	}
 	
 	public void adicionarNoCarrinho(Produto produto) throws IOException {
 		
 		if(!listaDeProdutos.contains(produto)) {
-			produto.setQuantidadePedido(1L);
+			produto.setQuantidadePedido(produto.getQuantidadePedido());
 			listaDeProdutos.add(produto);
 		} else {
 			Produto produtoTemp = listaDeProdutos.get(listaDeProdutos.indexOf(produto));
-			produtoTemp.setQuantidadePedido(produtoTemp.getQuantidadePedido() + 1L);
+			produtoTemp.setQuantidadePedido(produtoTemp.getQuantidadePedido() + produto.getQuantidadePedido());
 		}
 		
 		try {

@@ -34,6 +34,9 @@
 	
 	<style>
 		@media ( min-width :220px) {
+			.navbar-inverse {
+			    z-index: 999999;
+			}
 			#myFooter .footer-copyright p {
 			    font-size: 12px;
 			}
@@ -508,20 +511,20 @@
 				</button>
 										
 				<img class="navbar-brand logotipo" src="img/logo.png" />
-				<a class="navbar-brand" href="products.xhtml">Decore Web Store</a>
+				<a class="navbar-brand" onclick="start(this);" href="products.xhtml">Decore Web Store</a>
 			</div>
 			
 			<div class="pedido" style="float: right;margin-top: -32px;margin-right: 56px;">
-				<a href="cart.xhtml">Meu Pedido<span class="badge badge-light">#{carrinhoBean.totalDeItens}</span></a>
+				<a onclick="start(this);" href="cart.xhtml">Meu Pedido<span class="badge badge-light">#{carrinhoBean.totalDeItens}</span></a>
 			</div>
 			
 			<div class="collapse navbar-collapse" id="myNavbar">
 				<ul class="nav navbar-nav navbar-right">
-					<li class="pedido-menu"><a href="cart.xhtml"><span
+					<li class="pedido-menu"><a onclick="start(this);" href="cart.xhtml"><span
 							class="glyphicon glyphicon-shopping-cart"></span>
 							 Meu Pedido 
 							 <span class="badge badge-light">#{carrinhoBean.totalDeItens}</span></a></li>
-					<li><a href="/Dashboard.xhtml"><span
+					<li><a onclick="start(this);" href="/Dashboard.xhtml"><span
 							class="glyphicon glyphicon-log-in"></span> Login</a></li>
 				</ul>
 			</div>
@@ -536,6 +539,8 @@
 
 	<div class="container" id="content" style="margin-top:40px;">
 
+<h:form id="form">
+	
 		<!-- Jumbotron Header -->
 		<div style="display: none;" class="jumbotron home-spacer"
 			id="products-jumbotron">
@@ -555,7 +560,7 @@
 	                  	           
 				<div class="thumbnail">
 					
-					<ui:fragment id="photo"
+					<ui:fragment
 						rendered="#{categoria.urlImagem == null}">
 						<div class="panel-img">
 							<p:link onclick="start(this);" href="categoria.xhtml?id=#{categoria.id}">
@@ -565,7 +570,7 @@
 						</div>
 					</ui:fragment>
 					
-					<ui:fragment id="photo"
+					<ui:fragment 
 						rendered="#{categoria.urlImagem != null}">
 						<div class="panel-img">
 							<p:link onclick="start(this);" href="categoria.xhtml?id=#{categoria.id}">
@@ -594,7 +599,7 @@
 	           
 					<div class="thumbnail">
 						
-						<ui:fragment id="photo"
+						<ui:fragment 
 							rendered="#{categoria.urlImagem == null}">
 							<div class="panel-img">
 								<img class="sem-foto"
@@ -602,7 +607,7 @@
 							</div>
 						</ui:fragment>
 						
-						<ui:fragment id="photo"
+						<ui:fragment 
 							rendered="#{categoria.urlImagem != null}">
 							<div class="panel-img">
 								<img class="tem-foto"
@@ -638,7 +643,7 @@
 	           
 					<div class="thumbnail box">
 						
-						<ui:fragment id="photo"
+						<ui:fragment 
 							rendered="#{produto.urlImagem == null}">
 							<div class="panel-img">
 								<img class="sem-foto"
@@ -646,7 +651,7 @@
 							</div>
 						</ui:fragment>
 						
-						<ui:fragment id="photo"
+						<ui:fragment 
 							rendered="#{produto.urlImagem != null}">
 							<div class="panel-img">
 								<img class="tem-foto"
@@ -688,7 +693,7 @@
 	           
 					<div class="thumbnail box">
 						
-						<ui:fragment id="photo"
+						<ui:fragment 
 							rendered="#{produto.urlImagem == null}">
 							<div class="panel-img">
 								<img class="sem-foto"
@@ -696,7 +701,7 @@
 							</div>
 						</ui:fragment>
 						
-						<ui:fragment id="photo"
+						<ui:fragment 
 							rendered="#{produto.urlImagem != null}">
 							<div class="panel-img">
 								<img class="tem-foto"
@@ -744,7 +749,7 @@
 	           
 					<div class="thumbnail box">
 						
-						<ui:fragment id="photo"
+						<ui:fragment 
 							rendered="#{produto.urlImagem == null}">
 							<div class="panel-img">
 								<img class="sem-foto"
@@ -752,7 +757,7 @@
 							</div>
 						</ui:fragment>
 						
-						<ui:fragment id="photo"
+						<ui:fragment 
 							rendered="#{produto.urlImagem != null}">
 							<div class="panel-img">
 								<img class="tem-foto"
@@ -794,7 +799,7 @@
 	           
 					<div class="thumbnail box">
 						
-						<ui:fragment id="photo"
+						<ui:fragment 
 							rendered="#{produto.urlImagem == null}">
 							<div class="panel-img">
 								<img class="sem-foto"
@@ -802,7 +807,7 @@
 							</div>
 						</ui:fragment>
 						
-						<ui:fragment id="photo"
+						<ui:fragment
 							rendered="#{produto.urlImagem != null}">
 							<div class="panel-img">
 								<img class="tem-foto"
@@ -850,7 +855,7 @@
 	           
 					<div class="thumbnail box">
 						
-						<ui:fragment id="photo"
+						<ui:fragment 
 							rendered="#{produto.urlImagem == null}">
 							<div class="panel-img">
 								<img class="sem-foto"
@@ -858,7 +863,7 @@
 							</div>
 						</ui:fragment>
 						
-						<ui:fragment id="photo"
+						<ui:fragment 
 							rendered="#{produto.urlImagem != null}">
 							<div class="panel-img">
 								<img class="tem-foto"
@@ -900,7 +905,7 @@
 	           
 					<div class="thumbnail box">
 						
-						<ui:fragment id="photo"
+						<ui:fragment 
 							rendered="#{produto.urlImagem == null}">
 							<div class="panel-img">
 								<img class="sem-foto"
@@ -908,7 +913,7 @@
 							</div>
 						</ui:fragment>
 						
-						<ui:fragment id="photo"
+						<ui:fragment 
 							rendered="#{produto.urlImagem != null}">
 							<div class="panel-img">
 								<img class="tem-foto"
@@ -945,6 +950,9 @@
 	    
 	    
 		<hr />
+		
+		</h:form>
+		
 	</div>
 	
 	
@@ -971,7 +979,7 @@
                 <div class="col-sm-2">
                     <h5>Inicio</h5>
                     <ul>
-                        <li><a href="index.xhtml">Home</a></li>
+                        <li><a onclick="start(this);" href="index.xhtml">Home</a></li>
                     </ul>
                 </div>
                 <div class="col-sm-2">

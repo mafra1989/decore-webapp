@@ -93,6 +93,86 @@
 			    margin-top: 8px;
 			    padding: 0px;
 			}
+			
+			.spinner {
+			  margin: 100px auto;
+			  width: 50px;
+			  height: 40px;
+			  text-align: center;
+			  font-size: 10px;
+			}
+			
+			.spinner > div {
+			  background-color: white;
+			  height: 100%;
+			  width: 6px;
+			  display: inline-block;
+			  
+			  -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+			  animation: sk-stretchdelay 1.2s infinite ease-in-out;
+			}
+			
+			.spinner .rect2 {
+			  -webkit-animation-delay: -1.1s;
+			  animation-delay: -1.1s;
+			}
+			
+			.spinner .rect3 {
+			  -webkit-animation-delay: -1.0s;
+			  animation-delay: -1.0s;
+			}
+			
+			.spinner .rect4 {
+			  -webkit-animation-delay: -0.9s;
+			  animation-delay: -0.9s;
+			}
+			
+			.spinner .rect5 {
+			  -webkit-animation-delay: -0.8s;
+			  animation-delay: -0.8s;
+			}
+			
+			@-webkit-keyframes sk-stretchdelay {
+			  0%, 40%, 100% { -webkit-transform: scaleY(0.4) }  
+			  20% { -webkit-transform: scaleY(1.0) }
+			}
+			
+			@keyframes sk-stretchdelay {
+			  0%, 40%, 100% { 
+			    transform: scaleY(0.4);
+			    -webkit-transform: scaleY(0.4);
+			  }  20% { 
+			    transform: scaleY(1.0);
+			    -webkit-transform: scaleY(1.0);
+			  }
+			}
+				
+			.loading-spinner {
+		        background: #2980b9b8;
+		        position: fixed;
+		        top: 0;
+		        right: 0;
+		        bottom: 0;
+		        left: 0;
+		        overflow: hidden;
+		        display: none;
+		        z-index: 99999;
+		    }
+		
+		    .loading-spinner.active {
+		        display: block;
+		        z-index: 99999;
+		    }
+		
+		    #hourglass { /* centraliza no meio da tela */
+		        position: absolute;
+		        top: 50%;
+		        left: 50%;
+		        margin: -32px 0 0 -32px;
+		    }
+		    .navbar-inverse {
+			    z-index: 999999;
+			}
 		}
 		
 		@media ( min-width :640px) {
@@ -148,21 +228,21 @@
                     </button>
                     
                     <img class="navbar-brand logotipo" src="img/logo.png" />
-                    <a class="navbar-brand" href="index.xhtml">Decore Web Store</a>
+                    <a class="navbar-brand" onclick="start(this);" href="products.xhtml">Decore Web Store</a>
                 </div>
                 
                 <div class="pedido" style="float: right;margin-top: -32px;margin-right: 56px;">
-					<a href="cart.xhtml">Meu Pedido<span class="badge badge-light">#{carrinhoBean.totalDeItens}</span></a>
+					<a onclick="start(this);" href="cart.xhtml">Meu Pedido<span class="badge badge-light">#{carrinhoBean.totalDeItens}</span></a>
 				</div>
 			
                 <div class="collapse navbar-collapse" id="myNavbar">
                     <ul class="nav navbar-nav navbar-right">
-                    	<li class="pedido-menu"><a href="cart.xhtml"><span
+                    	<li class="pedido-menu"><a onclick="start(this);" href="cart.xhtml"><span
 							class="glyphicon glyphicon-shopping-cart"></span>
 							 Meu Pedido 
 							 <span class="badge badge-light">#{carrinhoBean.totalDeItens}</span></a></li>
 							 
-                    	<li><a href="/Dashboard.xhtml"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    	<li><a onclick="start(this);" href="/Dashboard.xhtml"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
                     </ul>
                 </div>
             </div>
@@ -178,7 +258,7 @@
                             <h1>Bem vindo à Decore Web Store. Nossa loja On-line!</h1>
                             <p>Temos as melhores portas, fechaduras e móveis planejados para você.</p>
                             <br/>
-                            <a  href="products.xhtml" class="btn btn-danger btn-lg active">Faça seu pedido!</a>
+                            <a onclick="start(this);" href="products.xhtml" class="btn btn-danger btn-lg active">Faça seu pedido!</a>
                         </div>
                     </center>
                 </div>
@@ -241,7 +321,7 @@
 	                <div class="col-sm-2">
 	                    <h5>Inicio</h5>
 	                    <ul>
-	                        <li><a href="index.xhtml">Home</a></li>
+	                        <li><a href="#">Home</a></li>
 	                    </ul>
 	                </div>
 	                <div class="col-sm-2">
@@ -270,5 +350,36 @@
 	    </footer>
         <!--Footer end-->
 </h:form>
+
+	<div class="loading-spinner">
+		<div id="hourglass" class="spinner">
+		  <div class="rect1"></div>
+		  <div class="rect2"></div>
+		  <div class="rect3"></div>
+		  <div class="rect4"></div>
+		  <div class="rect5"></div>
+		</div>
+	</div>
+	
+	
+	<script type="text/javascript">
+		var delay = (function() {
+		    var timer = 0;
+		    return function(callback, ms) {
+		        clearTimeout (timer);
+		        timer = setTimeout(callback, ms);
+		    };
+		})();
+		
+		function start(url) {
+			event.preventDefault();
+			jQuery(".loading-spinner").fadeIn("slow");
+			
+			delay(function() {     
+					$(location).attr('href',url);
+				}, 1500);
+		}		
+	</script>
+	
 </h:body>
 </html>

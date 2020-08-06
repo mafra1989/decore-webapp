@@ -100,7 +100,7 @@ public class Produto implements Serializable {
 	@NotNull
 	@Column
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
-	private BigDecimal precoDeVenda;
+	private BigDecimal precoDeVenda = BigDecimal.ZERO;
 	
 
 	@Transient
@@ -395,7 +395,7 @@ public class Produto implements Serializable {
 	private String percentualVenda = "0";
 
 	@Transient
-	private Long quantidadePedido = 0L;
+	private Long quantidadePedido = 1L;
 
 	@Transient
 	private String codeTemp;

@@ -29,6 +29,51 @@
 	
 	<style>
 	@media ( min-width :220px) {
+		body .ui-accordion .ui-accordion-content {
+		    padding: 0px 0px;
+		}
+		
+		body .ui-accordion .ui-accordion-header.ui-state-active {
+		    background-color: #b5b3b3;
+		    color: #ffffff;
+		}
+		
+		body .ui-accordion .ui-accordion-header.ui-tabs-outline.ui-state-active {
+		    background-color: #b5b3b3;
+		    color: #ffffff;
+		}
+		
+		.ui-datatable table {
+		    width: auto;
+		}
+    
+		.badge-light_ {
+		    float: right;
+		    margin-top: -2px;
+		    font-size: 11px;
+		    padding: 2px 4px;
+		    background-color: #FEB10F;
+		    color: #333333;
+		    position: relative;
+		    right: 0;
+		    margin-right: 1px;
+		    z-index: 1;
+		}
+		
+		.link-foto {
+			float: left;
+			margin-top: -13px;
+		}
+		
+    
+		body .ui-panel .ui-panel-content {
+		    padding: 0px !important;
+		}
+		.voltar {
+		    margin-top: 6px;
+		    float: left;
+		    font-weight: normal;
+		}
 		.navbar-inverse {
 		    z-index: 999999;
 		}
@@ -144,23 +189,17 @@
 		}
 		body .ui-datatable tfoot td {
 		    background-color: #e4e1de;
-		    padding: 12px 4px;
+		    padding: 5px;
 		    border-color: #e4e1de;
 		    color: #000000;
 		}
 		.finalizar.ui-button {
-		    background-color: #b9a52b;
+		    background-color: #337ab7;
 		    width: 190px;
 		    padding: 3px;
 		    margin-top: -83px;
 		    margin-left: 5px;
 		    float: left;
-		}
-		.finalizar.ui-button.ui-state-hover {
-		    background-color: #ad981c;
-		}
-		.finalizar.ui-button.ui-state-focus {
-		    background-color: #ad981c;
 		}
 		.ui-datatable .ui-datatable-scrollable-body {
 		    outline: none;
@@ -406,66 +445,24 @@
 		        display: block;
 		    }
 		    
+		    .panel-resumo {
+		    	display:none;
+		    }
 		    
-		    .spinner__ {
-			  width: 40px;
-			  height: 40px;
-			
-			  position: relative;
-			  margin: 100px auto;
+		    body .ui-accordion .ui-accordion-header {
+			    background-color: #f1f2f7;
+			    color: #7e80a5;
+			    font-size: 11px;
+			    font-weight:normal;
 			}
-			
-			.double-bounce1, .double-bounce2 {
-			  width: 100%;
-			  height: 100%;
-			  border-radius: 50%;
-			  background-color: white;
-			  opacity: 0.6;
-			  position: absolute;
-			  top: 0;
-			  left: 0;
-			  
-			  -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
-			  animation: sk-bounce 2.0s infinite ease-in-out;
-			}
-			
-			.double-bounce2 {
-			  -webkit-animation-delay: -1.0s;
-			  animation-delay: -1.0s;
-			}
-			
-			@-webkit-keyframes sk-bounce {
-			  0%, 100% { -webkit-transform: scale(0.0) }
-			  50% { -webkit-transform: scale(1.0) }
-			}
-			
-			@keyframes sk-bounce {
-			  0%, 100% { 
-			    transform: scale(0.0);
-			    -webkit-transform: scale(0.0);
-			  } 50% { 
-			    transform: scale(1.0);
-			    -webkit-transform: scale(1.0);
-			  }
-			}
-			
-			.loading-spinner__ {
-		        background: #27ae60b3;
-		        position: fixed;
-		        top: 0;
-		        right: 0;
-		        bottom: 0;
-		        left: 0;
-		        overflow: hidden;
-		        display: none;
-		        z-index: 99999;
-		    }
-		
-		    .loading-spinner__.active {
-		        display: block;
-		    }
 	}
 	@media ( min-width :640px) {
+		body .ui-datatable tfoot td {
+		    padding: 3px;
+		}
+		.panel-resumo {
+	    	display:block;
+	    }
 		.logotipo {
 			margin-left: 4px;
 			margin-top: 7px;
@@ -489,30 +486,30 @@
 		    font-size: 19px;
 		}
 		.total-geral {
-			font-size: 20px;
+			font-size: 17px;
 		}
 		body .ui-datatable thead th:nth-child(1) {
 		    width: 38px;
 		}
 		body .ui-datatable thead th:nth-child(2) {
 		    width: 258px;
-		    font-size: 16px;
+		    font-size: 15px;
 		}
 		body .ui-datatable thead th:nth-child(3) {
 		    width: 28px;
-		    font-size: 16px;
+		    font-size: 15px;
 		}
 		body .ui-datatable thead th:nth-child(4) {
 		    width: 28px;
-		    font-size: 16px;
+		    font-size: 15px;
 		}
 		body .ui-datatable thead th:nth-child(5) {
 		    width: 28px;
-		    font-size: 16px;
+		    font-size: 15px;
 		}
 		body .ui-datatable thead th:nth-child(6) {
 		    width: 20px;
-		    font-size: 16px;
+		    font-size: 15px;
 		}
 		body .ui-datatable .ui-datatable-data > tr td:nth-child(3) {
 		    font-size: 12px !important;
@@ -543,6 +540,9 @@
 		.container {
 		    padding-right: 0px;
 		    padding-left: 0px;
+		}
+		.resumo-pedido {
+			display:none;
 		}
 	}
 	</style>
@@ -591,106 +591,181 @@
     	<p:breadCrumb>
 			<p:menuitem value="Home" onclick="start_(this);" url="products.xhtml" />
 		    <p:menuitem value="Categorias" onclick="start_(this);" url="products.xhtml" />
-		    <p:menuitem value="Meu pedido" url="#" />
+		    <p:menuitem value="Meu pedido" onclick="start_(this);" url="cart.xhtml" />
+		    <p:menuitem value="Checkout" url="#" />
 		</p:breadCrumb>
-    
-    	<h2 style="color:#73716f;">Meu pedido</h2>	    	
-	    <hr/>
-	    
-	    <p:commandButton value="Atualizar" icon="fa fa-fw fa-refresh" iconPos="right"  styleClass="remove-item atualizar-carrinho" 
-							action="#{carrinhoBean.atualizarCarrinho}"
-							process="@this meu-carrinho" update="meu-carrinho form:link1 form:link2" onstart="start();" oncomplete="stop();"
-							style="float: right;margin-top: -14px;margin-right: 0px;border: 1px solid #69389ad1;font-weight: normal;" />
-	    
-    	<p:dataTable var="produto" value="#{carrinhoBean.listaDeProdutos}" 
-	        paginator="false" style="margin-top:40px;margin-bottom:25px;font-size:14px;" id="meu-carrinho"
-	        paginatorAlwaysVisible="false" emptyMessage="Você ainda não adicionou nenhum item ao seu pedido.">
-	        
-	        <p:column>
-		        <ui:fragment 
-					rendered="#{produto.urlImagem == null}">
-					<p:link onclick="start_(this);" href="produto.xhtml?id=#{produto.id}">
-						<img class="imagem-produto box"
-						src="img/sem-foto01.png" alt="" />
-					</p:link>				
-				</ui:fragment>
-				
-				<ui:fragment
-					rendered="#{produto.urlImagem != null}">
-					<p:link onclick="start_(this);" href="produto.xhtml?id=#{produto.id}">
-						<img class="imagem-produto box"
-							src="#{produto.urlImagem}" />
-					</p:link>
-				</ui:fragment>
-		    </p:column>
-		 
-		    <p:column headerText="Item">
-		        <h:outputText value="#{produto.descricao}" />
-		    </p:column>
-		 
-		    <p:column headerText="Preço">
-		        <h:outputText value="#{produto.precoDeVenda}">
-		        	<f:convertNumber type="currency" maxFractionDigits="2" />
-		        </h:outputText>
-		    </p:column>
-		 
-		    <p:column headerText="Qtd">
-		        <p:inputText id="quantidade" 
-					placeholder="0" styleClass="quantidade" maxlength="4" onkeypress="return onlynumber();"
-					value="#{produto.quantidadePedido}">
-				</p:inputText>
-		    </p:column>
-		    
-		    <p:column headerText="Total">
-		        <h:outputText value="#{produto.precoDeVenda * produto.quantidadePedido}">
-		        	<f:convertNumber type="currency" maxFractionDigits="2" />
-		        </h:outputText>
-		    </p:column>
-		 
-		    <p:column>
-		        <p:commandButton icon="fa fa-fw fa-trash" styleClass="remove-item"
-							title="Remover" action="#{carrinhoBean.removerDoCarrinho(produto)}"
-							process="@this" update="meu-carrinho form:link1 form:link2" onstart="start();" oncomplete="stop();"
-							style=" width: 10px" />
-		    </p:column>
-		    
-		    <p:columnGroup type="footer"> 	
-	            <p:row>
-	            	<p:column colspan="2">
-	            		
-	            	</p:column>
-	                <p:column colspan="2" style="text-align:right" footerText="Total geral:">
-	                	
-	                </p:column>
-	                <p:column colspan="2" styleClass="total-geral" footerText="R$ #{carrinhoBean.totalGeralEmString}" />
-	            </p:row>
-	        </p:columnGroup>
-	        
-	        
-      
-	    </p:dataTable>
+		
+		
+		<p:accordionPanel activeIndex="null" styleClass="resumo-pedido" style="margin-top:12px;">
+			
+			<p:tab title="Resumo do Pedido">
+			   	
+			    <p:dataTable var="produto" value="#{carrinhoBean.listaDeProdutos}" 
+			        paginator="false" style="margin-top:1px;font-size:14px;" id="meu-carrinho"
+			        paginatorAlwaysVisible="false" emptyMessage="Você ainda não adicionou nenhum item ao seu pedido.">
+			        
+			        <p:column width="10%">
+			        	<span class="badge badge-light_">#{produto.quantidadePedido}</span>
+				        <ui:fragment 
+							rendered="#{produto.urlImagem == null}">
+							<p:link styleClass="link-foto" href="javascript:void(0);">
+								<img class="imagem-produto box"
+								src="img/sem-foto01.png" alt="" />
+							</p:link>				
+						</ui:fragment>
+						
+						<ui:fragment
+							rendered="#{produto.urlImagem != null}">
+							<p:link styleClass="link-foto" href="javascript:void(0);">
+								<img class="imagem-produto box"
+									src="#{produto.urlImagem}" />
+							</p:link>
+						</ui:fragment>
+				    </p:column>
+				 
+				    <p:column headerText="Item" width="65%">
+				        <h:outputText value="#{produto.descricao}" />
+				    </p:column>
+				    
+				    <p:column headerText="Total" width="25%">
+				        <h:outputText value="#{produto.precoDeVenda * produto.quantidadePedido}">
+				        	<f:convertNumber type="currency" maxFractionDigits="2" />
+				        </h:outputText>
+				    </p:column>
+				    
+				    <p:columnGroup type="footer"> 	
+			            <p:row>
+			                <p:column colspan="2" style="text-align:right" footerText="Total geral:">
+			                	
+			                </p:column>
+			                <p:column colspan="2" styleClass="total-geral" footerText="R$ #{carrinhoBean.totalGeralEmString}" />
+			            </p:row>
+			        </p:columnGroup>
+		      
+			    </p:dataTable>
+			
+			</p:tab>
+			
+		</p:accordionPanel>
+			
+		
+		<p:panelGrid columns="2" layout="grid" style="font-size:12px;margin-top:10px;"
+			styleClass="panelgrid-noborder disabled disabled"
+			columnClasses="ui-grid-col-6">
 
-		<hr style="border-top: 1px solid #c3c3c3;" />
-		
-		<p:commandButton value="Finalizar Pedido" icon="fa fa-fw fa-shopping-cart" onstart="start__();"
-							styleClass="finalizar" disabled="#{carrinhoBean.totalDeItens eq 0}"
-							process="@this meu-carrinho" action="#{carrinhoBean.finalizarPedido}" />
-							
-		<p:panel styleClass="continuar-comprando" style="text-align:center;"
-			rendered="#{carrinhoBean.totalDeItens ge 1}">
-			<p:link style="color: #bf5306;font-weight: normal;font-size:12px;" href="/webstore/decore/products.xhtml"
-								onclick="start_(this);">
-								Clique aqui para adicionar mais itens ao seu pedido.</p:link>
-		</p:panel>	
-		
-		<p:panel styleClass="continuar-comprando" style="text-align:center;"
-			rendered="#{carrinhoBean.totalDeItens eq 0}">
-			<p:link style="color: #bf5306;font-weight: normal;font-size:12px;" href="/webstore/decore/products.xhtml"
-								onclick="start_(this);">
-								Clique aqui e adicione itens ao seu pedido.</p:link>
-		</p:panel>					
-							
-		
+			<p:panel>
+				<p:outputLabel value="Informações de contato" style="padding-top:3px;" />
+				
+				<p:panelGrid columns="1" layout="grid" style="font-size:12px;margin-bottom:15px;"
+					styleClass="panelgrid-noborder disabled disabled"
+					columnClasses="ui-grid-col-12">
+					
+					<p:inputText autocomplete="off" style="width:100%;text-align:left;"
+						value="#{cadastroProdutoBean.produto.codigo}" placeholder="E-mail" />
+				</p:panelGrid>
+					
+				<p:outputLabel value="Endereço de entrega" />
+				
+				<p:panelGrid columns="2" layout="grid" style="font-size:12px;margin-top:-5px;"
+					styleClass="panelgrid-noborder disabled disabled"
+					columnClasses="ui-grid-col-6, ui-grid-col-6">
+				
+					<p:inputText autocomplete="off" style="width:100%;text-align:left;"
+						value="#{cadastroProdutoBean.produto.codigo}" placeholder="Nome" />
+						
+					<p:inputText autocomplete="off" style="width:100%;text-align:left;"
+						value="#{cadastroProdutoBean.produto.codigo}" placeholder="Telefone" />
+						
+				</p:panelGrid>
+				
+				<p:panelGrid columns="1" layout="grid" style="font-size:12px;"
+					styleClass="panelgrid-noborder disabled disabled"
+					columnClasses="ui-grid-col-12">
+					
+					<p:inputTextarea autocomplete="off" style="width:100%;text-align:left;"
+							value="#{cadastroProdutoBean.produto.codigo}" placeholder="Endereço" />
+				</p:panelGrid>
+				
+				<p:panelGrid columns="2" layout="grid" style="font-size:12px;margin-top:-5px;"
+					styleClass="panelgrid-noborder disabled disabled"
+					columnClasses="ui-grid-col-8, ui-grid-col-4">
+				
+					<p:inputText autocomplete="off" style="width:100%;text-align:left;"
+						value="#{cadastroProdutoBean.produto.codigo}" placeholder="Bairro" />
+						
+					<p:inputText autocomplete="off" style="width:100%;text-align:left;"
+						value="#{cadastroProdutoBean.produto.codigo}" placeholder="CEP" />
+			
+				</p:panelGrid>
+				
+				<p:panelGrid columns="1" layout="grid" style="font-size:12px;margin-top:12px;"
+					styleClass="panelgrid-noborder disabled disabled"
+					columnClasses="ui-grid-col-12">
+				
+					<p:panel>
+						<p:link styleClass="voltar" style="margin-top:10px;" onclick="start_(this);" href="cart.xhtml">Voltar ao pedido</p:link>
+						<p:commandButton value="Enviar Pedido" icon="fa fa-fw fa-send" onstart="start__();"
+									disabled="#{carrinhoBean.totalDeItens eq 0}" style="float:right;padding: 4px 19px;"
+									process="@this" action="#{carrinhoBean.finalizarPedido}" />
+					</p:panel>
+			
+				</p:panelGrid>
+			
+			</p:panel>
+			
+			
+			<p:panel styleClass="panel-resumo">
+				
+				<p:outputLabel value="Resumo do Pedido" style="margin-top:5px;" />    	
+			    
+			    <p:dataTable var="produto" value="#{carrinhoBean.listaDeProdutos}" 
+			        paginator="false" style="margin-top:1px;margin-bottom:8px;font-size:14px;" id="meu-carrinho"
+			        paginatorAlwaysVisible="false" emptyMessage="Você ainda não adicionou nenhum item ao seu pedido.">
+			        
+			        <p:column width="10%">
+			        	<span class="badge badge-light_">#{produto.quantidadePedido}</span>
+				        <ui:fragment 
+							rendered="#{produto.urlImagem == null}">
+							<p:link styleClass="link-foto" href="javascript:void(0);">
+								<img class="imagem-produto box"
+								src="img/sem-foto01.png" alt="" />
+							</p:link>				
+						</ui:fragment>
+						
+						<ui:fragment
+							rendered="#{produto.urlImagem != null}">
+							<p:link styleClass="link-foto" href="javascript:void(0);">
+								<img class="imagem-produto box"
+									src="#{produto.urlImagem}" />
+							</p:link>
+						</ui:fragment>
+				    </p:column>
+				 
+				    <p:column headerText="Item" width="70%">
+				        <h:outputText value="#{produto.descricao}" />
+				    </p:column>
+				    
+				    <p:column headerText="Total" width="20%">
+				        <h:outputText value="#{produto.precoDeVenda * produto.quantidadePedido}">
+				        	<f:convertNumber type="currency" maxFractionDigits="2" />
+				        </h:outputText>
+				    </p:column>
+				    
+				    <p:columnGroup type="footer"> 	
+			            <p:row>
+			                <p:column colspan="2" style="text-align:right" footerText="Total geral:">
+			                	
+			                </p:column>
+			                <p:column colspan="2" styleClass="total-geral" footerText="R$ #{carrinhoBean.totalGeralEmString}" />
+			            </p:row>
+			        </p:columnGroup>
+		      
+			    </p:dataTable>
+
+			</p:panel>
+			
+		</p:panelGrid>
+						
     </div>
 </h:form>    
         
@@ -753,16 +828,8 @@
 		  <div class="rect5"></div>
 		</div>
 	</div>
-	
-	
-	<div class="loading-spinner__">
-		<div id="hourglass" class="spinner__">
-		  <div class="double-bounce1"></div>
-		  <div class="double-bounce2"></div>
-		</div>
-	</div>
-	
-			
+
+
 	<script type="text/javascript">
 		var delay = (function() {
 		    var timer = 0;
@@ -779,11 +846,7 @@
 			delay(function() {     
 					$(location).attr('href',url);
 				}, 1500);
-		}
-		
-		function start__() {
-			jQuery(".loading-spinner__").fadeIn("slow");
-		}S
+		}	
 		
 		function start() {
 			jQuery(".loading-spinner").fadeIn("slow");
@@ -792,6 +855,9 @@
 		function stop() {
 			jQuery(".loading-spinner").fadeOut("slow");
 		}
+		
+		
+		jQuery(".container").fadeIn("slow");
 
 		function onlynumber(evt) {
 			   var theEvent = evt || window.event;
