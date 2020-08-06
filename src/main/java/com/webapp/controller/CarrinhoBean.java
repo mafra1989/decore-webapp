@@ -6,17 +6,14 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.webapp.model.Produto;
-import com.webapp.repository.Produtos;
 import com.webapp.util.jsf.FacesUtil;
 
 @Named
@@ -26,9 +23,6 @@ public class CarrinhoBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private List<Produto> listaDeProdutos = new ArrayList<Produto>();
-
-	@Inject
-	private Produtos produtos;
 
 	private static final Locale BRAZIL = new Locale("pt", "BR");
 
@@ -52,9 +46,9 @@ public class CarrinhoBean implements Serializable {
 		atualizarCarrinho();
 
 		if(totalDeItens > 0) {
-			FacesContext.getCurrentInstance().getExternalContext().redirect("/decore-wepapp/webstore/decore/checkout.xhtml");
+			FacesContext.getCurrentInstance().getExternalContext().redirect("/webstore/decore/checkout.xhtml");
 		} else {
-			FacesContext.getCurrentInstance().getExternalContext().redirect("/decore-wepapp/webstore/decore/cart.xhtml");
+			FacesContext.getCurrentInstance().getExternalContext().redirect("/webstore/decore/cart.xhtml");
 		}
 				
 	}
