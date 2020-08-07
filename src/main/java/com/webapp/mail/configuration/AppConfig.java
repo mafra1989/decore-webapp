@@ -43,11 +43,7 @@ public class AppConfig
 		javaMailProperties.put("mail.smtp.socketFactory.port", "587");
 		javaMailProperties.put("mail.smtp.socketFactory.fallback", "true");
 		javaMailProperties.put("mail.smtp.starttls.required", "true");
-		javaMailProperties.put("mail.smtp.ssl.enable", "false");
-		
-		//mail.host=smtp.sparkpostmail.com
-				
-				
+		javaMailProperties.put("mail.smtp.ssl.enable", "false");	
 			
 		mailSender.setJavaMailProperties(javaMailProperties);
 		return mailSender;
