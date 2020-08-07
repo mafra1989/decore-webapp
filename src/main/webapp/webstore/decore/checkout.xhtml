@@ -989,6 +989,14 @@
 				}, 1500);
 		}	
 		
+		function home(url) { 
+			jQuery(".loading-spinner_").fadeIn("slow");
+			
+			delay(function() {   
+					$(location).attr('href',url);
+				}, 1500);
+		}	
+		
 		function start() {
 			jQuery(".loading-spinner").fadeIn("slow");
 		}

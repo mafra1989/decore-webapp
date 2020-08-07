@@ -109,7 +109,7 @@ function pedidoEnviado() {
 	  /* Read more about handling dismissals below */
 	  if (result.dismiss === Swal.DismissReason.timer) {
 	    console.log('I was closed by the timer');
-	    start_('products.xhtml');
+	    home('products.xhtml');
 	  }
 	})
 
