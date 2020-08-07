@@ -2,7 +2,7 @@ package com.webapp.model;
 
 import java.io.Serializable;
 
-public class ItemPedido implements Serializable {
+public class ItemEspelhoVenda implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

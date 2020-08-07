@@ -27,10 +27,10 @@ import org.springframework.security.core.userdetails.User;
 import com.webapp.model.Entrega;
 import com.webapp.model.Grupo;
 import com.webapp.model.ItemCompra;
-import com.webapp.model.ItemPedido;
+import com.webapp.model.ItemEspelhoVenda;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.ItemVendaCompra;
-import com.webapp.model.Pedido;
+import com.webapp.model.EspelhoVenda;
 import com.webapp.model.Produto;
 import com.webapp.model.StatusPedido;
 import com.webapp.model.Usuario;
@@ -219,7 +219,7 @@ public class ConsultaVendasBean implements Serializable {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-		Pedido pedido = new Pedido();
+		EspelhoVenda pedido = new EspelhoVenda();
 		pedido.setVendaNum(vendaSelecionada.getNumeroVenda() + "");
 		pedido.setTipoVenda(vendaSelecionada.getTipoVenda().getDescricao().toUpperCase());
 		pedido.setBairro(vendaSelecionada.getBairro().getNome().toUpperCase());
@@ -236,7 +236,7 @@ public class ConsultaVendasBean implements Serializable {
 		List<ItemVenda> itensVenda = itensVendas.porVenda(vendaSelecionada);
 		for (ItemVenda itemVenda : itensVenda) {
 			
-			ItemPedido itemPedido = new ItemPedido();
+			ItemEspelhoVenda itemPedido = new ItemEspelhoVenda();
 			itemPedido.setCodigo(itemVenda.getProduto().getCodigo());
 			itemPedido.setDescricao(itemVenda.getProduto().getDescricao());
 			itemPedido.setValorUnitario(nf.format(itemVenda.getValorUnitario().intValue()));
@@ -248,10 +248,10 @@ public class ConsultaVendasBean implements Serializable {
 
 		pedido.setTotalVenda(nf.format(vendaSelecionada.getValorTotal()));
 
-		List<Pedido> pedidos = new ArrayList<>();
+		List<EspelhoVenda> pedidos = new ArrayList<>();
 		pedidos.add(pedido);
 
-		Relatorio<Pedido> report = new Relatorio<Pedido>();
+		Relatorio<EspelhoVenda> report = new Relatorio<EspelhoVenda>();
 		try {
 			report.getRelatorio(pedidos, "Venda-N" + vendaSelecionada.getNumeroVenda().longValue());
 			

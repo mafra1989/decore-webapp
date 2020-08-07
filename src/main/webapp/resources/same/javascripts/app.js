@@ -85,3 +85,32 @@ function estornarConta(itemID) {
 		})
 		
 }
+
+function pedidoEnviado() {
+	
+	let timerInterval;
+	Swal.fire({
+	  type: 'success',
+	  title: 'Pedido enviado!',
+	  html: 'Obrigado, em breve entraremos em contato, redicionando para a página principal.<br/><b></b>',
+	  timer: 10000,
+	  allowOutsideClick: false,
+	  timerProgressBar: true,
+	  onBeforeOpen: () => {
+	    Swal.showLoading()
+	    timerInterval = setInterval(() => {
+	      
+	    }, 100)
+	  },
+	  onClose: () => {
+	    clearInterval(timerInterval)
+	  }
+	}).then((result) => {
+	  /* Read more about handling dismissals below */
+	  if (result.dismiss === Swal.DismissReason.timer) {
+	    console.log('I was closed by the timer');
+	    $(location).attr('href','products.xhtml');
+	  }
+	})
+
+}

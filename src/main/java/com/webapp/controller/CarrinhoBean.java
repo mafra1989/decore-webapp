@@ -11,9 +11,22 @@ import java.util.Locale;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.primefaces.PrimeFaces;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
+
+import com.webapp.mail.configuration.AppConfig;
+import com.webapp.mail.model.CustomerInfo;
+import com.webapp.mail.model.ProductOrder;
+import com.webapp.mail.service.OrderService;
+import com.webapp.model.Bairro;
+import com.webapp.model.Pedido;
 import com.webapp.model.Produto;
+import com.webapp.repository.Bairros;
+import com.webapp.repository.filter.BairroFilter;
 import com.webapp.util.jsf.FacesUtil;
 
 @Named
@@ -34,12 +47,67 @@ public class CarrinhoBean implements Serializable {
 	
 	private Long totalDeItens = 0L;
 	
+	@Inject
+	private Pedido pedido;
+	
+	@Inject
+	private Bairros bairros;
+	
 	
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {			
 		}
 	}
+		
+	public List<Bairro> completeText(String query) {
+		
+        BairroFilter filtro = new BairroFilter();
+        filtro.setNome(query);
+        
+        List<Bairro> listaDeBairros = bairros.filtrados(filtro);       
+        
+        return listaDeBairros;
+    }	
 	
+	public void enviarPedido() throws IOException {
+		
+		AbstractApplicationContext context = new AnnotationConfigApplicationContext(
+				AppConfig.class);
+
+		OrderService orderService = (OrderService) context.getBean("orderService");
+		
+		orderService.sendOrderConfirmation(getDummyOrder());
+		
+		((AbstractApplicationContext) context).close();
+		
+		
+		pedido = new Pedido();
+		
+		listaDeProdutos = new ArrayList<Produto>();
+		
+		atualizarCarrinho();
+		
+		PrimeFaces.current().executeScript("pedidoEnviado();");		
+	}
+	
+	public ProductOrder getDummyOrder()
+	{
+		ProductOrder order = new ProductOrder();
+		order.setOrderId("5123");
+		//order.setProductName("Thinkpad Laptop");
+		//order.setStatus("Confirmed");
+	
+		CustomerInfo customerInfo = new CustomerInfo();
+		customerInfo.setName(convertToTitleCaseIteratingChars(pedido.getNome()));
+		//customerInfo.setAddress("25, West Street, Bangalore");
+		customerInfo.setEmail(pedido.getEmail().toLowerCase());
+		order.setCustomerInfo(customerInfo);
+		
+		System.out.println(customerInfo.getName());
+		System.out.println(customerInfo.getEmail());
+		
+		return order;
+	}
 	
 	public void finalizarPedido() throws IOException {
 		
@@ -166,7 +234,15 @@ public class CarrinhoBean implements Serializable {
 	public Long getTotalDeItens() {
 		return totalDeItens;
 	}
-	
-	
 
+
+	public Pedido getPedido() {
+		return pedido;
+	}
+
+
+	public void setPedido(Pedido pedido) {
+		this.pedido = pedido;
+	}
+	
 }

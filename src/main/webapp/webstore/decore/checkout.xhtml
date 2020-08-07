@@ -16,19 +16,45 @@
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 	</f:facet>
 	
-	<title>Seu carrinho de compras</title>
+	<title>Checkout</title>
 
 	<link href="css/bootstrap.css" rel="stylesheet" />
 	<link href="css/style.css" rel="stylesheet" />
 	
 	<link rel="stylesheet" href="css/footer-with-button-logo.css" />
 	
+	<h:outputScript target="body" library="manhattan-layout"
+		name="js/sweetalert2.min.js" />
+		
+	
 	<h:outputScript library="webjars"
 		name="bootstrap/3.2.0/js/bootstrap.min.js" />
-	<script src="js/bootstrap.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>	
+		 
+	<h:outputScript target="body" library="same" name="javascripts/app.js" />
+	
+	<h:outputStylesheet name="css/sweetalert2.min.css"
+		library="manhattan-layout" />
 	
 	<style>
 	@media ( min-width :220px) {
+		.swal2-popup #swal2-content {
+			/*font-size:12px;*/
+		}
+		body .ui-autocomplete-panel .ui-autocomplete-items .ui-autocomplete-item {
+			font-size:12px;
+		}
+		.ui-messages-info {
+		    border: 1px solid;
+		    margin: 10px 0;
+		    padding: 5px 5px 5px 5px;
+    	}
+    	.ui-message-error {
+		    border: 1px solid;
+		    margin: 0px 0px;
+		    padding: 3px 4px;
+		    font-size: 10px;
+		}
 		body .ui-accordion .ui-accordion-content {
 		    padding: 0px 0px;
 		}
@@ -109,9 +135,9 @@
 		    font-size: 12px;
 		}
 		.ui-widget-content .ui-inputfield {
-		    width: 40px;
-		    font-size: 11px;
-		    text-align: center;
+		    width: 100%;
+		    font-size: 12px;
+		    text-align: left;
 		}
 		body .ui-datatable .ui-datatable-data > tr {
 		    background-color: #F2F0EE;
@@ -301,7 +327,7 @@
 		}
 		
 		body .ui-button.ui-button-icon-only .ui-icon {
-		    margin-top: -11px;
+		   margin-top: -8px;
 		}
 		.imagem-produto {
 			max-width: 100%; 
@@ -455,6 +481,64 @@
 			    font-size: 11px;
 			    font-weight:normal;
 			}
+			
+			.spinner__ {
+			  width: 40px;
+			  height: 40px;
+			
+			  position: relative;
+			  margin: 100px auto;
+			}
+			
+			.double-bounce1, .double-bounce2 {
+			  width: 100%;
+			  height: 100%;
+			  border-radius: 50%;
+			  background-color: white;
+			  opacity: 0.6;
+			  position: absolute;
+			  top: 0;
+			  left: 0;
+			  
+			  -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
+			  animation: sk-bounce 2.0s infinite ease-in-out;
+			}
+			
+			.double-bounce2 {
+			  -webkit-animation-delay: -1.0s;
+			  animation-delay: -1.0s;
+			}
+			
+			@-webkit-keyframes sk-bounce {
+			  0%, 100% { -webkit-transform: scale(0.0) }
+			  50% { -webkit-transform: scale(1.0) }
+			}
+			
+			@keyframes sk-bounce {
+			  0%, 100% { 
+			    transform: scale(0.0);
+			    -webkit-transform: scale(0.0);
+			  } 50% { 
+			    transform: scale(1.0);
+			    -webkit-transform: scale(1.0);
+			  }
+			}
+			
+			.loading-spinner__ {
+		        background: #27ae60b3;
+		        position: fixed;
+		        top: 0;
+		        right: 0;
+		        bottom: 0;
+		        left: 0;
+		        overflow: hidden;
+		        display: none;
+		        z-index: 99999;
+		    }
+		
+		    .loading-spinner__.active {
+		        display: block;
+		    }
 	}
 	@media ( min-width :640px) {
 		body .ui-datatable tfoot td {
@@ -595,10 +679,12 @@
 		    <p:menuitem value="Checkout" url="#" />
 		</p:breadCrumb>
 		
+		<p:messages id="msg" closable="true" life="2000" showSummary="false"
+			showDetail="true" style="font-size: 12px;" rendered="false" />
 		
 		<p:accordionPanel activeIndex="null" styleClass="resumo-pedido" style="margin-top:12px;">
 			
-			<p:tab title="Resumo do Pedido">
+			<p:tab title="Resumo do Pedido - Total geral: R$ #{carrinhoBean.totalGeralEmString}">
 			   	
 			    <p:dataTable var="produto" value="#{carrinhoBean.listaDeProdutos}" 
 			        paginator="false" style="margin-top:1px;font-size:14px;" id="meu-carrinho"
@@ -649,7 +735,7 @@
 		</p:accordionPanel>
 			
 		
-		<p:panelGrid columns="2" layout="grid" style="font-size:12px;margin-top:10px;"
+		<p:panelGrid id="panel-grid" columns="2" layout="grid" style="font-size:12px;margin-top:10px;"
 			styleClass="panelgrid-noborder disabled disabled"
 			columnClasses="ui-grid-col-6">
 
@@ -660,21 +746,35 @@
 					styleClass="panelgrid-noborder disabled disabled"
 					columnClasses="ui-grid-col-12">
 					
-					<p:inputText autocomplete="off" style="width:100%;text-align:left;"
-						value="#{cadastroProdutoBean.produto.codigo}" placeholder="E-mail" />
+					<p:inputText id="email" autocomplete="off" style="width:100%;text-align:left;"
+						requiredMessage="E-mail deve ser informado." label=" " required="true"
+						value="#{carrinhoBean.pedido.email}" placeholder="E-mail" />
+					<p:message for="email" />
 				</p:panelGrid>
 					
 				<p:outputLabel value="Endereço de entrega" />
 				
-				<p:panelGrid columns="2" layout="grid" style="font-size:12px;margin-top:-5px;"
+				<p:panelGrid columns="2" layout="grid" style="font-size:12px;"
 					styleClass="panelgrid-noborder disabled disabled"
 					columnClasses="ui-grid-col-6, ui-grid-col-6">
 				
-					<p:inputText autocomplete="off" style="width:100%;text-align:left;"
-						value="#{cadastroProdutoBean.produto.codigo}" placeholder="Nome" />
+					<p:inputText id="nome" autocomplete="off" style="width:100%;text-align:left;"
+						requiredMessage="Nome deve ser informado." required="true" label="Nome"
+						value="#{carrinhoBean.pedido.nome}" placeholder="Nome" />
 						
-					<p:inputText autocomplete="off" style="width:100%;text-align:left;"
-						value="#{cadastroProdutoBean.produto.codigo}" placeholder="Telefone" />
+					<p:inputText id="telefone" autocomplete="off" style="width:100%;text-align:left;"
+						requiredMessage="Telefone deve ser informado." required="true" label="Telefone"
+						value="#{carrinhoBean.pedido.telefone}" placeholder="Telefone" />
+						
+				</p:panelGrid>
+				
+				<p:panelGrid columns="2" layout="grid" style="font-size:12px;"
+					styleClass="panelgrid-noborder disabled disabled"
+					columnClasses="ui-grid-col-6, ui-grid-col-6">
+					
+					<p:message for="nome" />
+					
+					<p:message for="telefone" />
 						
 				</p:panelGrid>
 				
@@ -682,19 +782,43 @@
 					styleClass="panelgrid-noborder disabled disabled"
 					columnClasses="ui-grid-col-12">
 					
-					<p:inputTextarea autocomplete="off" style="width:100%;text-align:left;"
-							value="#{cadastroProdutoBean.produto.codigo}" placeholder="Endereço" />
+					<p:inputTextarea id="endereco" autocomplete="off" style="width:100%;text-align:left;"
+						requiredMessage="Endereço deve ser informado." required="true" label="Endereço"
+						value="#{carrinhoBean.pedido.endereco}" placeholder="Endereço (com número)" />
+							
 				</p:panelGrid>
 				
-				<p:panelGrid columns="2" layout="grid" style="font-size:12px;margin-top:-5px;"
+				<p:panelGrid columns="1" layout="grid" style="font-size:12px;margin-top:-5px;"
+					styleClass="panelgrid-noborder disabled disabled"
+					columnClasses="ui-grid-col-12">
+					
+					<p:message for="endereco" />
+					
+				</p:panelGrid>
+				
+				<p:panelGrid columns="2" layout="grid" style="font-size:12px;"
 					styleClass="panelgrid-noborder disabled disabled"
 					columnClasses="ui-grid-col-8, ui-grid-col-4">
 				
-					<p:inputText autocomplete="off" style="width:100%;text-align:left;"
-						value="#{cadastroProdutoBean.produto.codigo}" placeholder="Bairro" />
+					<p:autoComplete id="bairro" autocomplete="off" forceSelection="true" dropdown="true" scrollHeight="210"
+						value="#{carrinhoBean.pedido.bairro}" style="width:100%;text-align:left;"
+						var="bairro" itemLabel="#{bairro.nome}" itemValue="#{bairro}" label="Bairro"
+						requiredMessage="Bairro deve ser informado." required="true"
+						completeMethod="#{carrinhoBean.completeText}" placeholder="Bairro" />
 						
-					<p:inputText autocomplete="off" style="width:100%;text-align:left;"
-						value="#{cadastroProdutoBean.produto.codigo}" placeholder="CEP" />
+					<p:inputText id="cep" autocomplete="off" style="width:100%;text-align:left;"
+						requiredMessage="CEP deve ser informado." required="true" label="CEP"
+						value="#{carrinhoBean.pedido.cep}" placeholder="CEP" />
+			
+				</p:panelGrid>
+				
+				<p:panelGrid columns="2" layout="grid" style="font-size:12px;"
+					styleClass="panelgrid-noborder disabled disabled"
+					columnClasses="ui-grid-col-8, ui-grid-col-4">
+				
+					<p:message for="bairro" />
+					
+					<p:message for="cep" />
 			
 				</p:panelGrid>
 				
@@ -704,9 +828,11 @@
 				
 					<p:panel>
 						<p:link styleClass="voltar" style="margin-top:10px;" onclick="start_(this);" href="cart.xhtml">Voltar ao pedido</p:link>
-						<p:commandButton value="Enviar Pedido" icon="fa fa-fw fa-send" onstart="start__();"
+						
+						<p:commandButton value="Enviar Pedido" icon="fa fa-fw fa-send"
 									disabled="#{carrinhoBean.totalDeItens eq 0}" style="float:right;padding: 4px 19px;"
-									process="@this" action="#{carrinhoBean.finalizarPedido}" />
+									update="form"  onstart="start__();" onsuccess="stop__();"
+									process="@this panel-grid" action="#{carrinhoBean.enviarPedido}" />
 					</p:panel>
 			
 				</p:panelGrid>
@@ -767,7 +893,14 @@
 		</p:panelGrid>
 						
     </div>
-</h:form>    
+</h:form>   
+
+<p:dialog id="downloadLoading" showHeader="false" modal="true"
+			widgetVar="downloadLoading" header="Status" draggable="false"
+			closable="false" resizable="false">
+			<p:graphicImage name="images/loadingbar.gif"
+				library="manhattan-layout" width="50" />
+		</p:dialog> 
         
 	<footer id="myFooter">
         <div class="container">
@@ -828,6 +961,14 @@
 		  <div class="rect5"></div>
 		</div>
 	</div>
+	
+	
+	<div class="loading-spinner__">
+		<div id="hourglass" class="spinner__">
+		  <div class="double-bounce1"></div>
+		  <div class="double-bounce2"></div>
+		</div>
+	</div>
 
 
 	<script type="text/javascript">
@@ -851,13 +992,14 @@
 		function start() {
 			jQuery(".loading-spinner").fadeIn("slow");
 		}
-
-		function stop() {
-			jQuery(".loading-spinner").fadeOut("slow");
+		
+		function start__() {
+			jQuery(".loading-spinner__").fadeIn("slow");
 		}
-		
-		
-		jQuery(".container").fadeIn("slow");
+
+		function stop__() {
+			jQuery(".loading-spinner__").fadeOut("slow");
+		}
 
 		function onlynumber(evt) {
 			   var theEvent = evt || window.event;
@@ -870,6 +1012,7 @@
 			      if(theEvent.preventDefault) theEvent.preventDefault();
 			   }
 			}
+		
 	 </script>
 
 </h:body>

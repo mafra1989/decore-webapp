@@ -1,0 +1,19 @@
+<html>
+	<body>
+        <h3>Olá ${order.customerInfo.name}, obrigado por fazer o pedido.</h3>
+
+        <div>
+            O número do seu pedido é : ${order.orderId}.
+        </div>
+        
+        <span>Aguarde, entraremos em contato com você.</span>
+
+		<div style="margin-top:70px;font-weight:bold;">
+           	Decore
+        </div>
+
+		<span>Portas e Móveis Planejados</span><br/>
+		<a href="https://decore-webapp.herokuapp.com/webstore/decore/products.xhtml">https://www.decore-webstore.com<a><br/>
+		<img style="width: 254px;margin-top: 5px;" src="https://i.imgur.com/ySrS1I4.jpg"></img>
+    </body>
+</html>
