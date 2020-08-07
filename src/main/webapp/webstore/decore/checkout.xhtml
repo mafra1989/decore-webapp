@@ -750,7 +750,7 @@
 					columnClasses="ui-grid-col-12">
 					
 					<p:inputText id="email" autocomplete="off" style="width:100%;text-align:left;"
-						requiredMessage="E-mail deve ser informado." label=" " required="true"
+						requiredMessage="E-mail deve ser informado." label=" " required="true" maxlength="120"
 						value="#{carrinhoBean.pedido.email}" placeholder="E-mail" />
 					<p:message for="email" />
 				</p:panelGrid>
@@ -763,9 +763,10 @@
 				
 					<p:inputText id="nome" autocomplete="off" style="width:100%;text-align:left;"
 						requiredMessage="Nome deve ser informado." required="true" label="Nome"
-						value="#{carrinhoBean.pedido.nome}" placeholder="Nome" />
+						value="#{carrinhoBean.pedido.nome}" placeholder="Nome" maxlength="120" />
 						
-					<p:inputText id="telefone" autocomplete="off" style="width:100%;text-align:left;"
+					<p:inputMask id="telefone"  autocomplete="off" style="width:100%;text-align:left;" 
+						mask="(99) 99999-9999" autoClear="false"
 						requiredMessage="Telefone deve ser informado." required="true" label="Telefone"
 						value="#{carrinhoBean.pedido.telefone}" placeholder="Telefone" />
 						
@@ -809,7 +810,8 @@
 						requiredMessage="Bairro deve ser informado." required="true"
 						completeMethod="#{carrinhoBean.completeText}" placeholder="Bairro" />
 						
-					<p:inputText id="cep" autocomplete="off" style="width:100%;text-align:left;"
+					<p:inputMask id="cep" autocomplete="off" style="width:100%;text-align:left;"
+						mask="99999-999" autoClear="false"
 						requiredMessage="CEP deve ser informado." required="true" label="CEP"
 						value="#{carrinhoBean.pedido.cep}" placeholder="CEP" />
 			
