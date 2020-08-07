@@ -37,16 +37,17 @@ public class AppConfig
 		javaMailProperties.put("mail.debug", "true");
 		//javaMailProperties.put("mail.smtp.connectiontimeout", 10000);
 		
-		javaMailProperties.put("mail.host", "smtp.google.com");
-		//mail.port=587
-		//mail.smtp.auth=true
+		javaMailProperties.put("mail.host", "smtp.gmail.com");
+		javaMailProperties.put("mail.port", "587");
+		javaMailProperties.put("mail.smtp.auth", "true");
 		javaMailProperties.put("mail.smtp.socketFactory.port", "587");
 		javaMailProperties.put("mail.smtp.socketFactory.fallback", "true");
 		javaMailProperties.put("mail.smtp.starttls.required", "true");
 		javaMailProperties.put("mail.smtp.ssl.enable", "false");
 		
-		javaMailProperties.put("mail.username", "evandro.ms2016@gmail.com");
-		javaMailProperties.put("mail.password", "tjam2019");
+		//mail.host=smtp.sparkpostmail.com
+				
+				
 			
 		mailSender.setJavaMailProperties(javaMailProperties);
 		return mailSender;
