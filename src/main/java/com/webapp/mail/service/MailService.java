@@ -2,5 +2,5 @@ package com.webapp.mail.service;
 
 public interface MailService
 {
-	public void sendEmail(final Object object);
+	public boolean sendEmail(final Object object);
 }

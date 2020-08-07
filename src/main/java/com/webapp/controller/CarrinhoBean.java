@@ -2,10 +2,13 @@ package com.webapp.controller;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -23,9 +26,12 @@ import com.webapp.mail.model.CustomerInfo;
 import com.webapp.mail.model.ProductOrder;
 import com.webapp.mail.service.OrderService;
 import com.webapp.model.Bairro;
+import com.webapp.model.ItemPedido;
 import com.webapp.model.Pedido;
 import com.webapp.model.Produto;
 import com.webapp.repository.Bairros;
+import com.webapp.repository.ItensPedidos;
+import com.webapp.repository.Pedidos;
 import com.webapp.repository.filter.BairroFilter;
 import com.webapp.util.jsf.FacesUtil;
 
@@ -47,11 +53,19 @@ public class CarrinhoBean implements Serializable {
 	
 	private Long totalDeItens = 0L;
 	
+	private Double totalGeral = 0D;
+	
 	@Inject
 	private Pedido pedido;
 	
 	@Inject
 	private Bairros bairros;
+	
+	@Inject
+	private Pedidos pedidos;
+	
+	@Inject
+	private ItensPedidos itensPedidos;
 	
 	
 	public void inicializar() {
@@ -76,9 +90,50 @@ public class CarrinhoBean implements Serializable {
 
 		OrderService orderService = (OrderService) context.getBean("orderService");
 		
-		orderService.sendOrderConfirmation(getDummyOrder());
+		boolean emailEnviado = orderService.sendOrderConfirmation(getDummyOrder());
 		
 		((AbstractApplicationContext) context).close();
+		
+		
+		
+		
+		pedido.setDataPedido(new Date());
+		pedido.setQuantidadeItens(totalDeItens);
+		pedido.setValorTotal(new BigDecimal(totalGeral));
+		
+		pedido.setEmail(pedido.getEmail().toLowerCase().trim());
+		pedido.setNome(convertToTitleCaseIteratingChars(pedido.getNome().trim()));
+		
+		pedido.setLucro(new BigDecimal(0));
+		pedido.setPercentualLucro(new BigDecimal(0));
+		
+		pedido.setEmpresa("Decore");
+		pedido.setStatus("AGUARDANDO");		
+		pedido.setEmailenviado(emailEnviado);
+		
+		Calendar calendario = Calendar.getInstance();
+		calendario.setTime(pedido.getDataPedido());
+		
+		pedido.setDia(Long.valueOf((calendario.get(Calendar.DAY_OF_MONTH))));
+		pedido.setNomeDia(Long.valueOf((calendario.get(Calendar.DAY_OF_WEEK))));
+		pedido.setSemana(Long.valueOf((calendario.get(Calendar.WEEK_OF_YEAR))));
+		pedido.setMes(Long.valueOf((calendario.get(Calendar.MONTH))) + 1);
+		pedido.setAno(Long.valueOf((calendario.get(Calendar.YEAR))));
+		
+		pedido = pedidos.save(pedido);
+		
+		for (Produto produto : listaDeProdutos) {
+			ItemPedido itemPedido = new ItemPedido();
+			itemPedido.setQuantidade(produto.getQuantidadePedido());
+			itemPedido.setValorUnitario(produto.getPrecoDeVenda());
+			itemPedido.setTotal(new BigDecimal(produto.getQuantidadePedido().intValue() * produto.getPrecoDeVenda().doubleValue()));
+			itemPedido.setProduto(produto);
+			itemPedido.setPedido(pedido);
+			
+			itensPedidos.save(itemPedido);
+		}
+		
+		
 		
 		
 		pedido = new Pedido();
@@ -98,9 +153,9 @@ public class CarrinhoBean implements Serializable {
 		//order.setStatus("Confirmed");
 	
 		CustomerInfo customerInfo = new CustomerInfo();
-		customerInfo.setName(convertToTitleCaseIteratingChars(pedido.getNome()));
+		customerInfo.setName(convertToTitleCaseIteratingChars(pedido.getNome().trim()));
 		//customerInfo.setAddress("25, West Street, Bangalore");
-		customerInfo.setEmail(pedido.getEmail().toLowerCase());
+		customerInfo.setEmail(pedido.getEmail().toLowerCase().trim());
 		order.setCustomerInfo(customerInfo);
 		
 		System.out.println(customerInfo.getName());
@@ -126,7 +181,7 @@ public class CarrinhoBean implements Serializable {
 		List<Produto> produtos = new ArrayList<>();	
 		
 		totalDeItens = 0L;
-		Double totalGeral = 0D;
+		totalGeral = 0D;
 		for (Produto produtoTemp : listaDeProdutos) {
 	
 			if(produtoTemp.getQuantidadePedido() == null || produtoTemp.getQuantidadePedido().intValue() == 0) {
@@ -169,7 +224,7 @@ public class CarrinhoBean implements Serializable {
 		}
 		
 		totalDeItens = 0L;
-		Double totalGeral = 0D;
+		totalGeral = 0D;
 		for (Produto produtoTemp : listaDeProdutos) {
 			produtoTemp.setDescricao(convertToTitleCaseIteratingChars(produtoTemp.getDescricao()));
 			totalGeral += produtoTemp.getPrecoDeVenda().doubleValue() * produtoTemp.getQuantidadePedido().intValue();
@@ -184,7 +239,7 @@ public class CarrinhoBean implements Serializable {
 		listaDeProdutos.remove(produtoTemp);
 		
 		totalDeItens = 0L;
-		Double totalGeral = 0D;
+		totalGeral = 0D;
 		for (Produto produtoTemp_ : listaDeProdutos) {
 			produtoTemp_.setDescricao(convertToTitleCaseIteratingChars(produtoTemp_.getDescricao()));
 			totalGeral += produtoTemp_.getPrecoDeVenda().doubleValue() * produtoTemp_.getQuantidadePedido().intValue();

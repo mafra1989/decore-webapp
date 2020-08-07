@@ -91,7 +91,7 @@ public class ItemVenda implements Serializable {
 	}
 
 	public void setValorUnitario(BigDecimal valorUnitario) {
-		this.valorUnitario = valorUnitario.setScale(4, BigDecimal.ROUND_HALF_EVEN);;
+		this.valorUnitario = valorUnitario.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public Long getQuantidade() {
@@ -107,7 +107,7 @@ public class ItemVenda implements Serializable {
 	}
 
 	public void setTotal(BigDecimal total) {
-		this.total = total.setScale(4, BigDecimal.ROUND_HALF_EVEN);;
+		this.total = total.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public BigDecimal getLucro() {
@@ -115,7 +115,7 @@ public class ItemVenda implements Serializable {
 	}
 
 	public void setLucro(BigDecimal lucro) {
-		this.lucro = lucro.setScale(4, BigDecimal.ROUND_HALF_EVEN);;
+		this.lucro = lucro.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public BigDecimal getPercentualLucro() {

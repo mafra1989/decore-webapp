@@ -12,9 +12,9 @@ public class OrderServiceImpl implements OrderService
 	@Autowired
 	private MailService mailService;
 
-	public void sendOrderConfirmation(ProductOrder productOrder)
+	public boolean sendOrderConfirmation(ProductOrder productOrder)
 	{
-		mailService.sendEmail(productOrder);
+		return mailService.sendEmail(productOrder);
 	}
 
 }

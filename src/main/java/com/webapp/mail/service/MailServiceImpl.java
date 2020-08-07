@@ -27,9 +27,10 @@ public class MailServiceImpl implements MailService
 	@Autowired
 	private Configuration freemarkerConfiguration;
 
-	public void sendEmail(Object object)
+	public boolean sendEmail(Object object)
 	{
 
+		boolean send;
 		ProductOrder order = (ProductOrder) object;
 		MimeMessagePreparator preparator = getMessagePreparator(order);
 
@@ -37,11 +38,15 @@ public class MailServiceImpl implements MailService
 		{
 			mailSender.send(preparator);
 			System.out.println("Message has been sent.............................");
+			send = true;
 		}
 		catch (MailException ex)
 		{
 			System.err.println(ex.getMessage());
+			send = false;
 		}
+		
+		return send;
 	}
 
 	private MimeMessagePreparator getMessagePreparator(final ProductOrder order)

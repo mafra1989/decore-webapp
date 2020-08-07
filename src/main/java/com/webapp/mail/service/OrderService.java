@@ -4,5 +4,5 @@ import com.webapp.mail.model.ProductOrder;
 
 public interface OrderService
 {
-	public void sendOrderConfirmation(ProductOrder productOrder);
+	public boolean sendOrderConfirmation(ProductOrder productOrder);
 }

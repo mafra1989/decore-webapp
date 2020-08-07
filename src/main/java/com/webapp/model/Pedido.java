@@ -8,6 +8,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
@@ -17,7 +19,7 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
-@Table(name = "lancamentos")
+@Table(name = "pedidos")
 public class Pedido implements Serializable {
 
 	private static final long serialVersionUID = 203356217547759664L;
@@ -28,64 +30,72 @@ public class Pedido implements Serializable {
 	private Long id;
 	
 	@NotNull
-	@Column
+	@Column(nullable = false)
 	private Date dataPedido = new Date();
 	
 	@NotNull
-	@Column
+	@Column(nullable = false)
 	private Long quantidadeItens = 0L;
 	
 	@NotNull
-	@Column
+	@Column(nullable = false)
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal valorTotal = BigDecimal.ZERO;
 	
 	@NotNull
-	@Column
+	@Column(nullable = false)
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal lucro = BigDecimal.ZERO;
 
 	@NotNull
-	@Column
+	@Column(nullable = false)
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
 	private BigDecimal percentualLucro = BigDecimal.ZERO;
 	
-	@Column
+	@Column(nullable = false, length = 20)
 	private String cupom;
 	
-	@NotBlank
 	@Column
+	@Digits(integer = 10 /* precision */, fraction = 0 /* scale */)
+	private BigDecimal desconto = BigDecimal.ZERO;
+	
+	@NotBlank
+	@Column(nullable = false, length = 60)
 	private String empresa;
 	
+	@Column(nullable = false, length = 20)
+	private String status;
+	
 	@Type(type = "yes_no")
-	@Column
-	private boolean status;
+	@Column(nullable = false)
+	private boolean emailenviado;
 
 	/* Informações de contato */
 	@Email
 	@NotBlank
-	@Column
+	@Column(nullable = false, length = 120)
 	private String email;
 
 	/* Endereço de entrega */
 	@NotBlank
-	@Column
+	@Column(nullable = false, length = 120)
 	private String nome;
 	
 	@NotBlank
-	@Column
+	@Column(nullable = false, length = 12)
 	private String telefone;
 	
 	@NotBlank
-	@Column
+	@Column(nullable = false, columnDefinition="TEXT")
 	private String endereco;
 	
 	@NotNull
-	@Column
+	@ManyToOne
+	@JoinColumn(nullable = false)
 	private Bairro bairro;
 	
 	@NotBlank
-	@Column
+	@Column(nullable = false, length = 10)
 	private String cep;
 
 	
@@ -135,7 +145,7 @@ public class Pedido implements Serializable {
 	}
 
 	public void setValorTotal(BigDecimal valorTotal) {
-		this.valorTotal = valorTotal;
+		this.valorTotal = valorTotal.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public BigDecimal getLucro() {
@@ -143,7 +153,7 @@ public class Pedido implements Serializable {
 	}
 
 	public void setLucro(BigDecimal lucro) {
-		this.lucro = lucro;
+		this.lucro = lucro.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public BigDecimal getPercentualLucro() {
@@ -151,7 +161,7 @@ public class Pedido implements Serializable {
 	}
 
 	public void setPercentualLucro(BigDecimal percentualLucro) {
-		this.percentualLucro = percentualLucro;
+		this.percentualLucro = percentualLucro.setScale(2, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public String getCupom() {
@@ -162,6 +172,14 @@ public class Pedido implements Serializable {
 		this.cupom = cupom;
 	}
 
+	public BigDecimal getDesconto() {
+		return desconto;
+	}
+
+	public void setDesconto(BigDecimal desconto) {
+		this.desconto = desconto;
+	}
+
 	public String getEmpresa() {
 		return empresa;
 	}
@@ -170,12 +188,20 @@ public class Pedido implements Serializable {
 		this.empresa = empresa;
 	}
 
-	public boolean isStatus() {
+	public String getStatus() {
 		return status;
 	}
 
-	public void setStatus(boolean status) {
+	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public boolean isEmailenviado() {
+		return emailenviado;
+	}
+
+	public void setEmailenviado(boolean emailenviado) {
+		this.emailenviado = emailenviado;
 	}
 
 	public String getEmail() {
