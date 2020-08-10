@@ -31,8 +31,7 @@
 		name="bootstrap/3.2.0/js/bootstrap.min.js" />
 	<script src="js/bootstrap.min.js"></script>	
 		 
-	<h:outputScript target="body" library="same" name="javascripts/app.js" />
-	
+
 	<h:outputStylesheet name="css/sweetalert2.min.css"
 		library="manhattan-layout" />
 	
@@ -753,7 +752,7 @@
 		
 		
 		<p:remoteCommand name="submitForm" action="#{carrinhoBean.confirmarPagamento}"
-				process="@this panel-grid" oncomplete="stop__();" />
+				process="@this panel-grid" update="@this form-script" oncomplete="stop__();" />
 											
 		<p:panelGrid id="panel-grid" columns="2" layout="grid" style="font-size:12px;margin-top:10px;"
 			styleClass="panelgrid-noborder disabled disabled"
@@ -773,9 +772,6 @@
 					styleClass="panelgrid-noborder disabled disabled"
 					columnClasses="ui-grid-col-6, ui-grid-col-6">
 				
-					<p:inputText id="description" value="Ítem selecionado" />
-					<p:inputText id="transaction_amount" styleClass="transaction_amount" value="#{carrinhoBean.totalGeral}" readonly="true" />
-			
 					<p:panelGrid columns="1" layout="grid" 
 						styleClass="panelgrid-noborder disabled disabled grid-card"
 						columnClasses="ui-grid-col-12">
@@ -868,6 +864,8 @@
 		        
 		        
 		        <p:inputText type="hidden" id="email" value="#{carrinhoBean.pedido.email}" styleClass="email" />
+		        <p:inputText type="hidden" id="description" value="Ítem selecionado" />
+				<p:inputText type="hidden" id="transaction_amount" value="#{carrinhoBean.totalGeral}" styleClass="transaction_amount" readonly="true" />					
 		        <p:inputText type="hidden" id="payment_method_id" value="#{carrinhoBean.paymentMethodId}" styleClass="payment_method_id" />
 		        <p:inputText type="hidden" id="installments" value="#{carrinhoBean.installments}" styleClass="installments" />
 		        
@@ -1024,6 +1022,7 @@
 	</div>
 
 
+<h:form id="form-script">
 	<script type="text/javascript">
 		var delay = (function() {
 		    var timer = 0;
@@ -1074,6 +1073,16 @@
 			   }
 			}
 		
+		
+		$(document).ready(function() {
+			
+			document.getElementById('cardNumber').addEventListener('keyup', guessPaymentMethod);
+			document.getElementById('cardNumber').addEventListener('change', guessPaymentMethod);
+
+			window.Mercadopago.setPublishableKey("TEST-4ec8521c-4fb8-4d62-afc0-6ef65bfdec1f");
+			window.Mercadopago.getIdentificationTypes();
+		});
+		
 		function setInstallment(value) {
 			$('.installments').val(value);	
 		}
@@ -1090,6 +1099,9 @@
 	 </script>
 	 
 	 <script src="https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js"></script>
+	 <h:outputScript target="body" library="same" name="javascripts/app.js" />
+	 
+</h:form>
 
 </h:body>
 </html>

@@ -91,7 +91,7 @@ function pedidoEnviado() {
 	let timerInterval;
 	Swal.fire({
 	  type: 'success',
-	  title: 'Pedido enviado!',
+	  title: 'Pagamento realizado!',
 	  html: 'Obrigado, em breve entraremos em contato, redicionando para a página principal.<br/><b></b>',
 	  timer: 10000,
 	  allowOutsideClick: false,
@@ -113,17 +113,6 @@ function pedidoEnviado() {
 	  }
 	})
 }
-
-
-
-$(document).ready(function() {
-	
-	document.getElementById('cardNumber').addEventListener('keyup', guessPaymentMethod);
-	document.getElementById('cardNumber').addEventListener('change', guessPaymentMethod);
-
-	window.Mercadopago.setPublishableKey("TEST-4ec8521c-4fb8-4d62-afc0-6ef65bfdec1f");
-	window.Mercadopago.getIdentificationTypes();
-});
 
 function guessPaymentMethod(event) {
     let cardnumber = document.getElementById("cardNumber").value;
@@ -187,9 +176,6 @@ function sdkResponseHandler(status, response) {
         stop__();
     }else{
     	$('.token').val(response.id);
-        
-    	alert(response.id);
-        console.log(response.id);
         
         submitForm([ {
 			name : 'token',

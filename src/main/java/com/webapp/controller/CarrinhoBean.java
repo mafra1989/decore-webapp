@@ -2,10 +2,13 @@ package com.webapp.controller;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -16,14 +19,19 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 
 import com.mercadopago.MercadoPago;
 import com.mercadopago.exceptions.MPException;
 import com.mercadopago.resources.Payment;
 import com.mercadopago.resources.datastructures.payment.Payer;
+import com.webapp.mail.configuration.AppConfig;
 import com.webapp.mail.model.CustomerInfo;
 import com.webapp.mail.model.ProductOrder;
+import com.webapp.mail.service.OrderService;
 import com.webapp.model.Bairro;
+import com.webapp.model.ItemPedido;
 import com.webapp.model.Pedido;
 import com.webapp.model.Produto;
 import com.webapp.repository.Bairros;
@@ -71,6 +79,8 @@ public class CarrinhoBean implements Serializable {
 	
 	private Integer token;
 	
+	private static String ACCESS_TOKEN = "TEST-1852237905175376-080820-c7142e78a910796fbc26999ef2fa808d-277250128";
+	
 	
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {			
@@ -87,7 +97,7 @@ public class CarrinhoBean implements Serializable {
         return listaDeBairros;
     }	
 	
-	private static String ACCESS_TOKEN = "TEST-4ec8521c-4fb8-4d62-afc0-6ef65bfdec1f";
+	
 	public void confirmarPagamento() throws IOException, MPException {
 		
 		Map<String, String> requestParamMap = FacesContext.getCurrentInstance().getExternalContext()
@@ -121,8 +131,7 @@ public class CarrinhoBean implements Serializable {
 		
 		if(payment.getStatus() != null && payment.getStatus().equals(Payment.Status.approved)) {
 			
-			PrimeFaces.current().executeScript(
-					"PF('downloadLoading').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Pagamento efetuado com sucesso!' });");
+			sendMailAndSavePedido();
 			
 		} else {
 			
@@ -130,10 +139,13 @@ public class CarrinhoBean implements Serializable {
 					"swal({ type: 'error', title: 'Erro!', text: 'Pagamento não realizado.' });");			
 		}
 		
+		PrimeFaces.current().ajax().update("form");	
 		
-		
-		/*
-		
+	}
+	
+	
+	private void sendMailAndSavePedido() {
+			
 		AbstractApplicationContext context = new AnnotationConfigApplicationContext(
 				AppConfig.class);
 
@@ -193,9 +205,8 @@ public class CarrinhoBean implements Serializable {
 		
 		PrimeFaces.current().executeScript("pedidoEnviado();");
 		
-		*/
-		
 	}
+	
 	
 	public void pagarPedido() throws IOException {
 		
