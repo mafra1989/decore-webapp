@@ -119,7 +119,7 @@ public class CarrinhoBean implements Serializable {
 		Payment payment = new Payment();
 		payment.setTransactionAmount(totalGeral.floatValue())
 		       .setToken(token)
-		       .setDescription("Rustic Leather Chair")
+		       .setDescription("Compras na Decore Web Store")
 		       .setInstallments(Installments)
 		       .setPaymentMethodId(paymentMethodId)
 		       .setPayer(new Payer()
@@ -145,19 +145,7 @@ public class CarrinhoBean implements Serializable {
 	
 	
 	private void sendMailAndSavePedido() {
-			
-		AbstractApplicationContext context = new AnnotationConfigApplicationContext(
-				AppConfig.class);
-
-		OrderService orderService = (OrderService) context.getBean("orderService");
-		
-		boolean emailEnviado = orderService.sendOrderConfirmation(getDummyOrder());
-		
-		((AbstractApplicationContext) context).close();
-		
-		
-		
-		
+					
 		pedido.setDataPedido(new Date());
 		pedido.setQuantidadeItens(totalDeItens);
 		pedido.setValorTotal(new BigDecimal(totalGeral));
@@ -170,7 +158,6 @@ public class CarrinhoBean implements Serializable {
 		
 		pedido.setEmpresa("Decore");
 		pedido.setStatus("AGUARDANDO");		
-		pedido.setEmailenviado(emailEnviado);
 		
 		Calendar calendario = Calendar.getInstance();
 		calendario.setTime(pedido.getDataPedido());
@@ -197,6 +184,26 @@ public class CarrinhoBean implements Serializable {
 		
 		
 		
+		AbstractApplicationContext context = new AnnotationConfigApplicationContext(
+				AppConfig.class);
+
+		OrderService orderService = (OrderService) context.getBean("orderService");
+		
+		boolean emailEnviado = orderService.sendOrderConfirmation(getDummyOrder());
+		
+		((AbstractApplicationContext) context).close();
+		
+		
+		
+		
+		
+		pedido.setEmailenviado(emailEnviado);
+		pedidos.save(pedido);
+		
+		
+		
+		
+		
 		pedido = new Pedido();
 		
 		listaDeProdutos = new ArrayList<Produto>();
@@ -208,10 +215,10 @@ public class CarrinhoBean implements Serializable {
 	}
 	
 	
-	public void pagarPedido() throws IOException {
+	public void realizarPagamento() throws IOException {
 		
 		try {
-			Thread.sleep(2000);
+			Thread.sleep(1500);
 			
 		} catch (InterruptedException e) {
 		}
@@ -223,7 +230,7 @@ public class CarrinhoBean implements Serializable {
 	public ProductOrder getDummyOrder()
 	{
 		ProductOrder order = new ProductOrder();
-		order.setOrderId("5123");
+		order.setOrderId(String.valueOf(pedido.getId()));
 		//order.setProductName("Thinkpad Laptop");
 		//order.setStatus("Confirmed");
 	
@@ -275,7 +282,7 @@ public class CarrinhoBean implements Serializable {
 		totalGeralEmString = nf.format(totalGeral.doubleValue());
 		
 		try {
-			Thread.sleep(2000);
+			Thread.sleep(1500);
 			
 		} catch (InterruptedException e) {
 		}
