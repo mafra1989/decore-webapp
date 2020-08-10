@@ -23,9 +23,12 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.AbstractApplicationContext;
 
 import com.mercadopago.MercadoPago;
+import com.mercadopago.exceptions.MPConfException;
 import com.mercadopago.exceptions.MPException;
 import com.mercadopago.resources.Payment;
+import com.mercadopago.resources.Preference;
 import com.mercadopago.resources.datastructures.payment.Payer;
+import com.mercadopago.resources.datastructures.preference.Item;
 import com.webapp.mail.configuration.AppConfig;
 import com.webapp.mail.model.CustomerInfo;
 import com.webapp.mail.model.ProductOrder;
@@ -79,7 +82,9 @@ public class CarrinhoBean implements Serializable {
 	
 	private Integer token;
 	
-	private static String ACCESS_TOKEN = "TEST-1852237905175376-080820-c7142e78a910796fbc26999ef2fa808d-277250128";
+	private static String TESTE_ACCESS_TOKEN = "TEST-1852237905175376-080820-c7142e78a910796fbc26999ef2fa808d-277250128";
+	
+	private Preference preference;
 	
 	
 	public void inicializar() {
@@ -105,16 +110,10 @@ public class CarrinhoBean implements Serializable {
 
 		String token = requestParamMap.get("token") != null ? requestParamMap.get("token") : "";
 
-				
-		System.out.println(Installments);
-		System.out.println(paymentMethodId);
-		System.out.println(token);
+
 		
-		System.out.println(ACCESS_TOKEN);
-		System.out.println(totalGeral.floatValue());
-		System.out.println(pedido.getEmail());
 		
-		MercadoPago.SDK.setAccessToken(ACCESS_TOKEN);
+		MercadoPago.SDK.setAccessToken(TESTE_ACCESS_TOKEN);
 
 		Payment payment = new Payment();
 		payment.setTransactionAmount(totalGeral.floatValue())
@@ -215,7 +214,42 @@ public class CarrinhoBean implements Serializable {
 	}
 	
 	
-	public void realizarPagamento() throws IOException {
+	public void realizarPagamento() throws IOException, MPException {
+		
+		// Configura credenciais
+		MercadoPago.SDK.setAccessToken("TESTE_ACCESS_TOKEN");
+		
+		
+		Payment payment = new Payment();
+		payment//.setTransactionAmount(totalGeral.floatValue())
+		       //.setDescription("Compras na Decore Web Store")
+		       .setPayer(new Payer()
+		         .setEmail(pedido.getEmail()));
+		
+
+		// Cria um objeto de preferência
+		preference = new Preference();
+
+		// Cria um item na preferência
+		Item item = new Item();
+		item.setTitle("Meu produto")
+		    .setQuantity(1)
+		    .setUnitPrice((float) 75.56);
+		preference.appendItem(item);
+		
+		com.mercadopago.resources.datastructures.preference.Payer payer = new com.mercadopago.resources.datastructures.preference.Payer()
+        .setEmail(pedido.getEmail());
+		preference.setPayer(payer);
+		
+		System.out.println(preference.getPayer());
+		
+		preference.save();
+		
+		
+		
+		System.out.println(preference.getInitPoint());
+		
+		
 		
 		try {
 			Thread.sleep(1500);
@@ -223,7 +257,10 @@ public class CarrinhoBean implements Serializable {
 		} catch (InterruptedException e) {
 		}
 		
-		FacesContext.getCurrentInstance().getExternalContext().redirect("/webstore/decore/pagamento.xhtml");
+		
+		PrimeFaces.current().executeScript("doPay_();");
+		
+		//FacesContext.getCurrentInstance().getExternalContext().redirect("/webstore/decore/pagamento.xhtml");
 				
 	}
 	
@@ -246,10 +283,10 @@ public class CarrinhoBean implements Serializable {
 		return order;
 	}
 	
-	public void finalizarPedido() throws IOException {
+	public void finalizarPedido() throws IOException, MPException {
 		
 		atualizarCarrinho();
-
+		
 		if(totalDeItens > 0) {
 			FacesContext.getCurrentInstance().getExternalContext().redirect("/webstore/decore/checkout.xhtml");
 		} else {
@@ -409,6 +446,10 @@ public class CarrinhoBean implements Serializable {
 
 	public void setToken(Integer token) {
 		this.token = token;
+	}
+
+	public Preference getPreference() {
+		return preference;
 	}
 
 }
