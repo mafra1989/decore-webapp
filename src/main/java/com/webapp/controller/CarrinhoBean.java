@@ -2,15 +2,13 @@ package com.webapp.controller;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -18,15 +16,14 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.support.AbstractApplicationContext;
 
-import com.webapp.mail.configuration.AppConfig;
+import com.mercadopago.MercadoPago;
+import com.mercadopago.exceptions.MPException;
+import com.mercadopago.resources.Payment;
+import com.mercadopago.resources.datastructures.payment.Payer;
 import com.webapp.mail.model.CustomerInfo;
 import com.webapp.mail.model.ProductOrder;
-import com.webapp.mail.service.OrderService;
 import com.webapp.model.Bairro;
-import com.webapp.model.ItemPedido;
 import com.webapp.model.Pedido;
 import com.webapp.model.Produto;
 import com.webapp.repository.Bairros;
@@ -68,6 +65,13 @@ public class CarrinhoBean implements Serializable {
 	private ItensPedidos itensPedidos;
 	
 	
+	private String paymentMethodId;
+	
+	private Integer Installments;
+	
+	private Integer token;
+	
+	
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {			
 		}
@@ -83,7 +87,52 @@ public class CarrinhoBean implements Serializable {
         return listaDeBairros;
     }	
 	
-	public void enviarPedido() throws IOException {
+	private static String ACCESS_TOKEN = "TEST-4ec8521c-4fb8-4d62-afc0-6ef65bfdec1f";
+	public void confirmarPagamento() throws IOException, MPException {
+		
+		Map<String, String> requestParamMap = FacesContext.getCurrentInstance().getExternalContext()
+				.getRequestParameterMap();
+
+		String token = requestParamMap.get("token") != null ? requestParamMap.get("token") : "";
+
+				
+		System.out.println(Installments);
+		System.out.println(paymentMethodId);
+		System.out.println(token);
+		
+		System.out.println(ACCESS_TOKEN);
+		System.out.println(totalGeral.floatValue());
+		System.out.println(pedido.getEmail());
+		
+		MercadoPago.SDK.setAccessToken(ACCESS_TOKEN);
+
+		Payment payment = new Payment();
+		payment.setTransactionAmount(totalGeral.floatValue())
+		       .setToken(token)
+		       .setDescription("Rustic Leather Chair")
+		       .setInstallments(Installments)
+		       .setPaymentMethodId(paymentMethodId)
+		       .setPayer(new Payer()
+		         .setEmail(pedido.getEmail()));
+
+		payment.save();
+
+		System.out.println(payment.getStatus());
+		
+		if(payment.getStatus() != null && payment.getStatus().equals(Payment.Status.approved)) {
+			
+			PrimeFaces.current().executeScript(
+					"PF('downloadLoading').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Pagamento efetuado com sucesso!' });");
+			
+		} else {
+			
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'error', title: 'Erro!', text: 'Pagamento não realizado.' });");			
+		}
+		
+		
+		
+		/*
 		
 		AbstractApplicationContext context = new AnnotationConfigApplicationContext(
 				AppConfig.class);
@@ -142,7 +191,22 @@ public class CarrinhoBean implements Serializable {
 		
 		atualizarCarrinho();
 		
-		PrimeFaces.current().executeScript("pedidoEnviado();");		
+		PrimeFaces.current().executeScript("pedidoEnviado();");
+		
+		*/
+		
+	}
+	
+	public void pagarPedido() throws IOException {
+		
+		try {
+			Thread.sleep(2000);
+			
+		} catch (InterruptedException e) {
+		}
+		
+		FacesContext.getCurrentInstance().getExternalContext().redirect("/webstore/decore/pagamento.xhtml");
+				
 	}
 	
 	public ProductOrder getDummyOrder()
@@ -300,4 +364,33 @@ public class CarrinhoBean implements Serializable {
 		this.pedido = pedido;
 	}
 	
+	
+	public Double getTotalGeral() {
+		return totalGeral;
+	}
+
+	public String getPaymentMethodId() {
+		return paymentMethodId;
+	}
+
+	public void setPaymentMethodId(String paymentMethodId) {
+		this.paymentMethodId = paymentMethodId;
+	}
+
+	public Integer getInstallments() {
+		return Installments;
+	}
+
+	public void setInstallments(Integer installments) {
+		Installments = installments;
+	}
+
+	public Integer getToken() {
+		return token;
+	}
+
+	public void setToken(Integer token) {
+		this.token = token;
+	}
+
 }

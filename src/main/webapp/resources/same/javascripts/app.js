@@ -112,5 +112,88 @@ function pedidoEnviado() {
 	    home();
 	  }
 	})
-
 }
+
+
+
+$(document).ready(function() {
+	
+	document.getElementById('cardNumber').addEventListener('keyup', guessPaymentMethod);
+	document.getElementById('cardNumber').addEventListener('change', guessPaymentMethod);
+
+	window.Mercadopago.setPublishableKey("TEST-4ec8521c-4fb8-4d62-afc0-6ef65bfdec1f");
+	window.Mercadopago.getIdentificationTypes();
+});
+
+function guessPaymentMethod(event) {
+    let cardnumber = document.getElementById("cardNumber").value;
+
+    if (cardnumber.length >= 6) {
+        let bin = cardnumber.substring(0,6);
+        window.Mercadopago.getPaymentMethod({
+            "bin": bin
+        }, setPaymentMethod);
+    }
+};
+
+function setPaymentMethod(status, response) {
+    if (status == 200) {
+    	console.log(response);
+        let paymentMethodId = response[0].id;
+        $('.payment_method_id').val(paymentMethodId);
+        getInstallments();
+    } else {
+        alert(`payment method info error: ${response}`);
+    }
+}
+
+function getInstallments(){
+    window.Mercadopago.getInstallments({
+        "payment_method_id": $('.payment_method_id').val(),
+        "amount": parseFloat($('.transaction_amount').val())
+
+    }, function (status, response) {
+        if (status == 200) {
+        	console.log(response);
+            document.getElementById('installments').options.length = 0;
+            response[0].payer_costs.forEach( installment => {
+                let opt = document.createElement('option');
+                opt.text = installment.recommended_message;
+                opt.value = installment.installments;
+                document.getElementById('installments').appendChild(opt);
+            });
+            
+            $('.installments').val(response[0].payer_costs[0].installments);
+        } else {
+            alert(`installments method info error: ${response}`);
+        }
+    });
+}
+
+
+function doPay(){ 
+
+	var $form = document.querySelector('#form');
+	
+	window.Mercadopago.createToken($form, sdkResponseHandler);
+	
+	return false;
+
+};
+
+function sdkResponseHandler(status, response) {
+    if (status != 200 && status != 201) {
+        alert("verify filled data");
+        stop__();
+    }else{
+    	$('.token').val(response.id);
+        
+    	alert(response.id);
+        console.log(response.id);
+        
+        submitForm([ {
+			name : 'token',
+			value : response.id
+		} ]);
+    }
+};
