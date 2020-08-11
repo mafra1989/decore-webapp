@@ -217,14 +217,7 @@ public class CarrinhoBean implements Serializable {
 	public void realizarPagamento() throws IOException, MPException {
 		
 		// Configura credenciais
-		MercadoPago.SDK.setAccessToken("TESTE_ACCESS_TOKEN");
-		
-		
-		Payment payment = new Payment();
-		payment//.setTransactionAmount(totalGeral.floatValue())
-		       //.setDescription("Compras na Decore Web Store")
-		       .setPayer(new Payer()
-		         .setEmail(pedido.getEmail()));
+		MercadoPago.SDK.setAccessToken(TESTE_ACCESS_TOKEN);
 		
 
 		// Cria um objeto de preferência
@@ -240,18 +233,8 @@ public class CarrinhoBean implements Serializable {
 		com.mercadopago.resources.datastructures.preference.Payer payer = new com.mercadopago.resources.datastructures.preference.Payer()
         .setEmail(pedido.getEmail());
 		preference.setPayer(payer);
-		
-		System.out.println(preference.getPayer());
-		
-		System.out.println(preference.save().getSandboxInitPoint());
-		
-		System.out.println(preference.getClientId());
-		
-		System.out.println(preference.toString());
-		
-		System.out.println(preference.getInitPoint());
-		
-		
+			
+		preference.save();
 		
 		try {
 			Thread.sleep(1500);
@@ -259,10 +242,9 @@ public class CarrinhoBean implements Serializable {
 		} catch (InterruptedException e) {
 		}
 		
-		PrimeFaces.current().ajax().update("form");	
-		PrimeFaces.current().executeScript("doPay_();");
+		PrimeFaces.current().executeScript("start__();");
 		
-		//FacesContext.getCurrentInstance().getExternalContext().redirect("/webstore/decore/pagamento.xhtml");
+		FacesContext.getCurrentInstance().getExternalContext().redirect("/webstore/decore/pagamento.xhtml");
 				
 	}
 	

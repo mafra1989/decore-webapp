@@ -39,7 +39,8 @@ public class CharacterEncodingFilter implements Filter {
 																						// 1.1
 		//httpResponse.setHeader("Pragma", "no-cache"); // HTTP 1.0
 		//httpResponse.setDateHeader("Expires", 0); // Proxies
-		httpResponse.setHeader("Content-Security-Policy", "frame-ancestors 'none'"); 
+		httpResponse.setHeader("Content-Security-Policy", "frame-ancestors 'self'");
+		httpResponse.setHeader("X-XSS-Protection", "1; 'mode=block' always");
 
 		chain.doFilter(req, resp);
 	}
