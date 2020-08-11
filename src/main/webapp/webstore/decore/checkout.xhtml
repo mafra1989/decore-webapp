@@ -113,7 +113,6 @@
 		    margin-top: 6px;
 		    float: left;
 		    font-weight: normal;
-		    font-size:14px;
 		}
 		.navbar-inverse {
 		    z-index: 999999;
@@ -855,7 +854,7 @@
 						<p:link styleClass="voltar" style="margin-top:10px;" onclick="start_(this);" href="cart.xhtml">Voltar ao pedido</p:link>
 						
 						<p:commandButton value="Continuar com o pagamento"
-									disabled="#{carrinhoBean.totalDeItens eq 0}" style="float:right;padding: 4px 4px;font-weight: normal;font-size: 14px;"
+									disabled="#{carrinhoBean.totalDeItens eq 0}" style="float:right;padding: 4px 4px;font-weight: normal;font-size: 12px;"
 									update="form" onstart="start__();" onsuccess="stop__();"
 									process="@this panel-grid" action="#{carrinhoBean.realizarPagamento}" />													
 					</p:panel>

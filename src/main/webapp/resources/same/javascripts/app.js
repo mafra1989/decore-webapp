@@ -159,6 +159,18 @@ function getInstallments(){
     });
 }
 
+function doPay_(){ 
+
+	var $button = document.querySelector('.mercadopago-button');
+	
+	stop__();
+
+	$button.click();
+	
+	return false;
+
+};
+
 function doPay(){ 
 
 	var $form = document.querySelector('#form');

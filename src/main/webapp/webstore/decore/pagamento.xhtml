@@ -40,9 +40,6 @@
 		.mercadopago-button {
 			display:none;
 		}
-		.panel-mp .mercadopago-button {
-			display:block;
-		}
 		.pagamento.ui-panelgrid .ui-panelgrid-cell {
 		    padding: 4px 0px;
 	    }
@@ -786,10 +783,9 @@
 					</p:panel>
 					
 					<p:panel styleClass="panel-mp">
-						<script
-						   src="https://www.mercadopago.com.br/integrations/v1/web-payment-checkout.js"
-						   data-preference-id="#{carrinhoBean.preference.id}">
-						 </script>
+						<p:commandButton value="Pagar"
+									disabled="#{carrinhoBean.totalDeItens eq 0}" style="float:right;padding: 4px 4px;font-weight: normal;font-size: 14px;"
+									onstart="start__();" />
 					 </p:panel>
 			
 				</p:panelGrid>
@@ -966,7 +962,12 @@
 		}
 		
 		function start__() {
+			event.preventDefault();
 			jQuery(".loading-spinner__").fadeIn("slow");
+			
+			delay(function() {     
+				doPay_();
+			}, 1500);
 		}
 
 		function stop__() {
