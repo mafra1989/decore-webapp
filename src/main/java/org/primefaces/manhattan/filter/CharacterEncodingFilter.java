@@ -23,6 +23,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
 
 public class CharacterEncodingFilter implements Filter {
 
@@ -33,11 +34,12 @@ public class CharacterEncodingFilter implements Filter {
 		resp.setCharacterEncoding("UTF-8");
 
 		/* PROBLEMA DE CACHE RESOLVIDO */
-		//HttpServletResponse httpResponse = (HttpServletResponse) resp;
+		HttpServletResponse httpResponse = (HttpServletResponse) resp;
 		//httpResponse.setHeader("Cache-Control", "no-cache,no-store,must-revalidate"); // HTTP
 																						// 1.1
 		//httpResponse.setHeader("Pragma", "no-cache"); // HTTP 1.0
 		//httpResponse.setDateHeader("Expires", 0); // Proxies
+		httpResponse.setHeader("Content-Security-Policy", "frame-ancestors 'none'"); 
 
 		chain.doFilter(req, resp);
 	}

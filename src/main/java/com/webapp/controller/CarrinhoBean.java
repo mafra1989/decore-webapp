@@ -257,7 +257,7 @@ public class CarrinhoBean implements Serializable {
 		} catch (InterruptedException e) {
 		}
 		
-		
+		PrimeFaces.current().ajax().update("form", "form-pay");	
 		PrimeFaces.current().executeScript("doPay_();");
 		
 		//FacesContext.getCurrentInstance().getExternalContext().redirect("/webstore/decore/pagamento.xhtml");

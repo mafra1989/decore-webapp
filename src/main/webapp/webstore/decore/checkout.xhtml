@@ -8,15 +8,7 @@
 	
 
 <h:head>
-	<f:facet name="first">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<meta name="viewport"
-			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-		<meta name="apple-mobile-web-app-capable" content="yes" />
-	</f:facet>
 	
-	<title>Checkout</title>
 
 	<link href="css/bootstrap.css" rel="stylesheet" />
 	<link href="css/style.css" rel="stylesheet" />
@@ -37,7 +29,7 @@
 	<style>
 	@media ( min-width :220px) {
 		.mercadopago-button {
-			display:none;
+			display:block;
 		}
 		.layout--modal .page-mask {
 	    	width: 100% !important;
@@ -862,7 +854,7 @@
 						
 						<p:commandButton value="Realizar pagamento" icon="fa fa-fw fa-send" 
 									disabled="#{carrinhoBean.totalDeItens eq 0}" style="float:right;padding: 4px 19px;"
-									update="form form-pay" onstart="start__();" onsuccess="stop__();"
+									update="form" onstart="start__();" onsuccess="stop__();"
 									process="@this panel-grid" action="#{carrinhoBean.realizarPagamento}" />													
 					</p:panel>
 			
@@ -1069,5 +1061,10 @@
 
 	<h:outputScript target="body" library="same" name="javascripts/app.js" />
 	
+	
+	
 </h:body>
+
+
+						
 </html>
