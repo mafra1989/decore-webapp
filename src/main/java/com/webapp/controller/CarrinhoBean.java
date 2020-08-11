@@ -243,9 +243,11 @@ public class CarrinhoBean implements Serializable {
 		
 		System.out.println(preference.getPayer());
 		
-		preference.save();
+		System.out.println(preference.save().getSandboxInitPoint());
 		
+		System.out.println(preference.getClientId());
 		
+		System.out.println(preference.toString());
 		
 		System.out.println(preference.getInitPoint());
 		
@@ -257,7 +259,7 @@ public class CarrinhoBean implements Serializable {
 		} catch (InterruptedException e) {
 		}
 		
-		PrimeFaces.current().ajax().update("form", "form-pay");	
+		PrimeFaces.current().ajax().update("form");	
 		PrimeFaces.current().executeScript("doPay_();");
 		
 		//FacesContext.getCurrentInstance().getExternalContext().redirect("/webstore/decore/pagamento.xhtml");

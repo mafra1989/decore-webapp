@@ -916,19 +916,16 @@
 		</p:panelGrid>
 						
     </div>
-    	
-</h:form> 
-
-<h:form id="form-pay">
-
-<form id="pay" action="/processar_pagamento" method="POST">
-						  <script
+    
+    <script
 						   src="https://www.mercadopago.com.br/integrations/v1/web-payment-checkout.js"
 						   data-preference-id="#{carrinhoBean.preference.id}">
 						  </script>
-						</form>
-						
-						</h:form>
+    	
+</h:form> 
+
+
+
 		
 
 	<p:dialog id="downloadLoading" showHeader="false" modal="true"
