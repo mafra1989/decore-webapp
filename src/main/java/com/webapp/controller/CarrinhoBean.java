@@ -11,7 +11,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -23,11 +22,8 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.AbstractApplicationContext;
 
 import com.mercadopago.MercadoPago;
-import com.mercadopago.exceptions.MPConfException;
 import com.mercadopago.exceptions.MPException;
-import com.mercadopago.resources.Payment;
 import com.mercadopago.resources.Preference;
-import com.mercadopago.resources.datastructures.payment.Payer;
 import com.mercadopago.resources.datastructures.preference.Item;
 import com.webapp.mail.configuration.AppConfig;
 import com.webapp.mail.model.CustomerInfo;
@@ -82,7 +78,7 @@ public class CarrinhoBean implements Serializable {
 	
 	private Integer token;
 	
-	private static String TESTE_ACCESS_TOKEN = "TEST-1852237905175376-080820-c7142e78a910796fbc26999ef2fa808d-277250128";
+	private static String TEST_ACCESS_TOKEN = "TEST-1852237905175376-080820-c7142e78a910796fbc26999ef2fa808d-277250128";
 	
 	private Preference preference;
 	
@@ -103,8 +99,10 @@ public class CarrinhoBean implements Serializable {
     }	
 	
 	
-	public void confirmarPagamento() throws IOException, MPException {
-		
+	public void pagarComMercadoPago() throws IOException, MPException {
+
+		/*
+		 
 		Map<String, String> requestParamMap = FacesContext.getCurrentInstance().getExternalContext()
 				.getRequestParameterMap();
 
@@ -113,7 +111,7 @@ public class CarrinhoBean implements Serializable {
 
 		
 		
-		MercadoPago.SDK.setAccessToken(TESTE_ACCESS_TOKEN);
+		MercadoPago.SDK.setAccessToken(TEST_ACCESS_TOKEN);
 
 		Payment payment = new Payment();
 		payment.setTransactionAmount(totalGeral.floatValue())
@@ -138,7 +136,49 @@ public class CarrinhoBean implements Serializable {
 					"swal({ type: 'error', title: 'Erro!', text: 'Pagamento não realizado.' });");			
 		}
 		
+		
 		PrimeFaces.current().ajax().update("form");	
+		
+		*/
+		
+		
+		Long totalDeItens = 0L;
+		Double totalGeral = 0D;
+		for (Item item : preference.getItems()) {	
+			totalDeItens += item.getQuantity().intValue();
+			totalGeral += item.getUnitPrice().doubleValue() * item.getQuantity().intValue();
+		}
+		
+		
+		if(this.totalDeItens.intValue() == totalDeItens.intValue() && this.totalGeral.doubleValue() == totalGeral.doubleValue()) {
+			//sendMailAndSavePedido();
+			PrimeFaces.current().executeScript("start__();");
+			
+		} else {
+			
+			// Configura credenciais
+			MercadoPago.SDK.setAccessToken(TEST_ACCESS_TOKEN);	
+
+			// Cria um objeto de preferência
+			preference = new Preference();
+
+			// Cria um itens na preferência
+			for (Produto produto : listaDeProdutos) {
+				Item item = new Item();
+				item.setTitle(produto.getDescricaoConvertida())
+				    .setQuantity(produto.getQuantidadePedido().intValue())
+				    .setUnitPrice(produto.getPrecoDeVenda().floatValue());
+				preference.appendItem(item);			
+			}
+			
+			com.mercadopago.resources.datastructures.preference.Payer payer = new com.mercadopago.resources.datastructures.preference.Payer()
+	        .setEmail(pedido.getEmail());
+			preference.setPayer(payer);
+				
+			preference.save();
+						
+			PrimeFaces.current().executeScript("stop__();atualizaPedido();");
+		}	
 		
 	}
 	
@@ -217,34 +257,27 @@ public class CarrinhoBean implements Serializable {
 	public void realizarPagamento() throws IOException, MPException {
 		
 		// Configura credenciais
-		MercadoPago.SDK.setAccessToken(TESTE_ACCESS_TOKEN);
-		
+		MercadoPago.SDK.setAccessToken(TEST_ACCESS_TOKEN);	
 
 		// Cria um objeto de preferência
 		preference = new Preference();
 
-		// Cria um item na preferência
-		Item item = new Item();
-		item.setTitle("Meu produto")
-		    .setQuantity(1)
-		    .setUnitPrice((float) 75.56);
-		preference.appendItem(item);
+		// Cria um itens na preferência
+		for (Produto produto : listaDeProdutos) {
+			Item item = new Item();
+			item.setTitle(produto.getDescricaoConvertida())
+			    .setQuantity(produto.getQuantidadePedido().intValue())
+			    .setUnitPrice(produto.getPrecoDeVenda().floatValue());
+			preference.appendItem(item);			
+		}
 		
 		com.mercadopago.resources.datastructures.preference.Payer payer = new com.mercadopago.resources.datastructures.preference.Payer()
         .setEmail(pedido.getEmail());
 		preference.setPayer(payer);
 			
 		preference.save();
-		
-		try {
-			Thread.sleep(1500);
-			
-		} catch (InterruptedException e) {
-		}
-		
-		PrimeFaces.current().executeScript("start__();");
-		
-		FacesContext.getCurrentInstance().getExternalContext().redirect("/webstore/decore/pagamento.xhtml");
+
+		PrimeFaces.current().executeScript("pagamento();");
 				
 	}
 	

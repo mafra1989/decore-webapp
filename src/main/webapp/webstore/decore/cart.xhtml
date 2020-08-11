@@ -98,7 +98,7 @@
 		    width: 20px;
 		}
 		hr {
-	    	border-top: 1px solid #636161;
+	    	border-top: 1px solid #c3c3c3;
 	    	margin-top: -3px;
     		margin-bottom: 20px;
 	    }
@@ -600,7 +600,7 @@
 	    <p:commandButton value="Atualizar" icon="fa fa-fw fa-refresh" iconPos="right"  styleClass="remove-item atualizar-carrinho" 
 							action="#{carrinhoBean.atualizarCarrinho}"
 							process="@this meu-carrinho" update="meu-carrinho form:link1 form:link2 form:btn-finalizar form:msg1 form:msg2" onstart="start();" oncomplete="stop();"
-							style="float: right;margin-top: -14px;margin-right: 0px;border: 1px solid #69389ad1;font-weight: normal;" />
+							style="float: right;margin-top: -14px;margin-right: 0px;border: 1px solid #c3c3c3;font-weight: normal;" />
 	    
     	<p:dataTable var="produto" value="#{carrinhoBean.listaDeProdutos}" 
 	        paginator="false" style="margin-top:40px;margin-bottom:25px;font-size:14px;" id="meu-carrinho"
@@ -664,26 +664,24 @@
 	                </p:column>
 	                <p:column colspan="2" styleClass="total-geral" footerText="R$ #{carrinhoBean.totalGeralEmString}" />
 	            </p:row>
-	        </p:columnGroup>
-	        
-	        
+	        </p:columnGroup>        
       
 	    </p:dataTable>
 
 		<hr style="border-top: 1px solid #c3c3c3;" />
 		
-		<p:commandButton id="btn-finalizar" value="Finalizar Pedido" icon="fa fa-fw fa-shopping-cart" onstart="start__();"
+		<p:commandButton id="btn-finalizar" value="Finalizar Pedido" icon="fa fa-fw fa-shopping-cart" onstart="checkout();"
 							styleClass="finalizar" disabled="#{carrinhoBean.totalDeItens eq 0}"
 							process="@this meu-carrinho" action="#{carrinhoBean.finalizarPedido}" />
 							
-		<p:panel id="msg1" styleClass="continuar-comprando" style="text-align:center;"
+		<p:panel id="msg1" styleClass="continuar-comprando" style="text-align:center;display:none;"
 			rendered="#{carrinhoBean.totalDeItens ge 1}">
 			<p:link style="color: #bf5306;font-weight: normal;font-size:12px;" href="/webstore/decore/products.xhtml"
 								onclick="start_(this);">
 								Clique aqui para adicionar mais itens ao seu pedido.</p:link>
 		</p:panel>	
 		
-		<p:panel id="msg2" styleClass="continuar-comprando" style="text-align:center;"
+		<p:panel id="msg2" styleClass="continuar-comprando" style="text-align:center;display:none;"
 			rendered="#{carrinhoBean.totalDeItens eq 0}">
 			<p:link style="color: #bf5306;font-weight: normal;font-size:12px;" href="/webstore/decore/products.xhtml"
 								onclick="start_(this);">
@@ -779,6 +777,10 @@
 			delay(function() {     
 					$(location).attr('href',url);
 				}, 1500);
+		}
+		
+		function checkout() {
+			jQuery(".loading-spinner_").fadeIn("slow");
 		}
 		
 		function start__() {

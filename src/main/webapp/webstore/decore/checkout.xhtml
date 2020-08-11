@@ -35,7 +35,9 @@
 	
 	<style>
 	@media ( min-width :220px) {
-		
+		.grid-card.ui-panelgrid .ui-panelgrid-cell {
+		    padding: 0px;
+		}
 		.pagamento.ui-panelgrid .ui-panelgrid-cell {
 		    padding: 4px 0px;
 	    }
@@ -765,83 +767,104 @@
 				
 				<p:panelGrid columns="1" layout="grid" style="font-size:12px;margin-bottom:15px;"
 					styleClass="panelgrid-noborder disabled disabled"
-					columnClasses="ui-grid-col-12">
+					columnClasses="ui-grid-col-12">				
 					
-					<p:inputText id="email" autocomplete="off" style="width:100%;text-align:left;"
-						requiredMessage="E-mail deve ser informado." label=" " required="true" maxlength="120"
-						value="#{carrinhoBean.pedido.email}" placeholder="E-mail" />
-					<p:message for="email" />
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled grid-card"
+						columnClasses="ui-grid-col-12">
+				
+						<p:outputLabel value="E-mail" style="font-weight: normal;font-size: 12px;" /> 
+						<p:inputText id="email" autocomplete="off" style="width:100%;text-align:left;"
+							requiredMessage="E-mail deve ser informado." label=" " required="true" maxlength="120"
+							value="#{carrinhoBean.pedido.email}" placeholder="E-mail" />
+						<p:message for="email" style="margin-top:5px;" />
+					</p:panelGrid>
 				</p:panelGrid>
 					
-				<p:outputLabel value="Endereço de faturamento" />
+				<p:outputLabel value="Informações de entrega" />
 				
 				<p:panelGrid columns="2" layout="grid" style="font-size:12px;"
 					styleClass="panelgrid-noborder disabled disabled"
 					columnClasses="ui-grid-col-6, ui-grid-col-6">
+					
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled grid-card"
+						columnClasses="ui-grid-col-12">
 				
-					<p:inputText id="nome"  autocomplete="off" style="width:100%;text-align:left;"
-						requiredMessage="Nome deve ser informado." required="true" label="Nome"
-						value="#{carrinhoBean.pedido.nome}" placeholder="Nome" maxlength="120" />
-		
-					<p:inputMask id="telefone"  autocomplete="off" style="width:100%;text-align:left;" 
-						mask="(99) 99999-9999" autoClear="false"
-						requiredMessage="Telefone deve ser informado." required="true" label="Telefone"
-						value="#{carrinhoBean.pedido.telefone}" placeholder="Telefone" />
-						
-				</p:panelGrid>
-				
-				<p:panelGrid columns="2" layout="grid" style="font-size:12px;"
-					styleClass="panelgrid-noborder disabled disabled"
-					columnClasses="ui-grid-col-6, ui-grid-col-6">
+						<p:outputLabel value="Nome" style="font-weight: normal;font-size: 12px;" /> 
+						<p:inputText id="nome"  autocomplete="off" style="width:100%;text-align:left;"
+							requiredMessage="Nome deve ser informado." required="true" label="Nome"
+							value="#{carrinhoBean.pedido.nome}" placeholder="Nome" maxlength="120" />
 							
-					<p:message for="nome" />				
+						<p:message for="nome" style="margin-top:5px;" />
+					</p:panelGrid>
+		
 						
-					<p:message for="telefone" />
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled grid-card"
+						columnClasses="ui-grid-col-12">
+				
+						<p:outputLabel value="Telefone" style="font-weight: normal;font-size: 12px;" /> 
+						<p:inputMask id="telefone"  autocomplete="off" style="width:100%;text-align:left;" 
+							mask="(99) 99999-9999" autoClear="false"
+							requiredMessage="Telefone deve ser informado." required="true" label="Telefone"
+							value="#{carrinhoBean.pedido.telefone}" placeholder="Telefone" />
+							
+						<p:message for="telefone" style="margin-top:5px;" />
+					</p:panelGrid>
 						
 				</p:panelGrid>
+				
 				
 				<p:panelGrid columns="1" layout="grid" style="font-size:12px;"
 					styleClass="panelgrid-noborder disabled disabled"
 					columnClasses="ui-grid-col-12">
-					
-					<p:inputTextarea id="endereco" autocomplete="off" style="width:100%;text-align:left;"
-						requiredMessage="Endereço deve ser informado." required="true" label="Endereço"
-						value="#{carrinhoBean.pedido.endereco}" placeholder="Endereço (com número)" />
+	
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled grid-card"
+						columnClasses="ui-grid-col-12">
+				
+						<p:outputLabel value="Endereço" style="font-weight: normal;font-size: 12px;" />
+						<p:inputTextarea id="endereco" autocomplete="off" style="width:100%;text-align:left;"
+							requiredMessage="Endereço deve ser informado." required="true" label="Endereço"
+							value="#{carrinhoBean.pedido.endereco}" placeholder="Endereço (com número)" />
+							
+						<p:message for="endereco" />
+					</p:panelGrid>
 							
 				</p:panelGrid>
-				
-				<p:panelGrid columns="1" layout="grid" style="font-size:12px;margin-top:-5px;"
-					styleClass="panelgrid-noborder disabled disabled"
-					columnClasses="ui-grid-col-12">
-					
-					<p:message for="endereco" />
-					
-				</p:panelGrid>
+
 				
 				<p:panelGrid columns="2" layout="grid" style="font-size:12px;"
 					styleClass="panelgrid-noborder disabled disabled"
 					columnClasses="ui-grid-col-8, ui-grid-col-4">
+								
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled grid-card"
+						columnClasses="ui-grid-col-12">
 				
-					<p:autoComplete id="bairro" autocomplete="off" forceSelection="true" dropdown="true" scrollHeight="210"
-						value="#{carrinhoBean.pedido.bairro}" style="width:100%;text-align:left;"
-						var="bairro" itemLabel="#{bairro.nome}" itemValue="#{bairro}" label="Bairro"
-						requiredMessage="Bairro deve ser informado." required="true"
-						completeMethod="#{carrinhoBean.completeText}" placeholder="Bairro" />
+						<p:outputLabel value="Bairro" style="font-weight: normal;font-size: 12px;" />
+						<p:autoComplete id="bairro" autocomplete="off" forceSelection="true" dropdown="true" scrollHeight="210"
+							value="#{carrinhoBean.pedido.bairro}" style="width:100%;text-align:left;"
+							var="bairro" itemLabel="#{bairro.nome}" itemValue="#{bairro}" label="Bairro"
+							requiredMessage="Bairro deve ser informado." required="true"
+							completeMethod="#{carrinhoBean.completeText}" placeholder="Bairro" />
+							
+						<p:message for="bairro" style="margin-top:5px;" />							
+					</p:panelGrid>
 						
-					<p:inputMask id="cep" autocomplete="off" style="width:100%;text-align:left;"
-						mask="99999-999" autoClear="false"
-						requiredMessage="CEP deve ser informado." required="true" label="CEP"
-						value="#{carrinhoBean.pedido.cep}" placeholder="CEP" />
-			
-				</p:panelGrid>
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled grid-card"
+						columnClasses="ui-grid-col-12">
 				
-				<p:panelGrid columns="2" layout="grid" style="font-size:12px;"
-					styleClass="panelgrid-noborder disabled disabled"
-					columnClasses="ui-grid-col-8, ui-grid-col-4">
-				
-					<p:message for="bairro" />
+						<p:outputLabel value="CEP" style="font-weight: normal;font-size: 12px;" />
+						<p:inputMask id="cep" autocomplete="off" style="width:100%;text-align:left;"
+							mask="99999-999" autoClear="false"
+							requiredMessage="CEP deve ser informado." required="true" label="CEP"
+							value="#{carrinhoBean.pedido.cep}" placeholder="CEP" />
 						
-					<p:message for="cep" styleClass="msg-require" />
+						<p:message for="cep" styleClass="msg-require" style="margin-top:5px;" />
+					</p:panelGrid>
 			
 				</p:panelGrid>
 								
@@ -854,9 +877,9 @@
 						<p:link styleClass="voltar" style="margin-top:10px;" onclick="start_(this);" href="cart.xhtml">Voltar ao pedido</p:link>
 						
 						<p:commandButton value="Continuar com o pagamento"
-									disabled="#{carrinhoBean.totalDeItens eq 0}" style="float:right;padding: 4px 4px;font-weight: normal;font-size: 12px;"
+									disabled="#{carrinhoBean.totalDeItens eq 0}" style="float:right;padding: 4px 4px;font-size: 12px;"
 									update="form" onstart="start__();" onsuccess="stop__();"
-									process="@this panel-grid" action="#{carrinhoBean.realizarPagamento}" />													
+									process="@this form" action="#{carrinhoBean.realizarPagamento}" />													
 					</p:panel>
 			
 				</p:panelGrid>
@@ -1024,6 +1047,15 @@
 					$(location).attr('href','products.xhtml');
 				}, 1500);
 		}	
+		
+		function pagamento() {
+			event.preventDefault();
+			jQuery(".loading-spinner__").fadeIn("slow");
+			
+			delay(function() {     
+					$(location).attr('href','pagamento.xhtml');
+				}, 2000);
+		}
 		
 		function start() {
 			jQuery(".loading-spinner").fadeIn("slow");

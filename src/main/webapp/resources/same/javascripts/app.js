@@ -86,6 +86,33 @@ function estornarConta(itemID) {
 		
 }
 
+function atualizaPedido() {
+	
+	let timerInterval;
+	Swal.fire({
+	  type: 'warning',
+	  title: 'Atualizando',
+	  html: 'Tente novamente em aguns instantes, estamos atualizando seu pedido.<br/><b></b>',
+	  timer: 5000,
+	  allowOutsideClick: false,
+	  timerProgressBar: true,
+	  onBeforeOpen: () => {
+	    Swal.showLoading()
+	    timerInterval = setInterval(() => {
+	      
+	    }, 100)
+	  },
+	  onClose: () => {
+	    clearInterval(timerInterval)
+	  }
+	}).then((result) => {
+	  /* Read more about handling dismissals below */
+	  if (result.dismiss === Swal.DismissReason.timer) {
+		  $(location).attr('href','pagamento.xhtml');
+	  }
+	})
+}
+
 function pedidoEnviado() {
 	
 	let timerInterval;

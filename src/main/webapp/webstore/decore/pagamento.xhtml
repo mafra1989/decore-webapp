@@ -783,9 +783,8 @@
 					</p:panel>
 					
 					<p:panel styleClass="panel-mp">
-						<p:commandButton value="Pagar"
-									disabled="#{carrinhoBean.totalDeItens eq 0}" style="float:right;padding: 4px 4px;font-weight: normal;font-size: 14px;"
-									onstart="start__();" />
+						<p:commandButton value="Pagar" action="#{carrinhoBean.pagarComMercadoPago}" onclick="pagar();"
+									disabled="#{carrinhoBean.totalDeItens eq 0}" style="background: #27ae60f5;float:right;padding: 4px 4px;font-weight: normal;font-size: 14px;" />
 					 </p:panel>
 			
 				</p:panelGrid>
@@ -968,6 +967,10 @@
 			delay(function() {     
 				doPay_();
 			}, 1500);
+		}
+		
+		function pagar() {
+			jQuery(".loading-spinner__").fadeIn("slow");
 		}
 
 		function stop__() {
