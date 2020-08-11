@@ -37,6 +37,12 @@
 	
 	<style>
 	@media ( min-width :220px) {
+		.mercadopago-button {
+			display:none;
+		}
+		.panel-mp .mercadopago-button {
+			display:block;
+		}
 		.pagamento.ui-panelgrid .ui-panelgrid-cell {
 		    padding: 4px 0px;
 	    }
@@ -779,10 +785,10 @@
 						<p:link styleClass="voltar" style="margin-top:10px;" onclick="start_(this);" href="checkout.xhtml">Voltar ao checkout</p:link>	 
 					</p:panel>
 					
-					<p:panel>
+					<p:panel styleClass="panel-mp">
 						<script
 						   src="https://www.mercadopago.com.br/integrations/v1/web-payment-checkout.js"
-						   data-preference-id="${carrinhoBean.preference.id}">
+						   data-preference-id="#{carrinhoBean.preference.id}">
 						 </script>
 					 </p:panel>
 			
@@ -845,7 +851,10 @@
 						
     </div>
     
-  
+  <script
+	   src="https://www.mercadopago.com.br/integrations/v1/web-payment-checkout.js"
+	   data-preference-id="#{carrinhoBean.preference.id}">
+	 </script>
 		
 </h:form> 		
 
