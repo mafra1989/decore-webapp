@@ -318,7 +318,7 @@ public class EstoqueBean implements Serializable {
 	}
 
 	private void todasCategoriasProdutos() {
-		todasCategoriasProdutos = categoriasProdutos.todos("Decore");
+		todasCategoriasProdutos = categoriasProdutos.todos(usuario.getEmpresa());
 	}
 
 	public ProdutoFilter getFilter() {

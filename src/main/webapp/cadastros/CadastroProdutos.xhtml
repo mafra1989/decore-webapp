@@ -239,7 +239,9 @@
 								placeholder="R$ 0,00" symbol="R$ "  onkeyup="ajaxDelay()"								
 								value="#{cadastroProdutoBean.produto.precoDeVenda}">
 								
-								<p:ajax event="keydown" process="@this"></p:ajax>
+								<p:ajax event="blur"
+									process="@this percentual-juros percentual-lucro" update="panel-lucro panel-contribuicao preco-venda-estimado"
+									listener="#{cadastroProdutoBean.calculaMargens}"></p:ajax>
 							</p:inputNumber>
 								
 							<p:outputLabel value="Desconto Máx. (%)" />
@@ -271,7 +273,7 @@
 							id="margem-lucro" rendered="#{cadastroProdutoBean.produto.id != null}"
 							columnClasses="ui-grid-col-3, ui-grid-col-3, ui-grid-col-2, ui-grid-col-3">		
 
-							<p:outputLabel value="Margem de Contribuição (%)" />
+							<p:outputLabel value="Margem Markup (%)" />
 							<p:panel style="text-align: center" id="panel-contribuicao">
 							
 								<h:outputText id="margemEmDinheiro" styleClass="margem-em-dinheiro"
@@ -285,18 +287,20 @@
 									value="%#{cadastroProdutoBean.produto.margemLucro}"
 									style="font-weight: bold; font-size: 18px" />
 								<p:inputNumber id="percentual-juros"  thousandSeparator="," decimalSeparator="." symbol="% "
-									value="#{cadastroProdutoBean.produto.margemLucro}">
+									value="#{cadastroProdutoBean.produto.margemLucro}" disabled="#{cadastroProdutoBean.produto.quantidadeAtual le 0}">
 									
 									<p:ajax event="blur" 
-										listener="#{cadastroProdutoBean.calculaMargemLucroReal}"
-										process="@this percentual-juros percentual-lucro" update="panel-lucro panel-contribuicao preco-venda-estimado" />
+										listener="#{cadastroProdutoBean.calculaMargemLucroReal_}"
+										process="@this percentual-juros preco-venda percentual-lucro" 
+										update="panel-lucro panel-contribuicao preco-venda preco-venda-estimado" />
 								</p:inputNumber>
 								<p:slider for="percentual-juros" display="percentual" step="0.01"
-									displayTemplate="%{value}" minValue="0" maxValue="400">
+									displayTemplate="%{value}" minValue="0" maxValue="400"
+									disabled="#{cadastroProdutoBean.produto.quantidadeAtual le 0}">
 
-									<p:ajax event="slideEnd" update="panel-lucro panel-contribuicao preco-venda-estimado"
-										listener="#{cadastroProdutoBean.calculaMargemLucroReal}"
-										process="@this percentual-juros percentual-lucro" />
+									<p:ajax event="slideEnd" update="panel-lucro panel-contribuicao preco-venda preco-venda-estimado"
+										listener="#{cadastroProdutoBean.calculaMargemLucroReal_}"
+										process="@this percentual-juros percentual-lucro preco-venda" />
 								</p:slider>
 							</p:panel>
 							
@@ -314,16 +318,19 @@
 									value="%#{cadastroProdutoBean.produto.margemLucroReal}"
 									style="font-weight: bold; font-size: 18px" />	
 								<p:inputNumber id="percentual-lucro"  thousandSeparator="," decimalSeparator="." symbol="% "
-									value="#{cadastroProdutoBean.produto.margemLucroReal}">
+									value="#{cadastroProdutoBean.produto.margemLucroReal}" disabled="#{cadastroProdutoBean.produto.quantidadeAtual le 0}">
 									
-									<p:ajax event="blur" process="@this preco-venda-estimado margem-lucro" listener="#{cadastroProdutoBean.calculaMargemContribuicao}" update="panel-lucro lucroEmDinheiro panel-contribuicao preco-venda-estimado" />
+									<p:ajax event="blur" process="@this preco-venda preco-venda-estimado margem-lucro" 
+										listener="#{cadastroProdutoBean.calculaMargemContribuicao_}" 
+										update="panel-lucro lucroEmDinheiro panel-contribuicao preco-venda preco-venda-estimado" />
 								</p:inputNumber>
 								<p:slider for="percentual-lucro" display="margem-lucro2"  
-									displayTemplate="%{value}" minValue="0" maxValue="80" step="0.01">
+									displayTemplate="%{value}" minValue="0" maxValue="80" step="0.01"
+									disabled="#{cadastroProdutoBean.produto.quantidadeAtual le 0}">
 
-									<p:ajax event="slideEnd" update="panel-lucro panel-contribuicao preco-venda-estimado"
-										listener="#{cadastroProdutoBean.calculaMargemContribuicao}"
-										process="@this preco-venda-estimado margem-lucro" />
+									<p:ajax event="slideEnd" update="panel-lucro panel-contribuicao preco-venda preco-venda-estimado"
+										listener="#{cadastroProdutoBean.calculaMargemContribuicao_}"
+										process="@this preco-venda preco-venda-estimado margem-lucro" />
 								</p:slider>
 							</p:panel>
 
@@ -359,13 +366,13 @@
 						</p:panelGrid>
 						
 						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px" id="panel-preco"
-							styleClass="panelgrid-noborder disabled disabled" rendered="#{cadastroProdutoBean.produto.id != null}"
+							styleClass="panelgrid-noborder disabled disabled" rendered="false"
 							columnClasses="ui-grid-col-3, ui-grid-col-3">
 
 							<p:outputLabel value="Preço de Venda Estimado" for="preco-venda-estimado" />
 							<p:inputNumber id="preco-venda-estimado" decimalPlaces="4" styleClass="preco-venda-estimado"
 								placeholder="R$ 0,00" symbol="R$ " autocomplete="off" readonly="true" onkeyup="ajaxDelay()"
-								value="#{cadastroProdutoBean.produto.custoMedioUnitario + (cadastroProdutoBean.produto.custoMedioUnitario * cadastroProdutoBean.produto.margemLucro/100)}">
+								value="#{cadastroProdutoBean.produto.precoDeVenda}">
 								
 								<p:ajax event="keyup" process="@this"></p:ajax>
 							</p:inputNumber>

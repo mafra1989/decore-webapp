@@ -122,7 +122,7 @@ public class PDVBean implements Serializable {
 	@Inject
 	private Produto produto;
 	
-	private boolean leitor;
+	private boolean leitor = true;
 	
 	private Integer activeIndex = 0;
 	
