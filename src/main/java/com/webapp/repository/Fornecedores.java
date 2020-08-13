@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.persistence.NoResultException;
 
 import com.webapp.model.Fornecedor;
 import com.webapp.repository.filter.FornecedorFilter;
@@ -47,14 +47,14 @@ public class Fornecedores implements Serializable {
 	}
 	
 	
-	
-	
-	
-	public Number totalInvestidores() {		
-		String jpql = "SELECT count(i) FROM Investidor i";
-		Query q = manager.createQuery(jpql);
-		Number count = (Number) q.getSingleResult();
+	public Fornecedor porNome(String nome, String empresa) {
 		
-		return count;
+		try {
+			return this.manager.createQuery("from Fornecedor i where i.nome = :nome and i.empresa = :empresa order by nome", Fornecedor.class)
+					.setParameter("nome", nome).setParameter("empresa", empresa).getSingleResult();
+		} catch(NoResultException e) {		
+		}
+		
+		return null;
 	}
 }

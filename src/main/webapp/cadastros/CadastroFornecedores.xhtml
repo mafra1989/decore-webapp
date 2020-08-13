@@ -242,7 +242,6 @@
 								widgetVar="btn-save"
 								onstart="PF('downloadLoading').show(); PF('btn-save').disable();"
 								onsuccess="PF('downloadLoading').hide(); PF('btn-save').enable();"
-								oncomplete="if (!args.validationFailed) PF('fornecedor-dialog').hide();"
 								update="msg form-dialog form"
 								action="#{cadastroFornecedorBean.salvar}"
 								process="@this form-dialog" style="font-weight: bold" />

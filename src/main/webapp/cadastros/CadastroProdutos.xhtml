@@ -86,9 +86,60 @@
 	body .panel-save .ui-button {
 		width: 100%;
 	}
+	#categoriaProduto-dialog .card {
+	    margin-bottom: 5px;
+	}
+	.panel-btn.ui-panel .ui-panel-content {
+	    padding: 6px 8px !important;
+	    border: none;		
+	}
+	
+	#anexo-dialog .ui-panel .ui-panel-content {
+	    padding: 0px;
+	    border: none;
+    }
+    
+    #anexo-dialog_ .ui-panel .ui-panel-content {
+	    padding: 0px;
+	    border: none;
+    }
+    
+    .ui-fluid .ui-selectonemenu {
+    	width: 100% !important;
+    }
+    .panel-categoria.ui-panel .ui-panel-content {
+	    border: none;
+	    padding: 0px;
+    }
+    .panel-categoria.ui-fluid .ui-selectonemenu {
+	    width: 84% !important;
+	}
+	
+	.panel-fornecedor.ui-panel .ui-panel-content {
+	    border: none;
+	    padding: 0px;
+    }
+    .panel-fornecedor.ui-fluid .ui-selectonemenu {
+	    width: 84% !important;
+	}
+	.btn-plus.ui-button {
+		float:right;font-weight: bold; width:34px;height: 28px;background-color: #03666bb5;
+	}
+}
+
+@media ( min-width :400px) {
+	.panel-categoria.ui-fluid .ui-selectonemenu {
+	    width: 87% !important;
+	}
+	.panel-fornecedor.ui-fluid .ui-selectonemenu {
+	    width: 87% !important;
+	}
 }
 
 @media ( min-width :460px) {
+	.panel-categoria.ui-fluid .ui-selectonemenu {
+	    width: 87% !important;
+	}
 	.ui-slider .ui-slider-handle {
 		width: 1.7em;
 		height: 1.7em;
@@ -106,6 +157,16 @@
 }
 
 @media ( min-width :640px) {
+    .panel-categoria.ui-fluid .ui-selectonemenu {
+	    width: 74% !important;
+	}
+    .panel-fornecedor.ui-fluid .ui-selectonemenu {
+	    width: 74% !important;
+	}
+	.btn-plus.ui-button {
+		margin-left:2px;
+		float:none;
+	}
 	.ui-slider-handle {
 		width: 1.2em !important;
 		height: 1.2em !important;
@@ -180,7 +241,7 @@
 								value="#{cadastroProdutoBean.produto.codigo}" />
 								
 							<p:outputLabel value="Barcode N." for="codigo-barras" />
-							<p:inputText id="codigo-barras" autocomplete="off" onkeyup="updateBarcode(this.value);"
+							<p:inputText id="codigo-barras" styleClass="bar-code" autocomplete="off" onkeyup="updateBarcode(this.value);"
 								value="#{cadastroProdutoBean.produto.codigoDeBarras}">
 							</p:inputText>
 						</p:panelGrid>
@@ -397,37 +458,57 @@
 
 						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
 							styleClass="panelgrid-noborder disabled disabled"
-							columnClasses="ui-grid-col-3, ui-grid-col-2">
+							columnClasses="ui-grid-col-3, ui-grid-col-4">
 
 							<p:outputLabel value="Categoria" for="categoria" />
-							<p:selectOneMenu id="categoria"
-								value="#{cadastroProdutoBean.produto.categoriaProduto}"
-								placeholder="selecione">
-
-								<f:selectItem itemLabel="Selecione" />
-
-								<f:selectItems
-									value="#{cadastroProdutoBean.todasCategoriasProdutos}"
-									var="categoria" itemLabel="#{categoria.nome}"
-									itemValue="#{categoria}" />
-							</p:selectOneMenu>
+							
+							<p:panel class="card card-w-title ui-fluid panel-categoria"
+								style="padding-bottom: 0px;margin-bottom: 0px;">
+								
+								<p:selectOneMenu id="categoria"
+									value="#{cadastroProdutoBean.produto.categoriaProduto}"
+									placeholder="selecione">
+	
+									<f:selectItem itemLabel="Selecione" />
+	
+									<f:selectItems
+										value="#{cadastroProdutoBean.todasCategoriasProdutos}"
+										var="categoria" itemLabel="#{categoria.nome}"
+										itemValue="#{categoria}" />
+								</p:selectOneMenu>
+							
+								<p:commandButton 
+									onstart="PF('downloadLoading').show();" onsuccess="stop();"
+									icon="fa fa-plus" oncomplete="PF('categoriaProduto-dialog').show();"
+									styleClass="btn-plus" />   
+							</p:panel>
 						</p:panelGrid>
 
 						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
 							styleClass="panelgrid-noborder disabled disabled"
-							columnClasses="ui-grid-col-3, ui-grid-col-2">
+							columnClasses="ui-grid-col-3, ui-grid-col-4">
 
 							<p:outputLabel value="Fornecedor" for="fornecedor" />
-							<p:selectOneMenu id="fornecedor"
-								value="#{cadastroProdutoBean.produto.fornecedor}"
-								placeholder="selecione">
-
-								<f:selectItem itemLabel="Selecione" />
-
-								<f:selectItems value="#{cadastroProdutoBean.todosFornecedores}"
-									var="fornecedor" itemLabel="#{fornecedor.nome}"
-									itemValue="#{fornecedor}" />
-							</p:selectOneMenu>
+							
+							<p:panel class="card card-w-title ui-fluid panel-fornecedor"
+								style="padding-bottom: 0px;margin-bottom: 0px;">
+								
+								<p:selectOneMenu id="fornecedor"
+									value="#{cadastroProdutoBean.produto.fornecedor}"
+									placeholder="selecione">
+	
+									<f:selectItem itemLabel="Selecione" />
+	
+									<f:selectItems value="#{cadastroProdutoBean.todosFornecedores}"
+										var="fornecedor" itemLabel="#{fornecedor.nome}"
+										itemValue="#{fornecedor}" />
+								</p:selectOneMenu>
+								
+								<p:commandButton oncomplete="PF('fornecedor-dialog').show();"
+									onstart="PF('downloadLoading').show();" onsuccess="stop();"
+									icon="fa fa-plus" styleClass="btn-plus">
+								</p:commandButton>
+							</p:panel>  
 						</p:panelGrid>
 
 
@@ -442,17 +523,22 @@
 								oncomplete="PF('downloadLoading').hide();PF('anexo-dialog').show();"
 								disabled="#{not seguranca.acessoAdministrador()}"
 								onsuccess="PF('downloadLoading').hide();" update="anexo-dialog"
-								icon="fa fa-plus" style="font-weight:bold" />
+								icon="fa fa-plus" style="font-weight:bold" />							
+						</p:panelGrid>
+						
+						
+						<p:panelGrid id="panel-foto" columns="2" layout="grid"
+							style="margin-bottom: 5px"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-3, ui-grid-col-3">
 
-							<p:outputLabel value=""
-								rendered="#{cadastroProdutoBean.produto.urlImagem != null}" />
+							<p:outputLabel value="" />
 							<ui:fragment id="photo-edit"
 								rendered="#{cadastroProdutoBean.produto.urlImagem != null}">
 								<img
 									src="#{cadastroProdutoBean.produto.urlImagem}"
 									style="width: 100%;" />
-							</ui:fragment>
-							
+							</ui:fragment>							
 						</p:panelGrid>
 
 					</p:panel>
@@ -470,7 +556,8 @@
 								onstart="PF('downloadLoading').show();"
 								disabled="#{not seguranca.acessoAdministrador()}"
 								styleClass="btn-calcular" onsuccess="stop();"
-								update="msg panel-cadastro"
+								update="msg panel-cadastro fornecedor-dialog categoriaProduto-dialog"
+								oncomplete="reloadBarCode();"
 								action="#{cadastroProdutoBean.salvar}"
 								process="@this form panel-upload" icon="fa fa-save"
 								style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;" />
@@ -594,7 +681,7 @@
 		<p:dialog header="Adicionar foto" widgetVar="anexo-dialog"
 			position="top" style="margin-top: 100px" id="anexo-dialog"
 			resizable="false" modal="true" closeOnEscape="true" responsive="true"
-			width="350px">
+			width="250px">
 
 			<h:form id="form-anexo" enctype="multipart/form-data">
 
@@ -615,14 +702,14 @@
 							action="#{cadastroProdutoBean.upload}" ajax="false"
 							process="@this"
 							onclick="PrimeFaces.monitorDownload(start, stop);"
-							update="form:panel-upload"
-							style="background-color: #147df0; font-weight: bold; float: rifht; width: 140px">
+							update="form:panel-upload form:panel-foto"
+							style="background-color: #147df0; font-weight: bold; float: rifht; width: 97px">
 
 						</p:commandButton>
 
 						<p:commandButton icon="fa fa-fw fa-close" value="Fechar"
 							onclick="PF('anexo-dialog').hide();"
-							style="background-color: #e15e5ef0; font-weight: bold; float: left; width: 140px">
+							style="background-color: #e15e5ef0; font-weight: bold; float: left; width: 97px">
 
 						</p:commandButton>
 					</p:panel>
@@ -632,6 +719,195 @@
 
 			</h:form>
 		</p:dialog>
+		
+		
+		
+		<p:dialog
+			header="#{cadastroProdutoBean.categoriaProduto.id == null ? 'Nova categoria de produto' : 'Editar categoria de produto'}"
+			widgetVar="categoriaProduto-dialog" id="categoriaProduto-dialog" resizable="false" position="top" style="margin-top: 100px"
+			modal="true" closeOnEscape="true" responsive="true" width="250px">	
+
+			<h:form id="form-dialog">
+			
+				<p:focus for="nome" context="form-dialog" />
+
+				<div class="ui-fluid">
+					<p:defaultCommand target="btn-salvar" />	
+
+					<div class="card card-w-title ui-fluid"
+						style="padding: 0px 5px 0px 5px; padding-bottom: 0px !important">
+
+						<p:panelGrid columns="1" layout="grid"
+							style="margin-top: 15px; margin-bottom: 5px"
+							styleClass="panelgrid-noborder disabled disabled">
+
+							<p:outputLabel value="Nome" for="nome" />
+							<p:inputText id="nome"
+								value="#{cadastroProdutoBean.categoriaProduto.nome}" />
+						</p:panelGrid>
+						
+						<p:panelGrid id="panel-upload" columns="1" layout="grid"
+							style="margin-bottom: 5px" rendered="false"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-12">
+
+							<p:outputLabel value="Foto" />
+							<p:commandButton value="Adicionar" styleClass="btn-upload"
+								onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();PF('anexo-dialog_').show();"
+								onsuccess="PF('downloadLoading').hide();" update="anexo-dialog_"
+								icon="fa fa-plus" style="font-weight:bold" />
+
+							<ui:fragment id="photo-edit" 
+								rendered="#{cadastroProdutoBean.categoriaProduto.urlImagem != null}">
+								<img
+									src="#{cadastroProdutoBean.categoriaProduto.urlImagem}"
+									style="width: 100%;max-height: 196px;" />
+							</ui:fragment>
+							
+						</p:panelGrid>
+						
+
+						<div
+							style="width: 100%; margin-left: -15px;
+    						padding-left: 32px;margin-top: 20px;margin-bottom: 10px; 
+    						border-top: 1px solid #ccc"></div>
+						
+						
+						<p:panel class="card card-w-title ui-fluid panel-btn"
+								style="padding-bottom: 0px;margin-bottom: 0px;">
+		
+							<p:commandButton id="btn-salvar" value="Salvar"
+								widgetVar="btn-save" icon="fa fa-fw fa-save"
+								onstart="PF('downloadLoading').show(); PF('btn-save').disable();"
+								onsuccess="PF('downloadLoading').hide(); PF('btn-save').enable();"
+								update="msg form-dialog form:categoria"
+								action="#{cadastroProdutoBean.salvarCategoria}"
+								style="font-weight: bold;background-color: #0d8819b5; width: 97px">
+	
+							</p:commandButton>
+	
+							<p:commandButton icon="fa fa-fw fa-close" value="Fechar"
+								onclick="PF('categoriaProduto-dialog').hide();"
+								style="margin-left:1px;background-color: #e15e5ef0; font-weight: bold; float: left; width: 97px">
+	
+							</p:commandButton>
+						</p:panel>
+						
+						
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		
+		
+		
+		<p:dialog header="Adicionar foto" widgetVar="anexo-dialog_"
+			position="top" style="margin-top: 100px" id="anexo-dialog_"
+			resizable="false" modal="true" closeOnEscape="true" responsive="true"
+			width="250px">
+
+			<h:form id="form-anexo_" enctype="multipart/form-data">
+
+				<p:fileUpload styleClass="btn-upload" sizeLimit="1000000"
+					value="#{cadastroProdutoBean.file_}" label="Anexar" process="@this"
+					style="margin-left:8px;margin-top:5px" mode="simple"
+					skinSimple="true">
+				</p:fileUpload>
+
+
+				<div class="ui-g-12 ui-lg-12">
+
+					<p:panel class="card card-w-title ui-fluid"
+						style="padding-bottom: 0px;margin-bottom: 0px;">
+
+						<p:commandButton icon="fa fa-fw fa-cloud-upload" value="Upload"
+							action="#{cadastroProdutoBean.uploadFotoCategoria}" ajax="false"
+							process="@this"
+							onclick="PrimeFaces.monitorDownload(start, stop);"
+							update="anexo-dialog_"
+							style="background-color: #147df0; font-weight: bold; float: rifht; width: 97px">
+
+						</p:commandButton>
+
+						<p:commandButton icon="fa fa-fw fa-close" value="Fechar"
+							onclick="PF('anexo-dialog_').hide();"
+							style="background-color: #e15e5ef0; font-weight: bold; float: left; width: 97px">
+
+						</p:commandButton>
+					</p:panel>
+				</div>
+				
+				
+
+			</h:form>
+		</p:dialog>
+		
+		
+		
+		<p:dialog
+			header="#{cadastroProdutoBean.fornecedor.id == null ? 'Novo fornecedor' : 'Editar fornecedor'}"
+			widgetVar="fornecedor-dialog" id="fornecedor-dialog" resizable="false" position="top" style="margin-top: 100px"
+			modal="true" closeOnEscape="true" responsive="true" width="250px">
+
+			<h:form id="form-dialog_">
+
+				<div class="ui-fluid">
+					<p:defaultCommand target="btn-salvar_" />
+
+					<div class="card card-w-title ui-fluid"
+						style="padding: 0px 5px 0px 5px; padding-bottom: 0px !important;margin-bottom: 5px;">
+
+						<p:panelGrid columns="1" layout="grid"
+							style="margin-top: 15px; margin-bottom: 5px"
+							styleClass="panelgrid-noborder disabled disabled">
+
+							<p:outputLabel value="Nome" for="nome" />
+							<p:inputText id="nome"
+								value="#{cadastroProdutoBean.fornecedor.nome}" />
+						</p:panelGrid>
+
+						<p:panelGrid columns="1" layout="grid" rendered="false"
+							styleClass="panelgrid-noborder disabled disabled">
+
+							<p:outputLabel value="Contato" for="contato" />
+							<p:inputMask id="contato"
+								value="#{cadastroProdutoBean.fornecedor.contato}"
+								mask="(99) 9-9999-9999" />
+
+						</p:panelGrid>
+		
+						<div
+							style="width: 100%; margin-left: -15px;
+    						padding-left: 32px;margin-top: 20px;margin-bottom: 10px; 
+    						border-top: 1px solid #ccc"></div>
+						
+						
+						<p:panel class="card card-w-title ui-fluid panel-btn"
+								style="padding-bottom: 0px;margin-bottom: 0px;">
+							
+							<p:commandButton id="btn-salvar_" value="Salvar"
+								widgetVar="btn-save" process="@this form-dialog_"
+								onstart="PF('downloadLoading').show(); PF('btn-save').disable();"
+								onsuccess="PF('downloadLoading').hide(); PF('btn-save').enable();"
+								update="msg form-dialog_ form:fornecedor"
+								action="#{cadastroProdutoBean.salvarFornecedor}"
+								style="font-weight: bold;background-color: #0d8819b5; width: 97px" />
+	
+							<p:commandButton icon="fa fa-fw fa-close" value="Fechar"
+								onclick="PF('fornecedor-dialog').hide();"
+								style="margin-left:1px;background-color: #e15e5ef0; font-weight: bold; float: left; width: 97px">
+	
+							</p:commandButton>
+						</p:panel>
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		
+		
 
 		<p:dialog id="downloadLoading" showHeader="false" modal="true"
 			widgetVar="downloadLoading" header="Status" draggable="false"
@@ -699,6 +975,15 @@
 			    return false;
 			  }
 			});
+			
+			function reloadBarCode() {
+				var barcode = $(".bar-code").val();
+				
+				if(barcode) {
+					JsBarcode(".barcode", $(".bar-code").val());
+				}			
+			}
+			
 
 		</script>
 		

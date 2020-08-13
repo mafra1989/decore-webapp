@@ -75,6 +75,15 @@ public class CadastroProdutoBean implements Serializable {
 	
 	@Inject
 	private Usuarios usuarios;
+
+	@Inject
+	private CategoriaProduto categoriaProduto;
+	
+	private UploadedFile file_;
+
+	@Inject
+	private Fornecedor fornecedor;
+	
 	
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -250,6 +259,9 @@ public class CadastroProdutoBean implements Serializable {
 					fileContent = null;
 					file = null;
 					
+					categoriaProduto = new CategoriaProduto();
+					fornecedor = new Fornecedor();
+					
 					PrimeFaces.current().executeScript(
 							"swal({ type: 'success', title: 'Concluído!', text: 'Produto cadastrado com sucesso!' });");
 				} else {
@@ -360,17 +372,65 @@ public class CadastroProdutoBean implements Serializable {
 				
 				produto.setUrlImagem(jObj.get("link").toString());
 				
+				PrimeFaces.current().executeScript("JsBarcode('.barcode', $('.bar-code').val());");
+				
 			} catch(WebException e) {
 				
 				PrimeFaces.current().executeScript(
 						"swal({ type: 'error', title: 'Erro!', text: 'Erro ao enviar imagem do produto: " + produto.getCodigo() + "!' });");
+			
+				PrimeFaces.current().executeScript("JsBarcode('.barcode', $('.bar-code').val());");
 			}
 						
 		} else {
 			PrimeFaces.current().executeScript(
 					"swal({ type: 'error', title: 'Erro!', text: 'Selecione uma imagem com até 200KB!' });");
+			
+			PrimeFaces.current().executeScript("JsBarcode('.barcode', $('.bar-code').val());"); 
 		}
 	}
+	
+	
+	public void salvarCategoria() {
+		
+		categoriaProduto.setEmpresa(usuario.getEmpresa());
+		CategoriaProduto categoria = categoriasProdutos.porNome(categoriaProduto.getNome(), usuario.getEmpresa());
+		
+		if(categoria == null) {
+			categoriasProdutos.save(categoriaProduto);		
+			categoriaProduto = new CategoriaProduto();
+			
+			PrimeFaces.current().executeScript("PF('categoriaProduto-dialog').hide();");
+			
+			todasCategoriasProdutos();
+			
+		} else {
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'error', title: 'Erro!', text: 'Já existe uma categoria com o nome informado!' });");
+		}
+		
+	}
+	
+	
+	public void salvarFornecedor() {
+		
+		fornecedor.setEmpresa(usuario.getEmpresa());
+		Fornecedor fornecedor = fornecedores.porNome(this.fornecedor.getNome(), usuario.getEmpresa());
+		
+		if(fornecedor == null) {
+			fornecedores.save(this.fornecedor);		
+			this.fornecedor = new Fornecedor();
+			
+			PrimeFaces.current().executeScript("PF('fornecedor-dialog').hide();");
+			
+			todosFornecedores();
+			
+		} else {
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'error', title: 'Erro!', text: 'Já existe um fornecedor com o nome informado!' });");
+		}
+	}
+
 
 	public byte[] getFileContent() {
 		return fileContent;
@@ -378,6 +438,65 @@ public class CadastroProdutoBean implements Serializable {
 
 	public Usuario getUsuario() {
 		return usuario;
+	}
+
+	public CategoriaProduto getCategoriaProduto() {
+		return categoriaProduto;
+	}
+
+	public void setCategoriaProduto(CategoriaProduto categoriaProduto) {
+		this.categoriaProduto = categoriaProduto;
+	}
+	
+	public void uploadFotoCategoria() {
+		if(file_ != null && file_.getFileName() != null) {
+			
+			try {
+				
+				//fileContent = file.getContents();	
+								
+				String json = Uploader.upload(file_);
+				//System.out.println(json);
+				
+				JSONObject jObj = new JSONObject(json);
+				jObj = new JSONObject(jObj.get("data").toString());
+				System.out.println(jObj.get("link"));
+				
+				categoriaProduto.setUrlImagem(jObj.get("link").toString());
+				
+				PrimeFaces.current().executeScript("PF('categoriaProduto-dialog').show();");
+				
+			} catch(WebException e) {
+				
+				PrimeFaces.current().executeScript("PF('categoriaProduto-dialog').show();");
+				
+				PrimeFaces.current().executeScript(
+						"swal({ type: 'error', title: 'Erro!', text: 'Erro ao enviar imagem da categoria: " + categoriaProduto.getNome() + "!' });");
+			}
+						
+		} else {
+			
+			PrimeFaces.current().executeScript("PF('categoriaProduto-dialog').show();");
+			
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'error', title: 'Erro!', text: 'Selecione uma imagem com até 200KB!' });");
+		}
+	}
+
+	public UploadedFile getFile_() {
+		return file_;
+	}
+
+	public void setFile_(UploadedFile file_) {
+		this.file_ = file_;
+	}
+
+	public Fornecedor getFornecedor() {
+		return fornecedor;
+	}
+
+	public void setFornecedor(Fornecedor fornecedor) {
+		this.fornecedor = fornecedor;
 	}
 		
 }
