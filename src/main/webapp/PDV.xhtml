@@ -781,7 +781,7 @@
 									</p:panelGrid>
 
 									<p:panelGrid columns="1" layout="grid"
-										style="margin-bottom: 5px"
+										style="margin-bottom: 5px" id="panel-desconto"
 										styleClass="panelgrid-noborder disabled disabled"
 										columnClasses="ui-grid-col-12">
 
@@ -799,11 +799,19 @@
 												style="font-weight: bold; font-size: 18px" />
 											<h:inputHidden id="percentual-desconto"
 												value="#{pDVBean.itemVenda.desconto}" />
-											<p:slider for="percentual-desconto" display="desconto" onSlideEnd="ajaxDelay();"
+												
+											<p:inputNumber id="input-desconto" thousandSeparator="," decimalSeparator="." symbol="% "
+												value="#{pDVBean.itemVenda.desconto}" decimalPlaces="0" 
+												minValue="0" maxValue="#{pDVBean.itemVenda.produto.descontoMaximo}">
+												
+												<p:ajax event="blur" process="@this desconto percentual-desconto margem margem-lucro"  
+													update="desconto percentual-desconto margem margem-lucro slide-desconto descontoEmDinheiro"  />
+											</p:inputNumber>
+											<p:slider id="slide-desconto" for="percentual-desconto" display="desconto" onSlideEnd="ajaxDelay();" 
 												displayTemplate="%{value}" minValue="0" maxValue="#{pDVBean.itemVenda.produto.descontoMaximo}">
 			
 												<p:ajax event="slideEnd" 
-													process="@this desconto percentual-desconto margem margem-lucro" />
+													process="@this desconto percentual-desconto margem margem-lucro input-desconto" />
 											</p:slider>
 										</p:panel>
 									</p:panelGrid>
@@ -933,7 +941,7 @@
 								</p:panelGrid>
 
 								<p:panelGrid columns="2" layout="grid" id="panel-ajuste"
-									rendered="#{seguranca.acessoAdministrador()}"
+									rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado()}"
 									styleClass="panelgrid-noborder disabled disabled panel-ajuste"
 									columnClasses="ui-grid-col-4, ui-grid-col-8">
 
@@ -956,7 +964,7 @@
 									<p:outputLabel value="Ok, então os valores de custo médio de cada produto dessa venda poderão ser somados aos valores totais de custo de suas próximas entradas."
 										rendered="#{pDVBean.venda.ajuste and pDVBean.venda.recuperarValores}" />
 								
-									</p:panelGrid>
+								</p:panelGrid>
 				
 
 								<p:panelGrid columns="2" layout="grid"

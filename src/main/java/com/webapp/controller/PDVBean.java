@@ -172,7 +172,7 @@ public class PDVBean implements Serializable {
 			filter = new ProdutoFilter();
 			itemVenda = new ItemVenda();
 			itemVenda.getProduto().setMargemLucro(BigDecimal.ZERO);
-			PrimeFaces.current().executeScript("swal({ type: 'error', title: 'Erro!', text: 'Produto não encontrado!', timer: 3000 });");
+			PrimeFaces.current().executeScript("swal({ type: 'error', title: 'Erro!', text: 'Produto não encontrado!', timer: 1500 });");
 		}
 		
 	}
@@ -634,7 +634,7 @@ public class PDVBean implements Serializable {
 
 		} else {
 			PrimeFaces.current().executeScript(
-					"swal({ type: 'warning', title: 'Atenção!', text: 'Adicione pelo menos um item à venda!', timer: 3000 });");
+					"swal({ type: 'warning', title: 'Atenção!', text: 'Adicione pelo menos um item à venda!', timer: 1500 });");
 		}
 
 	}
@@ -739,7 +739,7 @@ public class PDVBean implements Serializable {
 
 		if (itensCompra.size() == 0) {
 			PrimeFaces.current().executeScript(
-					"swal({ type: 'warning', title: 'Atenção!', text: 'Não existe quantidade disponível!', timer: 3000 });");
+					"swal({ type: 'warning', title: 'Atenção!', text: 'Não existe quantidade disponível!', timer: 1500 });");
 		} else {
 
 			itensCompraTemp = new ArrayList<>();
@@ -889,17 +889,17 @@ public class PDVBean implements Serializable {
 						
 				} else {
 					PrimeFaces.current().executeScript(
-							"swal({ type: 'error', title: 'Erro!', text: 'Quantidade maior que a disponível!', timer: 3000 });");
+							"swal({ type: 'error', title: 'Erro!', text: 'Quantidade maior que a disponível!', timer: 1500 });");
 				}
 				
 			} else {
 				PrimeFaces.current().executeScript(
-						"swal({ type: 'error', title: 'Erro!', text: 'Quantidade não pode ser menor ou igual a zero!', timer: 3000 });");
+						"swal({ type: 'error', title: 'Erro!', text: 'Quantidade não pode ser menor ou igual a zero!', timer: 1500 });");
 			}
 
 		} else {
 			PrimeFaces.current().executeScript(
-					"swal({ type: 'error', title: 'Erro!', text: 'Não é possível adicionar itens à esta venda!' });");
+					"swal({ type: 'error', title: 'Erro!', text: 'Não é possível adicionar itens à esta venda!', timer: 1500 });");
 		}
 	}
 	
@@ -1112,7 +1112,7 @@ public class PDVBean implements Serializable {
 
 		} else {
 			PrimeFaces.current().executeScript(
-					"swal({ type: 'error', title: 'Erro!', text: 'Não é possível remover os itens desta venda!' });");
+					"swal({ type: 'error', title: 'Erro!', text: 'Não é possível remover os itens desta venda!', timer: 1500 });");
 		}
 	}
 
@@ -1243,7 +1243,7 @@ public class PDVBean implements Serializable {
 
 		} else {
 			PrimeFaces.current().executeScript(
-					"swal({ type: 'error', title: 'Erro!', text: 'Não é possível editar os itens desta venda!' });");
+					"swal({ type: 'error', title: 'Erro!', text: 'Não é possível editar os itens desta venda!', timer: 1500 });");
 		}
 
 	}

@@ -321,7 +321,7 @@
 						</p:menuitem>
 						<p:separator />
 						<p:menuitem icon="fa fa-fw fa-trash" id="btn-trash"
-							value="Excluir" process="@this" disabled="#{not seguranca.acessoAdministrador()}"
+							value="Excluir" process="@this" disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
 							onclick="deleteItem(#{consultaLancamentosBean.lancamentoSelecionado.id});" />
 					</p:menuButton>
 

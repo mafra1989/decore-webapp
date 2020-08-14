@@ -213,13 +213,21 @@
 
 					<h3 style="font-weight: bold">Resultado da consulta</h3>
 
-					<p:commandButton icon="fa fa-fw fa-image" value="Visualizar"
-						id="foto-button" update="produto-dialog form-dialog"
-						actionListener="#{estoqueBean.prepareFoto}"
-						style="margin-right:10px;font-weight:bold; float:right;width:100px;margin-top: -40px;"
-						disabled="#{estoqueBean.produtoSelecionado.id == null}"
-						onstart="PF('downloadLoading').show();"
-						oncomplete="PF('downloadLoading').hide();PF('produto-dialog').show();"></p:commandButton>
+					<p:menuButton id="foto-button" value="Opções"
+						style="width: 80px;float: right;margin-top: -40px;margin-right: 10px"
+						disabled="#{estoqueBean.produtoSelecionado.id == null}">	
+						
+						<p:menuitem actionListener="#{estoqueBean.prepareFoto}" value="Visualizar" icon="fa fa-fw fa-eye" onstart="PF('downloadLoading').show();"
+							 update="produto-dialog form-dialog" oncomplete="PF('downloadLoading').hide();PF('produto-dialog').show();"></p:menuitem>
+						
+						<p:separator />
+						<p:menuitem value="Detalhes" icon="fa fa-fw fa-list"
+							id="btn-view" outcome="/cadastros/CadastroProdutos.xhtml"
+							onclick="PF('downloadLoading').show();">
+							<f:param name="id"
+								value="#{estoqueBean.produtoSelecionado.id}" />
+						</p:menuitem>
+					</p:menuButton>
 
 					<p:panelGrid columns="1" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
