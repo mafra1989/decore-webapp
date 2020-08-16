@@ -57,6 +57,32 @@ function deleteItem(itemID) {
 		
 }
 
+function cancelarVenda() {
+	
+	const swalWithBootstrapButtons = swal.mixin({
+		  confirmButtonClass: 'btn btn-success',
+		  cancelButtonClass: 'btn btn-danger',
+		  buttonsStyling: false,
+		})
+
+		swalWithBootstrapButtons({
+		  title: 'Tem certeza?',
+		  text: "A venda será cancelada e os itens serão removidos!",
+		  type: 'warning',
+		  showCancelButton: true,
+		  confirmButtonText: 'Sim, confirmar!',
+		  cancelButtonText: 'Não, cancele!',
+		  reverseButtons: true
+		}).then((result) => {
+		  if (result.value) {
+			  
+			  cancelaVenda();
+			  		 
+		  }
+		})
+		
+}
+
 function estornarConta(itemID) {
 	
 	const swalWithBootstrapButtons = swal.mixin({

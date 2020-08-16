@@ -18,11 +18,13 @@ public class AcessoAutorizadoListener implements AuthenticationSuccessHandler {
 			Authentication authentication) throws IOException, ServletException {
 	
 		Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
-		
+		/*
 		if (roles.contains("ROLE_ADMINISTRADOR")) {
 			httpServletResponse.sendRedirect("/Empresas.xhtml");
 			
-		} else if(roles.contains("ROLE_VENDEDOR")) {
+		} else 
+		*/
+		if(roles.contains("ROLE_VENDEDOR")) {
 			httpServletResponse.sendRedirect("/PDV.xhtml");
 			
 		} else {

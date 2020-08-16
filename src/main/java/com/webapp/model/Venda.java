@@ -51,6 +51,14 @@ public class Venda implements Serializable {
 	@Column
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
 	private BigDecimal percentualLucro = BigDecimal.ZERO;
+	
+	@Column
+	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	private BigDecimal totalDesconto = BigDecimal.ZERO;
+	
+	@Column
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
+	private BigDecimal totalDescontoEmDinheiro = BigDecimal.ZERO;
 
 	@Column
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
@@ -166,6 +174,22 @@ public class Venda implements Serializable {
 
 	public void setPercentualLucro(BigDecimal percentualLucro) {
 		this.percentualLucro = percentualLucro.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+	}
+
+	public BigDecimal getTotalDesconto() {
+		return totalDesconto;
+	}
+
+	public void setTotalDesconto(BigDecimal totalDesconto) {
+		this.totalDesconto = totalDesconto.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+	}
+
+	public BigDecimal getTotalDescontoEmDinheiro() {
+		return totalDescontoEmDinheiro;
+	}
+
+	public void setTotalDescontoEmDinheiro(BigDecimal totalDescontoEmDinheiro) {
+		this.totalDescontoEmDinheiro = totalDescontoEmDinheiro.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public BigDecimal getValorCompra() {

@@ -18,22 +18,46 @@
 
 		<style>
 @media ( min-width :220px) {
+	.image-delivery {
+		display:none;
+	}
+	body .ui-selectbooleanbutton.ui-state-active {
+	    /*background-color: #f58244cc;*/
+	}
  	.panel-desc .ui-grid-col-4:first-child {
  		text-align: center;
+ 	}
+ 	.panel-itens {
+ 		margin-bottom: 0px;margin-top: 0px; padding-bottom: 0% !important;
  	}
 	.panel-itenstable {
 	    margin-top: 4px;
 	    border: none;
+	    margin-top: -30px;
 	}
 	.panel-totalpagar {
 		float: right;
 	}
-	.btn-finalizar {
+	
+	.btn-finalizar.ui-button {
 		font-weight: bold;
-	    margin-bottom: 18px;
+	    margin-bottom: 0px;
 	    background-color: #0d8819b5 !important;
-	    width: 100%;
+	    width: 50%;
+    	margin-right: 0px;   
 	 }
+	 
+	 .btn-cancelar.ui-button {
+		font-weight: bold;
+	    margin-bottom: 0px;
+	    background-color: #ce050ec9 !important;
+	    width: 49%;
+	 }
+	 
+	 body .ui-button.ui-button-text-icon-left .ui-icon {
+	    margin-top: -8px;
+	    font-size: 16px;
+	}
 	.panel-itenstable .ui-widget-content {
 		border: none;
 	}
@@ -318,6 +342,9 @@
     .line-total {
 		display:none;
 	}
+	.total-pagar {
+		font-weight: bold;
+	}
 	.desconto {
 		text-align: center;
 		width: 97%;
@@ -333,10 +360,40 @@
 		margin-top:5px;
 		padding:18px;
 	}
+	
+	.desconto.ui-panel {
+	    margin: 0px;
+	    width: 100%;
+	}
 
+	.panel-total-geral {
+		padding-bottom: 0px;margin-top: 23px;
+	    position: relative;
+	    bottom: 0;
+	    width: 100%;
+	}
+	.ui-datatable-scrollable-body {
+		overflow: auto;
+		max-height: 280px;
+	}
 }
 
 @media ( min-width :460px) {
+	.image-delivery {
+		display:block;
+	}
+	.panel-itenstable {
+	    margin-top: 0px;
+	}
+	.panel-itens {
+ 		padding-bottom: 40% !important;
+ 	}
+	.panel-total-geral {
+		padding-bottom: 0px;margin-bottom: 28px;position: absolute;bottom: 0;width: 400px;
+	}
+	.total-pagar {
+		margin-top: -38px;float: left;margin-right: -82px;margin-bottom:5px;
+	}
 	.panel-body {
 		padding:0px;
 	}
@@ -374,11 +431,8 @@
 		padding-right: 0px !important;
 	}
 	.line-total {
-		width: 30%;
-	    margin-bottom: 60px;
+		width: 400px;
 	    border-top: 1px solid #ccc;
-	    position: absolute;
-	    bottom: 0;
 	    z-index: 1;
 	    display:block;
 	}
@@ -397,11 +451,19 @@
 		bottom:0;
 		position:absolute;
 	}
-	.btn-finalizar {
+	
+	.btn-finalizar.ui-button {
 		font-weight: bold;
-	    margin-bottom: 18px;
+	    margin-bottom: 0px;
 	    background-color: #0d8819b5;
-	    width: 160px;
+	    width: 34% !important;
+	    margin-left:2px;
+	 }
+	 .btn-cancelar.ui-button {
+		font-weight: bold;
+	    margin-bottom: 0px;
+	    background-color: #ce050ec9 !important;
+	   	width: 34% !important;
 	 }
 	.panel-finalizar .ui-widget-content {
 	    background: transparent;
@@ -510,16 +572,20 @@
 		<div class="ui-g-12 ui-lg-12">
 
 			<h:form id="form">
+			
+				<p:remoteCommand name="cancelaVenda" process="@this"
+					update="form" action="#{pDVBean.novaVenda}"
+					onstart="PF('downloadLoading').show();"
+					oncomplete="PF('downloadLoading').hide();" />
 
 				<p:defaultCommand target="btn-calcular" rendered="false" />
 
-				<p:panelGrid columns="2" layout="grid"
+				<p:panelGrid columns="2" layout="grid" style="padding-bottom: 10%;backgound:#fff;"
 					styleClass="panelgrid-noborder disabled disabled panel-body"
 					columnClasses="ui-grid-col-6, ui-grid-col-6">
 
 					<p:panel class="card card-w-title ui-fluid panel-left"
-						id="panel-itens"
-						style="margin-bottom: 0px;margin-top: 0px; padding-bottom: 0px !important">
+						id="panel-itens">
 
 						<h1>#{pDVBean.venda.id == null ? 'Registrar Venda - PDV'
 							: 'Informações da Venda'}</h1>
@@ -546,6 +612,9 @@
 									value="#{pDVBean.itemVenda.produto.precoDeVenda}" />
 									
 								<p:defaultCommand scope="campos-valor" target="btn-adicionar" 
+									rendered="#{pDVBean.itemVenda.produto.id != null}" />
+									
+								<p:defaultCommand scope="panel-desconto" target="btn-adicionar" 
 									rendered="#{pDVBean.itemVenda.produto.id != null}" />								
 							
 
@@ -590,7 +659,7 @@
 										action="#{pDVBean.pesquisar}" process="@this busca-por-leitor"
 										update="tabView"
 										style="width:38px;height:29px" styleClass="white-button"
-										disabled="#{not pDVBean.leitor}" />
+										/>
 								</p:panelGrid>
 
 
@@ -712,7 +781,7 @@
 
 										<p:outputLabel value="Quantidade" for="quantidade" />
 										<p:inputNumber id="quantidade" decimalPlaces="0"
-											placeholder="0" styleClass="quantidade" onkeyup="ajaxDelay()"
+											placeholder="0" styleClass="quantidade" onkeyup="ajaxDelay('')"
 											value="#{pDVBean.itemVenda.quantidade}">
 
 											<p:ajax event="keyup" process="@this" update="btn-adicionar"></p:ajax>
@@ -771,7 +840,7 @@
 												style="font-weight: bold; font-size: 18px" />
 											<h:inputHidden id="margem-lucro" 
 												value="#{pDVBean.itemVenda.produto.margemLucro}" />
-											<p:slider for="margem-lucro" display="margem" onSlideEnd="ajaxDelay();"
+											<p:slider for="margem-lucro" display="margem" onSlideEnd="ajaxDelay('');"
 												displayTemplate="%{value}" minValue="0" maxValue="300">
 			
 												<p:ajax event="slideEnd" update="preco-unitario valor-unitario"
@@ -794,24 +863,25 @@
 												<f:convertNumber type="currency" />
 											</h:outputText>
 											
-											<h:outputText id="desconto"
-												value="%#{pDVBean.itemVenda.desconto}"
-												style="font-weight: bold; font-size: 18px" />
+											<h:outputText id="desconto" styleClass="label-desconto"
+												value="%#{pDVBean.itemVenda.desconto}" 
+												style="font-weight: bold; font-size: 18px;display:none;" />
 											<h:inputHidden id="percentual-desconto"
 												value="#{pDVBean.itemVenda.desconto}" />
 												
 											<p:inputNumber id="input-desconto" thousandSeparator="," decimalSeparator="." symbol="% "
-												value="#{pDVBean.itemVenda.desconto}" decimalPlaces="0" 
-												minValue="0" maxValue="#{pDVBean.itemVenda.produto.descontoMaximo}">
+												value="#{pDVBean.itemVenda.desconto}" decimalPlaces="0" onkeyup="ajaxDelay_();"
+												minValue="0" maxValue="#{pDVBean.itemVenda.produto.descontoMaximo}" 
+												styleClass="input-desconto">
 												
-												<p:ajax event="blur" process="@this desconto percentual-desconto margem margem-lucro"  
-													update="desconto percentual-desconto margem margem-lucro slide-desconto descontoEmDinheiro"  />
+												<p:ajax event="change" process="@this percentual-desconto margem margem-lucro" 
+													update="percentual-desconto desconto margem margem-lucro slide-desconto descontoEmDinheiro"  />
 											</p:inputNumber>
-											<p:slider id="slide-desconto" for="percentual-desconto" display="desconto" onSlideEnd="ajaxDelay();" 
+											<p:slider style="display:none;" id="slide-desconto" for="percentual-desconto" display="desconto" onSlideEnd="ajaxDelay('');" 
 												displayTemplate="%{value}" minValue="0" maxValue="#{pDVBean.itemVenda.produto.descontoMaximo}">
 			
-												<p:ajax event="slideEnd" 
-													process="@this desconto percentual-desconto margem margem-lucro input-desconto" />
+												<p:ajax event="slideEnd" update="input-desconto"
+													process="@this desconto percentual-desconto  margem margem-lucro" />
 											</p:slider>
 										</p:panel>
 									</p:panelGrid>
@@ -827,6 +897,7 @@
 										<p:panel>
 											<h:outputText id="lucroEmDinheiro" styleClass="lucro-em-dinheiro"
 												value="#{pDVBean.itemVenda.lucro == null ? 0 : pDVBean.itemVenda.lucro}"
+												rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado()}"
 												style="font-weight: bold;font-size: 10px;float: right;margin-top: -17px;margin-right: 6px;color: #757575;">
 											
 												<f:convertNumber type="currency" />
@@ -852,7 +923,7 @@
 										value="#{pDVBean.itemVenda.observacoes}" />
 								</p:panelGrid>
 								
-								<p:panelGrid columns="2" layout="grid" 
+								<p:panelGrid columns="2" layout="grid"
 									styleClass="panelgrid-noborder disabled disabled"
 									columnClasses="ui-grid-col-8, ui-grid-col-4">
 
@@ -863,7 +934,7 @@
 										onsuccess="PF('downloadLoading').hide();" icon="fa fa-arrow-right" iconPos="right"
 										update="msg tabView codigo lucroEmDinheiro descricao fornecedor form:total-venda id valor-unitario quantidade valor-total form:panel-table lote "
 										action="#{pDVBean.adicionarItem}"
-										process="@this codigo valor-unitario quantidade valor-total id lote percentual-desconto observacao"
+										process="@this input-desconto codigo valor-unitario quantidade valor-total id lote percentual-desconto observacao"
 										style="font-weight: bold;">
 									</p:commandButton>
 								</p:panelGrid>
@@ -999,7 +1070,7 @@
 							columnClasses="ui-grid-col-12">
 
 							<p:dataTable id="itensTable" paginatorAlwaysVisible="false"
-								scrollable="true" value="#{pDVBean.itensVenda}"
+								scrollable="true" scrollHeight="280" value="#{pDVBean.itensVenda}"
 								var="item" emptyMessage="Nenhum item adicionado." reflow="true"
 								paginator="false" rowKey="#{item.code}"
 								selection="#{pDVBean.itemSelecionado}"
@@ -1072,33 +1143,67 @@
 								oncomplete="stop();" icon="fa fa-fw fa-list"
 								rendered="#{pDVBean.venda.id != null}" />
 						</p:contextMenu>
+						
+						<p:panel class="card card-w-title ui-fluid panel-total-geral">
+						
+							<p:panel>
+								<p:outputLabel value="Total de itens: " style="font-size: 12px;color:#5b5656;margin-left: 2px;font-weight:bold;" />
+								<p:outputLabel id="total-itens"
+									value="#{pDVBean.venda.quantidadeItens}"
+									style="font-size: 13px;font-weight:bold;color:#75767dc9;">
+								</p:outputLabel>
+							</p:panel>
+							
+							<p:panel style="margin-bottom: 15px;">	
+								<p:outputLabel value="Total de desconto: " style="font-size: 12px;color:#5b5656;margin-left: 2px;font-weight:bold;" />
+								<p:outputLabel id="total-desconto"
+									value="#{pDVBean.venda.totalDescontoEmDinheiro}"
+									style="font-size: 13px;font-weight:bold;color:#75767dc9;">
+									
+									<f:convertNumber type="currency" />
+								</p:outputLabel>
+								<p:outputLabel 
+									value=" (#{pDVBean.venda.totalDesconto}%)"
+									style="font-size: 13px;font-weight:bold;color:#75767dc9;">
+								</p:outputLabel>
+							</p:panel>
 
-						<p:panelGrid columns="2"
-							styleClass="panelgrid-noborder disabled disabled valor-total panel-totalpagar">
-							<p:outputLabel value="Total: " />
-							<p:outputLabel id="total-venda"
-								value="#{pDVBean.venda.valorTotal}"
-								style="font-size: 36px;margin-bottom:5px; font-weight:bold;margin-left:8px;color:#5b5656">
-
-								<f:convertNumber type="currency" />
-							</p:outputLabel>
-						</p:panelGrid>
-
-						<div
-							class="line-total"></div>
-
-						<p:panelGrid columns="2" layout="grid"
-							styleClass="panelgrid-noborder disabled disabled panel-finalizar"
-							columnClasses="ui-grid-col-2, ui-grid-col-3">
+							<div
+								class="line-total"></div>
+								
+							<p:panelGrid columns="1" layout="grid"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-12">
+							
+								<p:outputLabel value="Total a pagar: " style="font-weight:bold;" />
+								<p:outputLabel id="total-venda"
+									value="#{pDVBean.venda.valorTotal}"
+									style="margin-top: -8px;font-size: 36px;margin-bottom:5px; font-weight:bold;margin-left:8px;color:#5b5656">
+	
+									<f:convertNumber type="currency" />
+								</p:outputLabel>
+							
+							</p:panelGrid>
+								
+							
+							<p:commandButton id="btn-cancelar" value="Cancelar"
+								onstart="PF('downloadLoading').show();" icon="fa fa-ban"
+								onsuccess="PF('downloadLoading').hide();" styleClass="btn-cancelar"
+								disabled="#{pDVBean.venda.id != null}"
+								process="@this" onclick="cancelarVenda();" />
+							
 
 							<p:commandButton id="btn-calcular" value="Finalizar Venda"
-								onstart="PF('downloadLoading').show();" icon="fa fa-save"
+								onstart="PF('downloadLoading').show();" icon="fa fa-check"
 								onsuccess="PF('downloadLoading').hide();" styleClass="btn-finalizar"
 								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado() and not seguranca.acessoVendedor()}"
 								update="msg tabView tabView:data-venda tabView:tipo-venda tabView:panel-entrega tabView:panel-ajuste tabView:vendedor tabView:bairro panel-table tabView:id tabView:codigo tabView:descricao tabView:fornecedor tabView:valor-unitario tabView:quantidade tabView:valor-total tabView:lote"
-								action="#{pDVBean.salvar}"
+								action="#{pDVBean.salvar}" 
 								process="@this panel-table tabView:data-venda tabView:vendedor tabView:bairro tabView:tipo-venda tabView:panel-ajuste" />
-						</p:panelGrid>
+
+						
+							<p:graphicImage rendered="false" styleClass="image-delivery" library="manhattan-layout" name="images/delivery.jpg" style="width: 150px;float: right;margin-top: -59px;margin-right: -60px;" />
+						</p:panel>
 
 					</p:panel>
 
@@ -1234,8 +1339,17 @@
 			    };
 			})();
 			
-			function ajaxDelay(){ 
+			function ajaxDelay_(){
+				var desconto_ = $('.campos-percentual .desconto .input-desconto input').val();
+				var percentualDesconto = document.querySelector(".label-desconto");
+				percentualDesconto.innerText = desconto_.replace(' ','');
+				ajaxDelay(desconto_);
+			}
+			
+			function ajaxDelay(desconto_){ 
 				var quantidade = $('.quantidade input').val();
+				
+				quantidade = quantidade.replace('.','');
 				
 				var valorDeCusto = $('.valor-custo').val();
 				var precoDeVenda = $('.preco-venda').val();
@@ -1267,6 +1381,19 @@
 					}*/
 					
 					var desconto = $('.campos-percentual .desconto input').val();
+					if(desconto_) {
+						desconto = desconto_;												
+						console.log(desconto_);
+					} else {
+						//$('.campos-percentual .desconto .input-desconto input').val(desconto);
+					}
+					
+					desconto = desconto.replace('% ','');
+					
+					if(!desconto) {
+						desconto = 0;
+					}
+					
 									
 					var total = totalSemDesconto - (totalSemDesconto * parseFloat(desconto)/100);
 					
@@ -1313,6 +1440,20 @@
 					f = parseFloat('0').toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
 					
 					$('.sub-total input').val(f);
+					
+					
+					var desconto = $('.campos-percentual .desconto input').val();
+					if(desconto_) {
+						desconto = desconto_;						
+						$('.label-desconto').val(desconto_);
+					}
+					
+					desconto = desconto.replace('% ','');
+					
+					if(!desconto) {
+						desconto = 0;
+					}
+					
 					
 					var descontoElement = document.querySelector(".desconto-em-dinheiro");
 					descontoElement.innerText = f;

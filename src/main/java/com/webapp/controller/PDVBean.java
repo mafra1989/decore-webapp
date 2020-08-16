@@ -182,6 +182,37 @@ public class PDVBean implements Serializable {
 		
 	}
 	
+	public void novaVenda() {
+		
+		Venda vendaTemp_ = new Venda();
+		vendaTemp_.setNumeroVenda(null);
+		vendaTemp_.setTipoVenda(venda.getTipoVenda());
+		vendaTemp_.setBairro(venda.getBairro());
+		vendaTemp_.setUsuario(venda.getUsuario());			
+		
+		venda = new Venda();
+		itensVenda = new ArrayList<ItemVenda>();
+		itemVenda = new ItemVenda();
+		itemVenda.getProduto().setMargemLucro(BigDecimal.ZERO);
+		itemSelecionado = null;
+
+		itensCompra = new ArrayList<>();
+		itemCompra = new ItemCompra();
+
+		entregaVenda = new Entrega();
+		entrega = false;
+		
+		venda = vendaTemp_;
+		
+		filter = new ProdutoFilter();
+		produto = new Produto();
+		
+		activeIndex = 0;
+		
+		PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda cancelada com sucesso!', timer: 1500 });");
+		
+	}
+	
 	public List<Bairro> completeText(String query) {
 		
         BairroFilter filtro = new BairroFilter();
@@ -762,139 +793,179 @@ public class PDVBean implements Serializable {
 			
 			/* Método custo médio */
 			itemVenda.setValorUnitario(itemVenda.getProduto().getPrecoDeVenda());
-
-			Long quantidadeDisponivel = itemVenda.getProduto().getQuantidadeAtual();//itemCompra.getQuantidadeDisponivel();
-
-			//for (ItemVenda itemVenda : itensVenda) {
+			
 				
-				/*if (itemCompra.getCompra().getId().longValue() == itemVenda.getCompra().getId().longValue()) {
-					if (itemCompra.getProduto().getId().longValue() == itemVenda.getProduto().getId().longValue()) {
-						if (itemVenda.getId() == null && venda.getId() == null) {
-							quantidadeDisponivel -= itemVenda.getQuantidade();
-						}
-					}
-				}*/
-								
-				/*for (Compra compra : itemVenda.getCompras()) {
-					if (itemCompra.getCompra().getId().longValue() == compra.getId()
-							.longValue()) {
-						if (itemCompra.getProduto().getId().longValue() == itemVenda.getProduto().getId()
-								.longValue()) {
-							
-							quantidadeDisponivel -= itemVenda.getQuantidade();
-						}
-					}
-				}			
-			}*/
+			if(itemVenda.getValorUnitario().doubleValue() > 0) {
+				
+				venda.setQuantidadeItens(venda.getQuantidadeItens() + itemVenda.getQuantidade());
+				
+				BigDecimal totalDesconto = BigDecimal.ZERO;
+				if(itemVenda.getDesconto() != null) {
+					totalDesconto = new BigDecimal((itemVenda.getProduto().getPrecoDeVenda().doubleValue() * itemVenda.getQuantidade().intValue() * itemVenda.getDesconto().doubleValue()) / 100);
+				}
+				
+				venda.setTotalDescontoEmDinheiro(new BigDecimal(venda.getTotalDescontoEmDinheiro().doubleValue() + totalDesconto.doubleValue()));
+						
 
-			System.out.println("itemVenda.getQuantidade(): " + itemVenda.getQuantidade());
-			System.out.println("quantidadeDisponivel: " + quantidadeDisponivel);
-
-			if(itemVenda.getQuantidade() > 0) {
-
-				if (itemVenda.getQuantidade() <= quantidadeDisponivel) {
+				Long quantidadeDisponivel = itemVenda.getProduto().getQuantidadeAtual();//itemCompra.getQuantidadeDisponivel();
+	
+				//for (ItemVenda itemVenda : itensVenda) {
 					
-						/*if (itemVenda.getValorUnitario().doubleValue() <= itemCompra.getValorUnitario().doubleValue()) {					
-							PrimeFaces.current().executeScript(
-									"swal({ type: 'warning', title: 'Atenção!', text: 'Produto adicionado com valor unitário menor ou igual ao valor de compra.' });");
-						}*/
-					
-						BigDecimal subtotal = BigDecimal.valueOf(
-							itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().longValue());					
-						itemVenda.setTotal(new BigDecimal(subtotal.doubleValue() - (subtotal.doubleValue() * (itemVenda.getDesconto().doubleValue() / 100))));
-						
-						itemVenda.setVenda(venda);
-						
-						itemVenda.setSaldo(itemVenda.getQuantidade());
-						
-						Double valorDeCustoUnitario = itemVenda.getProduto().getCustoMedioUnitario().doubleValue();
-						
-						List<ItemVendaCompra> itensVendaCompra = new ArrayList<ItemVendaCompra>();				
-						Long saldo = itemVenda.getQuantidade();
-						for (int i = itensCompra.size() - 1; i >= 0; i--) {
-							System.out.println("Saldo: "+saldo);
-							if(saldo > 0L) {
-								if(saldo.longValue() <= itensCompra.get(i).getQuantidadeDisponivel().longValue()) {
-									ItemVendaCompra itemVendaCompra = new ItemVendaCompra();
-									itemVendaCompra.setItemVenda(itemVenda);
-									itemVendaCompra.setCompra(itensCompra.get(i).getCompra());
-									itemVendaCompra.setQuantidade(saldo);
-									//itemVendaCompra.setTotal(new BigDecimal(valorDeCustoUnitario.doubleValue() * itemVendaCompra.getQuantidade().intValue()));
-									
-									itensVendaCompra.add(itemVendaCompra);
-									
-									saldo = 0L; 
-								} else {
-									
-									ItemVendaCompra itemVendaCompra = new ItemVendaCompra();
-									itemVendaCompra.setItemVenda(itemVenda);
-									itemVendaCompra.setCompra(itensCompra.get(i).getCompra());
-									itemVendaCompra.setQuantidade(itensCompra.get(i).getQuantidadeDisponivel());
-									//itemVendaCompra.setTotal(new BigDecimal(valorDeCustoUnitario.doubleValue() * itemVendaCompra.getQuantidade().intValue()));
-									
-									itensVendaCompra.add(itemVendaCompra);
-									
-									saldo -= itensCompra.get(i).getQuantidadeDisponivel().longValue();
-								}
+					/*if (itemCompra.getCompra().getId().longValue() == itemVenda.getCompra().getId().longValue()) {
+						if (itemCompra.getProduto().getId().longValue() == itemVenda.getProduto().getId().longValue()) {
+							if (itemVenda.getId() == null && venda.getId() == null) {
+								quantidadeDisponivel -= itemVenda.getQuantidade();
 							}
 						}
-						
-						//itemVenda.setPercentualLucro(new BigDecimal(itemVenda.getTotal().doubleValue() - (itemVenda.getProduto().getCustoMedioUnitario().doubleValue() * itemVenda.getQuantidade().doubleValue())/ itemVenda.getTotal().doubleValue() * 100));
-						
-						itemVenda.setItensVendaCompra(itensVendaCompra);				
-						//itemVenda.setCompra(itemCompra.getCompra());
-	
-						/* Calculo do Lucro em valor e percentual */						
-						
-						Double valorDeCustoTotal = new BigDecimal(valorDeCustoUnitario
-								* itemVenda.getQuantidade().intValue())
-						.setScale(4, BigDecimal.ROUND_HALF_EVEN).doubleValue();
-						
-					
-						itemVenda.setLucro(new BigDecimal(((itemVenda.getValorUnitario().doubleValue() - valorDeCustoUnitario.doubleValue()) / itemVenda.getValorUnitario().doubleValue())
-								* (itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().intValue())
-								- (itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().doubleValue()) * itemVenda.getDesconto().doubleValue() / 100));
-	
-						itemVenda.setPercentualLucro(new BigDecimal(((itemVenda.getTotal().doubleValue() - (valorDeCustoUnitario.doubleValue() * itemVenda.getQuantidade())) / itemVenda.getTotal().doubleValue() * 100)));
-						itemVenda.setValorCompra(new BigDecimal(valorDeCustoUnitario.doubleValue() * itemVenda.getQuantidade().intValue()));
-	
-						System.out.println("ValorDeCustoTotal: " + valorDeCustoTotal);
-						System.out.println("ValorDeCustoUnitario: " + valorDeCustoUnitario);
-						System.out.println("Lucro: " + itemVenda.getLucro());
-						System.out.println("PercentualDeLucro: " + itemVenda.getPercentualLucro());
-	
-						venda.setValorTotal(BigDecimal
-								.valueOf(venda.getValorTotal().doubleValue() + itemVenda.getTotal().doubleValue()));
-	
-						itemVenda.setCode(itemVenda.getProduto().getCodigo().concat("_" + new Date().getTime()));
-						itensVenda.add(itemVenda);
-	
-						String code = itemVenda.getCode();
-						Produto produto = itemVenda.getProduto();
-											
-	
-						itemVenda = new ItemVenda();
-						itemVenda.setCode(code);
-						itemVenda.setProduto(produto);
+					}*/
 									
+					/*for (Compra compra : itemVenda.getCompras()) {
+						if (itemCompra.getCompra().getId().longValue() == compra.getId()
+								.longValue()) {
+							if (itemCompra.getProduto().getId().longValue() == itemVenda.getProduto().getId()
+									.longValue()) {
+								
+								quantidadeDisponivel -= itemVenda.getQuantidade();
+							}
+						}
+					}			
+				}*/
 	
-						atualizaSaldoLoteDeCompras(produto);
+				System.out.println("itemVenda.getQuantidade(): " + itemVenda.getQuantidade());
+				System.out.println("quantidadeDisponivel: " + quantidadeDisponivel);
+	
+				if(itemVenda.getQuantidade() > 0) {
+	
+					if (itemVenda.getQuantidade() <= quantidadeDisponivel) {
+						
+							/*if (itemVenda.getValorUnitario().doubleValue() <= itemCompra.getValorUnitario().doubleValue()) {					
+								PrimeFaces.current().executeScript(
+										"swal({ type: 'warning', title: 'Atenção!', text: 'Produto adicionado com valor unitário menor ou igual ao valor de compra.' });");
+							}*/
+						
+							double desconto = 0;				
+							if(itemVenda.getDesconto() != null) {
+								desconto = itemVenda.getDesconto().doubleValue() / 100;
+							} else {
+								itemVenda.setDesconto(BigDecimal.ZERO);
+							}
+							
+							BigDecimal subtotal = BigDecimal.valueOf(
+								itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().longValue());					
+							itemVenda.setTotal(new BigDecimal(subtotal.doubleValue() - (subtotal.doubleValue() * desconto)));
+							
+							itemVenda.setVenda(venda);
+							
+							itemVenda.setSaldo(itemVenda.getQuantidade());
+							
+							Double valorDeCustoUnitario = itemVenda.getProduto().getCustoMedioUnitario().doubleValue();
+							
+							List<ItemVendaCompra> itensVendaCompra = new ArrayList<ItemVendaCompra>();				
+							Long saldo = itemVenda.getQuantidade();
+							for (int i = itensCompra.size() - 1; i >= 0; i--) {
+								System.out.println("Saldo: "+saldo);
+								if(saldo > 0L) {
+									if(saldo.longValue() <= itensCompra.get(i).getQuantidadeDisponivel().longValue()) {
+										ItemVendaCompra itemVendaCompra = new ItemVendaCompra();
+										itemVendaCompra.setItemVenda(itemVenda);
+										itemVendaCompra.setCompra(itensCompra.get(i).getCompra());
+										itemVendaCompra.setQuantidade(saldo);
+										//itemVendaCompra.setTotal(new BigDecimal(valorDeCustoUnitario.doubleValue() * itemVendaCompra.getQuantidade().intValue()));
 										
+										itensVendaCompra.add(itemVendaCompra);
+										
+										saldo = 0L; 
+									} else {
+										
+										ItemVendaCompra itemVendaCompra = new ItemVendaCompra();
+										itemVendaCompra.setItemVenda(itemVenda);
+										itemVendaCompra.setCompra(itensCompra.get(i).getCompra());
+										itemVendaCompra.setQuantidade(itensCompra.get(i).getQuantidadeDisponivel());
+										//itemVendaCompra.setTotal(new BigDecimal(valorDeCustoUnitario.doubleValue() * itemVendaCompra.getQuantidade().intValue()));
+										
+										itensVendaCompra.add(itemVendaCompra);
+										
+										saldo -= itensCompra.get(i).getQuantidadeDisponivel().longValue();
+									}
+								}
+							}
+							
+							//itemVenda.setPercentualLucro(new BigDecimal(itemVenda.getTotal().doubleValue() - (itemVenda.getProduto().getCustoMedioUnitario().doubleValue() * itemVenda.getQuantidade().doubleValue())/ itemVenda.getTotal().doubleValue() * 100));
+							
+							itemVenda.setItensVendaCompra(itensVendaCompra);				
+							//itemVenda.setCompra(itemCompra.getCompra());
+		
+							/* Calculo do Lucro em valor e percentual */						
+							
+							Double valorDeCustoTotal = new BigDecimal(valorDeCustoUnitario
+									* itemVenda.getQuantidade().intValue())
+							.setScale(4, BigDecimal.ROUND_HALF_EVEN).doubleValue();
+							
 						
-						/* Nova entrada de produto */
-						itemVenda = new ItemVenda();
-						itemVenda.getProduto().setMargemLucro(BigDecimal.ZERO);
-						this.produto = new Produto();
-						filter = new ProdutoFilter();
-						
+							itemVenda.setLucro(new BigDecimal(((itemVenda.getValorUnitario().doubleValue() - valorDeCustoUnitario.doubleValue()) / itemVenda.getValorUnitario().doubleValue())
+									* (itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().intValue())
+									- (itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().doubleValue()) * desconto));
+		
+							itemVenda.setPercentualLucro(new BigDecimal(((itemVenda.getTotal().doubleValue() - (valorDeCustoUnitario.doubleValue() * itemVenda.getQuantidade())) / itemVenda.getTotal().doubleValue() * 100)));
+							itemVenda.setValorCompra(new BigDecimal(valorDeCustoUnitario.doubleValue() * itemVenda.getQuantidade().intValue()));
+		
+							System.out.println("ValorDeCustoTotal: " + valorDeCustoTotal);
+							System.out.println("ValorDeCustoUnitario: " + valorDeCustoUnitario);
+							System.out.println("Lucro: " + itemVenda.getLucro());
+							System.out.println("PercentualDeLucro: " + itemVenda.getPercentualLucro());
+		
+							venda.setValorTotal(BigDecimal
+									.valueOf(venda.getValorTotal().doubleValue() + itemVenda.getTotal().doubleValue()));
+		
+							itemVenda.setCode(itemVenda.getProduto().getCodigo().concat("_" + new Date().getTime()));
+							itensVenda.add(itemVenda);
+		
+							String code = itemVenda.getCode();
+							Produto produto = itemVenda.getProduto();
+												
+		
+							itemVenda = new ItemVenda();
+							itemVenda.setCode(code);
+							itemVenda.setProduto(produto);
+							
+							
+							BigDecimal totalSemDesconto = BigDecimal.ZERO;
+							for (ItemVenda itemVenda : itensVenda) {
+								totalSemDesconto = new BigDecimal(totalSemDesconto.doubleValue() + (itemVenda.getQuantidade().intValue() * itemVenda.getProduto().getPrecoDeVenda().doubleValue()));
+							}
+							
+							Double totalDescontoEmDinheiro = venda.getTotalDescontoEmDinheiro().doubleValue();
+							if(totalDescontoEmDinheiro > 0) {
+								venda.setTotalDesconto(new BigDecimal((totalDescontoEmDinheiro * 100)/totalSemDesconto.doubleValue()));
+							} else {
+								venda.setTotalDesconto(BigDecimal.ZERO);
+							}
+										
+		 
+							atualizaSaldoLoteDeCompras(produto);
+											
+							
+							/* Nova entrada de produto */
+							itemVenda = new ItemVenda();
+							itemVenda.getProduto().setMargemLucro(BigDecimal.ZERO);
+							this.produto = new Produto();
+							filter = new ProdutoFilter();
+							
+					} else {
+						PrimeFaces.current().executeScript(
+								"swal({ type: 'error', title: 'Erro!', text: 'Quantidade maior que a disponível!', timer: 1500 });");
+					}
+					
 				} else {
 					PrimeFaces.current().executeScript(
-							"swal({ type: 'error', title: 'Erro!', text: 'Quantidade maior que a disponível!', timer: 1500 });");
+							"swal({ type: 'error', title: 'Erro!', text: 'Quantidade não pode ser menor ou igual a zero!', timer: 1500 });");
 				}
 				
 			} else {
+				
 				PrimeFaces.current().executeScript(
-						"swal({ type: 'error', title: 'Erro!', text: 'Quantidade não pode ser menor ou igual a zero!', timer: 1500 });");
+						"swal({ type: 'error', title: 'Erro!', text: 'Item com valor unitário igual a zero, vá em cadastro e informe o preço de venda do produto!', timer: 1500 });");
+
 			}
 
 		} else {
@@ -1003,6 +1074,16 @@ public class PDVBean implements Serializable {
 	public void removeItem() {
 
 		if (venda.getId() == null) {
+			
+			venda.setQuantidadeItens(venda.getQuantidadeItens() - itemSelecionado.getQuantidade());
+			
+			BigDecimal totalDesconto = BigDecimal.ZERO;
+			if(itemVenda.getDesconto() != null) {
+				totalDesconto = new BigDecimal((itemSelecionado.getProduto().getPrecoDeVenda().doubleValue() * itemSelecionado.getQuantidade().intValue() * itemSelecionado.getDesconto().doubleValue()) / 100);
+			}
+			
+			venda.setTotalDescontoEmDinheiro(new BigDecimal(venda.getTotalDescontoEmDinheiro().doubleValue() - totalDesconto.doubleValue()));
+
 
 			// itemVenda = itemSelecionado;
 			venda.setValorTotal(
@@ -1099,6 +1180,21 @@ public class PDVBean implements Serializable {
 						"R$ " + nf.format(itensCompra.get(i).getValorUnitario().doubleValue()));
 				itensCompraTemp.add(itensCompra.get(i));
 			}
+			
+			
+			BigDecimal totalSemDesconto = BigDecimal.ZERO;
+			for (ItemVenda itemVenda : itensVenda) {
+				totalSemDesconto = new BigDecimal(totalSemDesconto.doubleValue() + (itemVenda.getQuantidade().intValue() * itemVenda.getProduto().getPrecoDeVenda().doubleValue()));
+			}
+			
+			Double totalDescontoEmDinheiro = venda.getTotalDescontoEmDinheiro().doubleValue();
+			if(totalDescontoEmDinheiro > 0) {
+				venda.setTotalDesconto(new BigDecimal((totalDescontoEmDinheiro * 100)/totalSemDesconto.doubleValue()));
+			} else {
+				venda.setTotalDesconto(BigDecimal.ZERO);
+			}
+			
+	
 
 			itensCompra = new ArrayList<>();
 			itensCompra.addAll(itensCompraTemp);
@@ -1119,6 +1215,16 @@ public class PDVBean implements Serializable {
 	public void editarItem() {
 
 		if (venda.getId() == null) {
+			
+			venda.setQuantidadeItens(venda.getQuantidadeItens() - itemSelecionado.getQuantidade());
+			
+			BigDecimal totalDesconto = BigDecimal.ZERO;
+			if(itemVenda.getDesconto() != null) {
+				totalDesconto = new BigDecimal((itemSelecionado.getProduto().getPrecoDeVenda().doubleValue() * itemSelecionado.getQuantidade().intValue() * itemSelecionado.getDesconto().doubleValue()) / 100);
+			}
+			
+			venda.setTotalDescontoEmDinheiro(new BigDecimal(venda.getTotalDescontoEmDinheiro().doubleValue() - totalDesconto.doubleValue()));
+
 
 			//itemVenda = itemSelecionado;
 			itemVenda = new ItemVenda();
@@ -1230,6 +1336,21 @@ public class PDVBean implements Serializable {
 						"R$ " + nf.format(itensCompra.get(i).getValorUnitario().doubleValue()));
 				itensCompraTemp.add(itensCompra.get(i));
 			}
+			
+			
+			BigDecimal totalSemDesconto = BigDecimal.ZERO;
+			for (ItemVenda itemVenda : itensVenda) {
+				totalSemDesconto = new BigDecimal(totalSemDesconto.doubleValue() + (itemVenda.getQuantidade().intValue() * itemVenda.getProduto().getPrecoDeVenda().doubleValue()));
+			}
+			
+			Double totalDescontoEmDinheiro = venda.getTotalDescontoEmDinheiro().doubleValue();
+			if(totalDescontoEmDinheiro > 0) {
+				venda.setTotalDesconto(new BigDecimal((totalDescontoEmDinheiro * 100)/totalSemDesconto.doubleValue()));
+			} else {
+				venda.setTotalDesconto(BigDecimal.ZERO);
+			}
+			
+			
 
 			itensCompra = new ArrayList<>();
 			itensCompra.addAll(itensCompraTemp);
