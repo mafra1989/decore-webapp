@@ -220,7 +220,7 @@ public class RegistroComprasBean implements Serializable {
 						/* Atualizar custo total e custo medio un. */
 						produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemCompra.getQuantidade().longValue() * itemCompra.getValorUnitario().doubleValue())));					
 						
-						Long saldo = (Long) itensCompras.saldoPorProduto(produto);
+						Long saldo =  produto.getQuantidadeAtual();//(Long) itensCompras.saldoPorProduto(produto);
 						System.out.println(produto.getCustoTotal().doubleValue() + " / " + saldo.longValue());
 						produto.setCustoMedioUnitario(new BigDecimal(produto.getCustoTotal().doubleValue() / saldo.longValue()));
 					}
@@ -460,7 +460,7 @@ public class RegistroComprasBean implements Serializable {
 					/* Atualizar custo total e custo medio un. */
 					produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemCompra.getQuantidade().longValue() * itemCompra.getValorUnitario().doubleValue())));					
 					
-					Long saldo = (Long) itensCompras.saldoPorProduto(produto);
+					Long saldo = produto.getQuantidadeAtual();//(Long) itensCompras.saldoPorProduto(produto);
 					System.out.println(produto.getCustoTotal().doubleValue() + " / " + saldo.longValue());
 					produto.setCustoMedioUnitario(new BigDecimal(produto.getCustoTotal().doubleValue() / saldo.longValue()));
 				
@@ -473,7 +473,7 @@ public class RegistroComprasBean implements Serializable {
 						/* Atualizar custo total e custo medio un. */
 						produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemCompra.getQuantidade().longValue() * itemCompra.getValorUnitario().doubleValue())));					
 						
-						Long saldo = (Long) itensCompras.saldoPorProduto(produto);
+						Long saldo = produto.getQuantidadeAtual();//(Long) itensCompras.saldoPorProduto(produto);
 						System.out.println(produto.getCustoTotal().doubleValue() + " / " + saldo.longValue());
 						produto.setCustoMedioUnitario(new BigDecimal(produto.getCustoTotal().doubleValue() / saldo.longValue()));
 					}					
