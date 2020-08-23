@@ -1020,6 +1020,7 @@
 			var licence = "AUSuRQp1FdcTMaMl30Lg11YKZtj3KdetC22rN+pENTU6SzFHV3gn8iVEG/AyU2MtB1DxXGhYlh6aT3r+2nFgdGFF+sZkdNmE/0Q1JNFaxGn/cjM0CGdi8ClyI2zAd35vrGrqwGEDUZLxNEEUMCmAQpAFlyh6+ZGLSWl9Hz0Cmc1K6kBTw6cLPCtGutrt5z4G6XwZ7LjDHfCHCOJwDdSQk200r9q9oh661WlR9wDzneI4zSV/TP/sHohChVNXrSUY4kD7YMnOg2SRxzBKnYYcEZxjti3ozczriAv0m9H4wSsy0PDaam5fWVSUBEg9IR2fppUSelg8gyXFMjv/mvjZdNkmiBOr8rNfQ1p1GUP+osH3yBYhOY85SFeLffsBwMY5nZ4dV8tdmlVlYhmAdt0yaK5NHfkEjiqCwUqjTBySOiWRbYBIRr8NsD6GO4bmV8Jizuj8aoZTIv3laqjnuv0vRHtv4XSEEzDSQAwEBxQF8t2NYmffHr5xvszLNYwDhJnapmwN67/q9uJbWtRU8UrkDu/NYbiRkTjhxeuG5JoM4CQdJ4rpTtWpLx1BWTsX2goYWuxjvziofsTJIpxtgdK/0DqsUWJM65kCfEiQPDaKhB0R51MyQFLSDgYAShtbZLW8OMiZAdcRHkTkimkR6OrG2OutyCuYvCGKYc0P8QYVM5SLGbwfky7e/cOur6ZVFuO0/PROzGQbxoYlTfaTIc3Cl/iIaFRTJzYVQSuEFpSD+KrwnL6j5ezqo+NGh2MrWJOGtg7aG30d8wgpDNI2XTfkvC20J/O9NAycyi8HUz+Zxm49xzJCcLvXeVILtEWD/I4OPy4=";	        
 
 			function readBarcode() {
+				event.preventDefault();
 				ScanditSDK.configure(licence , {
 				  engineLocation: "https://cdn.jsdelivr.net/npm/scandit-sdk@5.x/build/",
 				})
@@ -1037,11 +1038,14 @@
 				      $('.bar-code').val(scanResult.barcodes[0].data);
 				      JsBarcode(".barcode", scanResult.barcodes[0].data);
 				      alert(scanResult.barcodes[0].data);
-					  $('.btn-close-dlgbarcode').click();
 				    });
 				    				    	
 				    //barcodePicker.stopScanning();
-				});			
+				});	
+				
+				delay(function() { 
+						$('.btn-close-dlgbarcode').click(); 
+					}, 500);
 			}
 
 		</script>
