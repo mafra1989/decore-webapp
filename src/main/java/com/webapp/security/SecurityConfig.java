@@ -39,9 +39,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.headers().frameOptions().sameOrigin()
 			.and()
 			
-			.requiresChannel()
-			  .antMatchers("/Login.xhtml").requiresSecure()
-			  .and()
+			 .requiresChannel()
+	            .anyRequest()
+	            .requiresSecure().and()
 		
 		.authorizeRequests()
 			.antMatchers("/Login.xhtml", "/404.xhtml", "/500.xhtml", "/javax.faces.resource/**").permitAll()
