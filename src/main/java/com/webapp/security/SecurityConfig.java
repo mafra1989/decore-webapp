@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.and()
 			
 			.requiresChannel()
-			  .antMatchers("/Login*").requiresSecure()
+			  .antMatchers("/Login.xhtml").requiresSecure()
 			  .and()
 		
 		.authorizeRequests()
