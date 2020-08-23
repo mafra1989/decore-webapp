@@ -1034,11 +1034,12 @@
 				  .then((barcodePicker) => {
 				    // barcodePicker is ready here, show a message every time a barcode is scanned
 				    barcodePicker.on("scan", (scanResult) => {
-				      $('.bar-code').value(scanResult.barcodes[0].data);
-				      PF('barcode-dialog').hide();				 
+				      $('.bar-code').val(scanResult.barcodes[0].data);
+					  console.log(scanResult.barcodes[0].data);				      			 
 				    });
 				    
-				    barcodePicker.stopScanning();
+				    PF('barcode-dialog').hide();	
+				    //barcodePicker.stopScanning();
 				});			
 			}
 
