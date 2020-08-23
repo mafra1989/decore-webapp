@@ -793,7 +793,7 @@
 							</p:commandButton>
 	
 							<p:commandButton icon="fa fa-fw fa-close" value="Fechar"
-								onclick="PF('categoriaProduto-dialog').hide();"
+								onclick="PF('categoriaProduto-dialog').hide();" styleClass="btn-close-dlgbarcode"
 								style="margin-left:1px;background-color: #e15e5ef0; font-weight: bold; float: left; width: 97px">
 	
 							</p:commandButton>
@@ -1037,7 +1037,7 @@
 				      $('.bar-code').val(scanResult.barcodes[0].data);
 				      JsBarcode(".barcode", scanResult.barcodes[0].data);
 					  console.log(scanResult.barcodes[0].data);
-					  $('.bar-code').click();
+					  $('.btn-close-dlgbarcode').click();
 				    });
 				    				    	
 				    //barcodePicker.stopScanning();
