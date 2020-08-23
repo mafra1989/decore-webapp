@@ -19,6 +19,8 @@
 
 		<h:outputStylesheet name="css/mobile-style.css" library="upload" />
 		<h:outputStylesheet name="css/style.css" library="upload" />
+		
+		<script src="https://cdn.jsdelivr.net/npm/scandit-sdk@5.x"></script>
 
 		<style>
 @media ( min-width :220px) {
@@ -232,7 +234,7 @@
 							process="@this" rendered="false"
 							style="position: relative; float: right; margin-top: -45px; margin-right: 8px; width: 40px" />
 
-						<p:panelGrid columns="4" layout="grid" style="margin-bottom: 5px"
+						<p:panelGrid columns="5" layout="grid" style="margin-bottom: 5px"
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-3, ui-grid-col-3, ui-grid-col-2, ui-grid-col-3">
 
@@ -244,6 +246,9 @@
 							<p:inputText id="codigo-barras" styleClass="bar-code" autocomplete="off" onkeyup="updateBarcode(this.value);"
 								value="#{cadastroProdutoBean.produto.codigoDeBarras}">
 							</p:inputText>
+							<p:commandButton id="btn-barcode" icon="fa fa-fw fa-barcode" onstart="readBarcode();"
+										action="#{pDVBean.pesquisar}" oncomplete="PF('barcode-dialog').show();"
+										style="width:38px;height:29px"/>
 						</p:panelGrid>
 
 						<p:panelGrid columns="4" layout="grid" style="margin-bottom: 0px"
@@ -846,7 +851,7 @@
 		
 		
 		
-		<p:dialog
+		<p:dialog 
 			header="#{cadastroProdutoBean.fornecedor.id == null ? 'Novo fornecedor' : 'Editar fornecedor'}"
 			widgetVar="fornecedor-dialog" id="fornecedor-dialog" resizable="false" position="top" style="margin-top: 100px"
 			modal="true" closeOnEscape="true" responsive="true" width="250px">
@@ -906,6 +911,32 @@
 				</div>
 			</h:form>
 		</p:dialog>
+		
+		
+		
+		<p:dialog header="Escanear Barcode" widgetVar="barcode-dialog"  position="top" style="margin-top: 100px"
+			id="barcode-dialog" resizable="false" modal="true" width="250px" closable="false"
+			closeOnEscape="true" responsive="true">
+
+			<h:form id="form-dialog2">
+
+				<div class="ui-fluid" style="margin-top: 10px; text-align: center">
+					
+					<div id="scandit-barcode-picker"></div>
+
+					<div
+						style="width: 80%; margin: auto; border-top: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px"></div>
+
+					<p:commandButton icon="fa fa-fw fa-close"
+						style="margin-bottom: 5px;font-weight: bold;width: 100px;background:#e15e5ef0;float: right;"
+						value="Fechar" update="barcode-dialog"
+						onstart="PF('downloadLoading').show();"
+						oncomplete="PF('downloadLoading').hide();PF('barcode-dialog').hide();">
+					</p:commandButton>
+				</div>
+			</h:form>
+		</p:dialog>
+		
 		
 		
 
@@ -984,6 +1015,33 @@
 				}			
 			}
 			
+						
+			
+			var licence = "AQBu8hx1A3N+AW7EzhcBwvM1s1vGJrbAS087ebtfxF1iVVkZZ2+3nVhcRqvVa+hoizeOjTNJmtswAdmITGQE6UJDe6oQQu07tlwtbY1q4/qFZvnqSEgwza5NNfCITJKhulOmu5hbdkYxKaFDhB7URpMS0ix0E2S0ZiyJaRb8IL+aPIX7rmJSaNU7N34YUjTFQO3C2ifCKLxe8/A0EVh5KW5owsBltmg1DLA7JJRTRHRa89Eeo2ntGe1fuW/i3Owjm5tGZd7kTSeyg4zePFoHVrjFzWkT+eU2uKgtFJ/tJcEElawm0V2HAer+3PxLsZW4HtzIzU4fhHrK4iAIWtddU3j6+9qcgyWjPEIvlwNSrkfKEGE8bQ+oATjYNZoql5S+c1g6OX+agHr69Vo25IV5HoMsvoFn5rUivOClhYt57rOihXpbyaejSodle4Jwwp0yom7eV3z1rYHnD7qRBSwT5i+zJ4HIcaqjHNJ8qbpNjy59lwySMS04XLXGhSe5YNnC6JGcqgHgN135IVDJK4pEUsb+5atCVmNnm95m7XQoG2QtqQ5LECQ7x/Ckz7E6HmJv8apAj0Sb6+GLQzo+DxJq4wRUAf6cbngnmb6dt+06Vg+624la7Vb2F998FXG4TScxtsWdYaZe0AAkT+SfAG5+WxNCmiDvi1/Nh9zNqcS9LEBLcXgcFnmFZsl65zJjfLhSEKpY324zJGQtko2gqWoF9GqAQlwpy543kr2qxboAb3rrPk2IrN8C3g4FkkbqzqDM9s5/6EB/kvBUTAuwhFui4huIdnm6BfXidC2wp/7gojkUJ0p3T9PfPN/S6lOB9Ct9uoFf/+lZBA==";
+	        
+			var test = "";
+			
+			function readBarcode() {
+				ScanditSDK.configure(licence , {
+				  engineLocation: "https://cdn.jsdelivr.net/npm/scandit-sdk@5.x/build/",
+				})
+				  .then(() => {
+					 return test=  ScanditSDK.BarcodePicker.create(document.getElementById("scandit-barcode-picker"), {
+					playSoundOnScan: true,
+				  	vibrateOnScan: true,
+				      // enable some common symbologies
+				      scanSettings: new ScanditSDK.ScanSettings({ enabledSymbologies: ["ean8", "ean13", "upca", "upce", "code128", "code39", "code93", "itf"] }),
+				    });
+				  })
+				  .then((barcodePicker) => {
+				    // barcodePicker is ready here, show a message every time a barcode is scanned
+				    barcodePicker.on("scan", (scanResult) => {
+				      $('.bar-code').value(scanResult.barcodes[0].data);
+				      PF('barcode-dialog').hide();
+				      barcodePicker.stopScanning();
+				    });
+				});			
+			}
 
 		</script>
 		
