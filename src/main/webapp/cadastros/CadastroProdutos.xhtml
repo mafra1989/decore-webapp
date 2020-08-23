@@ -1021,39 +1021,34 @@
 
 			var reading = false;
 			function readBarcode() {
-				event.preventDefault();	
 				
 				if(!reading) {
 					
 					reading = true;
 				
-					delay(function() { 
-							
-						ScanditSDK.configure(licence , {
-							  engineLocation: "https://cdn.jsdelivr.net/npm/scandit-sdk@5.x/build/",
-							})
-							  .then(() => {
-								 return test=  ScanditSDK.BarcodePicker.create(document.getElementById("scandit-barcode-picker"), {
-								playSoundOnScan: true,
-							  	vibrateOnScan: true,
-							      // enable some common symbologies
-							      scanSettings: new ScanditSDK.ScanSettings({ enabledSymbologies: ["ean8", "ean13", "upca", "upce", "code128", "code39", "code93", "itf"] }),
-							    });
-							  })
-							  .then((barcodePicker) => {
-							    // barcodePicker is ready here, show a message every time a barcode is scanned
-							    barcodePicker.on("scan", (scanResult) => {
-							      $('.bar-code').val(scanResult.barcodes[0].data);
-							      JsBarcode(".barcode", scanResult.barcodes[0].data);
-							      alert(scanResult.barcodes[0].data);
-								  $('.btn-close-dlgbarcode').click();
-								  reading = false;
-							    });
-							    				    	
-							    //barcodePicker.stopScanning();
-							});	
-						
-						}, 500);
+					ScanditSDK.configure(licence , {
+						  engineLocation: "https://cdn.jsdelivr.net/npm/scandit-sdk@5.x/build/",
+						})
+						  .then(() => {
+							 return test=  ScanditSDK.BarcodePicker.create(document.getElementById("scandit-barcode-picker"), {
+							playSoundOnScan: true,
+						  	vibrateOnScan: true,
+						      // enable some common symbologies
+						      scanSettings: new ScanditSDK.ScanSettings({ enabledSymbologies: ["ean8", "ean13", "upca", "upce", "code128", "code39", "code93", "itf"] }),
+						    });
+						  })
+						  .then((barcodePicker) => {
+						    // barcodePicker is ready here, show a message every time a barcode is scanned
+						    barcodePicker.on("scan", (scanResult) => {
+						      $('.bar-code').val(scanResult.barcodes[0].data);
+						      JsBarcode(".barcode", scanResult.barcodes[0].data);
+						      alert(scanResult.barcodes[0].data);
+							  $('.btn-close-dlgbarcode').click();
+							  reading = false;
+						    });
+						    				    	
+						    //barcodePicker.stopScanning();
+						});
 				}
 			}
 
