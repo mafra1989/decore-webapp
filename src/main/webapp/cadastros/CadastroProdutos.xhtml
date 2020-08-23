@@ -1036,30 +1036,28 @@
 				      scanSettings: new ScanditSDK.ScanSettings({ enabledSymbologies: ["ean8", "ean13", "upca", "upce", "code128", "code39", "code93", "itf"] }),
 				    });
 				  })
-				  .then((barcodePicker) => {			
+				  .then((barcodePicker) => {
+				    // barcodePicker is ready here, show a message every time a barcode is scanned
+				    barcodePicker.on("scan", (scanResult) => {
 				    	
 				    	if(scaning) {
 				    		scaning = false;
 				    		
-				    		// barcodePicker is ready here, show a message every time a barcode is scanned
-						    barcodePicker.on("scan", (scanResult) => {
-				    		
-					    		if(!reading) {
-						    	  reading = true;
-						    	  					    	  
-							      $('.bar-code').val(scanResult.barcodes[0].data);
-							      JsBarcode(".barcode", scanResult.barcodes[0].data);
-							      
-							      swal({ type: 'success', title: 'Concluído!', text: scanResult.barcodes[0].data });
-							      
-								  $('.btn-close-dlgbarcode').click();
-								  
-								  reading = false;							  
-					    		}
-						    }
+				    		if(!reading) {
+					    	  reading = true;
+					    	  					    	  
+						      $('.bar-code').val(scanResult.barcodes[0].data);
+						      JsBarcode(".barcode", scanResult.barcodes[0].data);
+
+						      swal({ type: 'success', title: 'Concluído!', text: scanResult.barcodes[0].data });
+						      
+							  $('.btn-close-dlgbarcode').click();
+							  
+							  reading = false;							  
+				    		}
 				    	}
 				    	
-				    );
+				    });
 				    				    	
 				    //barcodePicker.stopScanning();
 				});
