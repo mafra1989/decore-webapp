@@ -692,13 +692,23 @@
 										
 											
 										<p:outputLabel
+											value="Nome do produto."
+											style="font-size: 16px;font-weight: bold;"
+											rendered="#{pDVBean.itemVenda.produto.id == null}" />
+											
+										<p:outputLabel
+											value="#{pDVBean.itemVenda.produto.nome}"
+											style="font-size: 16px;font-weight: bold;"
+											rendered="#{pDVBean.itemVenda.produto.id != null}" />
+											
+										<p:outputLabel
 											value="Leia o código de barras ou informe a descrição do produto."
-											style="font-size: 22px;font-weight: bold;"
+											style="font-size: 22px;font-weight: bold;float: left;margin-top: -5px;"
 											rendered="#{pDVBean.itemVenda.produto.id == null}" />
 											
 										<p:outputLabel
 											value="#{pDVBean.itemVenda.produto.descricao}"
-											style="font-size: 22px;font-weight: bold;"
+											style="font-size: 22px;font-weight: bold;float: left;margin-top: -5px;"
 											rendered="#{pDVBean.itemVenda.produto.id != null}" />
 											
 
