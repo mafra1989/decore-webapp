@@ -146,6 +146,11 @@
 				</f:facet>
 
 			</p:toolbar>
+			
+			<p:remoteCommand name="setarItemID" process="@this"
+				update="form" action="#{estoqueBean.excluir}"
+				onstart="PF('downloadLoading').show();"
+				oncomplete="PF('downloadLoading').hide();" />
 
 			<div class="ui-g-12 ui-lg-12">
 
@@ -227,6 +232,10 @@
 							<f:param name="id"
 								value="#{estoqueBean.produtoSelecionado.id}" />
 						</p:menuitem>
+						
+						<p:menuitem icon="fa fa-fw fa-trash" id="btn-trash" 
+							value="Excluir" process="@this" disabled="#{not seguranca.acessoAdministrador()}"
+							onclick="deleteItem(#{estoqueBean.produtoSelecionado.id});" />
 					</p:menuButton>
 
 					<p:panelGrid columns="1" layout="grid"

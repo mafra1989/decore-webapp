@@ -541,5 +541,21 @@ public class EstoqueBean implements Serializable {
 	public List<Produto> getProdutosEmDestaque() {
 		return produtosEmDestaque;
 	}
+	
+	
+	public void excluir() {
+
+		if (produtoSelecionado != null) {
+
+			produtos.remove(produtoSelecionado);
+
+			produtoSelecionado = null;
+			pesquisar();
+					
+			PrimeFaces.current().executeScript(
+							"swal({ type: 'success', title: 'Concluído!', text: 'Produto excluído com sucesso!' });");
+
+		}
+	}
 
 }
