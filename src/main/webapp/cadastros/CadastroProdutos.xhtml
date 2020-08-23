@@ -1037,7 +1037,7 @@
 				      $('.bar-code').val(scanResult.barcodes[0].data);
 				      JsBarcode(".barcode", scanResult.barcodes[0].data);
 					  console.log(scanResult.barcodes[0].data);
-					  PF('barcode-dialog').hide();
+					  $('.bar-code').click();
 				    });
 				    				    	
 				    //barcodePicker.stopScanning();
