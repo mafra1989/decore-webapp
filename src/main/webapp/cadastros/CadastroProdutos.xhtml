@@ -1055,11 +1055,10 @@
 							      $('.bar-code').val(scanResult.barcodes[0].data);
 							      JsBarcode(".barcode", scanResult.barcodes[0].data);
 							      //swal({ type: 'success', title: 'Concluído!', text: scanResult.barcodes[0].data });
-							      alert(scanResult.barcodes[0].data);
-							      $('.btn-close-dlgbarcode').click();
-							      $('.process-barcode').click();							  
-								  
-								  reading = false;							  
+							      //alert(scanResult.barcodes[0].data);
+							      
+							      codigoEscaneado_(scanResult.barcodes[0].data);							      
+							      							  
 					    		}
 					    	}
 					    	

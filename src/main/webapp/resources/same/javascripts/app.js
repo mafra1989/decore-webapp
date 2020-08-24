@@ -247,3 +247,59 @@ function sdkResponseHandler(status, response) {
 		} ]);
     }
 };
+
+
+function codigoEscaneado(barcode) {
+	
+	const swalWithBootstrapButtons = swal.mixin({
+		  confirmButtonClass: 'btn btn-success',
+		  cancelButtonClass: 'btn btn-danger',
+		  buttonsStyling: false,
+		})
+
+		swalWithBootstrapButtons({
+		  title: 'Código Escaneado',
+		  text: "Código: " + barcode,
+		  type: 'success',
+		  showCancelButton: false,
+		  confirmButtonText: 'OK',
+		  reverseButtons: true
+		}).then((result) => {
+		  if (result.value) {
+			  
+			  $('.btn-close-dlgbarcode').click();
+			  $('.btn-barcode').click();
+			  							  						  
+			  reading = false;	
+			  		 
+		  }
+		})	
+}
+
+
+function codigoEscaneado_(barcode) {
+	
+	const swalWithBootstrapButtons = swal.mixin({
+		  confirmButtonClass: 'btn btn-success',
+		  cancelButtonClass: 'btn btn-danger',
+		  buttonsStyling: false,
+		})
+
+		swalWithBootstrapButtons({
+		  title: 'Código Escaneado',
+		  text: "Código: " + barcode,
+		  type: 'success',
+		  showCancelButton: false,
+		  confirmButtonText: 'OK',
+		  reverseButtons: true
+		}).then((result) => {
+		  if (result.value) {
+			  
+			  $('.btn-close-dlgbarcode').click();
+			  $('.process-barcode').click();							  
+
+			  reading = false;
+			  		 
+		  }
+		})	
+}

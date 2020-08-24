@@ -239,6 +239,9 @@
 		border: none;
 		background: transparent;
 	}
+	.panel-body.ui-panelgrid .ui-panelgrid-cell:nth-child(2) {
+		padding: 10px 18px;
+	}
 	.ui-datatable tbody td {
 		height: auto !important;
 	}
@@ -394,6 +397,12 @@
 }
 
 @media ( min-width :460px) {
+	.panel-body.ui-panelgrid .ui-panelgrid-cell:nth-child(2) {
+		padding: 2px 2px 0px 0px;
+	}
+	.panel-total-geral.card.card-w-title {
+		padding: 2px;
+	}
 	.panel-desc {
 		margin-top:10px;
 	}
@@ -1099,7 +1108,7 @@
 
 
 					<p:panel class="card card-w-title ui-fluid itens-add panel-right"
-						id="panel-table" style="padding: 10px 18px;padding-bottom: 0px !important;" styleClass="panel-itenstable">
+						id="panel-table" style="padding-bottom: 0px !important;" styleClass="panel-itenstable">
 
 						<p style="font-weight: bold; margin-left: 4px;">Itens
 							adicionados</p>
@@ -1569,11 +1578,10 @@
 					    	  					    	  
 						      $('.field-barcode').val(scanResult.barcodes[0].data);
 						      //swal({ type: 'success', title: 'Concluído!', text: scanResult.barcodes[0].data });
-						      alert(scanResult.barcodes[0].data);
-						      $('.btn-close-dlgbarcode').click();
-							  $('.btn-barcode').click();
-							  							  						  
-							  reading = false;							  
+						      //alert(text:scanResult.barcodes[0].data);
+						      
+						      codigoEscaneado(scanResult.barcodes[0].data);
+						      						  
 				    		}
 				    	}
 				    	
