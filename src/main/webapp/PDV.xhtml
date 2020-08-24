@@ -1563,7 +1563,7 @@
 					playSoundOnScan: true,
 				  	vibrateOnScan: true,
 				      // enable some common symbologies
-				      scanSettings: new ScanditSDK.ScanSettings({ enabledSymbologies: ["ean8", "ean13", "upca", "upce", "code128", "code39", "code93", "itf"], codeDuplicateFilter: 1000 }),
+				      scanSettings: new ScanditSDK.ScanSettings({ enabledSymbologies: ["ean8", "ean13", "upca", "upce", "code128", "code39", "code93", "itf"], codeDuplicateFilter: 3000 }),
 				    });
 				  })
 				  .then((barcodePicker) => {
