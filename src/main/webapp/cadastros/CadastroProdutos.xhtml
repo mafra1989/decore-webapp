@@ -926,7 +926,7 @@
 
 				<div class="ui-fluid" style="margin-top: 10px; text-align: center">
 					
-					<div id="scandit-barcode-picker" style="max-width: 350px; max-height: 80%;"></div>
+					<div id="scandit-barcode-picker" style="max-width: 350px; max-height: 100%;"></div>
 
 					<div
 						style="width: 80%; margin: auto; border-top: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px"></div>
@@ -1039,7 +1039,7 @@
 						playSoundOnScan: true,
 					  	vibrateOnScan: true,					  	
 					      // enable some common symbologies
-					      scanSettings: new ScanditSDK.ScanSettings({ enabledSymbologies: ["ean8", "ean13", "upca", "upce", "code128", "code39", "code93", "itf"], codeDuplicateFilter: 5000 }),
+					      scanSettings: new ScanditSDK.ScanSettings({ enabledSymbologies: ["ean8", "ean13", "upca", "upce", "code128", "code39", "code93", "itf"], codeDuplicateFilter: 1000 }),
 					    });
 					  })
 					  .then((barcodePicker) => {
