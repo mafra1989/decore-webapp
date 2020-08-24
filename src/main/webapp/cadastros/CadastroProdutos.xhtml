@@ -249,6 +249,10 @@
 							<p:commandButton id="btn-barcode" icon="fa fa-fw fa-camera-retro" onstart="readBarcode();"
 										oncomplete="PF('barcode-dialog').show();"
 										style="width:38px;height:29px"/>
+							
+							<p:commandButton process="@this codigo-barras" styleClass="process-barcode"
+										action="#{cadastroProdutoBean.validaBarcode}"
+										style="width:38px;height:29px"/>
 						</p:panelGrid>
 
 						<p:panelGrid columns="4" layout="grid" style="margin-bottom: 0px"
@@ -930,7 +934,7 @@
 					<p:commandButton icon="fa fa-fw fa-close" styleClass="btn-close-dlgbarcode"
 						style="margin-bottom: 5px;font-weight: bold;width: 100px;background:#e15e5ef0;float: right;"
 						value="Fechar" update="barcode-dialog barcode-form" process="@this form:codigo-barras"
-						onstart="PF('downloadLoading').show();" action="#{cadastroProdutoBean.validaBarcode}"
+						onstart="PF('downloadLoading').show();" 
 						oncomplete="PF('downloadLoading').hide();PF('barcode-dialog').hide();">
 					</p:commandButton>
 				</div>
@@ -1052,7 +1056,8 @@
 							      JsBarcode(".barcode", scanResult.barcodes[0].data);
 							      //swal({ type: 'success', title: 'Concluído!', text: scanResult.barcodes[0].data });
 							      alert(scanResult.barcodes[0].data);
-								  $('.btn-close-dlgbarcode').click();
+							      $('.btn-close-dlgbarcode').click();
+							      $('.process-barcode').click();							  
 								  
 								  reading = false;							  
 					    		}
