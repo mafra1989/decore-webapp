@@ -951,6 +951,7 @@ public class PDVBean implements Serializable {
 							this.produto = new Produto();
 							filter = new ProdutoFilter();
 							
+							
 					} else {
 						PrimeFaces.current().executeScript(
 								"swal({ type: 'error', title: 'Erro!', text: 'Quantidade maior que a disponível!', timer: 1500 });");

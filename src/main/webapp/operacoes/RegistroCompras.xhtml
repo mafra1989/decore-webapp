@@ -16,9 +16,29 @@
 	</f:metadata>
 
 	<ui:define name="content">
+	
+		<script src="https://cdn.jsdelivr.net/npm/scandit-sdk@5.x"></script>
 
 		<style>
 @media ( min-width :220px) {
+	.btn-barcode_.ui-button.ui-state-default {
+    	display: none !important;  	
+    }
+	.btn-camera.ui-button.ui-state-default {
+    	display: block !important;  
+    	width: 35px;
+    	height: 29px;	
+    	float: right;
+    }	
+	 .busca-avancada .ui-autocomplete {
+	    width:86.6%;
+	}
+	.busca-avancada .ui-inputtext {
+	    width: 86.6%;
+	}
+	.busca-avancada.ui-panel .ui-panel-content {
+		padding: 0px;
+	}
 	.entrada .ui-inputtext {
 		color: #2d5db3;
 		/*font-weight: bold;*/
@@ -149,7 +169,16 @@
 	}
 }
 
-@media ( min-width :460px) {
+@media ( min-width :460px) {	
+	.busca-avancada .ui-autocomplete {
+	    width: 84.7%;
+	}
+	.btn-barcode_.ui-button.ui-state-default {
+    	display: block !important;  	
+    }
+	.btn-camera.ui-button.ui-state-default {
+    	display: none !important;  	
+    }
 	.ui-slider .ui-slider-handle {
 		width: 1.7em;
 		height: 1.7em;
@@ -167,6 +196,9 @@
 }
 
 @media ( min-width :640px) {
+	.busca-avancada .ui-inputtext {
+	    width: 84.7%;
+	}
 	.ui-slider-handle {
 		width: 1.2em !important;
 		height: 1.2em !important;
@@ -211,9 +243,7 @@
 
 		<div class="ui-g-12 ui-lg-12">
 
-			<h:form id="form">
-
-				<p:defaultCommand target="btn-calcular" />
+			<h:form id="form">							
 
 				<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
 					styleClass="panelgrid-noborder disabled disabled"
@@ -276,20 +306,80 @@
 							<p:inputNumber id="total" decimalPlaces="0" readonly="true"
 								placeholder="0" value="#{registroComprasBean.compra.valorTotal}" />
 						</p:panelGrid>
-
-
+			
+				<p:panel class="card card-w-title ui-fluid" id="panel-itens_"
+						style="margin-bottom: 0px;margin-top: 10px; padding-bottom: 0px !important">
+						
 						<h3 style="font-weight: bold">Itens da compra</h3>
 
-						<p:commandButton styleClass="btn-new" icon="fa fa-fw fa-cubes"
-							title="Buscar produto" onstart="PF('downloadLoading').show();"
-							oncomplete="PF('downloadLoading').hide();PF('item-dialog').show()"
-							process="@this"
-							disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
-							style="position: relative; float: right; margin-top: -38px; margin-right: 8px; width: 40px" />
-
+													
+						
+							<p:selectBooleanButton id="leitor" 
+								value="#{registroComprasBean.leitor}" onLabel="ATIVADO"
+								offLabel="DESATIVADO" onIcon="fa fa-fw fa-check"
+								offIcon="fa fa-fw fa-close" style="position: relative; float: right; margin-top: -38px; margin-right: 8px; font-size:11px;width:105px;">
+								
+								<p:ajax process="@this" update="panel-busca" />										
+							</p:selectBooleanButton>
+							
+							<p:outputLabel value="Leitor de código de barras" for="leitor" style="font-size: 12px;margin-top: -60px; margin-right: 8px;position: relative; float: right;" />
+													
 						<p:inputText id="id" type="hidden"
 							value="#{registroComprasBean.itemCompra.code}" required="true"
-							requiredMessage="Produto deve ser informado." />
+							requiredMessage="Produto deve ser informado." />											
+									
+						<p:focus for="busca" rendered="#{registroComprasBean.itemCompra.produto.id == null and not registroComprasBean.leitor}" />
+						<p:focus for="busca-por-leitor" rendered="#{registroComprasBean.itemCompra.produto.id == null and registroComprasBean.leitor}" />
+									
+						<p:focus id="focus-valor-unitario" for="valor-unitario" rendered="#{registroComprasBean.itemCompra.produto.id != null}"  />
+							
+						<p:defaultCommand scope="panel-itens_" target="btn-adicionar" 
+									rendered="#{registroComprasBean.itemCompra.produto.id != null}" />	
+									
+						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+							styleClass="panelgrid-noborder disabled disabled" id="panel-busca"
+							columnClasses="ui-grid-col-4, ui-grid-col-8">
+							
+									<p:outputLabel value="Buscar Produto" />
+							
+									<p:panel styleClass="busca-avancada">
+							
+										<p:autoComplete id="busca" value="#{registroComprasBean.produto}" 
+											placeholder="Digite o código ou descrição do produto"
+											var="produto" styleClass="busca" rendered="#{not registroComprasBean.leitor}"
+											itemLabel="#{produto.codigo.concat(' | ').concat(produto.descricao)}" itemValue="#{produto}"
+											completeMethod="#{registroComprasBean.completeText_Produto}">
+											
+											<p:ajax event="itemSelect" listener="#{registroComprasBean.onItemSelect}" 
+												update="panel-itens_ form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total" />
+										</p:autoComplete>
+										
+										<p:inputText id="busca-por-leitor" value="#{registroComprasBean.filter.codigo}" styleClass="field-barcode busca-por-leitor"
+											placeholder="Escaneie ou digite o código do produto" rendered="#{registroComprasBean.leitor}" />
+											
+										<p:commandButton id="btn-barcode" icon="fa fa-fw fa-barcode" 
+											action="#{registroComprasBean.pesquisar_}" process="@this busca-por-leitor"
+											update="panel-itens_ form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total" 
+											style="float:right;width:35px;height:28px" styleClass="white-button btn-barcode btn-barcode_" />
+										
+										
+										<p:commandButton id="enter-barcode" icon="fa fa-fw fa-camera-retro" 
+											onstart="readBarcode();" disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
+											oncomplete="PF('barcode-dialog').show();" styleClass="btn-camera white-button white-button_" />
+										
+									
+										<p:commandButton styleClass="btn-new btn-camera" icon="fa fa-fw fa-cubes"
+											title="Buscar produto" onstart="PF('downloadLoading').show();"
+											oncomplete="PF('downloadLoading').hide();PF('item-dialog').show()"
+											process="@this" rendered="false"
+											disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}" />
+										
+									
+									</p:panel>
+																
+						</p:panelGrid>
+										
+										
 
 						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
 							styleClass="panelgrid-noborder disabled disabled"
@@ -357,13 +447,13 @@
 								onstart="PF('downloadLoading').show();" icon="fa fa-plus"
 								onsuccess="PF('downloadLoading').hide();"
 								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
-								update="msg codigo descricao fornecedor total-compra id valor-unitario quantidade valor-total panel-table"
+								update="panel-itens_ msg codigo descricao fornecedor total-compra id valor-unitario quantidade valor-total panel-table"
 								action="#{registroComprasBean.adicionarItem}"
 								process="@this codigo valor-unitario quantidade valor-total id"
 								style="font-weight: bold;" />
 						</p:panelGrid>
 					</p:panel>
-
+</p:panel>
 
 					<p:panel class="card card-w-title ui-fluid itens-add"
 						id="panel-table" style="padding-bottom: 0px !important">
@@ -716,6 +806,33 @@
 
 			</h:form>
 		</p:dialog>
+		
+		
+		
+		<p:dialog header="Escanear Barcode" widgetVar="barcode-dialog"  position="top" style="margin-top: 100px"
+			id="barcode-dialog" resizable="false" modal="true" width="350px" closable="false" 
+			closeOnEscape="true" responsive="true">
+
+			<h:form id="form-dialog2">
+
+				<div class="ui-fluid" style="margin-top: 10px; text-align: center">
+					
+					<div id="scandit-barcode-picker" style="max-width: 350px; max-height: 100%;"></div>
+
+					<div
+						style="width: 80%; margin: auto; border-top: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px"></div>
+
+					<p:commandButton icon="fa fa-fw fa-close" styleClass="btn-close-dlgbarcode"
+						style="margin-bottom: 5px;font-weight: bold;width: 100px;background:#e15e5ef0;float: right;"
+						value="Fechar" update="barcode-dialog" 
+						onstart="PF('downloadLoading').show();" 
+						oncomplete="PF('downloadLoading').hide();PF('barcode-dialog').hide();">
+					</p:commandButton>
+				</div>
+			</h:form>
+		</p:dialog>
+		
+		
 
 		<p:dialog id="downloadLoading" showHeader="false" modal="true"
 			widgetVar="downloadLoading" header="Status" draggable="false"
@@ -762,6 +879,52 @@
 				delay(function() { 
 					sendAjaxical(); 
 					}, 500);
+			}
+			
+			
+			
+			var licence = "AUSuRQp1FdcTMaMl30Lg11YKZtj3KdetC22rN+pENTU6SzFHV3gn8iVEG/AyU2MtB1DxXGhYlh6aT3r+2nFgdGFF+sZkdNmE/0Q1JNFaxGn/cjM0CGdi8ClyI2zAd35vrGrqwGEDUZLxNEEUMCmAQpAFlyh6+ZGLSWl9Hz0Cmc1K6kBTw6cLPCtGutrt5z4G6XwZ7LjDHfCHCOJwDdSQk200r9q9oh661WlR9wDzneI4zSV/TP/sHohChVNXrSUY4kD7YMnOg2SRxzBKnYYcEZxjti3ozczriAv0m9H4wSsy0PDaam5fWVSUBEg9IR2fppUSelg8gyXFMjv/mvjZdNkmiBOr8rNfQ1p1GUP+osH3yBYhOY85SFeLffsBwMY5nZ4dV8tdmlVlYhmAdt0yaK5NHfkEjiqCwUqjTBySOiWRbYBIRr8NsD6GO4bmV8Jizuj8aoZTIv3laqjnuv0vRHtv4XSEEzDSQAwEBxQF8t2NYmffHr5xvszLNYwDhJnapmwN67/q9uJbWtRU8UrkDu/NYbiRkTjhxeuG5JoM4CQdJ4rpTtWpLx1BWTsX2goYWuxjvziofsTJIpxtgdK/0DqsUWJM65kCfEiQPDaKhB0R51MyQFLSDgYAShtbZLW8OMiZAdcRHkTkimkR6OrG2OutyCuYvCGKYc0P8QYVM5SLGbwfky7e/cOur6ZVFuO0/PROzGQbxoYlTfaTIc3Cl/iIaFRTJzYVQSuEFpSD+KrwnL6j5ezqo+NGh2MrWJOGtg7aG30d8wgpDNI2XTfkvC20J/O9NAycyi8HUz+Zxm49xzJCcLvXeVILtEWD/I4OPy4=";	        
+			
+			var reading = false; 
+			var scaning = false;
+			function readBarcode() {
+				
+				scaning = true;
+
+				ScanditSDK.configure(licence , {
+				  engineLocation: "https://cdn.jsdelivr.net/npm/scandit-sdk@5.x/build/",
+				})
+				  .then(() => {
+					 return test=  ScanditSDK.BarcodePicker.create(document.getElementById("scandit-barcode-picker"), {
+					playSoundOnScan: true,
+				  	vibrateOnScan: true,
+				      // enable some common symbologies
+				      scanSettings: new ScanditSDK.ScanSettings({ enabledSymbologies: ["ean8", "ean13", "upca", "upce", "code128", "code39", "code93", "itf"], codeDuplicateFilter: 1000 }),
+				    });
+				  })
+				  .then((barcodePicker) => {
+				    // barcodePicker is ready here, show a message every time a barcode is scanned
+				    barcodePicker.on("scan", (scanResult) => {
+				    	
+				    	if(scaning) {
+				    		scaning = false;
+				    		
+				    		if(!reading) {
+					    	  reading = true;
+					    	  					    	  
+						      $('.field-barcode').val(scanResult.barcodes[0].data);
+						      //swal({ type: 'success', title: 'Concluído!', text: scanResult.barcodes[0].data });
+						      //alert(text:scanResult.barcodes[0].data);
+						      
+						      codigoEscaneado(scanResult.barcodes[0].data);
+						      						  
+				    		}
+				    	}
+				    	
+				    });
+				    				    	
+				    //barcodePicker.stopScanning();
+				});
 			}
 		</script>
 

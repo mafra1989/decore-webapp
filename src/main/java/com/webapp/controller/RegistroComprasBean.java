@@ -13,6 +13,7 @@ import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 
 import org.primefaces.PrimeFaces;
+import org.primefaces.event.SelectEvent;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
@@ -98,6 +99,12 @@ public class RegistroComprasBean implements Serializable {
 	
 	@Inject
 	private Usuario usuario;
+	
+	@Inject
+	private Produto produto;	
+	
+	private boolean leitor = true;
+	
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -136,6 +143,45 @@ public class RegistroComprasBean implements Serializable {
 			itemCompra.setCode(itemCompra.getProduto().getCodigo());
 		}
 	}
+	
+	
+	public List<Produto> completeText_Produto(String query) {
+		System.out.println(query);
+		filter.setEmpresa(usuario.getEmpresa());
+		filter.setDescricao(query);
+		
+		List<Produto> listaProdutos = produtos.filtrados(filter);
+         
+        return listaProdutos;
+    }
+	
+	public void onItemSelect(SelectEvent event) {		
+        System.out.println(event.getObject().toString());
+        selecionarProduto((Produto) event.getObject());
+        produto = new Produto();
+    }
+	
+	
+	
+	public void pesquisar_() {
+		System.out.println("Código escaneado: " + filter.getCodigo());
+		
+		Produto produto = produtos.porCodigoDeBarras(filter.getCodigo(), usuario.getEmpresa());	
+		
+		if(produto != null) {
+			filter = new ProdutoFilter();
+			selecionarProduto(produto);
+			
+		} else {
+			filter = new ProdutoFilter();
+			itemCompra = new ItemCompra();
+			//itemCompra.getProduto().setMargemLucro(BigDecimal.ZERO);
+			PrimeFaces.current().executeScript("swal({ type: 'error', title: 'Erro!', text: 'Produto não encontrado!', timer: 1500 });");
+		}
+		
+	}
+	
+	
 
 	public void changePagamento() {
 		if (tipoPagamento == TipoPagamento.AVISTA) {
@@ -601,6 +647,8 @@ public class RegistroComprasBean implements Serializable {
 							BigDecimal.valueOf(compra.getValorTotal().doubleValue() + itemCompra.getTotal().doubleValue()));
 
 					itemCompra = new ItemCompra();
+					
+					produto = new Produto();
 				} else {
 					
 					PrimeFaces.current()
@@ -613,6 +661,9 @@ public class RegistroComprasBean implements Serializable {
 			}
 
 		} else {
+			itemCompra = new ItemCompra();			
+			produto = new Produto();
+			
 			PrimeFaces.current()
 					.executeScript("swal({ type: 'error', title: 'Erro!', text: 'Produto já foi adicionado!' });");
 		}
@@ -763,5 +814,21 @@ public class RegistroComprasBean implements Serializable {
 
 	public void setValorEntrada(Double valorEntrada) {
 		this.valorEntrada = valorEntrada;
+	}
+
+	public Produto getProduto() {
+		return produto;
+	}
+
+	public void setProduto(Produto produto) {
+		this.produto = produto;
+	}
+
+	public boolean isLeitor() {
+		return leitor;
+	}
+
+	public void setLeitor(boolean leitor) {
+		this.leitor = leitor;
 	}
 }
