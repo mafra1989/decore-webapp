@@ -235,6 +235,39 @@ public class CadastroProdutoBean implements Serializable {
 		}
 		
 	}
+			
+	
+	public void validaBarcode() {
+		
+		if (produto.getId() == null) {
+			
+			Produto produtoTemp = null;
+				
+			if(!produto.getCodigoDeBarras().equals("") && produto.getCodigoDeBarras() != null) {
+				produtoTemp = produtos.porCodigoDeBarras(produto.getCodigoDeBarras(), usuario.getEmpresa());
+			}
+				
+			if(produtoTemp != null) {
+				
+				PrimeFaces.current().executeScript(
+						"swal({ type: 'error', title: 'Erro!', text: 'Já existe um produto com o código informado!' });");
+			}
+						
+		} else {
+			
+			Produto produtoTemp = null;
+				
+			if(!produto.getCodigoDeBarras().equals("") && produto.getCodigoDeBarras() != null) {
+				produtoTemp = produtos.porCodigoDeBarrasCadastrado(produto);
+			}
+			
+			if(produtoTemp != null) {
+				PrimeFaces.current().executeScript(
+						"swal({ type: 'error', title: 'Erro!', text: 'Já existe um produto com o código de barras informado!' });");
+			}		
+		}
+	}
+	
 	
 	public void salvar() {
 
