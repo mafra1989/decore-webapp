@@ -21,6 +21,10 @@
 
 		<style>
 @media ( min-width :220px) {
+	body .ui-autocomplete-panel {
+	    /*width: 60% !important;*/
+	    max-height: 250px;
+    }
 	.btn-barcode_.ui-button.ui-state-default {
     	display: none !important;  	
     }
@@ -146,10 +150,10 @@
 		.ui-datatable tfoot th {
 		font-size: 13px;
 	}
-	body .btn-new.ui-button {
-		color: #676363;
-		background-color: #f9f9f9;
-		border: 1px solid #8a8585;
+	body .btn-new.ui-button { 
+    	width: 35px;
+    	height: 29px;	
+    	float: right;
 	}
 	.swal2-popup {
 		width: 28em;
@@ -170,6 +174,10 @@
 }
 
 @media ( min-width :460px) {	
+	body .ui-autocomplete-panel {
+	    /*width: auto !important;*/
+	    height: auto;
+    }
 	.busca-avancada .ui-autocomplete {
 	    width: 84.7%;
 	}
@@ -357,21 +365,21 @@
 										<p:inputText id="busca-por-leitor" value="#{registroComprasBean.filter.codigo}" styleClass="field-barcode busca-por-leitor"
 											placeholder="Escaneie ou digite o código do produto" rendered="#{registroComprasBean.leitor}" />
 											
-										<p:commandButton id="btn-barcode" icon="fa fa-fw fa-barcode" 
+										<p:commandButton id="btn-barcode" icon="fa fa-fw fa-barcode" rendered="#{registroComprasBean.leitor}"
 											action="#{registroComprasBean.pesquisar_}" process="@this busca-por-leitor"
 											update="panel-itens_ form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total" 
-											style="float:right;width:35px;height:28px" styleClass="white-button btn-barcode btn-barcode_" />
+											style="float:right;width:35px;height:29px" styleClass="white-button btn-barcode btn-barcode_" />
 										
 										
-										<p:commandButton id="enter-barcode" icon="fa fa-fw fa-camera-retro" 
+										<p:commandButton id="enter-barcode" icon="fa fa-fw fa-camera-retro"  rendered="#{registroComprasBean.leitor}"
 											onstart="readBarcode();" disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
 											oncomplete="PF('barcode-dialog').show();" styleClass="btn-camera white-button white-button_" />
 										
 									
-										<p:commandButton styleClass="btn-new btn-camera" icon="fa fa-fw fa-cubes"
+										<p:commandButton styleClass="btn-new" icon="fa fa-fw fa-cubes"
 											title="Buscar produto" onstart="PF('downloadLoading').show();"
 											oncomplete="PF('downloadLoading').hide();PF('item-dialog').show()"
-											process="@this" rendered="false"
+											process="@this" rendered="#{not registroComprasBean.leitor}" 
 											disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}" />
 										
 									
@@ -591,7 +599,7 @@
 								<p:commandButton icon="fa fa-fw fa-check"
 									action="#{registroComprasBean.selecionarProduto(produto)}"
 									title="Selecionar Produto"
-									update="form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total"
+									update="form:panel-itens_ form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total"
 									styleClass="btn-select" process="@this"
 									onstart="PF('downloadLoading').show();"
 									oncomplete="PF('downloadLoading').hide();PF('item-dialog').hide();">
@@ -599,6 +607,16 @@
 							</p:column>
 
 						</p:dataTable>
+						
+						<div
+						style="width: 80%; margin: auto; border-top: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px"></div>
+
+						<p:commandButton icon="fa fa-fw fa-close" styleClass="btn-close"
+							style="margin-bottom: 5px;font-weight: bold;width: 100px;background:#e15e5ef0;float: right;"
+							value="Fechar"
+							onstart="PF('downloadLoading').show();" 
+							oncomplete="PF('downloadLoading').hide();PF('item-dialog').hide();">
+						</p:commandButton>
 					</p:panel>
 				</div>
 
