@@ -31,6 +31,7 @@ import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemDevolucao;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.ItemVendaCompra;
+import com.webapp.model.Lancamento;
 import com.webapp.model.Produto;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
@@ -45,6 +46,7 @@ import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensDevolucoes;
 import com.webapp.repository.ItensVendas;
 import com.webapp.repository.ItensVendasCompras;
+import com.webapp.repository.Lancamentos;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.Usuarios;
 import com.webapp.repository.Vendas;
@@ -106,6 +108,9 @@ public class ConsultaComprasBean implements Serializable {
 
 	@Inject
 	private Produtos produtos;
+	
+	@Inject
+	private Lancamentos lancamentos;
 	
 	@Inject
 	private Contas contas;
@@ -426,6 +431,11 @@ public class ConsultaComprasBean implements Serializable {
 						for (Produto produto : todosProdutos) {
 							produto.setEstorno(BigDecimal.ZERO);
 							produtos.save(produto);
+						}
+						
+						List<Lancamento> todosLancamento = lancamentos.todos(usuario_.getEmpresa());
+						for (Lancamento lancamento : todosLancamento) {
+							lancamentos.remove(lancamento);
 						}
 					}
 					

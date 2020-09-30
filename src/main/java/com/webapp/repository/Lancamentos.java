@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import com.webapp.model.Caixa;
 import com.webapp.model.CategoriaLancamento;
 import com.webapp.model.DestinoLancamento;
 import com.webapp.model.Lancamento;
@@ -40,6 +41,11 @@ public class Lancamentos implements Serializable {
 		despesaTemp = this.manager.merge(despesa);
 
 		this.manager.remove(despesaTemp);
+	}
+	
+	public List<Lancamento> todos(String empresa) {
+		return this.manager.createQuery("from Lancamento where empresa = :empresa order by id", Lancamento.class)
+				.setParameter("empresa", empresa).getResultList();
 	}
 	
 	public Lancamento porNumeroLancamento(Long condigoOperacao, String empresa) {
