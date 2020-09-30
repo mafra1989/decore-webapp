@@ -145,6 +145,8 @@ public class RegistroVendasBean implements Serializable {
 			todosUsuarios = usuarios.todos(usuario.getEmpresa());
 			todosTiposVendas = tiposVendas.todos();
 			todosBairros = bairros.todos();
+			
+			venda.setUsuario(usuario);
 		}
 	}
 
@@ -220,7 +222,7 @@ public class RegistroVendasBean implements Serializable {
 			FormaPagamento formaPagamento = formasPagamentos.porNome("Dinheiro");
 			venda.setFormaPagamento(formaPagamento);
 			
-			venda.setVendaPaga(true);
+			
 			
 			venda.setValorRecebido(venda.getValorTotal());
 			venda.setFaltando(BigDecimal.ZERO);
@@ -469,6 +471,8 @@ public class RegistroVendasBean implements Serializable {
 			if (!edit) {
 				
 				venda.setStatus(!entrega);
+				
+				venda.setVendaPaga(!entrega);
 
 				if (entrega) {
 					entregaVenda.setStatus("PENDENTE");
@@ -512,6 +516,7 @@ public class RegistroVendasBean implements Serializable {
 				if (entrega) {
 					if(entregaVenda.getId() == null) {
 						venda.setStatus(!entrega);
+						venda.setVendaPaga(!entrega);
 						
 						entregaVenda.setStatus("PENDENTE");
 						entregaVenda.setVenda(venda);
@@ -525,6 +530,7 @@ public class RegistroVendasBean implements Serializable {
 						entregaVenda = new Entrega();
 						
 						venda.setStatus(!entrega);
+						venda.setVendaPaga(!entrega);
 					}
 				}
 

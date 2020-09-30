@@ -345,7 +345,7 @@
 							</p:selectOneMenu>
 						</p:panelGrid>
 						
-						<p:panelGrid columns="2" layout="grid" id="panel-ajuste" rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado()}"
+						<p:panelGrid style="display:none;" columns="2" layout="grid" id="panel-ajuste" rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado()}"
 							styleClass="panelgrid-noborder disabled disabled panel-ajuste"
 							columnClasses="ui-grid-col-4, ui-grid-col-4">
 
@@ -373,7 +373,7 @@
 						</p:panelGrid>
 			
 				<p:panel class="card card-w-title ui-fluid panel-info" id="panel-itens_"
-						style="margin-bottom: 0px;margin-top: 10px; padding-bottom: 0px !important">
+						style="margin-bottom: 0px;margin-top: 30px; padding-bottom: 0px !important">
 						
 						<h3 style="font-weight: bold">Itens da compra</h3>
 
