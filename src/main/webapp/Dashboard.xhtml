@@ -598,7 +598,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 		font-family: "Source Sans Pro", "Helvetica Neue", sans-serif !important;
 	}
 	body .ui-datatable tfoot td {
-		font-size: 14px !important;
+		font-size: 12px !important;
 	}
 }
 
@@ -707,7 +707,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 							<div class="overview-box-content">
 								<div class="overview-box-title">Saldo de Lucro em Vendas</div>
 								<div class="overview-box-stats"><h:outputText value="#{dashboardBean.saldoLucroEmVendas}"><f:convertNumber type="currency" /></h:outputText></div>
-								<div class="overview-box-details"><p:commandLink value="Retirar valor" update="retira-dialog form-retira" oncomplete="PF('retira-dialog').show();" /></div>
+								<div class="overview-box-details"><p:commandLink value="Retirar valor" disabled="true" update="retira-dialog form-retira" oncomplete="PF('retira-dialog').show();" /></div>
 							</div>
 						</div>
 					</div>
@@ -884,7 +884,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 							styleClass="barChart-02" style="width: 100%;margin-top: 10px;" />
 							
 							
-						<div style="text-align:center;margin-top: 8px;"> 
+						<div style="text-align:center;margin-top: 13px;"> 
 							<label style="font-weight: bold; font-size: 14px;color:#585757;">Vendas por semana vs Lucro</label>
 						</div>
 						
@@ -913,7 +913,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 							oncomplete="stop();PF('info-detalhes').show();">
 						</p:commandButton>
 
-						<p:dataTable id="fluxoTable2" scrollable="true" scrollHeight="151"
+						<p:dataTable id="fluxoTable2" scrollable="true" scrollHeight="180"
 							value="#{dashboardBean.detalhesVendasPorCategoria}" var="venda"
 							styleClass="vendas-top5" selectionMode="single"
 							selection="#{dashboardBean.vendaPorCategoriaSelecionada}"
@@ -973,7 +973,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 							oncomplete="stop();PF('info-detalhes-estoque').show();">
 						</p:commandButton>
 
-						<p:dataTable id="fluxoTable3" scrollable="true" scrollHeight="151"
+						<p:dataTable id="fluxoTable3" scrollable="true" scrollHeight="180"
 							value="#{dashboardBean.detalhesEstoqueParaVendaPorCategoria}"
 							var="estoque" styleClass="vendas-top5" selectionMode="single"
 							selection="#{dashboardBean.estoquePorCategoriaSelecionada}"

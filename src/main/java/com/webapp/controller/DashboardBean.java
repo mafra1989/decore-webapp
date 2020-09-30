@@ -276,8 +276,12 @@ public class DashboardBean implements Serializable {
 			Number saldoLucroEmVendasAVistaPagas = vendas.totalLucros(usuario.getEmpresa()).doubleValue();
 			Number saldoEstorno = produtos.saldoEstorno(usuario.getEmpresa());
 			
+			
 			saldoLucroEmVendas = ((saldoLucroEmVendasAVistaPagas.doubleValue() + saldoLucroEmVendasAPagarPagas.doubleValue()) + saldoEstorno.doubleValue()) - totalDeRetiradas.doubleValue();
 			
+			if(usuario.getEmpresa().equals("Decore")) {
+				saldoLucroEmVendas = 0D;
+			}
 			
 			Calendar calendarStart = Calendar.getInstance();
 			calendarStart.setTime(dateStart);
