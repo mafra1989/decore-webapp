@@ -1887,4 +1887,8 @@ public class DashboardBean implements Serializable {
 
 	}
 
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
 }
