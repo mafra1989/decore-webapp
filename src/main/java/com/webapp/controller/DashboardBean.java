@@ -1869,6 +1869,8 @@ public class DashboardBean implements Serializable {
 				
 				valorRetirada = 0D;
 				
+				createBarModel();
+				
 				PrimeFaces.current().executeScript(
 						"PF('downloadLoading').hide();PF('btn-save').enable();PF('retira-dialog').hide();swal({ type: 'success', title: 'Parabéns!', text: 'Retirada realizada com sucesso!' });");
 				valorRetirada = null;
