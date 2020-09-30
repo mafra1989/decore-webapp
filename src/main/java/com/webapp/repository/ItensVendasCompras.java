@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import com.webapp.model.Compra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.ItemVendaCompra;
+import com.webapp.model.Produto;
 import com.webapp.util.jpa.Transacional;
 
 public class ItensVendasCompras implements Serializable {
@@ -42,7 +43,13 @@ public class ItensVendasCompras implements Serializable {
 				.setParameter("id", itemVenda.getId()).getResultList();
 	}
 	
-	public List<ItemVendaCompra> porCompra(Compra compra) {
+	public List<ItemVendaCompra> porCompra(Compra compra, Produto produto) {
+		return this.manager
+				.createQuery("from ItemVendaCompra e join fetch e.compra c where c.id = :id AND e.itemVenda.produto.id = :produtoID order by e.id asc", ItemVendaCompra.class)
+				.setParameter("id", compra.getId()).setParameter("produtoID", produto.getId()).getResultList();
+	}
+	
+	public List<ItemVendaCompra> porCompra_(Compra compra) {
 		return this.manager
 				.createQuery("from ItemVendaCompra e join fetch e.compra c where c.id = :id order by e.id asc", ItemVendaCompra.class)
 				.setParameter("id", compra.getId()).getResultList();

@@ -50,8 +50,9 @@ public class Compras implements Serializable {
 		this.manager.remove(compraTemp);
 	}
 
-	public List<Compra> todas() {
-		return this.manager.createQuery("from Compra order by numeroCompra desc", Compra.class).getResultList();
+	public List<Compra> todas(String empresa) {
+		return this.manager.createQuery("from Compra where empresa = :empresa order by numeroCompra desc", Compra.class)
+				.setParameter("empresa", empresa).getResultList();
 	}
 
 	public Compra ultimoNCompra(String empresa) {
@@ -72,6 +73,27 @@ public class Compras implements Serializable {
 
 	public Number totalCompras(String empresa) {
 		String jpql = "SELECT sum(i.valorTotal) FROM Compra i Where i.empresa = :empresa AND i.ajuste = 'N'";
+		
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa);
+
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+	
+	
+	public Number comprasAvistaPagas(String empresa) {
+		String jpql = "SELECT sum(i.valorTotal) FROM Compra i Where i.empresa = :empresa AND i.ajuste = 'N' AND i.conta = 'N'";
 		
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa);
 

@@ -208,7 +208,7 @@
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-2, ui-grid-col-4">
 
-						<p:outputLabel value="Vendas normais" />
+						<p:outputLabel value="Vendas sem entrega" />
 						<p:selectBooleanCheckbox
 							value="#{consultaVendasBean.vendasNormais}"
 							style="margin-left: 3px;" />
@@ -219,7 +219,7 @@
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-2, ui-grid-col-4">
 
-						<p:outputLabel value="Vendas para entrega"
+						<p:outputLabel value="Vendas com entrega"
 							styleClass="venda-entrega" />
 						<p:selectManyCheckbox unselectable="true"
 							value="#{consultaVendasBean.statusPedido}">
@@ -267,6 +267,12 @@
 							process="@this"
 							rendered="#{consultaVendasBean.entrega.id != null and consultaVendasBean.entrega.status == 'ENTREGUE'}">
 						</p:menuitem>
+						<p:menuitem value="Desfazer entrega e pagamento" icon="fa fa-fw fa-undo"
+							onstart="start();" oncomplete="stop();"
+							action="#{consultaVendasBean.desfazerEntregaPagamento}" update="form"
+							process="@this"
+							rendered="#{consultaVendasBean.entrega.id != null and consultaVendasBean.entrega.status == 'ENTREGUE' and consultaVendasBean.vendaSelecionada.tipoPagamento == 'AVISTA'}">
+						</p:menuitem>
 						<p:menuitem value="Ver localização" icon="fa fa-fw fa-map-marker"
 							onstart="start();" oncomplete="stop();"
 							url="https://maps.google.com/maps?daddr=#{consultaVendasBean.entrega.localizacao}"
@@ -301,7 +307,7 @@
 								onstart="PF('downloadLoading').show();"
 								oncomplete="PF('downloadLoading').hide();" />
 
-							<p:column headerText="N. Venda" width="10%">
+							<p:column headerText="N. Venda" width="8%">
 								<h:outputText value="#{venda.numeroVenda}" />
 								<p:commandButton icon="fa fa-fw fa-edit" styleClass="inventario" rendered="#{venda.ajuste}" />
 							</p:column>
@@ -323,15 +329,23 @@
 							<p:column headerText="Vendedor" width="10%">
 								<h:outputText value="#{venda.usuario.nome}" />
 							</p:column>
+							
+							<p:column headerText="Pagamento" width="10%">
+								<h:outputText value="#{venda.tipoPagamento.descricao.concat(', ').concat(venda.formaPagamento.nome)}" />
+							</p:column>
 
-							<p:column headerText="Qtd. Itens" width="10%">
+							<p:column headerText="Qtd. Itens" width="8%">
 								<h:outputText value="#{venda.quantidadeItens}" />
 							</p:column>
 
-							<p:column headerText="Valor Total" width="15%">
+							<p:column headerText="Valor Total" width="10%">
 								<h:outputText value="#{venda.valorTotal}">
 									<f:convertNumber type="currency" />
 								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Pago?" width="8%">
+								<h:outputText value="#{venda.tipoPagamento == 'PARCELADO' ? 'Venda Parc.' : (venda.conta ? 'À receber' : (venda.vendaPaga ? 'Sim' : 'Não'))}" />
 							</p:column>
 
 						</p:dataTable>

@@ -1,0 +1,540 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	template="/WEB-INF/template.xhtml">
+
+	<ui:define name="title">Abrir / Fechar Caixa</ui:define>
+
+	<f:metadata>
+		<f:viewAction action="#{caixaBean.inicializar}" />
+	</f:metadata>
+
+	<ui:define name="content">
+
+		<style>
+@media ( min-width :220px) {
+	.resumo .ui-panel .ui-panel-content {
+	    border: none;
+	    padding: 0px 0px;
+	}
+	.resumo.ui-panelgrid .ui-panelgrid-cell {
+    	padding: 4px 0px;
+    }
+    .resumo.ui-panelgrid .ui-panelgrid-cell:nth-child(2) {
+    	padding: 4px 10px;
+    }
+    .resumo.ui-panelgrid .ui-panelgrid-cell .ui-panelgrid-cell {
+    	padding: 5px 3px !important;
+    } 
+	.dashboard.card_ .overview-box.overview-box-1 {
+    	background-color: #1e94d2;
+    }
+    .dashboard.card_ .overview-box.overview-box-1 .overview-box-icon {
+    	background-color: #096b9e;
+    }
+    .dashboard.card_ .overview-box.overview-box-1 .overview-box-icon i {
+    	color: #1e94d2;
+    }
+    .dashboard.card_ .overview-box.overview-box-1 .overview-box-details {
+    	color: #0b5a84;
+    }
+	.dashboard .overview-box .overview-box-content .overview-box-stats {
+	    font-size: 24px;
+	}
+	.dashboard .overview-box .overview-box-content .overview-box-title {
+	    font-weight: bold;
+	}
+	.dashboard.card_ .overview-box.overview-box-2 {
+	    background-color: #16a00ac2;
+	}
+	.dashboard.card_ .overview-box.overview-box-2 .overview-box-details {
+	    color: #286323;
+	}
+	.dashboard.card_ .overview-box.overview-box-2 .overview-box-icon {
+    	background-color: #448238;
+    }
+    .dashboard.card_ .overview-box.overview-box-2 .overview-box-icon i {
+	    color: #4eb745;
+	}
+	.dashboard .overview-box {
+	    margin-top: 2px;
+	}
+	.card {
+		padding:0px;
+		padding-bottom:3px;
+		margin-bottom: 0px;
+	}
+	#pagamento-dialog .ui-inputfield {
+		width: 96%;
+	}
+	.ui-monthpicker .ui-monthpicker-month {
+	    width: 10%;
+	    padding: 0.95em;
+    }
+   
+    .ui-monthpicker a:hover {
+	    color: #084282;
+	}
+	#pagamento-dialog .ui-panel .ui-panel-content {
+		border: none;
+		padding: 8px;
+	}
+	body .ui-datepicker {
+		width: auto;
+		text-align: center;
+	}
+	.ui-datepicker a {
+		font-weight: bold;
+	}
+	body .ui-state-disabled {
+		opacity: .7;
+	}
+	.pagar {
+		margin-top: -6px;
+	}
+	.ui-datatable-reflow .ui-datatable-data td[role="gridcell"] .ui-column-title
+		{
+		float: left;
+	}
+	.panel-total.ui-panel .ui-panel-content {
+		border: none;
+		padding: 0px;
+	}
+	.fotoDialog {
+		max-height: 380px !important;
+		width: 240px !important;
+		margin-top: -50px;
+	}
+	.categoria-field {
+		width: 100%;
+		height: 32px;
+	}
+	.ui-slider .ui-slider-handle {
+		width: 1.7em;
+		height: 1.7em;
+	}
+	.ui-slider-horizontal {
+		height: 1.2em !important;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 28px !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+		width: 50% !important;
+		float: left !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-6 {
+		width: 50% !important;
+		float: left !important;
+	}
+	.qty-parcelas.ui-panelgrid .ui-panelgrid-cell:nth-child(1) {
+		margin-top: 10px !important;
+	}
+	.percentual-juros.ui-panelgrid .ui-panelgrid-cell:nth-child(1) {
+		margin-top: 8px !important;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+		.ui-datatable tfoot th {
+		font-size: 13px;
+	}
+	body .btn-new.ui-button {
+		color: #676363;
+		background-color: #f9f9f9;
+		border: 1px solid #8a8585;
+	}
+	.swal2-popup {
+		width: 28em;
+		max-width: 100%;
+		padding: 0 0 0.4em 0;
+		font-size: 0.75rem;
+	}
+	.swal2-popup #swal2-content {
+		font-weight: 400;
+	}
+	#contasPagas .ui-state-active, .pagar .ui-state-active, #contasPagas .ui-state-highlight,
+		.pagar .ui-state-highlight {
+		background-color: #46bb68;
+	}
+	#itensTable .ui-inputswitch .ui-inputswitch-off {
+		background-color: #f15b5b;
+	}
+	.pagar.ui-state-disabled {
+		opacity: 1;
+	}
+}
+
+@media ( min-width :460px) {
+	.ui-slider .ui-slider-handle {
+		width: 1.7em;
+		height: 1.7em;
+	}
+	.ui-slider-horizontal {
+		height: 1.2em;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 27px !important;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+		.ui-datatable tfoot th {
+		font-size: 14px;
+	}
+}
+
+@media ( min-width :640px) {
+	.pagar {
+		margin-top: 0px;
+	}
+	.categoria-field {
+		width: 60% !important;
+	}
+	.ui-slider-handle {
+		width: 1.2em !important;
+		height: 1.2em !important;
+	}
+	.ui-slider-horizontal {
+		height: 0.8em !important;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 27px !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+		width: 33.33333% !important;
+		float: none;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-6 {
+		width: auto !important;
+		float: none;
+	}
+	.fotoDialog {
+		max-height: 500px !important;
+		width: 240px !important;
+		margin-top: -50px;
+	}
+	
+	
+	body .ui-datepicker .ui-datepicker-header .ui-datepicker-next {
+    	display: none !important;
+    }
+    body .ui-datepicker .ui-datepicker-header .ui-datepicker-prev {
+    	display: none !important;
+    }
+}
+@media ( min-width :860px) {
+	.resumo .ui-panel .ui-panel-content {
+	    padding: 6px 0px;
+	}
+}
+</style>
+
+		<div class="page-header">
+			<h1>Abrir / Fechar Caixa</h1>
+		</div>
+
+		<p:growl id="msg" closable="true" life="500" showSummary="false"
+			showDetail="true" style="text-align: center" />
+
+
+		<h:form id="form" prependId="false">
+
+			<p:remoteCommand name="setarItemID" process="@this itensTable"
+				update="form" action="#{caixaBean.fecharCaixa}"
+				onstart="PF('downloadLoading').show();"
+				oncomplete="PF('downloadLoading').hide();" />
+
+			<p:toolbar id="toolbar">
+				<f:facet name="left">
+					<p:commandButton icon="fa fa-fw fa-search" value="Pesquisar"
+						id="pesquisar-button" update="panel-table itensTable"
+						style="margin-left: 3px;font-weight:bold" process="@this form pagamento"
+						action="#{caixaBean.filtrarRegistrosCaixa}"
+						onstart="PF('downloadLoading').show();"
+						oncomplete="PF('downloadLoading').hide();"></p:commandButton>
+				</f:facet>
+				
+				<f:facet name="right">
+					<p:commandButton icon="fa fa-fw fa-check-square-o"
+							style="font-weight: bold;float: right;width: 140px;margin-right: 3px;background-color: #e21f1ab5;"
+							value="Fechar Caixa" onstart="PF('downloadLoading').show();"
+							oncomplete="PF('downloadLoading').hide();fecharCaixa(#{caixaBean.totalEmDinheiro})"
+							process="@this" rendered="#{caixaBean.caixaAberto}"	 />
+					
+					<p:commandButton icon="fa fa-fw fa-sign-in" 
+							rendered="#{not caixaBean.caixaAberto}"		
+							style="font-weight: bold;float: right;width: 140px;margin-right: 3px;background:#0d8819b5"
+							value="Abrir Caixa" onstart="PF('downloadLoading').show();" oncomplete="PF('downloadLoading').hide();PF('pagamento-dialog').show();" 
+							process="@this" update="pagamento-dialog" />
+				</f:facet>
+
+			</p:toolbar>
+
+			<div class="ui-g-12 ui-lg-12">
+
+				<p:panel class="card card-w-title ui-fluid itens-add"
+					style="padding-bottom: 0px !important; margin-bottom:20px;margin-top:5px">
+
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3">
+
+						<p:outputLabel value="Forma de Pagamento" for="pagamento" />
+						<p:selectOneMenu id="pagamento" value="#{caixaBean.formaPagamento}">
+							            
+				            <f:selectItem itemLabel="Selecione" />
+
+				            <f:selectItems value="#{caixaBean.todasFormasPagamentos}" var="formaPagamento" itemLabel="#{formaPagamento.nome}" itemValue="#{formaPagamento}"/>
+				        </p:selectOneMenu>
+
+					</p:panelGrid>
+
+				</p:panel>
+
+
+				<p:panel class="card card-w-title itens-add"
+					id="panel-table"
+					style="padding-bottom: 0px !important;margin-top:-10px;margin-bottom:5px;">
+
+					<h3 style="font-weight: bold">Registros do Caixa</h3>
+
+					<p:menuButton id="menu-btn" value="Opções" rendered="false"
+						style="width: 80px;float: right;margin-top: -40px;margin-right: 10px"
+						disabled="true">
+
+						<p:menuitem value="#{consultaContasBean.contaSelecionada.tipo == 'DEBITO' ? 'Pagar' : 'Receber'}" icon="fa fa-fw fa-money"
+							onstart="start();" actionListener="#{consultaContasBean.preparaDataVencimento}"
+							oncomplete="PF('pagamento-dialog').show();stop();"
+							update="pagamento-dialog" 
+							rendered="#{not consultaContasBean.contaSelecionada.status}">
+						</p:menuitem>
+						<p:separator />
+						<p:menuitem icon="fa fa-fw fa-undo" value="#{consultaContasBean.contaSelecionada.tipo == 'DEBITO' ? 'Desfazer pagamento' : 'Desfazer recebimento'}"
+							process="@this" 
+							rendered="#{consultaContasBean.contaSelecionada.status}"
+							onclick="estornarConta(#{consultaContasBean.contaSelecionada.id});" />
+					</p:menuButton>
+
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-12">
+
+						<p:dataTable id="itensTable" paginatorAlwaysVisible="false"
+							scrollable="true" scrollHeight="288"
+							value="#{caixaBean.itensCaixaFiltrados}" var="itemCaixa"
+							emptyMessage="Nenhum registro encontrado." reflow="true"
+							paginator="false" rowKey="#{itemCaixa.id}"
+							selection="#{caixaBean.itemCaixaSelecionado}"
+							selectionMode="single">
+
+							<p:ajax process="@this" event="rowSelect"
+								onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();" update="menu-btn" />
+								
+							<p:ajax process="@this" event="rowUnselect"
+								onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();" update="menu-btn" />
+
+							<p:column headerText="Data" width="20%">
+								<h:outputText value="#{itemCaixa.data}">
+									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy hh:mm" timeZone="GMT-4" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Descrição" width="35%">
+								<h:outputText value="#{itemCaixa.descricao}" />
+							</p:column>
+							
+							<p:column headerText="Valor" width="20%">
+								<h:outputText value="#{itemCaixa.valor}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Tipo" width="20%">
+								<h:outputText
+									value="#{itemCaixa.tipoPagamento}" />
+							</p:column>
+							
+							<p:column headerText="Forma Pagamento" width="25%">
+								<h:outputText value="#{(itemCaixa.operacao == 'DEVOLUCAO' or itemCaixa.operacao == 'LANCAMENTO') ? '-' : itemCaixa.formaPagamento.nome}" />
+							</p:column>
+
+							<p:column headerText="Operação" width="25%">
+								<h:outputText value="#{itemCaixa.operacao == null ? '-' : itemCaixa.operacao.descricao}" />
+							</p:column>		
+
+						</p:dataTable>
+						
+					</p:panelGrid>
+					
+					
+					
+					
+					<p:panelGrid columns="2" layout="grid" style="margin-top: 8px;"
+							styleClass="panelgrid-noborder disabled disabled resumo"
+							columnClasses="ui-grid-col-6, ui-grid-col-6">
+							
+						<p:panel>
+						
+							<h3 style="font-weight: bold">Dinheiro x Débito/Crédito</h3>
+							
+							<div class="ui-g dashboard card card_" style="margin-top: -12px;width:100%;">
+					
+								<div class="ui-g-12 ui-lg-6 ui-xl-6">
+									<div class="ui-g overview-box overview-box-2">
+										<div class="overview-box-icon">
+											<i class="fa fa-money" />
+										</div>
+										<div class="overview-box-content">
+											<div class="overview-box-title">Total em Dinheiro</div>
+											<div class="overview-box-stats"><h:outputText value="#{caixaBean.totalEmDinheiro}"><f:convertNumber type="currency" /></h:outputText></div>
+											<div class="overview-box-details">Em caixa</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="ui-g-12 ui-lg-6 ui-xl-6">
+									<div class="ui-g overview-box overview-box-1">
+										<div class="overview-box-icon">
+											<i class="fa fa-credit-card" /> 
+										</div>  
+										<div class="overview-box-content">
+											<div class="overview-box-title">Total em Débito/Crédito</div>
+											<div class="overview-box-stats"><p:outputLabel
+														value="#{caixaBean.totalEmVendasDebitoCredito}"><f:convertNumber type="currency" /></p:outputLabel></div>
+											<div class="overview-box-details" style="color: #ececec;">Pagtos com cartão</div>
+										</div>
+									</div>
+								</div>
+					
+							</div>
+						</p:panel>
+						
+						<p:panel>
+						
+							<h3 style="font-weight: bold">Detalhamento do Caixa</h3>
+							
+							<p:panelGrid columns="2" layout="grid" style="margin-top:-5px;"
+									styleClass="panelgrid-noborder disabled disabled resumo"
+									columnClasses="ui-grid-col-6, ui-grid-col-6">
+									
+									<p:panelGrid columns="2" layout="grid" style="margin-top:-5px;"
+										styleClass="panelgrid-noborder disabled disabled resumo"
+										columnClasses="ui-grid-col-8, ui-grid-col-4">
+								
+										<p:outputLabel value="Total em Vendas:" style="font-weight:bold;font-size:13px;"></p:outputLabel>
+										<p:outputLabel
+											value="#{caixaBean.totalEmVendas}"
+											style="font-size: 13px;"><f:convertNumber type="currency" /></p:outputLabel>
+										
+										<p:outputLabel value="Devoluções/Trocas:" style="font-weight:bold;font-size:13px;"></p:outputLabel>
+										<p:outputLabel
+											value="#{caixaBean.totalEmDevolucaoTrocas}"
+											style="font-size: 13px;"><f:convertNumber type="currency" /></p:outputLabel>
+										
+										<p:outputLabel value="Vendas no Dinheiro:" style="font-weight:bold;font-size:13px;"></p:outputLabel>
+										<p:outputLabel
+											value="#{caixaBean.totalEmVendasEmDinheiro}"
+											style="font-size: 13px;"><f:convertNumber type="currency" /></p:outputLabel>
+										
+										<p:outputLabel value="Vendas no Débito/Crédito:" style="font-weight:bold;font-size:13px;"></p:outputLabel>
+										<p:outputLabel
+											value="#{caixaBean.totalEmVendasDebitoCredito}"
+											style="font-size: 13px;"><f:convertNumber type="currency" /></p:outputLabel>			
+									</p:panelGrid>
+									
+									<p:panelGrid columns="2" layout="grid" style="margin-bottom:15px;margin-top:-5px;"
+										styleClass="panelgrid-noborder disabled disabled resumo"
+										columnClasses="ui-grid-col-8, ui-grid-col-4">
+										
+										<p:outputLabel value="Lançamento de Despesas:" style="font-weight:bold;font-size:13px;"></p:outputLabel>
+										<p:outputLabel
+											value="#{caixaBean.totalDespesas}"
+											style="font-size: 13px;"><f:convertNumber type="currency" /></p:outputLabel>
+										
+										<p:outputLabel value="Lançamento de Receitas:" style="font-weight:bold;font-size:13px;"></p:outputLabel>
+										<p:outputLabel
+											value="#{caixaBean.totalReceitas}"
+											style="font-size: 13px;"><f:convertNumber type="currency" /></p:outputLabel>
+									</p:panelGrid>
+							</p:panelGrid>
+						
+						</p:panel>
+							
+					</p:panelGrid>
+
+				</p:panel>
+
+			</div>
+
+		</h:form>
+
+
+		<p:dialog id="pagamento-dialog" header="Abertura de Caixa" modal="true"
+			widgetVar="pagamento-dialog" draggable="false" width="300"
+			closable="false" resizable="false" position="top"
+			style="margin-top: 100px">
+
+			<h:form id="form-pagamento">
+				
+				<p:panelGrid columns="1" layout="grid" style="margin-top:10px;"
+								styleClass="panelgrid-noborder disabled disabled"
+								columnClasses="ui-grid-col-12">
+								
+					<p:outputLabel value="Saldo inicial (Dinheiro)" for="saldo-inicial" 
+							style="font-weight: bold;" />
+	
+					<p:inputNumber id="saldo-inicial" decimalPlaces="2"
+						placeholder="R$ 0,00" autocomplete="off" 
+						symbol="R$ "  
+						value="#{caixaBean.caixa.saldoInicial}">
+					</p:inputNumber>
+					
+					<p:outputLabel value="Observação" for="observacao" 
+							style="font-weight: bold;" />
+							
+					<p:inputTextarea id="observacao" value="#{caixaBean.caixa.observacao}" style="width:96%;" />
+				</p:panelGrid>
+								
+								
+								
+
+				<p:panel styleClass="panelgrid-noborder disabled disabled">
+					<p:commandButton icon="fa fa-fw fa-check"
+						style="float: right;font-weight: bold;font-size: 13px;background-color: #089a29c7;position: relative;margin-top: 8px;margin-bottom: 4px;margin-right: 0px;"
+						value="Confirmar"
+						process="@this pagamento-dialog form-pagamento"
+						action="#{caixaBean.abrirCaixa}" onstart="start();"
+						update="form" oncomplete="stop();PF('pagamento-dialog').hide();">
+					</p:commandButton>
+
+					<p:commandButton icon="fa fa-fw fa-close"
+						style="float: right;font-weight: bold;margin-top: 8px;margin-bottom: 4px;font-size: 13px;background-color: #ab3705b5;position: relative;margin-right: 3px;"
+						value="Cancelar" onstart="start();"
+						oncomplete="PF('pagamento-dialog').hide();stop();">
+					</p:commandButton>
+				</p:panel>
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog id="downloadLoading" showHeader="false" modal="true"
+			widgetVar="downloadLoading" header="Status" draggable="false"
+			closable="false" resizable="false">
+			<p:graphicImage name="images/loadingbar.gif"
+				library="manhattan-layout" width="50" />
+		</p:dialog>
+
+		<script type="text/javascript">
+			function start() {
+				PF('downloadLoading').show();
+			}
+
+			function stop() {
+				PF('downloadLoading').hide();
+			}
+		</script>
+
+	</ui:define>
+
+</ui:composition>

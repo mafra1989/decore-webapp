@@ -49,20 +49,45 @@
 							<p:menuitem id="pm_Dashboard" styleClass="pm_Dashboard"
 								value="Dashboard" icon="fa fa-home" outcome="/Dashboard.xhtml"
 								rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()}" />
-
-							<p:menuitem id="pm_Contas" value="Contas à Pagar / Receber"
-								icon="fa fa-folder-open-o" outcome="/Contas.xhtml" 
-								rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()}" />
-
-							<p:menuitem id="pm_PDV" value="PDV"
-								icon="fa fa-qrcode" url="https://decore-webapp.herokuapp.com/PDV.xhtml" 
-								rendered="#{seguranca.acessoAdministrador() or seguranca.acessoVendedor()}">
-							</p:menuitem>
+	
+							<p:submenu id="pm_finance" styleClass="pm_finance"
+								rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()}"
+								label="Minhas Finanças" icon="fa fa-check-square-o">
+								
+								<p:menuitem id="pm_Resumo" styleClass="pm_Resumo"
+									value="Resumo Financeiro" icon="fa fa-pie-chart" outcome="/Financeiro.xhtml"
+									rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()}" />
+	
+	
+								<p:menuitem id="pm_Contas" value="Pagar / Receber"
+									icon="fa fa-expand" outcome="/Contas.xhtml" 
+									rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()}" />
+								
+								
+							</p:submenu>
+							
+							<p:submenu id="pm_PDV" styleClass="pm_PDV"
+								rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado()}"
+								label="PDV" icon="fa fa-trello">
+							
+								<p:menuitem id="pm_caixa" styleClass="pm_caixa"
+									value="Abrir / Fechar Caixa" icon="fa fa-inbox"
+									outcome="/Caixa.xhtml" />
+									
+								<p:menuitem id="pm_FrenteCaixa" value="Frente de Caixa"
+									icon="fa fa-qrcode" outcome="/PDV.xhtml"   
+									rendered="#{seguranca.acessoAdministrador() or seguranca.acessoVendedor()}">
+								</p:menuitem>
+												
+								<p:menuitem id="pm_devolucoes" styleClass="pm_devolucao"
+									value="Devolução / Troca" icon="fa fa-mail-reply-all"
+									outcome="/DevolucaoTroca.xhtml" />
+							</p:submenu>
 							
 							<p:submenu id="pm_consulta" label="Consultar" icon="fa fa-search"
 								rendered="#{seguranca.acessoAdministrador()  or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum() or seguranca.acessoVendedor()}">
 
-								<p:menuitem id="pm_estoque" value="Estoque" icon="fa fa-cubes"
+								<p:menuitem id="pm_estoque" value="Produto" icon="fa fa-cubes"
 									outcome="/consultas/Estoque.xhtml" />
 
 								<p:menuitem id="pm_compra" value="Compras" rendered="#{not seguranca.acessoVendedor()}"
@@ -92,7 +117,7 @@
 									outcome="/cadastros/CadastroFornecedores.xhtml" />
 									
 								<p:menuitem id="pm_empresas" value="Empresa"
-									icon="fa fa-diamond" rendered="false"
+									icon="fa fa-diamond" 
 									outcome="/cadastros/CadastroEmpresas.xhtml" />
 
 								<p:menuitem id="pm_bairros" value="Bairro"
@@ -105,6 +130,10 @@
 								<p:menuitem id="pm_cat_lancamento" value="Tipo de Venda"
 									icon="fa fa-instagram"
 									outcome="/cadastros/CadastroTipoVenda.xhtml" />
+									
+								<p:menuitem id="pm_formas_pagamentos" value="Formas de Pagamentos"
+									icon="fa fa-credit-card"
+									outcome="/cadastros/CadastroFormaPagamento.xhtml" />
 
 								<p:submenu id="pm_tipos" label="Lançamentos" icon="fa fa-copy">
 
@@ -128,15 +157,15 @@
 								rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado()}"
 								label="Operações" icon="fa fa-cogs">
 
-								<p:menuitem id="pm_emprestimo" styleClass="pm_emprestimo"
-									value="Registrar Compra" icon="fa fa-shopping-cart"
+								<p:menuitem id="pm_compras" styleClass="pm_compra"
+									value="Registrar Compras" icon="fa fa-shopping-cart"
 									url="https://decore-webapp.herokuapp.com/operacoes/RegistroCompras.xhtml" />
 
-								<p:menuitem id="pm_pagamento2" styleClass="pm_pagamento2"
+								<p:menuitem id="pm_vendas" styleClass="pm_venda"
 									value="Registrar Venda" icon="fa fa-dollar"
 									outcome="/operacoes/RegistroVendas.xhtml" />
 
-								<p:menuitem id="pm_despesa" styleClass="pm_despesa"
+								<p:menuitem id="pm_lancamentos" styleClass="pm_lancamento"
 									value="Registrar Lançamentos" icon="fa fa-list-ol"
 									outcome="/operacoes/RegistroLancamentos.xhtml" />
 							</p:submenu>

@@ -111,7 +111,8 @@ public class CadastroProdutoBean implements Serializable {
 	
 	public void calculaMargens() {
 		calculaMargemLucroReal();
-		calculaMargemContribuicao();		
+		calculaMargemContribuicao();
+		
 	}
 	
 	public void calculaMargemLucroReal() {
@@ -200,6 +201,7 @@ public class CadastroProdutoBean implements Serializable {
 		produto.setTotalVendas(BigDecimal.valueOf(quantidadeItensVendidos));
 		
 		
+		
 		Long totalAjusteItensVendidos = 0L;
 		itensVenda = itensVendas.porProduto(produto, true);
 		for (ItemVenda itemVenda : itensVenda) {
@@ -210,7 +212,15 @@ public class CadastroProdutoBean implements Serializable {
 		
 		
 		produto.setTotalAcumulado(BigDecimal.valueOf(itensCompras.aVender(produto).doubleValue() * (1 + (produto.getMargemLucro().doubleValue()/100))));
-		//produto.setTotalAcumulado(BigDecimal.valueOf(produto.getQuantidadeAtual() * produto.getLocalizacao().doubleValue()));
+		produto.setEstimativaLucro(BigDecimal.valueOf(produto.getTotalAcumulado().doubleValue() - (produto.getQuantidadeAtual().longValue() * produto.getCustoMedioUnitario().doubleValue())));
+		
+		
+		if(totalItensComprados > 0) {
+			produto.setPrecoMedioCompra(BigDecimal.valueOf(produto.getTotalCompras().doubleValue() / BigDecimal.valueOf(totalItensComprados).intValue()));
+		} else {
+			produto.setPrecoMedioCompra(BigDecimal.ZERO);
+		}
+		
 		
 		if(totalItensVendidos > 0) {
 			produto.setPrecoMedioVenda(BigDecimal.valueOf(produto.getTotalVendas().doubleValue() / BigDecimal.valueOf(totalItensVendidos).intValue()));
@@ -222,7 +232,17 @@ public class CadastroProdutoBean implements Serializable {
 		
 		produto.setQuantidadeItensVendidos(totalItensVendidos);
 		
+		produto.setQuantidadeAtual(itensCompras.quantidadeDisponivelPorProduto(produto).longValue());
+		
 		calculaMargens();
+		
+		if(produto.getMargemLucro().doubleValue() < 0) {
+			produto.setMargemLucro(BigDecimal.ZERO);
+		}
+		
+		if(produto.getMargemLucroReal().doubleValue() < 0) {
+			produto.setMargemLucroReal(BigDecimal.ZERO);
+		}
 	}
 	
 	public void calculaAvender() {
@@ -233,6 +253,8 @@ public class CadastroProdutoBean implements Serializable {
 			produto.setTotalAcumulado(BigDecimal.valueOf(produto.getPrecoDeVenda().doubleValue() * produto.getQuantidadeAtual()));
 			System.out.println(produto.getTotalAcumulado());
 		}
+		
+		produto.setEstimativaLucro(BigDecimal.valueOf(produto.getTotalAcumulado().doubleValue() - (produto.getQuantidadeAtual().longValue() * produto.getCustoMedioUnitario().doubleValue())));
 		
 	}
 			

@@ -346,7 +346,7 @@ public class RelatorioLancamentosBean implements Serializable {
 		if (categoriasPorDia != null && categoriasPorDia.length > 0) {
 			
 			for (String categoria : categoriasPorDia) {
-				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria, usuario.getEmpresa());
+				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria, null);
 				if(categoriaLancamento.getId() == 25835L || categoriaLancamento.getId() == 5423L ||
 						categoriaLancamento.getId() == 5424L || categoriaLancamento.getId() == 5425L ||
 								categoriaLancamento.getId() == 5426L || categoriaLancamento.getId() == 5427L) {
@@ -563,7 +563,7 @@ public class RelatorioLancamentosBean implements Serializable {
 			for (String categoria : categoriasPorDia) {
 				
 				System.out.println(categoria);
-				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria, usuario.getEmpresa());
+				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria, null);
 				System.out.println(categoriaLancamento.getTipoLancamento().getOrigem());
 				if(categoriaLancamento.getTipoLancamento().getOrigem() == OrigemLancamento.DEBITO) {
 					debito = true;
@@ -582,7 +582,7 @@ public class RelatorioLancamentosBean implements Serializable {
 		if (categoriasPorDia == null || categoriasPorDia.length == 0
 				|| debito) {
 			dataSet.setData(values);
-			dataSet.setLabel("Débito");
+			dataSet.setLabel("Despesa");
 			dataSet.setBorderColor("rgba(54, 162, 235)");
 			dataSet.setBackgroundColor("rgba(54, 162, 235)");
 			data.addChartDataSet(dataSet);
@@ -591,7 +591,7 @@ public class RelatorioLancamentosBean implements Serializable {
 		if (categoriasPorDia == null || categoriasPorDia.length == 0
 				|| credito) {
 			dataSet2.setData(values2);
-			dataSet2.setLabel("Crédito");
+			dataSet2.setLabel("Receita");
 			dataSet2.setBorderColor("rgba(255, 205, 86)");
 			dataSet2.setBackgroundColor("rgba(255, 205, 86)");
 			data.addChartDataSet(dataSet2);
@@ -630,7 +630,7 @@ public class RelatorioLancamentosBean implements Serializable {
 		if (categoriasPorSemana != null && categoriasPorSemana.length > 0) {
 			
 			for (String categoria : categoriasPorSemana) {
-				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria, usuario.getEmpresa());
+				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria, null);
 				if(categoriaLancamento.getId() == 25835L || categoriaLancamento.getId() == 5423L ||
 						categoriaLancamento.getId() == 5424L || categoriaLancamento.getId() == 5425L ||
 								categoriaLancamento.getId() == 5426L || categoriaLancamento.getId() == 5427L) {
@@ -825,7 +825,7 @@ public class RelatorioLancamentosBean implements Serializable {
 			for (String categoria : categoriasPorSemana) {
 				
 				System.out.println(categoria);
-				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria, usuario.getEmpresa());
+				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria, null);
 				System.out.println(categoriaLancamento.getTipoLancamento().getOrigem());
 				if(categoriaLancamento.getTipoLancamento().getOrigem() == OrigemLancamento.DEBITO) {
 					debito = true;
@@ -844,7 +844,7 @@ public class RelatorioLancamentosBean implements Serializable {
 		if (categoriasPorSemana == null || categoriasPorSemana.length == 0
 				|| debito) {
 			dataSet.setData(values);
-			dataSet.setLabel("Débito");
+			dataSet.setLabel("Despesa");
 			dataSet.setBorderColor("rgba(54, 162, 235)");
 			dataSet.setBackgroundColor("rgba(54, 162, 235)");
 			data.addChartDataSet(dataSet);
@@ -853,7 +853,7 @@ public class RelatorioLancamentosBean implements Serializable {
 		if (categoriasPorSemana == null || categoriasPorSemana.length == 0
 				|| credito) {
 			dataSet2.setData(values2);
-			dataSet2.setLabel("Crédito");
+			dataSet2.setLabel("Receita");
 			dataSet2.setBorderColor("rgba(255, 205, 86)");
 			dataSet2.setBackgroundColor("rgba(255, 205, 86)");
 			data.addChartDataSet(dataSet2);
@@ -956,7 +956,7 @@ public class RelatorioLancamentosBean implements Serializable {
 		if (categoriasPorMes != null && categoriasPorMes.length > 0) {
 			
 			for (String categoria : categoriasPorMes) {
-				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria, usuario.getEmpresa());
+				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria, null);
 				if(categoriaLancamento.getId() == 25835L || categoriaLancamento.getId() == 5423L ||
 						categoriaLancamento.getId() == 5424L || categoriaLancamento.getId() == 5425L ||
 								categoriaLancamento.getId() == 5426L || categoriaLancamento.getId() == 5427L) {
@@ -1143,7 +1143,7 @@ public class RelatorioLancamentosBean implements Serializable {
 			for (String categoria : categoriasPorMes) {
 				
 				System.out.println(categoria);
-				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria, usuario.getEmpresa());
+				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria, null);
 				System.out.println(categoriaLancamento.getTipoLancamento().getOrigem());
 				if(categoriaLancamento.getTipoLancamento().getOrigem() == OrigemLancamento.DEBITO) {
 					debito = true;
@@ -1162,7 +1162,7 @@ public class RelatorioLancamentosBean implements Serializable {
 		if (categoriasPorMes == null || categoriasPorMes.length == 0
 				|| debito) {
 			dataSet.setData(values);
-			dataSet.setLabel("Débito");
+			dataSet.setLabel("Despesa");
 			dataSet.setBorderColor("rgba(54, 162, 235)");
 			dataSet.setBackgroundColor("rgba(54, 162, 235)");
 			data.addChartDataSet(dataSet);
@@ -1171,7 +1171,7 @@ public class RelatorioLancamentosBean implements Serializable {
 		if (categoriasPorMes == null || categoriasPorMes.length == 0
 				|| credito) {
 			dataSet2.setData(values2);
-			dataSet2.setLabel("Crédito");
+			dataSet2.setLabel("Receita");
 			dataSet2.setBorderColor("rgba(255, 205, 86)");
 			dataSet2.setBackgroundColor("rgba(255, 205, 86)");
 			data.addChartDataSet(dataSet2);
@@ -1213,7 +1213,7 @@ public class RelatorioLancamentosBean implements Serializable {
 		if (categoriasPorAno != null && categoriasPorAno.length > 0) {
 			
 			for (String categoria : categoriasPorAno) {
-				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria, usuario.getEmpresa());
+				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria, null);
 				if(categoriaLancamento.getId() == 25835L || categoriaLancamento.getId() == 5423L ||
 						categoriaLancamento.getId() == 5424L || categoriaLancamento.getId() == 5425L ||
 								categoriaLancamento.getId() == 5426L || categoriaLancamento.getId() == 5427L) {
@@ -1386,7 +1386,7 @@ public class RelatorioLancamentosBean implements Serializable {
 			for (String categoria : categoriasPorAno) {
 				
 				System.out.println(categoria);
-				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria, usuario.getEmpresa());
+				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome(categoria, null);
 				System.out.println(categoriaLancamento.getTipoLancamento().getOrigem());
 				if(categoriaLancamento.getTipoLancamento().getOrigem() == OrigemLancamento.DEBITO) {
 					debito = true;
@@ -1405,7 +1405,7 @@ public class RelatorioLancamentosBean implements Serializable {
 		if (categoriasPorAno == null || categoriasPorAno.length == 0
 				|| debito) {
 			dataSet.setData(values);
-			dataSet.setLabel("Débito");
+			dataSet.setLabel("Despesa");
 			dataSet.setBorderColor("rgba(54, 162, 235)");
 			dataSet.setBackgroundColor("rgba(54, 162, 235)");
 			data.addChartDataSet(dataSet);
@@ -1414,7 +1414,7 @@ public class RelatorioLancamentosBean implements Serializable {
 		if (categoriasPorAno == null || categoriasPorAno.length == 0
 				|| credito) {
 			dataSet2.setData(values2);
-			dataSet2.setLabel("Crédito");
+			dataSet2.setLabel("Receita");
 			dataSet2.setBorderColor("rgba(255, 205, 86)");
 			dataSet2.setBackgroundColor("rgba(255, 205, 86)");
 			data.addChartDataSet(dataSet2);

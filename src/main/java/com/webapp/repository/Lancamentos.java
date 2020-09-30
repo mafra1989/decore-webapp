@@ -145,10 +145,117 @@ public class Lancamentos implements Serializable {
 
 		return count;
 	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalDespesasPorCategoriaMesAtual() {
+		Calendar calendar = Calendar.getInstance();
+		String jpql = "SELECT i.numeroLancamento, sum(i.valor) FROM Lancamento i WHERE i.categoriaLancamento.tipoLancamento.origem = :origemLancamento and i.conta = 'N' and i.mes = :mesAtual and i.ano = :anoAtual AND i.ajuste = 'N' GROUP BY i.numeroLancamento order by sum(i.valor) desc";
+		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.DEBITO)
+				.setParameter("mesAtual", Long.parseLong(String.valueOf(calendar.get(Calendar.MONTH) + 1)))
+				.setParameter("anoAtual", Long.parseLong(String.valueOf(calendar.get(Calendar.YEAR))));
+		List<Object[]> result = q.getResultList();
+
+		return result;
+	}
+	
+	public Number totalDeRetiradas(String empresa, CategoriaLancamento categoriaLancamento) {
+		
+		String jpql = "SELECT sum(c.valor) FROM Lancamento c WHERE c.empresa = :empresa AND "
+				+ "c.categoriaLancamento.id = :categoriaLancamento";
+		Query q = manager.createQuery(jpql).setParameter("categoriaLancamento", categoriaLancamento.getId())
+				.setParameter("empresa", empresa);
+
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+	
+	
+	public Number totalDespesasAvistaPagasSemRetirada(String empresa) {
+
+		String jpql = "SELECT sum(c.valor) FROM Lancamento c WHERE c.empresa = :empresa AND "
+				+ "c.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND c.conta = 'N' AND c.ajuste = 'N' "
+				+ "AND c.categoriaLancamento.nome != 'Retirada de lucro'";
+		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.DEBITO)
+				.setParameter("empresa", empresa);
+
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+	
+	
+	public Number totalDespesasAvistaPagas(String empresa) {
+
+		String jpql = "SELECT sum(c.valor) FROM Lancamento c WHERE c.empresa = :empresa AND "
+				+ "c.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND c.conta = 'N' AND c.ajuste = 'N' "
+				+ "";
+		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.DEBITO)
+				.setParameter("empresa", empresa);
+
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+	
+	
+	public Number totalReceitasAvistaPagas(String empresa) {
+
+		String jpql = "SELECT sum(c.valor) FROM Lancamento c WHERE c.empresa = :empresa AND "
+				+ "c.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND c.conta = 'N' AND c.ajuste = 'N'";
+		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.CREDITO)
+				.setParameter("empresa", empresa);
+
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+	
 
 	/* DEPRECIADO */
-	public Number totalCreditos() {
-		String jpql = "SELECT sum(i.valor) FROM Lancamento i WHERE i.categoriaLancamento.tipoLancamento.origem = :origemLancamento";
+	public Number totalReceitas() {
+		String jpql = "SELECT sum(i.valor) FROM Lancamento i WHERE i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.conta = 'N'";
 		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.CREDITO);
 
 		Number count = 0;
@@ -554,5 +661,120 @@ public class Lancamentos implements Serializable {
 
 		return value;
 	}
+	
+	
+	public Number totalLancamentosReceitasPorDiaValor(Calendar calendarStart, Calendar calendarStop, String empresa) {
 
+		String jpql = "SELECT sum(i.valor) FROM Lancamento i "
+				+ "WHERE i.empresa = :empresa AND i.dataLancamento BETWEEN :dataInicio AND :dataFim "
+				+ "AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.conta = 'N' AND i.ajuste = 'N'";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
+				calendarStop.getTime()).setParameter("origemLancamento", OrigemLancamento.CREDITO);
+
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+
+	
+	public Number totalLancamentosDespesasPorDiaValor(Calendar calendarStart, Calendar calendarStop, String empresa) {
+
+		String jpql = "SELECT sum(i.valor) FROM Lancamento i "
+				+ "WHERE i.empresa = :empresa AND i.dataLancamento BETWEEN :dataInicio AND :dataFim "
+				+ "AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.conta = 'N' AND i.ajuste = 'N'";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
+				calendarStop.getTime()).setParameter("origemLancamento", OrigemLancamento.DEBITO);
+
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalLancamentosDespesasPorData(Calendar calendarStart, Calendar calendarStop, String empresa) {
+
+		String condition = "";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+
+		select_Condition = "i.dia, i.mes, i.ano, i.numeroLancamento, i.categoriaLancamento.tipoLancamento.origem, ";
+		sum_Condition = "sum(i.valor)";
+		groupBy_Condition = "i.dia, i.mes, i.ano, i.numeroLancamento, i.categoriaLancamento.tipoLancamento.origem ";
+		orderBy_Condition = "i.dia asc, i.mes asc, i.ano asc, i.categoriaLancamento.tipoLancamento.origem";
+
+		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Lancamento i "
+				+ "WHERE i.empresa = :empresa AND i.dataLancamento BETWEEN :dataInicio AND :dataFim "
+				+ "AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.conta = 'N' AND i.ajuste = 'N' " + condition + "group by " + groupBy_Condition
+				+ " order by " + orderBy_Condition;
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
+				calendarStop.getTime()).setParameter("origemLancamento", OrigemLancamento.DEBITO);
+		
+		List<Object[]> result = q.getResultList();
+		
+		for (Object[] object : result) {
+			if ((OrigemLancamento) object[4] == OrigemLancamento.CREDITO) {
+				object[4] = "CREDITO";
+			} else {
+				object[4] = "DEBITO";
+			}
+		}
+
+		return result;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalLancamentosReceitasPorData(Calendar calendarStart, Calendar calendarStop, String empresa) {
+
+		String condition = "";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+
+		select_Condition = "i.dia, i.mes, i.ano, i.numeroLancamento, i.categoriaLancamento.tipoLancamento.origem, ";
+		sum_Condition = "sum(i.valor)";
+		groupBy_Condition = "i.dia, i.mes, i.ano, i.numeroLancamento, i.categoriaLancamento.tipoLancamento.origem ";
+		orderBy_Condition = "i.dia asc, i.mes asc, i.ano asc, i.categoriaLancamento.tipoLancamento.origem";
+
+		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Lancamento i "
+				+ "WHERE i.empresa = :empresa AND i.dataLancamento BETWEEN :dataInicio AND :dataFim "
+				+ "AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.conta = 'N' AND i.ajuste = 'N' " + condition + "group by " + groupBy_Condition
+				+ " order by " + orderBy_Condition;
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
+				calendarStop.getTime()).setParameter("origemLancamento", OrigemLancamento.CREDITO);
+		
+		List<Object[]> result = q.getResultList();
+		
+		for (Object[] object : result) {
+			if ((OrigemLancamento) object[4] == OrigemLancamento.CREDITO) {
+				object[4] = "CREDITO";
+			} else {
+				object[4] = "DEBITO";
+			}
+		}
+
+		return result;
+	}
 }

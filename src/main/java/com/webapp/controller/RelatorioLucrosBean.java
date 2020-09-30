@@ -486,9 +486,11 @@ public class RelatorioLucrosBean implements Serializable {
 		List<Number> values3 = new ArrayList<>();
 
 		List<String> labels = new ArrayList<>();
+		
+		boolean percentualDiario = false;
 
 		for (Object[] object : result) {
-			Double totalDeVendas = ((Number) object[3]).doubleValue();
+			Double totalDeLucroEmVendas = ((Number) object[3]).doubleValue();
 
 			System.out.println("totalComprasPorData: " + object[4]);
 			Double totalCompras = ((Number) object[4]).doubleValue();
@@ -513,7 +515,7 @@ public class RelatorioLucrosBean implements Serializable {
 								usuario.getEmpresa())
 						.doubleValue();
 
-				System.out.println("Total vendas: " + totalDeVendas);
+				System.out.println("Total de Lucro em Vendas: " + totalDeLucroEmVendas);
 				System.out.println("Receitas: " + totalDeReceitas);
 
 				totalDeDespesas = contas
@@ -527,40 +529,42 @@ public class RelatorioLucrosBean implements Serializable {
 				// if (totalDeReceitas > 0 || totalDeDespesas > 0 || totalDeVendas > 0 ||
 				// totalCompras > 0) {
 
-				values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
+				values.add(((totalVendasComPrecoVenda/*totalDeLucroEmVendas*/ + totalDeReceitas) - totalDeDespesas));
 
-				if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) == 0 && totalDeDespesas > 0) {
+				if (((totalDeLucroEmVendas + totalDeReceitas) - totalDeDespesas) == 0 && totalDeDespesas > 0) {
 					values2.add(-100.0);
 					System.out.println("Valor Percentual: -100.0");
-				} else if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) > 0
+				} else if (((totalDeLucroEmVendas + totalDeReceitas) - totalDeDespesas) > 0
 						&& (totalCompras + totalDeDespesas) == 0) {
 					values2.add(100.0);
 					System.out.println("Valor Percentual: 100.0");
 
-				} else if (((totalDeVendas + totalDeReceitas) - totalDeDespesas == 0) && totalDeDespesas == 0) {
+				} else if (((totalDeLucroEmVendas + totalDeReceitas) - totalDeDespesas == 0) && totalDeDespesas == 0) {
 					values2.add(0);
 
 				} else {
 					values2.add(
-							(((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
+							(((totalDeLucroEmVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
 									* 100);
 					System.out.println("Valor Percentual: "
-							+ (((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
+							+ (((totalDeLucroEmVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
 									* 100);
 				}
 
 				System.out.println("Percentual: "
-						+ (((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
+						+ (((totalDeLucroEmVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
 								* 100);
 
 				labels.add(object[0] + "/" + object[1]/* + "/" + object[2] */);
 				// }
 
 			} else {
+				
+				percentualDiario = true;
 				// if (totalDeVendas > 0 || totalCompras > 0) {
-				values.add(totalDeVendas/* - totalDeCompras */);
+				values.add(totalDeLucroEmVendas/* - totalDeCompras */);
 
-				if (totalDeVendas > 0) {
+				if (totalDeLucroEmVendas > 0) {
 					//values2.add((totalDeVendas / totalCompras) * 100);
 					values2.add((totalVendasComPrecoVenda - totalCompras)/totalVendasComPrecoVenda * 100);
 				} else {
@@ -582,18 +586,24 @@ public class RelatorioLucrosBean implements Serializable {
 		dataSet.setBorderColor("rgb(54, 162, 235)");
 		dataSet.setBackgroundColor("rgba(54, 162, 235)");
 
-		dataSet2.setData(values2);
-		dataSet2.setLabel("Percentual");
-		dataSet2.setYaxisID("right-y-axis");
-		// dataSet2.setFill(false);
-		dataSet2.setBorderColor("rgba(255, 159, 64)");
+		if (percentualDiario) {
+			dataSet2.setData(values2);
+			dataSet2.setLabel("Percentual");
+			dataSet2.setYaxisID("right-y-axis");
+			// dataSet2.setFill(false);
+			dataSet2.setBorderColor("rgba(255, 159, 64)");
+		}
 
 		dataSet3.setData(values3);
 		dataSet3.setLabel("Target");
 		dataSet3.setBorderColor("rgba(75, 192, 192)");
 
 		data.addChartDataSet(dataSet3);
-		data.addChartDataSet(dataSet2);
+		
+		if (percentualDiario) {
+			data.addChartDataSet(dataSet2);
+		}
+		
 		data.addChartDataSet(dataSet);
 
 		data.setLabels(labels);

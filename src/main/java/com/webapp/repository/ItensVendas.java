@@ -1,10 +1,12 @@
 package com.webapp.repository;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import com.webapp.model.Compra;
@@ -37,6 +39,59 @@ public class ItensVendas implements Serializable {
 
 		this.manager.remove(itemVendaTemp);
 	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> porVenda(Venda venda, Produto produto) {
+		
+		List<Object[]> objects = new ArrayList<Object[]>();
+		
+		try {
+			return this.manager
+					.createQuery("SELECT sum(e.quantidade), sum(e.quantidade * e.valorUnitario), sum(e.total) from ItemVenda e where e.venda.id = :id and e.produto.id = :produto group by e.id order by e.id desc")
+					.setParameter("id", venda.getId())
+					.setParameter("produto", produto.getId()).getResultList();
+			
+		} catch(NoResultException e) {
+			
+		}
+
+		return objects;
+	}
+	
+	
+	
+	@SuppressWarnings("unchecked")
+	public List<ItemVenda> porVendaProduto(Venda venda, Produto produto) {
+		
+		List<ItemVenda> objects = new ArrayList<ItemVenda>();
+		
+		try {
+			return this.manager
+					.createQuery("SELECT e from ItemVenda e where e.venda.id = :id and e.produto.id = :produto order by e.id desc")
+					.setParameter("id", venda.getId())
+					.setParameter("produto", produto.getId()).getResultList();
+			
+		} catch(NoResultException e) {
+			
+		}
+
+		return objects;
+	}
+	
+	
+	
+	@SuppressWarnings("unchecked")
+	public List<ItemVenda> porProduto(Venda venda, Produto produto) {
+		
+		return this.manager
+				.createQuery("SELECT e from ItemVenda e where e.venda.id = :id and e.produto.id = :produto order by e.id desc")
+				.setParameter("id", venda.getId())
+				.setParameter("produto", produto.getId()).getResultList();
+			
+	}
+	
+	
 
 	public List<ItemVenda> porVenda(Venda venda) {
 		return this.manager.createQuery("from ItemVenda e join fetch e.venda c where c.id = :id order by e.id asc",
@@ -109,7 +164,7 @@ public class ItensVendas implements Serializable {
 		
 		// AND p.status = 'Y' 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.empresa = :empresa AND p.ano = :anoInicio AND p.status = 'Y' AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition + " order by "
+				+ "WHERE p.empresa = :empresa AND p.ano = :anoInicio AND p.vendaPaga = 'Y' AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition + " order by "
 				+ orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("anoInicio", Long.parseLong(ano));
 

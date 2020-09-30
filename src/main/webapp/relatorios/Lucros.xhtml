@@ -30,15 +30,26 @@
 							label : function(tooltipItem, data) {
 								var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
 
-								if (tooltipItem.datasetIndex == 0
-										|| tooltipItem.datasetIndex == 2) {
-									var valor = "R$ " + numberToReal(amount);
-									if (valor.includes("-.")) {
-										valor = valor.replace("-.", "-");
+								if(data.datasets.length > 2) {
+									if (tooltipItem.datasetIndex == 0
+											|| tooltipItem.datasetIndex == 2) {
+										var valor = "R$ " + numberToReal(amount);
+										if (valor.includes("-.")) {
+											valor = valor.replace("-.", "-");
+										}
+										return valor;
+									} else {
+										return numberToReal(amount) + "%";
 									}
-									return valor;
 								} else {
-									return numberToReal(amount) + "%";
+									if (tooltipItem.datasetIndex == 0
+											|| tooltipItem.datasetIndex == 1) {
+										var valor = "R$ " + numberToReal(amount);
+										if (valor.includes("-.")) {
+											valor = valor.replace("-.", "-");
+										}
+										return valor;
+									}
 								}
 							}
 						}

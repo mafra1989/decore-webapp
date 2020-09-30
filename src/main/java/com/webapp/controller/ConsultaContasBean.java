@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.enterprise.context.SessionScoped;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -25,14 +26,16 @@ import com.webapp.model.Lancamento;
 import com.webapp.model.OrigemConta;
 import com.webapp.model.TipoOperacao;
 import com.webapp.model.Usuario;
+import com.webapp.model.Venda;
 import com.webapp.repository.Compras;
 import com.webapp.repository.Contas;
 import com.webapp.repository.Lancamentos;
 import com.webapp.repository.Usuarios;
+import com.webapp.repository.Vendas;
 import com.webapp.util.jsf.FacesUtil;
 
 @Named
-@SessionScoped
+@ViewScoped
 public class ConsultaContasBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -45,6 +48,9 @@ public class ConsultaContasBean implements Serializable {
 	
 	@Inject
 	private Compras compras;
+	
+	@Inject
+	private Vendas vendas;
 	
 	@Inject
 	private Usuarios usuarios;
@@ -68,7 +74,7 @@ public class ConsultaContasBean implements Serializable {
 
 	private OrigemConta[] origemConta;
 
-	private TipoOperacao tipoOperacao = TipoOperacao.LANCAMENTO;
+	private TipoOperacao tipoOperacao;
 
 	private List<Conta> contasFiltradas = new ArrayList<>();
 
@@ -97,13 +103,6 @@ public class ConsultaContasBean implements Serializable {
 				}
 			}
 			
-			if(!empresa.equals(usuario.getEmpresa())) {
-				
-				if(!empresa.equals("")) {
-					pesquisar();
-				} 
-			}
-			
 		}
 	}
 
@@ -120,21 +119,26 @@ public class ConsultaContasBean implements Serializable {
 		calendarioTemp.set(Calendar.SECOND, 59);
 
 		contasFiltradas = new ArrayList<>();
-		contasFiltradas = contas.contasFiltradas(codigo, tipoOperacao, mes, calendarioTemp, origemConta, vencimento,
+		contasFiltradas = contas.contasFiltradas(null, tipoOperacao, mes, calendarioTemp, origemConta, vencimento,
 				contasPagas, usuario.getEmpresa());
 
 		double totalContasTemp = 0;
 		for (Conta conta : contasFiltradas) {
 			totalContasTemp += conta.getValor().doubleValue();
 			
-			if(tipoOperacao == TipoOperacao.LANCAMENTO) {
+			if(conta.getOperacao().equals(TipoOperacao.LANCAMENTO.toString())) {
 				Lancamento lancamento = lancamentos.porNumeroLancamento(conta.getCodigoOperacao(), usuario.getEmpresa());
 				conta.setDescricao(lancamento.getDescricao());
 			}
 			
-			if(tipoOperacao == TipoOperacao.COMPRA) {
+			if(conta.getOperacao().equals(TipoOperacao.COMPRA.toString())) {
 				Compra compra = compras.porNumeroCompra(conta.getCodigoOperacao(), usuario.getEmpresa());
-				conta.setVendedor(compra.getUsuario().getNome());
+				conta.setDescricao(compra.getUsuario().getNome());
+			}
+			
+			if(conta.getOperacao().equals(TipoOperacao.VENDA.toString())) {
+				Venda venda = vendas.porNumeroVenda(conta.getCodigoOperacao(), usuario.getEmpresa());
+				conta.setDescricao(venda.getUsuario().getNome());
 			}
 			
 		}
@@ -146,6 +150,10 @@ public class ConsultaContasBean implements Serializable {
 		 */
 
 		contaSelecionada = null;
+	}
+	
+	public void preparaDataVencimento() {
+		contaSelecionada.setVencimento(new Date());
 	}
 
 	public void pagar() {

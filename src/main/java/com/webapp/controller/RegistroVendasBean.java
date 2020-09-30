@@ -23,15 +23,18 @@ import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.Bairro;
 import com.webapp.model.Entrega;
+import com.webapp.model.FormaPagamento;
 import com.webapp.model.Grupo;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.Produto;
+import com.webapp.model.TipoPagamento;
 import com.webapp.model.TipoVenda;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
 import com.webapp.repository.Bairros;
 import com.webapp.repository.Entregas;
+import com.webapp.repository.FormasPagamentos;
 import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
 import com.webapp.repository.Produtos;
@@ -115,6 +118,9 @@ public class RegistroVendasBean implements Serializable {
 	private Usuario usuario;
 	
 	private boolean disableAjuste = false;
+	
+	@Inject
+	private FormasPagamentos formasPagamentos;
 	
 
 	public void inicializar() {
@@ -206,6 +212,22 @@ public class RegistroVendasBean implements Serializable {
 			venda.setSemana(Long.valueOf((calendarioTemp.get(Calendar.WEEK_OF_YEAR))));
 			venda.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
 			venda.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
+			
+			
+			
+			venda.setTipoPagamento(TipoPagamento.AVISTA);
+
+			FormaPagamento formaPagamento = formasPagamentos.porNome("Dinheiro");
+			venda.setFormaPagamento(formaPagamento);
+			
+			venda.setVendaPaga(true);
+			
+			venda.setValorRecebido(venda.getValorTotal());
+			venda.setFaltando(BigDecimal.ZERO);
+			venda.setTroco(BigDecimal.ZERO);
+			
+			
+			
 			
 			if(!venda.isAjuste()) {
 				venda.setRecuperarValores(false);

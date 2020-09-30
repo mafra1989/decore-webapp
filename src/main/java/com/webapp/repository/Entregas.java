@@ -1,6 +1,7 @@
 package com.webapp.repository;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -32,6 +33,11 @@ public class Entregas implements Serializable {
 		entregaTemp = this.manager.merge(entrega);
 
 		this.manager.remove(entregaTemp);
+	}
+	
+	public List<Entrega> todas(String empresa) {
+		return this.manager.createQuery("from Entrega e where e.venda.empresa = :empresa order by e.id", Entrega.class)
+				.setParameter("empresa", empresa).getResultList();
 	}
 	
 	public Entrega porVenda(Venda venda) {

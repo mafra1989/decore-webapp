@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -77,7 +79,7 @@ public class Venda implements Serializable {
 	@NotNull
 	@ManyToOne
 	@JoinColumn
-	private Bairro bairro;
+	private Bairro bairro = new Bairro();
 	
 	@Type(type = "yes_no")
 	@Column(nullable = false)
@@ -118,6 +120,65 @@ public class Venda implements Serializable {
 	@Type(type = "yes_no")
 	@Column(nullable = true)
 	private boolean recuperarValores = false;
+	
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = true)
+	private TipoPagamento tipoPagamento;
+	
+	//@NotNull
+	@ManyToOne
+	@JoinColumn
+	private FormaPagamento formaPagamento;
+	
+	
+	@NotNull
+	@Column(nullable = false)
+	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	private BigDecimal taxaDeEntrega = BigDecimal.ZERO;
+	
+	
+	@NotNull
+	@Column(nullable = false)
+	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	private BigDecimal acrescimo = BigDecimal.ZERO;
+	
+	
+	@NotNull
+	@Column(nullable = false)
+	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	private BigDecimal valorRecebido = BigDecimal.ZERO;
+	
+	@NotNull
+	@Column(nullable = false)
+	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	private BigDecimal faltando = BigDecimal.ZERO;
+	
+	@NotNull
+	@Column(nullable = false)
+	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	private BigDecimal troco = BigDecimal.ZERO;
+	
+	
+	@Type(type = "yes_no")
+	@Column(nullable = false)
+	private boolean vendaPaga = true;
+	
+	
+	@Type(type = "yes_no")
+	@Column(nullable = false)
+	private boolean conta;
+	
+	
+	@Column(nullable = false)
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
+	private BigDecimal estorno = BigDecimal.ZERO;
+	
+	
+	@Column(nullable = false)
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
+	private BigDecimal saldoParaTroca = BigDecimal.ZERO;
+	
 	
 
 	public Long getId() {
@@ -280,6 +341,22 @@ public class Venda implements Serializable {
 		this.recuperarValores = recuperarValores;
 	}
 
+	public TipoPagamento getTipoPagamento() {
+		return tipoPagamento;
+	}
+
+	public void setTipoPagamento(TipoPagamento tipoPagamento) {
+		this.tipoPagamento = tipoPagamento;
+	}
+
+	public FormaPagamento getFormaPagamento() {
+		return formaPagamento;
+	}
+
+	public void setFormaPagamento(FormaPagamento formaPagamento) {
+		this.formaPagamento = formaPagamento;
+	}
+
 	public Bairro getBairro() {
 		return bairro;
 	}
@@ -302,6 +379,78 @@ public class Venda implements Serializable {
 
 	public void setAjuste(boolean ajuste) {
 		this.ajuste = ajuste;
+	}
+
+	public BigDecimal getTaxaDeEntrega() {
+		return taxaDeEntrega;
+	}
+
+	public void setTaxaDeEntrega(BigDecimal taxaDeEntrega) {
+		this.taxaDeEntrega = taxaDeEntrega.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+	}
+
+	public BigDecimal getAcrescimo() {
+		return acrescimo;
+	}
+
+	public void setAcrescimo(BigDecimal acrescimo) {
+		this.acrescimo = acrescimo.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+	}
+
+	public BigDecimal getValorRecebido() {
+		return valorRecebido;
+	}
+
+	public void setValorRecebido(BigDecimal valorRecebido) {
+		this.valorRecebido = valorRecebido.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+	}
+
+	public BigDecimal getFaltando() {
+		return faltando;
+	}
+
+	public void setFaltando(BigDecimal faltando) {
+		this.faltando = faltando.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+	}
+
+	public BigDecimal getTroco() {
+		return troco;
+	}
+
+	public void setTroco(BigDecimal troco) {
+		this.troco = troco.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+	}
+
+	public boolean isVendaPaga() {
+		return vendaPaga;
+	}
+
+	public void setVendaPaga(boolean vendaPaga) {
+		this.vendaPaga = vendaPaga;
+	}
+
+	public boolean isConta() {
+		return conta;
+	}
+
+	public void setConta(boolean conta) {
+		this.conta = conta;
+	}
+
+	public BigDecimal getEstorno() {
+		return estorno;
+	}
+
+	public void setEstorno(BigDecimal estorno) {
+		this.estorno = estorno.setScale(4, BigDecimal.ROUND_HALF_EVEN);
+	}
+
+	public BigDecimal getSaldoParaTroca() {
+		return saldoParaTroca;
+	}
+
+	public void setSaldoParaTroca(BigDecimal saldoParaTroca) {
+		this.saldoParaTroca = saldoParaTroca.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	@Override

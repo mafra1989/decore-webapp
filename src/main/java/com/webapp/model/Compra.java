@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -80,6 +82,22 @@ public class Compra implements Serializable {
 	@Column(nullable = false)
 	private Long ano;
 	
+	
+	
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = true)
+	private TipoPagamento tipoPagamento;
+	
+	@Type(type = "yes_no")
+	@Column(nullable = false)
+	private boolean compraPaga = true;
+	
+	@Type(type = "yes_no")
+	@Column(nullable = false)
+	private boolean conta;
+	
+	
 
 	public Long getId() {
 		return id;
@@ -118,7 +136,7 @@ public class Compra implements Serializable {
 	}
 
 	public void setValorTotal(BigDecimal valorTotal) {
-		this.valorTotal = valorTotal.setScale(4, BigDecimal.ROUND_HALF_EVEN);;
+		this.valorTotal = valorTotal.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public Usuario getUsuario() {
@@ -193,6 +211,30 @@ public class Compra implements Serializable {
 
 	public void setAno(Long ano) {
 		this.ano = ano;
+	}
+
+	public TipoPagamento getTipoPagamento() {
+		return tipoPagamento;
+	}
+
+	public void setTipoPagamento(TipoPagamento tipoPagamento) {
+		this.tipoPagamento = tipoPagamento;
+	}
+
+	public boolean isCompraPaga() {
+		return compraPaga;
+	}
+
+	public void setCompraPaga(boolean compraPaga) {
+		this.compraPaga = compraPaga;
+	}
+
+	public boolean isConta() {
+		return conta;
+	}
+
+	public void setConta(boolean conta) {
+		this.conta = conta;
 	}
 
 	@Override

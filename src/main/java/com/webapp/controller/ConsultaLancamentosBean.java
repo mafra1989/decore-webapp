@@ -22,12 +22,15 @@ import com.webapp.model.CategoriaLancamento;
 import com.webapp.model.Conta;
 import com.webapp.model.DestinoLancamento;
 import com.webapp.model.Grupo;
+import com.webapp.model.ItemCaixa;
 import com.webapp.model.Lancamento;
 import com.webapp.model.OrigemLancamento;
+import com.webapp.model.TipoOperacao;
 import com.webapp.model.Usuario;
 import com.webapp.repository.CategoriasLancamentos;
 import com.webapp.repository.Contas;
 import com.webapp.repository.DestinosLancamentos;
+import com.webapp.repository.ItensCaixas;
 import com.webapp.repository.Lancamentos;
 import com.webapp.repository.Usuarios;
 import com.webapp.util.jsf.FacesUtil;
@@ -100,6 +103,9 @@ public class ConsultaLancamentosBean implements Serializable {
 	
 	private String empresa = "";
 	
+	@Inject
+	private ItensCaixas itensCaixas;
+	
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -150,7 +156,7 @@ public class ConsultaLancamentosBean implements Serializable {
 		boolean favorecido = false;
 		
 		for (String categoria : categorias) {
-			categoriaLancamento = categoriasDespesas.porNome(categoria, usuario_.getEmpresa());
+			categoriaLancamento = categoriasDespesas.porNome(categoria, null);
 			if(categoriaLancamento.getId() == 25835L || categoriaLancamento.getId() == 5423L ||
 					categoriaLancamento.getId() == 5424L || categoriaLancamento.getId() == 5425L ||
 							categoriaLancamento.getId() == 5426L || categoriaLancamento.getId() == 5427L) {
@@ -250,7 +256,7 @@ public class ConsultaLancamentosBean implements Serializable {
 		boolean favorecido = false;
 		
 		for (String categoria : categorias) {
-			categoriaLancamento = categoriasDespesas.porNome(categoria, usuario_.getEmpresa());
+			categoriaLancamento = categoriasDespesas.porNome(categoria, null);
 			if(categoriaLancamento.getId() == 25835L || categoriaLancamento.getId() == 5423L ||
 					categoriaLancamento.getId() == 5424L || categoriaLancamento.getId() == 5425L ||
 							categoriaLancamento.getId() == 5426L || categoriaLancamento.getId() == 5427L) {
@@ -296,6 +302,15 @@ public class ConsultaLancamentosBean implements Serializable {
 
 		if (contasPagas != true) {
 			lancamentos.remove(lancamentoSelecionado);
+			
+			
+			ItemCaixa itemCaixa = itensCaixas.porCodigoOperacao(lancamentoSelecionado.getNumeroLancamento(), TipoOperacao.LANCAMENTO, lancamentoSelecionado.getEmpresa());
+
+			if(itemCaixa != null) {
+				
+				itensCaixas.remove(itemCaixa);
+			}
+			
 
 			lancamentoSelecionado = null;
 			pesquisar();

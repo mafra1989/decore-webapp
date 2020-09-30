@@ -189,6 +189,12 @@
 						<p:column headerText="Zona">
 							<h:outputText value="#{bairro.zona.descricao}" />
 						</p:column>
+						
+						<p:column headerText="Taxa de Entrega">
+							<h:outputText value="#{bairro.taxaDeEntrega}">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+						</p:column>
 
 					</p:dataTable>
 				</p:panel>
@@ -234,6 +240,13 @@
 									itemLabel="#{zona.descricao}"
 									itemValue="#{zona}" />
 							</p:selectOneMenu>
+							
+							<p:outputLabel value="Taxa de Entrega" for="taxa-entrega" />
+							<p:inputNumber id="taxa-entrega" decimalPlaces="2"
+								placeholder="R$ 0,00" autocomplete="off" 
+								symbol="R$ "
+								value="#{cadastroBairroBean.bairro.taxaDeEntrega}">
+							</p:inputNumber>
 						</p:panelGrid>
 
 						<p:spacer />

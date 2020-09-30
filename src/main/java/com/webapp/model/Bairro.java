@@ -1,6 +1,7 @@
 package com.webapp.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +10,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
@@ -22,6 +24,11 @@ public class Bairro implements Serializable {
 	private Long id;
 	private String nome;
 	private Zona zona;
+
+	@NotNull
+	@Column(nullable = false)
+	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	private BigDecimal taxaDeEntrega = BigDecimal.ZERO;
 
 	@Id
 	@GeneratedValue
@@ -52,6 +59,14 @@ public class Bairro implements Serializable {
 
 	public void setZona(Zona zona) {
 		this.zona = zona;
+	}
+
+	public BigDecimal getTaxaDeEntrega() {
+		return taxaDeEntrega;
+	}
+
+	public void setTaxaDeEntrega(BigDecimal taxaDeEntrega) {
+		this.taxaDeEntrega = taxaDeEntrega.setScale(2, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	@Override

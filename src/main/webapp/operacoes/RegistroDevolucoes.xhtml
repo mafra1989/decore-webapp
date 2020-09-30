@@ -1,0 +1,827 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	template="/WEB-INF/template.xhtml">
+
+	<ui:define name="title">Devolução/Troca</ui:define>
+
+	<f:metadata>
+		<f:viewAction action="#{registroDevolucoesBean.inicializar}" />
+	</f:metadata>
+
+	<ui:define name="content">
+
+		<style>
+@media ( min-width :220px) {
+	#produto-dialog .ui-state-disabled {
+    	opacity: 1;
+    }
+	#itens-dialog .ui-panel .ui-panel-content {
+	    border: none;
+    	padding: 6px;
+    }
+    #itens-dialog .panel-total-devolucao .ui-panel-content {
+    	padding: 0px;
+    }
+    #itens-dialog .ui-button.ui-button-icon-only .ui-icon {
+	    margin-top: -11px;
+	    border: 1px solid #c0c0c0;
+	    padding: 3px;
+	    border-radius: 2px;
+	    margin-left: -11px;
+	}
+	body.swal2-toast-shown .swal2-container.swal2-top-end, body.swal2-toast-shown .swal2-container.swal2-top-right {
+	    bottom: 0 !important;
+	    left: 0 !important;
+	    background: rgba(0,0,0,.4) !important;
+	    margin-top: 65px;
+	}
+	.fotoDialog .ui-panel .ui-panel-content {
+	    border: none;
+	    padding: 0px;
+    }
+	.busca.ui-autocomplete {
+	    width:88%;
+	}
+	.data-venda .ui-panelgrid-cell:nth-child(3) {
+		text-align:left;
+		margin-top:0px;
+	}
+	.leitor-barras.ui-panel .ui-panel-content {
+		padding: 0px;
+		border:none;
+	}
+	
+	.leitor-barras .ui-inputtext {
+	    width: 88%;
+	}
+	.btn-barcode_.ui-button.ui-state-default {
+    	display: none !important;  	
+    }
+    .btn-camera.ui-button.ui-state-default {
+    	display: block !important;  
+    	width: 35px;
+    	height: 29px;	
+    	float: right;
+    }
+	.inventario.ui-button {
+	    width: auto !important;;
+	    color: #000000 !important;;
+	    background-color: transparent !important;;
+    }
+	body .ui-button.ui-button-text-icon-left .ui-button-text {
+		font-weight: bold;
+	}
+	.panel-total.ui-panel .ui-panel-content {
+		border: none;
+		padding: 0px;
+	}
+	.fotoDialog {
+		max-height: 380px !important;
+		width: 240px !important;
+		margin-top: -50px;
+	}
+	.categoria-field {
+		width: 100%;
+		height: 32px;
+	}
+	.ui-slider .ui-slider-handle {
+		width: 1.7em;
+		height: 1.7em;
+	}
+	.ui-slider-horizontal {
+		height: 1.2em !important;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 28px !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+		width: 50% !important;
+		float: left !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-6 {
+		width: 50% !important;
+		float: left !important;
+	}
+	.qty-parcelas.ui-panelgrid .ui-panelgrid-cell:nth-child(1) {
+		margin-top: 10px !important;
+	}
+	.percentual-juros.ui-panelgrid .ui-panelgrid-cell:nth-child(1) {
+		margin-top: 8px !important;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+		.ui-datatable tfoot th {
+		font-size: 13px;
+	}
+	body .btn-new.ui-button { 
+    	width: 35px;
+    	height: 29px;	
+    	float: right;
+	}
+	.swal2-popup {
+		width: 28em;
+		max-width: 100%;
+		padding: 0 0 0.4em 0;
+		font-size: 0.75rem;
+	}
+	.swal2-popup #swal2-content {
+		font-weight: 400;
+	}
+}
+
+@media ( min-width :460px) {
+	.data-venda .ui-panelgrid-cell:nth-child(3) {
+		text-align:center;
+		margin-top:5px;
+	}
+	.leitor-barras .ui-inputtext {
+	    width: 88%;
+	}
+	.btn-barcode_.ui-button.ui-state-default {
+    	display: block !important;  	
+    }
+	.btn-camera.ui-button.ui-state-default {
+    	display: none !important;  	
+    }
+	.ui-slider .ui-slider-handle {
+		width: 1.7em;
+		height: 1.7em;
+	}
+	.ui-slider-horizontal {
+		height: 1.2em;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 27px !important;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+		.ui-datatable tfoot th {
+		font-size: 14px;
+	}
+	.venda-entrega {
+		margin-top: 7px;
+		float: left;
+	}
+}
+
+@media ( min-width :640px) {
+	.categoria-field {
+		width: 60% !important;
+	}
+	.ui-slider-handle {
+		width: 1.2em !important;
+		height: 1.2em !important;
+	}
+	.ui-slider-horizontal {
+		height: 0.8em !important;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 27px !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+		width: 33.33333% !important;
+		float: none;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-6 {
+		width: auto !important;
+		float: none;
+	}
+	.fotoDialog {
+		max-height: 500px !important;
+		width: 500px !important;
+		margin-top: -50px;
+	}
+	.fotoDialog .ui-inputtext {
+	    width: 40%;
+	}
+	.fotoDialog .ui-panelgrid .ui-panelgrid-cell {
+    	padding: 4px 4px;
+    }
+}
+</style>
+
+		<div class="page-header">
+			<h1>Devolução/Troca</h1>
+		</div>
+
+		<p:growl id="msg" closable="true" life="1500" showSummary="false"
+			showDetail="true" style="text-align: center" />
+
+
+
+		<h:form id="form" prependId="false">
+		
+			<p:focus for="busca-por-leitor" />
+			
+			<p:remoteCommand name="setarItemID" process="@this vendasTable"
+				update="form" action="#{registroDevolucoesBean.excluir}"
+				onstart="PF('downloadLoading').show();"
+				oncomplete="PF('downloadLoading').hide();" />
+				
+		
+
+			<p:toolbar id="toolbar">
+				<f:facet name="left">
+					<p:commandButton icon="fa fa-fw fa-search" value="Pesquisar"
+						id="pesquisar-button" update="form produto-dialog"
+						style="margin-left: 3px;font-weight:bold" process="@this form"
+						action="#{registroDevolucoesBean.pesquisar_}"
+						onstart="PF('downloadLoading').show();"
+						oncomplete="PF('downloadLoading').hide();"></p:commandButton>
+				</f:facet>
+				
+				<f:facet name="right">
+			
+					<p:outputLabel id="saldo" value="Saldo p/ troca: R$ #{registroDevolucoesBean.saldoParaTroca == null ? '0,00' : registroDevolucoesBean.saldoParaTroca}" style="color: #5a5656;margin-top: 5px;font-size:14px;float: right;" />
+				</f:facet>
+
+			</p:toolbar>
+
+			<div class="ui-g-12 ui-lg-12">
+
+				<p:panel class="card card-w-title ui-fluid itens-add" id="panel-busca_"
+					style="padding-bottom: 0px !important; margin-top:10px">
+
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-4">
+						
+						<p:outputLabel value="" />
+						
+						<p:panel class="leitor-barras">
+													
+							<p:selectBooleanButton id="leitor" 
+								value="#{registroDevolucoesBean.leitor}" onLabel="ATIVADO"
+								offLabel="DESATIVADO" onIcon="fa fa-fw fa-check"
+								offIcon="fa fa-fw fa-close" style="float: right;font-size:11px;width:105px;">
+								
+								<p:ajax process="@this" update="panel-busca_ panel-busca" />										
+							</p:selectBooleanButton>
+							
+							<p:outputLabel value="Leitor de código de barras" for="leitor" style="font-size: 12px;margin-right:5px;margin-top: 7px;float: right;" />
+													
+						</p:panel>
+					</p:panelGrid>
+					
+					<p:defaultCommand scope="panel-busca" target="btn-barcode" 
+									rendered="#{registroDevolucoesBean.leitor}" />	
+							
+					<p:panelGrid columns="2" layout="grid" id="panel-busca"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-4">
+
+						<p:outputLabel value="Produto" for="busca" />
+						
+						<p:panel class="leitor-barras">
+						
+							<p:focus for="busca" context="leitor-barras" rendered="#{not registroDevolucoesBean.leitor}" />
+							<p:focus for="busca-por-leitor" context="leitor-barras" rendered="#{registroDevolucoesBean.leitor}" />
+							
+							<p:autoComplete id="busca" value="#{registroDevolucoesBean.produto_}" 
+								placeholder="Digite o código ou descrição do produto"
+								var="produto" styleClass="busca" rendered="#{not registroDevolucoesBean.leitor}"
+								itemLabel="#{produto.codigo.concat(' | ').concat(produto.descricao)}" itemValue="#{produto}"
+								completeMethod="#{registroDevolucoesBean.completeText_Produto}">
+								
+								<p:ajax event="itemSelect" listener="#{registroDevolucoesBean.onItemSelect}" />
+							</p:autoComplete>
+							
+							<p:inputText id="busca-por-leitor" value="#{registroDevolucoesBean.filter.codigo}" styleClass="field-barcode busca-por-leitor"
+									placeholder="Escaneie ou digite o código do produto" rendered="#{registroDevolucoesBean.leitor}" />
+											
+								
+							<p:commandButton id="btn-barcode" icon="fa fa-fw fa-barcode" rendered="#{registroDevolucoesBean.leitor}"
+								action="#{registroDevolucoesBean.pesquisar_}" process="@this form"
+								update="form produto-dialog" onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();"
+								style="float:right;width:35px;height:29px" styleClass="white-button btn-barcode btn-barcode_" />
+							
+							
+							<p:commandButton id="enter-barcode" icon="fa fa-fw fa-camera-retro"  rendered="#{registroDevolucoesBean.leitor}"
+								onstart="readBarcode();" disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
+								oncomplete="PF('barcode-dialog').show();" styleClass="btn-camera white-button white-button_" />
+							
+						
+							<p:commandButton styleClass="btn-new" icon="fa fa-fw fa-filter"
+								actionListener="#{registroDevolucoesBean.resetInput}"
+								title="Limpar campo" onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();" update="panel-busca"
+								process="@this" rendered="#{not registroDevolucoesBean.leitor}" 
+								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}">
+								
+							</p:commandButton>
+						</p:panel>							
+					</p:panelGrid>
+
+					<p:panelGrid columns="4" id="painel" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled data-venda"
+						columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-1, ui-grid-col-2">
+
+						<p:outputLabel value="Data da venda" for="data01" />
+						<p:datePicker id="data01" value="#{registroDevolucoesBean.dateStart}"
+							readonlyInput="true" pattern="dd/MM/yyyy" locale="pt" 
+							showIcon="true">
+						</p:datePicker>
+
+
+						<p:outputLabel value="até" id="data02" />
+						<p:datePicker id="data-02" value="#{registroDevolucoesBean.dateStop}"
+							readonlyInput="true" styleClass="dateStop" pattern="dd/MM/yyyy"
+							locale="pt" showIcon="true">
+						</p:datePicker>
+
+					</p:panelGrid>
+					
+					<p:panelGrid columns="2" layout="grid" 
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3">
+
+						<p:outputLabel value="Venda N." for="venda" />
+						<p:inputNumber id="venda" decimalPlaces="0" 
+							styleClass="quantidade" onkeyup="ajaxDelay('')"
+							value="#{registroDevolucoesBean.numeroVenda}">
+
+							<p:ajax event="keyup" process="@this"></p:ajax>
+						</p:inputNumber>
+					</p:panelGrid>
+
+				</p:panel>
+
+				<p:panel class="card card-w-title ui-fluid itens-add"
+					id="panel-table"
+					style="padding-bottom: 0px !important;margin-top:-10px">
+
+					<h3 style="font-weight: bold">Vendas realizadas</h3>
+					
+					<p:commandButton icon="fa fa-fw fa-list-ol"
+							style="font-weight: bold;;float: right;margin-top: -40px;margin-right: 10px;width:180px;background:#fff;color:#5a5656;border:1px solid #c0c0c0;"
+							value="Itens adicionados [#{registroDevolucoesBean.quantidadeItens}]" onstart="PF('downloadLoading').show();"
+							oncomplete="PF('downloadLoading').hide();PF('itens-dialog').show();"
+							process="@this" update="itens-dialog" />
+
+					<p:menuButton id="menu-btn" value="Opções" rendered="false"
+						style="width: 80px;float: right;margin-top: -40px;margin-right: 10px"
+						disabled="#{(registroDevolucoesBean.vendasFiltradasSize eq 0) or registroDevolucoesBean.vendaSelecionada.id == null}">
+
+						<p:menuitem value="Visualizar" icon="fa fa-fw fa-eye"
+							id="btn-view" outcome="#{registroDevolucoesBean.vendaSelecionada.pdv ? '/PDV.xhtml' : '/operacoes/RegistroVendas.xhtml'}"
+							onclick="PF('downloadLoading').show();">
+							<f:param name="id"
+								value="#{registroDevolucoesBean.vendaSelecionada.id}" />
+						</p:menuitem>
+						
+						<p:separator />
+						<p:menuitem icon="fa fa-fw fa-trash" id="btn-trash"
+							value="Excluir" process="@this" disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
+							onclick="deleteItem(#{registroDevolucoesBean.vendaSelecionada.id});" />
+						<p:separator />
+
+						<p:menuitem value="Entregar venda" icon="fa fa-fw fa-money"
+							onstart="start();" oncomplete="stop();"
+							action="#{registroDevolucoesBean.entregarVenda}" update="form"
+							process="@this"
+							rendered="#{registroDevolucoesBean.entrega.id != null and registroDevolucoesBean.entrega.status == 'PENDENTE'}">
+						</p:menuitem>
+						<p:separator />
+						<p:menuitem value="Desfazer entrega" icon="fa fa-fw fa-undo"
+							onstart="start();" oncomplete="stop();"
+							action="#{registroDevolucoesBean.desfazerEntrega}" update="form"
+							process="@this"
+							rendered="#{registroDevolucoesBean.entrega.id != null and registroDevolucoesBean.entrega.status == 'ENTREGUE'}">
+						</p:menuitem>
+						<p:menuitem value="Ver localização" icon="fa fa-fw fa-map-marker"
+							onstart="start();" oncomplete="stop();"
+							url="https://maps.google.com/maps?daddr=#{registroDevolucoesBean.entrega.localizacao}"
+							target="_blank"
+							rendered="#{registroDevolucoesBean.entrega.id != null}">
+						</p:menuitem>
+						<p:menuitem value="Baixar PDF" icon="fa fa-fw fa-cloud-download"
+							action="#{registroDevolucoesBean.emitirPedido}" 
+							ajax="false" target="_blank" disabled="#{seguranca.usuarioLogado.usuario.empresa eq 'Havaianas'}">
+						</p:menuitem>
+
+					</p:menuButton>
+
+
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-12">
+
+						<p:dataTable id="vendasTable" paginatorAlwaysVisible="false"
+							scrollable="true" scrollHeight="500"
+							value="#{registroDevolucoesBean.itensVendasFiltradas}" var="itemVenda"
+							emptyMessage="Nenhum resultado encontrado." reflow="true"
+							paginator="false" rowKey="#{itemVenda.id}"
+							selection="#{registroDevolucoesBean.itemVendaSelecionada}"
+							selectionMode="single">
+
+							<p:ajax process="@this form-dialog_:quantidade_" event="rowSelect" update="menu-btn produto-dialog_ form-dialog_"
+								listener="#{registroDevolucoesBean.prepararDevolucaoSelecionada}" 
+								onstart="PF('downloadLoading').show();" 
+								oncomplete="PF('downloadLoading').hide();PF('produto-dialog_').show();" />
+								
+							<p:ajax process="@this" event="rowUnselect" update="menu-btn"
+								onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();" />
+
+							<p:column headerText="N. Venda" width="10%">
+								<h:outputText value="#{itemVenda.venda.numeroVenda}" />
+								<p:commandButton icon="fa fa-fw fa-edit" styleClass="inventario" rendered="#{venda.ajuste}" />
+							</p:column>
+
+							<p:column headerText="Data da venda" width="10%">
+								<h:outputText value="#{itemVenda.venda.dataVenda}">
+									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" dateStyle="short" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Tipo de venda" width="10%">
+								<h:outputText value="#{itemVenda.venda.tipoVenda.descricao}" />
+							</p:column>
+
+							<p:column headerText="Bairro" width="10%">
+								<h:outputText value="#{itemVenda.venda.bairro.nome}" />
+							</p:column>
+
+							<p:column headerText="Vendedor" width="10%">
+								<h:outputText value="#{itemVenda.venda.usuario.nome}" />
+							</p:column>
+							
+							<p:column headerText="Produto" width="10%">
+								<h:outputText value="#{itemVenda.produto.codigo}" />
+							</p:column>
+
+							<p:column headerText="Qtd. Itens" width="10%">
+								<h:outputText value="#{itemVenda.quantidade}" />
+							</p:column>
+
+							<p:column headerText="Valor Pago" width="10%">
+								<h:outputText value="#{itemVenda.total}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+
+						</p:dataTable>
+
+						<p:panel
+							styleClass="panelgrid-noborder disabled disabled panel-total">
+
+							<p:outputLabel
+								value="Total de Vendas: R$ #{registroDevolucoesBean.totalVendas}"
+								style="float:left;margin-top:10px;margin-bottom:5px;margin-left:-10px;font-size: 13px;font-family: inherit;" />
+
+							<p:outputLabel
+								value="Total de Itens: #{registroDevolucoesBean.totalItens}"
+								style="float:right;margin-top:10px;margin-bottom:5px;margin-right:0px;font-size: 13px;font-family: inherit;" />
+
+						</p:panel>
+					</p:panelGrid>
+
+				</p:panel>
+
+			</div>
+
+		</h:form>
+		
+		
+		
+		
+		<p:dialog header="Devolver produto" widgetVar="produto-dialog"  position="top" style="margin-top: 100px"
+			id="produto-dialog" resizable="false" modal="true" 
+			closeOnEscape="true" responsive="true" 
+			styleClass="fotoDialog">
+
+			<h:form id="form-dialog">
+			
+				<p:focus for="quantidade" />
+			
+				<p:defaultCommand target="devolver-trocar" />
+
+				<div class="ui-fluid" style="margin-top: 5px; text-align: center">
+															
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-5, ui-grid-col-7">
+						
+						<p:panel>
+						
+							<p:panelGrid columns="1" layout="grid"
+								styleClass="panelgrid-noborder disabled disabled"
+								columnClasses="ui-grid-col-6">
+								
+								<ui:fragment id="photo"
+									rendered="#{registroDevolucoesBean.produto.urlImagem != null}">
+									<img 
+										src="#{registroDevolucoesBean.produto.urlImagem}"
+										style="width: 200px; height: auto;margin-left: -10px;" />
+								</ui:fragment>
+								
+								<ui:fragment id="photo2" 
+									rendered="#{registroDevolucoesBean.produto.urlImagem == null}">
+									<p:graphicImage library="myapp" name="/images/sem-foto.png" width="166px" height="176px" />
+								</ui:fragment>
+							</p:panelGrid>
+						
+						</p:panel>
+						
+						
+						
+							<p:panelGrid columns="1" layout="grid" style="text-align:left;"
+								styleClass="panelgrid-noborder disabled disabled"
+								columnClasses="ui-grid-col-12">
+								
+									<p:outputLabel
+										value="#{registroDevolucoesBean.produto.nome}"
+										style="font-size: 16px;font-weight: bold;" />
+										
+									<p:outputLabel
+										value="#{registroDevolucoesBean.produto.descricao}"
+										style="font-size: 22px;font-weight: bold;float:left;margin-top: -10px;" />
+										
+									<p:outputLabel value="cod.: #{registroDevolucoesBean.produto.codigo}" style="float: left;margin-top: -8px;" />
+									
+									
+									<p:outputLabel value="Valor pago/Un."
+											style="font-weight: bold;font-size: 12px;" />
+										
+									<p:outputLabel id="valor-pago" value="#{registroDevolucoesBean.produto.valorPago}"
+										style="font-size: 28px;font-weight: bold;margin-top: -10px;float: left;">
+										
+										<f:convertNumber type="currency" />
+									</p:outputLabel>
+									
+									
+									<p:outputLabel value="Quantidade" for="quantidade" />
+									<p:inputNumber id="quantidade" decimalPlaces="0" disabled="true"
+										placeholder="0" styleClass="quantidade" onkeyup="ajaxDelay('')"
+										value="#{registroDevolucoesBean.devolucao.quantidade}">
+
+										<p:ajax event="keyup" process="@this"></p:ajax>
+									</p:inputNumber>
+							</p:panelGrid>
+						
+					</p:panelGrid>	
+
+					<div
+						style="width: 100%; margin: auto; border-top: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px"></div>
+
+					<p:panel>
+											
+						<p:commandButton icon="fa fa-fw fa-retweet" rendered="false"
+								style="margin-bottom: 5px;font-weight: bold;float: right;width: 145px;margin-right: 5px;background-color: #0d8819b5;"
+								value="Devolver e Trocar" id="devolver-trocar" onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();PF('produto-dialog').hide();"
+								action="#{registroDevolucoesBean.devolucaoTrocaSelecionada}"
+								process="@this produto-dialog" update="form" />
+	
+						<p:commandButton icon="fa fa-fw fa-close"
+							style="float:right;margin-right: 3px;margin-bottom: 5px;font-weight: bold;width: 100px;background:#e15e5ef0;"
+							value="Fechar" 
+							onstart="PF('downloadLoading').show();"
+							oncomplete="PF('downloadLoading').hide();PF('produto-dialog').hide();">
+						</p:commandButton>
+					</p:panel>
+					
+				</div>
+			</h:form>
+		</p:dialog>
+		
+		
+		
+		<p:dialog header="Devolver produto" widgetVar="produto-dialog_"  position="top" style="margin-top: 100px"
+			id="produto-dialog_" resizable="false" modal="true" 
+			closeOnEscape="true" responsive="true" 
+			styleClass="fotoDialog">
+
+			<h:form id="form-dialog_">
+			
+				<p:focus for="quantidade_" />
+			
+				<p:defaultCommand target="devolver-trocar_" />
+
+				<div class="ui-fluid" style="margin-top: 5px; text-align: center">
+															
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-5, ui-grid-col-7">
+						
+						<p:panel>
+						
+							<p:panelGrid columns="1" layout="grid"
+								styleClass="panelgrid-noborder disabled disabled"
+								columnClasses="ui-grid-col-6">
+								
+								<ui:fragment id="photo2"
+									rendered="#{registroDevolucoesBean.produto.urlImagem != null}">
+									<img 
+										src="#{registroDevolucoesBean.produto.urlImagem}"
+										style="width: 200px; height: auto;margin-left: -10px;" />
+								</ui:fragment>
+								
+								<ui:fragment id="photo2_" 
+									rendered="#{registroDevolucoesBean.produto.urlImagem == null}">
+									<p:graphicImage library="myapp" name="/images/sem-foto.png" width="166px" height="176px" />
+								</ui:fragment>
+							</p:panelGrid>
+						
+						</p:panel>
+						
+						
+						
+							<p:panelGrid columns="1" layout="grid" style="text-align:left;"
+								styleClass="panelgrid-noborder disabled disabled"
+								columnClasses="ui-grid-col-12">
+								
+									<p:outputLabel
+										value="#{registroDevolucoesBean.produto.nome}"
+										style="font-size: 16px;font-weight: bold;" />
+										
+									<p:outputLabel
+										value="#{registroDevolucoesBean.produto.descricao}"
+										style="font-size: 22px;font-weight: bold;float:left;margin-top: -10px;" />
+										
+									<p:outputLabel value="cod.: #{registroDevolucoesBean.produto.codigo}" style="float: left;margin-top: -8px;" />
+									
+									
+									<p:outputLabel value="Valor pago/Un."
+											style="font-weight: bold;font-size: 12px;" />
+										
+									<p:outputLabel id="valor-pago" value="#{registroDevolucoesBean.produto.valorPago}"
+										style="font-size: 28px;font-weight: bold;margin-top: -10px;float: left;">
+										
+										<f:convertNumber type="currency" />
+									</p:outputLabel>
+									
+									
+									<p:outputLabel value="Quantidade" for="quantidade_" />
+									<p:inputNumber id="quantidade_" decimalPlaces="0" 
+										placeholder="0" styleClass="quantidade" onkeyup="ajaxDelay('')"
+										value="#{registroDevolucoesBean.devolucao.quantidade}">
+
+										<p:ajax event="keyup" process="@this"></p:ajax>
+									</p:inputNumber>
+							</p:panelGrid>
+						
+					</p:panelGrid>	
+
+					<div
+						style="width: 100%; margin: auto; border-top: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px"></div>
+
+					<p:panel>
+											
+						<p:commandButton icon="fa fa-fw fa-retweet" rendered="false"
+								style="margin-bottom: 5px;font-weight: bold;float: right;width: 145px;margin-right: 3px;background-color: #0d8819b5;"
+								value="Devolver e Trocar" id="devolver-trocar_" onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();PF('produto-dialog_').hide();"
+								action="#{registroDevolucoesBean.devolucaoTrocaSelecionada}"
+								process="@this produto-dialog_" update="form" />
+						
+						<p:commandButton icon="fa fa-fw fa-plus"
+								style="margin-bottom: 5px;font-weight: bold;float: right;width: 100px;margin-right: 3px;background:#147df0"
+								value="Adicionar" id="devolver_" onstart="PF('downloadLoading').show();"
+								action="#{registroDevolucoesBean.adicionarItem}" oncomplete="PF('downloadLoading').hide();"
+								process="@this form-dialog_" update="panel-table saldo form-dialog_ msg" />
+	
+						<p:commandButton icon="fa fa-fw fa-close"
+							style="float:right;margin-right: 3px;margin-bottom: 5px;font-weight: bold;width: 100px;background:#e15e5ef0;"
+							value="Fechar" 
+							onstart="PF('downloadLoading').show();"
+							oncomplete="PF('downloadLoading').hide();PF('produto-dialog_').hide();">
+						</p:commandButton>
+					</p:panel>
+					
+				</div>
+			</h:form>
+		</p:dialog>
+		
+		
+		
+		
+		
+		
+		<p:dialog header="Itens adicionados" widgetVar="itens-dialog"  position="top" style="margin-top: 100px"
+			id="itens-dialog" resizable="false" modal="true" width="500px"
+			closeOnEscape="true" responsive="true">
+
+			<h:form id="form-itens">
+
+				<div class="ui-fluid" style="margin-top: 3px;">
+				
+					<p:defaultCommand target="btn-close" />
+															
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-12">
+			
+						<p:outputLabel value="Itens adicionados para devolução" style="font-weight:bold;color: #5a5656;margin-top: 3px;font-size:14px;" />
+						
+						<p:dataTable id="itensTable" paginatorAlwaysVisible="false"
+							scrollable="true" scrollHeight="130" style="margin-top: 8px;"
+							value="#{registroDevolucoesBean.listaDevolucao}" var="itemVenda"
+							emptyMessage="Nenhum item adicionado." reflow="true"
+							paginator="false">
+
+							<p:column headerText="N. Venda" width="10%">
+								<h:outputText value="#{itemVenda.venda.numeroVenda}" />
+								<p:commandButton icon="fa fa-fw fa-edit" styleClass="inventario" rendered="#{venda.ajuste}" />
+							</p:column>
+							
+							<p:column headerText="Produto" width="10%">
+								<p:commandLink value="#{itemVenda.produto.codigo}" actionListener="#{registroDevolucoesBean.prepararItemAdicionado(itemVenda)}" update="produto-dialog" oncomplete="PF('produto-dialog').show();" />
+							</p:column>
+
+							<p:column headerText="Qtd. Itens" width="10%">
+								<h:outputText value="#{itemVenda.quantidade}" />
+							</p:column>
+
+							<p:column headerText="Sub-Total" width="10%">
+								<h:outputText value="#{itemVenda.total}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Remover" width="10%">
+								<p:commandButton icon="fa fa-fw fa-close" action="#{registroDevolucoesBean.removeItem(itemVenda)}"
+									style="font-weight: bold;background: transparent;color: #434560;"
+										onstart="PF('downloadLoading').show();" update="form-itens panel-table saldo"
+										oncomplete="PF('downloadLoading').hide();PF('downloadLoading').hide();"
+										disabled="#{registroDevolucoesBean.trocaPendente}">
+								</p:commandButton>
+							</p:column>
+
+						</p:dataTable>
+						
+						<p:panel styleClass="panel-total-devolucao">
+							<p:outputLabel value="Total de itens: #{registroDevolucoesBean.itensParaDevolucao}" style="color: #5a5656;margin-top: 3px;font-size:13px;float: left;" />						
+							<p:outputLabel value="Saldo p/ troca: R$ #{registroDevolucoesBean.saldoParaTroca == null ? '0,00' : registroDevolucoesBean.saldoParaTroca}" style="color: #5a5656;margin-top: 3px;font-size:13px;float: right;" />
+						</p:panel>
+					</p:panelGrid>	
+
+					<div
+						style="width: 105%;margin-left: -12px; border-top: 1px solid #ccc; margin-top: 3px; margin-bottom: 6px"></div>
+
+					<p:panel id="panel-buttons">
+											
+						<p:commandButton icon="fa fa-fw fa-retweet" disabled="#{registroDevolucoesBean.listaDevolucaoSize le 0}"
+								style="margin-bottom: 5px;font-weight: bold;float: right;width: 90px;margin-right: 3px;background-color: #0d8819b5;"
+								value="Trocar" onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();PF('itens-dialog').hide();"
+								action="#{registroDevolucoesBean.devolucaoTrocaSelecionada}"
+								process="@this form" update="form" />
+						
+						<p:commandButton icon="fa fa-fw fa-reply" disabled="#{registroDevolucoesBean.listaDevolucaoSize le 0 or registroDevolucoesBean.trocaPendente}"
+								style="margin-bottom: 5px;font-weight: bold;float: right;width: 100px;margin-right: 3px;background:#147df0"
+								value="Devolver" onstart="PF('downloadLoading').show();" oncomplete="PF('downloadLoading').hide();PF('itens-dialog').hide();"
+								action="#{registroDevolucoesBean.devolucaoSelecionada}" 
+								process="@this form" update="form" />
+	
+						<p:commandButton icon="fa fa-fw fa-close" id="btn-close"
+							style="float:left;margin-left: 3px;margin-bottom: 5px;font-weight: bold;width: 100px;background:#e15e5ef0;"
+							value="Fechar" 
+							onstart="PF('downloadLoading').show();"
+							oncomplete="PF('downloadLoading').hide();PF('itens-dialog').hide();">
+						</p:commandButton>
+					</p:panel>
+					
+				</div>
+			</h:form>
+		</p:dialog>
+		
+		
+
+
+
+		<p:dialog id="downloadLoading" showHeader="false" modal="true"
+			widgetVar="downloadLoading" header="Status" draggable="false"
+			closable="false" resizable="false">
+			<p:graphicImage name="images/loadingbar.gif"
+				library="manhattan-layout" width="50" />
+		</p:dialog>
+
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+		<script type="text/javascript">
+			const Toast = Swal.mixin({
+			  toast: true,
+			  position: 'top-end',
+			  showConfirmButton: false,
+			  timer: 1500,
+			  timerProgressBar: true,
+			  onOpen: (toast) => {
+			    toast.addEventListener('mouseenter', Swal.stopTimer)
+			    toast.addEventListener('mouseleave', Swal.resumeTimer)
+			  }
+			});
+		
+			function start() {
+				PF('downloadLoading').show();
+			}
+
+			function stop() {
+				PF('downloadLoading').hide();
+			}
+		</script>
+
+	</ui:define>
+
+</ui:composition>

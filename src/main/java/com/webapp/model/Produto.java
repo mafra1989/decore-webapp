@@ -70,6 +70,12 @@ public class Produto implements Serializable {
 	@NotNull
 	@Column
 	private Long quantidadeAtual = 0L;
+	
+	
+	@NotNull
+	@Column
+	private Long estoqueMinimo = 10L;
+	
 
 	@Column
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
@@ -106,6 +112,10 @@ public class Produto implements Serializable {
 	@Transient
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal totalAcumulado = BigDecimal.ZERO;
+	
+	@Transient
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
+	private BigDecimal estimativaLucro = BigDecimal.ZERO;
 
 	@Transient
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
@@ -134,6 +144,11 @@ public class Produto implements Serializable {
 	@Column
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal custoMedioUnitario = BigDecimal.ZERO;
+	
+	
+	@Column
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
+	private BigDecimal estorno = BigDecimal.ZERO;
 	
 	
 	@Type(type = "yes_no")
@@ -213,6 +228,14 @@ public class Produto implements Serializable {
 		this.quantidadeAtual = quantidadeAtual;
 	}
 
+	public Long getEstoqueMinimo() {
+		return estoqueMinimo;
+	}
+
+	public void setEstoqueMinimo(Long estoqueMinimo) {
+		this.estoqueMinimo = estoqueMinimo;
+	}
+
 	public BigDecimal getMargemLucro() {
 		return margemLucro;
 	}
@@ -227,6 +250,14 @@ public class Produto implements Serializable {
 
 	public void setTotalAcumulado(BigDecimal totalAcumulado) {
 		this.totalAcumulado = totalAcumulado.setScale(4, BigDecimal.ROUND_HALF_EVEN);
+	}
+
+	public BigDecimal getEstimativaLucro() {
+		return estimativaLucro;
+	}
+
+	public void setEstimativaLucro(BigDecimal estimativaLucro) {
+		this.estimativaLucro = estimativaLucro.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public BigDecimal getTotalCompras() {
@@ -275,6 +306,14 @@ public class Produto implements Serializable {
 
 	public void setCustoMedioUnitario(BigDecimal custoMedioUnitario) {
 		this.custoMedioUnitario = custoMedioUnitario.setScale(4, BigDecimal.ROUND_HALF_EVEN);
+	}
+
+	public BigDecimal getEstorno() {
+		return estorno;
+	}
+
+	public void setEstorno(BigDecimal estorno) {
+		this.estorno = estorno.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public String getCodigoDeBarras() {
@@ -338,7 +377,7 @@ public class Produto implements Serializable {
 	}
 
 	public void setMargemLucroRealEmDinheiro(BigDecimal margemLucroRealEmDinheiro) {
-		this.margemLucroRealEmDinheiro = margemLucroRealEmDinheiro.setScale(4, BigDecimal.ROUND_HALF_EVEN);;
+		this.margemLucroRealEmDinheiro = margemLucroRealEmDinheiro.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public BigDecimal getPrecoDeVenda() {
@@ -383,6 +422,9 @@ public class Produto implements Serializable {
 	}
 	
 	@Transient
+	private BigDecimal precoMedioCompra = BigDecimal.ZERO;
+	
+	@Transient
 	private BigDecimal precoMedioVenda = BigDecimal.ZERO;
 
 	@Transient
@@ -415,6 +457,18 @@ public class Produto implements Serializable {
 	@Transient
 	private Long descontoMaximo = 0L;
 	
+	@Transient
+	private BigDecimal valorPago = BigDecimal.ZERO;
+	
+	
+	
+	public BigDecimal getPrecoMedioCompra() {
+		return precoMedioCompra;
+	}
+
+	public void setPrecoMedioCompra(BigDecimal precoMedioCompra) {
+		this.precoMedioCompra = precoMedioCompra;
+	}
 	
 	public BigDecimal getPrecoMedioVenda() {
 		return precoMedioVenda;
@@ -512,6 +566,18 @@ public class Produto implements Serializable {
 		this.descontoMaximo = descontoMaximo;
 	}
 	
+	public BigDecimal getValorPago() {
+		return valorPago;
+	}
+
+	public void setValorPago(BigDecimal valorPago) {
+		this.valorPago = valorPago.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
+	}
+	
+	
+	
+	
+
 	public String getDescricaoConvertida() {
 		return convertToTitleCaseIteratingChars(descricao);
 	}

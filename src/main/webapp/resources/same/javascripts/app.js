@@ -303,3 +303,90 @@ function codigoEscaneado_(barcode) {
 		  }
 		})	
 }
+
+
+function devolucaoRealizada() {
+	
+	let timerInterval;
+	Swal.fire({
+	  type: 'success',
+	  title: 'Concluído!',
+	  html: 'Devolução realizada com sucesso, redirecionando para fazer a troca.<br/><b></b>',
+	  timer: 8000,
+	  allowOutsideClick: false,
+	  timerProgressBar: true,
+	  onBeforeOpen: () => {
+	    Swal.showLoading()
+	    timerInterval = setInterval(() => {
+	      
+	    }, 100)
+	  },
+	  onClose: () => {
+	    clearInterval(timerInterval)
+	  }
+	}).then((result) => {
+	  /* Read more about handling dismissals below */
+	  if (result.dismiss === Swal.DismissReason.timer) {
+		  $(location).attr('href','/decore-webapp/PDV.xhtml');
+	  }
+	})
+}
+
+
+function trocarItens() {
+	
+	let timerInterval;
+	Swal.fire({
+	  type: 'success',
+	  title: 'Aguarde!',
+	  html: 'Redirecionando para fazer a troca.<br/><b></b>',
+	  timer: 3000,
+	  allowOutsideClick: false,
+	  timerProgressBar: true,
+	  onBeforeOpen: () => {
+	    Swal.showLoading()
+	    timerInterval = setInterval(() => {
+	      
+	    }, 100)
+	  },
+	  onClose: () => {
+	    clearInterval(timerInterval)
+	  }
+	}).then((result) => {
+	  /* Read more about handling dismissals below */
+	  if (result.dismiss === Swal.DismissReason.timer) {
+		  $(location).attr('href','/decore-webapp/PDV.xhtml');
+	  }
+	})
+}
+
+function fecharCaixa(valor) {
+	
+	var numero = valor.toFixed(2).split('.');
+	numero[0] = "R$ " + numero[0].split(/(?=(?:...)*$)/).join('.');
+
+	valor = numero.join(',');
+	
+	const swalWithBootstrapButtons = swal.mixin({
+		  confirmButtonClass: 'btn btn-success',
+		  cancelButtonClass: 'btn btn-danger',
+		  buttonsStyling: false,
+		})
+
+		swalWithBootstrapButtons({
+		  title: 'Fechar Caixa',
+		  text: "O caixa será fechado em " + valor + ". Confirmar esse valor?",
+		  type: 'warning',
+		  showCancelButton: true,
+		  confirmButtonText: 'Sim, confirmar!',
+		  cancelButtonText: 'Não, cancelar!',
+		  reverseButtons: true
+		}).then((result) => {
+		  if (result.value) {
+			  
+			  setarItemID();
+			  		 
+		  }
+		})
+		
+}

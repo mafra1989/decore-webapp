@@ -654,7 +654,7 @@ public class ImportarDadosBean implements Serializable {
 					Usuario usuario = usuariosRepository.porId(1L);
 					lancamento.setUsuario(usuario);
 					
-					lancamento.setCategoriaLancamento(categoriasLancamentosRepository.porNome(row.getCell(5).toString(), usuario.getEmpresa()));
+					lancamento.setCategoriaLancamento(categoriasLancamentosRepository.porNome(row.getCell(5).toString(), null));
 					lancamento.setDestinoLancamento(destinosLancamentosRepository.porDescricao(row.getCell(2).toString()));
 					lancamento.setDescricao(row.getCell(3).toString());
 					lancamento.setValor(BigDecimal.valueOf(Double.parseDouble(row.getCell(4).toString())));

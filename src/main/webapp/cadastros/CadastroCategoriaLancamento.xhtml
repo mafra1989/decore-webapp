@@ -191,7 +191,7 @@
 						</p:column>
 						
 						<p:column headerText="Empresa">
-							<h:outputText value="#{categoriaDespesa.empresa != null ? categoriaDespesa.empresa : '-'}" />
+							<h:outputText value="#{categoriaDespesa.empresa_.id != null ? categoriaDespesa.empresa_.nome : 'Todas'}" />
 						</p:column>
 
 					</p:dataTable>
@@ -241,13 +241,16 @@
 							
 							<p:outputLabel value="Empresa" for="empresa" />
 							<p:selectOneMenu id="empresa"
-								value="#{cadastroCategoriaLancamentoBean.categoriaDespesa.empresa}"
+								value="#{cadastroCategoriaLancamentoBean.categoriaDespesa.empresa_}"
 								placeholder="selecione">
 
-								<f:selectItem itemLabel="Selecione" itemValue="" />
+								<f:selectItem itemLabel="Selecione" />
 								
-								<f:selectItem itemLabel="Decore" itemValue="Decore" />
-								<f:selectItem itemLabel="Havaianas" itemValue="Havaianas" />
+								<f:selectItems
+									value="#{cadastroCategoriaLancamentoBean.todasEmpresas}"
+									var="empresa"
+									itemLabel="#{empresa.nome}"
+									itemValue="#{empresa}" />
 							</p:selectOneMenu>
 						</p:panelGrid>
 

@@ -161,11 +161,19 @@
 		width: 240px !important;
 		margin-top: -50px;
 	}
+	
+	
+	body .ui-datepicker .ui-datepicker-header .ui-datepicker-next {
+    	display: none !important;
+    }
+    body .ui-datepicker .ui-datepicker-header .ui-datepicker-prev {
+    	display: none !important;
+    }
 }
 </style>
 
 		<div class="page-header">
-			<h1>Contas à Pagar / Receber</h1>
+			<h1>Pagar / Receber</h1>
 		</div>
 
 		<p:growl id="msg" closable="true" life="500" showSummary="false"
@@ -200,15 +208,14 @@
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-2, ui-grid-col-3">
 
-						<p:outputLabel value="Código" for="codigo" />
+						<p:outputLabel value="Código" for="codigo" rendered="false" />
 						<p:inputNumber id="codigo" decimalPlaces="0" thousandSeparator=""
-							value="#{consultaContasBean.codigo}">
+							value="#{consultaContasBean.codigo}" rendered="false">
 						</p:inputNumber>
 
 						<p:outputLabel value="Tipo de operação" for="operacao" />
-						<p:selectOneMenu id="operacao"
-							value="#{consultaContasBean.tipoOperacao}"
-							style="margin-bottom: 5px">
+						<p:selectOneMenu id="operacao" 
+							value="#{consultaContasBean.tipoOperacao}">
 
 							<f:selectItem itemLabel="Selecione" />
 
@@ -217,24 +224,31 @@
 								itemValue="#{tipoOperacao}" />
 						</p:selectOneMenu>
 
-						<p:outputLabel value="Mês" for="mes" />
-						<p:datePicker id="mes" view="month" locale="pt"
+						<p:outputLabel value="Contas do mês" for="mes" />
+						<p:datePicker id="mes" view="month" locale="pt" 
 							readonlyInput="true" value="#{consultaContasBean.mes}"
 							pattern="MM/yyyy" yearNavigator="false" yearRange="2018:2030" />
+							
+						<p:outputLabel value="Data de pagamento" for="pagamento" rendered="false" />
+						<p:datePicker id="pagamento" value="#{consultaComprasBean.dateStart}" rendered="false"
+							pattern="dd/MM/yyyy" locale="pt" showButtonBar="false"
+							showIcon="true">
+						</p:datePicker>
 
 					</p:panelGrid>
 
-					<p:panelGrid columns="4" id="painel" layout="grid"
+					<p:panelGrid columns="2" id="painel" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
-						columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-1, ui-grid-col-2">
+						columnClasses="ui-grid-col-2, ui-grid-col-3">
 
-						<p:outputLabel value="Conta" />
+						<p:outputLabel value="Tipo de conta" />
 						<p:selectManyCheckbox unselectable="true"
 							value="#{consultaContasBean.origemConta}">
 							<f:selectItems value="#{consultaContasBean.origensContas}"
 								var="origemCota" itemLabel="#{origemCota.descricao}"
 								itemValue="#{origemCota}" />
 						</p:selectManyCheckbox>
+						
 					</p:panelGrid>
 
 					<p:panelGrid columns="4" layout="grid" rendered="false"
@@ -261,7 +275,7 @@
 				</p:panel>
 
 
-				<p:panel class="card card-w-title ui-fluid itens-add"
+				<p:panel class="card card-w-title itens-add"
 					id="panel-table"
 					style="padding-bottom: 0px !important;margin-top:-10px">
 
@@ -272,7 +286,7 @@
 						disabled="#{(consultaContasBean.contasFiltradasSize eq 0) or consultaContasBean.contaSelecionada.id == null or (not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado())}">
 
 						<p:menuitem value="#{consultaContasBean.contaSelecionada.tipo == 'DEBITO' ? 'Pagar' : 'Receber'}" icon="fa fa-fw fa-money"
-							onstart="start();"
+							onstart="start();" actionListener="#{consultaContasBean.preparaDataVencimento}"
 							oncomplete="PF('pagamento-dialog').show();stop();"
 							update="pagamento-dialog" 
 							rendered="#{not consultaContasBean.contaSelecionada.status}">
@@ -307,23 +321,23 @@
 								<h:outputText value="#{conta.codigoOperacao}" />
 							</p:column>
 							
-							<p:column headerText="Descrição" width="35%" visible="#{consultaContasBean.tipoOperacao == 'LANCAMENTO'}">
-								<h:outputText value="#{conta.descricao}" />
+							<p:column headerText="Descrição" width="35%">
+								<h:outputText value="#{conta.descricao != null ? conta.descricao : '-'}" />
 							</p:column>
 							
-							<p:column headerText="Vendedor" width="35%" visible="#{consultaContasBean.tipoOperacao == 'COMPRA'}">
+							<p:column headerText="Vendedor" width="35%" visible="false">
 								<h:outputText value="#{conta.vendedor}" />
 							</p:column>
 
 							<p:column headerText="Operação" width="20%">
 								<h:outputText
-									value="#{conta.operacao == 'LANCAMENTO' ? 'Lançamento' : (conta.operacao == 'COMPRA' ? 'Compra' : conta.operacao)}">
+									value="#{conta.operacao == 'LANCAMENTO' ? 'Lançamento' : (conta.operacao == 'COMPRA' ? 'Compra' : (conta.operacao == 'VENDA' ? 'Venda' : conta.operacao))}">
 								</h:outputText>
 							</p:column>
 
-							<p:column headerText="Tipo" width="20%">
+							<p:column headerText="Tipo" width="20%" visible="false">
 								<h:outputText
-									value="#{conta.tipo == 'CREDITO' ? 'Crédito' : (conta.tipo == 'DEBITO' ? 'Débito' : '-')}" />
+									value="#{conta.tipo == 'CREDITO' ? 'Receita' : (conta.tipo == 'DEBITO' ? 'Despesa' : '-')}" />
 							</p:column>
 
 							<p:column headerText="Parcela" width="20%">

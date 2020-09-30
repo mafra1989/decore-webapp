@@ -54,6 +54,7 @@ public class Conta implements Serializable {
 	@Type(type = "yes_no")
 	@Column(nullable = true)
 	private boolean ajuste;
+	
 
 	/* Campos para relat�rio */
 	@Column(nullable = false)
@@ -74,6 +75,24 @@ public class Conta implements Serializable {
 	@NotBlank
 	@Column
 	private String empresa;
+	
+	
+	@Column(nullable = false)
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
+	private BigDecimal subTotal;
+	
+	@Column(nullable = false)
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
+	private BigDecimal custoMedio;
+	
+	@Column(nullable = false)
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
+	private BigDecimal lucro;
+	
+	@Column(nullable = false)
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
+	private BigDecimal taxaEntrega;
+	
 
 	public Long getId() {
 		return id;
@@ -201,6 +220,38 @@ public class Conta implements Serializable {
 
 	public void setEmpresa(String empresa) {
 		this.empresa = empresa;
+	}
+
+	public BigDecimal getSubTotal() {
+		return subTotal;
+	}
+
+	public void setSubTotal(BigDecimal subTotal) {
+		this.subTotal = subTotal.setScale(4, BigDecimal.ROUND_HALF_EVEN);
+	}
+
+	public BigDecimal getCustoMedio() {
+		return custoMedio;
+	}
+
+	public void setCustoMedio(BigDecimal custoMedio) {
+		this.custoMedio = custoMedio.setScale(4, BigDecimal.ROUND_HALF_EVEN);
+	}
+
+	public BigDecimal getLucro() {
+		return lucro;
+	}
+
+	public void setLucro(BigDecimal lucro) {
+		this.lucro = lucro.setScale(4, BigDecimal.ROUND_HALF_EVEN);
+	}
+
+	public BigDecimal getTaxaEntrega() {
+		return taxaEntrega;
+	}
+
+	public void setTaxaEntrega(BigDecimal taxaEntrega) {
+		this.taxaEntrega = taxaEntrega.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	@Override

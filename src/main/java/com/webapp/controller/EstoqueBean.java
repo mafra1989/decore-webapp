@@ -156,6 +156,7 @@ public class EstoqueBean implements Serializable {
 
 		long value = 0;
 		for (Produto produto : produtosFiltrados) {
+			produto.setQuantidadeAtual(itensCompras.quantidadeDisponivelPorProduto(produto).longValue());
 			value += produto.getQuantidadeAtual();
 		}
 

@@ -48,7 +48,7 @@ public class Lancamento implements Serializable {
 	@JoinColumn
 	private CategoriaLancamento categoriaLancamento = new CategoriaLancamento();
 
-	@NotNull
+	/*@NotNull*/
 	@ManyToOne
 	@JoinColumn
 	private DestinoLancamento destinoLancamento = new DestinoLancamento();
@@ -81,6 +81,11 @@ public class Lancamento implements Serializable {
 	@NotBlank
 	@Column
 	private String empresa;
+	
+	
+	@Type(type = "yes_no")
+	@Column(nullable = false)
+	private boolean conta;
 	
 
 	public Long getId() {
@@ -202,6 +207,14 @@ public class Lancamento implements Serializable {
 
 	public void setEmpresa(String empresa) {
 		this.empresa = empresa;
+	}
+
+	public boolean isConta() {
+		return conta;
+	}
+
+	public void setConta(boolean conta) {
+		this.conta = conta;
 	}
 
 	@Override

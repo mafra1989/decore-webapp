@@ -20,6 +20,136 @@
 
 		<style>
 @media ( min-width :220px) {
+	.desconto .ui-state-disabled {
+    	opacity: 1;
+    }
+	.tipo-pagamento.ui-state-disabled {
+    	opacity: .75;
+    }
+    .pag-avista.ui-state-disabled {
+    	opacity: .75;
+    }
+	body.swal2-toast-shown .swal2-container.swal2-top-end, body.swal2-toast-shown .swal2-container.swal2-top-right {
+	    bottom: 0 !important;
+	    left: 0 !important;
+	    background: rgba(0,0,0,.4) !important;
+	    margin-top: 65px;
+	}
+	#primeiraParc-dialog.ui-dialog .ui-dialog-content {
+	    padding: 8px 19px;
+	}
+	
+	#pagamentoPara-dialog.ui-dialog .ui-dialog-content {
+	    padding: 8px 19px;
+	}
+	
+	.sub_total .ui-panel-content {
+		margin-top: 10px !important;
+		margin-bottom: 4px;
+	}
+	#confirmDialog .ui-panel .ui-panel-content {
+	    padding: 6px 0px;
+	}
+	#confirmDialog.ui-dialog {
+	    width: 350px !important;
+	}
+    #confirmDialog .forma-pagamento.ui-selectonemenu {
+	    width: 100% !important;
+	    min-width: 100% !important;
+	}
+	#confirmDialog .forma-pagamento.ui-selectonemenu .ui-selectonemenu-label {
+	    white-space: normal;
+	}
+	.entrada_ > .ui-inputtext {
+	    color: #53ab5c;
+	    font-weight: bold;
+    }
+    .valor-recebido > .ui-inputtext {
+	    color: #53ab5c;
+	    font-weight: bold;
+    }
+    .troco > .ui-inputtext {
+	    color: #147df0;
+	    font-weight: bold;
+    } 
+    
+    .falta > .ui-inputtext {
+	    color: #ea3911;
+	    font-weight: bold;
+    } 
+    
+	#confirmDialog .ui-panelgrid .ui-panelgrid-cell:nth-child(2n) {
+		text-align: end;
+	}
+	#confirmDialog .ui-datatable .ui-datatable-data>tr td.ui-editable-column input
+		{
+		text-align: right;
+	}
+	#confirmDialog .ui-panelgrid .ui-panelgrid-cell {
+		padding: 2px 2px;
+	}
+	#confirmDialog.ui-dialog .ui-dialog-content {
+		padding: 0px 12px 0px 12px !important;
+	}
+	#confirmDialog .ui-grid-responsive .ui-grid-row {
+		display: flex;
+	}
+	.panel-confirm.ui-panel .ui-panel-content {
+		padding: 0px !important;
+	}
+	.panel-parcelas.hide {
+		max-height: 0;
+		pointer-events: none;
+		transition: max-height 0.3s ease-in-out;
+		
+	}
+	.panel-parcelas {
+		overflow: hidden;
+		max-height: 300px;
+		transition: max-height 1s ease-in-out;
+	}
+	.panel-parcelas.ui-panel .ui-panel-content {
+		padding: 2px 0px 2px 0px !important;
+	}
+	
+	.grid-valores.hide {
+		max-height: 0;
+		pointer-events: none;
+		transition: max-height 0.3s ease-in-out;
+	}
+	.grid-valores {
+		overflow: hidden;
+		max-height: 300px;
+		transition: max-height 1s ease-in-out;		
+	}
+	
+	.parcela-unica.hide {
+		max-height: 0;
+		pointer-events: none;
+		transition: max-height 0.3s ease-in-out;
+		margin-bottom: 0px;
+		margin-top: 0px;
+	}
+	.parcela-unica {
+		overflow: hidden;
+		max-height: 300px;
+		transition: max-height 1s ease-in-out;	
+		margin-bottom: 5px;	
+		
+	}
+	
+	.panel-info-entrega {
+		margin-top: -10px;
+	}
+	body .ui-fieldset .ui-fieldset-content {
+	    padding: 6px 7px;
+	}
+	.ui-fieldset .ui-panelgrid .ui-grid-responsive .ui-panelgrid-cell {
+	    padding: 4px 4px !important;
+	}
+	.ui-fieldset .ui-panelgrid-cell:nth-child(2) {
+	    padding: 0px 11px !important;
+	}
 	.panel-busca-leitor.ui-panelgrid .ui-panelgrid-cell {
 		text-align: right !important;
 	}
@@ -240,7 +370,7 @@
 		background: transparent;
 	}
 	.panel-body.ui-panelgrid .ui-panelgrid-cell:nth-child(2) {
-		padding: 10px 18px;
+		padding: 4px 10px;
 	}
 	.ui-datatable tbody td {
 		height: auto !important;
@@ -355,7 +485,7 @@
     }
     .image-produto {
     	width: 60%;
-    	height: 200px;
+    	height: auto;
     	margin-top: -47px;
     }
     .line-total {
@@ -385,10 +515,15 @@
 	}
 
 	.panel-total-geral {
-		padding-bottom: 0px;margin-top: 23px;
+		padding-bottom: 0px;
+		margin-top: 15px;
 	    position: relative;
 	    bottom: 0;
 	    width: 100%;
+	}
+	
+	.panel-total-geral .ui-panelgrid {
+		width: 120%;
 	}
 	.ui-datatable-scrollable-body {
 		overflow: auto;
@@ -397,6 +532,32 @@
 }
 
 @media ( min-width :460px) {
+	#confirmDialog .ui-panel .ui-panel-content {
+	    padding: 1px 0px;
+	}
+	#confirmDialog.ui-dialog {
+	    width: auto !important;
+	}
+	#confirmDialog .forma-pagamento.ui-selectonemenu {
+   		width: 100% !important;
+   		min-width: 100% !important;
+    }
+	.panel-total-geral {
+		margin-top: 23px;
+	}
+	.sub_total {
+		margin-top: 10px;
+		margin-bottom: 10px;
+	}
+	.panel-body.ui-panelgrid .ui-panelgrid-cell:nth-child(2) {
+	    padding: 10px 18px;
+	}
+	.panel-info-entrega {
+		margin-top: 5px;
+	}
+	.ui-fieldset .ui-panelgrid-cell:nth-child(2) {
+	    padding: 2px !important;
+	}
 	.panel-body.ui-panelgrid .ui-panelgrid-cell:nth-child(2) {
 		padding: 2px 2px 0px 0px;
 	}
@@ -514,7 +675,7 @@
 	}
 	.image-produto {
 		width: 100%;
-	    height: 160px;
+	    height: auto;
 	    margin-top: 0px;
 	}
 	.busca .ui-autocomplete-input {
@@ -566,6 +727,7 @@
 }
 
 @media ( min-width :640px) {
+	
 	.ui-slider-handle {
 		width: 1.2em !important;
 		height: 1.2em !important;
@@ -607,6 +769,12 @@
 
 			<h:form id="form">
 			
+				<p:hotkey bind="ctrl+shift+f" action="#{pDVBean.finalizar}" 
+					onstart="PF('downloadLoading').show();selectTab1();" oncomplete="PF('downloadLoading').hide();"
+					update="msg confirm-dialog confirmDialog tabView:data-venda tabView:tipo-venda tabView:panel-entrega tabView:panel-ajuste tabView:vendedor tabView:bairro panel-table tabView:id tabView:codigo tabView:descricao tabView:fornecedor tabView:valor-unitario tabView:quantidade tabView:valor-total tabView:lote"
+				 	process="@this panel-table tabView:data-venda tabView:vendedor tabView:bairro tabView:tipo-venda tabView:panel-ajuste" />
+			
+			
 				<p:remoteCommand name="cancelaVenda" process="@this"
 					update="form" action="#{pDVBean.novaVenda}"
 					onstart="PF('downloadLoading').show();"
@@ -624,16 +792,17 @@
 						<h1>#{pDVBean.venda.id == null ? 'Registrar Venda - PDV'
 							: 'Informações da Venda'}</h1>
 
-						<p:tabView id="tabView"
+						<p:tabView id="tabView" effect="slide"
 							activeIndex="#{pDVBean.activeIndex}">
+						
 
 							<p:tab title="Produto" titleStyleClass="tabs" id="tab-receita">
 														
-								<p:focus for="busca" rendered="#{pDVBean.itemVenda.produto.id == null and not pDVBean.leitor}" />
+								<p:focus for="busca" rendered="#{(pDVBean.itemVenda.produto.id == null and not pDVBean.leitor) or pDVBean.itemVenda.produto.quantidadeAtual le 0}" />
 								
-								<p:focus for="busca-por-leitor" rendered="#{pDVBean.itemVenda.produto.id == null and pDVBean.leitor}" />
+								<p:focus for="busca-por-leitor" rendered="#{(pDVBean.itemVenda.produto.id == null and pDVBean.leitor) or pDVBean.itemVenda.produto.quantidadeAtual le 0}" />
 								
-								<p:focus id="focus-qtde" for="quantidade" rendered="#{pDVBean.itemVenda.produto.id != null}"  />
+								<p:focus id="focus-qtde" for="quantidade" rendered="#{pDVBean.itemVenda.produto.id != null and pDVBean.itemVenda.produto.quantidadeAtual ge 1}"  />
 
 								<p:inputText id="id" type="hidden"
 									value="#{pDVBean.itemVenda.code}" required="true"
@@ -828,7 +997,7 @@
 										columnClasses="ui-grid-col-12">
 
 										<p:outputLabel value="Quantidade" for="quantidade" />
-										<p:inputNumber id="quantidade" decimalPlaces="0"
+										<p:inputNumber id="quantidade" decimalPlaces="0" readonly="#{pDVBean.itemVenda.id != null}"
 											placeholder="0" styleClass="quantidade" onkeyup="ajaxDelay('')"
 											value="#{pDVBean.itemVenda.quantidade}">
 
@@ -886,13 +1055,13 @@
 											<h:outputText id="margem"
 												value="%#{pDVBean.itemVenda.produto.margemLucro}"
 												style="font-weight: bold; font-size: 18px" />
-											<h:inputHidden id="margem-lucro" 
+											<h:inputHidden id="margem-lucro"  readonly="#{pDVBean.itemVenda.id != null}"
 												value="#{pDVBean.itemVenda.produto.margemLucro}" />
 											<p:slider for="margem-lucro" display="margem" onSlideEnd="ajaxDelay('');"
 												displayTemplate="%{value}" minValue="0" maxValue="300">
 			
 												<p:ajax event="slideEnd" update="preco-unitario valor-unitario"
-													process="@this margem margem-lucro" />
+													process="@this margem margem-lucro"  />
 											</p:slider>
 										</p:panel>
 									</p:panelGrid>
@@ -920,7 +1089,7 @@
 											<p:inputNumber id="input-desconto" thousandSeparator="," decimalSeparator="." symbol="% "
 												value="#{pDVBean.itemVenda.desconto}" decimalPlaces="0" onkeyup="ajaxDelay_();"
 												minValue="0" maxValue="#{pDVBean.itemVenda.produto.descontoMaximo}" 
-												styleClass="input-desconto">
+												styleClass="input-desconto" disabled="#{pDVBean.itemVenda.id != null}">
 												
 												<p:ajax event="change" process="@this percentual-desconto margem margem-lucro" 
 													update="percentual-desconto desconto margem margem-lucro slide-desconto descontoEmDinheiro"  />
@@ -989,7 +1158,7 @@
 
 							</p:tab>
 
-							<p:tab title="Dados da venda" titleStyleClass="tabs"
+							<p:tab title="Dados da venda" titleStyleClass="tabs" 
 								id="tab-despesa">
 
 								<h3 style="font-weight: bold">Dados da Venda</h3>
@@ -1025,7 +1194,10 @@
 										dropdown="true" scrollHeight="210" styleClass="bairro"
 										value="#{pDVBean.venda.bairro}" var="bairro"
 										itemLabel="#{bairro.nome}" itemValue="#{bairro}"
-										completeMethod="#{pDVBean.completeText}" />
+										completeMethod="#{pDVBean.completeText}">
+										
+										<p:ajax event="itemSelect" process="@this" listener="#{pDVBean.calculaAcrescimo}" update="taxa-entrega form:taxa-de-entrega form:total-venda" />
+									</p:autoComplete>
 
 									<p:outputLabel value="Vendedor" for="vendedor" />
 									<p:selectOneMenu id="vendedor" styleClass="vendedor"
@@ -1041,7 +1213,10 @@
 									</p:selectOneMenu>
 								</p:panelGrid>
 
-								<p:panelGrid columns="3" layout="grid" id="panel-entrega"
+								
+								<h3 style="font-weight: bold">Entrega</h3>
+								
+								<p:panelGrid columns="3" layout="grid" id="panel-entrega" rendered="true"
 									styleClass="panelgrid-noborder disabled disabled panel-entrega"
 									columnClasses="ui-grid-col-4, ui-grid-col-2, ui-grid-col-4">
 
@@ -1049,7 +1224,7 @@
 									<p:inputSwitch offLabel="Não" onLabel="Sim" id="entrega" style="width:150px"
 										value="#{pDVBean.entrega}">
 
-										<p:ajax process="@this" update="@parent" />
+										<p:ajax process="@this" listener="#{pDVBean.calculaAcrescimo}" update="@parent taxa-entrega form:sub-total_ form:taxa-de-entrega form:total-venda" />
 									</p:inputSwitch>
 
 									<p:commandLink styleClass="btn-new entrega" id="localizacao"
@@ -1057,10 +1232,163 @@
 										onstart="PF('downloadLoading').show();"
 										oncomplete="PF('downloadLoading').hide();PF('entrega-dialog').show()"
 										process="@this" disabled="#{not pDVBean.entrega}" />
+										
+										
+									<p:outputLabel value="Taxa de Entrega" for="taxa-entrega" />				
+									<p:inputNumber id="taxa-entrega" decimalPlaces="2"
+										placeholder="R$ 0,00" autocomplete="off" 
+										symbol="R$ " readonly="true"
+										value="#{pDVBean.venda.taxaDeEntrega}">
+									</p:inputNumber>
+								</p:panelGrid>
+								
+								
+								
+								<p:panelGrid columns="2" layout="grid" id="panel-endereco" rendered="true"
+									styleClass="panelgrid-noborder disabled disabled panel-info-entrega"
+									columnClasses="ui-grid-col-4, ui-grid-col-8" style="display:none;">
+									
+									<p:outputLabel value="" />	
+										
+									<p:fieldset collapsed="true" style="margin-left: 0px;" legend="Informações de entrega" toggleable="true" toggleSpeed="500">
+								        <p:ajax event="toggle" listener="#{fieldsetView.handleToggle}" />
+								        
+										<p:panelGrid columns="2" layout="grid" style="font-size:12px;"
+											styleClass="panelgrid-noborder disabled disabled"
+											columnClasses="ui-grid-col-6, ui-grid-col-6">
+											
+											<p:panelGrid columns="1" layout="grid"
+												styleClass="panelgrid-noborder disabled disabled grid-card"
+												columnClasses="ui-grid-col-12">
+										
+												<p:outputLabel value="Nome" style="font-weight: normal;font-size: 14px;" /> 
+												<p:inputText id="nome" style="width:100%;text-align:left;"
+													requiredMessage="Nome deve ser informado." required="true" label="Nome"
+													value="#{pDVBean.entregaVenda.nome}" placeholder="Nome" maxlength="120" />
+													
+											</p:panelGrid>
+								
+												
+											<p:panelGrid columns="1" layout="grid"
+												styleClass="panelgrid-noborder disabled disabled grid-card"
+												columnClasses="ui-grid-col-12">
+										
+												<p:outputLabel value="Telefone" style="font-weight: normal;font-size: 14px;" /> 
+												<p:inputMask id="telefone" style="width:100%;text-align:left;" 
+													mask="(99) 99999-9999" autoClear="false"
+													requiredMessage="Telefone deve ser informado." required="true" label="Telefone"
+													value="#{pDVBean.entregaVenda.nome}" placeholder="Telefone" />
+													
+											</p:panelGrid>
+												
+										</p:panelGrid>
+										
+										
+										<p:panelGrid columns="3" layout="grid" style="font-size:12px;"
+											styleClass="panelgrid-noborder disabled disabled" id="panel-endereco2"
+											columnClasses="ui-grid-col-3, ui-grid-col-7, ui-grid-col-2">
+											
+											<p:panelGrid columns="1" layout="grid"
+												styleClass="panelgrid-noborder disabled disabled grid-card"
+												columnClasses="ui-grid-col-12">
+										
+												<p:outputLabel value="CEP" style="font-weight: normal;font-size: 14px;" />
+												<p:inputMask id="cep" style="width:100%;text-align:left;"
+													mask="99999-999" autoClear="false" placeholder="CEP"
+													requiredMessage="CEP deve ser informado." required="true" label="CEP"
+													value="#{pDVBean.entregaVenda.nome}">
+													
+													<p:ajax event="blur" onstart="start__();" oncomplete="stop__();" process="@this" update="endereco bairro" listener="#{carrinhoBean.buscaEnderecoPorCEP}" />
+												</p:inputMask>
+												
+											</p:panelGrid>
+							
+											<p:panelGrid columns="1" layout="grid"
+												styleClass="panelgrid-noborder disabled disabled grid-card"
+												columnClasses="ui-grid-col-12">
+										
+												<p:outputLabel value="Endereço" style="font-weight: normal;font-size: 14px;" />
+												<p:inputText id="endereco" style="width:100%;text-align:left;"
+													requiredMessage="Endereço deve ser informado." required="true" label="Endereço"
+													value="#{pDVBean.entregaVenda.nome}" placeholder="Endereço" />
+													
+											</p:panelGrid>
+											
+											<p:panelGrid columns="1" layout="grid"
+												styleClass="panelgrid-noborder disabled disabled grid-card"
+												columnClasses="ui-grid-col-12">
+										
+												<p:outputLabel value="Nº" style="font-weight: normal;font-size: 14px;" />
+												<p:inputText id="numero" style="width:100%;text-align:left;"
+													requiredMessage="Número deve ser informado." required="true" label="Número"
+													value="#{pDVBean.entregaVenda.nome}" placeholder="Nº" />
+													
+											</p:panelGrid>
+													
+										</p:panelGrid>
+						
+										
+										<p:panelGrid columns="2" layout="grid" style="font-size:12px;"
+											styleClass="panelgrid-noborder disabled disabled" id="panel-endereco_"
+											columnClasses="ui-grid-col-8, ui-grid-col-4">
+											
+											<p:panelGrid columns="1" layout="grid"
+												styleClass="panelgrid-noborder disabled disabled grid-card"
+												columnClasses="ui-grid-col-12">
+										
+												<p:outputLabel value="Complemento" style="font-weight: normal;font-size: 14px;" />
+												<p:inputText id="complemento" style="width:100%;text-align:left;"
+													value="#{pDVBean.entregaVenda.nome}" placeholder="Complemento" />
+													
+											</p:panelGrid>
+														
+											<p:panelGrid columns="1" layout="grid"
+												styleClass="panelgrid-noborder disabled disabled grid-card"
+												columnClasses="ui-grid-col-12">
+										
+												<p:outputLabel value="Bairro" style="font-weight: normal;font-size: 14px;" />
+												<p:inputText id="bairro2" style="width:100%;text-align:left;"
+													value="#{pDVBean.entregaVenda.nome}" placeholder="Bairro"
+													label="Bairro"
+													requiredMessage="Bairro deve ser informado." required="true" />
+																				
+											</p:panelGrid>
+						
+										</p:panelGrid>
+								    </p:fieldset>
+								</p:panelGrid>
+								
+								
+								<h3 style="font-weight: bold">Pagamento</h3>
+								
+								<p:panelGrid columns="2" layout="grid" id="forma-pagamento" rendered="true"
+									styleClass="panelgrid-noborder disabled disabled panel-entrega"
+									columnClasses="ui-grid-col-4, ui-grid-col-4">
+
+									<p:outputLabel value="Selecione a forma de pagamento" />				
+									<p:selectOneMenu id="formas-pagamentos" value="#{pDVBean.venda.formaPagamento}">
+							            
+							            <p:ajax event="change" update="form:total-venda acrescimo form:total-acrescimos" process="@this" listener="#{pDVBean.calculaAcrescimo}" onstart="PF('downloadLoading').show();" oncomplete="PF('downloadLoading').hide();" />
+							            
+							            <f:selectItems value="#{pDVBean.todasFormasPagamentos}" var="formaPagamento" itemLabel="#{formaPagamento.nome}" itemValue="#{formaPagamento}"/>
+							        </p:selectOneMenu>							     							        
+								</p:panelGrid>
+								
+								<p:panelGrid columns="3" layout="grid" id="panel-acrescimo" rendered="true"
+									styleClass="panelgrid-noborder disabled disabled panel-entrega"
+									columnClasses="ui-grid-col-4, ui-grid-col-2, ui-grid-col-4"
+									style="margin-top:5px;">
+
+									<p:outputLabel value="Acréscimo" for="acrescimo" />	
+									<p:inputNumber id="acrescimo" decimalPlaces="2"
+										placeholder="% 0,00" autocomplete="off" 
+										symbol="% " readonly="true"
+										value="#{pDVBean.venda.formaPagamento.acrescimo}">
+									</p:inputNumber>
 								</p:panelGrid>
 
 								<p:panelGrid columns="2" layout="grid" id="panel-ajuste"
-									rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado()}"
+									rendered="false"
 									styleClass="panelgrid-noborder disabled disabled panel-ajuste"
 									columnClasses="ui-grid-col-4, ui-grid-col-8">
 
@@ -1194,27 +1522,86 @@
 						
 						<p:panel class="card card-w-title ui-fluid panel-total-geral">
 						
-							<p:panel>
-								<p:outputLabel value="Total de itens: " style="font-size: 12px;color:#5b5656;margin-left: 2px;font-weight:bold;" />
-								<p:outputLabel id="total-itens"
-									value="#{pDVBean.venda.quantidadeItens}"
-									style="font-size: 13px;font-weight:bold;color:#75767dc9;">
-								</p:outputLabel>
-							</p:panel>
+							<p:panelGrid columns="2" layout="grid"
+								styleClass="panelgrid-noborder disabled disabled"
+								columnClasses="ui-grid-col-6, ui-grid-col-6">
 							
-							<p:panel style="margin-bottom: 15px;">	
-								<p:outputLabel value="Total de desconto: " style="font-size: 12px;color:#5b5656;margin-left: 2px;font-weight:bold;" />
-								<p:outputLabel id="total-desconto"
-									value="#{pDVBean.venda.totalDescontoEmDinheiro}"
-									style="font-size: 13px;font-weight:bold;color:#75767dc9;">
+								<p:panel>
+									<p:panel>
+										<p:outputLabel value="Total de itens: " style="font-size: 12px;color:#5b5656;margin-left: 2px;font-weight:bold;" />
+										<p:outputLabel id="total-itens"
+											value="#{pDVBean.venda.quantidadeItens}"
+											style="font-size: 13px;font-weight:bold;color:#75767dc9;">
+										</p:outputLabel>
+									</p:panel>
 									
-									<f:convertNumber type="currency" />
-								</p:outputLabel>
-								<p:outputLabel 
-									value=" (#{pDVBean.venda.totalDesconto}%)"
-									style="font-size: 13px;font-weight:bold;color:#75767dc9;">
-								</p:outputLabel>
-							</p:panel>
+									<p:panel style="margin-bottom: 5px;">	
+										<p:outputLabel value="Total de desconto: " style="font-size: 12px;color:#5b5656;margin-left: 2px;font-weight:bold;" />
+										<p:outputLabel id="total-desconto"
+											value="#{pDVBean.venda.totalDescontoEmDinheiro}"
+											style="font-size: 13px;font-weight:bold;color:#75767dc9;">
+											
+											<f:convertNumber type="currency" />
+										</p:outputLabel>
+										<p:outputLabel 
+											value=" (#{pDVBean.venda.totalDesconto}%)"
+											style="font-size: 13px;font-weight:bold;color:#75767dc9;">
+										</p:outputLabel>
+									</p:panel>
+									
+									<p:panel styleClass="sub_total">
+										<p:outputLabel value="Sub-Total: " style="font-size: 12px;color:#5b5656;margin-left: 2px;font-weight:bold;" />
+										<p:outputLabel id="sub-total_"
+											value="#{pDVBean.venda.id != null ? (pDVBean.venda.valorTotal - pDVBean.totalDeAcrescimo - pDVBean.venda.taxaDeEntrega) : (pDVBean.venda.valorTotal - pDVBean.totalDeAcrescimo - pDVBean.venda.taxaDeEntrega)}"
+											style="font-size: 13px;font-weight:bold;color:#75767dc9;">
+											
+											<f:convertNumber type="currency" />
+										</p:outputLabel>
+									</p:panel>
+								</p:panel>
+								
+								<p:panel>
+									<p:panel>
+										<p:outputLabel value="Total de acréscimos: " style="font-size: 12px;color:#5b5656;margin-left: 2px;font-weight:bold;" />
+										<p:outputLabel id="total-acrescimos"
+											value="#{pDVBean.totalDeAcrescimo}"
+											style="font-size: 13px;font-weight:bold;color:#75767dc9;">
+											
+											<f:convertNumber type="currency" />
+										</p:outputLabel>
+									</p:panel>
+									
+									<p:panel style="margin-bottom: 10px;">
+										<p:outputLabel value="Taxa de Entrega: " style="font-size: 12px;color:#5b5656;margin-left: 2px;font-weight:bold;" />
+										<p:outputLabel id="taxa-de-entrega"
+											value="#{pDVBean.venda.taxaDeEntrega == null ? 'R$ 0,00' : pDVBean.venda.taxaDeEntrega}"
+											style="font-size: 13px;font-weight:bold;color:#75767dc9;">
+											
+											<f:convertNumber type="currency" />
+										</p:outputLabel>
+									</p:panel>
+									
+									<p:panel style="margin-bottom: 15px;" rendered="#{pDVBean.venda.id != null}">
+										<p:outputLabel value="Lucro total: " style="font-size: 12px;color:#5b5656;margin-left: 2px;font-weight:bold;" />
+										<p:outputLabel id="lucro-total"
+											value="#{(pDVBean.venda.lucro + pDVBean.venda.estorno)}"
+											style="font-size: 13px;font-weight:bold;color:#75767dc9;">
+											
+											<f:convertNumber type="currency" />
+										</p:outputLabel>
+										
+										<p:outputLabel value=" | Estorno: " style="font-size: 12px;color:#5b5656;margin-left: 2px;font-weight:bold;" />
+										<p:outputLabel
+											value="#{pDVBean.venda.estorno}"
+											style="font-size: 13px;font-weight:bold;color:#75767dc9;">
+											
+											<f:convertNumber type="currency" />
+										</p:outputLabel>
+									</p:panel>
+							
+								</p:panel>
+							
+							</p:panelGrid>
 
 							<div
 								class="line-total"></div>
@@ -1243,10 +1630,10 @@
 
 							<p:commandButton id="btn-calcular" value="Finalizar Venda"
 								onstart="PF('downloadLoading').show();" icon="fa fa-check"
+								actionListener="#{pDVBean.finalizar}" onclick="selectTab1();"
 								onsuccess="PF('downloadLoading').hide();" styleClass="btn-finalizar"
 								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado() and not seguranca.acessoVendedor()}"
-								update="msg tabView tabView:data-venda tabView:tipo-venda tabView:panel-entrega tabView:panel-ajuste tabView:vendedor tabView:bairro panel-table tabView:id tabView:codigo tabView:descricao tabView:fornecedor tabView:valor-unitario tabView:quantidade tabView:valor-total tabView:lote"
-								action="#{pDVBean.salvar}" 
+								update="msg confirm-dialog confirmDialog tabView:data-venda tabView:tipo-venda tabView:panel-entrega tabView:panel-ajuste tabView:vendedor tabView:bairro panel-table tabView:id tabView:codigo tabView:descricao tabView:fornecedor tabView:valor-unitario tabView:quantidade tabView:valor-total tabView:lote"
 								process="@this panel-table tabView:data-venda tabView:vendedor tabView:bairro tabView:tipo-venda tabView:panel-ajuste" />
 
 						
@@ -1390,6 +1777,421 @@
 		
 		
 		
+		
+		
+		<p:dialog header="Confirmação de pagamento" widgetVar="confirmDialog"
+			position="top" style="margin-top: 100px;" id="confirmDialog" 
+			resizable="false" modal="true" closeOnEscape="true" responsive="true">
+
+			<h:form id="confirm-dialog" style="margin-top: 10px;">
+			
+				<p:focus for="valor-recebido" />
+				
+				<p:hotkey bind="ctrl+shift+s" action="#{pDVBean.salvar}" rendered="false"
+					update="msg form" onstart="start();" oncomplete="stop();" 
+				 	process="@this form confirm-dialog" />
+								
+
+				<div class="ui-g-12 ui-lg-12">
+					<p:panel class="card card-w-title ui-fluid"
+						style="padding-bottom: 0px;margin-bottom: 0px;">
+
+						<div class="ui-g-12 ui-lg-6">
+						
+							<p:panelGrid columns="2" layout="grid" id="pagamento-grid"
+								styleClass="panelgrid-noborder disabled disabled"
+								columnClasses="ui-grid-col-7, ui-grid-col-5">
+	
+								<p:outputLabel style="font-weight: bold" value="Data da compra: "
+									rendered="false" /> 
+								<p:outputLabel value="#{pDVBean.venda.dataVenda}"
+									rendered="false">
+									<f:convertDateTime pattern="dd/MM/yyyy" locale="pt" />
+								</p:outputLabel>
+	
+								<p:outputLabel style="font-weight: bold" value="Total a pagar: " />
+								<p:outputLabel value="#{pDVBean.venda.valorTotal}" id="valorPagar"
+									style="font-weight: bold;font-size: 22px;float: right;margin-top: -7px;">
+									<f:convertNumber type="currency" />
+								</p:outputLabel>
+	
+								<p:outputLabel
+									style="font-weight: bold;margin-top: 6px;float: left;"
+									for="formaPagamento" value="Tipo de pagamento: " />
+								<p:selectOneMenu id="formaPagamento"
+									value="#{pDVBean.tipoPagamento}" styleClass="tipo-pagamento"
+									placeholder="selecione">
+	
+									<p:ajax event="change" onstart="start();" oncomplete="stop();"
+										process="@this"
+										listener="#{pDVBean.changeTipoPagamento}"
+										update="@parent entrada pagamento_para lbl-pagamento parcela-unica editar-parcelas gerar-parcelas primeira-parcela qtd-parcelas qtd-periodo valor-recebido troco faltando panel-contas panel-confirm form:total-venda form:tabView valorPagar form:total-acrescimos formas-pagamentos_" />
+	
+									<f:selectItems value="#{pDVBean.tiposPagamentos}"
+										var="tipoPagamento" itemLabel="#{tipoPagamento.descricao}"
+										itemValue="#{tipoPagamento}" />
+								</p:selectOneMenu>
+								
+								
+								<p:outputLabel value="Forma de pagamento:" for="formas-pagamentos_" style="font-weight: bold;margin-top: 4px;float: left;" />				
+								<p:selectOneMenu id="formas-pagamentos_" value="#{pDVBean.venda.formaPagamento}" styleClass="forma-pagamento"
+										disabled="#{pDVBean.tipoPagamento == 'PARCELADO'}">
+						            
+						            <p:ajax event="change" update="@parent input-av panel-contas pagamento_para lbl-pagamento parcela-unica faltando troco form:total-venda form:tabView valorPagar form:total-acrescimos" process="@this" listener="#{pDVBean.calculaAcrescimo}" onstart="PF('downloadLoading').show();" oncomplete="PF('downloadLoading').hide();" />
+						            
+						            <f:selectItems value="#{pDVBean.todasFormasPagamentos}" var="formaPagamento" itemLabel="#{formaPagamento.nome}" itemValue="#{formaPagamento}"/>
+						        </p:selectOneMenu>
+						        
+						        <p:outputLabel value="Saldo p/ troca: " rendered="#{pDVBean.vendaPaga and pDVBean.venda.formaPagamento.nome == 'Dinheiro' and pDVBean.tipoPagamento == 'AVISTA'}" style="font-weight: bold;float: left;position: relative;margin-top: 9px;" />
+								<p:outputLabel value="R$ #{pDVBean.saldoParaTrocaEmString}" rendered="#{pDVBean.vendaPaga and pDVBean.venda.formaPagamento.nome == 'Dinheiro' and pDVBean.tipoPagamento == 'AVISTA'}"
+									style="font-weight: bold;font-size: 18px;float: right;margin-top: 7px;color: #663399;">
+									<f:convertNumber type="currency" />
+								</p:outputLabel>
+	
+							</p:panelGrid>
+						</div>
+
+						<div class="ui-g-12 ui-lg-6" style="border-left: 1px solid #c0c0c0;">
+							<p:panel id="panel-parcelas" 
+								styleClass="panelgrid-noborder disabled disabled panel-parcelas #{pDVBean.tipoPagamento == 'PARCELADO' ? '' : 'hide'}">
+	
+								<p:panelGrid columns="2" layout="grid" style="margin-top:-31px;"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-7, ui-grid-col-5">
+									
+									<p:outputLabel value="" />
+									<p:commandLink value="Trocar data" onstart="start();"
+										oncomplete="stop();" id="editar-parcelas" 
+										icon="fa fa-fw fa-edit" style="margin-top: 10px;float: right;"
+										action="#{pDVBean.zerarParcelas}"
+										update="@this entrada editar-parcelas 
+											gerar-parcelas primeira-parcela 
+											qtd-parcelas qtd-periodo btn-salvar"
+										disabled="#{not pDVBean.parcelasConfirmadas}" />
+																	
+									<p:outputLabel for="entrada" rendered="false"
+										style="font-weight: bold;margin-top: 0px;float: left;"
+										value="Entrada: " />
+	
+									<p:inputNumber id="entrada" decimalPlaces="2" rendered="false"
+										placeholder="R$ 0,00" autocomplete="off" minValue="0"
+										symbol="R$ " styleClass="entrada entrada_"
+										value="#{pDVBean.valorEntrada}"
+										disabled="#{pDVBean.parcelasConfirmadas}">
+									</p:inputNumber>
+						
+									<p:outputLabel style="font-weight: bold;float: left;" value="Primeira parcela: " /> 
+									<p:commandLink id="primeira-parcela" value="#{pDVBean.primeiraParcelaEmString}" onstart="start();"
+										oncomplete="PF('primeiraParc-dialog').show();stop();"
+										actionListener="#{pDVBean.preparaPrimeiraParcela}"
+										style="float: right;" process="@this"
+										icon="fa fa-fw fa-edit"
+										update="primeiraParc-dialog entrada 
+											gerar-parcelas primeira-parcela 
+											qtd-parcelas qtd-periodo btn-salvar">
+									</p:commandLink>
+															
+								</p:panelGrid>
+															
+	
+								<p:panelGrid columns="2" layout="grid" id="panel-parcelamento" 
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-6, ui-grid-col-6">
+	
+									<p:outputLabel style="font-weight: bold;float: left;margin-top: 7px;margin-bottom: 3px;"
+										value="Parcelamento: " />								
+		
+									<p:outputLabel />
+									
+									<p:inputNumber decimalPlaces="0" required="true" id="qtd-parcelas"
+										requiredMessage="Quantidade de Parcelas deve ser informado."
+										placeholder="Quantidade de Parcelas"
+										value="#{pDVBean.parcelas}">
+									</p:inputNumber>
+	
+									<p:selectOneMenu value="#{pDVBean.periodoPagamento}"
+										id="qtd-periodo" placeholder="selecione">
+	
+										<f:selectItems
+											value="#{pDVBean.periodosPagamentos}"
+											var="periodoPagamento"
+											itemLabel="#{periodoPagamento.descricao}"
+											itemValue="#{periodoPagamento}" />
+									</p:selectOneMenu>
+	
+								</p:panelGrid>
+	
+	
+	
+								<p:panel style="text-align: center;margin-top: 5px;margin-bottom: 5px;"
+									styleClass="panelgrid-noborder disabled disabled">
+	
+									<p:commandButton value="Gerar parcelas" onstart="start();"
+										oncomplete="stop();PF('parcelamento-dialog').show();"
+										action="#{pDVBean.gerarParcelas}" id="gerar-parcelas"
+										process="@this panel-parcelamento qtd-parcelas qtd-periodo entrada"
+										update="msg btn-salvar parcelamento-dialog" disabled="#{pDVBean.tipoPagamento != 'PARCELADO'}"
+										style="width: 110px; font-weight:bold"></p:commandButton>
+								</p:panel>
+	
+								
+							</p:panel>
+	
+			
+							<p:panelGrid columns="2" layout="grid" id="grid-valores" 
+								styleClass="panelgrid-noborder disabled disabled grid-valores #{(pDVBean.tipoPagamento == 'AVISTA' and pDVBean.venda.formaPagamento.nome == 'Dinheiro' and pDVBean.vendaPaga or (pDVBean.entrega and pDVBean.venda.formaPagamento.nome == 'Dinheiro' and pDVBean.tipoPagamento == 'AVISTA')) ? '' : 'hide'}"
+								columnClasses="ui-grid-col-7, ui-grid-col-5">
+								
+								<p:outputLabel for="valor-recebido" rendered="#{not pDVBean.entrega}"
+										style="font-weight: bold;margin-top: 0px;float: left;"
+										value="Valor recebido: " />
+										
+								<p:outputLabel id="areceber" for="valor-recebido" rendered="#{pDVBean.entrega and not pDVBean.vendaPaga}"
+										style="font-weight: bold;margin-top: 0px;float: left;"
+										value="Valor a receber: " />
+										
+								<p:outputLabel id="recebido" for="valor-recebido" rendered="#{pDVBean.entrega and pDVBean.vendaPaga}"
+										style="font-weight: bold;margin-top: 0px;float: left;"
+										value="Valor recebido: " />
+	
+								<p:inputNumber id="valor-recebido" decimalPlaces="2"
+									placeholder="R$ 0,00" autocomplete="off" 
+									symbol="R$ " styleClass="entrada valor-recebido"
+									value="#{pDVBean.valorRecebido}">
+									
+									<p:ajax event="blur" process="@parent" listener="#{pDVBean.calculaTroco}" update="grid-valores" />
+								</p:inputNumber>
+								
+								
+								<p:outputLabel for="faltando"
+									style="font-weight: bold;margin-top: 0px;float: left;"
+									value="Faltando: " />
+	
+								<p:inputNumber id="faltando" decimalPlaces="2" readonly="true"
+									placeholder="R$ 0,00" autocomplete="off" 
+									symbol="R$ " styleClass="entrada falta"
+									value="#{pDVBean.faltando}">
+								</p:inputNumber>
+								
+								
+								<p:outputLabel for="troco"
+									style="font-weight: bold;margin-top: 0px;float: left;"
+									value="Troco: " />
+	
+								<p:inputNumber id="troco" decimalPlaces="2" readonly="true"
+									placeholder="R$ 0,00" autocomplete="off" 
+									symbol="R$ " styleClass="entrada troco"
+									value="#{pDVBean.troco}">
+								</p:inputNumber>
+								
+							</p:panelGrid>
+							
+							
+							
+							<p:panelGrid columns="2" layout="grid" id="pagamento_para" 
+								styleClass="panelgrid-noborder disabled disabled parcela-unica #{(pDVBean.tipoPagamento == 'AVISTA' and pDVBean.venda.formaPagamento.nome == 'Dinheiro' and not pDVBean.vendaPaga and not pDVBean.entrega) ? '' : 'hide'}"
+								columnClasses="ui-grid-col-7, ui-grid-col-5">
+								
+								<p:outputLabel id="lbl-pagamento" style="font-weight: bold;float: left;" value="Pagamento para: "
+									rendered="#{pDVBean.venda.formaPagamento.nome eq 'Dinheiro'}" /> 
+								<p:commandLink id="parcela-unica" value="#{pDVBean.pagamentoParaEmString}" onstart="start();"
+									rendered="#{pDVBean.venda.formaPagamento.nome eq 'Dinheiro'}"
+									oncomplete="PF('pagamentoPara-dialog').show();stop();"
+									style="float: right;"
+									icon="fa fa-fw fa-edit" actionListener="#{pDVBean.preparaPagamentoPara}"
+									update="pagamentoPara-dialog form-pagamentoPara:inline">
+								</p:commandLink>
+							</p:panelGrid>
+							
+							
+							<p:panel id="panel-contas"
+								styleClass="panelgrid-noborder disabled disabled panel-confirm">
+	
+								<p:outputLabel id="label-cp"
+									style="font-weight: bold;margin-top: 5px;float: left;margin-left:3px;"
+									value="Conta à receber: "
+									rendered="#{pDVBean.tipoPagamento == 'PARCELADO'}" />
+	
+								<p:inputSwitch onLabel="Sim" offLabel="Não" id="input-cp"
+									style="float:right;width: 50px !important;margin-right: 2px;margin-top: 4px;"
+									value="#{pDVBean.contaAPagar}"
+									disabled="#{pDVBean.tipoPagamento == 'PARCELADO'}"
+									rendered="#{pDVBean.tipoPagamento == 'PARCELADO'}">
+	
+									<p:ajax event="change" process="@this" update="@this" />
+								</p:inputSwitch>
+	
+								<p:outputLabel id="label-av"
+									style="font-weight: bold;margin-top: 5px;float: left;margin-left:3px;"
+									value="PAGO: "
+									rendered="#{pDVBean.tipoPagamento == 'AVISTA'}" />
+	
+								<p:inputSwitch onLabel="Sim" offLabel="Não" id="input-av" styleClass="pag-avista"
+									style="float:right;width: 50px !important;margin-right: 2px;margin-top: 4px;"
+									value="#{pDVBean.vendaPaga}" disabled="#{pDVBean.venda.formaPagamento.nome != 'Dinheiro' and not pDVBean.entrega}"
+									rendered="#{pDVBean.tipoPagamento == 'AVISTA'}">
+	
+									<p:ajax event="change" process="@this" update="@this pagamento-grid grid-valores pagamento_para valor-recebido" listener="#{pDVBean.changeStatusPago}" onstart="PF('downloadLoading').show();" oncomplete="PF('downloadLoading').hide();" />
+								</p:inputSwitch>		
+	
+							</p:panel>
+						</div>
+						
+
+						<div
+							style="float: left; width: 100%;margin-top: 15px; margin-bottom: 10px; border-top: 1px solid #ccc"></div>
+
+						<p:panel style="text-align: right; margin-top: 80px;"
+							id="panel-confirm"
+							styleClass="panelgrid-noborder disabled disabled panel-confirm">
+
+							<p:commandButton onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();PF('confirmDialog').hide();"
+								icon="fa fa-fw fa-close"
+								style="width: 100px;margin-right:2px;background: #fd6161;"
+								value="Cancelar"></p:commandButton>
+							<p:commandButton process="@this form confirm-dialog"
+								update="msg form" id="btn-salvar"
+								onstart="start();" oncomplete="stop();"
+								action="#{pDVBean.salvar}"
+								icon="fa fa-fw fa-save"
+								disabled="#{not pDVBean.parcelasConfirmadas}"
+								style="width: 100px;background-color: #0d8819b5;font-weight:bold"
+								value="Salvar"></p:commandButton>
+						</p:panel>
+					</p:panel>
+				</div>
+
+			</h:form>
+		</p:dialog>
+		
+		
+		
+		<p:dialog id="primeiraParc-dialog" showHeader="false" modal="true"
+			widgetVar="primeiraParc-dialog" draggable="false" width="300"
+			closable="false" resizable="false" position="top"
+			style="margin-top: 132px">
+
+			<h:form id="form-primeiraParc">
+				<p:calendar id="inline" mode="inline"
+					value="#{pDVBean.primeiraParcela}"
+					locale="pt" pattern="dd/MM/yyyy" />
+
+				<p:panel styleClass="panelgrid-noborder disabled disabled">
+					<p:commandButton icon="fa fa-fw fa-check"
+						style="float: right;font-weight: bold;font-size: 13px;background-color: #089a29c7;position: relative;margin-top: 8px;margin-right: 0px;"
+						value="Confirmar"
+						process="@this primeiraParc-dialog inline form-primeiraParc"
+						action="#{pDVBean.confirmarPrimeiraParcela}" onstart="start();"
+						update="confirm-dialog:entrada confirm-dialog:editar-parcelas 
+							confirm-dialog:gerar-parcelas confirm-dialog:primeira-parcela 
+							confirm-dialog:qtd-parcelas confirm-dialog:qtd-periodo" 
+						oncomplete="stop();PF('primeiraParc-dialog').hide();">
+					</p:commandButton>
+
+					<p:commandButton icon="fa fa-fw fa-close"
+						style="float: right;font-weight: bold;margin-top: 8px;font-size: 13px;background-color: #ab3705b5;position: relative;margin-right: 3px;"
+						value="Cancelar" onstart="start();"
+						oncomplete="PF('primeiraParc-dialog').hide();stop();">
+					</p:commandButton>
+				</p:panel>
+			</h:form>
+		</p:dialog>
+		
+		
+		
+		
+		<p:dialog id="pagamentoPara-dialog" showHeader="false" modal="true"
+			widgetVar="pagamentoPara-dialog" draggable="false" width="300"
+			closable="false" resizable="false" position="top"
+			style="margin-top: 132px">
+
+			<h:form id="form-pagamentoPara">
+				<p:calendar id="inline" mode="inline"
+					value="#{pDVBean.pagamentoPara}"
+					locale="pt" pattern="dd/MM/yyyy" />
+
+				<p:panel styleClass="panelgrid-noborder disabled disabled">
+					<p:commandButton icon="fa fa-fw fa-check"
+						style="float: right;font-weight: bold;font-size: 13px;background-color: #089a29c7;position: relative;margin-top: 8px;margin-right: 0px;"
+						value="Confirmar"
+						process="@this pagamentoPara-dialog inline form-pagamentoPara"
+						action="#{pDVBean.confirmarPagamentoPara}" onstart="start();"
+						update="confirm-dialog:parcela-unica" 
+						oncomplete="stop();PF('pagamentoPara-dialog').hide();">
+					</p:commandButton>
+
+					<p:commandButton icon="fa fa-fw fa-close"
+						style="float: right;font-weight: bold;margin-top: 8px;font-size: 13px;background-color: #ab3705b5;position: relative;margin-right: 3px;"
+						value="Cancelar" onstart="start();"
+						oncomplete="PF('pagamentoPara-dialog').hide();stop();">
+					</p:commandButton>
+				</p:panel>
+			</h:form>
+		</p:dialog>
+		
+		
+		
+		<p:dialog id="parcelamento-dialog" showHeader="false" modal="true"
+			widgetVar="parcelamento-dialog" draggable="false" width="300"
+			closable="false" resizable="false" position="top"
+			style="margin-top: 132px">
+
+			<h:form id="form-parcelamento">
+				
+				<p:dataTable id="contasTable" paginatorAlwaysVisible="false"
+					scrollable="true" scrollHeight="125" editable="true"
+					editMode="cell" value="#{pDVBean.todasContas}"
+					var="conta" emptyMessage="Nenhuma parcela gerada."
+					paginator="false" styleClass="produtosTable"
+					style="margin-top: 0px;border: 1px solid #147df0;">
+
+					<p:column headerText="Parcela" width="15%"
+						style="text-align: center">
+						<h:outputText value="#{conta.parcela}" />
+					</p:column>
+
+					<p:column headerText="Valor" width="20%"
+						style="text-align: center">
+
+						<h:outputText value="#{conta.valor}">
+							<f:convertNumber type="currency" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Vencimento" width="20%"
+						style="text-align: center">
+
+						<h:outputText value="#{conta.vencimento}">
+							<f:convertDateTime pattern="dd/MM/yyyy" locale="pt" />
+						</h:outputText>
+					</p:column>
+
+				</p:dataTable>
+
+				<p:panel styleClass="panelgrid-noborder disabled disabled">
+					<p:commandButton icon="fa fa-fw fa-check"
+						style="float: right;font-weight: bold;font-size: 13px;background-color: #089a29c7;position: relative;margin-top: 8px;margin-right: 0px;"
+						value="Confirmar" disabled="#{pDVBean.todasContasSize le 0}"
+						process="@this parcelamento-dialog form-parcelamento"
+						action="#{pDVBean.confirmarParcelas}" onstart="start();"
+						update="confirm-dialog:entrada confirm-dialog:editar-parcelas 
+						confirm-dialog:gerar-parcelas confirm-dialog:primeira-parcela 
+						confirm-dialog:qtd-parcelas confirm-dialog:qtd-periodo 
+						confirm-dialog:qtd-parcelas confirm-dialog:btn-salvar" oncomplete="stop();PF('parcelamento-dialog').hide();">
+						
+					</p:commandButton>
+
+					<p:commandButton icon="fa fa-fw fa-close"
+						style="float: right;font-weight: bold;margin-top: 8px;font-size: 13px;background-color: #ab3705b5;position: relative;margin-right: 3px;"
+						value="Cancelar" onstart="start();"
+						oncomplete="PF('parcelamento-dialog').hide();stop();">
+					</p:commandButton>
+				</p:panel>
+			</h:form>
+		</p:dialog>
+		
+		
 
 		<p:dialog id="downloadLoading" showHeader="false" modal="true"
 			widgetVar="downloadLoading" header="Status" draggable="false"
@@ -1398,7 +2200,20 @@
 				library="manhattan-layout" width="50" />
 		</p:dialog>
 
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 		<script type="text/javascript">
+			const Toast = Swal.mixin({
+			  toast: true,
+			  position: 'top-end',
+			  showConfirmButton: false,
+			  timer: 3000,
+			  timerProgressBar: true,
+			  onOpen: (toast) => {
+			    toast.addEventListener('mouseenter', Swal.stopTimer)
+			    toast.addEventListener('mouseleave', Swal.resumeTimer)
+			  }
+			});
+			
 			function start() {
 				PF('downloadLoading').show();
 			}
@@ -1406,6 +2221,42 @@
 			function stop() {
 				PF('downloadLoading').hide();
 			}
+			
+			function selectTab1() {	
+				$('.ui-tabs-nav li:nth-child(2) a').click();
+			}
+			
+			function ocultar() {
+				delay(function() { 
+						$(".panel-parcelas").addClass("hide");
+					}, 500);
+			}
+
+			function mostrar() {
+				$(".panel-parcelas").removeClass("hide");
+			}
+			
+			
+			function ocultarValores() {
+				$(".grid-valores").addClass("hide");
+				$(".parcela-unica").removeClass("hide");
+				
+			}
+
+			function mostrarValores() {
+				$(".grid-valores").removeClass("hide");
+				$(".parcela-unica").addClass("hide");
+			}
+			
+			
+			function mostrarParcelaUnica() {
+				$(".parcela-unica").removeClass("hide");			
+			}
+			
+			function ocultarParcelaUnica() {
+				$(".parcela-unica").addClass("hide");			
+			}
+			
 			
 			var delay = (function() {
 			    var timer = 0;

@@ -87,6 +87,10 @@ public class Produtos implements Serializable {
 		this.manager.remove(produtoTemp);
 	}
 	
+	public List<Produto> todos(String empresa) {
+		return this.manager.createQuery("from Produto p where p.categoriaProduto.empresa = :empresa order by p.id", Produto.class)
+				.setParameter("empresa", empresa).getResultList();
+	}
 
 	public List<Produto> porCategoria_(CategoriaProduto categoriaProduto) {
 		return this.manager
@@ -159,13 +163,55 @@ public class Produtos implements Serializable {
 		
                 try {
 		    count = (Number) this.manager
-				.createQuery("SELECT sum((e.valorUnitario * e.quantidadeDisponivel) * (1 + (e.produto.margemLucro/100))) from ItemCompra e where e.compra.empresa = :empresa AND e.quantidadeDisponivel > 0")
+				.createQuery("SELECT sum(e.quantidadeDisponivel * e.produto.precoDeVenda) from ItemCompra e where e.compra.empresa = :empresa AND e.quantidadeDisponivel > 0")
 				.setParameter("empresa", empresa).getSingleResult();
 
 		} catch(NoResultException e) {
 			
 		}
                 
+		if(count == null) {
+			count = 0;
+		}
+		
+		return count;
+	}
+	
+	
+	public Number saldoEstorno(String empresa) {
+
+        Number count = 0;
+
+        try {
+		    count = (Number) this.manager
+				.createQuery("SELECT sum(e.estorno) from Produto e where e.categoriaProduto.empresa = :empresa")
+				.setParameter("empresa", empresa).getSingleResult();
+		
+		} catch(NoResultException e) {
+			
+		}
+		        
+		if(count == null) {
+			count = 0;
+		}
+		
+		return count;
+	}
+	
+	
+	public Number totalCustoMedio(String empresa) {
+
+        Number count = 0;
+
+        try {
+		    count = (Number) this.manager
+				.createQuery("SELECT sum(e.quantidadeDisponivel * e.produto.custoMedioUnitario) from ItemCompra e where e.compra.empresa = :empresa AND e.quantidadeDisponivel > 0")
+				.setParameter("empresa", empresa).getSingleResult();
+		
+		} catch(NoResultException e) {
+			
+		}
+		        
 		if(count == null) {
 			count = 0;
 		}

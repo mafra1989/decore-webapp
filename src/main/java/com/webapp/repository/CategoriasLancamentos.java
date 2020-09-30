@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
 import com.webapp.model.CategoriaLancamento;
+import com.webapp.model.Empresa;
 import com.webapp.model.OrigemLancamento;
 import com.webapp.repository.filter.CategoriaLancamentoFilter;
 import com.webapp.util.jpa.Transacional;
@@ -36,11 +37,11 @@ public class CategoriasLancamentos implements Serializable {
 		this.manager.remove(categoriaLancamentoTemp);
 	}
 
-	public CategoriaLancamento porNome(String nome, String empresa) {
+	public CategoriaLancamento porNome(String nome, Empresa empresa) {
 		CategoriaLancamento categoriaLancamento = null;
 		try {
-			categoriaLancamento = this.manager.createQuery("from CategoriaLancamento i where (i.empresa is null OR i.empresa = :empresa) AND lower(i.nome) like lower(:nome) order by nome", CategoriaLancamento.class)
-					.setParameter("empresa", empresa).setParameter("nome", "%" + nome + "%").getSingleResult();
+			categoriaLancamento = this.manager.createQuery("from CategoriaLancamento i where lower(i.nome) like :nome order by nome", CategoriaLancamento.class)
+					.setParameter("nome", "%" + nome.toLowerCase() + "%").getSingleResult();
 			return categoriaLancamento;
 			
 		} catch (NoResultException e) {
@@ -49,38 +50,33 @@ public class CategoriasLancamentos implements Serializable {
 	}
 	
 	public List<CategoriaLancamento> todos(String empresa) {
-		return this.manager.createQuery("from CategoriaLancamento where (empresa is null OR empresa = :empresa) order by nome", CategoriaLancamento.class)
-				.setParameter("empresa", empresa).getResultList();
+		return this.manager.createQuery("from CategoriaLancamento order by nome", CategoriaLancamento.class).getResultList();
 	}
 
 	public List<CategoriaLancamento> todasDespesas(String empresa) {
 		return this.manager
-				.createQuery("from CategoriaLancamento c where (c.empresa is null OR c.empresa = :empresa) AND c.tipoLancamento.origem = :origem order by nome",
+				.createQuery("from CategoriaLancamento c where c.tipoLancamento.origem = :origem order by nome",
 						CategoriaLancamento.class)
-				.setParameter("empresa", empresa)
 				.setParameter("origem", OrigemLancamento.DEBITO).getResultList();
 	}
 
 	public List<CategoriaLancamento> todasReceitas(String empresa) {
 		return this.manager
-				.createQuery("from CategoriaLancamento c where (c.empresa is null OR c.empresa = :empresa) AND c.tipoLancamento.origem = :origem order by nome",
+				.createQuery("from CategoriaLancamento c where c.tipoLancamento.origem = :origem order by nome",
 						CategoriaLancamento.class)
-				.setParameter("empresa", empresa)
 				.setParameter("origem", OrigemLancamento.CREDITO).getResultList();
 	}
 
 	public List<CategoriaLancamento> porOrigem(OrigemLancamento origem, String empresa) {
-		return this.manager.createQuery("from CategoriaLancamento c where (c.empresa is null OR c.empresa = :empresa) AND c.origem = :origem order by c.nome",
+		return this.manager.createQuery("from CategoriaLancamento c where c.origem = :origem order by c.nome",
 				CategoriaLancamento.class)
-				.setParameter("empresa", empresa)
 				.setParameter("origem", origem).getResultList();
 	}
 
 	public List<CategoriaLancamento> filtrados(CategoriaLancamentoFilter filter) {
-		return this.manager.createQuery("from CategoriaLancamento i where (i.empresa is null OR i.empresa = :empresa) AND i.nome like :nome order by nome",
+		return this.manager.createQuery("from CategoriaLancamento i where lower(i.nome) like :nome order by nome",
 				CategoriaLancamento.class)
-				.setParameter("empresa", filter.getEmpresa())
-				.setParameter("nome", "%" + filter.getNome() + "%").getResultList();
+				.setParameter("nome", "%" + filter.getNome().toLowerCase() + "%").getResultList();
 	}
 
 }

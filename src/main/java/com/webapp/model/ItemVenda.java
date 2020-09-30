@@ -220,6 +220,10 @@ public class ItemVenda implements Serializable {
 	@Transient
 	private List<ItemVendaCompra> itensVendaCompra;
 
+	@Transient
+	private boolean update;
+	
+	
 	public String getCode() {
 		return code;
 	}
@@ -242,6 +246,14 @@ public class ItemVenda implements Serializable {
 
 	public void setItensVendaCompra(List<ItemVendaCompra> itensVendaCompra) {
 		this.itensVendaCompra = itensVendaCompra;
+	}
+
+	public boolean isUpdate() {
+		return update;
+	}
+
+	public void setUpdate(boolean update) {
+		this.update = update;
 	}
 
 }

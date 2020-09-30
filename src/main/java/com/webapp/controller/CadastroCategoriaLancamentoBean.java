@@ -13,12 +13,14 @@ import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.CategoriaLancamento;
 import com.webapp.model.DestinoLancamento;
+import com.webapp.model.Empresa;
 import com.webapp.model.Grupo;
 import com.webapp.model.OrigemLancamento;
 import com.webapp.model.TipoLancamento;
 import com.webapp.model.Usuario;
 import com.webapp.repository.CategoriasLancamentos;
 import com.webapp.repository.DestinosLancamentos;
+import com.webapp.repository.Empresas;
 import com.webapp.repository.TiposDespesas;
 import com.webapp.repository.Usuarios;
 import com.webapp.repository.filter.CategoriaLancamentoFilter;
@@ -35,6 +37,9 @@ public class CadastroCategoriaLancamentoBean implements Serializable {
 	
 	@Inject
 	private TiposDespesas tiposLancamentos;
+	
+	@Inject
+	private Empresas empresas;
 
 	private List<TipoLancamento> todosTiposLancamentos;
 	
@@ -42,6 +47,8 @@ public class CadastroCategoriaLancamentoBean implements Serializable {
 	private DestinosLancamentos destinosLancamentos;
 
 	private List<DestinoLancamento> todosDestinosLancamentos;
+	
+	private List<Empresa> todasEmpresas;
 
 	@Inject
 	private CategoriaLancamento categoriaDespesa;
@@ -92,6 +99,8 @@ public class CadastroCategoriaLancamentoBean implements Serializable {
 
 	public void salvar() {
 
+		categoriaDespesa.setEmpresa(usuario.getEmpresa());
+		categoriaDespesa.setDestinoLancamento(null);
 		categoriasDespesas.save(categoriaDespesa);
 
 		categoriaDespesaSelecionada = null;
@@ -125,6 +134,7 @@ public class CadastroCategoriaLancamentoBean implements Serializable {
 		todasCategoriasDespesas = categoriasDespesas.todos(usuario.getEmpresa());
 		todosDestinosLancamentos = destinosLancamentos.todos();
 		todosTiposLancamentos = tiposLancamentos.todos();
+		todasEmpresas = empresas.todos();
 	}
 
 	public List<CategoriaLancamento> getTodasCategoriasDespesas() {
@@ -165,6 +175,10 @@ public class CadastroCategoriaLancamentoBean implements Serializable {
 
 	public List<TipoLancamento> getTodosTiposLancamentos() {
 		return todosTiposLancamentos;
+	}
+
+	public List<Empresa> getTodasEmpresas() {
+		return todasEmpresas;
 	}
 
 }

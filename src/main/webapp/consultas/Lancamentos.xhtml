@@ -232,12 +232,12 @@
 						</p:datePicker>
 
 
-						<p:outputLabel value="Origem do Lançamento" />
+						<p:outputLabel value="Tipo de Lançamento" />
 						<p:selectManyCheckbox unselectable="true"
 							value="#{consultaLancamentosBean.origemLancamento}">
 							<f:selectItems
 								value="#{consultaLancamentosBean.origensLancamentos}"
-								var="origemLancamento" itemLabel="#{origemLancamento.descricao}"
+								var="origemLancamento" itemLabel="#{origemLancamento == 'DEBITO' ? 'Despesa' : 'Receita'}"
 								itemValue="#{origemLancamento}" />
 						</p:selectManyCheckbox>
 					</p:panelGrid>

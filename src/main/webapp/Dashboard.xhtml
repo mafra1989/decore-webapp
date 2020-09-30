@@ -13,6 +13,55 @@
 	<ui:define name="head">
 
 		<script type="text/javascript">
+			function percentExtender_() {
+	
+				var options = $.extend(true, {}, this.cfg.config);
+	
+				this.cfg.config.options = {
+					legend : {
+						display : true,
+					},
+	
+					scales : {
+						xAxes : [ {
+							display : true,
+						} ]
+					},
+	
+					tooltips : {
+						callbacks : {
+	
+							label : function(tooltipItem, data) {
+								var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+	
+								if(data.datasets.length > 2) {
+									if (tooltipItem.datasetIndex == 0
+											|| tooltipItem.datasetIndex == 2) {
+										var valor = "R$ " + numberToReal(amount);
+										if (valor.includes("-.")) {
+											valor = valor.replace("-.", "-");
+										}
+										return valor;
+									} else {
+										return numberToReal(amount) + "%";
+									}
+								} else {
+									if (tooltipItem.datasetIndex == 0
+											|| tooltipItem.datasetIndex == 1) {
+										var valor = "R$ " + numberToReal(amount);
+										if (valor.includes("-.")) {
+											valor = valor.replace("-.", "-");
+										}
+										return valor;
+									}
+								}
+							}
+						}
+					},
+				};
+	
+				$.extend(true, this.cfg.config, options);
+			}
 			function percentExtender() {
 				var tickColor = "#666";
 				var gridlineColor = "rgba(0,0,0,0.1)";
@@ -25,7 +74,7 @@
 					},
 
 					title : {
-						display : true,
+						display : false,
 						text : 'Top 5 Despesas - Mês atual'
 					},
 					tooltips : {
@@ -53,26 +102,80 @@
 
 			function percentExtender2() {
 
+				var options = $.extend(true, {}, this.cfg.config);
+
 				this.cfg.config.options = {
 					legend : {
-						display : false,
+						display : true,
 					},
 
-					title : {
-						display : true,
-						text : 'Total de Vendas vs Dia da Semana'
+					scales : {
+						xAxes : [ {
+							display : true,
+						} ]
 					},
+
 					tooltips : {
 						callbacks : {
 
 							label : function(tooltipItem, data) {
 								var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
 
-								return numberToReal(amount);
+								if (tooltipItem.datasetIndex == 1
+										|| tooltipItem.datasetIndex == 0) {
+									var valor = "R$ " + numberToReal(amount);
+									if (valor.includes("-.")) {
+										valor = valor.replace("-.", "-");
+									}
+									return valor;
+								} else {
+									return numberToReal(amount) + "%";
+								}
 							}
 						}
 					},
 				};
+
+				$.extend(true, this.cfg.config, options);
+			}
+			
+			function percentExtender2_() {
+
+				var options = $.extend(true, {}, this.cfg.config);
+
+				this.cfg.config.options = {
+					legend : {
+						display : true,
+					},
+					
+					title : {
+						display : false,
+						text : 'Despesas vs Receitas'
+					},
+
+					scales : {
+						xAxes : [ {
+							display : true,
+						} ]
+					},
+
+					tooltips : {
+						callbacks : {
+
+							label : function(tooltipItem, data) {
+								var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+
+								var valor = "R$ " + numberToReal(amount);
+								if (valor.includes("-.")) {
+									valor = valor.replace("-.", "-");
+								}
+								return valor;
+							}
+						}
+					},
+				};
+
+				$.extend(true, this.cfg.config, options);
 			}
 
 			function percentExtender3() {
@@ -83,7 +186,7 @@
 					},
 
 					title : {
-						display : true,
+						display : false,
 						text : 'Total de Vendas vs Categoria'
 					},
 					tooltips : {
@@ -107,7 +210,7 @@
 					},
 
 					title : {
-						display : true,
+						display : false,
 						text : 'Estoque para Vendas vs Categoria'
 					},
 					tooltips : {
@@ -220,11 +323,11 @@ body .ui-datatable .ui-datatable-data>tr td {
 	color: #525252;
 }
 
-.dashboard .overview-box.overview-box-1 .overview-box-icon i {
+.dashboard .saldo-geral.overview-box.overview-box-1 .overview-box-icon i {
 	color: #069ed2;
 }
 
-.dashboard .overview-box.overview-box-1 .overview-box-icon {
+.dashboard .saldo-geral.overview-box.overview-box-1 .overview-box-icon {
 	background-color: #197290;
 }
 
@@ -237,6 +340,149 @@ body .ui-datatable .ui-datatable-data>tr td {
 }
 
 @media ( min-width :220px) {
+	.swal2-popup {
+		width: 28em;
+		max-width: 100%;
+		padding: 0 0 0.4em 0;
+		font-size: 0.75rem;
+	}
+	.swal2-popup #swal2-content {
+		font-weight: 400;
+	}
+	body .ui-widget-content {
+	    border: none;
+	}
+	.dashboard .overview-box.overview-box-2 a {
+		color: #907209;
+	}
+	.dashboard .overview-box.overview-box-2 a:hover {
+		color: #634f0a !important;
+	}
+	#form-retira .ui-panel .ui-panel-content {
+    	padding: 9px;
+    }
+    #form-retira .ui-widget-content {
+    	border:none;
+    }
+    #form-retira .card {
+	    margin-bottom: 0px;
+	}
+	.dashboard.saldo-geral_ .card {
+	    margin-bottom: 0px;
+	}
+	.vendas-top5.ui-datatable tfoot td {
+    	padding: 0px 10px;
+    }
+	.ui-datatable .ui-datatable-scrollable-body {
+    	outline: none;
+    }
+	.aw-box__icon {
+    	color: #434560;
+    }
+	.dashboard.card_ .overview-box.overview-box-2 {
+	    background-color: #16a00ac2;
+	}
+	.dashboard.card_ .overview-box.overview-box-2 .overview-box-details {
+	    color: #286323;
+	}
+	.dashboard.card_ .overview-box.overview-box-2 .overview-box-icon {
+    	background-color: #448238;
+    }
+    .dashboard.card_ .overview-box.overview-box-2 .overview-box-icon i {
+	    color: #4eb745;
+	}
+	
+	.dashboard.card_ .overview-box.overview-box-4 {
+	    background-color: #ed3c3ce0;
+	}
+	.dashboard.card_ .overview-box.overview-box-4 .overview-box-icon i {
+	    color: #ef5454;
+	}
+	.dashboard.card_ .overview-box.overview-box-4 .overview-box-icon {
+    	background-color: #b52f2f;
+    }
+    .dashboard.card_ .overview-box.overview-box-4 .overview-box-details {
+	    color: #922626;
+	}
+	
+	.dashboard.card_ .overview-box.overview-box-3 {
+	    background-color: #fb7933;
+	}
+	.dashboard.card_ .overview-box.overview-box-3 .overview-box-icon i {
+	    color: #ff8e52;
+	}
+	.dashboard.card_ .overview-box.overview-box-3 .overview-box-icon {
+    	background-color: #bd5b28;
+    }
+    .dashboard.card_ .overview-box.overview-box-3 .overview-box-details {
+	    color: #ab4d1b;
+	}
+	
+	.dashboard.card_ .overview-box.overview-box-1 {
+    	background-color: #1e94d2;
+    }
+    .dashboard.card_ .overview-box.overview-box-1 .overview-box-icon {
+    	background-color: #096b9e;
+    }
+    .dashboard.card_ .overview-box.overview-box-1 .overview-box-icon i {
+    	color: #1e94d2;
+    }
+    .dashboard.card_ .overview-box.overview-box-1 .overview-box-details {
+    	color: #0b5a84;
+    }
+
+	.ui-datatable .ui-datatable-scrollable-footer {
+    	background-color: transparent !important;
+    }
+    body .ui-datatable .ui-datatable-scrollable-header {
+    	background-color: transparent !important;
+    }
+    body .ui-datatable .ui-datatable-data>tr {
+	    background-color: #ffffff;
+	}
+	.layout-wrapper .layout-main .layout-content {
+    	padding: 55px 17px 4px 17px;
+    }
+	.dashboard .card {
+    	padding: 6px;
+	}
+	.dashboard-top.card .ui-lg-4 {
+    	padding: 0em;
+    }
+    
+    .dashboard-top.card .ui-lg-8 {
+    	padding: 0em;
+    }
+    
+    .dashboard-top.card .ui-lg-3 {
+    	padding: .47em;
+    }
+    
+    .dashboard .user-card {
+	    margin-top: 24px;
+	    border: none;
+	    padding-right: 0px;
+	    padding-bottom: 10px;
+    }
+    
+    .dashboard .overview-box {
+	    margin-top: 0px;
+	}
+    
+    .dashboard.card {
+    	margin-bottom: 8px;
+    	padding: 0px;
+    }
+    
+	.dashboard .user-card .user-card-content .user-detail ul li {
+	    padding: 6px 24px;
+	}
+	.dashboard .user-card .user-card-content {
+    	min-height: auto;
+    }
+    .dashboard .user-card .user-card-content .user-detail ul {
+    	padding: 0px;
+    }
 	body .ui-datatable tfoot td {
 		background-color: transparent;
 		padding: 6px 10px;
@@ -273,6 +519,9 @@ body .ui-datatable .ui-datatable-data>tr td {
 	.dashboard-bottom {
 		margin-top: -10px;
 	}
+	.dashboard-bottom.card {
+		padding: 0px;
+	}
 	.fluxo-caixa {
 		margin-top: -20px;
 	}
@@ -297,22 +546,22 @@ body .ui-datatable .ui-datatable-data>tr td {
 	.dashboard .overview-box .overview-box-content .overview-box-title {
 		font-weight: bold;
 	}
-	.dashboard .overview-box.overview-box-1 .overview-box-details {
+	.dashboard .saldo-geral.overview-box.overview-box-1 .overview-box-details {
 		color: #efefef;
 		font-size: 12px;
 	}
 	.dashboard .overview-box .overview-box-content .overview-box-stats {
 		font-size: 24px;
 	}
-	.dashboard .overview-box.overview-box-3 {
+	.dashboard .acesso.overview-box.overview-box-3 {
 		background-color: #ffffff;
 		border: 1px solid #a7a7a7;
 		border-radius: 5px;
 	}
-	.dashboard .overview-box.overview-box-3 .overview-box-details {
+	.dashboard .acesso.overview-box.overview-box-3 .overview-box-details {
 		color: #e5d7ff;
 	}
-	.dashboard .overview-box.overview-box-1 {
+	.dashboard .saldo-geral.overview-box.overview-box-1 {
 		background-color: #069ed2;
 		border-radius: 5px;
 		height: 138px;
@@ -321,12 +570,13 @@ body .ui-datatable .ui-datatable-data>tr td {
 		margin-top: 12px;
 		margin-left: 15px;
 	}
-	.dashboard .overview-box.overview-box-1 .overview-box-icon {
+	.dashboard .saldo-geral.overview-box.overview-box-1 .overview-box-icon {
 		margin-top: -1px;
 	}
 }
 
 @media ( min-width :460px) {
+	
 	.ui-grid-col-3 {
 		width: 100%;
 	}
@@ -351,6 +601,14 @@ body .ui-datatable .ui-datatable-data>tr td {
 		font-size: 14px !important;
 	}
 }
+
+@media ( min-width :860px) {
+	.dashboard .user-card {
+	    margin-top: 3px;
+	    padding-bottom: 0px;
+	    padding-right: 0px;
+	}
+}
 </style>
 	</ui:define>
 
@@ -367,10 +625,10 @@ body .ui-datatable .ui-datatable-data>tr td {
 
 		<h:form id="form">
 
-			<div class="ui-g dashboard" style="margin-top: -25px">
+			<div class="ui-g dashboard saldo-geral_" style="margin-top: -10px">
 
-				<div class="ui-g-12 ui-lg-6 ui-xl-3">
-					<div class="ui-g overview-box overview-box-1">
+				<div class="ui-g-12 ui-lg-6 ui-xl-6 card">
+					<div class="ui-g overview-box overview-box-1 saldo-geral">
 						<div class="overview-box-icon">
 							<i class="fa fa-inbox"></i>
 						</div>
@@ -384,8 +642,8 @@ body .ui-datatable .ui-datatable-data>tr td {
 					</div>
 				</div>
 
-				<div class="ui-g-12 ui-lg-6 ui-xl-3 acesso-rapido">
-					<div class="ui-g overview-box overview-box-3" style="padding: 0px">
+				<div class="ui-g-12 ui-lg-6 ui-xl-6 acesso-rapido card">
+					<div class="ui-g overview-box overview-box-3 acesso" style="padding: 0px">
 
 						<label style="color: #585858; font-weight: bold; margin: 6px 8px">Acesso
 							rápido</label>
@@ -436,25 +694,151 @@ body .ui-datatable .ui-datatable-data>tr td {
 						</div>
 					</div>
 				</div>
-
-
-				<div class="ui-g-12 dashboard-top">
+				
+				
+				
+				<div class="ui-g dashboard card" style="margin-top: 6px;width:100%;">
+					
+					<div class="ui-g-12 ui-lg-3 ui-xl-3">
+						<div class="ui-g overview-box overview-box-2">
+							<div class="overview-box-icon">
+								<i class="fa fa-diamond" />
+							</div>
+							<div class="overview-box-content">
+								<div class="overview-box-title">Saldo de Lucro em Vendas</div>
+								<div class="overview-box-stats"><h:outputText value="#{dashboardBean.saldoLucroEmVendas}"><f:convertNumber type="currency" /></h:outputText></div>
+								<div class="overview-box-details"><p:commandLink value="Retirar valor" update="retira-dialog form-retira" oncomplete="PF('retira-dialog').show();" /></div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="ui-g-12 ui-lg-3 ui-xl-3">
+						<div class="ui-g overview-box overview-box-4">
+							<div class="overview-box-icon">
+								<i class="fa fa-dollar" />
+							</div>
+							<div class="overview-box-content">
+								<div class="overview-box-title">Total de Vendas <span style="font-size:9px;">Hoje (<h:outputText value="#{dashboardBean.hoje}" />)</span></div>
+								<div class="overview-box-stats"><h:outputText value="#{dashboardBean.totalVendasHojeValor}"><f:convertNumber type="currency" /></h:outputText></div>
+								<div class="overview-box-details"><h:outputText value="#{dashboardBean.totalVendasHojeQuantidade le 0 ? '' : (dashboardBean.totalVendasHojeQuantidade eq 1 ? ''.concat(dashboardBean.totalVendasHojeQuantidade).concat(' Venda / ') : ''.concat(dashboardBean.totalVendasHojeQuantidade).concat(' Vendas / '))}" /><h:outputText value="#{dashboardBean.totalLucrosHoje}"><f:convertNumber type="currency" /></h:outputText> de Lucro</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="ui-g-12 ui-lg-3 ui-xl-3">
+						<div class="ui-g overview-box overview-box-3">
+							<div class="overview-box-icon">
+								<i class="fa fa-motorcycle" />
+							</div>
+							<div class="overview-box-content">
+								<div class="overview-box-title">Entregas pendentes</div>
+								<div class="overview-box-stats"><h:outputText value="#{dashboardBean.linkEntregas} " /></div>
+								<div class="overview-box-details"><h:outputText value="#{dashboardBean.totalEntregasPendentesValor}"><f:convertNumber type="currency" /></h:outputText><span style="font-size:10px;"> <h:outputText value=" #{dashboardBean.totalEntregas}" /></span></div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="ui-g-12 ui-lg-3 ui-xl-3">
+						<div class="ui-g overview-box overview-box-1">
+							<div class="overview-box-icon">
+								<i class="fa fa-money" />
+							</div>
+							<div class="overview-box-content">
+								<div class="overview-box-title">Estimativa de Lucro</div>
+								<div class="overview-box-stats"><h:outputText value="#{dashboardBean.alucrar}"><f:convertNumber type="currency" /></h:outputText></div>
+								<div class="overview-box-details"><h:outputText value="#{dashboardBean.avender_.value}"><f:convertNumber type="currency" /></h:outputText> à vender </div>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+				
+				
+				<div class="ui-g-12 dashboard-top card" style="margin-top:6px;">
 					<div class="ui-g-12 ui-lg-8 ui-xl-7">
 
 						<label style="font-weight: bold; font-size: 14px">Fluxo de
 							Caixa</label>
 						<p:barChart model="#{dashboardBean.barModel}"
-							style="width: 100%; height: 250px;margin-top:-25px" />
+							style="width: 100%; height: 250px;margin-top:-38px" />
 
 
 
 					</div>
+					
+					
+					
+					
+					<div class="ui-g-12 ui-lg-4">
+		                <div class="user-card">
+		                    
+		                    <div class="user-card-content">
+		                        	
+		                        <div class="user-detail">
+		                           <ul>
+		                             <li class="clearfix">
+		                                 <i class="fa fa-inbox fa-fw"></i>
+		                                 <span class="project-title">Caixa</span>
+		                                 <span class="project-detail"><h:outputText value="#{dashboardBean.caixa.value}"><f:convertNumber type="currency" /></h:outputText></span>
+		                                 <div class="project-progressbar">
+		                                     <div class="project-progressbar-value" style="width: 50%"></div>
+		                                 </div>
+		                             </li>
+		                             <li class="clearfix">
+		                                 <i class="fa fa-usd fa-fw"></i>
+		                                 <span class="project-title">Vendas</span>
+		                                 <span class="project-detail"><h:outputText value="#{dashboardBean.vendas_.value}"><f:convertNumber type="currency" /></h:outputText></span>
+		                                 <div class="project-progressbar">
+		                                     <div class="project-progressbar-value" style="width: 20%"></div>
+		                                 </div>
+		                             </li>
+		                             <li class="clearfix">
+		                                 <i class="fa fa-plus-circle fa-fw"></i>
+		                                 <span class="project-title">Receitas</span>
+		                                 <span class="project-detail"><h:outputText value="#{dashboardBean.receitas.value}"><f:convertNumber type="currency" /></h:outputText></span>
+		                                 <div class="project-progressbar">
+		                                     <div class="project-progressbar-value" style="width: 65%"></div>
+		                                 </div>
+		                             </li>
+		                             <li class="clearfix">
+		                                 <i class="fa fa-shopping-cart fa-fw"></i>
+		                                 <span class="project-title">Compras</span>
+		                                 <span class="project-detail"><h:outputText value="#{dashboardBean.compras_.value}"><f:convertNumber type="currency" /></h:outputText></span>
+		                                 <div class="project-progressbar">
+		                                     <div class="project-progressbar-value" style="width: 80%"></div>
+		                                 </div>
+		                             </li>
+		                             <li class="clearfix">
+		                                 <i class="fa fa-minus-circle fa-fw"></i>
+		                                 <span class="project-title">Despesas</span>
+		                                 <span class="project-detail"><h:outputText value="#{dashboardBean.despesas.value}"><f:convertNumber type="currency" /></h:outputText></span>
+		                                 <div class="project-progressbar">
+		                                     <div class="project-progressbar-value" style="width: 50%"></div>
+		                                 </div>
+		                             </li>
+		                             <li class="clearfix">
+		                                 <i class="fa fa-cubes fa-fw"></i>
+		                                 <span class="project-title">À vender</span>
+		                                 <span class="project-detail"><h:outputText value="#{dashboardBean.avender_.value}"><f:convertNumber type="currency" /></h:outputText></span>
+		                                 <div class="project-progressbar">
+		                                     <div class="project-progressbar-value" style="width: 20%"></div>
+		                                 </div>
+		                             </li>
+		                           </ul>
+		                        </div>
+		                    </div>
+		                </div>
+		            </div>
+					
+					
+					
+					
 
 					<div class="ui-g-12 ui-lg-4 ui-xl-5">
 						<p:barChart model="#{dashboardBean.mixedModel}" rendered="false"
 							style="width: 100%; height: 255px;" />
 
-						<p:dataTable id="fluxoTable" rows="10"
+						<p:dataTable id="fluxoTable" rows="10" rendered="false"
 							value="#{dashboardBean.tabela}" var="fluxoDeCaixa"
 							styleClass="fluxo-caixa">
 
@@ -471,11 +855,54 @@ body .ui-datatable .ui-datatable-data>tr td {
 						</p:dataTable>
 					</div>
 				</div>
+				
+				
+				<div class="card_" style="width:100%;">	
+					<div style="text-align:center;margin-top: -5px;">
+						<h2>Resumo de vendas / Estoque</h2>
+					</div>
+				</div>
+				
+				
+				
 
-				<div class="ui-g-12 dashboard-bottom">
+
+				
+				
+				
+				<div class="ui-g-12 dashboard-bottom card" style="padding-top:10px;margin-top: -8px;margin-bottom:35px;">		
+				
+				
 					<div class="ui-g-12 ui-lg-4 ui-xl-4">
+						
+						<div style="text-align:center;"> 
+							<label style="font-weight: bold; font-size: 14px;color:#585757;">Vendas por Dia vs Lucro</label>
+						</div>
+						
+						<p:barChart id="barChart-vendasPorSemana"
+							model="#{dashboardBean.mixedModelPorDia_}"
+							styleClass="barChart-02" style="width: 100%;margin-top: 10px;" />
+							
+							
+						<div style="text-align:center;margin-top: 8px;"> 
+							<label style="font-weight: bold; font-size: 14px;color:#585757;">Vendas por semana vs Lucro</label>
+						</div>
+						
+						<p:barChart 
+							model="#{dashboardBean.mixedModelPorSemana}"
+							styleClass="barChart-02" style="width: 100%;margin-top: 10px;" />
+					</div>
+					
+								
+						
+					<div class="ui-g-12 ui-lg-4 ui-xl-4">
+											
+						<div style="text-align:center;">
+							<label style="font-weight: bold; font-size: 14px;color:#585757;">Total de Vendas vs Categoria</label>
+						</div>
+												
 						<p:donutChart model="#{dashboardBean.donutModel}"
-							style="width: 100%; height: 230px;" />
+							style="width: 100%; height: 200px;margin-top: 10px;" />
 
 						<p:commandButton icon="fa fa-fw fa-search" id="btn-detalhes-venda"
 							style="margin-top: -32px; margin-bottom: 2px;float:right;font-weight: bold;width: 32px;height:26px;background: #f3f3f3f0;color: #716c6c;border: 1px solid #6b6b6b"
@@ -486,7 +913,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 							oncomplete="stop();PF('info-detalhes').show();">
 						</p:commandButton>
 
-						<p:dataTable id="fluxoTable2" scrollable="true" scrollHeight="150"
+						<p:dataTable id="fluxoTable2" scrollable="true" scrollHeight="151"
 							value="#{dashboardBean.detalhesVendasPorCategoria}" var="venda"
 							styleClass="vendas-top5" selectionMode="single"
 							selection="#{dashboardBean.vendaPorCategoriaSelecionada}"
@@ -495,7 +922,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 							<p:ajax event="rowSelect" process="@this"
 								update="form:btn-detalhes-venda" />
 
-							<p:column headerText="Categoria" style="text-align:left">
+							<p:column headerText="Categoria" style="text-align:left;">
 								<h:outputText value="#{venda.item}" />
 							</p:column>
 
@@ -522,9 +949,19 @@ body .ui-datatable .ui-datatable-data>tr td {
 						</p:dataTable>
 					</div>
 
-					<div class="ui-g-12 ui-lg-4 ui-xl-4">
+					
+
+					
+					
+					
+					<div class="ui-g-12 ui-lg-4 ui-xl-4">					
+						
+						<div style="text-align:center;">
+							<label style="font-weight: bold; font-size: 14px;color:#585757;">Estoque para Vendas vs Categoria</label>
+						</div>
+						
 						<p:polarAreaChart model="#{dashboardBean.polarAreaModel}"
-							style="width: 100%; height: 230px;" />
+							style="width: 100%; height: 200px;margin-top: 10px;" />
 
 						<p:commandButton icon="fa fa-fw fa-search"
 							id="btn-detalhes-estoque"
@@ -536,7 +973,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 							oncomplete="stop();PF('info-detalhes-estoque').show();">
 						</p:commandButton>
 
-						<p:dataTable id="fluxoTable3" scrollable="true" scrollHeight="150"
+						<p:dataTable id="fluxoTable3" scrollable="true" scrollHeight="151"
 							value="#{dashboardBean.detalhesEstoqueParaVendaPorCategoria}"
 							var="estoque" styleClass="vendas-top5" selectionMode="single"
 							selection="#{dashboardBean.estoquePorCategoriaSelecionada}"
@@ -546,7 +983,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 								update="form:btn-detalhes-estoque" />
 
 							<p:column headerText="Categoria" width="10%"
-								style="text-align:left">
+								style="text-align:left;">
 								<h:outputText value="#{estoque.item}" />
 							</p:column>
 
@@ -574,38 +1011,11 @@ body .ui-datatable .ui-datatable-data>tr td {
 
 						</p:dataTable>
 					</div>
-
-					<div class="ui-g-12 ui-lg-4 ui-xl-4">
-						<p:pieChart model="#{dashboardBean.pieModel}"
-							style="width: 100%; height: 230px;" />
-
-						<p:dataTable id="fluxoTable4" scrollable="true" scrollHeight="150"
-							value="#{dashboardBean.top5Despesas}" var="top5Despesa"
-							styleClass="vendas-top5">
-
-							<p:column headerText="Categoria" width="10%"
-								style="text-align:left">
-								<h:outputText value="#{top5Despesa.item}" />
-							</p:column>
-
-							<p:column headerText="Valor" width="80%" style="text-align:right">
-								<h:outputText value="#{top5Despesa.value}">
-									<f:convertNumber type="currency" />
-								</h:outputText>
-							</p:column>
-
-							<p:columnGroup type="footer">
-								<p:row>
-									<p:column style="text-align:right" footerText="Total:" />
-									<p:column style="text-align:right"
-										footerText="#{dashboardBean.totalDespesasTop5}" />
-								</p:row>
-							</p:columnGroup>
-
-						</p:dataTable>
-					</div>
+					
 				</div>
 			</div>
+				
+				
 
 		</h:form>
 
@@ -818,6 +1228,61 @@ body .ui-datatable .ui-datatable-data>tr td {
 						value="Fechar" onstart="start();"
 						oncomplete="stop();PF('produto-dialog').hide();">
 					</p:commandButton>
+				</div>
+			</h:form>
+		</p:dialog>
+		
+		
+		
+		<p:dialog
+			header="Retirada de Lucro"
+			widgetVar="retira-dialog" id="retira-dialog" resizable="false"
+			modal="true" closeOnEscape="true" responsive="true" width="250px"
+			style="margin-top: 10px">
+
+			<h:form id="form-retira">
+
+				<div class="ui-fluid">
+					<p:defaultCommand target="btn-salvar" />
+
+					<div class="card card-w-title ui-fluid"
+						style="padding: 0px 5px 0px 5px; padding-bottom: 0px !important">
+
+						<p:panelGrid columns="1" layout="grid"
+							style="margin-top: 8px; margin-bottom: 5px"
+							styleClass="panelgrid-noborder disabled disabled">
+
+							<p:outputLabel value="Valor" for="valor-retirada" />
+							<p:inputNumber id="valor-retirada" decimalPlaces="2"
+										autocomplete="off" styleClass="valor-numerico"
+										placeholder="R$ 0,00" symbol="R$ "
+										value="#{dashboardBean.valorRetirada}" />				
+						</p:panelGrid>
+
+						<p:spacer />
+						
+						<div style="width: 114%;margin-left: -15px; border-top: 1px solid #ccc"></div>
+						
+						<p:panel class="card card-w-title ui-fluid panel-btn"
+								style="margin-top:5px;padding-bottom: 0px;margin-bottom: 0px;">
+		
+							<p:commandButton id="btn-salvar" value="Salvar"
+								widgetVar="btn-save" icon="fa fa-fw fa-save"
+								onstart="PF('downloadLoading').show(); PF('btn-save').disable();"
+								update="form form-retira" process="@this form-retira valor-retirada"
+								action="#{dashboardBean.retirarLucro}"
+								style="font-weight: bold;background-color: #0d8819b5; width: 97px">
+	
+							</p:commandButton>
+	
+							<p:commandButton icon="fa fa-fw fa-close" value="Fechar"
+								onclick="PF('retira-dialog').hide();" 
+								style="margin-left:1px;background-color: #e15e5ef0; font-weight: bold; float: left; width: 97px">
+	
+							</p:commandButton>
+						</p:panel>
+
+					</div>
 				</div>
 			</h:form>
 		</p:dialog>
