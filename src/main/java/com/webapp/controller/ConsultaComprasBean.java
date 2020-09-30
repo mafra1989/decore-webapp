@@ -20,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.Caixa;
+import com.webapp.model.CategoriaLancamento;
 import com.webapp.model.CategoriaProduto;
 import com.webapp.model.Compra;
 import com.webapp.model.Conta;
@@ -36,6 +37,7 @@ import com.webapp.model.Produto;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
 import com.webapp.repository.Caixas;
+import com.webapp.repository.CategoriasLancamentos;
 import com.webapp.repository.CategoriasProdutos;
 import com.webapp.repository.Compras;
 import com.webapp.repository.Contas;
@@ -111,6 +113,9 @@ public class ConsultaComprasBean implements Serializable {
 	
 	@Inject
 	private Lancamentos lancamentos;
+	
+	@Inject
+	private CategoriasLancamentos categoriasLancamentos;
 	
 	@Inject
 	private Contas contas;
@@ -433,7 +438,8 @@ public class ConsultaComprasBean implements Serializable {
 							produtos.save(produto);
 						}
 						
-						List<Lancamento> todosLancamento = lancamentos.todos(usuario_.getEmpresa());
+						CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome("Retirada de lucro", null);
+						List<Lancamento> todosLancamento = lancamentos.todos(usuario_.getEmpresa(), categoriaLancamento);
 						for (Lancamento lancamento : todosLancamento) {
 							lancamentos.remove(lancamento);
 						}

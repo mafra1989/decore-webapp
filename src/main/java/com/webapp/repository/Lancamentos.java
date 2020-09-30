@@ -43,9 +43,9 @@ public class Lancamentos implements Serializable {
 		this.manager.remove(despesaTemp);
 	}
 	
-	public List<Lancamento> todos(String empresa) {
-		return this.manager.createQuery("from Lancamento where empresa = :empresa order by id", Lancamento.class)
-				.setParameter("empresa", empresa).getResultList();
+	public List<Lancamento> todos(String empresa, CategoriaLancamento categoriaLancamento) {
+		return this.manager.createQuery("from Lancamento where empresa = :empresa AND categoriaLancamento.id = :id order by id", Lancamento.class)
+				.setParameter("empresa", empresa).setParameter("id", categoriaLancamento.getId()).getResultList();
 	}
 	
 	public Lancamento porNumeroLancamento(Long condigoOperacao, String empresa) {
