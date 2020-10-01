@@ -36,7 +36,7 @@ public class TiposDespesas implements Serializable {
 	}
 
 	public List<TipoLancamento> todos() {
-		return this.manager.createQuery("from TipoLancamento order by descricao", TipoLancamento.class).getResultList();
+		return this.manager.createQuery("from TipoLancamento where descricao != 'Lucros distribuídos' order by descricao", TipoLancamento.class).getResultList();
 	}
 	
 	public List<TipoLancamento> porOrigem(OrigemLancamento origem) {
@@ -44,7 +44,7 @@ public class TiposDespesas implements Serializable {
 	}
 
 	public List<TipoLancamento> filtrados(TipoLancamentoFilter filter) {
-		return this.manager.createQuery("from TipoLancamento i where i.descricao like :descricao order by descricao", TipoLancamento.class)
+		return this.manager.createQuery("from TipoLancamento i where i.descricao != 'Lucros distribuídos' AND i.descricao like :descricao order by descricao", TipoLancamento.class)
 				.setParameter("descricao", "%" + filter.getDescricao() + "%").getResultList();
 	}
 	

@@ -303,7 +303,7 @@ public class RegistroDevolucoesBean implements Serializable {
 	        
 		} else {
 
-			PrimeFaces.current().executeScript("swal({ type: 'warning', title: 'Caixa Fechado!', text: 'Para fazer devolução, primeiro você deve abrir o caixa!', timer: 5000 });");		
+			PrimeFaces.current().executeScript("swal({ type: 'error', title: 'Caixa Fechado!', text: 'Para fazer devolução, primeiro você deve abrir o caixa!', timer: 5000 });");		
 		}
 		
 	}
@@ -429,7 +429,7 @@ public class RegistroDevolucoesBean implements Serializable {
 			
 			PrimeFaces.current().executeScript(
 					"Toast.fire({ " +
-					  "icon: 'warning', " +
+					  "icon: 'success', " +
 					  "title: '"+ mensagem +"'" +
 					"}) ");
 			
@@ -441,8 +441,13 @@ public class RegistroDevolucoesBean implements Serializable {
 		} else {
 			
 			filter = new ProdutoFilter();
-			PrimeFaces.current()
-			.executeScript("swal({ type: 'warning', title: 'Atenção!', text: 'Nenhuma resultado encontrado!', timer: 1500 });");
+			//PrimeFaces.current()
+			//.executeScript("swal({ type: 'warning', title: 'Atenção!', text: 'Nenhuma resultado encontrado!', timer: 1500 });");
+			PrimeFaces.current().executeScript(
+					"Toast.fire({ " +
+					  "icon: 'error', " +
+					  "title: 'Nenhum resultado encontrado!'" +
+					"}) ");
 		}
 		
 		

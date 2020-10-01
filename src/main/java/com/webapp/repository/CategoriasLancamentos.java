@@ -50,12 +50,12 @@ public class CategoriasLancamentos implements Serializable {
 	}
 	
 	public List<CategoriaLancamento> todos(String empresa) {
-		return this.manager.createQuery("from CategoriaLancamento order by nome", CategoriaLancamento.class).getResultList();
+		return this.manager.createQuery("from CategoriaLancamento where nome != 'Retirada de lucro' order by nome", CategoriaLancamento.class).getResultList();
 	}
 
 	public List<CategoriaLancamento> todasDespesas(String empresa) {
 		return this.manager
-				.createQuery("from CategoriaLancamento c where c.tipoLancamento.origem = :origem order by nome",
+				.createQuery("from CategoriaLancamento c where c.nome != 'Retirada de lucro' AND c.tipoLancamento.origem = :origem order by nome",
 						CategoriaLancamento.class)
 				.setParameter("origem", OrigemLancamento.DEBITO).getResultList();
 	}
@@ -74,7 +74,7 @@ public class CategoriasLancamentos implements Serializable {
 	}
 
 	public List<CategoriaLancamento> filtrados(CategoriaLancamentoFilter filter) {
-		return this.manager.createQuery("from CategoriaLancamento i where lower(i.nome) like :nome order by nome",
+		return this.manager.createQuery("from CategoriaLancamento i where i.nome != 'Retirada de lucro' lower(i.nome) like :nome order by nome",
 				CategoriaLancamento.class)
 				.setParameter("nome", "%" + filter.getNome().toLowerCase() + "%").getResultList();
 	}

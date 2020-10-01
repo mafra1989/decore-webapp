@@ -389,7 +389,7 @@ public class PDVBean implements Serializable {
 	        
 		} else {
 			produto = new Produto();
-			PrimeFaces.current().executeScript("swal({ type: 'warning', title: 'Caixa Fechado!', text: 'Para usar o PDV, primeiro você deve abrir o caixa!', timer: 5000 });");		
+			PrimeFaces.current().executeScript("swal({ type: 'error', title: 'Caixa Fechado!', text: 'Para usar o PDV, primeiro você deve abrir o caixa!', timer: 5000 });");		
 		}
     }
 
