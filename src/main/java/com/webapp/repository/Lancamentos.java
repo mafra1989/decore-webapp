@@ -87,6 +87,8 @@ public class Lancamentos implements Serializable {
 
 		if (categorias != null && categorias.length > 0) {
 			conditionCategoria = "AND i.categoriaLancamento.nome in (:categorias) ";
+		} else {
+			conditionCategoria = "AND i.categoriaLancamento.nome != 'Retirada de lucro' ";
 		}
 		
 		if (usuario != null && usuario.getId() != null) { 

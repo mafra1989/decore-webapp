@@ -74,7 +74,7 @@ public class CategoriasLancamentos implements Serializable {
 	}
 
 	public List<CategoriaLancamento> filtrados(CategoriaLancamentoFilter filter) {
-		return this.manager.createQuery("from CategoriaLancamento i where i.nome != 'Retirada de lucro' lower(i.nome) like :nome order by nome",
+		return this.manager.createQuery("from CategoriaLancamento i where i.nome != 'Retirada de lucro' AND lower(i.nome) like :nome order by nome",
 				CategoriaLancamento.class)
 				.setParameter("nome", "%" + filter.getNome().toLowerCase() + "%").getResultList();
 	}
