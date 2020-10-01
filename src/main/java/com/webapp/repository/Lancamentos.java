@@ -697,7 +697,7 @@ public class Lancamentos implements Serializable {
 
 		String jpql = "SELECT sum(i.valor) FROM Lancamento i "
 				+ "WHERE i.empresa = :empresa AND i.dataLancamento BETWEEN :dataInicio AND :dataFim "
-				+ "AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.conta = 'N' AND i.ajuste = 'N'";
+				+ "AND i.categoriaLancamento.nome != 'Retirada de lucro' AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.conta = 'N' AND i.ajuste = 'N'";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
 				calendarStop.getTime()).setParameter("origemLancamento", OrigemLancamento.DEBITO);
 
@@ -732,7 +732,7 @@ public class Lancamentos implements Serializable {
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Lancamento i "
 				+ "WHERE i.empresa = :empresa AND i.dataLancamento BETWEEN :dataInicio AND :dataFim "
-				+ "AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.conta = 'N' AND i.ajuste = 'N' " + condition + "group by " + groupBy_Condition
+				+ "AND i.categoriaLancamento.nome != 'Retirada de lucro' AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.conta = 'N' AND i.ajuste = 'N' " + condition + "group by " + groupBy_Condition
 				+ " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
 				calendarStop.getTime()).setParameter("origemLancamento", OrigemLancamento.DEBITO);

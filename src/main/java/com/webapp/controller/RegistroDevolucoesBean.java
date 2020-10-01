@@ -165,6 +165,8 @@ public class RegistroDevolucoesBean implements Serializable {
 	@Inject
 	private FormasPagamentos formasPagamentos;
 	
+	private boolean caixaAberto = false;
+	
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -217,6 +219,13 @@ public class RegistroDevolucoesBean implements Serializable {
 				
 				listaDevolucao.add(itemVenda);
 			}
+			
+			
+			Caixa caixa = caixas.porUsuario(usuario_, usuario_.getEmpresa());
+			if(caixa != null) {
+				caixaAberto = true;
+			}
+			
 		}
 	}
 	
@@ -231,7 +240,8 @@ public class RegistroDevolucoesBean implements Serializable {
         return listaProdutos;
     }
 	
-	public void onItemSelect(SelectEvent event) {		
+	public void onItemSelect(SelectEvent event) {	
+		
         System.out.println(event.getObject().toString());
         produto = (Produto) event.getObject();
     }
@@ -241,52 +251,59 @@ public class RegistroDevolucoesBean implements Serializable {
 	public void pesquisar_() {
 		System.out.println("Código escaneado: " + filter.getCodigo());
 		
-		if(!trocaPendente) {
+		if(caixaAberto) {
 			
-			if(leitor) {
+			if(!trocaPendente) {
 				
-				if(!filter.getCodigo().trim().equals("")) {
+				if(leitor) {
 					
-					produto = produtos.porCodigoDeBarras(filter.getCodigo(), usuario_.getEmpresa());	
-					
-					pesquisar(produto);
-					
-					if(produto == null) {
+					if(!filter.getCodigo().trim().equals("")) {
 						
-						filter = new ProdutoFilter();
-						PrimeFaces.current()
-						.executeScript("swal({ type: 'error', title: 'Erro!', text: 'Produto não encontrado!', timer: 1500 });");
+						produto = produtos.porCodigoDeBarras(filter.getCodigo(), usuario_.getEmpresa());	
 						
-						itensVendasFiltradas = new ArrayList<ItemVenda>();
-									
-					} 
+						pesquisar(produto);
+						
+						if(produto == null) {
+							
+							filter = new ProdutoFilter();
+							PrimeFaces.current()
+							.executeScript("swal({ type: 'error', title: 'Erro!', text: 'Produto não encontrado!', timer: 1500 });");
+							
+							itensVendasFiltradas = new ArrayList<ItemVenda>();
+										
+						} 
+						
+					} else {
+						produto = null;
+						pesquisar(produto);
+					}
 					
 				} else {
-					produto = null;
-					pesquisar(produto);
+					
+					pesquisar(produto_);
+					
+					/*if(produto != null) {
+						
+						pesquisar();
+												
+					} else {
+
+						PrimeFaces.current()
+						.executeScript("swal({ type: 'error', title: 'Erro!', text: 'Produto não encontrado!', timer: 1500 });");
+
+					}*/
 				}
 				
 			} else {
 				
-				pesquisar(produto_);
-				
-				/*if(produto != null) {
-					
-					pesquisar();
-											
-				} else {
+				PrimeFaces.current()
+					.executeScript("swal({ type: 'error', title: 'Ops!', text: 'Exitem itens pendentes para troca!', timer: 2000 });");
 
-					PrimeFaces.current()
-					.executeScript("swal({ type: 'error', title: 'Erro!', text: 'Produto não encontrado!', timer: 1500 });");
-
-				}*/
 			}
-			
+	        
 		} else {
-			
-			PrimeFaces.current()
-				.executeScript("swal({ type: 'error', title: 'Ops!', text: 'Exitem itens pendentes para troca!', timer: 2000 });");
 
+			PrimeFaces.current().executeScript("swal({ type: 'warning', title: 'Caixa Fechado!', text: 'Para fazer devolução, primeiro você deve abrir o caixa!', timer: 5000 });");		
 		}
 		
 	}
@@ -407,8 +424,14 @@ public class RegistroDevolucoesBean implements Serializable {
 			
 			
 			
-			PrimeFaces.current()
-			.executeScript("swal({ type: 'success', title: 'Pronto!', text: '" + mensagem + "', timer: 1000 });");
+			//PrimeFaces.current()
+			//.executeScript("swal({ type: 'success', title: 'Pronto!', text: '" + mensagem + "', timer: 1000 });");
+			
+			PrimeFaces.current().executeScript(
+					"Toast.fire({ " +
+					  "icon: 'warning', " +
+					  "title: '"+ mensagem +"'" +
+					"}) ");
 			
 			
 			devolucao = new Devolucao();
