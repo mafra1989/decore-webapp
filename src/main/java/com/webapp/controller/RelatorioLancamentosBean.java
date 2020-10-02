@@ -691,6 +691,9 @@ public class RelatorioLancamentosBean implements Serializable {
 				System.out.println(semana01);
 
 				List<Object[]> resultTemp = contas.totalLancamentosPorSemana(ano01, semana01, semana01, true, usuario.getEmpresa());
+				
+				List<Object[]> resultLancamentoDespesas = lancamentos.totalLancamentosPorSemana(ano01, semana01, semana01, true, usuario.getEmpresa());
+				resultTemp.addAll(resultLancamentoDespesas);
 
 				if (resultTemp.size() == 0) {
 

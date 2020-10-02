@@ -399,25 +399,21 @@ public class Lancamentos implements Serializable {
 		return result;
 	}
 
-	/* DEPRECIADO */
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalDespesasPorSemana(String ano, String semana01, String semana02,
-			CategoriaLancamento categoriaLancamento, boolean chartCondition) {
+	public List<Object[]> totalLancamentosPorSemana(String ano, String semana01, String semana02,
+			boolean chartCondition, String empresa) {
 
 		String condition = "";
 		String select_Condition = "";
 		String sum_Condition = "";
 		String groupBy_Condition = "";
 		String orderBy_Condition = "";
-		if (categoriaLancamento != null && categoriaLancamento.getId() != null) {
-			condition = "AND i.categoriaLancamento.nome = :categoriaLancamento ";
-		}
 
 		if (chartCondition != false) {
-			select_Condition = "i.semana, i.ano, ";
+			select_Condition = "i.semana, i.ano, i.numeroLancamento, i.categoriaLancamento.tipoLancamento.origem, ";
 			sum_Condition = "sum(i.valor)";
-			groupBy_Condition = "i.semana, i.ano";
-			orderBy_Condition = "i.semana asc, i.ano asc";
+			groupBy_Condition = "i.semana, i.ano, i.numeroLancamento, i.categoriaLancamento.tipoLancamento.origem ";
+			orderBy_Condition = "i.semana asc, i.ano asc, i.categoriaLancamento.tipoLancamento.origem";
 		} else {
 			select_Condition = "i.categoriaLancamento.tipoLancamento.descricao, ";
 			sum_Condition = "count(i.categoriaLancamento.tipoLancamento.descricao)";
@@ -427,15 +423,11 @@ public class Lancamentos implements Serializable {
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Lancamento i "
 				+ "WHERE i.semana BETWEEN :semanaInicio AND :semanaFim " + "AND i.ano = :ano "
-				+ "AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento " + condition + "group by "
+				+ condition + "group by "
 				+ groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("semanaInicio", Long.parseLong(semana01.replace("W", "")))
 				.setParameter("semanaFim", Long.parseLong(semana02.replace("W", "")))
 				.setParameter("ano", Long.parseLong(ano)).setParameter("origemLancamento", OrigemLancamento.DEBITO);
-
-		if (categoriaLancamento != null && categoriaLancamento.getId() != null) {
-			q.setParameter("categoriaLancamento", categoriaLancamento.getNome());
-		}
 
 		List<Object[]> result = q.getResultList();
 

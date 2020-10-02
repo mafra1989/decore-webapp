@@ -495,6 +495,7 @@ public class Contas implements Serializable {
 
 		return result;
 	}
+	
 
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalDespesasPorMes(String ano, String mes01, String mes02, boolean chartCondition, String empresa) {
