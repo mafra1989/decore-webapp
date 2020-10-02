@@ -692,8 +692,8 @@ public class RelatorioLancamentosBean implements Serializable {
 
 				List<Object[]> resultTemp = contas.totalLancamentosPorSemana(ano01, semana01, semana01, true, usuario.getEmpresa());
 				
-				List<Object[]> resultLancamentoDespesas = lancamentos.totalLancamentosPorSemana(ano01, semana01, semana01, true, usuario.getEmpresa());
-				resultTemp.addAll(resultLancamentoDespesas);
+				List<Object[]> resultLancamento = lancamentos.totalLancamentosPorSemana(ano01, semana01, semana01, true, usuario.getEmpresa());
+				resultTemp.addAll(resultLancamento);
 
 				if (resultTemp.size() == 0) {
 
@@ -1014,7 +1014,10 @@ public class RelatorioLancamentosBean implements Serializable {
 					mes01 = "0" + i;
 				}
 
-				List<Object[]> resultTemp = contas.totalDespesasPorMes(ano02, mes01, mes01, true, usuario.getEmpresa());
+				List<Object[]> resultTemp = contas.totalLancamentosPorMes(ano02, mes01, mes01, true, usuario.getEmpresa());
+				
+				List<Object[]> resultLancamento = lancamentos.totalLancamentosPorMes(ano02, mes01, mes01, true, usuario.getEmpresa());
+				resultTemp.addAll(resultLancamento);
 
 				if (resultTemp.size() == 0) {
 
@@ -1268,7 +1271,10 @@ public class RelatorioLancamentosBean implements Serializable {
 				
 				String ano03 = String.valueOf(i);
 				
-				List<Object[]> resultTemp = contas.totalDespesasPorAno(ano03, ano03, true, usuario.getEmpresa());
+				List<Object[]> resultTemp = contas.totalLancamentosPorAno(ano03, ano03, true, usuario.getEmpresa());
+				
+				List<Object[]> resultLancamento = lancamentos.totalLancamentosPorAno(ano03, ano03, true, usuario.getEmpresa());
+				resultTemp.addAll(resultLancamento);
 				
 				if (resultTemp.size() == 0) {
 
@@ -1479,10 +1485,10 @@ public class RelatorioLancamentosBean implements Serializable {
 
 	public void prepareDonutModelPorSemana() {
 
-		/*List<Object[]> result = lancamentos.totalDespesasPorSemana(ano01, semana01, semana02, categoriaPorSemana,
+		List<Object[]> result = lancamentos.totalDespesasPorSemana(ano01, semana01, semana02, categoriaPorSemana,
 				false);
 
-		createDonutModel(result);*/
+		createDonutModel(result);
 	}
 
 	public void prepareDonutModelPorMes() {

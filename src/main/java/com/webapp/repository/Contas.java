@@ -498,7 +498,7 @@ public class Contas implements Serializable {
 	
 
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalDespesasPorMes(String ano, String mes01, String mes02, boolean chartCondition, String empresa) {
+	public List<Object[]> totalLancamentosPorMes(String ano, String mes01, String mes02, boolean chartCondition, String empresa) {
 
 		String condition = "";
 		String select_Condition = "";
@@ -531,7 +531,7 @@ public class Contas implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalDespesasPorAno(String ano01, String ano02, boolean chartCondition, String empresa) {
+	public List<Object[]> totalLancamentosPorAno(String ano01, String ano02, boolean chartCondition, String empresa) {
 
 		String condition = "";
 		String select_Condition = "";
