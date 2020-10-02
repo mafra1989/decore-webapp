@@ -427,7 +427,7 @@ public class Lancamentos implements Serializable {
 				+ groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("semanaInicio", Long.parseLong(semana01.replace("W", "")))
 				.setParameter("semanaFim", Long.parseLong(semana02.replace("W", "")))
-				.setParameter("ano", Long.parseLong(ano)).setParameter("origemLancamento", OrigemLancamento.DEBITO);
+				.setParameter("ano", Long.parseLong(ano));
 
 		List<Object[]> result = q.getResultList();
 
