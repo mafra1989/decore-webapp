@@ -1479,10 +1479,10 @@ public class RelatorioLancamentosBean implements Serializable {
 
 	public void prepareDonutModelPorSemana() {
 
-		List<Object[]> result = lancamentos.totalDespesasPorSemana(ano01, semana01, semana02, categoriaPorSemana,
+		/*List<Object[]> result = lancamentos.totalDespesasPorSemana(ano01, semana01, semana02, categoriaPorSemana,
 				false);
 
-		createDonutModel(result);
+		createDonutModel(result);*/
 	}
 
 	public void prepareDonutModelPorMes() {
