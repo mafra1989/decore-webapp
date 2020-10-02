@@ -402,7 +402,19 @@ public class RelatorioLancamentosBean implements Serializable {
 				calendarStopTemp.set(Calendar.MINUTE, 59);
 				calendarStopTemp.set(Calendar.SECOND, 59);
 
-				List<Object[]> resultTemp = contas.totalLancamentosPorData(calendarStartTemp, calendarStopTemp, usuario.getEmpresa());
+				//List<Object[]> resultTemp = contas.totalLancamentosPorData(calendarStartTemp, calendarStopTemp, usuario.getEmpresa());
+				
+				List<Object[]> resultTemp = new ArrayList<>();
+				List<Object[]> resultDespesasPagas = contas.totalDespesasPagasPorData(calendarStartTemp, calendarStopTemp, usuario.getEmpresa());
+				List<Object[]> resultReceitasPagas = contas.totalReceitasPagasPorData(calendarStartTemp, calendarStopTemp, usuario.getEmpresa());
+				
+				List<Object[]> resultLancamentoDespesas = lancamentos.totalLancamentosDespesasPorData(calendarStartTemp, calendarStopTemp, usuario.getEmpresa());
+				List<Object[]> resultLancamentoReceitas = lancamentos.totalLancamentosReceitasPorData(calendarStartTemp, calendarStopTemp, usuario.getEmpresa());
+					
+				resultTemp.addAll(resultDespesasPagas);
+				resultTemp.addAll(resultLancamentoDespesas);
+				resultTemp.addAll(resultReceitasPagas);
+				resultTemp.addAll(resultLancamentoReceitas);
 
 				if (resultTemp.size() == 0) {
 
