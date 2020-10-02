@@ -531,9 +531,9 @@ public class Lancamentos implements Serializable {
 		String orderBy_Condition = "";
 
 		if (chartCondition != false) {
-			select_Condition = "i.mes, i.ano, i.codigoOperacao, i.categoriaLancamento.tipoLancamento.origem, ";
+			select_Condition = "i.mes, i.ano, i.numeroLancamento, i.categoriaLancamento.tipoLancamento.origem, ";
 			sum_Condition = "sum(i.valor)";
-			groupBy_Condition = "i.mes, i.ano, i.codigoOperacao, i.categoriaLancamento.tipoLancamento.origem ";
+			groupBy_Condition = "i.mes, i.ano, i.numeroLancamento, i.categoriaLancamento.tipoLancamento.origem ";
 			orderBy_Condition = "i.mes asc, i.ano asc, i.categoriaLancamento.tipoLancamento.origem";
 			
 		} else {
@@ -611,9 +611,9 @@ public class Lancamentos implements Serializable {
 		String orderBy_Condition = "";
 
 		if (chartCondition != false) {
-			select_Condition = "i.ano, i.codigoOperacao, i.categoriaLancamento.tipoLancamento.origem, ";
+			select_Condition = "i.ano, i.numeroLancamento, i.categoriaLancamento.tipoLancamento.origem, ";
 			sum_Condition = "sum(i.valor)";
-			groupBy_Condition = "i.ano, i.codigoOperacao, i.categoriaLancamento.tipoLancamento.origem";
+			groupBy_Condition = "i.ano, i.numeroLancamento, i.categoriaLancamento.tipoLancamento.origem";
 			orderBy_Condition = "i.ano asc, i.categoriaLancamento.tipoLancamento.origem";
 			
 		} else {
