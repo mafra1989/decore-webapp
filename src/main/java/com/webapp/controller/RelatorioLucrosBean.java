@@ -487,7 +487,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 		List<String> labels = new ArrayList<>();
 		
-		boolean percentualDiario = false;
+		boolean percentualDiario = true;
 
 		for (Object[] object : result) {
 			Double totalDeLucroEmVendas = ((Number) object[3]).doubleValue();
