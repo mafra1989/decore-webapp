@@ -529,7 +529,9 @@ public class RelatorioLucrosBean implements Serializable {
 				// if (totalDeReceitas > 0 || totalDeDespesas > 0 || totalDeVendas > 0 ||
 				// totalCompras > 0) {
 
-				values.add(((totalVendasComPrecoVenda/*totalDeLucroEmVendas*/ + totalDeReceitas) - totalDeDespesas));
+				//values.add(((totalVendasComPrecoVenda/*totalDeLucroEmVendas*/ + totalDeReceitas) - totalDeDespesas));
+				
+				values.add(((totalDeLucroEmVendas + totalDeReceitas) - totalDeDespesas));
 
 				if (((totalDeLucroEmVendas + totalDeReceitas) - totalDeDespesas) == 0 && totalDeDespesas > 0) {
 					values2.add(-100.0);
@@ -560,7 +562,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 			} else {
 				
-				percentualDiario = true;
+				//percentualDiario = true;
 				// if (totalDeVendas > 0 || totalCompras > 0) {
 				values.add(totalDeLucroEmVendas/* - totalDeCompras */);
 
@@ -696,7 +698,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 		for (Object[] object : result) {
 
-			Double totalDeVendas = ((Number) object[2]).doubleValue();
+			Double totalDeLucros = ((Number) object[2]).doubleValue();
 			Double totalCompras = ((Number) object[3]).doubleValue();
 			
 			Double totalVendasComPrecoVenda = ((Number) object[4]).doubleValue();
@@ -721,25 +723,25 @@ public class RelatorioLucrosBean implements Serializable {
 
 				// if (totalDeReceitas > 0 || totalDeDespesas > 0 || totalDeVendas > 0 ||
 				// totalCompras > 0) {
-				values.add(((totalDeVendas + totalDeReceitas) - totalDeDespesas));
+				values.add(((totalDeLucros + totalDeReceitas) - totalDeDespesas));
 
-				if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) == 0 && totalDeDespesas > 0) {
+				if (((totalDeLucros + totalDeReceitas) - totalDeDespesas) == 0 && totalDeDespesas > 0) {
 					values2.add(-100.0);
 					System.out.println("Valor Percentual: -100.0");
-				} else if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) > 0
+				} else if (((totalDeLucros + totalDeReceitas) - totalDeDespesas) > 0
 						&& (totalCompras + totalDeDespesas) == 0) {
 					values2.add(100.0);
 					System.out.println("Valor Percentual: 100.0");
 
-				} else if (((totalDeVendas + totalDeReceitas) - totalDeDespesas == 0) && totalDeDespesas == 0) {
+				} else if (((totalDeLucros + totalDeReceitas) - totalDeDespesas == 0) && totalDeDespesas == 0) {
 					values2.add(0);
 
 				} else {
 					values2.add(
-							(((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
+							(((totalDeLucros + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
 									* 100);
 					System.out.println("Valor Percentual: "
-							+ (((totalDeVendas + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
+							+ (((totalDeLucros + totalDeReceitas) - totalDeDespesas) / (totalCompras + totalDeDespesas))
 									* 100);
 				}
 
@@ -753,9 +755,9 @@ public class RelatorioLucrosBean implements Serializable {
 
 			} else {
 				// if (totalDeVendas > 0 || totalCompras > 0) {
-				values.add(totalDeVendas/* - totalDeCompras */);
+				values.add(totalDeLucros/* - totalDeCompras */);
 
-				if (totalDeVendas > 0) {
+				if (totalDeLucros > 0) {
 					//values2.add((totalDeVendas / totalCompras) * 100);
 					values2.add((totalVendasComPrecoVenda - totalCompras)/totalVendasComPrecoVenda * 100);
 				} else {
