@@ -317,7 +317,7 @@ body .ui-datatable .ui-datatable-data>tr {
 }
 
 body .ui-datatable .ui-datatable-data>tr td {
-	padding: 0px 10px;
+	padding: 0px 8px;
 	/*font-weight: bold;*/
 	font-size: 12px;
 	color: #525252;
@@ -340,6 +340,9 @@ body .ui-datatable .ui-datatable-data>tr td {
 }
 
 @media ( min-width :220px) {
+	.ui-datatable table {
+	    table-layout: auto !important;
+	}
 	.total-venda-categoria {
 		margin-top: 5px;
 	}
@@ -384,7 +387,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 	    margin-bottom: 0px;
 	}
 	.vendas-top5.ui-datatable tfoot td {
-    	padding: 0px 10px;
+    	padding: 0px 6px;
     }
 	.ui-datatable .ui-datatable-scrollable-body {
     	outline: none;
@@ -504,7 +507,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 		font-size: 12px !important;
 		/*font-weight: bold;*/
 		border-bottom: none !important;
-		width: 100% !important;
+		width: auto !important;
 	}
 	.ui-grid-col-3 {
 		width: 25%;
@@ -589,6 +592,12 @@ body .ui-datatable .ui-datatable-data>tr td {
 }
 
 @media ( min-width :460px) {
+	.total-venda-categoria {
+		margin-top: 0px;
+	}
+	.estoque-venda-categoria {
+		margin-top: 0px;
+	}
 	.dashboard .overview-box .overview-box-content .overview-box-details {
     	font-size: 11px;
     }
@@ -613,7 +622,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 		font-family: "Source Sans Pro", "Helvetica Neue", sans-serif !important;
 	}
 	body .ui-datatable tfoot td {
-		font-size: 12px !important;
+		font-size: 14px !important;
 	}
 }
 
@@ -997,18 +1006,18 @@ body .ui-datatable .ui-datatable-data>tr td {
 							<p:ajax event="rowSelect" process="@this"
 								update="form:btn-detalhes-estoque" />
 
-							<p:column headerText="Categoria" width="10%"
+							<p:column headerText="Categoria" width="20%"
 								style="text-align:left;">
 								<h:outputText value="#{estoque.item}" />
 							</p:column>
 
-							<p:column headerText="Valor" width="80%" style="text-align:right">
+							<p:column headerText="Valor" width="60%" style="text-align:right">
 								<h:outputText value="#{estoque.value}">
 									<f:convertNumber type="currency" />
 								</h:outputText>
 							</p:column>
 
-							<p:column headerText="Quantidade" width="80%"
+							<p:column headerText="Quantidade" width="20%"
 								style="text-align:right">
 								<h:outputText value="#{estoque.quantidade}">
 								</h:outputText>
