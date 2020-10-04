@@ -563,7 +563,7 @@
 										update="panel-lucro info-lucro lucroEmDinheiro panel-contribuicao preco-venda preco-venda-estimado" />
 								</p:inputNumber>
 								<p:slider for="percentual-lucro" display="margem-lucro2"  
-									displayTemplate="%{value}" minValue="0" maxValue="80" step="0.01"
+									displayTemplate="%{value}" minValue="0" maxValue="99.99" step="0.01"
 									disabled="#{cadastroProdutoBean.produto.quantidadeAtual le 0}">
 
 									<p:ajax event="slideEnd" update="info-lucro panel-lucro lucroEmDinheiro panel-contribuicao preco-venda preco-venda-estimado"

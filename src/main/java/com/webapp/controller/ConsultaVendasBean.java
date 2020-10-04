@@ -150,14 +150,7 @@ public class ConsultaVendasBean implements Serializable {
 				}
 			}
 			
-			todosUsuarios = usuarios.todos(usuario_.getEmpresa());
-			
-			if(!empresa.equals(usuario_.getEmpresa())) {
-				
-				if(!empresa.equals("")) {
-					pesquisar();
-				} 
-			}
+			todosUsuarios = usuarios.todos(usuario_.getEmpresa());		
 		}
 	}
 

@@ -116,13 +116,6 @@ public class EstoqueBean implements Serializable {
 			}
 			
 			todasCategoriasProdutos();
-			
-			if(!empresa.equals(usuario.getEmpresa())) {
-				System.out.println(empresa + " " + usuario.getEmpresa());
-				if(!empresa.equals("")) {
-					pesquisar();
-				} 
-			}
 		}
 	}
 	

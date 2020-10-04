@@ -174,7 +174,6 @@ public class ConsultaComprasBean implements Serializable {
 			todosUsuarios = usuarios.todos(usuario_.getEmpresa());
 			
 			listarTodasCategoriasProdutos();
-	
 		}
 	}
 	

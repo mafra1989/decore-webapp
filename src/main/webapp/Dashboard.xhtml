@@ -340,6 +340,16 @@ body .ui-datatable .ui-datatable-data>tr td {
 }
 
 @media ( min-width :220px) {
+	.total-venda-categoria {
+		margin-top: 5px;
+	}
+	.estoque-venda-categoria {
+		margin-top: 12px;
+	}
+	.venda-semana-lucro {
+		text-align:center;
+		margin-top: 20px;
+	}
 	.dashboard .overview-box .overview-box-content .overview-box-details {
     	font-size: 12px;
     }
@@ -889,7 +899,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 							styleClass="barChart-02" style="width: 100%;margin-top: 10px;" />
 							
 							
-						<div style="text-align:center;margin-top: 20px;"> 
+						<div class="venda-semana-lucro"> 
 							<label style="font-weight: bold; font-size: 14px;color:#585757;">Vendas por semana vs Lucro</label>
 						</div>
 						
@@ -900,7 +910,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 					
 								
 						
-					<div class="ui-g-12 ui-lg-4 ui-xl-4">
+					<div class="ui-g-12 ui-lg-4 ui-xl-4 total-venda-categoria">
 											
 						<div style="text-align:center;">
 							<label style="font-weight: bold; font-size: 14px;color:#585757;">Total de Vendas vs Categoria</label>
@@ -959,7 +969,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 					
 					
 					
-					<div class="ui-g-12 ui-lg-4 ui-xl-4">					
+					<div class="ui-g-12 ui-lg-4 ui-xl-4 estoque-venda-categoria">					
 						
 						<div style="text-align:center;">
 							<label style="font-weight: bold; font-size: 14px;color:#585757;">Estoque para Vendas vs Categoria</label>

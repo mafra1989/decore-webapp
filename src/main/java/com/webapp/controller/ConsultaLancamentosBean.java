@@ -129,13 +129,6 @@ public class ConsultaLancamentosBean implements Serializable {
 			todosUsuarios = usuarios.todos(usuario_.getEmpresa());
 			todasCategoriasDespesas = categoriasDespesas.todos(usuario_.getEmpresa());
 			todosDestinosLancamentos = destinosLancamentos.todos();
-			
-			if(!empresa.equals(usuario_.getEmpresa())) {
-				
-				if(!empresa.equals("")) {
-					pesquisar();
-				} 
-			}
 		}
 	}
 
