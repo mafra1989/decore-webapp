@@ -386,8 +386,8 @@ body .ui-datatable .ui-datatable-data>tr td {
 	.dashboard.saldo-geral_ .card {
 	    margin-bottom: 0px;
 	}
-	.vendas-top5.ui-datatable tfoot td {
-    	padding: 0px 6px;
+	.vendas-top5.ui-datatable tfoot td:nth-child(2n-1) {
+    	padding: 0px 0px;
     }
 	.ui-datatable .ui-datatable-scrollable-body {
     	outline: none;
@@ -940,7 +940,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 							oncomplete="stop();PF('info-detalhes').show();">
 						</p:commandButton>
 
-						<p:dataTable id="fluxoTable2" scrollable="true" scrollHeight="157"
+						<p:dataTable id="fluxoTable2" scrollable="true" scrollHeight="150"
 							value="#{dashboardBean.detalhesVendasPorCategoria}" var="venda"
 							styleClass="vendas-top5" selectionMode="single"
 							selection="#{dashboardBean.vendaPorCategoriaSelecionada}"
@@ -1000,7 +1000,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 							oncomplete="stop();PF('info-detalhes-estoque').show();">
 						</p:commandButton>
 
-						<p:dataTable id="fluxoTable3" scrollable="true" scrollHeight="157"
+						<p:dataTable id="fluxoTable3" scrollable="true" scrollHeight="150"
 							value="#{dashboardBean.detalhesEstoqueParaVendaPorCategoria}"
 							var="estoque" styleClass="vendas-top5" selectionMode="single"
 							selection="#{dashboardBean.estoquePorCategoriaSelecionada}"
