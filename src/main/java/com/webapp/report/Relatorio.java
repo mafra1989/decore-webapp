@@ -47,9 +47,9 @@ public class Relatorio<T> {
 
 			JasperExportManager.exportReportToPdfStream(print, baos);
 			
-			//JasperPrintManager.printReport(print, true);
+			JasperPrintManager.printReport(print, true);
 			
-			 
+			/*
 			PDDocument documento = PDDocument.load(JasperExportManager.exportReportToPdf(print));
 			PrintService servico = PrintServiceLookup.lookupDefaultPrintService();
 	
@@ -58,6 +58,7 @@ public class Relatorio<T> {
 			job.setPrintService(servico);
 			job.print();
 			documento.close();
+			*/
 
 			/*response.reset();
 
