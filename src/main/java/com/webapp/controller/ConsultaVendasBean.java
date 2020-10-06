@@ -269,7 +269,7 @@ public class ConsultaVendasBean implements Serializable {
 			ItemEspelhoVenda itemPedido = new ItemEspelhoVenda();
 			itemPedido.setCodigo(itemVenda.getProduto().getCodigo());
 			itemPedido.setDescricao(itemVenda.getProduto().getDescricao());
-			itemPedido.setValorUnitario(nf.format(itemVenda.getValorUnitario().intValue()));
+			itemPedido.setValorUnitario(nf.format(itemVenda.getValorUnitario().doubleValue()));
 			itemPedido.setQuantidade(String.valueOf(itemVenda.getQuantidade()));
 			itemPedido.setSubTotal(nf.format(itemVenda.getTotal()));
 			

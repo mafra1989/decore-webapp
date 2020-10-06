@@ -21,7 +21,7 @@
 	</field>
 	<field name="descricao" class="java.lang.String"/>
 	<field name="quantidade" class="java.lang.String"/>
-	<field name="valor" class="java.lang.String">
+	<field name="valorUnitario" class="java.lang.String">
 		<fieldDescription><![CDATA[valor]]></fieldDescription>
 	</field>
 	<background>

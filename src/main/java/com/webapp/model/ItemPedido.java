@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
@@ -75,7 +76,6 @@ public class ItemPedido implements Serializable {
 	public void setQuantidade(Long quantidade) {
 		this.quantidade = quantidade;
 	}
-
 
 	public BigDecimal getTotal() {
 		return total;

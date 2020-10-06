@@ -1,7 +1,10 @@
 package com.webapp.controller;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -16,8 +19,20 @@ import java.util.Locale;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.print.DocFlavor;
+import javax.print.DocPrintJob;
+import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
+import javax.print.SimpleDoc;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.JobName;
+import javax.print.attribute.standard.MediaSizeName;
+import javax.print.attribute.standard.OrientationRequested;
+import javax.swing.JOptionPane;
 import javax.validation.constraints.NotNull;
 
+import org.apache.poi.hssf.record.formula.functions.Subtotal;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,11 +43,13 @@ import com.webapp.model.Caixa;
 import com.webapp.model.Conta;
 import com.webapp.model.Devolucao;
 import com.webapp.model.Entrega;
+import com.webapp.model.EspelhoVenda;
 import com.webapp.model.FormaPagamento;
 import com.webapp.model.Grupo;
 import com.webapp.model.ItemCaixa;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemDevolucao;
+import com.webapp.model.ItemEspelhoVenda;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.ItemVendaCompra;
 import com.webapp.model.PeriodoPagamento;
@@ -42,6 +59,7 @@ import com.webapp.model.TipoPagamento;
 import com.webapp.model.TipoVenda;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
+import com.webapp.report.Relatorio;
 import com.webapp.repository.Bairros;
 import com.webapp.repository.Caixas;
 import com.webapp.repository.Contas;
@@ -1511,7 +1529,8 @@ public class PDVBean implements Serializable {
 			vendaTemp_.setUsuario(venda.getUsuario());	
 			
 			
-			
+			emitirCupom(venda);
+			//imprimirCupom(itensVenda, venda);
 
 			
 			venda = new Venda();
@@ -3301,5 +3320,141 @@ public class PDVBean implements Serializable {
 
 	public String getSaldoParaTrocaEmString() {
 		return saldoParaTrocaEmString;
+	}
+	
+	
+	private void imprimirCupom(List<ItemVenda> itensVenda, Venda venda) {
+        
+		String dataF = "dd/MM/yyyy";
+        String horaF = "HH:mm:ss";
+        String data, hora;
+
+        Date tempoAtual = new Date();
+        //Pegando a data
+        SimpleDateFormat formata = new SimpleDateFormat(dataF);
+        data = formata.format(tempoAtual);
+        //pegando a hora
+        formata = new SimpleDateFormat(horaF);
+        hora = formata.format(tempoAtual);
+
+        String conteudoImprimir = "";
+        int numeroVenda = venda.getNumeroVenda().intValue();
+
+        for (ItemVenda itemVenda : itensVenda) {
+        	conteudoImprimir += itemVenda.getProduto().getCodigoDeBarras() + "    "
+                    + itemVenda.getQuantidade() + "     "
+                    + nf.format(itemVenda.getValorUnitario().doubleValue()) + "    "
+                    + itemVenda.getProduto().getDescricao() + "\n\r";
+		}
+        
+        System.out.println(
+                  "EXCLUSIVA MODAS                                 \n\r"
+                + "RUA DO COMERCIO 245, CENTRO, SANTA INES - MA    \n\r"
+                + "CONTATO (98) 98495-7066                         \n\r"
+                + "Data: " + data + "             Hora: " + hora +"\n\r"
+                + "NUMERO DA VENDA: " + numeroVenda +              "\n\r"
+                + "------------------------------------------------\n\r"
+                + "                CUPOM NAO FISCAL                \n\r"
+                + "------------------------------------------------\n\r"
+                + "COD  QTD   PRECO   DESCRICAO                    \n\r"
+                + conteudoImprimir +                              "\n\r"
+                + "------------------------------------------------\n\r"
+                + "SUBTOTAL    R$: " + nf.format(venda.getValorTotal().doubleValue()) + "\n\r"
+                
+				+ "ACRÉSCIMO   R$: " + nf.format(venda.getAcrescimo().doubleValue()) + "\n\r"
+				
+				+ "TX. ENTREGA R$: " + nf.format(venda.getTaxaDeEntrega().doubleValue()) + "   " + "VALOR RECEBIDO R$: " + nf.format(venda.getValorRecebido().doubleValue()) + "\n\r"
+
+				+ "DESCONTO    R$: " + nf.format(venda.getTotalDescontoEmDinheiro().doubleValue())   +"     " + "       TROCO R$: " + nf.format(venda.getTroco().doubleValue())+ "\n\r"
+           
+                + "VALOR TOTAL R$: " + nf.format(venda.getValorTotal().doubleValue()) + "\n\r"
+                + "------------------------------------------------\n\r"
+                + "   TROCA SOMENTE EM ATE 7 DIAS E COM A NOTA  \n\r"
+                + "            OBRIGADO E VOLTE SEMPRE          \n\r"
+                + "\n\r\n\r\n\r\n\r\n\r\n\r\n\r"
+                
+                
+        );
+    }
+
+    /**
+     * Função para imprimir
+     *
+     * @param pTexto
+    public void imprimir(String pTexto) {
+    	System.out.println(pTexto);
+        try {
+            InputStream prin = new ByteArrayInputStream(pTexto.getBytes());
+            DocFlavor docFlavor = DocFlavor.INPUT_STREAM.AUTOSENSE;
+            SimpleDoc documentoTexto = new SimpleDoc(prin, docFlavor, null);
+            PrintService impressora = PrintServiceLookup.lookupDefaultPrintService();
+            //pega a impressora padrão
+            PrintRequestAttributeSet printerAttributes = new HashPrintRequestAttributeSet();
+            printerAttributes.add(new JobName("Impressão", null));
+            printerAttributes.add(OrientationRequested.PORTRAIT);
+            printerAttributes.add(MediaSizeName.ISO_A4);
+            //informa o tipo de folha
+            DocPrintJob PrintJob = impressora.createPrintJob();
+
+            try {
+                PrintJob.print(documentoTexto, (PrintRequestAttributeSet) printerAttributes);
+                //tenta imprimir
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Não foi possível realizar a impressão!", "Erro", JOptionPane.ERROR_MESSAGE);
+                //Mensarem de erro
+            }
+            prin.close();
+        } catch (Exception e) {
+
+        }
+    }
+    */
+	
+	public void emitirCupom(Venda venda) {
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+		EspelhoVenda pedido = new EspelhoVenda();
+		pedido.setVendaNum(venda.getNumeroVenda() + "");
+		pedido.setTipoVenda(venda.getTipoVenda().getDescricao().toUpperCase());
+		pedido.setBairro(venda.getBairro().getNome().toUpperCase());
+		pedido.setDataVenda(sdf.format(venda.getDataVenda()));
+		pedido.setVendedor(venda.getUsuario().getNome().toUpperCase());
+
+		Entrega entrega = entregas.porVenda(venda);
+		if (entrega != null) {
+			pedido.setResponsavel(entrega.getNome());
+			pedido.setLocalizacao(entrega.getLocalizacao());
+			pedido.setObservacao(entrega.getObservacao());
+		}
+		
+		List<ItemVenda> itensVenda = itensVendas.porVenda(venda);
+		for (ItemVenda itemVenda : itensVenda) {
+			
+			ItemEspelhoVenda itemPedido = new ItemEspelhoVenda();
+			itemPedido.setCodigo(itemVenda.getProduto().getCodigo());
+			//itemPedido.setDescricao(itemVenda.getProduto().getDescricao());
+			itemPedido.setDescricao(itemVenda.getProduto().getCodigoDeBarras() + " " + itemVenda.getProduto().getDescricao() 
+					 + " " + itemVenda.getQuantidade() + " " + itemPedido.getUN() + " x " + nf.format(itemVenda.getValorUnitario().doubleValue()));
+			itemPedido.setValorUnitario(nf.format(itemVenda.getValorUnitario().doubleValue()));
+			itemPedido.setQuantidade(String.valueOf(itemVenda.getQuantidade()));
+			itemPedido.setSubTotal(nf.format(itemVenda.getTotal()));
+			
+			pedido.getItensPedidos().add(itemPedido);
+		}
+
+		pedido.setTotalVenda(nf.format(venda.getValorTotal()));
+
+		List<EspelhoVenda> pedidos = new ArrayList<>();
+		pedidos.add(pedido);
+
+		Relatorio<EspelhoVenda> report = new Relatorio<EspelhoVenda>();
+		try {
+			report.getRelatorio(pedidos, "Venda-N" + venda.getNumeroVenda().longValue());
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

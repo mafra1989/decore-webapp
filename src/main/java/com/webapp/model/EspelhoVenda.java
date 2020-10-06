@@ -7,6 +7,24 @@ import java.util.List;
 public class EspelhoVenda implements Serializable {
 
 	private static final long serialVersionUID = 203356217547759664L;
+	
+	/* Dados da Empresa */
+	private String xNome = "DECORE";
+	private String CNPJ = "32.783.038/0001-74";
+	private String xLgr = "Rua Rio Andirá";
+	private String nro = "n4";
+	private String xBairro = "São José Operário";
+	private String xMun = "Manaus";
+	private String UF = "AM";
+	
+	private String totalItens = "30";
+	private String subTotal = "0,00";
+	private String desconto = "0,00";
+	private String acrescimo = "0,00";
+	
+	private String valorAPagar = "0,00";
+	private String troco = "0,00";
+	private String valorRecebido = "0,00";
 
 	/* Dados da Venda */
 	private String vendaNum;
@@ -107,6 +125,119 @@ public class EspelhoVenda implements Serializable {
 
 	public void setTotalVenda(String totalVenda) {
 		this.totalVenda = totalVenda;
+	}
+
+	
+	public String getxNome() {
+		return xNome;
+	}
+
+	public void setxNome(String xNome) {
+		this.xNome = xNome;
+	}
+
+	public String getCNPJ() {
+		return CNPJ;
+	}
+
+	public void setCNPJ(String cNPJ) {
+		CNPJ = cNPJ;
+	}
+
+	public String getxLgr() {
+		return xLgr;
+	}
+
+	public void setxLgr(String xLgr) {
+		this.xLgr = xLgr;
+	}
+
+	public String getNro() {
+		return nro;
+	}
+
+	public void setNro(String nro) {
+		this.nro = nro;
+	}
+
+	public String getxBairro() {
+		return xBairro;
+	}
+
+	public void setxBairro(String xBairro) {
+		this.xBairro = xBairro;
+	}
+
+	public String getxMun() {
+		return xMun;
+	}
+
+	public void setxMun(String xMun) {
+		this.xMun = xMun;
+	}
+
+	public String getUF() {
+		return UF;
+	}
+
+	public void setUF(String uF) {
+		UF = uF;
+	}
+
+	public String getTotalItens() {
+		return totalItens;
+	}
+
+	public void setTotalItens(String totalItens) {
+		this.totalItens = totalItens;
+	}
+
+	public String getSubTotal() {
+		return subTotal;
+	}
+
+	public void setSubTotal(String subTotal) {
+		this.subTotal = subTotal;
+	}
+
+	public String getDesconto() {
+		return desconto;
+	}
+
+	public void setDesconto(String desconto) {
+		this.desconto = desconto;
+	}
+
+	public String getAcrescimo() {
+		return acrescimo;
+	}
+
+	public void setAcrescimo(String acrescimo) {
+		this.acrescimo = acrescimo;
+	}
+
+	public String getValorAPagar() {
+		return valorAPagar;
+	}
+
+	public void setValorAPagar(String valorAPagar) {
+		this.valorAPagar = valorAPagar;
+	}
+
+	public String getTroco() {
+		return troco;
+	}
+
+	public void setTroco(String troco) {
+		this.troco = troco;
+	}
+
+	public String getValorRecebido() {
+		return valorRecebido;
+	}
+
+	public void setValorRecebido(String valorRecebido) {
+		this.valorRecebido = valorRecebido;
 	}
 
 }

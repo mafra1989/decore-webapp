@@ -69,19 +69,19 @@
 							<p:submenu id="pm_PDV" styleClass="pm_PDV"
 								rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado()}"
 								label="PDV" icon="fa fa-trello">
-							
-								<p:menuitem id="pm_caixa" styleClass="pm_caixa"
-									value="Abrir / Fechar Caixa" icon="fa fa-inbox"
-									outcome="/Caixa.xhtml" />
-									
+								
 								<p:menuitem id="pm_FrenteCaixa" value="Frente de Caixa"
 									icon="fa fa-qrcode" outcome="/PDV.xhtml"   
 									rendered="#{seguranca.acessoAdministrador() or seguranca.acessoVendedor()}">
 								</p:menuitem>
-												
+							
 								<p:menuitem id="pm_devolucoes" styleClass="pm_devolucao"
 									value="Devolução / Troca" icon="fa fa-mail-reply-all"
 									outcome="/DevolucaoTroca.xhtml" />
+									
+								<p:menuitem id="pm_caixa" styleClass="pm_caixa"
+									value="Controle de Caixa" icon="fa fa-inbox"
+									outcome="/Caixa.xhtml" />	
 							</p:submenu>
 							
 							<p:submenu id="pm_consulta" label="Consultar" icon="fa fa-search"

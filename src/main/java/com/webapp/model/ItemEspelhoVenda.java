@@ -2,12 +2,15 @@ package com.webapp.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Transient;
+
 public class ItemEspelhoVenda implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private String codigo;
 	private String descricao;
+	private String UN = "un";
 	private String valorUnitario;
 	private String quantidade;
 	private String subTotal;
@@ -26,6 +29,14 @@ public class ItemEspelhoVenda implements Serializable {
 
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
+	}
+
+	public String getUN() {
+		return UN;
+	}
+
+	public void setUN(String uN) {
+		UN = uN;
 	}
 
 	public String getValorUnitario() {
