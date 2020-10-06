@@ -283,7 +283,7 @@ public class ConsultaVendasBean implements Serializable {
 
 		Relatorio<EspelhoVenda> report = new Relatorio<EspelhoVenda>();
 		try {
-			report.getRelatorio(pedidos, "Venda-N" + vendaSelecionada.getNumeroVenda().longValue());
+			report.getRelatorio_(pedidos, "Venda-N" + vendaSelecionada.getNumeroVenda().longValue());
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
