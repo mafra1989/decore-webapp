@@ -118,7 +118,7 @@ public class CadastroEquipeBean implements Serializable {
 
 	public void salvar() {
 		
-		usuario.setEmpresa(usuario_.getEmpresa());
+		//usuario.setEmpresa(usuario_.getEmpresa());
 
 		try {
 			
