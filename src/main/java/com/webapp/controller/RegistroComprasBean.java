@@ -282,7 +282,7 @@ public class RegistroComprasBean implements Serializable {
 					System.out.println("Custo médio Un.: " + produto.getCustoMedioUnitario().doubleValue());
 					if(produto.getCustoMedioUnitario().doubleValue() > 0) {
 						/* Atualizar custo total */
-						produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + itemCompra.getTotal().doubleValue()));
+						produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemCompra.getQuantidade() * produto.getCustoMedioUnitario().doubleValue()) /*itemCompra.getTotal().doubleValue()*/));
 					} else {
 						/* Atualizar custo total e custo medio un. */
 						produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + itemCompra.getTotal().doubleValue()));					

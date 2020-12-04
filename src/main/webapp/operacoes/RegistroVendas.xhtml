@@ -305,8 +305,8 @@
 									styleClass="panelgrid-noborder disabled disabled panel-ajuste"
 									columnClasses="ui-grid-col-4, ui-grid-col-8">
 		
-									<p:outputLabel value="Ajuste de estoque" for="ajuste" />
-									<p:selectBooleanCheckbox id="ajuste" style="margin-bottom: 9px;"
+									<p:outputLabel value="Ajuste de estoque" for="ajuste" style="display:none;" />
+									<p:selectBooleanCheckbox id="ajuste" style="margin-bottom: 9px;display:none;"
 										value="#{registroVendasBean.venda.ajuste}" disabled="#{registroVendasBean.venda.id != null}">
 										
 										<p:ajax process="@this" update="@parent" />
