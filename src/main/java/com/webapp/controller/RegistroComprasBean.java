@@ -268,6 +268,7 @@ public class RegistroComprasBean implements Serializable {
 					}
 				}
 				
+				compra.setTipoPagamento(tipoPagamento.AVISTA);
 				compra.setEmpresa(usuario.getEmpresa());
 				compra = compras.save(compra);
 
