@@ -166,7 +166,7 @@
 			</p:toolbar>
 
 
-			<div class="ui-g-12 ui-lg-8">
+			<div class="ui-g-12 ui-lg-12">
 				<p:panel class="card card-w-title ui-fluid"
 					style="padding-bottom: 0px;">
 
@@ -294,17 +294,7 @@
 									<p:outputLabel value="Função" for="funcao" />
 									<p:inputText id="funcao"
 										value="#{cadastroEquipeBean.usuario.funcao}" />
-										
-									<p:outputLabel value="Empresa" for="empresa" />
-									<p:selectOneMenu id="empresa" value="#{cadastroEquipeBean.usuario.empresa}"
-										placeholder="selecione">
-
-										<f:selectItem itemLabel="Selecione" />
-
-										<f:selectItems value="#{cadastroEquipeBean.todasEmpresas}"
-											var="empresa" itemLabel="#{empresa.nome}"
-											itemValue="#{empresa.nome}" />
-									</p:selectOneMenu>
+		
 										
 									<p:outputLabel value="CPF" for="cpf" />
 									<p:inputMask id="cpf" style="margin-bottom: 5px"
@@ -339,6 +329,17 @@
 
 										<p:ajax event="keyup" process="@this" />
 									</p:password>
+									
+									<p:outputLabel value="Empresa" for="empresa" />
+									<p:selectOneMenu id="empresa" value="#{cadastroEquipeBean.usuario.empresa}"
+										placeholder="selecione">
+
+										<f:selectItem itemLabel="Selecione" />
+
+										<f:selectItems value="#{cadastroEquipeBean.todasEmpresas}"
+											var="empresa" itemLabel="#{empresa.nome}"
+											itemValue="#{empresa.nome}" />
+									</p:selectOneMenu>
 
 									<p:outputLabel value="Nível de acesso" for="nivel" />
 									<p:selectOneMenu id="nivel" value="#{cadastroEquipeBean.grupo}" style="margin-bottom: 5px"
