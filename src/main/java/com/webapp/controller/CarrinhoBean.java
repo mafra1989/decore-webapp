@@ -78,7 +78,7 @@ public class CarrinhoBean implements Serializable {
 	
 	private Integer token;
 	
-	private static String TEST_ACCESS_TOKEN = "TEST-1852237905175376-080820-c7142e78a910796fbc26999ef2fa808d-277250128";
+	private static String TEST_ACCESS_TOKEN = "APP_USR-6700550009431141-031319-269e140a8c94d1e1e756e64f97ba8eef-176290424";
 	
 	private Preference preference;
 	
