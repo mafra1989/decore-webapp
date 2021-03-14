@@ -11,6 +11,9 @@ import javax.inject.Named;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
+import com.webapp.model.Configuracao;
+import com.webapp.repository.Configuracoes;
+
 @Named
 @RequestScoped
 public class Seguranca {
@@ -19,6 +22,9 @@ public class Seguranca {
 	private ExternalContext externalContext;
 
 	private String urlImagem;
+	
+	@Inject
+	private Configuracoes configuracoes;
 	
 
 	public String getNomeUsuario() {
@@ -96,4 +102,7 @@ public class Seguranca {
 		return urlImagem;
 	}
 
+	public Configuracao getConfiguracao() {
+		return configuracoes.porId(1L);
+	}
 }

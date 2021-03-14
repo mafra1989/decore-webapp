@@ -1643,6 +1643,7 @@ public class PDVBean implements Serializable {
 			venda.setVendaPaga(false);
 		} else {
 			venda.setConta((vendaPaga != true && !entrega) ? true : false);
+			venda.setVendaPaga(vendaPaga);
 		}
 		
 

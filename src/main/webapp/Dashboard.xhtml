@@ -1089,7 +1089,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 						<div class="ui-g ui-g-12">
 
 							<p:link href="operacoes/RegistroCompras.xhtml"
-								onclick="start();"
+								onclick="start();" 
 								style="width: 25%;text-align: center;border-radius: 5px;">
 								<div class="ui-lg-3">
 									<div class="overview-box-icon">
@@ -1099,7 +1099,17 @@ body .ui-datatable .ui-datatable-data>tr td {
 								</div>
 							</p:link>
 
-							<p:link href="PDV.xhtml" onclick="start();"
+							<p:link href="operacoes/RegistroVendas.xhtml" onclick="start();" rendered="#{seguranca.configuracao.produtosUrlNuvem}"
+								style="width: 25%;text-align: center;border-radius: 5px;">
+								<div class="ui-lg-3">
+									<div class="overview-box-icon">
+										<i class="fa fa fa-dollar fa-fw"></i>
+									</div>
+									<p style="color: #000">Vender</p>
+								</div>
+							</p:link>
+							
+							<p:link href="PDV.xhtml" onclick="start();" rendered="#{not seguranca.configuracao.produtosUrlNuvem}"
 								style="width: 25%;text-align: center;border-radius: 5px;">
 								<div class="ui-lg-3">
 									<div class="overview-box-icon">

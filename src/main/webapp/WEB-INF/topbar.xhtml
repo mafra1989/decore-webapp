@@ -55,7 +55,10 @@
 								</p:commandLink>
 							</h:form></li>
 						<li role="menuitem"><h:form>
-								<p:link href="/sistema-pdv/logout">
+								<p:link href="/logout" rendered="#{seguranca.configuracao.produtosUrlNuvem}">
+									<i class="fa fa-fw fa-sign-out"></i> Sair
+								</p:link>
+								<p:link href="/sistema-pdv/logout" rendered="#{not seguranca.configuracao.produtosUrlNuvem}">
 									<i class="fa fa-fw fa-sign-out"></i> Sair
 								</p:link>
 							</h:form></li>
