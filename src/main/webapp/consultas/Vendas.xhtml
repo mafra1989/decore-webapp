@@ -349,7 +349,7 @@
 								<h:outputText value="#{venda.tipoVenda.descricao}" />
 							</p:column>
 							
-							<p:column headerText="Mesa" width="7%">
+							<p:column headerText="Mesa" width="7%" rendered="#{seguranca.configuracao.controleMesas}">
 								<h:outputText value="#{venda.mesa != null ? venda.mesa : '-'}" />
 							</p:column>
 							
@@ -358,7 +358,7 @@
 							</p:column>
 
 							<p:column headerText="Bairro" width="10%">
-								<h:outputText value="#{venda.cliente.bairro.nome}" />
+								<h:outputText value="#{venda.pdv ? venda.cliente.bairro.nome : venda.bairro.nome}" />
 							</p:column>
 
 							<p:column headerText="Vendedor" width="10%" visible="false">
