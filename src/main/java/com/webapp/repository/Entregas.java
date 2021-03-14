@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
+import com.webapp.model.Empresa;
 import com.webapp.model.Entrega;
 import com.webapp.model.Venda;
 import com.webapp.util.jpa.Transacional;
@@ -35,9 +36,9 @@ public class Entregas implements Serializable {
 		this.manager.remove(entregaTemp);
 	}
 	
-	public List<Entrega> todas(String empresa) {
-		return this.manager.createQuery("from Entrega e where e.venda.empresa = :empresa order by e.id", Entrega.class)
-				.setParameter("empresa", empresa).getResultList();
+	public List<Entrega> todas(Empresa empresa) {
+		return this.manager.createQuery("from Entrega e where e.venda.empresa.id = :empresa order by e.id", Entrega.class)
+				.setParameter("empresa", empresa.getId()).getResultList();
 	}
 	
 	public Entrega porVenda(Venda venda) {

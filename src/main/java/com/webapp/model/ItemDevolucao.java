@@ -25,7 +25,8 @@ public class ItemDevolucao implements Serializable {
 
 	@NotNull
 	@Column(nullable = false)
-	private Long quantidade;
+	@Digits(integer = 10 /* precision */, fraction = 3 /* scale */)
+	private BigDecimal quantidade;
 	
 	@Column(nullable = false)
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
@@ -51,12 +52,12 @@ public class ItemDevolucao implements Serializable {
 		this.id = id;
 	}
 
-	public Long getQuantidade() {
+	public BigDecimal getQuantidade() {
 		return quantidade;
 	}
 
-	public void setQuantidade(Long quantidade) {
-		this.quantidade = quantidade;
+	public void setQuantidade(BigDecimal quantidade) {
+		this.quantidade = quantidade.setScale(3, BigDecimal.ROUND_HALF_EVEN);
 	}
 /*
 	public BigDecimal getTotal() {

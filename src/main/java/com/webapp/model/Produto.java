@@ -3,11 +3,14 @@ package com.webapp.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -51,40 +54,48 @@ public class Produto implements Serializable {
 	private String marca;
 	
 	@Column
+	private String cor;
+	
+	@Column
 	private String numeracao;
 	
 	
 	@Column
 	private String locacao;
 	
-	/*
+	@Column(length = 5, nullable = false)
+	private String unidadeMedida = "Un";
+	
+	
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
 	@Column
 	private byte[] foto;
-	*/
+	
 
 	@Column
 	private String urlImagem;
 
 	@NotNull
 	@Column
-	private Long quantidadeAtual = 0L;
+	@Digits(integer = 10 /* precision */, fraction = 3 /* scale */)
+	private BigDecimal quantidadeAtual = BigDecimal.ZERO;
 	
 	
 	@NotNull
 	@Column
-	private Long estoqueMinimo = 10L;
+	@Digits(integer = 10 /* precision */, fraction = 3 /* scale */)
+	private BigDecimal estoqueMinimo = BigDecimal.ZERO;
 	
 
 	@Column
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
-	private BigDecimal margemLucro = BigDecimal.valueOf(20);
+	private BigDecimal margemLucro = BigDecimal.ZERO;
 	
 	
 	@Column
 	@Digits(integer = 10 /* precision */, fraction = 0 /* scale */)
-	private BigDecimal desconto = BigDecimal.valueOf(10);
+	private BigDecimal desconto = BigDecimal.ZERO;
 	
 	
 	@Column
@@ -97,7 +108,7 @@ public class Produto implements Serializable {
 	
 	@Column
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
-	private BigDecimal margemLucroReal = BigDecimal.valueOf(20);
+	private BigDecimal margemLucroReal = BigDecimal.ZERO;
 	
 	@Column
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
@@ -130,7 +141,7 @@ public class Produto implements Serializable {
 	@JoinColumn
 	private CategoriaProduto categoriaProduto;
 
-	@NotNull
+	
 	@ManyToOne
 	@JoinColumn
 	private Fornecedor fornecedor;
@@ -140,7 +151,7 @@ public class Produto implements Serializable {
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal custoTotal = BigDecimal.ZERO;
 		
-	
+	@NotNull
 	@Column
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal custoMedioUnitario = BigDecimal.ZERO;
@@ -154,6 +165,11 @@ public class Produto implements Serializable {
 	@Type(type = "yes_no")
 	@Column
 	private boolean destaque;
+	
+	
+	@Type(type = "yes_no")
+	@Column
+	private boolean estoque;
 	
 
 	public Long getId() {
@@ -203,7 +219,15 @@ public class Produto implements Serializable {
 	public void setLocacao(String locacao) {
 		this.locacao = locacao;
 	}
-/*
+	
+	public String getUnidadeMedida() {
+		return unidadeMedida;
+	}
+
+	public void setUnidadeMedida(String unidadeMedida) {
+		this.unidadeMedida = unidadeMedida;
+	}
+
 	public byte[] getFoto() {
 		return foto;
 	}
@@ -211,7 +235,7 @@ public class Produto implements Serializable {
 	public void setFoto(byte[] foto) {
 		this.foto = foto;
 	}
-*/
+
 	public String getUrlImagem() {
 		return urlImagem;
 	}
@@ -220,20 +244,20 @@ public class Produto implements Serializable {
 		this.urlImagem = urlImagem;
 	}
 
-	public Long getQuantidadeAtual() {
+	public BigDecimal getQuantidadeAtual() {
 		return quantidadeAtual;
 	}
 
-	public void setQuantidadeAtual(Long quantidadeAtual) {
-		this.quantidadeAtual = quantidadeAtual;
+	public void setQuantidadeAtual(BigDecimal quantidadeAtual) {
+		this.quantidadeAtual = quantidadeAtual.setScale(3, BigDecimal.ROUND_HALF_EVEN);
 	}
 
-	public Long getEstoqueMinimo() {
+	public BigDecimal getEstoqueMinimo() {
 		return estoqueMinimo;
 	}
 
-	public void setEstoqueMinimo(Long estoqueMinimo) {
-		this.estoqueMinimo = estoqueMinimo;
+	public void setEstoqueMinimo(BigDecimal estoqueMinimo) {
+		this.estoqueMinimo = estoqueMinimo.setScale(3, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public BigDecimal getMargemLucro() {
@@ -305,7 +329,7 @@ public class Produto implements Serializable {
 	}
 
 	public void setCustoMedioUnitario(BigDecimal custoMedioUnitario) {
-		this.custoMedioUnitario = custoMedioUnitario.setScale(4, BigDecimal.ROUND_HALF_EVEN);
+		this.custoMedioUnitario = custoMedioUnitario != null ? custoMedioUnitario.setScale(4, BigDecimal.ROUND_HALF_EVEN) : null;
 	}
 
 	public BigDecimal getEstorno() {
@@ -332,6 +356,14 @@ public class Produto implements Serializable {
 		this.marca = marca;
 	}
 
+	public String getCor() {
+		return cor;
+	}
+
+	public void setCor(String cor) {
+		this.cor = cor;
+	}
+
 	public String getNumeracao() {
 		return numeracao;
 	}
@@ -345,7 +377,7 @@ public class Produto implements Serializable {
 	}
 
 	public void setDesconto(BigDecimal desconto) {
-		this.desconto = desconto.setScale(0, BigDecimal.ROUND_HALF_EVEN);;
+		this.desconto = desconto.setScale(0, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public BigDecimal getMargemContribuicao() {
@@ -353,7 +385,7 @@ public class Produto implements Serializable {
 	}
 
 	public void setMargemContribuicao(BigDecimal margemContribuicao) {
-		this.margemContribuicao = margemContribuicao.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
+		this.margemContribuicao = margemContribuicao.setScale(2, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public BigDecimal getMargemContribuicaoEmDinheiro() {
@@ -361,7 +393,7 @@ public class Produto implements Serializable {
 	}
 
 	public void setMargemContribuicaoEmDinheiro(BigDecimal margemContribuicaoEmDinheiro) {
-		this.margemContribuicaoEmDinheiro = margemContribuicaoEmDinheiro.setScale(4, BigDecimal.ROUND_HALF_EVEN);;
+		this.margemContribuicaoEmDinheiro = margemContribuicaoEmDinheiro.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public BigDecimal getMargemLucroReal() {
@@ -385,7 +417,7 @@ public class Produto implements Serializable {
 	}
 
 	public void setPrecoDeVenda(BigDecimal precoDeVenda) {
-		this.precoDeVenda = precoDeVenda.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
+		this.precoDeVenda = precoDeVenda != null ? precoDeVenda.setScale(2, BigDecimal.ROUND_HALF_EVEN) : null;
 	}
 
 	public boolean isDestaque() {
@@ -394,6 +426,14 @@ public class Produto implements Serializable {
 
 	public void setDestaque(boolean destaque) {
 		this.destaque = destaque;
+	}
+
+	public boolean isEstoque() {
+		return estoque;
+	}
+
+	public void setEstoque(boolean estoque) {
+		this.estoque = estoque;
 	}
 
 	@Override
@@ -428,10 +468,10 @@ public class Produto implements Serializable {
 	private BigDecimal precoMedioVenda = BigDecimal.ZERO;
 
 	@Transient
-	private Long quantidadeItensComprados = 0L;
+	private Double quantidadeItensComprados = 0D;
 
 	@Transient
-	private Long quantidadeItensVendidos = 0L;
+	private Double quantidadeItensVendidos = 0D;
 
 	@Transient
 	private String percentualVenda = "0";
@@ -449,10 +489,10 @@ public class Produto implements Serializable {
 	private String valor;
 	
 	@Transient
-	private Long totalAjusteItensComprados = 0L;
+	private Double totalAjusteItensComprados = 0D;
 
 	@Transient
-	private Long totalAjusteItensVendidos = 0L;
+	private Double totalAjusteItensVendidos = 0D;
 	
 	@Transient
 	private Long descontoMaximo = 0L;
@@ -460,6 +500,23 @@ public class Produto implements Serializable {
 	@Transient
 	private BigDecimal valorPago = BigDecimal.ZERO;
 	
+	@Transient
+	private String quantidadeAtualFormatada;
+	
+	@Transient
+	private boolean valid = true;
+	
+	@Transient
+	private String NomeFormatado;
+	
+	@Transient
+	private String NomeCompleto;
+	
+	@Transient
+	private String descricaoFormatada;
+	
+	@Transient
+	private String descricaoCompleta;
 	
 	
 	public BigDecimal getPrecoMedioCompra() {
@@ -486,19 +543,19 @@ public class Produto implements Serializable {
 		return new BigDecimal(custoMedioUnitario.doubleValue() * (margemLucro.doubleValue()/100)).setScale(2, BigDecimal.ROUND_HALF_EVEN);
 	}
 
-	public Long getQuantidadeItensComprados() {
+	public Double getQuantidadeItensComprados() {
 		return quantidadeItensComprados;
 	}
 
-	public void setQuantidadeItensComprados(Long quantidadeItensComprados) {
+	public void setQuantidadeItensComprados(Double quantidadeItensComprados) {
 		this.quantidadeItensComprados = quantidadeItensComprados;
 	}
 
-	public Long getQuantidadeItensVendidos() {
+	public Double getQuantidadeItensVendidos() {
 		return quantidadeItensVendidos;
 	}
 
-	public void setQuantidadeItensVendidos(Long quantidadeItensVendidos) {
+	public void setQuantidadeItensVendidos(Double quantidadeItensVendidos) {
 		this.quantidadeItensVendidos = quantidadeItensVendidos;
 	}
 
@@ -542,19 +599,19 @@ public class Produto implements Serializable {
 		this.valor = valor;
 	}
 
-	public Long getTotalAjusteItensComprados() {
+	public Double getTotalAjusteItensComprados() {
 		return totalAjusteItensComprados;
 	}
 
-	public void setTotalAjusteItensComprados(Long totalAjusteItensComprados) {
+	public void setTotalAjusteItensComprados(Double totalAjusteItensComprados) {
 		this.totalAjusteItensComprados = totalAjusteItensComprados;
 	}
 
-	public Long getTotalAjusteItensVendidos() {
+	public Double getTotalAjusteItensVendidos() {
 		return totalAjusteItensVendidos;
 	}
 
-	public void setTotalAjusteItensVendidos(Long totalAjusteItensVendidos) {
+	public void setTotalAjusteItensVendidos(Double totalAjusteItensVendidos) {
 		this.totalAjusteItensVendidos = totalAjusteItensVendidos;
 	}
 
@@ -574,14 +631,58 @@ public class Produto implements Serializable {
 		this.valorPago = valorPago.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
 	}
 	
-	
-	
-	
+	public String getQuantidadeAtualFormatada() {
+		return quantidadeAtualFormatada;
+	}
+
+	public void setQuantidadeAtualFormatada(String quantidadeAtualFormatada) {
+		this.quantidadeAtualFormatada = quantidadeAtualFormatada;
+	}
+
+	public boolean isValid() {
+		return valid;
+	}
+
+	public void setValid(boolean valid) {
+		this.valid = valid;
+	}
+
+	public String getNomeFormatado() {
+		return NomeFormatado;
+	}
+
+	public void setNomeFormatado(String nomeFormatado) {
+		NomeFormatado = nomeFormatado;
+	}
+
+	public String getDescricaoFormatada() {
+		return descricaoFormatada;
+	}
+
+	public void setDescricaoFormatada(String descricaoFormatada) {
+		this.descricaoFormatada = descricaoFormatada;
+	}
 
 	public String getDescricaoConvertida() {
 		return convertToTitleCaseIteratingChars(descricao);
 	}
 	
+	public String getNomeCompleto() {
+		return NomeCompleto;
+	}
+
+	public void setNomeCompleto(String nomeCompleto) {
+		NomeCompleto = nomeCompleto;
+	}
+
+	public String getDescricaoCompleta() {
+		return descricaoCompleta;
+	}
+
+	public void setDescricaoCompleta(String descricaoCompleta) {
+		this.descricaoCompleta = descricaoCompleta;
+	}
+
 	public String convertToTitleCaseIteratingChars(String text) {
 	    if (text == null || text.isEmpty()) {
 	        return text;

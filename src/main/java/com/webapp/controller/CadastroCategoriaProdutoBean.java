@@ -8,13 +8,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
-import org.primefaces.json.JSONObject;
-import org.primefaces.model.UploadedFile;
+import org.primefaces.model.file.UploadedFile;
+import org.primefaces.shaded.json.JSONObject;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.CategoriaProduto;
-import com.webapp.model.Grupo;
 import com.webapp.model.Produto;
 import com.webapp.model.Usuario;
 import com.webapp.repository.CategoriasProdutos;
@@ -64,22 +63,8 @@ public class CadastroCategoriaProdutoBean implements Serializable {
 		if (FacesUtil.isNotPostback()) {
 			
 			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();			
-			usuario = usuarios.porNome(user.getUsername());
-			
-			List<Grupo> grupos = usuario.getGrupos();
-			
-			if(grupos.size() > 0) {
-				for (Grupo grupo : grupos) {
-					if(grupo.getNome().equals("ADMINISTRADOR")) {
-						EmpresaBean empresaBean = (EmpresaBean) FacesUtil.getObjectSession("empresaBean");
-						if(empresaBean != null && empresaBean.getEmpresa() != null) {
-							usuario.setEmpresa(empresaBean.getEmpresa());
-						}
-					}
-				}
-			}
-			
-			
+			usuario = usuarios.porLogin(user.getUsername());
+						
 			listarTodasCategoriasProdutos();
 		}
 	}
@@ -202,7 +187,7 @@ public class CadastroCategoriaProdutoBean implements Serializable {
 	
 	public void buscar() {
 		categoriaProduto = categoriasProdutos.porId(categoriaProduto.getId());
-		filter.setEmpresa("Decore");
+		filter.setEmpresa(usuario.getEmpresa());
 		filter.setCategoriaProduto(categoriaProduto);
 		produtosFiltrados = produtos.filtrados(filter);
 		

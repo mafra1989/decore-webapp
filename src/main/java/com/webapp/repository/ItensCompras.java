@@ -64,6 +64,12 @@ public class ItensCompras implements Serializable {
 				.setParameter("id", produto.getId()).getResultList();
 	}
 	
+	public List<ItemCompra> porProdutoComRegistroDeCompra(Produto produto) { 
+		return this.manager //and e.quantidadeDisponivel > 0
+				.createQuery("from ItemCompra e join fetch e.compra c where e.produto.id = :id AND e.compra.ajuste = 'N' order by e.compra.dataCompra asc", ItemCompra.class)
+				.setParameter("id", produto.getId()).getResultList();
+	}
+	
 	public Object[] porQuantidadeDisponivel(Produto produto) { 
 		Object[] result = (Object[]) this.manager 
 				.createQuery("select sum(e.quantidadeDisponivel), sum(e.quantidadeDisponivel * e.valorUnitario) from ItemCompra e where e.quantidadeDisponivel > 0 and e.produto.id = :id")

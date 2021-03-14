@@ -12,7 +12,7 @@ body {
         appearance: none;
         
         &.ui-state-hover:not(.ui-state-error) {
-            border: 1px solid $inputHoverBorderColor;
+            border-color: $inputHoverBorderColor;
         }
         
         &.ui-state-focus:not(.ui-state-error) {
@@ -364,6 +364,52 @@ body {
         }
     }
     
+    .ui-toggleswitch {
+        height: 26px;
+        width: 3.5em;
+        
+        .ui-toggleswitch-slider {
+            @include transition(background-color .3s);
+            background-color: #a8acb1;
+            color: #ffffff;
+            border: 1px solid $contentBorderColor;
+            @include border-radius(2px);
+            overflow: hidden;
+            
+            &:before {
+                background-color: #ffffff;
+                border: 1px solid transparent;
+                @include transition(.3s);
+                @include border-radius(0);
+                width: calc(3em / 2);
+                height: 22px;
+                left: auto;
+                bottom: auto;
+            }
+        }
+        
+        &.ui-toggleswitch-checked {
+            .ui-toggleswitch-slider {
+                background-color: $highlightBgColor;
+                color: $highlightTextColor;
+                
+                &:before {
+                    @include translateX(calc(2em - 4px));
+                    @include translateXForIE(2em, -4px);
+                }
+            }
+        }
+        
+        &.ui-toggleswitch-focus {
+            .ui-toggleswitch-slider {            
+                &:before {
+                    border: 1px solid $primaryColor;
+                    @include border-shadow();
+                }
+            } 
+        }
+    }
+    
     .ui-autocomplete {
         .ui-autocomplete-dropdown {
             width: 28px;
@@ -566,13 +612,20 @@ body {
             }
         }
         
-        &.ui-selectcheckboxmenu-multiple {
-            padding-top: 1px;
+        &.ui-selectcheckboxmenu-multiple {            
+            .ui-selectcheckboxmenu-trigger {  
+                .ui-icon-triangle-1-s {
+                    margin-top: -8px;
+                    display: block;
+                    @include icon_override("\f078");
+                }
+            }
 
             .ui-selectcheckboxmenu-multiple-container {
                 &.ui-inputfield {
                     border: 0 none;
-                    padding-right: 32px;
+                    padding: 2px 32px 2px 3px;
+                    min-height: 30px;
                 }
                 
                 .ui-selectcheckboxmenu-token {
@@ -594,7 +647,7 @@ body {
         .ui-selectcheckboxmenu-header {
             padding: $headerPadding;
             border: 0 none;
-            border-bottom: 1px solid $headerBorderColor;
+            border-bottom: 1px solid $primaryDarkColor;
             
             .ui-selectcheckboxmenu-filter-container {
                 float: none;
@@ -629,23 +682,23 @@ body {
                     }
                     
                     &.ui-state-active {  
-                        border: 1px solid $headerIconColor;   
+                        border: 1px solid $primaryTextColor;   
                                            
                         .ui-icon {
-                            color: $headerTextColor;
+                            color: $primaryTextColor;
                         }
                     }
                 }
             }
             
             .ui-selectcheckboxmenu-close {
-                color: $headerIconColor;
+                color: $primaryTextColor;
                 margin: 3px 0 0 0;
                 @include transition(color $transitionDuration);
                 
                 &.ui-state-hover {
                     padding: 1px;
-                    color: $headerIconHoverColor;
+                    color: lighten($primaryColor,35%);
                 }
                 
                 span {
@@ -1018,7 +1071,7 @@ body {
             .ui-datepicker-prev {
                 cursor: pointer;
                 top:12px;
-                color: $headerIconColor;
+                color: $primaryTextColor;
                 @include icon_override("\f053");
                 @include transition(color $transitionDuration);
                 span {
@@ -1026,7 +1079,7 @@ body {
                 }
                 
                 &.ui-datepicker-prev-hover {
-                    color: $headerIconHoverColor;
+                    color: lighten($primaryColor,35%);
                     left: 2px;
                 }
             }
@@ -1034,7 +1087,7 @@ body {
             .ui-datepicker-next {
                 cursor: pointer;
                 top:12px;
-                color: $headerIconColor;
+                color: $primaryTextColor;
                 @include icon_override("\f054");
                 @include transition(color $transitionDuration);
                 span {
@@ -1042,7 +1095,7 @@ body {
                 }
                 
                 &.ui-datepicker-next-hover {
-                    color: $headerIconHoverColor;
+                    color: lighten($primaryColor,35%);
                     right: 2px;
                 }
             }
@@ -1052,7 +1105,7 @@ body {
             font-size: $fontSize;
             
             th {
-                color: $headerBgColor;
+                color: $primaryColor;
             }
             
             td {    
@@ -1163,6 +1216,161 @@ body {
         }
     }
     
+    .p-datepicker-panel {
+        @include border-radius($borderRadius);
+        overflow: hidden;
+
+        &:not(.ui-datepicker-inline) {
+            border: 0 none;
+            @include border-radius(0);
+            @include overlay-shadow();
+        }
+        
+        .ui-datepicker-group {
+            border: 0 none;
+            @include border-radius(0);
+        }
+        
+        .ui-datepicker-header {            
+            .ui-datepicker-prev {
+                outline: 0 none;
+
+                &:hover {
+                    color: lighten($primaryColor,35%);
+                    left: 2px;
+                }
+            }
+            
+            .ui-datepicker-next {
+                outline: 0 none;
+
+                &:hover {
+                    color: lighten($primaryColor,35%);
+                    right: 2px;
+                }
+            }
+        }
+        
+        table {
+            td {
+                a {
+                    &:hover {
+                        background-color: $listItemHoverBgColor;
+                    }
+                    
+                    &.ui-state-highlight {
+                        color: $highlightTextColor;
+                        background-color: $highlightBgColor;
+                    }
+                    
+                    &.ui-state-active {
+                        color: $highlightTextColor;
+                        background-color: $highlightBgColor;
+                    }
+                }
+                
+                a,span {
+                    width: 100%;
+                    @include box-sizing(border-box);
+                }
+                
+                &.ui-datepicker-today {
+                    a {
+                        background-color: $dividerColor;
+                        color: $textColor;
+                    }
+                }
+            }
+        }
+
+        &.ui-datepicker-multiple-month {            
+            .ui-datepicker-group {
+                @include border-radius(0);
+                width: 17em;
+                border-left: 1px solid $contentBorderColor;
+                
+                &:first-child {
+                    border-left: 0 none;
+                    @include border-radius-left(0);
+                }
+            }
+        }
+        
+        &.ui-datepicker-monthpicker {
+            .ui-monthpicker {
+                .ui-monthpicker-month {
+                    color: $textColor;
+                    @include box-sizing(border-box);
+                    
+                    &:hover{
+                        background-color: $listItemHoverBgColor;
+                    }
+                    
+                    &.ui-state-active {
+                        color: $highlightTextColor;
+                        background-color: $highlightBgColor;
+                    }
+                }
+            }
+        }
+        
+        .ui-timepicker {
+            font-weight: normal;
+            border: 0 none;
+            @include border-radius-top(0);
+            border-top: 1px solid $contentBorderColor;
+            
+            .ui-picker-up {
+                color: $primaryTextColor;
+                @include icon_override("\f077");
+                display: block;
+                margin-bottom: .2em;
+                
+                span {
+                    display: none;
+                }
+                
+                &:hover {
+                    color: lighten($primaryColor,35%);
+                }
+            }
+            
+            .ui-picker-down {
+                color: $primaryTextColor;
+                @include icon_override("\f078");
+                display: block;
+                margin-top: .2em;
+                
+                span {
+                    display: none;
+                }
+                
+                &:hover {
+                    color: lighten($primaryColor,35%);
+                }
+            }
+        }
+        
+        .ui-datepicker-buttonbar {
+            border: 0 none;
+            @include border-radius-top(0);
+            border-top: 1px solid $contentBorderColor;
+            
+            .ui-button {
+                width: auto;
+
+                &:focus {
+                    outline: 0 none;
+                    background-color: darken($primaryColor,5%);
+                }
+
+                &:hover {
+                    background-color: darken($primaryColor,5%);
+                }
+            }
+        }
+    }
+    
     .ui-inplace {
         .ui-inplace-display {
             padding: $inputPadding;
@@ -1200,7 +1408,8 @@ body {
         }
     }
     
-    #keypad-div {
+    #keypad-div,
+    .keypad-popup {
         button {
             border: 0 none;
             padding: 5px;
@@ -1247,6 +1456,49 @@ body {
         &.ui-state-error {
             background-color: transparent;
             border: 0 none;
+        }
+    }
+
+    .ui-inputgroup {
+        .ui-inputgroup-addon,
+        .ui-inputgroup-addon-checkbox {
+            padding: $inputPadding;
+            border-color: $inputGroupBorderColor;
+            background-color: $inputGroupBgColor;
+            color: $inputGroupTextColor;
+            min-width: $inputGroupAddonMinWidth;
+
+            &:first-child {
+                @include border-radius-left($borderRadius);
+            }
+
+            &:last-child {
+                @include border-radius-right($borderRadius);
+            }
+        }
+
+        .ui-inputfield {
+            &.ui-state-hover:not(.ui-state-error) {
+                border-left: 0 none;
+            }
+        }
+
+        .ui-button-text-only {
+            margin: 0;
+        }
+
+        .ui-inputgroup-addon-checkbox {
+            padding: 0;
+            position: relative;
+            
+            .ui-chkbox {
+                vertical-align: baseline;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                margin-top: -1 * $checkboxHeight / 2;
+                margin-left: -1 * $checkboxWidth / 2;
+            }
         }
     }
     

@@ -14,6 +14,8 @@ public class VendaPorCategoria implements Serializable {
 	private Number quantidade;
 	
 	private String codigo;
+	
+	private String unidadeMedida;
 
 
 	public String getItem() {
@@ -46,6 +48,14 @@ public class VendaPorCategoria implements Serializable {
 
 	public void setCodigo(String codigo) {
 		this.codigo = codigo;
+	}
+
+	public String getUnidadeMedida() {
+		return unidadeMedida;
+	}
+
+	public void setUnidadeMedida(String unidadeMedida) {
+		this.unidadeMedida = unidadeMedida;
 	}
 
 	@Override

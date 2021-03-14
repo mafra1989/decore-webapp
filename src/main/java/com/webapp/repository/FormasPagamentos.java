@@ -36,7 +36,7 @@ public class FormasPagamentos implements Serializable {
 	}
 
 	public List<FormaPagamento> todos() {
-		return this.manager.createQuery("from FormaPagamento order by id", FormaPagamento.class).getResultList();
+		return this.manager.createQuery("from FormaPagamento order by nome", FormaPagamento.class).getResultList();
 	}
 
 	public List<FormaPagamento> filtrados(FormaPagamentoFilter filter) {

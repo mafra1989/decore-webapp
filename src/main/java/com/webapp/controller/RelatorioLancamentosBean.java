@@ -28,7 +28,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.CategoriaLancamento;
-import com.webapp.model.Grupo;
 import com.webapp.model.Lancamento;
 import com.webapp.model.OrigemLancamento;
 import com.webapp.model.Produto;
@@ -39,7 +38,6 @@ import com.webapp.repository.Contas;
 import com.webapp.repository.Lancamentos;
 import com.webapp.repository.Targets;
 import com.webapp.repository.Usuarios;
-import com.webapp.util.jsf.FacesUtil;
 
 @Named
 @ViewScoped
@@ -179,20 +177,7 @@ public class RelatorioLancamentosBean implements Serializable {
 	public void init() {
 		
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		usuario = usuarios.porNome(user.getUsername());
-		
-		List<Grupo> grupos = usuario.getGrupos();
-		
-		if(grupos.size() > 0) {
-			for (Grupo grupo : grupos) {
-				if(grupo.getNome().equals("ADMINISTRADOR")) {
-					EmpresaBean empresaBean = (EmpresaBean) FacesUtil.getObjectSession("empresaBean");
-					if(empresaBean != null && empresaBean.getEmpresa() != null) {
-						usuario.setEmpresa(empresaBean.getEmpresa());
-					}
-				}
-			}
-		}
+		usuario = usuarios.porLogin(user.getUsername());
 		
 		todosUsuarios = usuarios.todos(usuario.getEmpresa());
 		listarTodasCategoriasLancamentos();
@@ -373,7 +358,7 @@ public class RelatorioLancamentosBean implements Serializable {
 		List<Number> values2 = new ArrayList<>();
 		
 		LineChartDataSet dataSet3 = new LineChartDataSet();
-		List<Number> values3 = new ArrayList<>();
+		List<Object> values3 = new ArrayList<>();
 
 		Calendar calendarStart = Calendar.getInstance();
 		calendarStart.setTime(dateStart);
@@ -669,7 +654,7 @@ public class RelatorioLancamentosBean implements Serializable {
 		List<Number> values2 = new ArrayList<>();
 		
 		LineChartDataSet dataSet3 = new LineChartDataSet();
-		List<Number> values3 = new ArrayList<>();
+		List<Object> values3 = new ArrayList<>();
 
 		List<String> labels = new ArrayList<>();
 		
@@ -998,7 +983,7 @@ public class RelatorioLancamentosBean implements Serializable {
 		List<Number> values2 = new ArrayList<>();
 		
 		LineChartDataSet dataSet3 = new LineChartDataSet();
-		List<Number> values3 = new ArrayList<>();
+		List<Object> values3 = new ArrayList<>();
 
 		List<Object[]> result = new ArrayList<>();
 
@@ -1258,7 +1243,7 @@ public class RelatorioLancamentosBean implements Serializable {
 		List<Number> values2 = new ArrayList<>();
 		
 		LineChartDataSet dataSet3 = new LineChartDataSet();
-		List<Number> values3 = new ArrayList<>();
+		List<Object> values3 = new ArrayList<>();
 		
 		List<String> labels = new ArrayList<>();
 		

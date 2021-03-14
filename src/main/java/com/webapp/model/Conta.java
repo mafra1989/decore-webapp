@@ -8,15 +8,17 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
-import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
-@Table(name = "conta")
+@Table(name = "contas")
 public class Conta implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -72,26 +74,27 @@ public class Conta implements Serializable {
 	@Column(nullable = false)
 	private Long ano;
 	
-	@NotBlank
-	@Column
-	private String empresa;
+	@NotNull
+	@ManyToOne
+	@JoinColumn
+	private Empresa empresa;
 	
 	
 	@Column(nullable = false)
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
-	private BigDecimal subTotal;
+	private BigDecimal subTotal = BigDecimal.ZERO;
 	
 	@Column(nullable = false)
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
-	private BigDecimal custoMedio;
+	private BigDecimal custoMedio = BigDecimal.ZERO;
 	
 	@Column(nullable = false)
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
-	private BigDecimal lucro;
+	private BigDecimal lucro = BigDecimal.ZERO;
 	
 	@Column(nullable = false)
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
-	private BigDecimal taxaEntrega;
+	private BigDecimal taxaEntrega = BigDecimal.ZERO;
 	
 
 	public Long getId() {
@@ -214,11 +217,11 @@ public class Conta implements Serializable {
 		this.ano = ano;
 	}
 
-	public String getEmpresa() {
+	public Empresa getEmpresa() {
 		return empresa;
 	}
 
-	public void setEmpresa(String empresa) {
+	public void setEmpresa(Empresa empresa) {
 		this.empresa = empresa;
 	}
 

@@ -21,6 +21,7 @@ public class Entrega implements Serializable {
 
 	private Long id;
 	private String nome;
+	private String contato;
 	private String localizacao;
 	private String latitude;
 	private String longitude;
@@ -48,6 +49,14 @@ public class Entrega implements Serializable {
 		this.nome = nome;
 	}
 
+	@Column(length = 20)
+	public String getContato() {
+		return contato;
+	}
+
+	public void setContato(String contato) {
+		this.contato = contato;
+	}
 
 	@Column(columnDefinition="TEXT")
 	public String getLocalizacao() {

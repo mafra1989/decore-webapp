@@ -306,7 +306,7 @@
 		<p:growl id="msg" closable="true" life="2000" showSummary="false"
 			showDetail="true" style="text-align: center" />
 
-		<div class="ui-g-12 ui-lg-12 card" style="margin-top: -10px">
+		<div class="ui-g-12 ui-lg-12 card" style="margin-top: -10px;margin-bottom:30px;">
 
 			<h:form id="form">							
 
@@ -349,7 +349,7 @@
 							styleClass="panelgrid-noborder disabled disabled panel-ajuste"
 							columnClasses="ui-grid-col-4, ui-grid-col-4">
 
-							<p:outputLabel value="Ajuste de estoque" for="ajuste" />
+							<p:outputLabel value="Atualizar Custo Médio?" for="ajuste" style="font-size: 13px;" />
 							<p:selectBooleanCheckbox id="ajuste"
 								value="#{registroComprasBean.compra.ajuste}"
 								disabled="#{registroComprasBean.compra.id != null}">
@@ -385,7 +385,7 @@
 								offLabel="DESATIVADO" onIcon="fa fa-fw fa-check"
 								offIcon="fa fa-fw fa-close" style="position: relative; float: right; margin-top: -38px; margin-right: 8px; font-size:11px;width:105px;">
 								
-								<p:ajax process="@this" update="panel-busca" />										
+								<p:ajax process="@this" update="panel-busca" listener="#{registroComprasBean.ativarLeitor}" />										
 							</p:selectBooleanButton>
 							
 							<p:outputLabel value="Leitor de código de barras" for="leitor" style="font-size: 12px;margin-top: -60px; margin-right: 8px;position: relative; float: right;" />
@@ -417,7 +417,7 @@
 											completeMethod="#{registroComprasBean.completeText_Produto}">
 											
 											<p:ajax event="itemSelect" listener="#{registroComprasBean.onItemSelect}" 
-												update="panel-itens_ form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total" />
+												update="panel-itens_ form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:quantidade_ form:quantidade__ form:valor-total" />
 										</p:autoComplete>
 										
 										<p:inputText id="busca-por-leitor" value="#{registroComprasBean.filter.codigo}" styleClass="field-barcode busca-por-leitor"
@@ -425,7 +425,7 @@
 											
 										<p:commandButton id="btn-barcode" icon="fa fa-fw fa-barcode" rendered="#{registroComprasBean.leitor}"
 											action="#{registroComprasBean.pesquisar_}" process="@this busca-por-leitor"
-											update="panel-itens_ form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total" 
+											update="panel-itens_ form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:quantidade_ form:quantidade__ form:valor-total" 
 											style="float:right;width:35px;height:29px" styleClass="white-button btn-barcode btn-barcode_" />
 										
 										
@@ -499,17 +499,36 @@
 							columnClasses="ui-grid-col-4, ui-grid-col-4">
 
 							<p:outputLabel value="Valor Unitário" for="valor-unitario" />
-							<p:inputNumber id="valor-unitario" decimalPlaces="2" onkeyup="ajaxDelay()"
-								placeholder="R$ 0,00" symbol="R$ " styleClass="valor-unitario"
+							<p:inputNumber id="valor-unitario" decimalPlaces="4" onkeyup="ajaxDelay()"
+								placeholder="R$ 0,0000" symbol="R$ " styleClass="valor-unitario"
 								value="#{registroComprasBean.itemCompra.valorUnitario}">
 								
 								<p:ajax event="keydown" update="btn-adicionar"></p:ajax>
 							</p:inputNumber>
 
-							<p:outputLabel value="Quantidade" for="quantidade" />
+							<p:outputLabel value="Quantidade (Un)" for="quantidade" rendered="#{registroComprasBean.itemCompra.produto == null}" />
+							<p:outputLabel value="Quantidade (#{registroComprasBean.itemCompra.produto.unidadeMedida})" for="quantidade" rendered="#{registroComprasBean.itemCompra.produto != null}" />
+							
 							<p:inputNumber id="quantidade" decimalPlaces="0" placeholder="0"
-								styleClass="quantidade" onkeyup="ajaxDelay()"
-								value="#{registroComprasBean.itemCompra.quantidade}">
+								styleClass="quantidade" onkeyup="ajaxDelayQtd()"
+								value="#{registroComprasBean.itemCompra.quantidade}"
+								rendered="#{registroComprasBean.itemCompra.produto.unidadeMedida == 'Un' or registroComprasBean.itemCompra.produto.unidadeMedida == 'Cx' or registroComprasBean.itemCompra.produto == null}">
+
+								<p:ajax event="keydown" update="btn-adicionar"></p:ajax>
+							</p:inputNumber>
+							
+							<p:inputNumber id="quantidade_" decimalPlaces="3" placeholder="0,000"
+								styleClass="quantidade_" onkeyup="ajaxDelayQtd_()"
+								value="#{registroComprasBean.itemCompra.quantidade}"
+								rendered="#{registroComprasBean.itemCompra.produto.unidadeMedida == 'Kg' or registroComprasBean.itemCompra.produto.unidadeMedida == 'Lt'}">
+
+								<p:ajax event="keydown" update="btn-adicionar"></p:ajax>
+							</p:inputNumber>
+							
+							<p:inputNumber id="quantidade__" decimalPlaces="1" placeholder="0,0"
+								styleClass="quantidade__" onkeyup="ajaxDelayQtd__()"
+								value="#{registroComprasBean.itemCompra.quantidade}"
+								rendered="#{registroComprasBean.itemCompra.produto.unidadeMedida == 'Pt'}">
 
 								<p:ajax event="keydown" update="btn-adicionar"></p:ajax>
 							</p:inputNumber>
@@ -582,9 +601,9 @@
 								onstart="PF('downloadLoading').show();" icon="fa fa-plus"
 								onsuccess="PF('downloadLoading').hide();"
 								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
-								update="panel-itens_ msg codigo descricao fornecedor total-compra id valor-unitario quantidade valor-total panel-table"
+								update="panel-itens_ msg codigo descricao fornecedor total-compra id valor-unitario quantidade quantidade_ quantidade__  valor-total panel-table"
 								action="#{registroComprasBean.adicionarItem}"
-								process="@this codigo valor-unitario quantidade valor-total id"
+								process="@this codigo valor-unitario quantidade quantidade_ quantidade__ valor-total id"
 								style="font-weight: bold;" />
 						</p:panelGrid>
 					</p:panel>
@@ -617,12 +636,33 @@
 
 								<p:column headerText="Val. Unit." width="20%">
 									<h:outputText value="#{item.valorUnitario}">
-										<f:convertNumber type="currency" />
+										<f:convertNumber type="currency" minFractionDigits="4" />
 									</h:outputText>
 								</p:column>
 
 								<p:column headerText="Qtd" width="20%">
-									<h:outputText value="#{item.quantidade}" />
+									<h:outputText value="#{item.quantidade}" rendered="#{item.produto.unidadeMedida == 'Kg' or item.produto.unidadeMedida == 'Lt'}">
+										<f:convertNumber minFractionDigits="3" />
+									</h:outputText>
+									
+									<h:outputText value=" #{item.produto.unidadeMedida}" rendered="#{(item.produto.unidadeMedida == 'Kg' or item.produto.unidadeMedida == 'Lt')}">
+									</h:outputText>
+									
+									
+									<h:outputText value="#{item.quantidade}" rendered="#{item.produto.unidadeMedida == 'Pt'}">
+										<f:convertNumber minFractionDigits="1" />
+									</h:outputText>
+									
+									<h:outputText value=" #{item.produto.unidadeMedida}" rendered="#{item.produto.unidadeMedida == 'Pt'}">
+									</h:outputText>
+									
+									
+									<h:outputText value="#{item.quantidade}" rendered="#{(item.produto.unidadeMedida != 'Kg' and item.produto.unidadeMedida != 'Lt' and item.produto.unidadeMedida != 'Pt')}">
+										<f:convertNumber minFractionDigits="0" />
+									</h:outputText>
+									
+									<h:outputText value=" #{item.produto.unidadeMedida}" rendered="#{(item.produto.unidadeMedida != 'Kg' and item.produto.unidadeMedida != 'Lt' and item.produto.unidadeMedida != 'Pt')}">
+									</h:outputText>
 								</p:column>
 
 								<p:column headerText="Total" width="20%">
@@ -641,7 +681,7 @@
 								disabled="#{registroComprasBean.itensCompraSize eq 0}" />
 
 							<p:menuitem value="Editar Item" id="btn-editar"
-								update="panel-table panel-itens_ default-busca form:total-compra form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total"
+								update="panel-table panel-itens_ default-busca form:total-compra form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:quantidade_ form:quantidade__ form:valor-total"
 								process="@this panel-table"
 								action="#{registroComprasBean.editarItem}" onstart="start();"
 								oncomplete="stop();" icon="fa fa-fw fa-edit"
@@ -670,7 +710,7 @@
 								onstart="PF('downloadLoading').show();" icon="fa fa-save"
 								onsuccess="PF('downloadLoading').hide();"
 								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
-								update="msg confirmDialog panel-ajuste data-compra comprador panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total"
+								update="msg confirmDialog panel-ajuste data-compra comprador panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:quantidade_ form:quantidade__ form:valor-total"
 								action="#{registroComprasBean.salvar}"
 								process="@this panel-table data-compra comprador"
 								style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;" />
@@ -726,7 +766,7 @@
 								<p:commandButton icon="fa fa-fw fa-check"
 									action="#{registroComprasBean.selecionarProduto(produto)}"
 									title="Selecionar Produto"
-									update="form:panel-itens_ form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total"
+									update="form:panel-itens_ form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:quantidade_ form:quantidade__ form:valor-total"
 									styleClass="btn-select" process="@this"
 									onstart="PF('downloadLoading').show();"
 									oncomplete="PF('downloadLoading').hide();PF('item-dialog').hide();">
@@ -1157,10 +1197,25 @@
 			    };
 			})();
 			
-			function ajaxDelay(){ 
-				var valorUnitario = $('.valor-unitario input').val();
+			function ajaxDelayQtd(){
 				var quantidade = $('.quantidade input').val(); 
-				var subtotal = parseFloat(valorUnitario.replace('R$ ','').replace('.','').replace(',','.')) * parseFloat(quantidade);
+				ajaxDelay(quantidade);
+			}
+			
+			function ajaxDelayQtd_(){
+				var quantidade = $('.quantidade_ input').val(); 
+				ajaxDelay(quantidade);
+			}
+			
+			function ajaxDelayQtd__(){
+				var quantidade = $('.quantidade__ input').val(); 
+				ajaxDelay(quantidade);
+			}
+			
+			function ajaxDelay(quantidade_){ 
+				var valorUnitario = $('.valor-unitario input').val();
+				var quantidade = quantidade_;  
+				var subtotal = parseFloat(valorUnitario.replace('R$ ','').replace('.','').replace(',','.')) * parseFloat(quantidade.replace('.','').replace(',','.'));
 				
 				if(subtotal.toString() != 'NaN') { 
 					var f = parseFloat(subtotal).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
@@ -1174,7 +1229,7 @@
 			
 			
 			
-			var licence = "AUSuRQp1FdcTMaMl30Lg11YKZtj3KdetC22rN+pENTU6SzFHV3gn8iVEG/AyU2MtB1DxXGhYlh6aT3r+2nFgdGFF+sZkdNmE/0Q1JNFaxGn/cjM0CGdi8ClyI2zAd35vrGrqwGEDUZLxNEEUMCmAQpAFlyh6+ZGLSWl9Hz0Cmc1K6kBTw6cLPCtGutrt5z4G6XwZ7LjDHfCHCOJwDdSQk200r9q9oh661WlR9wDzneI4zSV/TP/sHohChVNXrSUY4kD7YMnOg2SRxzBKnYYcEZxjti3ozczriAv0m9H4wSsy0PDaam5fWVSUBEg9IR2fppUSelg8gyXFMjv/mvjZdNkmiBOr8rNfQ1p1GUP+osH3yBYhOY85SFeLffsBwMY5nZ4dV8tdmlVlYhmAdt0yaK5NHfkEjiqCwUqjTBySOiWRbYBIRr8NsD6GO4bmV8Jizuj8aoZTIv3laqjnuv0vRHtv4XSEEzDSQAwEBxQF8t2NYmffHr5xvszLNYwDhJnapmwN67/q9uJbWtRU8UrkDu/NYbiRkTjhxeuG5JoM4CQdJ4rpTtWpLx1BWTsX2goYWuxjvziofsTJIpxtgdK/0DqsUWJM65kCfEiQPDaKhB0R51MyQFLSDgYAShtbZLW8OMiZAdcRHkTkimkR6OrG2OutyCuYvCGKYc0P8QYVM5SLGbwfky7e/cOur6ZVFuO0/PROzGQbxoYlTfaTIc3Cl/iIaFRTJzYVQSuEFpSD+KrwnL6j5ezqo+NGh2MrWJOGtg7aG30d8wgpDNI2XTfkvC20J/O9NAycyi8HUz+Zxm49xzJCcLvXeVILtEWD/I4OPy4=";	        
+			var licence = "Af7Ptlf9SIEnN6dNSi1RVVQVFERGB4bFyHv6PQ9SgWC+d5olnScMsiR0N6+iCdMmRlNmxYJy+ntHFDg3tkDVtI4tEgWASnfWGW2QR85FFM9AC1B86zjr8SQjlP1xQow/oBsWwNnWi+EZJRw7MfpRDZURUQUaLxK7QPzDO08xWnw6+EpNO3BxJQdp32uuxiZZk1Ob3Arc6yAQhToP3ktq4Gebf0dWNUAkwk0uPr/cHGaEdzVzxrOaAURS5zkkYkABE4lWGgzucTYWLr2sRfXaSoWKwDysGnzgM+JJXZvZrSylhQ618i/RY5UVvSlfat06he7vTD0XLBdkcI5rVGLLH4gLtPOIfRqkgV5K2EuJNgu1ggSx/jZ78xpU2BKlMlIgfw8ytWtVrgiKHPyz56dBOluFQlnQguQetkdCxAfmL+uv/XlJw1Dl2J+eCcDiKxTxLdzh4MuPm1txO/UVm5q8rm68rhcTRWXX0olZ7TBkMIpQDXZyzqRtS5kt+DdDDY+maNBHw1WiGIfuLS/XnOavB4xEhqK9imD41PSw10Fin/AdHGtqGUxEJHD6/ZEFP4Km5yZBBmn88DenuOuTNevGFvWP+0n8M2qAKhIbbdMRFx9kgj2cgM+BOyhvRC/GUm+HChTj6AB7uT9kVufqI2/20VVVoUSIpKfyaesf+YrXA2UXiFCBumLWRwPaYrsOi1E/XvA749twRAd+FJivXAu9mSf6YvO3HKx64IrN/KW3/8orDWcKdU10I5e3/Yk/frSguReiZLMI3+W4T/dL1Z60E2+H21LgvRrw4adScVkH";
 			
 			var reading = false; 
 			var scaning = false;

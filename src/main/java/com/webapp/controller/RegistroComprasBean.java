@@ -21,8 +21,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.Compra;
+import com.webapp.model.Configuracao;
 import com.webapp.model.Conta;
-import com.webapp.model.Grupo;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.ItemVendaCompra;
@@ -31,6 +31,7 @@ import com.webapp.model.Produto;
 import com.webapp.model.TipoPagamento;
 import com.webapp.model.Usuario;
 import com.webapp.repository.Compras;
+import com.webapp.repository.Configuracoes;
 import com.webapp.repository.Contas;
 import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
@@ -123,35 +124,34 @@ public class RegistroComprasBean implements Serializable {
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
 	
+	
+	@Inject
+	private Configuracoes configuracoes;
+	
+	@Inject
+	private Configuracao configuracao;
+	
+	
+	
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
 			
 			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();			
-			usuario = usuarios.porNome(user.getUsername());
+			usuario = usuarios.porLogin(user.getUsername());
 			
-			List<Grupo> grupos = usuario.getGrupos();
-			
-			if(grupos.size() > 0) {
-				for (Grupo grupo : grupos) {
-					if(grupo.getNome().equals("ADMINISTRADOR")) {
-						EmpresaBean empresaBean = (EmpresaBean) FacesUtil.getObjectSession("empresaBean");
-						if(empresaBean != null && empresaBean.getEmpresa() != null) {
-							usuario.setEmpresa(empresaBean.getEmpresa());
-						}
-					}
-				}
-			}
-			
-			todosUsuarios = usuarios.todos(usuario.getEmpresa());
+			todosUsuarios = usuarios.todosVendedores(usuario.getEmpresa());
 			
 			compra.setUsuario(usuario);
+			
+			configuracao = configuracoes.porId(1L);
+			leitor = configuracao.isLeitorPDV();
 		}
 	}
 
 	public void pesquisar() {
 		filter.setEmpresa(usuario.getEmpresa());
-		produtosFiltrados = produtos.filtrados(filter);
+		produtosFiltrados = produtos.filtrados_(filter);
 		System.out.println(produtosFiltrados.size());
 	}
 
@@ -170,7 +170,7 @@ public class RegistroComprasBean implements Serializable {
 		filter.setEmpresa(usuario.getEmpresa());
 		filter.setDescricao(query);
 		
-		List<Produto> listaProdutos = produtos.filtrados(filter);
+		List<Produto> listaProdutos = produtos.filtrados_(filter);
          
         return listaProdutos;
     }
@@ -186,7 +186,7 @@ public class RegistroComprasBean implements Serializable {
 	public void pesquisar_() {
 		System.out.println("Código escaneado: " + filter.getCodigo());
 		
-		Produto produto = produtos.porCodigoDeBarras(filter.getCodigo(), usuario.getEmpresa());	
+		Produto produto = produtos.porCodigoDeBarras_(filter.getCodigo(), usuario.getEmpresa());	
 		
 		if(produto != null) {
 			filter = new ProdutoFilter();
@@ -219,7 +219,7 @@ public class RegistroComprasBean implements Serializable {
 			
 			if(compra.isAjuste()) {
 				
-				Long totalDeItens = 0L;
+				long totalDeItens = 0;
 				double valorTotal = 0;
 				
 				if (compra.getId() != null) {
@@ -245,7 +245,7 @@ public class RegistroComprasBean implements Serializable {
 
 					for (ItemCompra itemCompra : itemCompraTemp) {
 						Produto produto = produtos.porId(itemCompra.getProduto().getId());
-						produto.setQuantidadeAtual(produto.getQuantidadeAtual() - itemCompra.getQuantidade());
+						produto.setQuantidadeAtual(new BigDecimal(produto.getQuantidadeAtual().doubleValue() - itemCompra.getQuantidade().doubleValue()));
 						produtos.save(produto);
 
 						itensCompras.remove(itemCompra);
@@ -268,7 +268,6 @@ public class RegistroComprasBean implements Serializable {
 					}
 				}
 				
-				compra.setTipoPagamento(tipoPagamento.AVISTA);
 				compra.setEmpresa(usuario.getEmpresa());
 				compra = compras.save(compra);
 
@@ -277,26 +276,38 @@ public class RegistroComprasBean implements Serializable {
 					itensCompras.save(itemCompra);
 
 					Produto produto = produtos.porId(itemCompra.getProduto().getId());
-					produto.setQuantidadeAtual(produto.getQuantidadeAtual() + itemCompra.getQuantidade());
+					produto.setQuantidadeAtual(new BigDecimal(produto.getQuantidadeAtual().doubleValue() + itemCompra.getQuantidade().doubleValue()));
 					
 					System.out.println("Custo médio Un.: " + produto.getCustoMedioUnitario().doubleValue());
+					
+					produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemCompra.getQuantidade().longValue() *  itemCompra.getProduto().getCustoMedioUnitario().doubleValue())));
+					
+					/*
 					if(produto.getCustoMedioUnitario().doubleValue() > 0) {
-						/* Atualizar custo total */
-						produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemCompra.getQuantidade() * produto.getCustoMedioUnitario().doubleValue()) /*itemCompra.getTotal().doubleValue()*/));
+						// Atualizar custo total
+						produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + itemCompra.getTotal().doubleValue()));
 					} else {
-						/* Atualizar custo total e custo medio un. */
+						// Atualizar custo total e custo medio un. 
 						produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + itemCompra.getTotal().doubleValue()));					
 						
-						Long saldo =  produto.getQuantidadeAtual();//(Long) itensCompras.saldoPorProduto(produto);
-						System.out.println(produto.getCustoTotal().doubleValue() + " / " + saldo.longValue());
-						//produto.setCustoMedioUnitario(new BigDecimal(produto.getCustoTotal().doubleValue() / saldo.longValue()));
+						Double saldo =  produto.getQuantidadeAtual().doubleValue();//(Long) itensCompras.saldoPorProduto(produto);
+						System.out.println(produto.getCustoTotal().doubleValue() + " / " + saldo.doubleValue());
+						produto.setCustoMedioUnitario(new BigDecimal(produto.getCustoTotal().doubleValue() / saldo.longValue()));
 					}
+					*/
 					
-					//produto.setCustoMedioUnitario(new BigDecimal(produto.getCustoTotal().doubleValue() / produto.getQuantidadeAtual().intValue()));
+					//produto.setCustoMedioUnitario(new BigDecimal(produto.getCustoTotal().doubleValue() / produto.getQuantidadeAtual().doubleValue()));
 					
 					produtos.save(produto);
 
-					totalDeItens += itemCompra.getQuantidade();
+					//totalDeItens += itemCompra.getQuantidade();
+					
+					if(!produto.getUnidadeMedida().equals("KG") && !produto.getUnidadeMedida().equals("LT") && !produto.getUnidadeMedida().equals("PT")) {
+						totalDeItens += itemCompra.getQuantidade().doubleValue();				
+					} else {
+						totalDeItens += 1;
+					}
+					
 					valorTotal += itemCompra.getTotal().doubleValue();
 				}
 
@@ -496,7 +507,7 @@ public class RegistroComprasBean implements Serializable {
 
 		if (contasPagas != true) {
 
-			Long totalDeItens = 0L;
+			long totalDeItens = 0;
 			double valorTotal = 0;
 
 			Calendar calendario = Calendar.getInstance();
@@ -521,33 +532,33 @@ public class RegistroComprasBean implements Serializable {
 					if (itensVenda.size() == 0 && itensVendaCompra.size() == 0) {
 						
 						Produto produto = produtos.porId(itemCompra.getProduto().getId());
-						produto.setQuantidadeAtual(produto.getQuantidadeAtual() - itemCompra.getQuantidade());
+						produto.setQuantidadeAtual(new BigDecimal(produto.getQuantidadeAtual().doubleValue() - itemCompra.getQuantidade().doubleValue()));
 						//produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - (itemCompra.getQuantidade().longValue() * produto.getCustoMedioUnitario().doubleValue())));
 										
 						/* RE-CALCULAR CUSTO MEDIO UNITARIO DOS PRODUTOS DESSA COMPRA */
-						produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - (itemCompra.getQuantidade().longValue() * itemCompra.getValorUnitario().doubleValue())));											
+						produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - (itemCompra.getQuantidade().doubleValue() * itemCompra.getValorUnitario().doubleValue())));											
 
 						itensCompras.remove(itemCompra);
 						
 						
-						
+						/*
 						Object[] result = itensCompras.porQuantidadeDisponivel(produto);
 						
-						if((Long) result[0] != null) {
+						if((BigDecimal) result[0] != null) {
 						
 							Double estorno = ((BigDecimal) result[1]).doubleValue() - produto.getCustoTotal().doubleValue();
 							
 							//Double estorno = (produto.getQuantidadeAtual().longValue() * produto.getCustoMedioUnitario().doubleValue()) - produto.getCustoTotal().doubleValue();
 							produto.setEstorno(new BigDecimal(produto.getEstorno().doubleValue() + estorno));
 							
-							produto.setCustoMedioUnitario(new BigDecimal(((BigDecimal) result[1]).doubleValue() / produto.getQuantidadeAtual().longValue()));
+							produto.setCustoMedioUnitario(new BigDecimal(((BigDecimal) result[1]).doubleValue() / produto.getQuantidadeAtual().doubleValue()));
 							
 							produto.setCustoTotal((BigDecimal) result[1]);	
 						}
 
 						
 						
-						if(produto.getQuantidadeAtual().longValue() <= 0) {
+						if(produto.getQuantidadeAtual().doubleValue() <= 0) {
 							produto.setCustoMedioUnitario(BigDecimal.ZERO);
 							
 							if(produto.getCustoTotal().doubleValue() > 0) {
@@ -563,7 +574,7 @@ public class RegistroComprasBean implements Serializable {
 							produto.setCustoTotal(BigDecimal.ZERO);
 						}
 						
-						
+						*/
 						produtos.save(produto);
 					}			
 					
@@ -601,19 +612,20 @@ public class RegistroComprasBean implements Serializable {
 			for (ItemCompra itemCompra : itensCompra) {
 				System.out.println(itemCompra.getId());
 				
-				Long quantidadeDisponivel = itensCompras.quantidadeDisponivelPorProduto(itemCompra.getProduto()).longValue();
+				Double quantidadeDisponivel = itensCompras.quantidadeDisponivelPorProduto(itemCompra.getProduto()).doubleValue();
 				
 				itemCompra.setCompra(compra);
 				itensCompras.save(itemCompra);
 
 				Produto produto = produtos.porId(itemCompra.getProduto().getId());
-				produto.setQuantidadeAtual(itensCompras.quantidadeDisponivelPorProduto(produto).longValue());
+				produto.setQuantidadeAtual(new BigDecimal(itensCompras.quantidadeDisponivelPorProduto(produto).doubleValue()));
 				
 				
 				System.out.println("Ajuste.: " + !compra.isAjuste());
+				/*
 				if(!compra.isAjuste()) {
 					
-					if(quantidadeDisponivel.longValue() > 0) {
+					if(quantidadeDisponivel.doubleValue() > 0) {
 						
 						List<ItemVenda> itensVenda = itensVendas.porCompra(compra, itemCompra);
 						List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porCompra(itemCompra.getCompra(), itemCompra.getProduto());
@@ -623,9 +635,9 @@ public class RegistroComprasBean implements Serializable {
 							// Atualizar custo total e custo medio un. 
 							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + itemCompra.getTotal().doubleValue()));					
 							
-							Long saldo = produto.getQuantidadeAtual();//(Long) itensCompras.saldoPorProduto(produto);
-							System.out.println(produto.getCustoTotal().doubleValue() + " / " + saldo.longValue());
-							produto.setCustoMedioUnitario(new BigDecimal(produto.getCustoTotal().doubleValue() / saldo.longValue()));
+							Double saldo = produto.getQuantidadeAtual().doubleValue();//(Long) itensCompras.saldoPorProduto(produto);
+							System.out.println(produto.getCustoTotal().doubleValue() + " / " + saldo.doubleValue());
+							produto.setCustoMedioUnitario(new BigDecimal(produto.getCustoTotal().doubleValue() / saldo.doubleValue()));
 						}
 						
 					
@@ -634,31 +646,38 @@ public class RegistroComprasBean implements Serializable {
 						// Atualizar custo total e custo medio un. 
 						produto.setCustoTotal(new BigDecimal(itemCompra.getTotal().doubleValue()));					
 						
-						Long saldo = produto.getQuantidadeAtual();//(Long) itensCompras.saldoPorProduto(produto);
-						System.out.println(produto.getCustoTotal().doubleValue() + " / " + saldo.longValue());
-						produto.setCustoMedioUnitario(new BigDecimal(produto.getCustoTotal().doubleValue() / saldo.longValue()));
+						Double saldo = produto.getQuantidadeAtual().doubleValue();//(Long) itensCompras.saldoPorProduto(produto);
+						System.out.println(produto.getCustoTotal().doubleValue() + " / " + saldo.doubleValue());
+						produto.setCustoMedioUnitario(new BigDecimal(produto.getCustoTotal().doubleValue() / saldo.doubleValue()));
 					}
 				
 				} else {
 					System.out.println("Custo médio Un.: " + produto.getCustoMedioUnitario().doubleValue());
-					if(quantidadeDisponivel.longValue() > 0) {
+					if(quantidadeDisponivel.doubleValue() > 0) {
 						// Atualizar custo total 
 						produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + itemCompra.getTotal().doubleValue()));
 					} else {
 						// Atualizar custo total e custo medio un. 
 						produto.setCustoTotal(new BigDecimal(itemCompra.getTotal().doubleValue()));					
 						
-						Long saldo = produto.getQuantidadeAtual();//(Long) itensCompras.saldoPorProduto(produto);
-						System.out.println(produto.getCustoTotal().doubleValue() + " / " + saldo.longValue());
+						Double saldo = produto.getQuantidadeAtual().doubleValue();//(Long) itensCompras.saldoPorProduto(produto);
+						System.out.println(produto.getCustoTotal().doubleValue() + " / " + saldo.doubleValue());
 					}					
 				}
-				
-				produto.setCustoMedioUnitario(new BigDecimal(produto.getCustoTotal().doubleValue() / produto.getQuantidadeAtual().intValue()));
+				*/
+				//produto.setCustoMedioUnitario(new BigDecimal(produto.getCustoTotal().doubleValue() / produto.getQuantidadeAtual().doubleValue()));
 				
 				/**/
 				produtos.save(produto);
 
-				totalDeItens += itemCompra.getQuantidade();
+				//totalDeItens += itemCompra.getQuantidade();
+				if(!produto.getUnidadeMedida().equals("KG") && !produto.getUnidadeMedida().equals("LT") && !produto.getUnidadeMedida().equals("PT")) {
+					totalDeItens += itemCompra.getQuantidade().doubleValue();				
+				} else {
+					totalDeItens += 1;
+				}
+				
+				
 				valorTotal += itemCompra.getTotal().doubleValue();
 			}
 			
@@ -768,11 +787,17 @@ public class RegistroComprasBean implements Serializable {
 		itemCompra.setCode(produto.getCodigo());
 		
 		Double quantidadeItensComprados = 0D;
-		Long totalItensComprados = 0L;
+		long totalItensComprados = 0;
 		List<ItemCompra> itensCompra = itensCompras.porProduto(produto, false);
 		for (ItemCompra itemCompra : itensCompra) {
-			quantidadeItensComprados += itemCompra.getValorUnitario().doubleValue() * itemCompra.getQuantidade();
-			totalItensComprados += itemCompra.getQuantidade();
+			quantidadeItensComprados += itemCompra.getValorUnitario().doubleValue() * itemCompra.getQuantidade().doubleValue();
+			
+			//totalItensComprados += itemCompra.getQuantidade();
+			if(!produto.getUnidadeMedida().equals("KG") && !produto.getUnidadeMedida().equals("LT") && !produto.getUnidadeMedida().equals("PT")) {
+				totalItensComprados += itemCompra.getQuantidade().doubleValue();				
+			} else {
+				totalItensComprados += 1;
+			}
 		}
 		
 		produto.setTotalCompras(BigDecimal.valueOf(quantidadeItensComprados));
@@ -788,11 +813,11 @@ public class RegistroComprasBean implements Serializable {
 		
 		if (!itensCompra.contains(itemCompra)) {
 			
-			if(itemCompra.getQuantidade() > 0) {
+			if(itemCompra.getQuantidade().doubleValue() > 0) {
 				
 				if(itemCompra.getValorUnitario().doubleValue() >= 0) {
 					itemCompra.setTotal(BigDecimal
-							.valueOf(itemCompra.getValorUnitario().doubleValue() * itemCompra.getQuantidade().longValue()));
+							.valueOf(itemCompra.getValorUnitario().doubleValue() * itemCompra.getQuantidade().doubleValue()));
 					itemCompra.setQuantidadeDisponivel(itemCompra.getQuantidade());
 					itemCompra.setCompra(compra);
 					itensCompra.add(itemCompra);
@@ -909,6 +934,11 @@ public class RegistroComprasBean implements Serializable {
 		}
 	}
 	
+	
+	public void ativarLeitor() {
+		configuracao.setLeitorPDV(leitor);
+		configuracao = configuracoes.save(configuracao);
+	}
 	
 	
 	public void confirmarPrimeiraParcela() {

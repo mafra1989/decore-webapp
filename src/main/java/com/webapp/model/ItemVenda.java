@@ -15,6 +15,8 @@ import javax.persistence.Transient;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Type;
+
 @Entity
 @Table(name = "itens_venda")
 public class ItemVenda implements Serializable {
@@ -32,7 +34,8 @@ public class ItemVenda implements Serializable {
 
 	@NotNull
 	@Column(nullable = false)
-	private Long quantidade;
+	@Digits(integer = 10 /* precision */, fraction = 3 /* scale */)
+	private BigDecimal quantidade;
 
 	@Column(nullable = false)
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
@@ -77,6 +80,16 @@ public class ItemVenda implements Serializable {
 	@Column(columnDefinition="TEXT")
 	private String observacoes;
 	
+	
+	@Type(type = "yes_no")
+	@Column
+	private boolean estoque;
+	
+	
+	@Column
+	private String composicao;
+	
+	
 
 	public Long getId() {
 		return id;
@@ -94,12 +107,12 @@ public class ItemVenda implements Serializable {
 		this.valorUnitario = valorUnitario.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
-	public Long getQuantidade() {
+	public BigDecimal getQuantidade() {
 		return quantidade;
 	}
 
-	public void setQuantidade(Long quantidade) {
-		this.quantidade = quantidade;
+	public void setQuantidade(BigDecimal quantidade) {
+		this.quantidade = quantidade.setScale(3, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public BigDecimal getTotal() {
@@ -180,6 +193,22 @@ public class ItemVenda implements Serializable {
 		this.observacoes = observacoes;
 	}
 
+	public boolean isEstoque() {
+		return estoque;
+	}
+
+	public void setEstoque(boolean estoque) {
+		this.estoque = estoque;
+	}
+
+	public String getComposicao() {
+		return composicao;
+	}
+
+	public void setComposicao(String composicao) {
+		this.composicao = composicao;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -215,13 +244,16 @@ public class ItemVenda implements Serializable {
 	private String code;
 	
 	@Transient
-	private Long saldo;
+	private double saldo;
 	
 	@Transient
 	private List<ItemVendaCompra> itensVendaCompra;
 
 	@Transient
 	private boolean update;
+	
+	@Transient
+	private boolean pizza;
 	
 	
 	public String getCode() {
@@ -232,11 +264,11 @@ public class ItemVenda implements Serializable {
 		this.code = code;
 	}
 
-	public Long getSaldo() {
+	public double getSaldo() {
 		return saldo;
 	}
 
-	public void setSaldo(Long saldo) {
+	public void setSaldo(double saldo) {
 		this.saldo = saldo;
 	}
 
@@ -254,6 +286,14 @@ public class ItemVenda implements Serializable {
 
 	public void setUpdate(boolean update) {
 		this.update = update;
+	}
+
+	public boolean isPizza() {
+		return pizza;
+	}
+
+	public void setPizza(boolean pizza) {
+		this.pizza = pizza;
 	}
 
 }

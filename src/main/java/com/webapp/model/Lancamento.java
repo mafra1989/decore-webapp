@@ -78,9 +78,10 @@ public class Lancamento implements Serializable {
 	private Long ano;
 	
 	
-	@NotBlank
-	@Column
-	private String empresa;
+	@NotNull
+	@ManyToOne
+	@JoinColumn
+	private Empresa empresa;
 	
 	
 	@Type(type = "yes_no")
@@ -125,8 +126,7 @@ public class Lancamento implements Serializable {
 	}
 
 	public void setValor(BigDecimal valor) {
-		this.valor = valor.setScale(4, BigDecimal.ROUND_HALF_EVEN);
-		;
+		this.valor = valor != null ? valor.setScale(4, BigDecimal.ROUND_HALF_EVEN) : null ;
 	}
 
 	public CategoriaLancamento getCategoriaLancamento() {
@@ -201,11 +201,11 @@ public class Lancamento implements Serializable {
 		this.ano = ano;
 	}
 
-	public String getEmpresa() {
+	public Empresa getEmpresa() {
 		return empresa;
 	}
 
-	public void setEmpresa(String empresa) {
+	public void setEmpresa(Empresa empresa) {
 		this.empresa = empresa;
 	}
 

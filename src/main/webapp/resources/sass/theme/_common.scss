@@ -11,9 +11,9 @@ body {
     }
     
     .ui-widget-header {
-        background: $headerBgColor;
-        color: $headerTextColor;
-        border: 1px solid $headerBorderColor;
+        background: $primaryColor;
+        color: $primaryTextColor;
+        border: 1px solid $primaryDarkColor;
         font-weight: bold;
     }
 

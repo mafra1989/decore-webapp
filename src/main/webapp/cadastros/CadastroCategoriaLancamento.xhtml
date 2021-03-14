@@ -174,7 +174,7 @@
 					<p:dataTable id="tipoDespesaTable" reflow="true"
 						paginatorAlwaysVisible="false"
 						value="#{cadastroCategoriaLancamentoBean.todasCategoriasDespesas}" var="categoriaDespesa"
-						emptyMessage="Nenhuma categoria de lançamento encontrada." rows="10"
+						emptyMessage="Nenhuma categoria de lançamento encontrada." scrollable="true" scrollHeight="470"
 						paginator="true" paginatorPosition="bottom" selectionMode="single"
 						selection="#{cadastroCategoriaLancamentoBean.categoriaDespesaSelecionada}"
 						rowKey="#{categoriaDespesa.id}" style="margin-top: 10px">
@@ -191,7 +191,7 @@
 						</p:column>
 						
 						<p:column headerText="Empresa">
-							<h:outputText value="#{categoriaDespesa.empresa_.id != null ? categoriaDespesa.empresa_.nome : 'Todas'}" />
+							<h:outputText value="#{categoriaDespesa.empresa.id != null ? categoriaDespesa.empresa.nome : 'Todas'}" />
 						</p:column>
 
 					</p:dataTable>
@@ -241,7 +241,7 @@
 							
 							<p:outputLabel value="Empresa" for="empresa" />
 							<p:selectOneMenu id="empresa"
-								value="#{cadastroCategoriaLancamentoBean.categoriaDespesa.empresa_}"
+								value="#{cadastroCategoriaLancamentoBean.categoriaDespesa.empresa}"
 								placeholder="selecione">
 
 								<f:selectItem itemLabel="Selecione" />

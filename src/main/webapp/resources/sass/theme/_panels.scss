@@ -5,7 +5,7 @@ body {
         
         .ui-panel-titlebar {
             border: 0 none;
-            border-bottom: 1px solid $headerBorderColor;
+            border-bottom: 1px solid $primaryDarkColor;
             padding: $headerPadding;
             @include border-radius-top($borderRadius);
             @include border-radius-bottom(0px);
@@ -19,12 +19,12 @@ body {
                 top: 2px;
                 position: relative;
                 font-size: $fontSize + 3;
-                color: $headerIconColor;
+                color: $primaryTextColor;
                 margin: 0 0 0 4px;
                 @include transition(color .3s);
                 
                 &.ui-state-hover {
-                    color:  $headerIconHoverColor;
+                    color:  lighten($primaryColor,35%);
                 }
                 
                 .ui-icon-minusthick {
@@ -62,10 +62,10 @@ body {
         padding: 0 0 6px 0;
                
         .ui-fieldset-legend {
-            color: $headerTextColor;
-            background-color: $headerBgColor;
+            color: $primaryTextColor;
+            background-color: $primaryColor;
             margin-left: 10px;
-            border: 1px solid $headerBorderColor;
+            border: 1px solid $primaryDarkColor;
             @include transition(background-color .3s);
             
             .ui-fieldset-toggler {
@@ -76,7 +76,7 @@ body {
                 height: $fontSize;
                 margin-top: 0;
                 padding: 0;
-                color: $headerIconColor;
+                color: $primaryTextColor;
             }
             
             &.ui-state-hover {
@@ -178,7 +178,7 @@ body {
                     
                     a {
                         padding: $tabHeaderPadding;
-                        color: $headerTextColor;
+                        color: $primaryTextColor;
                         
                         &:focus {
                             outline: 0 none;
@@ -189,7 +189,7 @@ body {
                         background-color: darken($primaryColor, 15%);
                         
                         .ui-icon-close {
-                            color: $headerIconHoverColor;
+                            color: lighten($primaryColor,35%);
                         }
                     }
                     
@@ -215,8 +215,8 @@ body {
                     }
                     
                     .ui-icon-close {
-                        color: $headerIconColor;
-                        margin-top: 8px;
+                        color: $primaryTextColor;
+                        margin-top: 10px;
                     }
                 }
             }
@@ -228,8 +228,8 @@ body {
             }
             
             .ui-tabs-navscroller-btn {
-                background-color: $headerBgColor;
-                border: 1px solid $headerBorderColor;
+                background-color: $primaryColor;
+                border: 1px solid $primaryDarkColor;
                 @include border-radius(0);
                 height: 28px;
                 
@@ -333,8 +333,8 @@ body {
     .ui-wizard {
         .ui-wizard-step-titles {
             .ui-wizard-step-title {
-                background-color: $headerBgColor;
-                border: 1px solid $headerBorderColor;
+                background-color: $primaryColor;
+                border: 1px solid $primaryDarkColor;
                 border-right: 0 none;
                 margin: 0;
                 padding: $headerPadding;
@@ -346,7 +346,7 @@ body {
                 
                 &:last-child {
                     @include border-radius-right($borderRadius);
-                    border-right: 1px solid $headerBorderColor;
+                    border-right: 1px solid $primaryDarkColor;
                 }
                 
                 &.ui-state-highlight {

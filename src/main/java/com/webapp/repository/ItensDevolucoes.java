@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import com.webapp.model.Empresa;
 import com.webapp.model.ItemDevolucao;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
@@ -36,9 +37,9 @@ public class ItensDevolucoes implements Serializable {
 		this.manager.remove(itemDevolucaoTemp);
 	}
 
-	public List<ItemDevolucao> todos(String empresa) {
-		return this.manager.createQuery("from ItemDevolucao i where i.devolucao.empresa = :empresa order by i.id", ItemDevolucao.class)
-				.setParameter("empresa", empresa).getResultList();
+	public List<ItemDevolucao> todos(Empresa empresa) {
+		return this.manager.createQuery("from ItemDevolucao i where i.devolucao.empresa.id = :empresa order by i.id", ItemDevolucao.class)
+				.setParameter("empresa", empresa.getId()).getResultList();
 	}
 
 	public List<ItemDevolucao> porVenda(Venda venda) {
@@ -47,11 +48,11 @@ public class ItensDevolucoes implements Serializable {
 				.setParameter("id",venda.getId()).getResultList();
 	}
 	
-	public Object[] saldoParaTroca(Usuario usuario, String empresa) {
+	public Object[] saldoParaTroca(Usuario usuario, Empresa empresa) {
 		
 		String jpql = "SELECT sum(i.quantidade), sum(i.valorTotal) FROM ItemDevolucao i WHERE i.devolucao.tipo = 'T' and i.devolucao.status = 'N'"
-				+ " AND i.devolucao.usuario.id = :id AND i.devolucao.empresa = :empresa";
-		Query q = manager.createQuery(jpql).setParameter("id", usuario.getId()).setParameter("empresa", empresa);
+				+ " AND i.devolucao.usuario.id = :id AND i.devolucao.empresa.id = :empresa";
+		Query q = manager.createQuery(jpql).setParameter("id", usuario.getId()).setParameter("empresa", empresa.getId());
 		
 		Object[] result = (Object[]) q.getSingleResult();
 		

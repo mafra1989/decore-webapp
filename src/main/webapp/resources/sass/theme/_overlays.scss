@@ -41,7 +41,7 @@ body {
             }
             
             .ui-dialog-titlebar-icon {
-                color: $headerIconColor;
+                color: $primaryTextColor;
                 border: 0 none;
                 @include transition(color .3s);
                 padding: 0;
@@ -49,7 +49,7 @@ body {
                 margin-top: 1px;
                 
                 &.ui-state-hover {
-                    color: $headerIconHoverColor;
+                    color: lighten($primaryColor,35%);
                 }
                 
                 &.ui-dialog-titlebar-maximize  {
@@ -140,6 +140,18 @@ body {
             }
         }
     }
+
+    .ui-sidebar {
+        .ui-sidebar-close {
+            &:hover {
+                padding: 1px;
+            }
+        }
+
+        .ui-button {
+            width: auto;
+        }
+    }
     
     .ui-lightbox {
         @include content-shadow();
@@ -148,17 +160,17 @@ body {
             padding: $headerPadding;
             
             .ui-lightbox-caption-text {
-                color: $headerTextColor;
+                color: $primaryTextColor;
                 margin: 0;
             }
             
             .ui-lightbox-close {
                 padding: 0;
-                color: $headerTextColor;
+                color: $primaryTextColor;
                 @include transition(color .3s);
                 
                 &.ui-state-hover {
-                    color: $headerIconHoverColor;
+                    color: lighten($primaryColor,35%);
                 }
             }
         }

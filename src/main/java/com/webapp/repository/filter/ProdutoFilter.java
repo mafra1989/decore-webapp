@@ -3,6 +3,7 @@ package com.webapp.repository.filter;
 import java.io.Serializable;
 
 import com.webapp.model.CategoriaProduto;
+import com.webapp.model.Empresa;
 
 public class ProdutoFilter implements Serializable {
 
@@ -12,9 +13,13 @@ public class ProdutoFilter implements Serializable {
 
 	private String descricao = "";
 	
+	private String tamanho = "";
+	
+	private String unidade = "";
+	
 	private CategoriaProduto categoriaProduto;
 	
-	private String empresa = "";
+	private Empresa empresa;
 
 	public String getCodigo() {
 		return codigo;
@@ -32,6 +37,22 @@ public class ProdutoFilter implements Serializable {
 		this.descricao = descricao;
 	}
 
+	public String getTamanho() {
+		return tamanho;
+	}
+
+	public void setTamanho(String tamanho) {
+		this.tamanho = tamanho;
+	}
+
+	public String getUnidade() {
+		return unidade;
+	}
+
+	public void setUnidade(String unidade) {
+		this.unidade = unidade;
+	}
+
 	public CategoriaProduto getCategoriaProduto() {
 		return categoriaProduto;
 	}
@@ -40,11 +61,11 @@ public class ProdutoFilter implements Serializable {
 		this.categoriaProduto = categoriaProduto;
 	}
 
-	public String getEmpresa() {
+	public Empresa getEmpresa() {
 		return empresa;
 	}
 
-	public void setEmpresa(String empresa) {
+	public void setEmpresa(Empresa empresa) {
 		this.empresa = empresa;
 	}
 

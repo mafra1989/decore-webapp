@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
+import com.webapp.model.Empresa;
 import com.webapp.model.Usuario;
 import com.webapp.repository.filter.UsuarioFilter;
 import com.webapp.util.jpa.Transacional;
@@ -35,14 +36,24 @@ public class Usuarios implements Serializable {
 		this.manager.remove(usuarioTemp);
 	}
 	
-	public List<Usuario> todos(String empresa) {
-		return this.manager.createQuery("from Usuario u WHERE u.empresa = :empresa order by u.nome", Usuario.class)
-				.setParameter("empresa", empresa).getResultList();
+	public List<Usuario> todosVendedores(Empresa empresa) {
+		return this.manager.createQuery("from Usuario u WHERE u.empresa.id = :empresa order by u.nome", Usuario.class)
+				.setParameter("empresa", empresa.getId()).getResultList();
+	}
+	
+	public List<Usuario> todos(Empresa empresa) {//WHERE u.empresa.id = :empresa
+		return this.manager.createQuery("from Usuario u order by u.nome", Usuario.class)
+				/*.setParameter("empresa", empresa.getId())*/.getResultList();
+	}
+	
+	public List<Usuario> todosEntregadores(Empresa empresa) {//WHERE u.empresa.id = :empresa
+		return this.manager.createQuery("from Usuario u WHERE u.empresa.id = :empresa and u.entregador = 'Y' order by u.nome", Usuario.class)
+				.setParameter("empresa", empresa.getId()).getResultList();
 	}
 
 	public List<Usuario> filtrados(UsuarioFilter filter) {
-		return this.manager.createQuery("from Usuario i where i.empresa = :empresa AND i.nome like :nome order by nome", Usuario.class)
-				.setParameter("empresa", filter.getEmpresa()).setParameter("nome", "%" + filter.getNome() + "%").getResultList();
+		return this.manager.createQuery("from Usuario i where i.empresa.id = :empresa AND i.nome like :nome order by nome", Usuario.class)
+				.setParameter("empresa", filter.getEmpresa().getId()).setParameter("nome", "%" + filter.getNome() + "%").getResultList();
 	}
 
 	public Usuario porLogin(String login) {
@@ -52,10 +63,12 @@ public class Usuarios implements Serializable {
 		try {
 			usuario = this.manager.createQuery("from Usuario where lower(login) = :login", Usuario.class)
 				.setParameter("login", login.toLowerCase()).getSingleResult();
+			
+			System.out.println("usuário: " + usuario.getLogin());
 		} catch (NoResultException e) {
 			System.out.println("nenhum usuário encontrado com o login informado");
 		}
-		System.out.println("usuário: " + usuario.getLogin());
+		
 		return usuario;
 	}
 	
@@ -72,4 +85,19 @@ public class Usuarios implements Serializable {
 		return usuario;
 	}
 	
+	public Usuario porLogin(String login, Long id) {
+		Usuario usuario = null;
+		
+		System.out.println("buscando usuário . . .");
+		try {
+			usuario = this.manager.createQuery("from Usuario where lower(login) = :login and id != :id", Usuario.class)
+					.setParameter("login", login.toLowerCase()).setParameter("id", id).getSingleResult();
+			
+			System.out.println("usuário: " + usuario.getLogin());
+		} catch (NoResultException e) {
+			System.out.println("nenhum usuário encontrado com o login informado");
+		}
+		
+		return usuario;
+	}
 }

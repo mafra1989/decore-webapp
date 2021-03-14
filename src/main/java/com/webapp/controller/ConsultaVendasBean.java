@@ -1,6 +1,7 @@
 package com.webapp.controller;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -24,23 +25,29 @@ import org.primefaces.PrimeFaces;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
+import com.google.common.io.ByteSource;
+import com.webapp.model.Caixa;
+import com.webapp.model.Cliente;
 import com.webapp.model.Conta;
 import com.webapp.model.Devolucao;
 import com.webapp.model.Entrega;
 import com.webapp.model.EspelhoVenda;
-import com.webapp.model.Grupo;
+import com.webapp.model.FormaPagamento;
 import com.webapp.model.ItemCaixa;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemDevolucao;
-import com.webapp.model.ItemEspelhoVenda;
+import com.webapp.model.ItemEspelhoVendaProdutos;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.ItemVendaCompra;
+import com.webapp.model.Pagamento;
 import com.webapp.model.Produto;
 import com.webapp.model.StatusPedido;
 import com.webapp.model.TipoOperacao;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
 import com.webapp.report.Relatorio;
+import com.webapp.repository.Caixas;
+import com.webapp.repository.Clientes;
 import com.webapp.repository.Contas;
 import com.webapp.repository.Devolucoes;
 import com.webapp.repository.Entregas;
@@ -49,6 +56,8 @@ import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensDevolucoes;
 import com.webapp.repository.ItensVendas;
 import com.webapp.repository.ItensVendasCompras;
+import com.webapp.repository.Lancamentos;
+import com.webapp.repository.Pagamentos;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.Usuarios;
 import com.webapp.repository.Vendas;
@@ -63,12 +72,17 @@ public class ConsultaVendasBean implements Serializable {
 	private List<Venda> vendasFiltradas = new ArrayList<>();
 
 	private List<Usuario> todosUsuarios;
+	
+	private List<Usuario> todosEntregadores;
 
 	@Inject
 	private Usuarios usuarios;
 
 	@Inject
 	private Usuario usuario;
+	
+	@Inject
+	private Usuario entregador;
 	
 	@Inject
 	private Usuario usuario_;
@@ -87,6 +101,9 @@ public class ConsultaVendasBean implements Serializable {
 	
 	@Inject
 	private Contas contas;
+	
+	@Inject
+	private Lancamentos lancamentos;
 	
 	@Inject
 	private ItensVendasCompras itensVendasCompras;
@@ -119,8 +136,6 @@ public class ConsultaVendasBean implements Serializable {
 
 	private StatusPedido[] statusPedido;
 	
-	private String empresa = "";
-	
 	@Inject
 	private Devolucoes devolucoes;
 	
@@ -130,35 +145,38 @@ public class ConsultaVendasBean implements Serializable {
 	@Inject
 	private ItensCaixas itensCaixas;
 	
+	@Inject
+	private Caixas caixas;
+	
+	@Inject
+	private Pagamentos pagamentos;
+	
+	@Inject
+	private Cliente cliente;
+	
+	@Inject
+	private Clientes clientes;
+	
+	private List<Cliente> todosClientes = new ArrayList<Cliente>();
+	
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
 			
 			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();		
-			usuario_ = usuarios.porNome(user.getUsername());
+			usuario_ = usuarios.porLogin(user.getUsername());
 			
-			List<Grupo> grupos = usuario_.getGrupos();
+			todosUsuarios = usuarios.todos(usuario_.getEmpresa());
 			
-			if(grupos.size() > 0) {
-				for (Grupo grupo : grupos) {
-					if(grupo.getNome().equals("ADMINISTRADOR")) {
-						EmpresaBean empresaBean = (EmpresaBean) FacesUtil.getObjectSession("empresaBean");
-						if(empresaBean != null && empresaBean.getEmpresa() != null) {
-							usuario_.setEmpresa(empresaBean.getEmpresa());
-						}
-					}
-				}
-			}
+			todosClientes = clientes.todos();
 			
-			todosUsuarios = usuarios.todos(usuario_.getEmpresa());		
+			todosEntregadores = usuarios.todosEntregadores(usuario_.getEmpresa());
+			
+			numeroVenda = null;
 		}
 	}
 
 	public void pesquisar() {
-		
-		if(!empresa.equals(usuario_.getEmpresa())) {			
-			empresa = usuario_.getEmpresa();
-		}
 		
 		Calendar calendarioTemp = Calendar.getInstance();
 		calendarioTemp.setTime(dateStop);
@@ -167,18 +185,28 @@ public class ConsultaVendasBean implements Serializable {
 		calendarioTemp.set(Calendar.SECOND, 59);
 
 		vendasFiltradas = vendas.vendasFiltradas(numeroVenda, dateStart, calendarioTemp.getTime(), vendasNormais,
-				statusPedido, usuario, usuario_.getEmpresa());
+				statusPedido, usuario, cliente, entregador, usuario_.getEmpresa());
 
 		double totalVendasTemp = 0;
+		double totalDesconto = 0;
 		totalItens = 0;
 		for (Venda venda : vendasFiltradas) {		
 			if(!venda.isAjuste()) {
-				totalVendasTemp += venda.getValorTotal().doubleValue();
+				totalVendasTemp += venda.getValorTotal().doubleValue();				
 				totalItens += venda.getQuantidadeItens().intValue();
+				
+				if(venda.getDesconto() != null) {
+					totalDesconto += venda.getDesconto().doubleValue();
+				}
+			}
+			
+			Pagamento pagamento = pagamentos.porVenda(venda, venda.getEmpresa());
+			if(pagamento != null) {
+				venda.setPagamento(", " + pagamento.getFormaPagamento().getNome());
 			}
 		}
 
-		totalVendas = nf.format(totalVendasTemp);
+		totalVendas = nf.format(totalVendasTemp - totalDesconto);
 
 		vendaSelecionada = null;
 	}
@@ -188,13 +216,69 @@ public class ConsultaVendasBean implements Serializable {
 	}
 
 	public void entregarVenda() {
+		
+		entrega = entregas.porVenda(vendaSelecionada);
 		entrega.setStatus(StatusPedido.ENTREGUE.name());
 		entrega = entregas.save(entrega);
 
 		Venda venda = entrega.getVenda();
 		venda.setStatus(true);
 		venda.setVendaPaga(true);
-		vendas.save(venda);
+		venda = vendas.save(venda);
+		
+		
+		if(!venda.isConta()) {
+			
+			Caixa caixa = caixas.porUsuario(usuario_, usuario_.getEmpresa());
+			
+			if(caixa != null) {
+				
+				List<ItemCaixa> itensCaixa = itensCaixas.porCodigoOperacao(venda.getNumeroVenda(), TipoOperacao.VENDA, usuario_.getEmpresa());
+				
+				if(itensCaixa.size() == 0) {
+				
+					ItemCaixa itemCaixa = new ItemCaixa();
+					itemCaixa.setCaixa(caixa);
+					itemCaixa.setCodigoOperacao(venda.getNumeroVenda());
+					itemCaixa.setData(new Date());
+					itemCaixa.setDescricao("Venda Nº " + venda.getNumeroVenda());
+					itemCaixa.setFormaPagamento(venda.getFormaPagamento());
+					itemCaixa.setOperacao(TipoOperacao.VENDA);
+					itemCaixa.setTipoPagamento("Entrada");
+					
+					List<ItemVenda> itensVenda = itensVendas.porVenda(venda);
+					
+					Double valorTotal = 0D;
+					for (ItemVenda itemVenda : itensVenda) {
+						valorTotal += itemVenda.getTotal().doubleValue();
+					}
+					
+					if(!venda.getFormaPagamento().getNome().equals("Dinheiro")) {
+						
+						if(venda.getDesconto() != null) {
+							venda.setValorTotalComDesconto(new BigDecimal(venda.getValorTotal().doubleValue() - venda.getDesconto().doubleValue()));
+						} else {
+							venda.setValorTotalComDesconto(new BigDecimal(venda.getValorTotal().doubleValue()));
+						}
+						
+						itemCaixa.setValor(venda.getValorTotalComDesconto());
+						
+					} else {
+						
+						if(venda.getDesconto() != null) {
+							itemCaixa.setValor(new BigDecimal(valorTotal - venda.getDesconto().doubleValue()));
+						} else {
+							itemCaixa.setValor(new BigDecimal(valorTotal));
+						}
+						
+					}		
+					
+					itensCaixas.save(itemCaixa);
+				}
+			}
+			
+		}
+		
 
 		PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda N."
 				+ vendaSelecionada.getNumeroVenda() + " entregue com sucesso!' });");
@@ -203,12 +287,13 @@ public class ConsultaVendasBean implements Serializable {
 	}
 
 	public void desfazerEntrega() {
+		entrega = entregas.porVenda(vendaSelecionada);
 		entrega.setStatus(StatusPedido.PENDENTE.name());
 		entrega = entregas.save(entrega);
 
 		Venda venda = entrega.getVenda();
 		venda.setStatus(false);
-		vendas.save(venda);
+		venda = vendas.save(venda);
 
 		PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Entrega da venda N."
 				+ vendaSelecionada.getNumeroVenda() + " desfeita com sucesso!' });");
@@ -223,7 +308,17 @@ public class ConsultaVendasBean implements Serializable {
 		Venda venda = entrega.getVenda();
 		venda.setStatus(false);
 		venda.setVendaPaga(false);
-		vendas.save(venda);
+		venda = vendas.save(venda);
+		
+		if(!venda.isVendaPaga()) {
+			List<ItemCaixa> itensCaixa = itensCaixas.porCodigoOperacao(venda.getNumeroVenda(), TipoOperacao.VENDA, usuario_.getEmpresa());
+			
+			if(itensCaixa.size() > 0) {
+				for (ItemCaixa itemCaixa : itensCaixa) {
+					itensCaixas.remove(itemCaixa);
+				}				
+			}
+		}
 
 		PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Entrega da venda N."
 				+ vendaSelecionada.getNumeroVenda() + " desfeita com sucesso!' });");
@@ -255,27 +350,72 @@ public class ConsultaVendasBean implements Serializable {
 		pedido.setBairro(vendaSelecionada.getBairro().getNome().toUpperCase());
 		pedido.setDataVenda(sdf.format(vendaSelecionada.getDataVenda()));
 		pedido.setVendedor(vendaSelecionada.getUsuario().getNome().toUpperCase());
+		
+		if(vendaSelecionada.getCliente().getId() != 1L) {
+			pedido.setCliente(vendaSelecionada.getCliente().getNome());
+		} else {
+			pedido.setCliente("-");
+		}
 
 		Entrega entrega = entregas.porVenda(vendaSelecionada);
 		if (entrega != null) {
 			pedido.setResponsavel(entrega.getNome());
 			pedido.setLocalizacao(entrega.getLocalizacao());
 			pedido.setObservacao(entrega.getObservacao());
+			pedido.setTelefone(entrega.getContato());
+			
+			if(entrega.getStatus() == StatusPedido.ENTREGUE.name()) {
+				pedido.setEntrega("Y");
+			}
 		}
+		
+		NumberFormat nf_ = new DecimalFormat("###,##0.000", REAL);
+		NumberFormat nf__ = new DecimalFormat("###,##0", REAL);
 		
 		List<ItemVenda> itensVenda = itensVendas.porVenda(vendaSelecionada);
 		for (ItemVenda itemVenda : itensVenda) {
 			
-			ItemEspelhoVenda itemPedido = new ItemEspelhoVenda();
+			ItemEspelhoVendaProdutos itemPedido = new ItemEspelhoVendaProdutos();
 			itemPedido.setCodigo(itemVenda.getProduto().getCodigo());
-			itemPedido.setDescricao(itemVenda.getProduto().getDescricao());
+			itemPedido.setDescricao(itemVenda.getProduto().getDescricao().trim());
 			itemPedido.setValorUnitario(nf.format(itemVenda.getValorUnitario().doubleValue()));
-			itemPedido.setQuantidade(String.valueOf(itemVenda.getQuantidade()));
+			
+			String quantidade = "0";
+			if(itemVenda.getProduto().getUnidadeMedida().equals("Kg") || itemVenda.getProduto().getUnidadeMedida().equals("Lt"))  {
+				quantidade = nf_.format(itemVenda.getQuantidade().doubleValue());
+			} else {
+				quantidade = nf__.format(itemVenda.getQuantidade());
+			}
+			
+			itemPedido.setQuantidade(quantidade);
+			
+			itemPedido.setUN(itemVenda.getProduto().getUnidadeMedida());
 			itemPedido.setSubTotal(nf.format(itemVenda.getTotal()));
 			
 			pedido.getItensPedidos().add(itemPedido);
 		}
 
+		
+		if(usuario_.getEmpresa().getLogoRelatorio() != null) {
+			
+			InputStream targetStream;
+			try {
+				targetStream = ByteSource.wrap(usuario_.getEmpresa().getLogoRelatorio()).openStream();
+				pedido.setLogo(targetStream);
+				
+			} catch (IOException e1) {
+			}	
+		}
+		
+		pedido.setxNome(usuario_.getEmpresa().getNome() != null ? usuario_.getEmpresa().getNome() : "");
+		pedido.setCNPJ(usuario_.getEmpresa().getCnpj() != null ? usuario_.getEmpresa().getCnpj() : "");
+		pedido.setxLgr(usuario_.getEmpresa().getEndereco() != null ? usuario_.getEmpresa().getEndereco().trim() : "");
+		pedido.setNro(usuario_.getEmpresa().getNumero() != null ? usuario_.getEmpresa().getNumero().trim() : "");
+		pedido.setxBairro(usuario_.getEmpresa().getBairro() != null ? usuario_.getEmpresa().getBairro().trim() : "");
+		pedido.setxMun(usuario_.getEmpresa().getCidade() != null ? usuario_.getEmpresa().getCidade() : "");
+		pedido.setUF(usuario_.getEmpresa().getUf() != null ? usuario_.getEmpresa().getUf() : "");
+		pedido.setContato(usuario_.getEmpresa().getContato() != null ? usuario_.getEmpresa().getContato() : "");
+		
 		pedido.setTotalVenda(nf.format(vendaSelecionada.getValorTotal()));
 
 		List<EspelhoVenda> pedidos = new ArrayList<>();
@@ -300,49 +440,60 @@ public class ConsultaVendasBean implements Serializable {
 			for (Conta conta : contasTemp) {
 				contas.remove(conta);
 			}
-
+			
+			/*
+			Lancamento lancamento = lancamentos.porValor(vendaSelecionada.getLucro().setScale(2, BigDecimal.ROUND_HALF_EVEN), usuario_.getEmpresa());
+			if(lancamento != null) {
+				lancamentos.remove(lancamento);
+			}
+			*/
 			
 			List<ItemVenda> itensVenda = itensVendas.porVenda(vendaSelecionada);
 			for (ItemVenda itemVenda : itensVenda) {
-				
+								
 				Produto produto = itemVenda.getProduto();
-				produto.setQuantidadeAtual(produto.getQuantidadeAtual() + itemVenda.getQuantidade());
-
-				List<ItemCompra> itensCompra = itensCompras.porProduto(itemVenda.getProduto());
-				for (ItemCompra itemCompra : itensCompra) {
+				
+				if(produto.isEstoque()) {
 					
-					if(vendaSelecionada.isPdv()) {
+					produto.setQuantidadeAtual(new BigDecimal(produto.getQuantidadeAtual().doubleValue() + itemVenda.getQuantidade().doubleValue()));
+
+					List<ItemCompra> itensCompra = itensCompras.porProduto(itemVenda.getProduto());
+					for (ItemCompra itemCompra : itensCompra) {
 						
-						List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porItemVenda(itemVenda);
-						
-						for(ItemVendaCompra itemVendaCompra : itensVendaCompra) {	
+						if(vendaSelecionada.isPdv()) {
 							
-							if (itemCompra.getCompra().getId().longValue() == itemVendaCompra.getCompra().getId().longValue()) {
+							List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porItemVenda(itemVenda);
+							
+							for(ItemVendaCompra itemVendaCompra : itensVendaCompra) {	
+								
+								if (itemCompra.getCompra().getId().longValue() == itemVendaCompra.getCompra().getId().longValue()) {
+									if (itemCompra.getProduto().getId().longValue() == itemVenda.getProduto().getId().longValue()) {
+										System.out.println("Quantidade Disponivel: "+itemCompra.getQuantidadeDisponivel());
+										System.out.println("Quantidade Retornada: "+itemVenda.getQuantidade());
+										
+										itemCompra.setQuantidadeDisponivel(new BigDecimal(
+												itemCompra.getQuantidadeDisponivel().doubleValue() + itemVendaCompra.getQuantidade().doubleValue()));
+										itensCompras.save(itemCompra);
+									}
+								}
+							}		
+							
+						} else {
+							
+							if (itemCompra.getCompra().getId().longValue() == itemVenda.getCompra().getId().longValue()) {
 								if (itemCompra.getProduto().getId().longValue() == itemVenda.getProduto().getId().longValue()) {
-									System.out.println("Quantidade Disponivel: "+itemCompra.getQuantidadeDisponivel());
-									System.out.println("Quantidade Retornada: "+itemVenda.getQuantidade());
-									
-									itemCompra.setQuantidadeDisponivel(
-											itemCompra.getQuantidadeDisponivel() + itemVendaCompra.getQuantidade());
+									System.out.println(itemCompra.getQuantidadeDisponivel());
+									System.out.println(itemVenda.getQuantidade());
+									itemCompra.setQuantidadeDisponivel(new BigDecimal(
+											itemCompra.getQuantidadeDisponivel().doubleValue() + itemVenda.getQuantidade().doubleValue()));
 									itensCompras.save(itemCompra);
 								}
-							}
-						}		
-						
-					} else {
-						
-						if (itemCompra.getCompra().getId().longValue() == itemVenda.getCompra().getId().longValue()) {
-							if (itemCompra.getProduto().getId().longValue() == itemVenda.getProduto().getId().longValue()) {
-								System.out.println(itemCompra.getQuantidadeDisponivel());
-								System.out.println(itemVenda.getQuantidade());
-								itemCompra.setQuantidadeDisponivel(
-										itemCompra.getQuantidadeDisponivel() + itemVenda.getQuantidade());
-								itensCompras.save(itemCompra);
 							}
 						}
 					}
 				}
 				
+			
 				List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porItemVenda(itemVenda);
 				
 				for(ItemVendaCompra itemVendaCompra : itensVendaCompra) {
@@ -362,81 +513,70 @@ public class ConsultaVendasBean implements Serializable {
 							
 							//List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porItemVenda(itemVenda);
 							//for (ItemVendaCompra itemVendaCompra : itensVendaCompra) {
-							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemVenda.getQuantidade().intValue() * produto.getCustoMedioUnitario().doubleValue())));					
+							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemVenda.getQuantidade().doubleValue() * produto.getCustoMedioUnitario().doubleValue())));					
 							//}
 						}
 												
 					} else {					
-					
-						/*produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + itemVenda.getValorCompra().doubleValue()));*/
-						
-						/*if(itemVenda.getLucro().doubleValue() >= 0) {
 							
-							//List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porItemVenda(itemVenda);
-							//for (ItemVendaCompra itemVendaCompra : itensVendaCompra) {
-							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + itemVenda.getValorCompra().doubleValue()));				
-							//}
-						} else {
+						if(produto.isEstoque()) {
 							
-							//List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porItemVenda(itemVenda);
-							//for (ItemVendaCompra itemVendaCompra : itensVendaCompra) {
+							/* RE-CALCULAR CUSTO MEDIO UNITARIO DOS PRODUTOS DESSA COMPRA */
+							/*
+							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + itemVenda.getValorCompra().doubleValue()));											
+							
+							Object[] result = itensCompras.porQuantidadeDisponivel(produto);
+							
+							if((BigDecimal) result[0] != null) {
+							
+								Double estorno = ((BigDecimal) result[1]).doubleValue() - produto.getCustoTotal().doubleValue();
 								
-								//BigDecimal subtotal = BigDecimal.valueOf( 
-											//itemVenda.getValorUnitario().doubleValue() * itemVendaCompra.getQuantidade().longValue());					
-								//BigDecimal total = new BigDecimal(subtotal.doubleValue() - (subtotal.doubleValue() * (itemVenda.getDesconto().doubleValue() / 100)));		
+								//Double estorno = (produto.getQuantidadeAtual().longValue() * produto.getCustoMedioUnitario().doubleValue()) - produto.getCustoTotal().doubleValue();
 								
-							
-								BigDecimal total = itemVenda.getTotal();
-								produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + total.doubleValue()));	
-											
+								produto.setEstorno(new BigDecimal(produto.getEstorno().doubleValue() + estorno));
 								
-							//}
-						}*/
-						
-						/* RE-CALCULAR CUSTO MEDIO UNITARIO DOS PRODUTOS DESSA COMPRA */
-						produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + itemVenda.getValorCompra().doubleValue()));											
-						
-						Object[] result = itensCompras.porQuantidadeDisponivel(produto);
-						
-						if((Long) result[0] != null) {
-						
-							Double estorno = ((BigDecimal) result[1]).doubleValue() - produto.getCustoTotal().doubleValue();
-							
-							//Double estorno = (produto.getQuantidadeAtual().longValue() * produto.getCustoMedioUnitario().doubleValue()) - produto.getCustoTotal().doubleValue();
-							
-							produto.setEstorno(new BigDecimal(produto.getEstorno().doubleValue() + estorno));
-							
-							produto.setCustoMedioUnitario(new BigDecimal(((BigDecimal) result[1]).doubleValue() / produto.getQuantidadeAtual().longValue()));
-							
-							produto.setCustoTotal((BigDecimal) result[1]);	
-						}
+								produto.setCustoMedioUnitario(new BigDecimal(((BigDecimal) result[1]).doubleValue() / produto.getQuantidadeAtual().doubleValue()));
+								
+								produto.setCustoTotal((BigDecimal) result[1]);	
+							}
+							*/
 
-						
-						
-						if(produto.getQuantidadeAtual().longValue() <= 0) {
-							produto.setCustoMedioUnitario(BigDecimal.ZERO);
 							
-							if(produto.getCustoTotal().doubleValue() > 0) {
-								produto.setEstorno(new BigDecimal(produto.getEstorno().doubleValue() - produto.getCustoTotal().doubleValue()));													
+							/*
+							if(produto.getQuantidadeAtual().doubleValue() <= 0) {
+								produto.setCustoMedioUnitario(BigDecimal.ZERO);
 								
-							} else if(produto.getCustoTotal().doubleValue() < 0) {
-								produto.setEstorno(new BigDecimal(produto.getEstorno().doubleValue() + (-1 * produto.getCustoTotal().doubleValue())));								
+								if(produto.getCustoTotal().doubleValue() > 0) {
+									produto.setEstorno(new BigDecimal(produto.getEstorno().doubleValue() - produto.getCustoTotal().doubleValue()));													
+									
+								} else if(produto.getCustoTotal().doubleValue() < 0) {
+									produto.setEstorno(new BigDecimal(produto.getEstorno().doubleValue() + (-1 * produto.getCustoTotal().doubleValue())));								
+								
+								} else {
+									produto.setEstorno(BigDecimal.ZERO);
+								}
+								
+								produto.setCustoTotal(BigDecimal.ZERO);
+							}
+							*/
+						}
+						
+						
+						List<ItemCaixa> itensCaixa = itensCaixas.porCodigoOperacao(vendaSelecionada.getNumeroVenda(), TipoOperacao.VENDA, vendaSelecionada.getEmpresa());
+
+						if(itensCaixa.size() > 0) {
 							
-							} else {
-								produto.setEstorno(BigDecimal.ZERO);
+							for (ItemCaixa itemVenda_ : itensCaixa) {
+								itensCaixas.remove(itemVenda_);
 							}
 							
-							produto.setCustoTotal(BigDecimal.ZERO);
 						}
 						
-						
-						
-						ItemCaixa itemCaixa = itensCaixas.porCodigoOperacao(vendaSelecionada.getNumeroVenda(), TipoOperacao.VENDA, vendaSelecionada.getEmpresa());
-
-						if(itemCaixa != null) {
-							
-							itensCaixas.remove(itemCaixa);
+						Pagamento pagamento = pagamentos.porVenda(vendaSelecionada, vendaSelecionada.getEmpresa());
+						if(pagamento != null) {
+							pagamentos.remove(pagamento);
 						}
+						
 						
 					}
 					
@@ -446,67 +586,51 @@ public class ConsultaVendasBean implements Serializable {
 						
 						if(!vendaSelecionada.isRecuperarValores()) {
 							//ItemCompra itemCompra = itensCompras.porCompra(itemVenda.getCompra(), itemVenda.getProduto());						
-							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemVenda.getQuantidade().intValue() * produto.getCustoMedioUnitario().doubleValue())));					
+							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemVenda.getQuantidade().doubleValue() * produto.getCustoMedioUnitario().doubleValue())));					
 						}
 												
 					} else {					
-					
-						/*produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + itemVenda.getValorCompra().doubleValue()));*/
 						
-						/* Deseja recuperar esses valores ? Se sim, Então os valores sub-totais de cada produto dessa venda
-						 * serão somados 
-						 * aos valores totais das próximas entradas de cada um desses produtos. Obs: O custo médio
-						 * desses produtos sofrerão aumento proporcional aos seus respectivos valores sub-totais dessa venda. 
-						 * */
-						/*if(itemVenda.getLucro().doubleValue() >= 0) {*/
+						if(produto.isEstoque()) {
 							
-							/*produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + itemVenda.getValorCompra().doubleValue()));	*/				
-							
-						/*} else {*/
-							
-							//BigDecimal total = BigDecimal.valueOf( 
-											//itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().longValue());					
+							/* RE-CALCULAR CUSTO MEDIO UNITARIO DOS PRODUTOS DESSA COMPRA */
 							/*
-							BigDecimal total = itemVenda.getTotal();
-							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + total.doubleValue()));					
-							*/											
-						//}
-						
-						/* RE-CALCULAR CUSTO MEDIO UNITARIO DOS PRODUTOS DESSA COMPRA */
-						produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + itemVenda.getValorCompra().doubleValue()));											
-						
-						Object[] result = itensCompras.porQuantidadeDisponivel(produto);
-						
-						if((Long) result[0] != null) {
-						
-							Double estorno = ((BigDecimal) result[1]).doubleValue() - produto.getCustoTotal().doubleValue();
+							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + itemVenda.getValorCompra().doubleValue()));											
 							
-							//Double estorno = (produto.getQuantidadeAtual().longValue() * produto.getCustoMedioUnitario().doubleValue()) - produto.getCustoTotal().doubleValue();
+							Object[] result = itensCompras.porQuantidadeDisponivel(produto);
 							
-							produto.setEstorno(new BigDecimal(produto.getEstorno().doubleValue() + estorno));
+							if((BigDecimal) result[0] != null) {
 							
-							produto.setCustoMedioUnitario(new BigDecimal(((BigDecimal) result[1]).doubleValue() / produto.getQuantidadeAtual().longValue()));
-							
-							produto.setCustoTotal((BigDecimal) result[1]);	
-						}
-
-						
-						
-						if(produto.getQuantidadeAtual().longValue() <= 0) {
-							produto.setCustoMedioUnitario(BigDecimal.ZERO);
-							
-							if(produto.getCustoTotal().doubleValue() > 0) {
-								produto.setEstorno(new BigDecimal(produto.getEstorno().doubleValue() - produto.getCustoTotal().doubleValue()));													
+								Double estorno = ((BigDecimal) result[1]).doubleValue() - produto.getCustoTotal().doubleValue();
 								
-							} else if(produto.getCustoTotal().doubleValue() < 0) {
-								produto.setEstorno(new BigDecimal(produto.getEstorno().doubleValue() + (-1 * produto.getCustoTotal().doubleValue())));								
-							
-							} else {
-								produto.setEstorno(BigDecimal.ZERO);
+								//Double estorno = (produto.getQuantidadeAtual().longValue() * produto.getCustoMedioUnitario().doubleValue()) - produto.getCustoTotal().doubleValue();
+								
+								produto.setEstorno(new BigDecimal(produto.getEstorno().doubleValue() + estorno));
+								
+								produto.setCustoMedioUnitario(new BigDecimal(((BigDecimal) result[1]).doubleValue() / produto.getQuantidadeAtual().doubleValue()));
+								
+								produto.setCustoTotal((BigDecimal) result[1]);	
 							}
+
 							
-							produto.setCustoTotal(BigDecimal.ZERO);
-						}
+							
+							if(produto.getQuantidadeAtual().doubleValue() <= 0) {
+								produto.setCustoMedioUnitario(BigDecimal.ZERO);
+								
+								if(produto.getCustoTotal().doubleValue() > 0) {
+									produto.setEstorno(new BigDecimal(produto.getEstorno().doubleValue() - produto.getCustoTotal().doubleValue()));													
+									
+								} else if(produto.getCustoTotal().doubleValue() < 0) {
+									produto.setEstorno(new BigDecimal(produto.getEstorno().doubleValue() + (-1 * produto.getCustoTotal().doubleValue())));								
+								
+								} else {
+									produto.setEstorno(BigDecimal.ZERO);
+								}
+								
+								produto.setCustoTotal(BigDecimal.ZERO);
+							}
+							*/
+						}				
 					}
 				}
 				
@@ -524,21 +648,32 @@ public class ConsultaVendasBean implements Serializable {
 				if(!listaDeDevolucoes.contains(devolucao)) {
 					listaDeDevolucoes.add(devolucao);
 				}
+				/*
+				List<ItemCaixa> itensCaixa = itensCaixas.porCodigoOperacao(itemDevolucao.getId(), TipoOperacao.DEVOLUCAO, vendaSelecionada.getEmpresa());
+
+				if(itensCaixa.size() > 0) {
+					
+					for (ItemCaixa itemVenda_ : itensCaixa) {
+						itensCaixas.remove(itemVenda_);
+					}
+					
+				}
+				*/
 				
 				itensDevolucoes.remove(itemDevolucao);
 			}
 			
 			for (Devolucao devolucao : listaDeDevolucoes) {
 				System.out.println(devolucao);
-				devolucoes.remove(devolucao);
+				//devolucoes.remove(devolucao);
 			}
 			
 
+			entrega = entregas.porVenda(vendaSelecionada);
+			
 			if (entrega.getId() != null) {
 				entregas.remove(entrega);
 			}
-			
-	
 
 			vendas.remove(vendaSelecionada);
 
@@ -681,6 +816,30 @@ public class ConsultaVendasBean implements Serializable {
 
 	public void setEntrega(Entrega entrega) {
 		this.entrega = entrega;
+	}
+
+	public Usuario getEntregador() {
+		return entregador;
+	}
+
+	public void setEntregador(Usuario entregador) {
+		this.entregador = entregador;
+	}
+
+	public List<Usuario> getTodosEntregadores() {
+		return todosEntregadores;
+	}
+
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
+	public List<Cliente> getTodosClientes() {
+		return todosClientes;
 	}
 
 }

@@ -16,9 +16,10 @@
 		<style>
 @media ( min-width :220px) {
 	.inventario.ui-button {
-	    width: auto !important;;
-	    color: #000000 !important;;
-	    background-color: transparent !important;;
+	    width: auto !important;
+	    color: #000000 !important;
+	    background-color: transparent !important;
+	    margin-left: 10px;
     }
 	body .ui-button.ui-button-text-icon-left .ui-button-text {
 		font-weight: bold;
@@ -190,8 +191,12 @@
 							readonlyInput="true" styleClass="dateStop" pattern="dd/MM/yyyy"
 							locale="pt" showIcon="true">
 						</p:datePicker>
+					</p:panelGrid>
 
-
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3">
+						
 						<p:outputLabel value="Vendedor" for="vendedor" />
 						<p:selectOneMenu id="vendedor"
 							value="#{consultaVendasBean.usuario}" placeholder="selecione">
@@ -201,6 +206,28 @@
 							<f:selectItems value="#{consultaVendasBean.todosUsuarios}"
 								var="vendedor" itemLabel="#{vendedor.nome}"
 								itemValue="#{vendedor}" />
+						</p:selectOneMenu>
+						
+						<p:outputLabel value="Cliente" for="cliente" />
+						<p:selectOneMenu id="cliente"
+							value="#{consultaVendasBean.cliente}" placeholder="selecione">
+
+							<f:selectItem itemLabel="Selecione" />
+
+							<f:selectItems value="#{consultaVendasBean.todosClientes}"
+								var="cliente" itemLabel="#{cliente.nome}"
+								itemValue="#{cliente}" />
+						</p:selectOneMenu>
+						
+						<p:outputLabel value="Entregador" for="entregador" />
+						<p:selectOneMenu id="entregador"
+							value="#{consultaVendasBean.entregador}" placeholder="selecione">
+
+							<f:selectItem itemLabel="Selecione" />
+
+							<f:selectItems value="#{consultaVendasBean.todosEntregadores}"
+								var="entregador" itemLabel="#{entregador.nome}"
+								itemValue="#{entregador}" />
 						</p:selectOneMenu>
 					</p:panelGrid>
 
@@ -258,7 +285,7 @@
 							onstart="start();" oncomplete="stop();"
 							action="#{consultaVendasBean.entregarVenda}" update="form"
 							process="@this"
-							rendered="#{consultaVendasBean.entrega.id != null and consultaVendasBean.entrega.status == 'PENDENTE'}">
+							rendered="#{consultaVendasBean.entrega.id != null and consultaVendasBean.entrega.status == 'PENDENTE' and consultaVendasBean.vendaSelecionada.tipoPagamento != null}">
 						</p:menuitem>
 						<p:separator />
 						<p:menuitem value="Desfazer entrega" icon="fa fa-fw fa-undo"
@@ -277,10 +304,10 @@
 							onstart="start();" oncomplete="stop();"
 							url="https://maps.google.com/maps?daddr=#{consultaVendasBean.entrega.localizacao}"
 							target="_blank"
-							rendered="#{consultaVendasBean.entrega.id != null}">
+							rendered="#{consultaVendasBean.entrega.id != null and consultaVendasBean.vendaSelecionada.tipoPagamento != null}">
 						</p:menuitem>
 						<p:menuitem value="Baixar PDF" icon="fa fa-fw fa-cloud-download"
-							action="#{consultaVendasBean.emitirPedido}" 
+							action="#{consultaVendasBean.emitirPedido}"
 							ajax="false" target="_blank" disabled="#{seguranca.usuarioLogado.usuario.empresa eq 'Havaianas'}">
 						</p:menuitem>
 
@@ -321,17 +348,25 @@
 							<p:column headerText="Tipo de venda" width="10%">
 								<h:outputText value="#{venda.tipoVenda.descricao}" />
 							</p:column>
-
-							<p:column headerText="Bairro" width="10%">
-								<h:outputText value="#{venda.bairro.nome}" />
+							
+							<p:column headerText="Mesa" width="7%">
+								<h:outputText value="#{venda.mesa != null ? venda.mesa : '-'}" />
+							</p:column>
+							
+							<p:column headerText="Cliente" width="10%">
+								<h:outputText value="#{venda.cliente.nome}" />
 							</p:column>
 
-							<p:column headerText="Vendedor" width="10%">
+							<p:column headerText="Bairro" width="10%">
+								<h:outputText value="#{venda.cliente.bairro.nome}" />
+							</p:column>
+
+							<p:column headerText="Vendedor" width="10%" visible="false">
 								<h:outputText value="#{venda.usuario.nome}" />
 							</p:column>
 							
 							<p:column headerText="Pagamento" width="10%">
-								<h:outputText value="#{venda.tipoPagamento.descricao.concat(', ').concat(venda.formaPagamento.nome)}" />
+								<h:outputText value="#{venda.tipoPagamento != null ? venda.tipoPagamento.descricao.concat(', ').concat(venda.formaPagamento.nome).concat(venda.pagamento) : '-'}" />
 							</p:column>
 
 							<p:column headerText="Qtd. Itens" width="8%">
@@ -339,13 +374,13 @@
 							</p:column>
 
 							<p:column headerText="Valor Total" width="10%">
-								<h:outputText value="#{venda.valorTotal}">
+								<h:outputText value="#{venda.valorTotal - venda.desconto}">
 									<f:convertNumber type="currency" />
 								</h:outputText>
 							</p:column>
 							
 							<p:column headerText="Pago?" width="8%">
-								<h:outputText value="#{venda.tipoPagamento == 'PARCELADO' ? 'Venda Parc.' : (venda.conta ? 'À receber' : (venda.vendaPaga ? 'Sim' : 'Não'))}" />
+								<h:outputText value="#{venda.tipoPagamento == 'PARCELADO' ? 'Venda Parc.' : (venda.conta ? 'À receber' : (venda.ajuste ? '-' : (venda.vendaPaga ? 'Sim' : 'Não')))}" />
 							</p:column>
 
 						</p:dataTable>

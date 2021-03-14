@@ -467,7 +467,7 @@
 										for="destino-despesa" />
 									<p:inputText 
 										readonly="true"
-										value="#{registroLancamentosBean.usuario_.empresa}" />
+										value="#{registroLancamentosBean.usuario_.empresa.nome}" />
 										
 									<p:selectOneMenu id="destino-despesa" rendered="false"
 										value="#{registroLancamentosBean.despesa.destinoLancamento}"
@@ -628,7 +628,7 @@
 										for="destino-receita" />
 									<p:inputText 
 										readonly="true"
-										value="#{registroLancamentosBean.usuario_.empresa}" />
+										value="#{registroLancamentosBean.usuario_.empresa.nome}" />
 										
 									<p:selectOneMenu id="destino-receita" rendered="false"
 										value="#{registroLancamentosBean.receita.destinoLancamento}"

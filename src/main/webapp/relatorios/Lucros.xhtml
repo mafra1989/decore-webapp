@@ -128,9 +128,9 @@
 		
 	}
 	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
-		right: 0;
-		height: 32px;
-		top: -2px;
+		right: -1;
+	    height: 29px;
+	    top: 0px;
 	}
 	.dateStop {
 		margin-left: 0px;
@@ -212,9 +212,9 @@
 		width: 90px;
 	}
 	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
-		right: 113px;
-		height: 32px;
-		top: -2px;
+		right: -35px;
+	    height: 29px;
+	    top: 0px;
 	}
 	.dateStop {
 		margin-left: 20px;
@@ -269,7 +269,7 @@
 				<p:panel class="ui-lg-6 ui-fluid itens-add"
 					style="padding-bottom: 0px !important; margin-top:10px;width:100%">
 
-					<h3 style="font-weight: bold; margin-top: -8px;">Lucro por Dia</h3>
+					<h3 style="font-weight: bold; margin-top: -8px;">Lucro em vendas por Dia</h3>
 
 					<p:panelGrid columns="4" id="painel" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
@@ -386,7 +386,7 @@
 				<p:panel class="ui-lg-6  ui-fluid itens-add"
 					style="padding-bottom: 0px !important; margin-top:10px;width:100%">
 
-					<h3 style="font-weight: bold; margin-top: -8px;">Lucro por
+					<h3 style="font-weight: bold; margin-top: -8px;">Lucro em vendas por
 						Semana</h3>
 
 					<p:panelGrid columns="2" layout="grid" id="painel-ano"
@@ -535,7 +535,7 @@
 				<p:panel class="ui-lg-6 ui-fluid itens-add"
 					style="padding-bottom: 0px !important; margin-top:10px;width:100%">
 
-					<h3 style="font-weight: bold; margin-top: -8px;">Lucro por Mês</h3>
+					<h3 style="font-weight: bold; margin-top: -8px;">Lucro geral por Mês</h3>
 
 					<p:panelGrid columns="2" layout="grid" id="painel-ano2"
 						styleClass="panelgrid-noborder disabled disabled"
@@ -584,8 +584,8 @@
 								itemLabel="#{mes}" itemValue="#{mes}"></f:selectItems>
 						</p:selectOneMenu>
 						
-						<p:outputLabel value="Vendedor" for="vendedor3" />
-						<p:selectOneMenu id="vendedor3"
+						<p:outputLabel value="Vendedor" for="vendedor3" rendered="false" />
+						<p:selectOneMenu id="vendedor3" rendered="false"
 							value="#{relatorioLucrosBean.usuarioPorMes}"
 							placeholder="selecione">
 
@@ -666,11 +666,13 @@
 						style="color:#6a6565;background-color:#f2f2f200;border: 1px solid #a8a8a8;float: right; width: 35px;margin-top:5px;margin-right:10px" />
 
 					<p:barChart model="#{relatorioLucrosBean.mixedModelPorMes}"
-						id="barChart-lucrosPorMes" styleClass="barChart-02" />
+						id="barChart-lucrosPorMes" styleClass="barChart-01" />
 
-					<p:panelGrid columns="1" layout="grid" style="text-align: center"
+					<p:panelGrid columns="1" layout="grid" style="text-align: center;margin-top: -26px;"
 						styleClass="panelgrid-noborder disabled disabled target"
 						columnClasses="ui-grid-col-12">
+						
+						<p:outputLabel style="font-size: 11px;" value="* Obs: Marque pelo menos uma categoria para ver o lucro em vendas mensal por categoria/produto." />
 
 						<p:commandLink value="Definir target" process="@this"
 							actionListener="#{relatorioLucrosBean.definirTargetMensal}"
@@ -685,7 +687,7 @@
 				<p:panel class="ui-lg-6  ui-fluid itens-add"
 					style="padding-bottom: 0px !important; margin-top:10px;width:100%">
 
-					<h3 style="font-weight: bold; margin-top: -8px;">Lucro por Ano</h3>
+					<h3 style="font-weight: bold; margin-top: -8px;">Lucro em vendas por Ano</h3>
 
 					<p:panelGrid columns="4" id="painel-anual" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"

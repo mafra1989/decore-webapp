@@ -30,11 +30,11 @@ public class ItemCaixa implements Serializable {
 	@Column
 	private Date data = new Date();
 	
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private Long codigoOperacao;
 	
 	@Enumerated(EnumType.STRING)
-	@Column(nullable = false, length = 10)
+	@Column(nullable = true, length = 10)
 	private TipoOperacao operacao;
 	
 	@Column(nullable = false, length = 120)

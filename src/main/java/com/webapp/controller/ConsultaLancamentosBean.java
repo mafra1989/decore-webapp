@@ -21,7 +21,6 @@ import org.springframework.security.core.userdetails.User;
 import com.webapp.model.CategoriaLancamento;
 import com.webapp.model.Conta;
 import com.webapp.model.DestinoLancamento;
-import com.webapp.model.Grupo;
 import com.webapp.model.ItemCaixa;
 import com.webapp.model.Lancamento;
 import com.webapp.model.OrigemLancamento;
@@ -101,8 +100,6 @@ public class ConsultaLancamentosBean implements Serializable {
 	
 	private String[] categorias;
 	
-	private String empresa = "";
-	
 	@Inject
 	private ItensCaixas itensCaixas;
 	
@@ -111,32 +108,17 @@ public class ConsultaLancamentosBean implements Serializable {
 		if (FacesUtil.isNotPostback()) {
 			
 			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();		
-			usuario_ = usuarios.porNome(user.getUsername());
-			
-			List<Grupo> grupos = usuario_.getGrupos();
-			
-			if(grupos.size() > 0) {
-				for (Grupo grupo : grupos) {
-					if(grupo.getNome().equals("ADMINISTRADOR")) {
-						EmpresaBean empresaBean = (EmpresaBean) FacesUtil.getObjectSession("empresaBean");
-						if(empresaBean != null && empresaBean.getEmpresa() != null) {
-							usuario_.setEmpresa(empresaBean.getEmpresa());
-						}
-					}
-				}
-			}
+			usuario_ = usuarios.porLogin(user.getUsername());
 			
 			todosUsuarios = usuarios.todos(usuario_.getEmpresa());
 			todasCategoriasDespesas = categoriasDespesas.todos(usuario_.getEmpresa());
 			todosDestinosLancamentos = destinosLancamentos.todos();
+			
+			numeroLancamento = null;
 		}
 	}
 
 	public void pesquisar() {
-		
-		if(!empresa.equals(usuario_.getEmpresa())) {			
-			empresa = usuario_.getEmpresa();
-		}
 		
 		Calendar calendarioTemp = Calendar.getInstance();
 		calendarioTemp.setTime(dateStop);
@@ -297,11 +279,14 @@ public class ConsultaLancamentosBean implements Serializable {
 			lancamentos.remove(lancamentoSelecionado);
 			
 			
-			ItemCaixa itemCaixa = itensCaixas.porCodigoOperacao(lancamentoSelecionado.getNumeroLancamento(), TipoOperacao.LANCAMENTO, lancamentoSelecionado.getEmpresa());
+			List <ItemCaixa> itemCaixas = itensCaixas.porCodigoOperacao(lancamentoSelecionado.getNumeroLancamento(), TipoOperacao.LANCAMENTO, lancamentoSelecionado.getEmpresa());
 
-			if(itemCaixa != null) {
+			if(itemCaixas.size() > 0) {
 				
-				itensCaixas.remove(itemCaixa);
+				for (ItemCaixa itemCaixa : itemCaixas) {
+					itensCaixas.remove(itemCaixa);
+				}
+				
 			}
 			
 

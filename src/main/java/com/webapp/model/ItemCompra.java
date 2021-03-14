@@ -31,14 +31,16 @@ public class ItemCompra implements Serializable {
 
 	@NotNull
 	@Column(nullable = false)
-	private Long quantidade;
+	@Digits(integer = 10 /* precision */, fraction = 3 /* scale */)
+	private BigDecimal quantidade;
 
 	@Column(nullable = false)
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal total;
 
 	@Column(nullable = false)
-	private Long quantidadeDisponivel;
+	@Digits(integer = 10 /* precision */, fraction = 3 /* scale */)
+	private BigDecimal quantidadeDisponivel;
 
 	@ManyToOne
 	@JoinColumn
@@ -70,12 +72,12 @@ public class ItemCompra implements Serializable {
 		this.valorUnitario = valorUnitario.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
-	public Long getQuantidade() {
+	public BigDecimal getQuantidade() {
 		return quantidade;
 	}
 
-	public void setQuantidade(Long quantidade) {
-		this.quantidade = quantidade;
+	public void setQuantidade(BigDecimal quantidade) {
+		this.quantidade = quantidade.setScale(3, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public BigDecimal getTotal() {
@@ -86,12 +88,12 @@ public class ItemCompra implements Serializable {
 		this.total = total.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
-	public Long getQuantidadeDisponivel() {
+	public BigDecimal getQuantidadeDisponivel() {
 		return quantidadeDisponivel;
 	}
 
-	public void setQuantidadeDisponivel(Long quantidadeDisponivel) {
-		this.quantidadeDisponivel = quantidadeDisponivel;
+	public void setQuantidadeDisponivel(BigDecimal quantidadeDisponivel) {
+		this.quantidadeDisponivel = quantidadeDisponivel.setScale(3, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public Produto getProduto() {
@@ -146,6 +148,10 @@ public class ItemCompra implements Serializable {
 	
 	@Transient
 	private String valorUnitarioFormatado;
+	
+	@Transient
+	private BigDecimal quantidadeDisponivel_;
+	
 
 	public String getCode() {
 		return code;
@@ -163,4 +169,11 @@ public class ItemCompra implements Serializable {
 		this.valorUnitarioFormatado = valorUnitarioFormatado;
 	}
 
+	public BigDecimal getQuantidadeDisponivel_() {
+		return quantidadeDisponivel_;
+	}
+
+	public void setQuantidadeDisponivel_(BigDecimal quantidadeDisponivel_) {
+		this.quantidadeDisponivel_ = quantidadeDisponivel_;
+	}
 }

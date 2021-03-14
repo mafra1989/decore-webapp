@@ -12,7 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.Fornecedor;
-import com.webapp.model.Grupo;
 import com.webapp.model.Usuario;
 import com.webapp.repository.Fornecedores;
 import com.webapp.repository.Usuarios;
@@ -47,20 +46,7 @@ public class CadastroFornecedorBean implements Serializable {
 		if (FacesUtil.isNotPostback()) {
 			
 			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();			
-			usuario = usuarios.porNome(user.getUsername());
-			
-			List<Grupo> grupos = usuario.getGrupos();
-			
-			if(grupos.size() > 0) {
-				for (Grupo grupo : grupos) {
-					if(grupo.getNome().equals("ADMINISTRADOR")) {
-						EmpresaBean empresaBean = (EmpresaBean) FacesUtil.getObjectSession("empresaBean");
-						if(empresaBean != null && empresaBean.getEmpresa() != null) {
-							usuario.setEmpresa(empresaBean.getEmpresa());
-						}
-					}
-				}
-			}
+			usuario = usuarios.porLogin(user.getUsername());
 			
 			listarTodos();
 		}

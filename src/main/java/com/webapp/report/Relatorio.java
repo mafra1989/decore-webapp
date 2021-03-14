@@ -1,18 +1,16 @@
 package com.webapp.report;
 
-import java.awt.print.PrinterJob;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
 
 import javax.faces.context.FacesContext;
-import javax.print.PrintService;
-import javax.print.PrintServiceLookup;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.printing.PDFPageable;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -39,15 +37,39 @@ public class Relatorio<T> {
 			
 			System.out.println(relatorioStream);
 
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			//ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
 			JRDataSource jrds = new JRBeanCollectionDataSource(lista, false);
 
 			JasperPrint print = JasperFillManager.fillReport(relatorioStream, null, jrds);
 
-			JasperExportManager.exportReportToPdfStream(print, baos);
+			//JasperExportManager.exportReportToPdfStream(print, baos);
 			
-			JasperPrintManager.printReport(print, true);
+			JasperPrintManager.printReport(print, false);
+			
+			
+
+			String path = "C:/xampp/tomcat/webapps/cupons/" + filename + ".pdf";
+			
+			new File(path).delete();
+			
+			File file = new File(path);
+			
+			try {
+				FileOutputStream fos = new FileOutputStream(file);
+				try {
+					fos.write(JasperExportManager.exportReportToPdf(print));
+					fos.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
 			
 			/*
 			PDDocument documento = PDDocument.load(JasperExportManager.exportReportToPdf(print));
@@ -57,7 +79,7 @@ public class Relatorio<T> {
 			job.setPageable(new PDFPageable(documento));
 			job.setPrintService(servico);
 			job.print();
-			documento.close();
+			documento.close();		
 			*/
 
 			/*response.reset();
@@ -83,6 +105,7 @@ public class Relatorio<T> {
 		}
 
 	}
+	
 	
 	public void getRelatorio_(List<T> lista, String filename) throws SQLException {
 		try {
@@ -122,6 +145,26 @@ public class Relatorio<T> {
 		}
 
 	}
+	
+	
+	public byte[] getRelatorio__(List<T> lista, String filename) throws SQLException {
+		try {
+
+			InputStream relatorioStream = this.getClass().getResourceAsStream("/relatorios/decore-vendas.jasper");
+			
+			System.out.println(relatorioStream);
+
+			JRDataSource jrds = new JRBeanCollectionDataSource(lista, false);
+
+			JasperPrint print = JasperFillManager.fillReport(relatorioStream, null, jrds);
+			
+			return JasperExportManager.exportReportToPdf(print);			
+
+		} catch (Exception e) {
+			throw new SQLException("Erro ao executar relatório", e);
+		}
+	}
+	
 	
 	public void getRelatorioEstoque(List<T> lista, String filename) throws SQLException {
 		try {

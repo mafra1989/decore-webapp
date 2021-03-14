@@ -5,8 +5,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 
 import com.webapp.model.Bairro;
+import com.webapp.model.Usuario;
 import com.webapp.repository.filter.BairroFilter;
 import com.webapp.util.jpa.Transacional;
 
@@ -39,8 +41,17 @@ public class Bairros implements Serializable {
 	}
 	
 	public Bairro porNome(String nome) {
-		return this.manager.createQuery("from Bairro i where i.nome = :nome", Bairro.class)
-				.setParameter("nome", nome).getSingleResult();
+		Bairro bairro = null;
+		
+		try {
+			bairro = this.manager.createQuery("from Bairro i where i.nome = :nome", Bairro.class)
+					.setParameter("nome", nome).getSingleResult();
+			
+		} catch (NoResultException e) {
+			System.out.println("nenhum bairro encontrado com o nome informado");
+		}
+		
+		return bairro;
 	}
 	
 	public List<Bairro> filtrados(BairroFilter filter) {

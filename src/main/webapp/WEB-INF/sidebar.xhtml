@@ -1,51 +1,50 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:pm="http://primefaces.org/manhattan">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pm="http://primefaces.org/manhattan">
+    
+    <style>
+    .layout-wrapper .layout-sidebar .layout-sidebar-logo {
+    	padding: 0px;
+    }
+    @media (min-width: 1281px) {
+		.layout-wrapper.layout-slim .layout-sidebar .layout-sidebar-logo .layout-sidebar-anchor {
+		    margin-top: -48px;
+		    z-index: 99999999;
+		    float: left;
+		    margin-left: 3px;
+		}
+	}
+    </style>
 
-	<style>
-.layout-wrapper .layout-sidebar .sidebar-logo img {
-	margin-left: 0;
-	height: 30px;
-}
+    <div class="layout-sidebar">
+        <div class="layout-sidebar-logo">
+            <a href="Dashboard.xhtml">
+                
+                <p:graphicImage rendered="false"
+						name="images/oie_Ov3NrqjejJJ5.png" library="manhattan-layout"
+						width="150" height="100" 
+						style="margin-left: 1px;margin-top: -13px;height: 61px;width: 238px;" />
+						
+				<ui:fragment
+					rendered="#{seguranca.usuarioLogado.usuario.empresa.logo != null}">
+					<img style="height: 64px;width: 270px;"
+						src="data:image/png;base64,#{seguranca.imageContentsAsBase64_Logo}" />
+				</ui:fragment>	
+            </a>
+            <a href="#" id="layout-sidebar-anchor" class="layout-sidebar-anchor" title="Toggle Menu">
+                <i class="fa"></i>
+            </a>
+        </div>
 
-.layout-wrapper .layout-sidebar .sidebar-logo {
-	padding-top: 15px;
-}
-
-.layout-wrapper .layout-sidebar .sidebar-logo .sidebar-anchor {
-	margin-left: 0px;
-}
-</style>
-
-	<div class="layout-sidebar">
-		<div class="sidebar-logo">
-			<a href="/Dashboard.xhtml"> 
-			
-				<p:graphicImage rendered="#{seguranca.usuarioLogado.usuario.empresa eq 'Decore'}"
-					name="images/decore-logo.jpg" library="manhattan-layout"
-					width="150" height="100" 
-					style="margin-left: 1px;margin-top: -12px;height: 59px;width: 238px;" />
-					
-				<p:graphicImage rendered="#{seguranca.usuarioLogado.usuario.empresa eq 'Havaianas'}"
-						name="images/havaianas-logo2.png" library="manhattan-layout"
-						width="150" height="100"
-						style="margin-left: 1px;margin-top: -12px;height: 59px;width: 238px;" />
-			
-			</a> <a href="#" class="sidebar-anchor animated fadeIn"
-				title="Toggle Menu"
-				style="float: right; margin-right: 13px; margin-top: 7px; display: none">
-				<i class="fa"></i>
-			</a>
-		</div>
-
-		<div class="nano">
-			<div class="nano-content sidebar-scroll-content">
-				<div class="layout-menu-container">
-					<h:form id="menuform">
-						<pm:menu id="pm_menu">
+        <div class="nano">
+            <div class="nano-content sidebar-scroll-content">
+                <div class="layout-menu-container">
+                    <h:form id="menuform">
+                        <pm:menu>
 							<p:menuitem id="pm_Dashboard" styleClass="pm_Dashboard"
 								value="Dashboard" icon="fa fa-home" outcome="/Dashboard.xhtml"
 								rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()}" />
@@ -67,21 +66,22 @@
 							</p:submenu>
 							
 							<p:submenu id="pm_PDV" styleClass="pm_PDV"
-								rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado()}"
+								rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado() or seguranca.acessoVendedor()}"
 								label="PDV" icon="fa fa-trello">
 								
+								<p:menuitem id="pm_caixa" styleClass="pm_caixa"
+									value="Controle de Caixa" icon="fa fa-inbox"
+									outcome="/Caixa.xhtml" />
+									
 								<p:menuitem id="pm_FrenteCaixa" value="Frente de Caixa"
 									icon="fa fa-qrcode" outcome="/PDV.xhtml"   
 									rendered="#{seguranca.acessoAdministrador() or seguranca.acessoVendedor()}">
 								</p:menuitem>
 							
-								<p:menuitem id="pm_devolucoes" styleClass="pm_devolucao"
+								<p:menuitem id="pm_devolucoes" styleClass="pm_devolucao" rendered="false"
 									value="Devolução / Troca" icon="fa fa-mail-reply-all"
 									outcome="/DevolucaoTroca.xhtml" />
-									
-								<p:menuitem id="pm_caixa" styleClass="pm_caixa"
-									value="Controle de Caixa" icon="fa fa-inbox"
-									outcome="/Caixa.xhtml" />	
+	
 							</p:submenu>
 							
 							<p:submenu id="pm_consulta" label="Consultar" icon="fa fa-search"
@@ -106,9 +106,9 @@
 								icon="fa fa-database">
 
 								<p:menuitem id="pm_produto" value="Produto" icon="fa fa-cubes"
-									url="https://decore-webapp.herokuapp.com/cadastros/CadastroProdutos.xhtml" />
+									outcome="/cadastros/CadastroProdutos.xhtml" />
 
-								<p:menuitem id="pm_tipo_produto" value="Tipo de Produto"
+								<p:menuitem id="pm_tipo_produto" value="Categoria de Produto"
 									icon="fa fa-ticket"
 									outcome="/cadastros/CadastroCategoriaProduto.xhtml" />
 
@@ -119,13 +119,17 @@
 								<p:menuitem id="pm_empresas" value="Empresa"
 									icon="fa fa-diamond" 
 									outcome="/cadastros/CadastroEmpresas.xhtml" />
+									
+								<p:menuitem id="pm_clientes" value="Cliente"
+									icon="fa fa-user-plus"
+									outcome="/cadastros/CadastroClientes.xhtml" />
 
 								<p:menuitem id="pm_bairros" value="Bairro"
 									icon="fa fa-map-marker"
 									outcome="/cadastros/CadastroBairros.xhtml" />
 
 								<p:menuitem id="pm_investidor" value="Equipe" icon="fa fa-users"
-									outcome="/cadastros/CadastroEquipe.xhtml" />
+									outcome="/cadastros/CadastroEquipe.xhtml" rendered="true" />
 
 								<p:menuitem id="pm_cat_lancamento" value="Tipo de Venda"
 									icon="fa fa-instagram"
@@ -159,9 +163,9 @@
 
 								<p:menuitem id="pm_compras" styleClass="pm_compra"
 									value="Registrar Compras" icon="fa fa-shopping-cart"
-									url="https://decore-webapp.herokuapp.com/operacoes/RegistroCompras.xhtml" />
+									outcome="/operacoes/RegistroCompras.xhtml" />
 
-								<p:menuitem id="pm_vendas" styleClass="pm_venda"
+								<p:menuitem id="pm_vendas" styleClass="pm_venda" rendered="true"
 									value="Registrar Venda" icon="fa fa-dollar"
 									outcome="/operacoes/RegistroVendas.xhtml" />
 
@@ -186,17 +190,31 @@
 									icon="fa fa-coffee" outcome="/relatorios/Lancamentos.xhtml" />
 
 							</p:submenu>
-
-							<p:menuitem id="pm_Import" styleClass="pm_Import"
-								rendered="false"
+		
+								
+							<p:submenu id="pm_menu_colors" label="Menu Colors" icon="fa fa-paint-brush" rendered="#{seguranca.acessoAdministrador()}">
+                                <p:menuitem id="pm_menu_dark" value="Dark Menu" icon="fa fa-square" actionListener="#{guestPreferences.setLightMenu(false)}" ajax="false"></p:menuitem>
+                                <p:menuitem id="pm_menu_light" value="Light Menu" icon="fa fa-square-o" actionListener="#{guestPreferences.setLightMenu(true)}" ajax="false"></p:menuitem>
+                            </p:submenu>
+                            
+                            <p:submenu id="pm_layout_modes" label="Layout Modes" icon="fa fa-gear" rendered="#{seguranca.acessoAdministrador()}">
+                                <p:menuitem id="pm_layout_slim" value="Slim" icon="fa fa-window-restore" actionListener="#{guestPreferences.updateLayoutMode('SLIM')}" ajax="false"></p:menuitem>
+                                <p:menuitem id="pm_layout_static" value="Static" icon="fa fa-bars" actionListener="#{guestPreferences.updateLayoutMode('STATIC')}" ajax="false"></p:menuitem>
+                                <p:menuitem id="pm_layout_overlay" value="Overlay" icon="fa fa-arrows-h" actionListener="#{guestPreferences.updateLayoutMode('OVERLAY')}" ajax="false"></p:menuitem>
+                                <p:menuitem id="pm_layout_horizontal" value="Horizontal" icon="fa fa-arrows-v" actionListener="#{guestPreferences.updateLayoutMode('HORIZONTAL')}" ajax="false"></p:menuitem>
+                                <p:menuitem id="pm_layout_toggle" value="Toggle" icon="fa fa-chevron-left" actionListener="#{guestPreferences.updateLayoutMode('TOGGLE')}" ajax="false"></p:menuitem>
+                            </p:submenu>
+                            
+                            
+                            <p:menuitem id="pm_Import" styleClass="pm_Import" rendered="#{seguranca.acessoAdministrador() and true}"
 								value="Importar Dados" icon="fa fa-laptop"
 								outcome="/importar/ImportarDados.xhtml" />
 
 						</pm:menu>
-					</h:form>
-				</div>
-			</div>
-		</div>
-	</div>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </ui:composition>

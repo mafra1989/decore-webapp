@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.PushbackInputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,13 +29,15 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.PrimeFaces;
-import org.primefaces.model.UploadedFile;
+import org.primefaces.model.file.UploadedFile;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
+import com.webapp.model.Bairro;
+import com.webapp.model.CategoriaProduto;
+import com.webapp.model.Cliente;
 import com.webapp.model.Compra;
 import com.webapp.model.Conta;
-import com.webapp.model.Grupo;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.Lancamento;
@@ -43,6 +47,8 @@ import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
 import com.webapp.repository.Bairros;
 import com.webapp.repository.CategoriasLancamentos;
+import com.webapp.repository.CategoriasProdutos;
+import com.webapp.repository.Clientes;
 import com.webapp.repository.Compras;
 import com.webapp.repository.Contas;
 import com.webapp.repository.DestinosLancamentos;
@@ -88,6 +94,10 @@ public class ImportarDadosBean implements Serializable {
 	@Inject
 	private CategoriasLancamentos categoriasLancamentosRepository;
 	
+	
+	@Inject
+	private CategoriasProdutos categoriasProdutosRepository;
+	
 	@Inject
 	private DestinosLancamentos destinosLancamentosRepository;
 
@@ -101,7 +111,7 @@ public class ImportarDadosBean implements Serializable {
 
 	private byte[] fileContent;
 
-	private String opcao = "";
+	private String opcao = "Produtos";
 
 	private boolean upload = false;
 
@@ -111,24 +121,27 @@ public class ImportarDadosBean implements Serializable {
 	@Inject
 	private Usuarios usuarios;
 	
+	private List<Produto> produtos = new ArrayList<>();
+	
+	
+	@Inject
+	private Cliente cliente;
+	
+	@Inject
+	private Clientes clientesRepository;
+	
+	private List<Cliente> clientes = new ArrayList<>();
+	
+	@Inject
+	private Bairros bairrosRepository;
+	
+	
+	
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
 
 			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();	
-			usuario = usuarios.porNome(user.getUsername());
-			
-			List<Grupo> grupos = usuario.getGrupos();
-			
-			if(grupos.size() > 0) {
-				for (Grupo grupo : grupos) {
-					if(grupo.getNome().equals("ADMINISTRADOR")) {
-						EmpresaBean empresaBean = (EmpresaBean) FacesUtil.getObjectSession("empresaBean");
-						if(empresaBean != null && empresaBean.getEmpresa() != null) {
-							usuario.setEmpresa(empresaBean.getEmpresa());
-						}
-					}
-				}
-			}
+			usuario = usuarios.porLogin(user.getUsername());
 		}
 	}
 
@@ -138,6 +151,18 @@ public class ImportarDadosBean implements Serializable {
 
 	public void setFile(UploadedFile file) {
 		this.file = file;
+	}
+
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
+	public List<Cliente> getClientes() {
+		return clientes;
 	}
 
 	public void importarCompras(UploadedFile file) {
@@ -150,7 +175,7 @@ public class ImportarDadosBean implements Serializable {
 
 		Workbook workbook;
 		try {
-			workbook = create(file.getInputstream());
+			workbook = create(file.getInputStream());
 
 			Sheet sheet = workbook.getSheetAt(0);
 			rowIterator = sheet.iterator();
@@ -199,7 +224,7 @@ public class ImportarDadosBean implements Serializable {
 										* Double.parseDouble(row.getCell(5).toString()))));
 
 						ItemCompra itemCompra = new ItemCompra();
-						itemCompra.setQuantidade((long) Double.parseDouble(row.getCell(5).toString()));
+						itemCompra.setQuantidade(new BigDecimal(Double.parseDouble(row.getCell(5).toString())));
 						itemCompra.setQuantidadeDisponivel(itemCompra.getQuantidade());
 						itemCompra.setValorUnitario(BigDecimal.valueOf(Double.parseDouble(row.getCell(4).toString())));
 						itemCompra.setTotal(BigDecimal.valueOf(Double.parseDouble(row.getCell(4).toString())
@@ -262,7 +287,7 @@ public class ImportarDadosBean implements Serializable {
 						itemCompraTemp.setCompra(compraTemp);
 
 						Produto produto = itemCompraTemp.getProduto();
-						produto.setQuantidadeAtual(produto.getQuantidadeAtual() + itemCompraTemp.getQuantidade());
+						produto.setQuantidadeAtual(new BigDecimal(produto.getQuantidadeAtual().doubleValue() + itemCompraTemp.getQuantidade().doubleValue()));
 						produtosRepository.save(produto);
 
 						itensComprasRepository.save(itemCompraTemp);
@@ -320,7 +345,7 @@ public class ImportarDadosBean implements Serializable {
 
 		Workbook workbook;
 		try {
-			workbook = create(file.getInputstream());
+			workbook = create(file.getInputStream());
 
 			Sheet sheet = workbook.getSheetAt(0);
 			rowIterator = sheet.iterator();
@@ -408,7 +433,7 @@ public class ImportarDadosBean implements Serializable {
 
 									/* Item */
 									/* Quantidade, ValorUnitario e Total */
-									itemVenda.setQuantidade(saldo);
+									itemVenda.setQuantidade(new BigDecimal(saldo));
 									itemVenda.setValorUnitario(
 											BigDecimal.valueOf(Double.parseDouble(row.getCell(6).toString())));
 									itemVenda.setTotal(
@@ -428,7 +453,7 @@ public class ImportarDadosBean implements Serializable {
 
 									/* Venda */
 									/* Total de Itens e Valor Total */
-									venda.setQuantidadeItens(venda.getQuantidadeItens() + itemVenda.getQuantidade());
+									venda.setQuantidadeItens(venda.getQuantidadeItens().longValue() + itemVenda.getQuantidade().longValue());
 									venda.setValorTotal(BigDecimal.valueOf(
 											venda.getValorTotal().doubleValue() + itemVenda.getTotal().doubleValue()));
 
@@ -459,7 +484,7 @@ public class ImportarDadosBean implements Serializable {
 									saldo -= itemCompraTemp.getQuantidadeDisponivel().longValue();
 									quantidadeDisponivel = itemCompraTemp.getQuantidadeDisponivel().longValue() - quantidadeDisponivel;
 									
-									itemCompraTemp.setQuantidadeDisponivel(quantidadeDisponivel);								
+									itemCompraTemp.setQuantidadeDisponivel(new BigDecimal(quantidadeDisponivel));								
 									itensComprasRepository.save(itemCompraTemp);
 
 								} else {
@@ -470,26 +495,26 @@ public class ImportarDadosBean implements Serializable {
 									itemVenda.setValorUnitario(
 											BigDecimal.valueOf(Double.parseDouble(row.getCell(6).toString())));
 									itemVenda.setTotal(BigDecimal.valueOf(itemVenda.getValorUnitario().doubleValue()
-											* itemCompraTemp.getQuantidadeDisponivel()));
+											* itemCompraTemp.getQuantidadeDisponivel().longValue()));
 
 									/* Item */
 									/* Lucro, PercentualLucro, ValorCompra e Compra */
-									itemVenda.setLucro(BigDecimal.valueOf((itemCompraTemp.getQuantidadeDisponivel()
+									itemVenda.setLucro(BigDecimal.valueOf((itemCompraTemp.getQuantidadeDisponivel().doubleValue()
 											* itemVenda.getValorUnitario().doubleValue())
-											- (itemCompraTemp.getQuantidadeDisponivel()
+											- (itemCompraTemp.getQuantidadeDisponivel().doubleValue()
 													* itemCompraTemp.getValorUnitario().doubleValue())));
 									itemVenda.setPercentualLucro(BigDecimal.valueOf((itemVenda.getLucro().doubleValue()
-											/ (itemCompraTemp.getQuantidadeDisponivel()
+											/ (itemCompraTemp.getQuantidadeDisponivel().doubleValue()
 													* itemCompraTemp.getValorUnitario().doubleValue()))
 											* 100));
-									itemVenda.setValorCompra(BigDecimal.valueOf(itemCompraTemp.getQuantidadeDisponivel()
+									itemVenda.setValorCompra(BigDecimal.valueOf(itemCompraTemp.getQuantidadeDisponivel().doubleValue()
 											* itemCompraTemp.getValorUnitario().doubleValue()));
 
 									itemVenda.setCompra(itemCompraTemp.getCompra());
 
 									/* Venda */
 									/* Total de Itens e Valor Total */
-									venda.setQuantidadeItens(venda.getQuantidadeItens() + itemVenda.getQuantidade());
+									venda.setQuantidadeItens(venda.getQuantidadeItens().longValue() + itemVenda.getQuantidade().longValue());
 									venda.setValorTotal(BigDecimal.valueOf(
 											venda.getValorTotal().doubleValue() + itemVenda.getTotal().doubleValue()));
 
@@ -518,7 +543,7 @@ public class ImportarDadosBean implements Serializable {
 
 									saldo -= itemCompraTemp.getQuantidadeDisponivel().longValue();
 									
-									itemCompraTemp.setQuantidadeDisponivel(0L);
+									itemCompraTemp.setQuantidadeDisponivel(BigDecimal.ZERO);
 									itensComprasRepository.save(itemCompraTemp);
 
 								}
@@ -574,12 +599,12 @@ public class ImportarDadosBean implements Serializable {
 						/* Venda */
 						itemVendaTemp.setVenda(vendaTemp);
 
-						quantidade += itemVendaTemp.getQuantidade();
+						quantidade += itemVendaTemp.getQuantidade().longValue();
 						valorTotal += itemVendaTemp.getTotal().doubleValue();
 
 						Produto produto = itemVendaTemp.getProduto();
 						produto = produtosRepository.porId(produto.getId());
-						produto.setQuantidadeAtual(produto.getQuantidadeAtual() - itemVendaTemp.getQuantidade());
+						produto.setQuantidadeAtual(new BigDecimal(produto.getQuantidadeAtual().longValue() - itemVendaTemp.getQuantidade().longValue()));
 
 						System.out.println(produto.getCodigo() + " - " + produto.getQuantidadeAtual());
 
@@ -621,7 +646,7 @@ public class ImportarDadosBean implements Serializable {
 
 		Workbook workbook;
 		try {
-			workbook = create(file.getInputstream());
+			workbook = create(file.getInputStream());
 
 			Sheet sheet = workbook.getSheetAt(0);
 			rowIterator = sheet.iterator();
@@ -713,22 +738,198 @@ public class ImportarDadosBean implements Serializable {
 		fileContent = null;
 	}
 	
+	
+	public void importarProdutos(UploadedFile file) {
 
-	public void importar() { 
+		Produto produto = null;
+		Iterator<Row> rowIterator = null;
+
+		produtos = new ArrayList<>();
+		
+		usuario = usuarios.porId(1L);
+
+		Workbook workbook;
+		try {
+			workbook = create(file.getInputStream());
+
+			Sheet sheet = workbook.getSheetAt(0);
+			rowIterator = sheet.iterator();
+
+			while (rowIterator.hasNext()) {
+				Row row = rowIterator.next();
+
+				if (row.getRowNum() > 0) {
+
+					if(row.getCell(3) != null) {
+						
+						produto = new Produto();
+						
+						CategoriaProduto categoriaProduto = categoriasProdutosRepository.porNome(row.getCell(3).toString(), usuario.getEmpresa());
+						
+						if(categoriaProduto == null) {
+							categoriaProduto = new CategoriaProduto();
+							categoriaProduto.setNome(convertToTitleCaseIteratingChars(row.getCell(3).toString()));
+							categoriaProduto.setEmpresa(usuario.getEmpresa());
+						}
+						
+						produto.setCodigo(row.getCell(0) != null ? row.getCell(0).toString().trim().replace(".0", "") : "");
+						produto.setNome(row.getCell(1) != null ? convertToTitleCaseIteratingChars(row.getCell(1).toString()) : "");
+						produto.setDescricao(row.getCell(2) != null ? convertToTitleCaseIteratingChars(row.getCell(2).toString()) : "");
+						produto.setCategoriaProduto(categoriaProduto);
+						produto.setNumeracao(row.getCell(4) != null ? row.getCell(4).toString() : "");
+						produto.setCustoMedioUnitario((row.getCell(5) != null && !row.getCell(5).toString().trim().equals("")) ? new BigDecimal(row.getCell(5).toString()) : null);						
+						produto.setPrecoDeVenda((row.getCell(6) != null && !row.getCell(6).toString().trim().equals("")) ? new BigDecimal(row.getCell(6).toString()) : null);
+						
+						
+						if(row.getCell(0) == null || row.getCell(0).toString().trim().equals("")) {
+							produto.setValid(false);
+						} else {
+							Produto produtoTemp = produtosRepository.porCodigo(row.getCell(0).toString().trim().replace(".0", ""), usuario.getEmpresa());
+							if(produtoTemp != null) {
+								produto.setValid(false);
+							}
+						}
+						
+						if(row.getCell(1) == null || row.getCell(1).toString().trim().equals("")) {
+							produto.setValid(false);
+						}
+						
+						if(row.getCell(2) == null || row.getCell(2).toString().trim().equals("")) {
+							produto.setValid(false);
+						}
+						
+						if(row.getCell(3).toString().trim().equals("")) {
+							produto.setValid(false);
+						}	
+						
+						if(row.getCell(5) == null || row.getCell(5).toString().trim().equals("")) {
+							produto.setValid(false);
+						}
+						
+						if(row.getCell(6) == null || row.getCell(6).toString().trim().equals("")) {
+							produto.setValid(false);
+						}
+						
+						produtos.add(produto);					
+					} 
+				}
+			}
+
+
+			System.out.println("Total de Produtos: " + produtos.size());
+
+
+		} catch (IOException | IllegalArgumentException e) {
+			if(produtos.size() == 0) {
+				PrimeFaces.current()
+						.executeScript("swal({ type: 'error', title: 'Erro!', text: 'Selecione um arquivo válido!' });");
+			}
+		}
+
+		//fileContent = null;
+	}
+	
+	
+	
+	public void importarClientes(UploadedFile file) {
+
+		Cliente cliente = null;
+		Iterator<Row> rowIterator = null;
+
+		clientes = new ArrayList<>();
+		
+		usuario = usuarios.porId(1L);
+		
+		NumberFormat nf = new DecimalFormat("#");
+
+		Workbook workbook;
+		try {
+			workbook = create(file.getInputStream());
+
+			Sheet sheet = workbook.getSheetAt(0);
+			rowIterator = sheet.iterator();
+
+			while (rowIterator.hasNext()) {
+				Row row = rowIterator.next();
+
+				if (row.getRowNum() > 0) {
+
+					if(row.getCell(3) != null) {
+						
+						cliente = new Cliente();
+						
+						Bairro bairro = bairrosRepository.porNome(row.getCell(3).toString());
+						
+						if(bairro == null) {
+							bairro = new Bairro();
+							bairro.setNome(convertToTitleCaseIteratingChars(row.getCell(3).toString()));
+							bairro.setTaxaDeEntrega(BigDecimal.ZERO);
+						}
+						
+						cliente.setNome(row.getCell(2) != null ? convertToTitleCaseIteratingChars(row.getCell(2).toString()) : "");
+						cliente.setBairro(bairro);
+						
+						if(row.getCell(1) == null || row.getCell(1).toString().trim().equals("")) {
+							cliente.setValid(false);
+						} else {
+							
+							if (row.getCell(1).getCellType() == 0) {
+								cliente.setContato(nf.format(row.getCell(1).getNumericCellValue()).trim());
+							} else {
+								cliente.setContato(row.getCell(1).toString());
+							}
+						}
+						
+						if(row.getCell(2) == null || row.getCell(2).toString().trim().equals("")) {
+							cliente.setValid(false);
+						}
+						
+						clientes.add(cliente);					
+					} 
+				}
+			}
+
+
+			System.out.println("Total de Clientes: " + clientes.size());
+
+
+		} catch (IOException | IllegalArgumentException e) {
+			if(clientes.size() == 0) {
+				PrimeFaces.current()
+						.executeScript("swal({ type: 'error', title: 'Erro!', text: 'Selecione um arquivo válido!' });");
+			}
+		}
+
+		//fileContent = null;
+	}
+	
+	
+
+	public void processarArquivo() { 
 		
 		System.out.println("Iniciando importação . . . upload: " + upload);
 
 		if (file != null && file.getFileName() != null) {
-			fileContent = file.getContents();
+			fileContent = file.getContent();
 			
 			if(upload == false) {
-				upload = true;
+				//upload = true;
 				
 				System.out.println(file.getFileName());
 				System.out.println("Opção: " + opcao);
 				System.out.println("Upload: " + upload);
 
 				if (!opcao.equalsIgnoreCase("")) {
+					
+					if (opcao.equalsIgnoreCase("produtos")) {
+						importarProdutos(file);
+						upload = false;
+					}
+					
+					if (opcao.equalsIgnoreCase("clientes")) {
+						importarClientes(file);
+						upload = false;
+					}
 
 					if (opcao.equalsIgnoreCase("compras")) {
 						importarCompras(file);
@@ -753,13 +954,109 @@ public class ImportarDadosBean implements Serializable {
 			}			
 
 		} else {
-
-			PrimeFaces.current()
-					.executeScript("swal({ type: 'error', title: 'Erro!', text: 'Selecione um arquivo válido!' });");
+			
+			if(produtos.size() == 0) {
+				PrimeFaces.current()
+						.executeScript("swal({ type: 'error', title: 'Erro!', text: 'Selecione um arquivo válido!' });");
+			}
 		}
 
 		System.out.println(fileContent);
 
+	}
+	
+	
+	public void importarDados() {
+
+		if (!opcao.equalsIgnoreCase("")) {
+			
+			if (opcao.equalsIgnoreCase("produtos")) {
+				
+				int cont = 0;
+				for (Produto produto : produtos) {	
+					if(produto.isValid()) {
+						
+						Produto produtoTemp = produtosRepository.porCodigo(produto.getCodigo(), usuario.getEmpresa());
+						if(produtoTemp == null) {
+							
+							CategoriaProduto categoriaProduto = categoriasProdutosRepository.porNome(produto.getCategoriaProduto().getNome(), usuario.getEmpresa());			
+							
+							if(categoriaProduto == null) {
+								categoriaProduto = produto.getCategoriaProduto();
+								categoriaProduto = categoriasProdutosRepository.save(categoriaProduto);
+								produto.setCategoriaProduto(categoriaProduto);
+							} else {
+								produto.setCategoriaProduto(categoriaProduto);
+							}
+							
+							produtosRepository.save(produto);
+							cont++;
+						}	
+					}
+				}	
+				
+				produtos = new ArrayList<Produto>();
+				
+				if(cont > 0) {
+					
+					String qtde = "" + cont;
+					if(cont < 10) {
+						qtde = "0" + cont;
+					}
+					
+					PrimeFaces.current()
+						.executeScript("swal({ type: 'success', title: 'Concluído!', text: '" + qtde + " produto(s) salvo(s) com sucesso!' });");
+				} else {
+					
+					PrimeFaces.current()
+						.executeScript("swal({ type: 'error', title: 'Erro!', text: 'Nenhum produto foi salvo!' });");
+					
+				}
+				
+			}
+			
+			
+			if (opcao.equalsIgnoreCase("clientes")) {
+				
+				int cont = 0;
+				for (Cliente cliente : clientes) {	
+					if(cliente.isValid()) {
+						
+						Bairro bairro = bairrosRepository.porNome(cliente.getBairro().getNome());			
+						
+						if(bairro == null) {
+							bairro = cliente.getBairro();
+							bairro = bairrosRepository.save(bairro);
+							cliente.setBairro(bairro);
+						} else {
+							cliente.setBairro(bairro);
+						}
+						
+						clientesRepository.save(cliente);
+						cont++;	
+					}
+				}	
+				
+				clientes = new ArrayList<Cliente>();
+				
+				if(cont > 0) {
+					
+					String qtde = "" + cont;
+					if(cont < 10) {
+						qtde = "0" + cont;
+					}
+					
+					PrimeFaces.current()
+						.executeScript("swal({ type: 'success', title: 'Concluído!', text: '" + qtde + " cliente(s) salvo(s) com sucesso!' });");
+				} else {
+					
+					PrimeFaces.current()
+						.executeScript("swal({ type: 'error', title: 'Erro!', text: 'Nenhum cliente foi salvo!' });");
+					
+				}
+				
+			}
+		}	
 	}
 
 	public static Workbook create(InputStream in) {
@@ -780,6 +1077,29 @@ public class ImportarDadosBean implements Serializable {
 		}
 		throw new IllegalArgumentException("你的excel版本目前poi解析不了");
 	}
+	
+	public String convertToTitleCaseIteratingChars(String text) {
+	    if (text == null || text.isEmpty()) {
+	        return text;
+	    }
+	 
+	    StringBuilder converted = new StringBuilder();
+	 
+	    boolean convertNext = true;
+	    for (char ch : text.toCharArray()) {
+	        if (Character.isSpaceChar(ch)) {
+	            convertNext = true;
+	        } else if (convertNext) {
+	            ch = Character.toTitleCase(ch);
+	            convertNext = false;
+	        } else {
+	            ch = Character.toLowerCase(ch);
+	        }
+	        converted.append(ch);
+	    }
+	 
+	    return converted.toString();
+	}
 
 	public String getOpcao() {
 		return opcao;
@@ -787,6 +1107,25 @@ public class ImportarDadosBean implements Serializable {
 
 	public void setOpcao(String opcao) {
 		this.opcao = opcao;
+	}
+
+	public List<Produto> getProdutos() {
+		return produtos;
+	}
+	
+	public Integer getProdutosSize() {
+		return produtos.size();
+	}
+	
+	public Integer getClientesSize() {
+		return clientes.size();
+	}
+	
+	
+	public void changeImport() {		
+		System.out.println(opcao);
+		produtos = new ArrayList<Produto>();
+		clientes = new ArrayList<Cliente>();
 	}
 
 }

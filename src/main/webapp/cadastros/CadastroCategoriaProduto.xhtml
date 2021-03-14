@@ -5,7 +5,7 @@
 	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
 	template="/WEB-INF/template.xhtml">
 
-	<ui:define name="title">Cadastro Tipo de Produto</ui:define>
+	<ui:define name="title">Cadastro Categoria de Produto</ui:define>
 
 	<f:metadata>
 		<f:viewAction action="#{cadastroCategoriaProdutoBean.inicializar}" />
@@ -115,7 +115,7 @@
 </style>
 
 		<div class="page-header">
-			<h1>Cadastro Tipo de Produto</h1>
+			<h1>Cadastro Categoria de Produto</h1>
 		</div>
 
 		<p:growl id="msg" closable="true" life="500" showSummary="false"
@@ -181,7 +181,8 @@
 					<p:dataTable id="categoriasProdutosTable" reflow="true"
 						paginatorAlwaysVisible="false"
 						value="#{cadastroCategoriaProdutoBean.todasCategoriasProdutos}" var="categoriaProduto"
-						emptyMessage="Nenhuma categoria de produto encontrada." rows="10"
+						emptyMessage="Nenhuma categoria de produto encontrada."
+						scrollable="true" scrollHeight="470"
 						paginator="true" paginatorPosition="bottom" selectionMode="single"
 						selection="#{cadastroCategoriaProdutoBean.categoriaProdutoSelecionado}"
 						rowKey="#{categoriaProduto.id}" style="margin-top: 10px">
@@ -225,7 +226,7 @@
 						</p:panelGrid>
 						
 						<p:panelGrid id="panel-upload" columns="1" layout="grid"
-							style="margin-bottom: 5px"
+							style="margin-bottom: 5px" rendered="false"
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-12">
 
@@ -249,6 +250,7 @@
 						<div
 							style="width: 100%; margin-left: -15px;
     						padding-left: 32px;margin-bottom: 10px; 
+    						margin-top: 25px; 
     						border-top: 1px solid #ccc"></div>
 						
 						

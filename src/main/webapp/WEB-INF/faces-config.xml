@@ -17,14 +17,14 @@
     
     <component>
         <component-type>org.primefaces.component.ManhattanMenu</component-type>
-        <component-class>org.primefaces.manhattan.component.ManhattanMenu</component-class>
+        <component-class>com.webapp.manhattan.component.ManhattanMenu</component-class>
     </component>
     
     <render-kit>
         <renderer>
             <component-family>org.primefaces.component</component-family>
             <renderer-type>org.primefaces.component.ManhattanMenuRenderer</renderer-type>
-            <renderer-class>org.primefaces.manhattan.component.ManhattanMenuRenderer</renderer-class>
+            <renderer-class>com.webapp.manhattan.component.ManhattanMenuRenderer</renderer-class>
         </renderer>
     </render-kit>
 

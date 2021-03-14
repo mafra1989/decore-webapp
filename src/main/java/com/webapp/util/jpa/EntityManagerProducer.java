@@ -12,7 +12,7 @@ import javax.persistence.Persistence;
 
 @ApplicationScoped
 public class EntityManagerProducer {
-
+    
     @Inject
     private PersistenceProperties properties;
     

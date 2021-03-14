@@ -15,6 +15,10 @@
 
 		<style>
 @media ( min-width :220px) {
+	#fornecedor-dialog .ui-panel .ui-panel-content {
+	    border: none;
+	    padding: 8px;
+	}
 	body .ui-toolbar {
 	    padding: 5px 5px;
 	}
@@ -111,7 +115,7 @@
 			<h1>Cadastro Fornecedor</h1>
 		</div>
 
-		<p:growl id="msg" closable="true" life="500" showSummary="false"
+		<p:growl id="msg" closable="true" life="3000" showSummary="false"
 			showDetail="true" style="text-align: center" />
 
 
@@ -157,7 +161,7 @@
 			</p:toolbar>
 
 
-			<div class="ui-g-12 ui-lg-6">
+			<div class="ui-g-12 ui-lg-12">
 				<p:panel class="card card-w-title ui-fluid"
 					style="padding-bottom: 0px;">
 
@@ -174,20 +178,33 @@
 					<p:dataTable id="fonecedoresTable" reflow="true"
 						paginatorAlwaysVisible="false"
 						value="#{cadastroFornecedorBean.todosFornecedores}" var="fornecedor"
-						emptyMessage="Nenhum fornecedor encontrado." rows="10"
+						emptyMessage="Nenhum fornecedor encontrado." scrollable="true" scrollHeight="470"
 						paginator="true" paginatorPosition="bottom" selectionMode="single"
 						selection="#{cadastroFornecedorBean.fornecedorSelecionado}"
 						rowKey="#{fornecedor.id}" style="margin-top: 10px">
 
 						<p:ajax event="rowSelect" update="form:toolbar" />
 						<p:ajax event="rowUnselect" update="form:toolbar" />
-
-						<p:column headerText="Nome">
+						
+						<p:column headerText="Nome" width="15%">
 							<h:outputText value="#{fornecedor.nome}" />
 						</p:column>
 						
-						<p:column headerText="Contato">
-							<h:outputText value="#{fornecedor.contato}" />
+						<p:column headerText="CPF/CNPJ" width="10%">
+							<h:outputText value="#{fornecedor.documento}" />
+						</p:column>
+
+						<p:column headerText="Contato" width="10%">
+							<h:outputText
+								value="#{fornecedor.contato != null ? fornecedor.contato : '-' }" />
+						</p:column>
+						
+						<p:column headerText="Endereço" width="25%">
+							<h:outputText value="#{fornecedor.endereco}" />
+						</p:column>
+						
+						<p:column headerText="Bairro" width="15%">
+							<h:outputText value="#{fornecedor.bairro}" />
 						</p:column>
 
 					</p:dataTable>
@@ -218,34 +235,44 @@
 							styleClass="panelgrid-noborder disabled disabled">
 
 							<p:outputLabel value="Nome" for="nome" />
-							<p:inputText id="nome"
+							<p:inputText id="nome" autocomplete="off"
 								value="#{cadastroFornecedorBean.fornecedor.nome}" />
-						</p:panelGrid>
-
-						<p:panelGrid columns="1" layout="grid"
-							styleClass="panelgrid-noborder disabled disabled">
+						
+							<p:outputLabel value="CPF/CNPJ" for="documento" />
+							<p:inputText id="documento" autocomplete="off"
+								value="#{cadastroFornecedorBean.fornecedor.documento}" />
 
 							<p:outputLabel value="Contato" for="contato" />
-							<p:inputMask id="contato"
-								value="#{cadastroFornecedorBean.fornecedor.contato}"
-								mask="(99) 9-9999-9999" />
+							<p:inputText id="contato" autocomplete="off"
+								value="#{cadastroFornecedorBean.fornecedor.contato}" />
+
+							<p:outputLabel value="Endereço" for="endereco" />
+							<p:inputTextarea id="endereco" rows="2" autocomplete="off"
+								value="#{cadastroFornecedorBean.fornecedor.endereco}" />
+
+							<p:outputLabel value="Bairro" for="bairro" />
+							<p:inputText id="bairro" autocomplete="off"
+								value="#{cadastroFornecedorBean.fornecedor.bairro}" />
 
 						</p:panelGrid>
-
-						<p:spacer />
-
-						<p:panelGrid columns="1" layout="grid"
-							styleClass="panelgrid-noborder disabled disabled">
-
-							<p:outputLabel />
+						
+						<p:panel class="card card-w-title ui-fluid"
+							style="padding-bottom: 10px;margin-bottom: 0px;">
+							
 							<p:commandButton id="btn-salvar" value="Salvar"
 								widgetVar="btn-save"
 								onstart="PF('downloadLoading').show(); PF('btn-save').disable();"
 								onsuccess="PF('downloadLoading').hide(); PF('btn-save').enable();"
-								update="msg form-dialog form"
+								update="msg form-dialog form" oncomplete="if (!args.validationFailed) PF('fornecedor-dialog').hide();"
 								action="#{cadastroFornecedorBean.salvar}"
-								process="@this form-dialog" style="font-weight: bold" />
-						</p:panelGrid>
+								process="@this form-dialog" style="background-color: #0d8819b5; font-weight: bold; float: right; width: 98px" />
+							
+							<p:commandButton icon="fa fa-fw fa-close" value="Fechar"
+								onclick="PF('fornecedor-dialog').hide();"
+								style="margin-left:1px;background-color: #e15e5ef0; font-weight: bold; float: left; width: 98px;margin-bottom: 10px;">
+
+							</p:commandButton>
+						</p:panel>
 
 					</div>
 				</div>

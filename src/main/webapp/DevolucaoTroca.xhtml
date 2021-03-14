@@ -8,7 +8,7 @@
 	<ui:define name="title">Devolução / Troca</ui:define>
 
 	<f:metadata>
-		<f:viewAction action="#{registroDevolucoesBean.inicializar}" />
+		<f:viewAction action="#{devolucoesTrocaBean.inicializar}" />
 	</f:metadata>
 
 	<ui:define name="content">
@@ -215,7 +215,7 @@
 			<p:focus for="busca-por-leitor" />
 			
 			<p:remoteCommand name="setarItemID" process="@this vendasTable"
-				update="form" action="#{registroDevolucoesBean.excluir}"
+				update="panel-table vendasTable produto-dialog" action="#{devolucoesTrocaBean.excluir}"
 				onstart="PF('downloadLoading').show();"
 				oncomplete="PF('downloadLoading').hide();" />
 				
@@ -224,16 +224,16 @@
 			<p:toolbar id="toolbar">
 				<f:facet name="left">
 					<p:commandButton icon="fa fa-fw fa-search" value="Pesquisar"
-						id="pesquisar-button" update="form produto-dialog"
+						id="pesquisar-button" update="panel-table vendasTable produto-dialog"
 						style="margin-left: 3px;font-weight:bold" process="@this form"
-						action="#{registroDevolucoesBean.pesquisar_}"
+						action="#{devolucoesTrocaBean.pesquisar_}"
 						onstart="PF('downloadLoading').show();"
 						oncomplete="PF('downloadLoading').hide();"></p:commandButton>
 				</f:facet>
 				
 				<f:facet name="right">
 			
-					<p:outputLabel id="saldo" value="Saldo p/ troca: R$ #{registroDevolucoesBean.saldoParaTroca == null ? '0,00' : registroDevolucoesBean.saldoParaTroca}" style="color: #5a5656;margin-top: 5px;font-size:14px;float: right;" />
+					<p:outputLabel id="saldo" value="Total em Devolução: R$ #{devolucoesTrocaBean.saldoParaTroca == null ? '0,00' : devolucoesTrocaBean.saldoParaTroca}" style="color: #5a5656;margin-top: 5px;font-size:14px;float: right;" />
 				</f:facet>
 
 			</p:toolbar>
@@ -252,11 +252,11 @@
 						<p:panel class="leitor-barras">
 													
 							<p:selectBooleanButton id="leitor" 
-								value="#{registroDevolucoesBean.leitor}" onLabel="ATIVADO"
+								value="#{devolucoesTrocaBean.leitor}" onLabel="ATIVADO"
 								offLabel="DESATIVADO" onIcon="fa fa-fw fa-check"
 								offIcon="fa fa-fw fa-close" style="float: right;font-size:11px;width:105px;">
 								
-								<p:ajax process="@this" update="panel-busca_ panel-busca" />										
+								<p:ajax process="@this" update="panel-busca" />										
 							</p:selectBooleanButton>
 							
 							<p:outputLabel value="Leitor de código de barras" for="leitor" style="font-size: 12px;margin-right:5px;margin-top: 7px;float: right;" />
@@ -265,7 +265,7 @@
 					</p:panelGrid>
 					
 					<p:defaultCommand scope="panel-busca" target="btn-barcode" 
-									rendered="#{registroDevolucoesBean.leitor}" />	
+									rendered="#{devolucoesTrocaBean.leitor}" />	
 							
 					<p:panelGrid columns="2" layout="grid" id="panel-busca"
 						styleClass="panelgrid-noborder disabled disabled"
@@ -275,39 +275,39 @@
 						
 						<p:panel class="leitor-barras">
 						
-							<p:focus for="busca" context="leitor-barras" rendered="#{not registroDevolucoesBean.leitor}" />
-							<p:focus for="busca-por-leitor" context="leitor-barras" rendered="#{registroDevolucoesBean.leitor}" />
+							<p:focus for="busca" context="leitor-barras" rendered="#{not devolucoesTrocaBean.leitor}" />
+							<p:focus for="busca-por-leitor" context="leitor-barras" rendered="#{devolucoesTrocaBean.leitor}" />
 							
-							<p:autoComplete id="busca" value="#{registroDevolucoesBean.produto_}" 
+							<p:autoComplete id="busca" value="#{devolucoesTrocaBean.produto_}" 
 								placeholder="Digite o código ou descrição do produto"
-								var="produto" styleClass="busca" rendered="#{not registroDevolucoesBean.leitor}"
+								var="produto" styleClass="busca" rendered="#{not devolucoesTrocaBean.leitor}"
 								itemLabel="#{produto.codigo.concat(' | ').concat(produto.descricao)}" itemValue="#{produto}"
-								completeMethod="#{registroDevolucoesBean.completeText_Produto}">
+								completeMethod="#{devolucoesTrocaBean.completeText_Produto}">
 								
-								<p:ajax event="itemSelect" listener="#{registroDevolucoesBean.onItemSelect}" />
+								<p:ajax event="itemSelect" listener="#{devolucoesTrocaBean.onItemSelect}" />
 							</p:autoComplete>
 							
-							<p:inputText id="busca-por-leitor" value="#{registroDevolucoesBean.filter.codigo}" styleClass="field-barcode busca-por-leitor"
-									placeholder="Escaneie ou digite o código do produto" rendered="#{registroDevolucoesBean.leitor}" />
+							<p:inputText id="busca-por-leitor" value="#{devolucoesTrocaBean.filter.codigo}" styleClass="field-barcode busca-por-leitor"
+									placeholder="Escaneie ou digite o código do produto" rendered="#{devolucoesTrocaBean.leitor}" />
 											
 								
-							<p:commandButton id="btn-barcode" icon="fa fa-fw fa-barcode" rendered="#{registroDevolucoesBean.leitor}"
-								action="#{registroDevolucoesBean.pesquisar_}" process="@this form"
-								update="form produto-dialog" onstart="PF('downloadLoading').show();"
+							<p:commandButton id="btn-barcode" icon="fa fa-fw fa-barcode" rendered="#{devolucoesTrocaBean.leitor}"
+								action="#{devolucoesTrocaBean.pesquisar_}" process="@this form busca-por-leitor"
+								update="panel-table vendasTable produto-dialog" onstart="PF('downloadLoading').show();"
 								oncomplete="PF('downloadLoading').hide();"
 								style="float:right;width:35px;height:29px" styleClass="white-button btn-barcode btn-barcode_" />
 							
 							
-							<p:commandButton id="enter-barcode" icon="fa fa-fw fa-camera-retro"  rendered="#{registroDevolucoesBean.leitor}"
+							<p:commandButton id="enter-barcode" icon="fa fa-fw fa-camera-retro"  rendered="#{devolucoesTrocaBean.leitor}"
 								onstart="readBarcode();" disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
 								oncomplete="PF('barcode-dialog').show();" styleClass="btn-camera white-button white-button_" />
 							
 						
 							<p:commandButton styleClass="btn-new" icon="fa fa-fw fa-filter"
-								actionListener="#{registroDevolucoesBean.resetInput}"
+								actionListener="#{devolucoesTrocaBean.resetInput}"
 								title="Limpar campo" onstart="PF('downloadLoading').show();"
 								oncomplete="PF('downloadLoading').hide();" update="panel-busca"
-								process="@this" rendered="#{not registroDevolucoesBean.leitor}" 
+								process="@this" rendered="#{not devolucoesTrocaBean.leitor}" 
 								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}">
 								
 							</p:commandButton>
@@ -319,14 +319,14 @@
 						columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-1, ui-grid-col-2">
 
 						<p:outputLabel value="Data da venda" for="data01" />
-						<p:datePicker id="data01" value="#{registroDevolucoesBean.dateStart}"
+						<p:datePicker id="data01" value="#{devolucoesTrocaBean.dateStart}"
 							readonlyInput="true" pattern="dd/MM/yyyy" locale="pt" 
 							showIcon="true">
 						</p:datePicker>
 
 
 						<p:outputLabel value="até" id="data02" />
-						<p:datePicker id="data-02" value="#{registroDevolucoesBean.dateStop}"
+						<p:datePicker id="data-02" value="#{devolucoesTrocaBean.dateStop}"
 							readonlyInput="true" styleClass="dateStop" pattern="dd/MM/yyyy"
 							locale="pt" showIcon="true">
 						</p:datePicker>
@@ -338,12 +338,13 @@
 						columnClasses="ui-grid-col-2, ui-grid-col-3">
 
 						<p:outputLabel value="Venda N." for="venda" />
-						<p:inputNumber id="venda" decimalPlaces="0" 
+						<p:inputNumber id="venda" decimalPlaces="0" thousandSeparator=""
 							styleClass="quantidade" onkeyup="ajaxDelay('')"
-							value="#{registroDevolucoesBean.numeroVenda}">
+							value="#{devolucoesTrocaBean.numeroVenda}">
 
 							<p:ajax event="keyup" process="@this"></p:ajax>
 						</p:inputNumber>
+						
 					</p:panelGrid>
 
 				</p:panel>
@@ -356,48 +357,48 @@
 					
 					<p:commandButton icon="fa fa-fw fa-list-ol"
 							style="font-weight: bold;;float: right;margin-top: -40px;margin-right: 10px;width:180px;background:#fff;color:#5a5656;border:1px solid #c0c0c0;"
-							value="Itens adicionados [#{registroDevolucoesBean.quantidadeItens}]" onstart="PF('downloadLoading').show();"
+							value="Itens adicionados [#{devolucoesTrocaBean.itensParaDevolucao}]" onstart="PF('downloadLoading').show();"
 							oncomplete="PF('downloadLoading').hide();PF('itens-dialog').show();"
 							process="@this" update="itens-dialog" />
 
 					<p:menuButton id="menu-btn" value="Opções" rendered="false"
 						style="width: 80px;float: right;margin-top: -40px;margin-right: 10px"
-						disabled="#{(registroDevolucoesBean.vendasFiltradasSize eq 0) or registroDevolucoesBean.vendaSelecionada.id == null}">
+						disabled="#{(devolucoesTrocaBean.vendasFiltradasSize eq 0) or devolucoesTrocaBean.vendaSelecionada.id == null}">
 
 						<p:menuitem value="Visualizar" icon="fa fa-fw fa-eye"
-							id="btn-view" outcome="#{registroDevolucoesBean.vendaSelecionada.pdv ? '/PDV.xhtml' : '/operacoes/RegistroVendas.xhtml'}"
+							id="btn-view" outcome="#{devolucoesTrocaBean.vendaSelecionada.pdv ? '/PDV.xhtml' : '/operacoes/RegistroVendas.xhtml'}"
 							onclick="PF('downloadLoading').show();">
 							<f:param name="id"
-								value="#{registroDevolucoesBean.vendaSelecionada.id}" />
+								value="#{devolucoesTrocaBean.vendaSelecionada.id}" />
 						</p:menuitem>
 						
 						<p:separator />
 						<p:menuitem icon="fa fa-fw fa-trash" id="btn-trash"
 							value="Excluir" process="@this" disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
-							onclick="deleteItem(#{registroDevolucoesBean.vendaSelecionada.id});" />
+							onclick="deleteItem(#{devolucoesTrocaBean.vendaSelecionada.id});" />
 						<p:separator />
 
 						<p:menuitem value="Entregar venda" icon="fa fa-fw fa-money"
 							onstart="start();" oncomplete="stop();"
-							action="#{registroDevolucoesBean.entregarVenda}" update="form"
+							action="#{devolucoesTrocaBean.entregarVenda}" update="form"
 							process="@this"
-							rendered="#{registroDevolucoesBean.entrega.id != null and registroDevolucoesBean.entrega.status == 'PENDENTE'}">
+							rendered="#{devolucoesTrocaBean.entrega.id != null and devolucoesTrocaBean.entrega.status == 'PENDENTE'}">
 						</p:menuitem>
 						<p:separator />
 						<p:menuitem value="Desfazer entrega" icon="fa fa-fw fa-undo"
 							onstart="start();" oncomplete="stop();"
-							action="#{registroDevolucoesBean.desfazerEntrega}" update="form"
+							action="#{devolucoesTrocaBean.desfazerEntrega}" update="form"
 							process="@this"
-							rendered="#{registroDevolucoesBean.entrega.id != null and registroDevolucoesBean.entrega.status == 'ENTREGUE'}">
+							rendered="#{devolucoesTrocaBean.entrega.id != null and devolucoesTrocaBean.entrega.status == 'ENTREGUE'}">
 						</p:menuitem>
 						<p:menuitem value="Ver localização" icon="fa fa-fw fa-map-marker"
 							onstart="start();" oncomplete="stop();"
-							url="https://maps.google.com/maps?daddr=#{registroDevolucoesBean.entrega.localizacao}"
+							url="https://maps.google.com/maps?daddr=#{devolucoesTrocaBean.entrega.localizacao}"
 							target="_blank"
-							rendered="#{registroDevolucoesBean.entrega.id != null}">
+							rendered="#{devolucoesTrocaBean.entrega.id != null}">
 						</p:menuitem>
 						<p:menuitem value="Baixar PDF" icon="fa fa-fw fa-cloud-download"
-							action="#{registroDevolucoesBean.emitirPedido}" 
+							action="#{devolucoesTrocaBean.emitirPedido}" 
 							ajax="false" target="_blank" disabled="#{seguranca.usuarioLogado.usuario.empresa eq 'Havaianas'}">
 						</p:menuitem>
 
@@ -406,20 +407,20 @@
 
 					<p:panelGrid columns="1" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
-						columnClasses="ui-grid-col-12">
+						columnClasses="ui-grid-col-12"> 
 
 						<p:dataTable id="vendasTable" paginatorAlwaysVisible="false"
 							scrollable="true" scrollHeight="500"
-							value="#{registroDevolucoesBean.itensVendasFiltradas}" var="itemVenda"
+							value="#{devolucoesTrocaBean.itensVendasFiltradas}" var="itemVenda"
 							emptyMessage="Nenhum resultado encontrado." reflow="true"
 							paginator="false" rowKey="#{itemVenda.id}"
-							selection="#{registroDevolucoesBean.itemVendaSelecionada}"
+							selection="#{devolucoesTrocaBean.itemVendaSelecionada}"
 							selectionMode="single">
 
-							<p:ajax process="@this form-dialog_:quantidade_" event="rowSelect" update="menu-btn produto-dialog_ form-dialog_"
-								listener="#{registroDevolucoesBean.prepararDevolucaoSelecionada}" 
+							<p:ajax process="@this form-dialog_:quantidade_ form-dialog_:quantidade__ form-dialog_:quantidade___" event="rowSelect" update="menu-btn produto-dialog_ form-dialog_"
+								listener="#{devolucoesTrocaBean.prepararDevolucaoSelecionada}" 
 								onstart="PF('downloadLoading').show();" 
-								oncomplete="PF('downloadLoading').hide();PF('produto-dialog_').show();" />
+								oncomplete="PF('downloadLoading').hide();" />
 								
 							<p:ajax process="@this" event="rowUnselect" update="menu-btn"
 								onstart="PF('downloadLoading').show();"
@@ -453,7 +454,19 @@
 							</p:column>
 
 							<p:column headerText="Qtd. Itens" width="10%">
-								<h:outputText value="#{itemVenda.quantidade}" />
+								<h:outputText value="#{itemVenda.quantidade}" rendered="#{itemVenda.produto.unidadeMedida == 'Kg' or itemVenda.produto.unidadeMedida == 'Lt'}">
+									<f:convertNumber minFractionDigits="3" />
+								</h:outputText>
+								
+								<h:outputText value=" #{itemVenda.produto.unidadeMedida}" rendered="#{itemVenda.produto.unidadeMedida == 'Kg' or itemVenda.produto.unidadeMedida == 'Lt'}">
+								</h:outputText>
+								
+								<h:outputText value="#{itemVenda.quantidade}" rendered="#{itemVenda.produto.unidadeMedida != 'Kg' and itemVenda.produto.unidadeMedida != 'Lt'}">
+									<f:convertNumber minFractionDigits="0" />
+								</h:outputText>
+								
+								<h:outputText value=" #{itemVenda.produto.unidadeMedida}" rendered="#{itemVenda.produto.unidadeMedida != 'Kg' and itemVenda.produto.unidadeMedida != 'Lt'}">
+								</h:outputText>
 							</p:column>
 
 							<p:column headerText="Valor Pago" width="10%">
@@ -468,12 +481,12 @@
 							styleClass="panelgrid-noborder disabled disabled panel-total">
 
 							<p:outputLabel
-								value="Total de Vendas: R$ #{registroDevolucoesBean.totalVendas}"
+								value="Total de Vendas: R$ #{devolucoesTrocaBean.totalVendas}"
 								style="float:left;margin-top:10px;margin-bottom:5px;margin-left:-10px;font-size: 13px;font-family: inherit;" />
 
 							<p:outputLabel
-								value="Total de Itens: #{registroDevolucoesBean.totalItens}"
-								style="float:right;margin-top:10px;margin-bottom:5px;margin-right:0px;font-size: 13px;font-family: inherit;" />
+								value="Total de Itens: #{devolucoesTrocaBean.totalItens}"
+								style="float:right;margin-top:10px;margin-bottom:5px;margin-right:0px;font-size: 13px;font-family: inherit;" />	
 
 						</p:panel>
 					</p:panelGrid>
@@ -510,16 +523,23 @@
 								styleClass="panelgrid-noborder disabled disabled"
 								columnClasses="ui-grid-col-6">
 								
-								<ui:fragment id="photo"
-									rendered="#{registroDevolucoesBean.produto.urlImagem != null}">
+								<ui:fragment id="photo" 
+									rendered="false">
 									<img 
-										src="#{registroDevolucoesBean.produto.urlImagem}"
+										src="#{devolucoesTrocaBean.produto.urlImagem}"
 										style="width: 200px; height: auto;margin-left: -10px;" />
 								</ui:fragment>
 								
 								<ui:fragment id="photo2" 
-									rendered="#{registroDevolucoesBean.produto.urlImagem == null}">
+									rendered="#{devolucoesTrocaBean.produto.foto == null}">
 									<p:graphicImage library="myapp" name="/images/sem-foto.png" width="166px" height="176px" />
+								</ui:fragment>
+								
+								<ui:fragment 
+									rendered="#{devolucoesTrocaBean.produto.foto != null}">
+									<img style="width: 200px; height: auto;margin-left: -10px;"
+										src="data:image/png;base64,#{devolucoesTrocaBean.imageContentsAsBase64}"
+										class="image-produto" />
 								</ui:fragment>
 							</p:panelGrid>
 						
@@ -532,33 +552,47 @@
 								columnClasses="ui-grid-col-12">
 								
 									<p:outputLabel
-										value="#{registroDevolucoesBean.produto.nome}"
+										value="#{devolucoesTrocaBean.produto.nome}"
 										style="font-size: 16px;font-weight: bold;" />
 										
 									<p:outputLabel
-										value="#{registroDevolucoesBean.produto.descricao}"
+										value="#{devolucoesTrocaBean.produto.descricao}"
 										style="font-size: 22px;font-weight: bold;float:left;margin-top: -10px;" />
 										
-									<p:outputLabel value="cod.: #{registroDevolucoesBean.produto.codigo}" style="float: left;margin-top: -8px;" />
+									<p:outputLabel value="cod.: #{devolucoesTrocaBean.produto.codigo}" style="float: left;margin-top: -8px;" />
 									
 									
 									<p:outputLabel value="Valor pago/Un."
 											style="font-weight: bold;font-size: 12px;" />
 										
-									<p:outputLabel id="valor-pago" value="#{registroDevolucoesBean.produto.valorPago}"
-										style="font-size: 28px;font-weight: bold;margin-top: -10px;float: left;">
+									<p:panel>
+										<p:outputLabel id="valor-pago" value="#{devolucoesTrocaBean.produto.valorPago}"
+											style="font-size: 28px;font-weight: bold;margin-top: -10px;float: left;">
+											
+											<f:convertNumber type="currency" />
+										</p:outputLabel>
 										
-										<f:convertNumber type="currency" />
-									</p:outputLabel>
+										<p:outputLabel value="#{devolucoesTrocaBean.produto.unidadeMedida}" style="font-weight:bold;margin-top:8px;margin-left:5px;float:left;font-size:10px;" />										
+									</p:panel>
 									
 									
 									<p:outputLabel value="Quantidade" for="quantidade" />
-									<p:inputNumber id="quantidade" decimalPlaces="0" disabled="true"
+									<p:inputNumber id="quantidade" decimalPlaces="3" disabled="true"
+										rendered="#{devolucoesTrocaBean.produto.unidadeMedida != 'Un' and devolucoesTrocaBean.produto.unidadeMedida != 'Cx'}"
 										placeholder="0" styleClass="quantidade" onkeyup="ajaxDelay('')"
-										value="#{registroDevolucoesBean.devolucao.quantidade}">
+										value="#{devolucoesTrocaBean.devolucao.quantidade}">
 
 										<p:ajax event="keyup" process="@this"></p:ajax>
 									</p:inputNumber>
+									
+									<p:inputNumber decimalPlaces="0" disabled="true"
+										rendered="#{devolucoesTrocaBean.produto.unidadeMedida == 'Un' or devolucoesTrocaBean.produto.unidadeMedida == 'Cx'}"
+										placeholder="0" styleClass="quantidade" onkeyup="ajaxDelay('')"
+										value="#{devolucoesTrocaBean.devolucao.quantidade}">
+
+										<p:ajax event="keyup" process="@this"></p:ajax>
+									</p:inputNumber>								
+									
 							</p:panelGrid>
 						
 					</p:panelGrid>	
@@ -572,7 +606,7 @@
 								style="margin-bottom: 5px;font-weight: bold;float: right;width: 145px;margin-right: 5px;background-color: #0d8819b5;"
 								value="Devolver e Trocar" id="devolver-trocar" onstart="PF('downloadLoading').show();"
 								oncomplete="PF('downloadLoading').hide();PF('produto-dialog').hide();"
-								action="#{registroDevolucoesBean.devolucaoTrocaSelecionada}"
+								action="#{devolucoesTrocaBean.devolucaoTrocaSelecionada}"
 								process="@this produto-dialog" update="form" />
 	
 						<p:commandButton icon="fa fa-fw fa-close"
@@ -612,16 +646,23 @@
 								styleClass="panelgrid-noborder disabled disabled"
 								columnClasses="ui-grid-col-6">
 								
-								<ui:fragment id="photo2"
-									rendered="#{registroDevolucoesBean.produto.urlImagem != null}">
+								<ui:fragment id="photo2" 
+									rendered="false">
 									<img 
-										src="#{registroDevolucoesBean.produto.urlImagem}"
+										src="#{devolucoesTrocaBean.produto.urlImagem}"
 										style="width: 200px; height: auto;margin-left: -10px;" />
 								</ui:fragment>
 								
 								<ui:fragment id="photo2_" 
-									rendered="#{registroDevolucoesBean.produto.urlImagem == null}">
+									rendered="#{devolucoesTrocaBean.produto.foto == null}">
 									<p:graphicImage library="myapp" name="/images/sem-foto.png" width="166px" height="176px" />
+								</ui:fragment>
+								
+								<ui:fragment id="photo"
+									rendered="#{devolucoesTrocaBean.produto.foto != null}">
+									<img style="width: 200px; height: auto;margin-left: -10px;"
+										src="data:image/png;base64,#{devolucoesTrocaBean.imageContentsAsBase64}"
+										class="image-produto" />
 								</ui:fragment>
 							</p:panelGrid>
 						
@@ -634,30 +675,50 @@
 								columnClasses="ui-grid-col-12">
 								
 									<p:outputLabel
-										value="#{registroDevolucoesBean.produto.nome}"
+										value="#{devolucoesTrocaBean.produto.nome}"
 										style="font-size: 16px;font-weight: bold;" />
 										
 									<p:outputLabel
-										value="#{registroDevolucoesBean.produto.descricao}"
+										value="#{devolucoesTrocaBean.produto.descricao}"
 										style="font-size: 22px;font-weight: bold;float:left;margin-top: -10px;" />
 										
-									<p:outputLabel value="cod.: #{registroDevolucoesBean.produto.codigo}" style="float: left;margin-top: -8px;" />
+									<p:outputLabel value="cod.: #{devolucoesTrocaBean.produto.codigo}" style="float: left;margin-top: -8px;" />
 									
 									
 									<p:outputLabel value="Valor pago/Un."
 											style="font-weight: bold;font-size: 12px;" />
 										
-									<p:outputLabel id="valor-pago" value="#{registroDevolucoesBean.produto.valorPago}"
-										style="font-size: 28px;font-weight: bold;margin-top: -10px;float: left;">
+									<p:panel>
+										<p:outputLabel id="valor-pago" value="#{devolucoesTrocaBean.produto.valorPago}"
+											style="font-size: 28px;font-weight: bold;margin-top: -10px;float: left;">
+											
+											<f:convertNumber type="currency" />
+										</p:outputLabel>
 										
-										<f:convertNumber type="currency" />
-									</p:outputLabel>
-									
+										<p:outputLabel value="#{devolucoesTrocaBean.produto.unidadeMedida}" style="font-weight:bold;margin-top:8px;margin-left:5px;float:left;font-size:10px;" />										
+									</p:panel>
 									
 									<p:outputLabel value="Quantidade" for="quantidade_" />
-									<p:inputNumber id="quantidade_" decimalPlaces="0" 
+									<p:inputNumber id="quantidade_" decimalPlaces="3" 
+										rendered="#{devolucoesTrocaBean.produto.unidadeMedida != 'Un' and devolucoesTrocaBean.produto.unidadeMedida != 'Cx' and devolucoesTrocaBean.produto.unidadeMedida != 'Pt'}"
 										placeholder="0" styleClass="quantidade" onkeyup="ajaxDelay('')"
-										value="#{registroDevolucoesBean.devolucao.quantidade}">
+										value="#{devolucoesTrocaBean.devolucao.quantidade}">
+
+										<p:ajax event="keyup" process="@this"></p:ajax>
+									</p:inputNumber>
+									
+									<p:inputNumber id="quantidade__" decimalPlaces="0" label="Quantidade"
+										rendered="#{devolucoesTrocaBean.produto.unidadeMedida == 'Un' or devolucoesTrocaBean.produto.unidadeMedida == 'Cx'}"
+										placeholder="0" styleClass="quantidade" onkeyup="ajaxDelay('')"
+										value="#{devolucoesTrocaBean.devolucao.quantidade}">
+
+										<p:ajax event="keyup" process="@this"></p:ajax>
+									</p:inputNumber>
+									
+									<p:inputNumber id="quantidade___" decimalPlaces="1" label="Quantidade"
+										rendered="#{devolucoesTrocaBean.produto.unidadeMedida == 'Pt'}"
+										placeholder="0" styleClass="quantidade" onkeyup="ajaxDelay('')"
+										value="#{devolucoesTrocaBean.devolucao.quantidade}">
 
 										<p:ajax event="keyup" process="@this"></p:ajax>
 									</p:inputNumber>
@@ -674,13 +735,13 @@
 								style="margin-bottom: 5px;font-weight: bold;float: right;width: 145px;margin-right: 3px;background-color: #0d8819b5;"
 								value="Devolver e Trocar" id="devolver-trocar_" onstart="PF('downloadLoading').show();"
 								oncomplete="PF('downloadLoading').hide();PF('produto-dialog_').hide();"
-								action="#{registroDevolucoesBean.devolucaoTrocaSelecionada}"
+								action="#{devolucoesTrocaBean.devolucaoTrocaSelecionada}"
 								process="@this produto-dialog_" update="form" />
 						
 						<p:commandButton icon="fa fa-fw fa-plus"
 								style="margin-bottom: 5px;font-weight: bold;float: right;width: 100px;margin-right: 3px;background:#147df0"
 								value="Adicionar" id="devolver_" onstart="PF('downloadLoading').show();"
-								action="#{registroDevolucoesBean.adicionarItem}" oncomplete="PF('downloadLoading').hide();"
+								action="#{devolucoesTrocaBean.adicionarItem}" oncomplete="PF('downloadLoading').hide();"
 								process="@this form-dialog_" update="panel-table saldo form-dialog_ msg" />
 	
 						<p:commandButton icon="fa fa-fw fa-close"
@@ -718,7 +779,7 @@
 						
 						<p:dataTable id="itensTable" paginatorAlwaysVisible="false"
 							scrollable="true" scrollHeight="130" style="margin-top: 8px;"
-							value="#{registroDevolucoesBean.listaDevolucao}" var="itemVenda"
+							value="#{devolucoesTrocaBean.listaDevolucao}" var="itemVenda"
 							emptyMessage="Nenhum item adicionado." reflow="true"
 							paginator="false">
 
@@ -728,11 +789,30 @@
 							</p:column>
 							
 							<p:column headerText="Produto" width="10%">
-								<p:commandLink value="#{itemVenda.produto.codigo}" actionListener="#{registroDevolucoesBean.prepararItemAdicionado(itemVenda)}" update="produto-dialog" oncomplete="PF('produto-dialog').show();" />
+								<p:commandLink value="#{itemVenda.produto.codigo}" actionListener="#{devolucoesTrocaBean.prepararItemAdicionado(itemVenda)}" update="produto-dialog" oncomplete="PF('produto-dialog').show();" />
 							</p:column>
 
 							<p:column headerText="Qtd. Itens" width="10%">
-								<h:outputText value="#{itemVenda.quantidade}" />
+								<h:outputText value="#{itemVenda.quantidade}" rendered="#{itemVenda.produto.unidadeMedida == 'Kg' or itemVenda.produto.unidadeMedida == 'Lt'}">
+									<f:convertNumber minFractionDigits="3" />
+								</h:outputText>
+								
+								<h:outputText value=" #{itemVenda.produto.unidadeMedida}" rendered="#{itemVenda.produto.unidadeMedida == 'Kg' or itemVenda.produto.unidadeMedida == 'Lt'}">
+								</h:outputText>
+								
+								<h:outputText value="#{itemVenda.quantidade}" rendered="#{itemVenda.produto.unidadeMedida != 'Kg' and itemVenda.produto.unidadeMedida != 'Lt' and itemVenda.produto.unidadeMedida != 'Pt'}">
+									<f:convertNumber minFractionDigits="0" />
+								</h:outputText>
+								
+								<h:outputText value=" #{itemVenda.produto.unidadeMedida}" rendered="#{itemVenda.produto.unidadeMedida != 'Kg' and itemVenda.produto.unidadeMedida != 'Lt' and itemVenda.produto.unidadeMedida != 'Pt'}">
+								</h:outputText>
+								
+								<h:outputText value="#{itemVenda.quantidade}" rendered="#{itemVenda.produto.unidadeMedida == 'Pt'}">
+									<f:convertNumber minFractionDigits="1" />
+								</h:outputText>
+								
+								<h:outputText value=" #{itemVenda.produto.unidadeMedida}" rendered="#{itemVenda.produto.unidadeMedida == 'Pt'}">
+								</h:outputText>
 							</p:column>
 
 							<p:column headerText="Sub-Total" width="10%">
@@ -742,19 +822,19 @@
 							</p:column>
 							
 							<p:column headerText="Remover" width="10%">
-								<p:commandButton icon="fa fa-fw fa-close" action="#{registroDevolucoesBean.removeItem(itemVenda)}"
-									style="font-weight: bold;background: transparent;color: #434560;"
-										onstart="PF('downloadLoading').show();" update="form-itens panel-table saldo"
+								<p:commandButton icon="fa fa-fw fa-close" action="#{devolucoesTrocaBean.removeItem(itemVenda)}"
+									style="font-weight: bold;background: transparent;color: #434560;" 
+										onstart="PF('downloadLoading').show();" update="form-itens panel-table saldo busca-por-leitor"
 										oncomplete="PF('downloadLoading').hide();PF('downloadLoading').hide();"
-										disabled="#{registroDevolucoesBean.trocaPendente}">
+										disabled="#{devolucoesTrocaBean.trocaPendente}">
 								</p:commandButton>
 							</p:column>
 
 						</p:dataTable>
 						
 						<p:panel styleClass="panel-total-devolucao">
-							<p:outputLabel value="Total de itens: #{registroDevolucoesBean.itensParaDevolucao}" style="color: #5a5656;margin-top: 3px;font-size:13px;float: left;" />						
-							<p:outputLabel value="Saldo p/ troca: R$ #{registroDevolucoesBean.saldoParaTroca == null ? '0,00' : registroDevolucoesBean.saldoParaTroca}" style="color: #5a5656;margin-top: 3px;font-size:13px;float: right;" />
+							<p:outputLabel value="Total de itens: #{devolucoesTrocaBean.itensParaDevolucao}" style="color: #5a5656;margin-top: 3px;font-size:13px;float: left;" />							
+							<p:outputLabel value="Total em Devolução: R$ #{devolucoesTrocaBean.saldoParaTroca == null ? '0,00' : devolucoesTrocaBean.saldoParaTroca}" style="color: #5a5656;margin-top: 3px;font-size:13px;float: right;" />
 						</p:panel>
 					</p:panelGrid>	
 
@@ -763,21 +843,21 @@
 
 					<p:panel id="panel-buttons">
 											
-						<p:commandButton icon="fa fa-fw fa-retweet" disabled="#{registroDevolucoesBean.listaDevolucaoSize le 0}"
+						<p:commandButton icon="fa fa-fw fa-retweet" disabled="#{devolucoesTrocaBean.listaDevolucaoSize le 0}"
 								style="margin-bottom: 5px;font-weight: bold;float: right;width: 90px;margin-right: 3px;background-color: #0d8819b5;"
-								value="Trocar" onstart="PF('downloadLoading').show();"
+								value="Trocar" onstart="PF('downloadLoading').show();" rendered="false"
 								oncomplete="PF('downloadLoading').hide();PF('itens-dialog').hide();"
-								action="#{registroDevolucoesBean.devolucaoTrocaSelecionada}"
+								action="#{devolucoesTrocaBean.devolucaoTrocaSelecionada}"
 								process="@this form" update="form" />
 						
-						<p:commandButton icon="fa fa-fw fa-reply" disabled="#{registroDevolucoesBean.listaDevolucaoSize le 0 or registroDevolucoesBean.trocaPendente}"
+						<p:commandButton icon="fa fa-fw fa-reply" disabled="#{devolucoesTrocaBean.listaDevolucaoSize le 0 or devolucoesTrocaBean.trocaPendente}"
 								style="margin-bottom: 5px;font-weight: bold;float: right;width: 100px;margin-right: 3px;background:#147df0"
 								value="Devolver" onstart="PF('downloadLoading').show();" oncomplete="PF('downloadLoading').hide();PF('itens-dialog').hide();"
-								action="#{registroDevolucoesBean.devolucaoSelecionada}" 
+								action="#{devolucoesTrocaBean.devolucaoSelecionada}" 
 								process="@this form" update="form" />
 	
 						<p:commandButton icon="fa fa-fw fa-close" id="btn-close"
-							style="float:left;margin-left: 3px;margin-bottom: 5px;font-weight: bold;width: 100px;background:#e15e5ef0;"
+							style="float:right;margin-left: 3px;margin-bottom: 5px;font-weight: bold;width: 100px;background:#e15e5ef0;"
 							value="Fechar" 
 							onstart="PF('downloadLoading').show();"
 							oncomplete="PF('downloadLoading').hide();PF('itens-dialog').hide();">

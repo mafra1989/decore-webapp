@@ -22,9 +22,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.Bairro;
+import com.webapp.model.Cliente;
 import com.webapp.model.Entrega;
 import com.webapp.model.FormaPagamento;
-import com.webapp.model.Grupo;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.Produto;
@@ -33,6 +33,7 @@ import com.webapp.model.TipoVenda;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
 import com.webapp.repository.Bairros;
+import com.webapp.repository.Clientes;
 import com.webapp.repository.Entregas;
 import com.webapp.repository.FormasPagamentos;
 import com.webapp.repository.ItensCompras;
@@ -117,6 +118,9 @@ public class RegistroVendasBean implements Serializable {
 	@Inject
 	private Usuario usuario;
 	
+	@Inject
+	private Clientes clientes;
+	
 	private boolean disableAjuste = false;
 	
 	@Inject
@@ -127,26 +131,28 @@ public class RegistroVendasBean implements Serializable {
 		if (FacesUtil.isNotPostback()) {
 			
 			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();		
-			usuario = usuarios.porNome(user.getUsername());
-			
-			List<Grupo> grupos = usuario.getGrupos();
-			
-			if(grupos.size() > 0) {
-				for (Grupo grupo : grupos) {
-					if(grupo.getNome().equals("ADMINISTRADOR")) {
-						EmpresaBean empresaBean = (EmpresaBean) FacesUtil.getObjectSession("empresaBean");
-						if(empresaBean != null && empresaBean.getEmpresa() != null) {
-							usuario.setEmpresa(empresaBean.getEmpresa());
-						}
-					}
-				}
-			}
+			usuario = usuarios.porLogin(user.getUsername());
 			
 			todosUsuarios = usuarios.todos(usuario.getEmpresa());
 			todosTiposVendas = tiposVendas.todos();
 			todosBairros = bairros.todos();
 			
 			venda.setUsuario(usuario);
+			
+			Cliente cliente = clientes.porId(1L);
+			venda.setCliente(cliente);
+			
+			if(usuario.getEmpresa().getId() == 7111 || usuario.getEmpresa().getId() == 7112) {
+				venda.setTipoVenda(tiposVendas.porId(34L));
+				FormaPagamento formaPagamento = formasPagamentos.porId(13987L);
+				venda.setFormaPagamento(formaPagamento);
+				venda.setBairro(bairros.porId(3008L));
+			} else {
+				venda.setTipoVenda(tiposVendas.porId(3L));
+				FormaPagamento formaPagamento = formasPagamentos.porId(1L);
+				venda.setFormaPagamento(formaPagamento);
+				venda.setBairro(bairros.porId(1L));
+			}
 		}
 	}
 
@@ -195,7 +201,7 @@ public class RegistroVendasBean implements Serializable {
 
 		if (itensVenda.size() > 0) {
 
-			Long totalDeItens = 0L;
+			long totalDeItens = 0L;
 			double valorTotal = 0;
 			double lucro = 0;
 			//double percentualLucro = 0;
@@ -390,7 +396,7 @@ public class RegistroVendasBean implements Serializable {
 					itensVendas.save(itemVenda);
 	
 					Produto produto = produtos.porId(itemVenda.getProduto().getId());
-					produto.setQuantidadeAtual(produto.getQuantidadeAtual() - itemVenda.getQuantidade());
+					produto.setQuantidadeAtual(new BigDecimal(produto.getQuantidadeAtual().doubleValue() - itemVenda.getQuantidade().doubleValue()));
 					
 					if(venda.isAjuste()) {
 								
@@ -434,7 +440,12 @@ public class RegistroVendasBean implements Serializable {
 						
 					produtos.save(produto);
 	
-					totalDeItens += itemVenda.getQuantidade();
+					if(!produto.getUnidadeMedida().equals("Kg") && !produto.getUnidadeMedida().equals("Lt") && !produto.getUnidadeMedida().equals("Pt")) {
+						totalDeItens += itemVenda.getQuantidade().doubleValue();				
+					} else {
+						totalDeItens += 1;
+					}
+					
 					valorTotal += itemVenda.getTotal().doubleValue();
 					valorCompra += itemVenda.getValorCompra().doubleValue();
 	
@@ -454,8 +465,8 @@ public class RegistroVendasBean implements Serializable {
 								System.out.println("itemVenda.getQuantidade(): " + itemVenda.getQuantidade());
 								System.out.println("itemCompraTemp.getQuantidadeDisponivel(): "
 										+ itemCompraTemp.getQuantidadeDisponivel());
-								itemCompraTemp.setQuantidadeDisponivel(
-										itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());
+								itemCompraTemp.setQuantidadeDisponivel(new BigDecimal(
+										itemCompraTemp.getQuantidadeDisponivel().doubleValue() - itemVenda.getQuantidade().doubleValue()));
 								System.out
 										.println("Nova QuantidadeDisponivel: " + itemCompraTemp.getQuantidadeDisponivel());
 								itensCompras.save(itemCompraTemp);
@@ -571,8 +582,10 @@ public class RegistroVendasBean implements Serializable {
 
 						produtoNaLista = true;
 						if (itemVenda.getId() == null && venda.getId() == null) {
-							itemCompraTemp.setQuantidadeDisponivel(
-									itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());
+							
+							itemCompraTemp.setQuantidadeDisponivel(new BigDecimal(
+									itemCompraTemp.getQuantidadeDisponivel().doubleValue() - itemVenda.getQuantidade().doubleValue()));
+					
 						}
 
 					}
@@ -580,15 +593,28 @@ public class RegistroVendasBean implements Serializable {
 			}
 
 			if (produtoNaLista != false) {
-				if (itemCompraTemp.getQuantidadeDisponivel() > 0) {
+				if (itemCompraTemp.getQuantidadeDisponivel().doubleValue() > 0) {
 					itensCompra.add(itemCompraTemp);
 				}
 			}
 
 			if (produtoNaLista != true) {
-				if (itemCompraTemp.getQuantidadeDisponivel() > 0) {
+				if (itemCompraTemp.getQuantidadeDisponivel().doubleValue() > 0) {
 					itensCompra.add(itemCompraTemp);
 				}
+			}
+			
+			if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Kg") || itemCompraTemp.getProduto().getUnidadeMedida().equals("Lt")) {
+				itemCompraTemp.setQuantidadeDisponivel_(new BigDecimal(
+						itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(3, BigDecimal.ROUND_HALF_EVEN));
+
+			} else if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Pt")) {
+				itemCompraTemp.setQuantidadeDisponivel_(new BigDecimal(
+						itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(1, BigDecimal.ROUND_HALF_EVEN));
+			
+			} else if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Un") || itemCompraTemp.getProduto().getUnidadeMedida().equals("Cx")) {
+				itemCompraTemp.setQuantidadeDisponivel_(new BigDecimal(
+						itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(0, BigDecimal.ROUND_HALF_EVEN));
 			}
 		}
 
@@ -611,19 +637,19 @@ public class RegistroVendasBean implements Serializable {
 
 	public void adicionarItem() {
 
-		if(itemVenda.getQuantidade() > 0) {
+		if(itemVenda.getQuantidade().doubleValue() > 0) {
 			
 			if(itemVenda.getValorUnitario().doubleValue() >= 0) {
 		
 				if (venda.getId() == null) {
 		
-					Long quantidadeDisponivel = itemCompra.getQuantidadeDisponivel();
+					Double quantidadeDisponivel = itemCompra.getQuantidadeDisponivel().doubleValue();
 		
 					for (ItemVenda itemVenda : itensVenda) {
 						if (itemCompra.getCompra().getId().longValue() == itemVenda.getCompra().getId().longValue()) {
 							if (itemCompra.getProduto().getId().longValue() == itemVenda.getProduto().getId().longValue()) {
 								if (itemVenda.getId() == null && venda.getId() == null) {
-									quantidadeDisponivel -= itemVenda.getQuantidade();
+									quantidadeDisponivel -= itemVenda.getQuantidade().doubleValue();
 								}
 							}
 						}
@@ -632,7 +658,7 @@ public class RegistroVendasBean implements Serializable {
 					System.out.println("itemVenda.getQuantidade(): " + itemVenda.getQuantidade());
 					System.out.println("quantidadeDisponivel: " + quantidadeDisponivel);
 		
-					if (itemVenda.getQuantidade() <= quantidadeDisponivel) {
+					if (itemVenda.getQuantidade().doubleValue() <= quantidadeDisponivel.doubleValue()) {
 						
 							if (itemVenda.getValorUnitario().doubleValue() <= itemCompra.getValorUnitario().doubleValue()) {					
 								PrimeFaces.current().executeScript(
@@ -659,7 +685,7 @@ public class RegistroVendasBean implements Serializable {
 									* (itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().intValue())
 									- (itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().doubleValue()) * itemVenda.getDesconto().doubleValue() / 100));
 		
-							itemVenda.setPercentualLucro(new BigDecimal(((itemVenda.getTotal().doubleValue() - (valorDeCustoUnitario.doubleValue() * itemVenda.getQuantidade())) / itemVenda.getTotal().doubleValue() * 100)));													
+							itemVenda.setPercentualLucro(new BigDecimal(((itemVenda.getTotal().doubleValue() - (valorDeCustoUnitario.doubleValue() * itemVenda.getQuantidade().doubleValue())) / itemVenda.getTotal().doubleValue() * 100)));													
 							itemVenda.setValorCompra(new BigDecimal(valorDeCustoUnitario.doubleValue() * itemVenda.getQuantidade().intValue()));
 
 							
@@ -695,8 +721,10 @@ public class RegistroVendasBean implements Serializable {
 		
 											produtoNaLista = true;
 											if (itemVenda.getId() == null && venda.getId() == null) {
-												itemCompraTemp.setQuantidadeDisponivel(
-														itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());
+												
+												itemCompraTemp.setQuantidadeDisponivel(new BigDecimal(
+														itemCompraTemp.getQuantidadeDisponivel().doubleValue() - itemVenda.getQuantidade().doubleValue()));
+								
 											}
 		
 										}
@@ -704,15 +732,28 @@ public class RegistroVendasBean implements Serializable {
 								}
 		
 								if (produtoNaLista != false) {
-									if (itemCompraTemp.getQuantidadeDisponivel() > 0) {
+									if (itemCompraTemp.getQuantidadeDisponivel().doubleValue() > 0) {
 										itensCompra.add(itemCompraTemp);
 									}
 								}
 		
 								if (produtoNaLista != true) {
-									if (itemCompraTemp.getQuantidadeDisponivel() > 0) {
+									if (itemCompraTemp.getQuantidadeDisponivel().doubleValue() > 0) {
 										itensCompra.add(itemCompraTemp);
 									}
+								}
+								
+								if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Kg") || itemCompraTemp.getProduto().getUnidadeMedida().equals("Lt")) {
+									itemCompraTemp.setQuantidadeDisponivel_(new BigDecimal(
+											itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(3, BigDecimal.ROUND_HALF_EVEN));
+					
+								} else if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Pt")) {
+									itemCompraTemp.setQuantidadeDisponivel_(new BigDecimal(
+											itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(1, BigDecimal.ROUND_HALF_EVEN));
+								
+								} else if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Un") || itemCompraTemp.getProduto().getUnidadeMedida().equals("Cx")) {
+									itemCompraTemp.setQuantidadeDisponivel_(new BigDecimal(
+											itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(0, BigDecimal.ROUND_HALF_EVEN));
 								}
 							}
 		
@@ -774,8 +815,9 @@ public class RegistroVendasBean implements Serializable {
 
 							produtoNaLista = true;
 							if (itemVenda.getId() == null && venda.getId() == null) {
-								itemCompraTemp.setQuantidadeDisponivel(
-										itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());
+								itemCompraTemp.setQuantidadeDisponivel(new BigDecimal(
+										itemCompraTemp.getQuantidadeDisponivel().doubleValue() - itemVenda.getQuantidade().doubleValue()));
+								
 							}
 
 						}
@@ -783,15 +825,28 @@ public class RegistroVendasBean implements Serializable {
 				}
 
 				if (produtoNaLista != false) {
-					if (itemCompraTemp.getQuantidadeDisponivel() > 0) {
+					if (itemCompraTemp.getQuantidadeDisponivel().doubleValue() > 0) {
 						itensCompra.add(itemCompraTemp);
 					}
 				}
 
 				if (produtoNaLista != true) {
-					if (itemCompraTemp.getQuantidadeDisponivel() > 0) {
+					if (itemCompraTemp.getQuantidadeDisponivel().doubleValue() > 0) {
 						itensCompra.add(itemCompraTemp);
 					}
+				}
+				
+				if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Kg") || itemCompraTemp.getProduto().getUnidadeMedida().equals("Lt")) {
+					itemCompraTemp.setQuantidadeDisponivel_(new BigDecimal(
+							itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(3, BigDecimal.ROUND_HALF_EVEN));
+	
+				} else if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Pt")) {
+					itemCompraTemp.setQuantidadeDisponivel_(new BigDecimal(
+							itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(1, BigDecimal.ROUND_HALF_EVEN));
+				
+				} else if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Un") || itemCompraTemp.getProduto().getUnidadeMedida().equals("Cx")) {
+					itemCompraTemp.setQuantidadeDisponivel_(new BigDecimal(
+							itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(0, BigDecimal.ROUND_HALF_EVEN));
 				}
 			}
 
@@ -841,8 +896,9 @@ public class RegistroVendasBean implements Serializable {
 
 							produtoNaLista = true;
 							if (itemVenda.getId() == null && venda.getId() == null) {
-								itemCompraTemp.setQuantidadeDisponivel(
-										itemCompraTemp.getQuantidadeDisponivel() - itemVenda.getQuantidade());
+								itemCompraTemp.setQuantidadeDisponivel(new BigDecimal(
+										itemCompraTemp.getQuantidadeDisponivel().doubleValue() - itemVenda.getQuantidade().doubleValue()));
+							
 							}
 
 						}
@@ -850,15 +906,28 @@ public class RegistroVendasBean implements Serializable {
 				}
 
 				if (produtoNaLista != false) {
-					if (itemCompraTemp.getQuantidadeDisponivel() > 0) {
+					if (itemCompraTemp.getQuantidadeDisponivel().doubleValue() > 0) {
 						itensCompra.add(itemCompraTemp);
 					}
 				}
 
 				if (produtoNaLista != true) {
-					if (itemCompraTemp.getQuantidadeDisponivel() > 0) {
+					if (itemCompraTemp.getQuantidadeDisponivel().doubleValue() > 0) {
 						itensCompra.add(itemCompraTemp);
 					}
+				}
+				
+				if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Kg") || itemCompraTemp.getProduto().getUnidadeMedida().equals("Lt")) {
+					itemCompraTemp.setQuantidadeDisponivel_(new BigDecimal(
+							itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(3, BigDecimal.ROUND_HALF_EVEN));
+	
+				} else if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Pt")) {
+					itemCompraTemp.setQuantidadeDisponivel_(new BigDecimal(
+							itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(1, BigDecimal.ROUND_HALF_EVEN));
+				
+				} else if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Un") || itemCompraTemp.getProduto().getUnidadeMedida().equals("Cx")) {
+					itemCompraTemp.setQuantidadeDisponivel_(new BigDecimal(
+							itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(0, BigDecimal.ROUND_HALF_EVEN));
 				}
 			}
 

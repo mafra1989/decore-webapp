@@ -24,6 +24,72 @@
 
 		<style>
 @media ( min-width :220px) {
+	.ajuste-estoque {
+	    float: right;
+   		margin-top: -153px;/*96*/
+	}
+	.estoque.ui-panelgrid .ui-panelgrid-cell:nth-child(3) {
+		margin-top: 25px;
+	}
+	.btn-duplicar.ui-button {
+		margin-left: 0px;font-weight: bold;margin-bottom: 10px;float: left;color: #3e3e3e;background-color: #d6a2f1a3;
+    	border: 1px solid #3e3e3e !important;
+	}
+	.btn-duplicar.ui-button.ui-state-hover {
+		background-color: #d6a2f1a3;
+	}
+	.btn-duplicar.ui-button.ui-state-focus {
+		background-color: #d6a2f1a3;
+	}
+	.btn-novo.ui-button {
+		margin-left: 0px;
+		font-weight: bold;
+		margin-bottom: 10px;
+		background-color: #dee0e6;float: left;color: #3e3e3e;border: 1px solid;
+	}
+	.btn-novo.ui-button.ui-state-hover {
+		background-color: #dee0e6;
+	}
+	.btn-novo.ui-button.ui-state-focus {
+		background-color: #dee0e6;
+	}
+	#compra-dialog .ui-state-disabled {
+    	opacity: .75;
+	}
+	.estoque-min.ui-panel .ui-panel-content {
+	    border: none;
+	    padding: 0px;
+    }
+	.medida .ui-state-disabled {
+    	opacity: .85;
+    }
+    .margem-lucro .ui-state-disabled {
+    	opacity: .85;
+    }
+	.title-estoque {
+		float: left;
+		margin-top:5px;
+		font-size: 13px;
+	}
+	.btn-novo {
+		width: 100%;
+	}
+	.add-estoque {
+		float: right;
+	    margin-top: -28px;
+	    font-size: 13px;
+    }
+	.estoque.hide {
+		max-height: 0;
+		pointer-events: none;
+		transition: max-height 0.3s ease-in-out;
+		
+	}
+	.estoque {
+		overflow: hidden;
+		max-height: 300px;
+		transition: max-height 1s ease-in-out;
+	}
 	.info-preco.ui-panel .ui-panel-content {
     	padding-bottom: 16px;
     }	
@@ -166,6 +232,28 @@
 }
 
 @media ( min-width :460px) {
+	.ajuste-estoque {
+	    float: left;
+   		margin-top: -10px;
+    	margin-bottom: 10px;
+    	margin-left: -8px;
+	}
+	
+	.estoque.ui-panelgrid .ui-panelgrid-cell:nth-child(3) {
+		margin-top: 0px;
+	}
+	
+	.btn-novo.ui-button {
+		margin-left: -81px;
+		font-weight: bold;
+		margin-bottom: 10px;
+		background-color: #dee0e6;float: left;color: #3e3e3e;border: 1px solid;
+	}
+	
+	.btn-novo.ui-button {
+		margin-left: -81px;
+	}
+	
 	.qtd-atual .ui-grid-col-3 {
 	    width: 24.7%;
 	}
@@ -223,7 +311,7 @@
 		width: auto !important;
 		float: none;
 	}
-	body .panel-save .ui-button {
+	.btn-calcular.ui-button {
 		width: 64% !important;
 	}
 	.info .ui-inputfield {
@@ -247,6 +335,57 @@
 		text-align: right;
     	margin-right: 15px;
 	}
+	.title-estoque {
+    	margin-left: -85px;
+	}
+	.add-estoque {
+		float: left;
+		margin-top:5px;
+		margin-left: -22px;
+	}
+	.layout-static .btn-novo {
+		margin-left: -81px;
+	}
+	
+	.layout-static .btn-duplicar {
+		margin-left: -178px;
+	}
+	
+	.layout-static-inactive .btn-novo {
+		margin-left: -118px !important;
+	}
+	
+	.layout-horizontal .btn-novo {
+		margin-left: -92px;
+	}
+	
+	.layout-horizontal .btn-duplicar {
+		margin-left: -200px;
+	}
+	
+	.layout-slim .btn-novo {
+		margin-left: -111px;
+	}
+	
+	.layout-slim-anchored .btn-novo {
+		margin-left: -93px;
+	}
+	
+	.layout-toggle .btn-novo {
+		margin-left: -118px;
+	}
+	
+	.layout-overlay .btn-novo {
+		margin-left: -118px;
+	}
+	
+	.btn-novo.ui-button {
+		width: 64% !important;
+	}
+	
+	.btn-duplicar.ui-button {
+		width: 64% !important;
+	}
 }
 </style>
 
@@ -259,14 +398,14 @@
 		<p:growl id="msg" closable="true" life="3000" showSummary="false"
 			showDetail="true" style="text-align: center" />
 
-		<div class="ui-g-12 ui-lg-12" style="padding-bottom: 20px;">
+		<div class="dashboard" style="padding-bottom: 6px;">
 
 			<h:form id="form" styleClass="form" enctype="multipart/form-data">
 
 				<p:panel style="margin-top: -8px;">
 
-					<p:panel class="card card-w-title ui-fluid" id="panel-cadastro"
-						style="padding-bottom: 0px !important">
+					<p:panel class="card card-w-title ui-fluid ui-g-12 ui-lg-12" id="panel-cadastro"
+						style="padding-bottom: 18px !important">
 
 						<h3 style="font-weight: bold">Dados do Produto</h3>
 
@@ -283,17 +422,17 @@
 							<p:inputText id="codigo" autocomplete="off"
 								value="#{cadastroProdutoBean.produto.codigo}" />
 								
-							<p:outputLabel value="Barcode N." for="codigo-barras" />
+							<p:outputLabel value="Código de Barras" for="codigo-barras" />
 							<p:inputText id="codigo-barras" styleClass="bar-code" autocomplete="off" onkeyup="updateBarcode(this.value);"
 								value="#{cadastroProdutoBean.produto.codigoDeBarras}">
 							</p:inputText>
 							<p:commandButton id="btn-barcode" icon="fa fa-fw fa-camera-retro" onstart="readBarcode();"
 										oncomplete="PF('barcode-dialog').show();"
-										style="width:38px;height:29px"/>
+										style="width:38px;height:29px" rendered="true" />
 							
 							<p:commandButton process="@this codigo-barras" styleClass="process-barcode"
 										action="#{cadastroProdutoBean.validaBarcode}"
-										style="width:38px;height:29px;display:none;"/>
+										style="width:38px;height:29px;display:none;" rendered="true"/>
 						</p:panelGrid>
 
 						<p:panelGrid columns="4" layout="grid" style="margin-bottom: 0px"
@@ -301,7 +440,7 @@
 							columnClasses="ui-grid-col-3, ui-grid-col-3, ui-grid-col-2, ui-grid-col-4">
 
 							<p:outputLabel value="Nome" for="nome" />
-							<p:inputText id="nome" autocomplete="off"
+							<p:inputText id="nome" autocomplete="off" maxlength="120"
 								value="#{cadastroProdutoBean.produto.nome}" />
 								
 								
@@ -318,7 +457,7 @@
 							<p:outputLabel value="Outras Informações" for="info" />
 							
 								
-							<p:textEditor  id="info" widgetVar="info" value="#{cadastroProdutoBean.produto.informacaoExtra}" height="200"/>	
+							<p:textEditor secure="false" id="info" widgetVar="info" value="#{cadastroProdutoBean.produto.informacaoExtra}" height="200"/>	
 								
 						</p:panelGrid>
 						
@@ -326,13 +465,16 @@
 							styleClass="panelgrid-noborder disabled disabled"
 							columnClasses="ui-grid-col-3, ui-grid-col-3, ui-grid-col-2, ui-grid-col-3">
 			
-							<p:outputLabel value="Locação" for="locacao" />
-							<p:inputText id="locacao" autocomplete="off"
+							<p:outputLabel value="Locação" for="locacao" rendered="false" />
+							<p:inputText id="locacao" autocomplete="off" rendered="false"
 								value="#{cadastroProdutoBean.produto.locacao}" />	
 								
-							<p:outputLabel value="Produto em destaque?"/>
+							<p:outputLabel value="" rendered="false" />
+							<p:outputLabel value="" rendered="false" />
+								
+							<p:outputLabel value="Produto em destaque?" rendered="false"/>
 							<p:inputSwitch offLabel="Não" onLabel="Sim" id="entrega" style="width:150px"
-								value="#{cadastroProdutoBean.produto.destaque}">
+								value="#{cadastroProdutoBean.produto.destaque}" rendered="false">
 							</p:inputSwitch>	
 								
 							<p:outputLabel value="" />
@@ -342,19 +484,21 @@
 						</p:panelGrid>
 						
 						
-						<p:panelGrid columns="4" layout="grid" style="margin-bottom: 5px"
+						<p:panelGrid columns="6" layout="grid" style="margin-bottom: 5px"
 							styleClass="panelgrid-noborder disabled disabled"
-							columnClasses="ui-grid-col-3, ui-grid-col-3, ui-grid-col-2, ui-grid-col-1">
+							columnClasses="ui-grid-col-3, ui-grid-col-3, ui-grid-col-2, ui-grid-col-2, ui-grid-col-1, ui-grid-col-1">
 
 							<p:outputLabel value="Marca" for="marca" />
 							<p:inputText id="marca" autocomplete="off"
 								value="#{cadastroProdutoBean.produto.marca}" />
 								
-							<p:outputLabel value="Número" for="numero" rendered="#{cadastroProdutoBean.usuario.empresa eq 'Havaianas'}" />
-							<p:inputNumber id="numero" decimalPlaces="0" styleClass="numero"
-								autocomplete="off" minValue="0" maxValue="99" rendered="#{cadastroProdutoBean.usuario.empresa eq 'Havaianas'}"
-								value="#{cadastroProdutoBean.produto.numeracao}">
-							</p:inputNumber>
+							<p:outputLabel value="Cor" for="cor" rendered="false" />
+							<p:inputText id="cor" autocomplete="off" rendered="false"
+								value="#{cadastroProdutoBean.produto.cor}" />
+								
+							<p:outputLabel value="Tamanho" for="numero" />
+							<p:inputText id="numero" autocomplete="off"
+								value="#{cadastroProdutoBean.produto.numeracao}" />
 						</p:panelGrid>
 						
 
@@ -435,12 +579,23 @@
 							columnClasses="ui-grid-col-3, ui-grid-col-3">
 
 							<p:outputLabel value="" />
-							<ui:fragment id="photo-edit"
-								rendered="#{cadastroProdutoBean.produto.urlImagem != null}">
+							<ui:fragment id="photo-edit" 
+								rendered="#{cadastroProdutoBean.fileContent != null and cadastroProdutoBean.produto.urlImagem == null}">
 								<img
-									src="#{cadastroProdutoBean.produto.urlImagem}"
+									src="data:image/png;base64,#{cadastroProdutoBean.imageContentsAsBase64}"
 									style="width: 100%;" />
-							</ui:fragment>							
+							</ui:fragment>	
+							
+							<p:graphicImage value="../../produtos/#{cadastroProdutoBean.produto.id}.jpg" cache="true"
+								style="width: 100%;"
+								rendered="#{cadastroProdutoBean.produto.urlImagem != null and not cadastroProdutoBean.configuracao.produtosUrlNuvem}">
+							</p:graphicImage>
+							
+							<ui:fragment  
+								rendered="#{cadastroProdutoBean.produto.urlImagem != null and cadastroProdutoBean.configuracao.produtosUrlNuvem}">
+								<img style="width: 100%;"
+									src="#{estoqueBean.produtoSelecionado.urlImagem}" />
+							</ui:fragment>					
 						</p:panelGrid>
 
 					</p:panel>
@@ -452,10 +607,147 @@
 						
 						
 						
-					<p:panel styleClass="info-preco">	
+					<p:panel styleClass="info-preco" id="info-preco">	
 						
 						
 						<h3 style="font-weight: bold">Informações de preço e estoque</h3>
+							
+						<p:panelGrid columns="4" layout="grid" style="margin-top:38px;margin-bottom: 25px;"
+							styleClass="panelgrid-noborder disabled disabled pdv qtd-atual"
+							columnClasses="ui-grid-col-3, ui-grid-col-2, ui-grid-col-6">
+							
+							<p:outputLabel value="Estoque Controlado" for="estoque-ctl" />
+							<p:inputSwitch id="estoque-ctl" offLabel="Não" onLabel="Sim" style="width:150px;float:left;margin-top:-2px;"
+								value="#{cadastroProdutoBean.produto.estoque}">
+								
+								<p:ajax process="@this grid-cm grid-um" update="tooltip tooltips panel-lucro panel-contribuicao grid-cm grid-um custo-medio_ custo-medio__ qtdAtual qtdAtual_ qtdAtual__ estoque-minimo info-lucro estoque-minimo_" listener="#{cadastroProdutoBean.gerenciarEstoque}" />
+							</p:inputSwitch>	
+								
+							<p:outputLabel styleClass="title-estoque" value="Marque esta opção se deseja controlar o estoque deste item." />
+						</p:panelGrid>						
+			
+						
+						<p:panelGrid columns="2" layout="grid" style="margin-top:20px;" id="grid-cm"
+							styleClass="panelgrid-noborder disabled disabled pdv qtd-atual medida"
+							columnClasses="ui-grid-col-3, ui-grid-col-3">
+							
+							<p:outputLabel value="Custo Médio" for="custo-medio_" />
+							<p:inputNumber id="custo-medio_" decimalPlaces="4" styleClass="preco-venda"
+								placeholder="R$ 0,0000" symbol="R$ " onkeyup="ajaxDelay()" minValue="0"
+								value="#{cadastroProdutoBean.produto.custoMedioUnitario}"
+								readonly="#{cadastroProdutoBean.produto.estoque}"
+								rendered="#{not cadastroProdutoBean.produto.estoque}">
+								
+								<p:ajax event="blur"
+									process="@this percentual-juros percentual-lucro" update="panel-lucro panel-contribuicao preco-venda-estimado"
+									listener="#{cadastroProdutoBean.calculaMargens}"></p:ajax>
+							</p:inputNumber>
+							
+							<p:inputNumber id="custo-medio__" decimalPlaces="4" styleClass="preco-venda"
+								placeholder="R$ 0,0000" symbol="R$ " onkeyup="ajaxDelay()" minValue="0"
+								value="#{cadastroProdutoBean.produto.custoMedioUnitario}"
+								rendered="#{cadastroProdutoBean.produto.estoque}">
+								
+								<p:ajax event="blur"
+									process="@this percentual-juros percentual-lucro" update="panel-lucro panel-contribuicao preco-venda-estimado"
+									listener="#{cadastroProdutoBean.calculaMargens}"></p:ajax>
+							</p:inputNumber>
+							
+							<p:tooltip id="tooltip" for="custo-medio__" style="font-size:12px;" value="Valor atualizado automaticamente, clique em Registrar Compra!"
+               						rendered="false" showEffect="clip" hideEffect="explode" position="right"/>
+               				             				
+							
+						</p:panelGrid>
+							
+						<p:panelGrid columns="3" layout="grid" style="margin-top:20px;" id="grid-um"
+							styleClass="panelgrid-noborder disabled disabled pdv qtd-atual medida"
+							columnClasses="ui-grid-col-3, ui-grid-col-2">
+							
+							<p:outputLabel value="Medida" for="un" />
+							<p:selectOneMenu id="un"
+								value="#{cadastroProdutoBean.produto.unidadeMedida}"
+								disabled="#{cadastroProdutoBean.produtoMovimentado}" 
+								placeholder="selecione">
+								
+								<p:ajax process="@this" update="panel-lucro panel-contribuicao qtdAtual qtdAtual_ qtdAtual__ estoque-minimo info-lucro estoque-minimo_ grid-estoque" />
+
+					            <f:selectItem itemLabel="Un - Unidade" itemValue="Un" />
+					            <f:selectItem itemLabel="Cx - Caixa" itemValue="Cx" />
+					            <f:selectItem itemLabel="Kg - Kilograma" itemValue="Kg" />
+					            <f:selectItem itemLabel="Lt - Litro" itemValue="Lt" />
+					            <f:selectItem itemLabel="Pt - Pacote" itemValue="Pt" />									
+							</p:selectOneMenu>
+							
+							<p:commandLink value="Registrar compra" disabled="#{not cadastroProdutoBean.produto.estoque}"
+								actionListener="#{cadastroProdutoBean.prepararRegistroCompra}" process="un grid-um" update="form-dialog__"
+								styleClass="add-estoque" onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();PF('compra-dialog').show();"
+								rendered="false">
+								<i style="float:left;margin-top: 2px;" class="fa fa-fw fa-shopping-cart"></i>
+							</p:commandLink>
+								
+						</p:panelGrid>
+						
+						
+						<p:panelGrid columns="4" layout="grid"  id="grid-estoque" style="margin-top:10px;margin-bottom: 5px;"
+							styleClass="panelgrid-noborder disabled disabled estoque #{cadastroProdutoBean.produto.estoque ? '' : 'hide'}"
+							columnClasses="ui-grid-col-3, ui-grid-col-3, ui-grid-col-3, ui-grid-col-3">
+
+							<p:outputLabel value="Quantidade atual" for="qtdAtual" /> 
+							<p:inputNumber id="qtdAtual" decimalPlaces="3" rendered="#{cadastroProdutoBean.produto.unidadeMedida == 'Kg' or cadastroProdutoBean.produto.unidadeMedida == 'Lt'}"
+								readonly="true" value="#{cadastroProdutoBean.produto.quantidadeAtual}" />
+								
+							<p:inputNumber id="qtdAtual__" decimalPlaces="1" rendered="#{cadastroProdutoBean.produto.unidadeMedida == 'Pt'}"
+								readonly="true" value="#{cadastroProdutoBean.produto.quantidadeAtual}" />
+								
+							<p:inputNumber id="qtdAtual_" decimalPlaces="0" rendered="#{cadastroProdutoBean.produto.unidadeMedida == 'Un' or cadastroProdutoBean.produto.unidadeMedida == 'Cx'}"
+								readonly="true" value="#{cadastroProdutoBean.produto.quantidadeAtual}" />
+							
+								
+							<p:outputLabel value="Estoque Mínimo" for="estoque-minimo" />
+							<p:inputNumber id="estoque-minimo" decimalPlaces="3" rendered="#{cadastroProdutoBean.produto.unidadeMedida == 'Kg' or cadastroProdutoBean.produto.unidadeMedida == 'Lt'}"
+								value="#{cadastroProdutoBean.produto.estoqueMinimo}" />
+								
+							<p:inputNumber id="estoque-minimo__" decimalPlaces="1" rendered="#{cadastroProdutoBean.produto.unidadeMedida == 'Pt'}"
+								value="#{cadastroProdutoBean.produto.estoqueMinimo}" />
+								
+							<p:panel id="estoque-minimo_" styleClass="estoque-min">
+								<p:inputNumber  decimalPlaces="0" rendered="#{cadastroProdutoBean.produto.unidadeMedida == 'Un' or cadastroProdutoBean.produto.unidadeMedida == 'Cx'}"
+									value="#{cadastroProdutoBean.produto.estoqueMinimo}" />
+							</p:panel>
+								
+							<p:outputLabel value="Saldo" for="saldo" rendered="false" />
+							<p:inputNumber id="saldo" decimalPlaces="4" rendered="false"
+								placeholder="R$ 0,00" symbol="R$ " autocomplete="off" readonly="true"
+								value="#{cadastroProdutoBean.produto.custoTotal}">
+							</p:inputNumber>
+							
+							<p:outputLabel />
+							<p:commandLink value="Ajustar Quantidade"
+								actionListener="#{cadastroProdutoBean.prepararRegistroCompra}" process="@this un grid-um" update="form-ajuste-dialog"
+								styleClass="ajuste-estoque" onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();PF('ajuste-dialog').show();">
+								<i style="float:left;margin-top: 2px;" class="fa fa-fw fa-sort"></i>
+							</p:commandLink>
+							
+							<p:outputLabel rendered="false" />
+							<p:outputLabel rendered="false" />
+							
+							<p:panelGrid id="tooltips">
+								<p:tooltip for="qtdAtual" style="font-size:12px;" value="Clique em ajustar quantidade!"
+	               								showEffect="clip" hideEffect="explode" position="right"/>
+	               								
+	               				<p:tooltip for="qtdAtual_" style="font-size:12px;" value="Clique em ajustar quantidade!"
+	               								showEffect="clip" hideEffect="explode" position="right"/>
+	               								
+	               				<p:tooltip for="qtdAtual__" style="font-size:12px;" value="Clique em ajustar quantidade!"
+	               								showEffect="clip" hideEffect="explode" position="right"/>
+               				</p:panelGrid>	
+							
+						</p:panelGrid>
+						
+			
+						
 						
 						<p:panelGrid columns="4" layout="grid" style="margin-bottom: 5px;"
 							styleClass="panelgrid-noborder disabled disabled pdv"
@@ -463,7 +755,7 @@
 
 							<p:outputLabel value="Preço de Venda" for="preco-venda" />
 							<p:inputNumber id="preco-venda" decimalPlaces="2" styleClass="preco-venda"
-								placeholder="R$ 0,00" symbol="R$ "  onkeyup="ajaxDelay()"								
+								placeholder="R$ 0,00" symbol="R$ "  onkeyup="ajaxDelay()" minValue="0"							
 								value="#{cadastroProdutoBean.produto.precoDeVenda}">
 								
 								<p:ajax event="blur"
@@ -496,45 +788,50 @@
 							</p:panel>
 						</p:panelGrid>
 						
-						<p:panelGrid columns="4" layout="grid" style="margin-bottom: 5px;"
-							styleClass="panelgrid-noborder disabled disabled pdv qtd-atual"
-							columnClasses="ui-grid-col-3, ui-grid-col-3, ui-grid-col-3, ui-grid-col-3"
-							rendered="#{cadastroProdutoBean.produto.id == null}">
-							
-							<p:outputLabel value="Quantidade atual" for="qtdAtual_" />
-							<p:inputNumber id="qtdAtual_" decimalPlaces="0" readonly="true" styleClass="preco-venda"
-								value="#{cadastroProdutoBean.produto.quantidadeAtual}" />
-						</p:panelGrid>
 
 						<p:panelGrid columns="4" layout="grid" style="margin-top: 15px;margin-bottom: 5px"
-							styleClass="panelgrid-noborder disabled disabled perc-desconto"
-							id="margem-lucro" rendered="#{cadastroProdutoBean.produto.id != null}"
+							styleClass="panelgrid-noborder disabled disabled perc-desconto margem-lucro"
+							id="margem-lucro" 
 							columnClasses="ui-grid-col-3, ui-grid-col-3, ui-grid-col-3, ui-grid-col-3">		
 
 							<p:outputLabel value="Margem Markup (%)" />
 							<p:panel style="text-align: center" id="panel-contribuicao">
 							
-								<h:outputText id="margemEmDinheiro" styleClass="margem-em-dinheiro"
+								<h:outputText id="margemEmDinheiro" styleClass="margem-em-dinheiro" rendered="#{cadastroProdutoBean.produto.custoMedioUnitario ge 0.01}"
 									value="#{cadastroProdutoBean.produto.custoMedioUnitario * cadastroProdutoBean.produto.margemLucro/100}" 
 									style="font-weight: bold;font-size: 10px;float: right;margin-top: -17px;margin-right: 6px;color: #757575;">
 									
 									<f:convertNumber type="currency" maxFractionDigits="4" />
 								</h:outputText>
+								
+								<h:outputText id="margemEmDinheiro_" styleClass="margem-em-dinheiro" rendered="#{cadastroProdutoBean.produto.custoMedioUnitario le 0.00}"
+									value="#{cadastroProdutoBean.produto.precoDeVenda}" 
+									style="font-weight: bold;font-size: 10px;float: right;margin-top: -17px;margin-right: 6px;color: #757575;">
+									
+									<f:convertNumber type="currency" maxFractionDigits="4" />
+								</h:outputText>
 							
+								<!-- value="%#{cadastroProdutoBean.produto.margemLucro}" -->
 								<h:outputText id="percentual"
-									value="%#{cadastroProdutoBean.produto.margemLucro}"
-									style="font-weight: bold; font-size: 18px" />
-								<p:inputNumber id="percentual-juros"  thousandSeparator="," decimalSeparator="." symbol="% "
-									value="#{cadastroProdutoBean.produto.margemLucro}" disabled="#{cadastroProdutoBean.produto.quantidadeAtual le 0}">
+									value="#{cadastroProdutoBean.produto.margemLucro}"
+									style="font-weight: bold; font-size: 18px">
+									
+									<f:convertNumber currencySymbol="%" type="currency" />
+								</h:outputText>
+								
+								<p:inputNumber id="percentual-juros"  thousandSeparator="." decimalSeparator="," symbol="% "
+									value="#{cadastroProdutoBean.produto.margemLucro}"
+									disabled="#{cadastroProdutoBean.produto.custoMedioUnitario le 0.00}">
 									
 									<p:ajax event="blur" 
 										listener="#{cadastroProdutoBean.calculaMargemLucroReal_}"
 										process="@this percentual-juros preco-venda percentual-lucro" 
 										update="info-lucro panel-lucro panel-contribuicao preco-venda preco-venda-estimado" />
 								</p:inputNumber>
-								<p:slider for="percentual-juros" display="percentual" step="0.01"
+								<!-- display="percentual" -->
+								<p:slider for="percentual-juros" step="0.01"
 									displayTemplate="%{value}" minValue="0" maxValue="400"
-									disabled="#{cadastroProdutoBean.produto.quantidadeAtual le 0}">
+									disabled="#{cadastroProdutoBean.produto.custoMedioUnitario le 0.00}">
 
 									<p:ajax event="slideEnd" update="info-lucro panel-lucro panel-contribuicao preco-venda preco-venda-estimado"
 										listener="#{cadastroProdutoBean.calculaMargemLucroReal_}"
@@ -545,26 +842,40 @@
 							<p:outputLabel value="Margem de Lucro (%)" />
 							<p:panel style="text-align: center" id="panel-lucro">
 							
-								<h:outputText id="lucroEmDinheiro" styleClass="lucro-em-dinheiro"
+								<h:outputText id="lucroEmDinheiro" styleClass="lucro-em-dinheiro" rendered="#{cadastroProdutoBean.produto.custoMedioUnitario ge 0.01}"
 									value="#{cadastroProdutoBean.produto.custoMedioUnitario * cadastroProdutoBean.produto.margemLucro/100}" 
 									style="font-weight: bold;font-size: 10px;float: right;margin-top: -17px;margin-right: 6px;color: #757575;">
 									
 									<f:convertNumber type="currency" maxFractionDigits="4" />
 								</h:outputText>
 								
+								<h:outputText id="lucroEmDinheiro_" styleClass="lucro-em-dinheiro" rendered="#{cadastroProdutoBean.produto.custoMedioUnitario le 0.00}"
+									value="#{cadastroProdutoBean.produto.precoDeVenda}" 
+									style="font-weight: bold;font-size: 10px;float: right;margin-top: -17px;margin-right: 6px;color: #757575;">
+									
+									<f:convertNumber type="currency" maxFractionDigits="4" />
+								</h:outputText>
+								
+								<!-- value="%#{cadastroProdutoBean.produto.margemLucroReal}" -->
 								<h:outputText id="margem-lucro2"
-									value="%#{cadastroProdutoBean.produto.margemLucroReal}"
-									style="font-weight: bold; font-size: 18px" />	
-								<p:inputNumber id="percentual-lucro"  thousandSeparator="," decimalSeparator="." symbol="% "
-									value="#{cadastroProdutoBean.produto.margemLucroReal}" disabled="#{cadastroProdutoBean.produto.quantidadeAtual le 0}">
+									value="#{cadastroProdutoBean.produto.margemLucroReal}"
+									style="font-weight: bold; font-size: 18px">
+									
+									<f:convertNumber currencySymbol="%" type="currency" />
+								</h:outputText>
+									
+								<p:inputNumber id="percentual-lucro"  thousandSeparator="." decimalSeparator="," symbol="% "
+									value="#{cadastroProdutoBean.produto.margemLucroReal}"
+									disabled="#{cadastroProdutoBean.produto.custoMedioUnitario le 0.00}">
 									
 									<p:ajax event="blur" process="@this preco-venda preco-venda-estimado" 
 										listener="#{cadastroProdutoBean.calculaMargemContribuicao_}" 
 										update="panel-lucro info-lucro lucroEmDinheiro panel-contribuicao preco-venda preco-venda-estimado" />
 								</p:inputNumber>
-								<p:slider for="percentual-lucro" display="margem-lucro2"  
+								<!-- display="margem-lucro2" -->
+								<p:slider for="percentual-lucro"   
 									displayTemplate="%{value}" minValue="0" maxValue="99.99" step="0.01"
-									disabled="#{cadastroProdutoBean.produto.quantidadeAtual le 0}">
+									disabled="#{cadastroProdutoBean.produto.custoMedioUnitario le 0.00}">
 
 									<p:ajax event="slideEnd" update="info-lucro panel-lucro lucroEmDinheiro panel-contribuicao preco-venda preco-venda-estimado"
 										listener="#{cadastroProdutoBean.calculaMargemContribuicao_}"
@@ -575,30 +886,7 @@
 						</p:panelGrid>
 												
 						
-						<p:panelGrid columns="4" layout="grid" style="margin-bottom: 5px" 
-							styleClass="panelgrid-noborder disabled disabled" rendered="#{cadastroProdutoBean.produto.id != null}"
-							columnClasses="ui-grid-col-3, ui-grid-col-3, ui-grid-col-3, ui-grid-col-3">
-
-							<p:outputLabel value="Quantidade atual" for="qtdAtual" />
-							<p:inputNumber id="qtdAtual" decimalPlaces="0" readonly="true" 
-								value="#{cadastroProdutoBean.produto.quantidadeAtual}" />
-								
-							<p:outputLabel value="Estoque Mínimo" for="estoque-minimo" />
-							<p:inputNumber id="estoque-minimo" decimalPlaces="0" 
-								value="#{cadastroProdutoBean.produto.estoqueMinimo}" />
-								
-							<p:outputLabel value="Custo Médio Un." for="custo-medio" />
-							<p:inputNumber id="custo-medio" decimalPlaces="4" styleClass="custo-medio"
-								placeholder="R$ 0,00" symbol="R$ " autocomplete="off" readonly="true"
-								value="#{cadastroProdutoBean.produto.custoMedioUnitario}">
-							</p:inputNumber>
-								
-							<p:outputLabel value="Saldo" for="saldo" />
-							<p:inputNumber id="saldo" decimalPlaces="4" styleClass="saldo"
-								placeholder="R$ 0,00" symbol="R$ " autocomplete="off" readonly="true"
-								value="#{cadastroProdutoBean.produto.custoTotal}">
-							</p:inputNumber>
-						</p:panelGrid>
+						
 						
 						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px" id="panel-preco"
 							styleClass="panelgrid-noborder disabled disabled" rendered="false"
@@ -663,9 +951,14 @@
 									<p:outputLabel value="" />
 									<p:outputLabel value="Quantidade de Itens Comprados"
 										for="totalComprados" />
-									<p:inputNumber id="totalComprados" readonly="true"
-										decimalPlaces="0"
-										value="#{cadastroProdutoBean.produto.quantidadeItensComprados}" />
+									<p:inputNumber id="totalComprados" readonly="true" rendered="#{cadastroProdutoBean.produto.unidadeMedida == 'Kg' or cadastroProdutoBean.produto.unidadeMedida == 'Lt'}"
+										decimalPlaces="3" value="#{cadastroProdutoBean.produto.quantidadeItensComprados}" />
+										
+									<p:inputNumber id="totalComprados__" readonly="true" rendered="#{cadastroProdutoBean.produto.unidadeMedida == 'Pt'}"
+										decimalPlaces="1" value="#{cadastroProdutoBean.produto.quantidadeItensComprados}" />
+										
+									<p:inputNumber id="totalComprados_" readonly="true" rendered="#{cadastroProdutoBean.produto.unidadeMedida == 'Un' or cadastroProdutoBean.produto.unidadeMedida == 'Cx'}"
+										decimalPlaces="0" value="#{cadastroProdutoBean.produto.quantidadeItensComprados}" />
 
 									<p:outputLabel value="Valor Total de Compras"
 										for="totalCompras" />
@@ -690,7 +983,7 @@
 									styleClass="panelgrid-noborder disabled disabled info"
 									columnClasses="ui-grid-col-6, ui-grid-col-4">
 
-									<p:outputLabel value="Ajustes de estoque" style="font-weight: bold" />
+									<p:outputLabel value="Ajustes de estoque (Entrada)" style="font-weight: bold" />
 									<p:outputLabel value="" />
 									<p:outputLabel value="Quantidade"
 										for="ajuste-totalComprados" />
@@ -711,9 +1004,14 @@
 									<p:outputLabel value="" />
 									<p:outputLabel value="Quantidade de Itens Vendidos"
 										for="totalVendidos" />
-									<p:inputNumber id="totalVendidos" readonly="true"
-										decimalPlaces="0"
-										value="#{cadastroProdutoBean.produto.quantidadeItensVendidos}" />
+									<p:inputNumber id="totalVendidos" readonly="true" rendered="#{cadastroProdutoBean.produto.unidadeMedida == 'Kg' or cadastroProdutoBean.produto.unidadeMedida == 'Lt'}"
+										decimalPlaces="3" value="#{cadastroProdutoBean.produto.quantidadeItensVendidos}" />
+										
+									<p:inputNumber id="totalVendidos__" readonly="true" rendered="#{cadastroProdutoBean.produto.unidadeMedida == 'Pt'}"
+										decimalPlaces="1" value="#{cadastroProdutoBean.produto.quantidadeItensVendidos}" />
+									
+									<p:inputNumber id="totalVendidos_" readonly="true"  rendered="#{cadastroProdutoBean.produto.unidadeMedida == 'Un' or cadastroProdutoBean.produto.unidadeMedida == 'Cx'}"
+										decimalPlaces="0" value="#{cadastroProdutoBean.produto.quantidadeItensVendidos}" />		
 
 									<p:outputLabel value="Valor Total de Vendas" for="totalVendas" />
 									<p:inputNumber id="totalVendas" readonly="true" symbol="R$ " decimalPlaces="4"
@@ -737,7 +1035,7 @@
 									styleClass="panelgrid-noborder disabled disabled info"
 									columnClasses="ui-grid-col-6, ui-grid-col-4">
 
-									<p:outputLabel value="Ajustes de estoque" style="font-weight: bold" />
+									<p:outputLabel value="Ajustes de estoque (Saída)" style="font-weight: bold" />
 									<p:outputLabel value="" />
 									<p:outputLabel value="Quantidade"
 										for="ajuste-totalVendidos" />
@@ -757,20 +1055,37 @@
 
 						<p:spacer />
 
-						<p:panelGrid columns="2" layout="grid"
+						<p:panelGrid columns="4" layout="grid"
 							styleClass="panelgrid-noborder disabled disabled panel-save"
-							columnClasses="ui-grid-col-3, ui-grid-col-3">
+							columnClasses="ui-grid-col-3, ui-grid-col-3, ui-grid-col-3">
 
 							<p:outputLabel />
 							<p:commandButton id="btn-calcular" value="Salvar"
 								onstart="PF('downloadLoading').show();"
 								disabled="#{not seguranca.acessoAdministrador()}"
 								styleClass="btn-calcular" onsuccess="stop();"
-								update="msg panel-cadastro fornecedor-dialog categoriaProduto-dialog"
+								update="msg info-preco panel-cadastro btn-duplicar fornecedor-dialog categoriaProduto-dialog"
 								oncomplete="reloadBarCode();"
 								action="#{cadastroProdutoBean.salvar}"
 								process="@this form panel-upload" icon="fa fa-save"
 								style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;" />
+								
+							<p:button value="Novo Produto" outcome="/cadastros/CadastroProdutos.xhtml"
+								onclick="PF('downloadLoading').show();"
+								disabled="#{not seguranca.acessoAdministrador()}"
+								styleClass="btn-novo" onsuccess="stop();" icon="fa fa-cubes">							
+							</p:button>
+								
+							<p:commandButton id="btn-duplicar" value="Duplicar"
+								onstart="PF('downloadLoading').show();"
+								disabled="#{not seguranca.acessoAdministrador() or cadastroProdutoBean.produto.id == null}"
+								styleClass="btn-duplicar" onsuccess="stop();"
+								update="msg @this form info-preco panel-cadastro fornecedor-dialog categoriaProduto-dialog"
+								oncomplete="reloadBarCode();" 
+								action="#{cadastroProdutoBean.duplicar}"
+								process="@this form panel-upload" icon="fa fa-share-square-o" />
+								
+							
 						</p:panelGrid>
 					</p:panel>
 
@@ -787,7 +1102,7 @@
 		<p:dialog header="Adicionar foto" widgetVar="anexo-dialog"
 			position="top" style="margin-top: 100px" id="anexo-dialog"
 			resizable="false" modal="true" closeOnEscape="true" responsive="true"
-			width="250px">
+			width="280px">
 
 			<h:form id="form-anexo" enctype="multipart/form-data">
 
@@ -809,13 +1124,13 @@
 							process="@this"
 							onclick="PrimeFaces.monitorDownload(start, stop);"
 							update="form:panel-upload form:panel-foto"
-							style="background-color: #147df0; font-weight: bold; float: rifht; width: 97px">
+							style="background-color: #147df0; font-weight: bold; float: right; width: 97px">
 
 						</p:commandButton>
 
 						<p:commandButton icon="fa fa-fw fa-close" value="Fechar"
 							onclick="PF('anexo-dialog').hide();"
-							style="background-color: #e15e5ef0; font-weight: bold; float: left; width: 97px">
+							style="background-color: #e15e5ef0; font-weight: bold; float: right; width: 97px">
 
 						</p:commandButton>
 					</p:panel>
@@ -831,7 +1146,7 @@
 		<p:dialog
 			header="#{cadastroProdutoBean.categoriaProduto.id == null ? 'Nova categoria de produto' : 'Editar categoria de produto'}"
 			widgetVar="categoriaProduto-dialog" id="categoriaProduto-dialog" resizable="false" position="top" style="margin-top: 100px"
-			modal="true" closeOnEscape="true" responsive="true" width="250px">	
+			modal="true" closeOnEscape="true" responsive="true" width="280px">	
 
 			<h:form id="form-dialog">
 			
@@ -881,7 +1196,7 @@
 						
 						
 						<p:panel class="card card-w-title ui-fluid panel-btn"
-								style="padding-bottom: 0px;margin-bottom: 0px;">
+								style="padding-bottom: 7px;margin-bottom: 20px;margin-top: -5px;">
 		
 							<p:commandButton id="btn-salvar" value="Salvar"
 								widgetVar="btn-save" icon="fa fa-fw fa-save"
@@ -889,13 +1204,13 @@
 								onsuccess="PF('downloadLoading').hide(); PF('btn-save').enable();"
 								update="msg form-dialog form:categoria"
 								action="#{cadastroProdutoBean.salvarCategoria}"
-								style="font-weight: bold;background-color: #0d8819b5; width: 97px">
+								style="font-weight: bold;background-color: #0d8819b5; width: 97px;float: right;">
 	
 							</p:commandButton>
 	
 							<p:commandButton icon="fa fa-fw fa-close" value="Fechar"
 								onclick="PF('categoriaProduto-dialog').hide();" 
-								style="margin-left:1px;background-color: #e15e5ef0; font-weight: bold; float: left; width: 97px">
+								style="margin-left:1px;background-color: #e15e5ef0; font-weight: bold; float: right; width: 97px">
 	
 							</p:commandButton>
 						</p:panel>
@@ -912,7 +1227,7 @@
 		<p:dialog header="Adicionar foto" widgetVar="anexo-dialog_"
 			position="top" style="margin-top: 100px" id="anexo-dialog_"
 			resizable="false" modal="true" closeOnEscape="true" responsive="true"
-			width="250px">
+			width="280px">
 
 			<h:form id="form-anexo_" enctype="multipart/form-data">
 
@@ -933,13 +1248,13 @@
 							process="@this"
 							onclick="PrimeFaces.monitorDownload(start, stop);"
 							update="anexo-dialog_"
-							style="background-color: #147df0; font-weight: bold; float: rifht; width: 97px">
+							style="background-color: #147df0; font-weight: bold; float: right; width: 97px">
 
 						</p:commandButton>
 
 						<p:commandButton icon="fa fa-fw fa-close" value="Fechar"
 							onclick="PF('anexo-dialog_').hide();"
-							style="background-color: #e15e5ef0; font-weight: bold; float: left; width: 97px">
+							style="background-color: #e15e5ef0; font-weight: bold; float: right; width: 97px">
 
 						</p:commandButton>
 					</p:panel>
@@ -955,7 +1270,7 @@
 		<p:dialog 
 			header="#{cadastroProdutoBean.fornecedor.id == null ? 'Novo fornecedor' : 'Editar fornecedor'}"
 			widgetVar="fornecedor-dialog" id="fornecedor-dialog" resizable="false" position="top" style="margin-top: 100px"
-			modal="true" closeOnEscape="true" responsive="true" width="250px">
+			modal="true" closeOnEscape="true" responsive="true" width="280px">
 
 			<h:form id="form-dialog_">
 
@@ -991,19 +1306,19 @@
 						
 						
 						<p:panel class="card card-w-title ui-fluid panel-btn"
-								style="padding-bottom: 0px;margin-bottom: 0px;">
+								style="padding-bottom: 7px;margin-bottom: 20px;margin-top: -5px;">
 							
-							<p:commandButton id="btn-salvar_" value="Salvar"
+							<p:commandButton id="btn-salvar_" value="Salvar" icon="fa fa-fw fa-save"
 								widgetVar="btn-save" process="@this form-dialog_"
 								onstart="PF('downloadLoading').show(); PF('btn-save').disable();"
 								onsuccess="PF('downloadLoading').hide(); PF('btn-save').enable();"
 								update="msg form-dialog_ form:fornecedor"
 								action="#{cadastroProdutoBean.salvarFornecedor}"
-								style="font-weight: bold;background-color: #0d8819b5; width: 97px" />
+								style="font-weight: bold;background-color: #0d8819b5; width: 97px;float: right;" />
 	
 							<p:commandButton icon="fa fa-fw fa-close" value="Fechar"
 								onclick="PF('fornecedor-dialog').hide();"
-								style="margin-left:1px;background-color: #e15e5ef0; font-weight: bold; float: left; width: 97px">
+								style="margin-left:1px;background-color: #e15e5ef0; font-weight: bold; width: 97px;float: right;">
 	
 							</p:commandButton>
 						</p:panel>
@@ -1012,6 +1327,178 @@
 				</div>
 			</h:form>
 		</p:dialog>
+		
+		
+		
+		<p:dialog 
+			header="Registrar Compra"
+			widgetVar="compra-dialog" id="compra-dialog" resizable="false" position="top" style="margin-top: 100px"
+			modal="true" closeOnEscape="true" responsive="true" width="280px">
+
+			<h:form id="form-dialog__">
+
+				<div class="ui-fluid">
+					<p:defaultCommand target="salva-compra" />
+
+					<div class="card card-w-title ui-fluid"
+						style="padding: 0px 5px 0px 5px; padding-bottom: 0px !important;margin-bottom: 5px;margin-top:15px;">
+
+						
+						
+						<p:panelGrid columns="2" layout="grid" 
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-6, ui-grid-col-6">
+
+							<p:outputLabel value="Valor Unitário" for="valor-unitario" />
+							<p:inputNumber id="valor-unitario" decimalPlaces="4" onkeyup="ajaxDelay()"
+								placeholder="R$ 0,0000" symbol="R$ " styleClass="valor-unitario"
+								value="#{cadastroProdutoBean.itemCompra.valorUnitario}">
+								
+								<p:ajax event="keydown" update="salva-compra"></p:ajax>
+							</p:inputNumber>
+
+							<p:outputLabel value="Quantidade (#{cadastroProdutoBean.produto.unidadeMedida})" for="quantidade" />
+							
+							<p:inputNumber id="quantidade" decimalPlaces="0" placeholder="0"
+								styleClass="quantidade" onkeyup="ajaxDelayQtd()" onchange="ajaxDelayQtd()" onblur="ajaxDelayQtd()"
+								value="#{cadastroProdutoBean.itemCompra.quantidade}"
+								rendered="#{cadastroProdutoBean.itemCompra.produto.unidadeMedida == 'Un' or cadastroProdutoBean.itemCompra.produto.unidadeMedida == 'Cx' or cadastroProdutoBean.itemCompra.produto == null}">
+
+								<p:ajax event="keydown" update="salva-compra"></p:ajax>
+							</p:inputNumber>
+							
+							<p:inputNumber id="quantidade_" decimalPlaces="3" placeholder="0,000"
+								styleClass="quantidade_" onkeyup="ajaxDelayQtd_()" onchange="ajaxDelayQtd_()" onblur="ajaxDelayQtd_()"
+								value="#{cadastroProdutoBean.itemCompra.quantidade}"
+								rendered="#{cadastroProdutoBean.itemCompra.produto.unidadeMedida == 'Kg' or cadastroProdutoBean.itemCompra.produto.unidadeMedida == 'Lt'}">
+
+								<p:ajax event="keydown" update="salva-compra"></p:ajax>
+							</p:inputNumber>
+							
+							<p:inputNumber id="quantidade__" decimalPlaces="1" placeholder="0,0"
+								styleClass="quantidade__" onkeyup="ajaxDelayQtd__()" onchange="ajaxDelayQtd__()" onblur="ajaxDelayQtd__()"
+								value="#{cadastroProdutoBean.itemCompra.quantidade}"
+								rendered="#{cadastroProdutoBean.itemCompra.produto.unidadeMedida == 'Pt'}">
+
+								<p:ajax event="keydown" update="salva-compra"></p:ajax>
+							</p:inputNumber>
+
+							<p:outputLabel value="Valor Total" for="valor-total" />
+							<p:inputNumber id="valor-total" decimalPlaces="2" disabled="true"
+								styleClass="sub-total" placeholder="R$ 0,00" symbol="R$ "
+								value="#{cadastroProdutoBean.itemCompra.quantidade * cadastroProdutoBean.itemCompra.valorUnitario}" />
+						</p:panelGrid>
+						
+						
+						<p:tooltip id="tooltip_" for="valor-unitario" style="z-index:9999999999;font-size:12px;" value="Esse é o valor de custo do produto."
+               								showEffect="clip" hideEffect="explode" position="bottom"/>
+						
+		
+						<div
+							style="width: 100%; margin-left: -15px;
+    						padding-left: 32px;margin-top: 16px;margin-bottom: 10px; 
+    						border-top: 1px solid #ccc"></div>
+						
+						
+						<p:panel class="card card-w-title ui-fluid panel-btn"
+								style="padding-bottom: 7px;margin-bottom: 20px;margin-top: -5px;">
+							
+							<p:commandButton value="Salvar" id="salva-compra" icon="fa fa-fw fa-save"
+								widgetVar="btn-save" process="@this form-dialog__"
+								onstart="PF('downloadLoading').show(); PF('btn-save').disable();"
+								onsuccess="PF('downloadLoading').hide(); PF('btn-save').enable();"
+								update="msg form-dialog__ form:info-preco"
+								action="#{cadastroProdutoBean.registrarCompra}"
+								style="font-weight: bold;background-color: #0d8819b5; width: 97px;float: right;" />
+	
+							<p:commandButton icon="fa fa-fw fa-close" value="Fechar"
+								oncomplete="PF('compra-dialog').hide();" process="@this"
+								style="margin-left:1px;background-color: #e15e5ef0; font-weight: bold; width: 97px;float: right;">
+	
+							</p:commandButton>
+						</p:panel>
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		
+		
+		
+				
+		<p:dialog 
+			header="Ajuste de Quantidade"
+			widgetVar="ajuste-dialog" id="ajuste-dialog" resizable="false" position="top" style="margin-top: 100px"
+			modal="true" closeOnEscape="true" responsive="true" width="280px">
+
+			<h:form id="form-ajuste-dialog">
+
+				<div class="ui-fluid">
+					<p:defaultCommand target="salva-quantidade" />
+
+					<div class="card card-w-title ui-fluid"
+						style="padding: 0px 5px 0px 5px; padding-bottom: 0px !important;margin-bottom: 5px;margin-top:15px;">
+						
+						<p:panelGrid columns="2" layout="grid" 
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-6, ui-grid-col-6">
+
+							<p:outputLabel for="nova-quantidade" style="font-weight: bold;font-size: 13px;" value="Quantidade atual (#{cadastroProdutoBean.produto.unidadeMedida})" />
+							
+							<p:inputNumber id="nova-quantidade" decimalPlaces="0" placeholder="0" minValue="0"
+								styleClass="quantidade" onkeyup="ajaxDelayQtd()" onchange="ajaxDelayQtd()" onblur="ajaxDelayQtd()"
+								value="#{cadastroProdutoBean.novaQuantidadeAtual}"
+								rendered="#{cadastroProdutoBean.itemCompra.produto.unidadeMedida == 'Un' or cadastroProdutoBean.itemCompra.produto.unidadeMedida == 'Cx' or cadastroProdutoBean.itemCompra.produto == null}">
+
+							</p:inputNumber>
+							
+							<p:inputNumber id="nova-quantidade_" decimalPlaces="3" placeholder="0,000" minValue="0"
+								styleClass="quantidade_" onkeyup="ajaxDelayQtd_()" onchange="ajaxDelayQtd_()" onblur="ajaxDelayQtd_()"
+								value="#{cadastroProdutoBean.novaQuantidadeAtual}"
+								rendered="#{cadastroProdutoBean.itemCompra.produto.unidadeMedida == 'Kg' or cadastroProdutoBean.itemCompra.produto.unidadeMedida == 'Lt'}">
+
+							</p:inputNumber>
+							
+							<p:inputNumber id="nova-quantidade__" decimalPlaces="1" placeholder="0,0" minValue="0"
+								styleClass="quantidade__" onkeyup="ajaxDelayQtd__()" onchange="ajaxDelayQtd__()" onblur="ajaxDelayQtd__()"
+								value="#{cadastroProdutoBean.novaQuantidadeAtual}"
+								rendered="#{cadastroProdutoBean.itemCompra.produto.unidadeMedida == 'Pt'}">
+
+							</p:inputNumber>
+
+						</p:panelGrid>
+						
+		
+						<div
+							style="width: 100%; margin-left: -15px;
+    						padding-left: 32px;margin-top: 16px;margin-bottom: 10px; 
+    						border-top: 1px solid #ccc"></div>
+						
+						
+						<p:panel class="card card-w-title ui-fluid panel-btn"
+								style="padding-bottom: 7px;margin-bottom: 20px;margin-top: -5px;">
+							
+							<p:commandButton value="Salvar" id="salva-quantidade" icon="fa fa-fw fa-save"
+								widgetVar="btn-save" process="@this ajuste-dialog"
+								onstart="PF('downloadLoading').show(); PF('btn-save').disable();"
+								onsuccess="PF('downloadLoading').hide(); PF('btn-save').enable();"
+								update="msg form-ajuste-dialog form:info-preco form:info-lucro"
+								action="#{cadastroProdutoBean.ajustarQuantidade}"
+								style="font-weight: bold;background-color: #0d8819b5; width: 97px;float: right;" />
+	
+							<p:commandButton icon="fa fa-fw fa-close" value="Fechar"
+								oncomplete="PF('ajuste-dialog').hide();" process="@this"
+								style="margin-left:1px;background-color: #e15e5ef0; font-weight: bold; width: 97px;float: right;">
+	
+							</p:commandButton>
+						</p:panel>
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		
+	
 		
 		
 		
@@ -1056,10 +1543,16 @@
 			function stop() {
 				PF('downloadLoading').hide();
 				
-				$( document ).ready(function() {
-					JsBarcode(".barcode", "#{cadastroProdutoBean.produto.codigoDeBarras}");
-				});
 				
+				
+			}
+			
+			function mostrarGridEstoque() {
+				$(".estoque").removeClass("hide");			
+			}
+			
+			function ocultarGridEstoque() {
+				$(".estoque").addClass("hide");			
 			}
 			
 			var delay = (function() {
@@ -1109,19 +1602,53 @@
 			});
 			
 			function reloadBarCode() {
-				var barcode = $(".bar-code").val();
-				
-				if(barcode) {
-					JsBarcode(".barcode", $(".bar-code").val());
-				}			
+								
+				delay(function() { 
+						var barcode = $(".bar-code").val(); 
+						
+						if(barcode) {
+							JsBarcode(".barcode", $(".bar-code").val());
+						}
+						
+					}, 500);
 			}
 
+			function ajaxDelayQtd(){
+				var quantidade = $('.quantidade input').val(); 
+				ajaxDelay_(quantidade);
+			}
+			
+			function ajaxDelayQtd_(){
+				var quantidade = $('.quantidade_ input').val(); 
+				ajaxDelay_(quantidade);
+			}
+			
+			function ajaxDelayQtd__(){
+				var quantidade = $('.quantidade__ input').val(); 
+				ajaxDelay_(quantidade);
+			}
+			
+			function ajaxDelay_(quantidade_){ 
+				var valorUnitario = $('.valor-unitario input').val();
+				var quantidade = quantidade_;  
+				var subtotal = parseFloat(valorUnitario.replace('R$ ','').replace('.','').replace(',','.')) * parseFloat(quantidade.replace('.','').replace(',','.'));
+				
+				if(subtotal.toString() != 'NaN') { 
+					var f = parseFloat(subtotal).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+					$('.sub-total input').val(f);
+				}
+				    
+				delay(function() { 
+					//sendAjaxical(); 
+					}, 500);
+			}
 		</script>
 		
 		<h:form id="barcode-form">
 			<script type="text/javascript">
-				var licence = "AUSuRQp1FdcTMaMl30Lg11YKZtj3KdetC22rN+pENTU6SzFHV3gn8iVEG/AyU2MtB1DxXGhYlh6aT3r+2nFgdGFF+sZkdNmE/0Q1JNFaxGn/cjM0CGdi8ClyI2zAd35vrGrqwGEDUZLxNEEUMCmAQpAFlyh6+ZGLSWl9Hz0Cmc1K6kBTw6cLPCtGutrt5z4G6XwZ7LjDHfCHCOJwDdSQk200r9q9oh661WlR9wDzneI4zSV/TP/sHohChVNXrSUY4kD7YMnOg2SRxzBKnYYcEZxjti3ozczriAv0m9H4wSsy0PDaam5fWVSUBEg9IR2fppUSelg8gyXFMjv/mvjZdNkmiBOr8rNfQ1p1GUP+osH3yBYhOY85SFeLffsBwMY5nZ4dV8tdmlVlYhmAdt0yaK5NHfkEjiqCwUqjTBySOiWRbYBIRr8NsD6GO4bmV8Jizuj8aoZTIv3laqjnuv0vRHtv4XSEEzDSQAwEBxQF8t2NYmffHr5xvszLNYwDhJnapmwN67/q9uJbWtRU8UrkDu/NYbiRkTjhxeuG5JoM4CQdJ4rpTtWpLx1BWTsX2goYWuxjvziofsTJIpxtgdK/0DqsUWJM65kCfEiQPDaKhB0R51MyQFLSDgYAShtbZLW8OMiZAdcRHkTkimkR6OrG2OutyCuYvCGKYc0P8QYVM5SLGbwfky7e/cOur6ZVFuO0/PROzGQbxoYlTfaTIc3Cl/iIaFRTJzYVQSuEFpSD+KrwnL6j5ezqo+NGh2MrWJOGtg7aG30d8wgpDNI2XTfkvC20J/O9NAycyi8HUz+Zxm49xzJCcLvXeVILtEWD/I4OPy4=";	        
-	
+				
+				var licence = "Af7Ptlf9SIEnN6dNSi1RVVQVFERGB4bFyHv6PQ9SgWC+d5olnScMsiR0N6+iCdMmRlNmxYJy+ntHFDg3tkDVtI4tEgWASnfWGW2QR85FFM9AC1B86zjr8SQjlP1xQow/oBsWwNnWi+EZJRw7MfpRDZURUQUaLxK7QPzDO08xWnw6+EpNO3BxJQdp32uuxiZZk1Ob3Arc6yAQhToP3ktq4Gebf0dWNUAkwk0uPr/cHGaEdzVzxrOaAURS5zkkYkABE4lWGgzucTYWLr2sRfXaSoWKwDysGnzgM+JJXZvZrSylhQ618i/RY5UVvSlfat06he7vTD0XLBdkcI5rVGLLH4gLtPOIfRqkgV5K2EuJNgu1ggSx/jZ78xpU2BKlMlIgfw8ytWtVrgiKHPyz56dBOluFQlnQguQetkdCxAfmL+uv/XlJw1Dl2J+eCcDiKxTxLdzh4MuPm1txO/UVm5q8rm68rhcTRWXX0olZ7TBkMIpQDXZyzqRtS5kt+DdDDY+maNBHw1WiGIfuLS/XnOavB4xEhqK9imD41PSw10Fin/AdHGtqGUxEJHD6/ZEFP4Km5yZBBmn88DenuOuTNevGFvWP+0n8M2qAKhIbbdMRFx9kgj2cgM+BOyhvRC/GUm+HChTj6AB7uT9kVufqI2/20VVVoUSIpKfyaesf+YrXA2UXiFCBumLWRwPaYrsOi1E/XvA749twRAd+FJivXAu9mSf6YvO3HKx64IrN/KW3/8orDWcKdU10I5e3/Yk/frSguReiZLMI3+W4T/dL1Z60E2+H21LgvRrw4adScVkH";
+			
 				var reading = false; 
 				var scaning = false;
 				function readBarcode() {

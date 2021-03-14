@@ -15,12 +15,31 @@
 
 		<style>
 @media ( min-width :220px) {
+	body .ui-button.ui-button-text-icon-left .ui-button-text {
+	   	font-weight:bold;
+	}
+	#anexo-dialog .ui-panel .ui-panel-content {
+	    padding: 0px;
+	    border: none;
+    }
+    
+    #anexo-dialog_ .ui-panel .ui-panel-content {
+	    padding: 0px;
+	    border: none;
+    }
+	.panel-btn.ui-panel .ui-panel-content {
+	    padding: 6px 8px !important;
+	    border: none;		
+	}
 	body .ui-toolbar {
 	    padding: 5px 5px;
 	}
 	.ui-slider .ui-slider-handle {
 		width: 1.7em;
 		height: 1.7em;
+	}
+	#form-dialog .card {
+	    margin-bottom: 6px;
 	}
 	.ui-slider-horizontal {
 		height: 1.2em !important;
@@ -125,17 +144,20 @@
 
 			<p:toolbar id="toolbar">
 				<f:facet name="left">
-					<p:commandButton value="Novo" icon="fa fa-fw fa-file-text-o"
-						action="#{cadastroEmpresaBean.prepararNovoCadastro}"
-						process="@this" update="empresa-dialog" 
-						oncomplete="PF('empresa-dialog').show()">
-
-						<p:resetInput target="empresa-dialog" />
-					</p:commandButton>
-
-					<p:separator />
-					<p:spacer />
-					<p:spacer />
+				
+					<p:panel rendered="false">
+						<p:commandButton value="Novo" icon="fa fa-fw fa-file-text-o"
+							action="#{cadastroEmpresaBean.prepararNovoCadastro}"
+							process="@this" update="empresa-dialog" 
+							oncomplete="PF('empresa-dialog').show()">
+	
+							<p:resetInput target="empresa-dialog" />
+						</p:commandButton>
+	
+						<p:separator />
+						<p:spacer />
+						<p:spacer />
+					</p:panel>
 
 					<p:commandButton icon="fa fa-fw fa-pencil" value="Editar" id="btn"
 						action="#{cadastroEmpresaBean.prepararEditarCadastro}"
@@ -152,12 +174,12 @@
 					<p:commandButton icon="fa fa-fw fa-trash" value="Excluir"
 						process="@this"
 						onclick="deleteItem(#{cadastroEmpresaBean.empresaSelecionada.id});"
-						disabled="#{cadastroEmpresaBean.empresaSelecionada == null}" />
+						disabled="#{cadastroEmpresaBean.empresaSelecionada == null or cadastroEmpresaBean.empresaSelecionada.id == 1}" />
 				</f:facet>
 			</p:toolbar>
 
 
-			<div class="ui-g-12 ui-lg-6">
+			<div class="ui-g-12 ui-lg-12">
 				<p:panel class="card card-w-title ui-fluid"
 					style="padding-bottom: 0px;">
 
@@ -166,24 +188,69 @@
 					<p:inputText id="search" value="#{cadastroEmpresaBean.filtro.nome}"
 						placeholder="Buscar pelo nome" style="width: 180px" />
 					<p:commandButton icon="fa fa-fw fa-search" title="Pesquisar"
-						id="pesquisar-button" update="empresaTable toolbar"
+						id="pesquisar-button" update="empresaTable toolbar logo"
 						style="margin-left: 3px; width: 40px" process="@parent"
 						action="#{cadastroEmpresaBean.pesquisar}">
 					</p:commandButton>
+					
+					<p:menuButton id="logo" value="Adicione"
+						style="width: 100px;float: right;font-weight:bold;"
+						disabled="#{cadastroEmpresaBean.empresaSelecionada.id == null}">
+
+						<p:menuitem value="Logo ao Sistema" icon="fa fa-fw fa-desktop"
+							id="logo-sistema" oncomplete="PF('downloadLoading').hide();PF('anexo-dialog').show();"
+							onstart="PF('downloadLoading').show();">
+						</p:menuitem>
+						
+						<p:menuitem value="Logo aos Relatórios" icon="fa fa-fw fa-ils"
+							id="logo-relatorio" oncomplete="PF('downloadLoading').hide();PF('anexo-dialog_').show();"
+							onstart="PF('downloadLoading').show();">
+						</p:menuitem>
+
+					</p:menuButton>
 
 					<p:dataTable id="empresaTable" reflow="true"
 						paginatorAlwaysVisible="false"
 						value="#{cadastroEmpresaBean.todasEmpresas}" var="empresa"
-						emptyMessage="Nenhuma empresa encontrada." rows="10"
+						emptyMessage="Nenhuma empresa encontrada."
+						scrollable="true" scrollHeight="470"
 						paginator="true" paginatorPosition="bottom" selectionMode="single"
 						selection="#{cadastroEmpresaBean.empresaSelecionada}"
 						rowKey="#{empresa.id}" style="margin-top: 10px">
 
-						<p:ajax event="rowSelect" update="form:toolbar" />
-						<p:ajax event="rowUnselect" update="form:toolbar" />
+						<p:ajax event="rowSelect" update="form:toolbar form:logo" />
+						<p:ajax event="rowUnselect" update="form:toolbar form:logo" />
 
-						<p:column headerText="Nome">
+						<p:column headerText="Nome" width="25%">
 							<h:outputText value="#{empresa.nome}" />
+						</p:column>
+						
+						<p:column headerText="CNPJ" width="20%">
+							<h:outputText value="#{empresa.cnpj}" />
+						</p:column>
+						
+						<p:column headerText="Contato" width="20%">
+							<h:outputText value="#{empresa.contato}" />
+						</p:column>
+						
+						<p:column headerText="Endereço" width="30%">
+							<h:outputText value="#{empresa.endereco}" />
+						</p:column>
+						
+						<p:column headerText="Número" width="15%">
+							<h:outputText value="#{empresa.numero}" />
+						</p:column>
+						
+						<p:column headerText="Bairro" width="20%">
+							<h:outputText value="#{empresa.bairro}" />
+						</p:column>
+						
+						<p:column headerText="Cidade" width="20%">
+							<h:outputText value="#{empresa.cidade}" />
+						</p:column>
+						
+						<p:column headerText="UF" width="20%">
+							<h:outputText value="#{empresa.uf}" />
 						</p:column>
 
 					</p:dataTable>
@@ -198,7 +265,7 @@
 		<p:dialog
 			header="#{cadastroEmpresaBean.empresa.id == null ? 'Nova empresa' : 'Editar empresa'}"
 			widgetVar="empresa-dialog" id="empresa-dialog" resizable="false"
-			modal="true" closeOnEscape="true" responsive="true" width="250px"
+			modal="true" closeOnEscape="true" responsive="true" width="300px"
 			style="margin-top: 10px">
 
 			<h:form id="form-dialog">
@@ -209,36 +276,164 @@
 					<div class="card card-w-title ui-fluid"
 						style="padding: 0px 5px 0px 5px; padding-bottom: 0px !important">
 
-						<p:panelGrid columns="1" layout="grid"
+						<p:panelGrid columns="2" layout="grid"
 							style="margin-top: 15px; margin-bottom: 5px"
-							styleClass="panelgrid-noborder disabled disabled">
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-4, ui-grid-col-8">
 
-							<p:outputLabel value="Nome" for="nome" />
-							<p:inputText id="nome"
+							<p:outputLabel value="Nome" for="nome"  />
+							<p:inputText id="nome" maxlength="120"
 								value="#{cadastroEmpresaBean.empresa.nome}" />
+								
+
+							<p:outputLabel value="CNPJ" for="cnpj" />
+							<p:inputText id="cnpj" maxlength="30"
+								value="#{cadastroEmpresaBean.empresa.cnpj}" />
+								
+							<p:outputLabel value="Contato" for="contato" />
+							<p:inputText id="contato" autocomplete="off"
+										value="#{cadastroEmpresaBean.empresa.contato}" />
+								
+							<p:outputLabel value="Endereço" for="endereco" />
+							<p:inputTextarea id="endereco" rows="2"
+								value="#{cadastroEmpresaBean.empresa.endereco}" />
+								
+							<p:outputLabel value="Número" for="numero" />
+							<p:inputText id="numero" maxlength="60"
+								value="#{cadastroEmpresaBean.empresa.numero}" />
+								
+							<p:outputLabel value="Bairro" for="bairro" />
+							<p:inputText id="bairro" maxlength="120"
+								value="#{cadastroEmpresaBean.empresa.bairro}" />
+								
+							<p:outputLabel value="Cidade" for="cidade" />
+							<p:inputText id="cidade" maxlength="60"
+								value="#{cadastroEmpresaBean.empresa.cidade}" />
+								
+							<p:outputLabel value="UF" for="uf" />
+							<p:inputText id="uf" maxlength="60"
+								value="#{cadastroEmpresaBean.empresa.uf}" />
 								
 						</p:panelGrid>
 
-						<p:spacer />
-
-						<p:panelGrid columns="1" layout="grid"
-							styleClass="panelgrid-noborder disabled disabled">
-
-							<p:outputLabel />
+						<div
+							style="width: 100%; margin-left: -15px;
+    						padding-left: 32px;margin-bottom: 10px; 
+    						margin-top: 15px; 
+    						border-top: 1px solid #ccc"></div>
+						
+						<p:panel class="card card-w-title ui-fluid panel-btn"
+								style="padding-bottom: 0px;margin-bottom: 0px;margin-top:-5px;">
+		
+							
 							<p:commandButton id="btn-salvar" value="Salvar"
-								widgetVar="btn-save"
+								widgetVar="btn-save"  icon="fa fa-fw fa-save"
 								onstart="PF('downloadLoading').show(); PF('btn-save').disable();"
 								onsuccess="PF('downloadLoading').hide(); PF('btn-save').enable();"
 								oncomplete="if (!args.validationFailed) PF('empresa-dialog').hide();"
 								update="msg form-dialog form"
 								action="#{cadastroEmpresaBean.salvar}"
-								process="@this form-dialog" style="font-weight: bold" />
-						</p:panelGrid>
+								process="@this form-dialog" style="font-weight: bold;float:right;background-color: #0d8819b5; width: 97px" />
+	
+							<p:commandButton icon="fa fa-fw fa-close" value="Fechar"
+								onclick="PF('empresa-dialog').hide();"
+								style="margin-left:1px;background-color: #e15e5ef0;float:right; font-weight: bold; width: 97px">
+	
+							</p:commandButton>
+						</p:panel>
 
 					</div>
 				</div>
 			</h:form>
 		</p:dialog>
+		
+		
+		<p:dialog header="Adicionar LOGO ao Sistema" widgetVar="anexo-dialog"
+			position="top" style="margin-top: 100px" id="anexo-dialog"
+			resizable="false" modal="true" closeOnEscape="true" responsive="true"
+			width="280px">
+
+			<h:form id="form-anexo" enctype="multipart/form-data">
+
+				<p:fileUpload styleClass="btn-upload" 
+					value="#{cadastroEmpresaBean.file}" label="Anexar" process="@this"
+					style="margin-left:8px;margin-top:5px" mode="simple"
+					skinSimple="true">
+				</p:fileUpload>
+
+
+
+				<div class="ui-g-12 ui-lg-12">
+
+					<p:panel class="card card-w-title ui-fluid"
+						style="padding-bottom: 0px;margin-bottom: 0px;">
+
+						<p:commandButton icon="fa fa-fw fa-cloud-upload" value="Upload"
+							action="#{cadastroEmpresaBean.upload}" ajax="false"
+							process="@this"
+							onclick="PrimeFaces.monitorDownload(start, stop);"
+							update="form:panel-upload form:panel-foto"
+							style="background-color: #147df0; font-weight: bold; float: right; width: 97px">
+
+						</p:commandButton>
+
+						<p:commandButton icon="fa fa-fw fa-close" value="Fechar"
+							onclick="PF('anexo-dialog').hide();"
+							style="background-color: #e15e5ef0; font-weight: bold; float: right; width: 97px">
+
+						</p:commandButton>
+					</p:panel>
+				</div>
+				
+				
+
+			</h:form>
+		</p:dialog>
+		
+		
+		
+		<p:dialog header="Adicionar LOGO aos relatórios" widgetVar="anexo-dialog_"
+			position="top" style="margin-top: 100px" id="anexo-dialog_"
+			resizable="false" modal="true" closeOnEscape="true" responsive="true"
+			width="280px">
+
+			<h:form id="form-anexo_" enctype="multipart/form-data">
+
+				<p:fileUpload styleClass="btn-upload" 
+					value="#{cadastroEmpresaBean.file_}" label="Anexar" process="@this"
+					style="margin-left:8px;margin-top:5px" mode="simple"
+					skinSimple="true">
+				</p:fileUpload>
+
+
+
+				<div class="ui-g-12 ui-lg-12">
+
+					<p:panel class="card card-w-title ui-fluid"
+						style="padding-bottom: 0px;margin-bottom: 0px;">
+
+						<p:commandButton icon="fa fa-fw fa-cloud-upload" value="Upload"
+							action="#{cadastroEmpresaBean.upload_}" ajax="false"
+							process="@this"
+							onclick="PrimeFaces.monitorDownload(start, stop);"
+							update="form:panel-upload form:panel-foto"
+							style="background-color: #147df0; font-weight: bold; float: right; width: 97px">
+
+						</p:commandButton>
+
+						<p:commandButton icon="fa fa-fw fa-close" value="Fechar"
+							onclick="PF('anexo-dialog_').hide();"
+							style="background-color: #e15e5ef0; font-weight: bold; float: right; width: 97px">
+
+						</p:commandButton>
+					</p:panel>
+				</div>
+				
+				
+
+			</h:form>
+		</p:dialog>
+		
 
 		<p:dialog id="downloadLoading" showHeader="false" modal="true"
 			widgetVar="downloadLoading" header="Status" draggable="false"

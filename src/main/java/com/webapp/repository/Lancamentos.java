@@ -1,6 +1,7 @@
 package com.webapp.repository;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -11,9 +12,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-import com.webapp.model.Caixa;
+import org.apache.commons.lang3.StringUtils;
+
 import com.webapp.model.CategoriaLancamento;
 import com.webapp.model.DestinoLancamento;
+import com.webapp.model.Empresa;
 import com.webapp.model.Lancamento;
 import com.webapp.model.OrigemLancamento;
 import com.webapp.model.Usuario;
@@ -43,27 +46,38 @@ public class Lancamentos implements Serializable {
 		this.manager.remove(despesaTemp);
 	}
 	
-	public List<Lancamento> todos(String empresa, CategoriaLancamento categoriaLancamento) {
-		return this.manager.createQuery("from Lancamento where empresa = :empresa AND categoriaLancamento.id = :id order by id", Lancamento.class)
-				.setParameter("empresa", empresa).setParameter("id", categoriaLancamento.getId()).getResultList();
+	public List<Lancamento> todos(Empresa empresa, CategoriaLancamento categoriaLancamento) {
+		return this.manager.createQuery("from Lancamento where empresa.id = :empresa AND categoriaLancamento.id = :id order by id", Lancamento.class)
+				.setParameter("empresa", empresa.getId()).setParameter("id", categoriaLancamento.getId()).getResultList();
 	}
 	
-	public Lancamento porNumeroLancamento(Long condigoOperacao, String empresa) {
+	public Lancamento porNumeroLancamento(Long condigoOperacao, Empresa empresa) {
 
 		try {
-			return this.manager.createQuery("from Lancamento e where e.empresa = :empresa AND e.numeroLancamento = :numeroLancamento", Lancamento.class)
-					.setParameter("empresa", empresa).setParameter("numeroLancamento", condigoOperacao).setMaxResults(1).getSingleResult();
+			return this.manager.createQuery("from Lancamento e where e.empresa.id = :empresa AND e.numeroLancamento = :numeroLancamento", Lancamento.class)
+					.setParameter("empresa", empresa.getId()).setParameter("numeroLancamento", condigoOperacao).setMaxResults(1).getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
+
+	}
+	
+	public Lancamento porValor(BigDecimal valor, Empresa empresa) {
+
+		try {
+			return this.manager.createQuery("from Lancamento e where e.empresa.id = :empresa AND e.valor = :valor AND e.categoriaLancamento.nome = 'Retirada de lucro'", Lancamento.class)
+					.setParameter("empresa", empresa.getId()).setParameter("valor", valor.doubleValue()).setMaxResults(1).getSingleResult();
 		} catch (NoResultException e) {
 			return null;
 		}
 
 	}
 
-	public Lancamento ultimoNLancamento(String empresa) {
+	public Lancamento ultimoNLancamento(Empresa empresa) {
 
 		try {
-			return this.manager.createQuery("from Lancamento e WHERE e.empresa = :empresa order by e.numeroLancamento desc", Lancamento.class)
-					.setParameter("empresa", empresa).setMaxResults(1).getSingleResult();
+			return this.manager.createQuery("from Lancamento e WHERE e.empresa.id = :empresa order by e.numeroLancamento desc", Lancamento.class)
+					.setParameter("empresa", empresa.getId()).setMaxResults(1).getSingleResult();
 		} catch (NoResultException e) {
 			return null;
 		}
@@ -73,7 +87,7 @@ public class Lancamentos implements Serializable {
 	@SuppressWarnings("unchecked")
 	public List<Lancamento> lancamentosFiltrados(Long numeroLancamento, Date dateStart, Date dateStop,
 			OrigemLancamento[] origemLancamento, CategoriaLancamento categoriaLancamento,
-			DestinoLancamento destinoLancamento, Usuario usuario, String[] categorias, String empresa) {
+			DestinoLancamento destinoLancamento, Usuario usuario, String[] categorias, Empresa empresa) {
 
 		String conditionOrigem = "";
 		String conditionCategoria = "";
@@ -88,7 +102,7 @@ public class Lancamentos implements Serializable {
 		if (categorias != null && categorias.length > 0) {
 			conditionCategoria = "AND i.categoriaLancamento.nome in (:categorias) ";
 		} else {
-			conditionCategoria = "AND i.categoriaLancamento.nome != 'Retirada de lucro' ";
+			//conditionCategoria = "AND i.categoriaLancamento.nome != 'Retirada de lucro' ";
 		}
 		
 		if (usuario != null && usuario.getId() != null) { 
@@ -100,16 +114,21 @@ public class Lancamentos implements Serializable {
 		}
 
 		if (numeroLancamento != null) {
-			conditionNumeroLancamento = "AND i.numeroLancamento = :numeroLancamento ";
+			if (StringUtils.isNotBlank(String.valueOf(numeroLancamento))) {
+				if(!String.valueOf(numeroLancamento).trim().equals("0")) {
+					System.out.println(numeroLancamento + " - " + String.valueOf(numeroLancamento));
+					conditionNumeroLancamento = "AND i.numeroLancamento = :numeroLancamento ";
+				}			
+			}
 		}
 
-		String jpql = "SELECT i FROM Lancamento i WHERE i.empresa = :empresa AND i.dataLancamento between :dateStart and :dateStop "
+		String jpql = "SELECT i FROM Lancamento i WHERE i.empresa.id = :empresa AND i.dataLancamento between :dateStart and :dateStop "
 				+ conditionOrigem + conditionCategoria + conditionUsuario + conditionDestino + conditionNumeroLancamento
 				+ "order by i.numeroLancamento desc";
 
 		System.out.println(jpql);
 
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
 
 		if (origemLancamento.length > 0) {
 			q.setParameter("origemLancamento", Arrays.asList(origemLancamento));
@@ -128,7 +147,12 @@ public class Lancamentos implements Serializable {
 		}
 
 		if (numeroLancamento != null) {
-			q.setParameter("numeroLancamento", numeroLancamento);
+			if (StringUtils.isNotBlank(String.valueOf(numeroLancamento))) {
+				if(!String.valueOf(numeroLancamento).trim().equals("0")) {
+					System.out.println(numeroLancamento + " - " + String.valueOf(numeroLancamento));
+					q.setParameter("numeroLancamento", numeroLancamento);
+				}			
+			}
 		}
 
 		return q.getResultList();
@@ -167,12 +191,12 @@ public class Lancamentos implements Serializable {
 		return result;
 	}
 	
-	public Number totalDeRetiradas(String empresa, CategoriaLancamento categoriaLancamento) {
+	public Number totalDeRetiradas(Empresa empresa, CategoriaLancamento categoriaLancamento) {
 		
-		String jpql = "SELECT sum(c.valor) FROM Lancamento c WHERE c.empresa = :empresa AND "
+		String jpql = "SELECT sum(c.valor) FROM Lancamento c WHERE c.empresa.id = :empresa AND "
 				+ "c.categoriaLancamento.id = :categoriaLancamento";
 		Query q = manager.createQuery(jpql).setParameter("categoriaLancamento", categoriaLancamento.getId())
-				.setParameter("empresa", empresa);
+				.setParameter("empresa", empresa.getId());
 
 		Number count = 0;
 		try {
@@ -190,13 +214,13 @@ public class Lancamentos implements Serializable {
 	}
 	
 	
-	public Number totalDespesasAvistaPagasSemRetirada(String empresa) {
+	public Number totalDespesasAvistaPagasSemRetirada(Empresa empresa) {
 
-		String jpql = "SELECT sum(c.valor) FROM Lancamento c WHERE c.empresa = :empresa AND "
+		String jpql = "SELECT sum(c.valor) FROM Lancamento c WHERE c.empresa.id = :empresa AND "
 				+ "c.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND c.conta = 'N' AND c.ajuste = 'N' "
 				+ "AND c.categoriaLancamento.nome != 'Retirada de lucro'";
 		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.DEBITO)
-				.setParameter("empresa", empresa);
+				.setParameter("empresa", empresa.getId());
 
 		Number count = 0;
 		try {
@@ -214,13 +238,13 @@ public class Lancamentos implements Serializable {
 	}
 	
 	
-	public Number totalDespesasAvistaPagas(String empresa) {
+	public Number totalDespesasAvistaPagas(Empresa empresa) {
 
-		String jpql = "SELECT sum(c.valor) FROM Lancamento c WHERE c.empresa = :empresa AND "
+		String jpql = "SELECT sum(c.valor) FROM Lancamento c WHERE c.empresa.id = :empresa AND "
 				+ "c.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND c.conta = 'N' AND c.ajuste = 'N' "
 				+ "";
 		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.DEBITO)
-				.setParameter("empresa", empresa);
+				.setParameter("empresa", empresa.getId());
 
 		Number count = 0;
 		try {
@@ -238,12 +262,12 @@ public class Lancamentos implements Serializable {
 	}
 	
 	
-	public Number totalReceitasAvistaPagas(String empresa) {
+	public Number totalReceitasAvistaPagas(Empresa empresa) {
 
-		String jpql = "SELECT sum(c.valor) FROM Lancamento c WHERE c.empresa = :empresa AND "
+		String jpql = "SELECT sum(c.valor) FROM Lancamento c WHERE c.empresa.id = :empresa AND "
 				+ "c.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND c.conta = 'N' AND c.ajuste = 'N'";
 		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.CREDITO)
-				.setParameter("empresa", empresa);
+				.setParameter("empresa", empresa.getId());
 
 		Number count = 0;
 		try {
@@ -325,7 +349,7 @@ public class Lancamentos implements Serializable {
 
 	/* DEPRECIADO */
 	public Number totalDeReceitasPorMes(Long mes, Long ano) {
-		String jpql = "SELECT sum(i.valor) FROM Lancamento i WHERE i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.mes = :mes AND i.ano = :ano AND UPPER(i.categoriaLancamento.tipoLancamento.descricao) = 'RECEITAS'";
+		String jpql = "SELECT sum(i.valor) FROM Lancamento i WHERE i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.conta = 'N' AND i.ajuste = 'N' AND i.mes = :mes AND i.ano = :ano";
 		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.CREDITO)
 				.setParameter("mes", mes).setParameter("ano", ano);
 		Number count = (Number) q.getSingleResult();
@@ -444,9 +468,9 @@ public class Lancamentos implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalLancamentosPorSemana(String ano, String semana01, String semana02,
-			boolean chartCondition, String empresa) {
+			boolean chartCondition, Empresa empresa) {
 
-		String condition = "AND i.conta = 'N' AND i.ajuste = 'N' AND i.empresa = :empresa AND i.categoriaLancamento.nome != 'Retirada de lucro' ";
+		String condition = "AND i.conta = 'N' AND i.ajuste = 'N' AND i.empresa.id = :empresa AND i.categoriaLancamento.nome != 'Retirada de lucro' ";
 		String select_Condition = "";
 		String sum_Condition = "";
 		String groupBy_Condition = "";
@@ -470,7 +494,7 @@ public class Lancamentos implements Serializable {
 				+ groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("semanaInicio", Long.parseLong(semana01.replace("W", "")))
 				.setParameter("semanaFim", Long.parseLong(semana02.replace("W", "")))
-				.setParameter("ano", Long.parseLong(ano)).setParameter("empresa", empresa);
+				.setParameter("ano", Long.parseLong(ano)).setParameter("empresa", empresa.getId());
 
 		List<Object[]> result = q.getResultList();
 
@@ -522,9 +546,9 @@ public class Lancamentos implements Serializable {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalLancamentosPorMes(String ano, String mes01, String mes02, boolean chartCondition, String empresa) {
+	public List<Object[]> totalLancamentosPorMes(String ano, String mes01, String mes02, boolean chartCondition, Empresa empresa) {
 
-		String condition = "AND i.conta = 'N' AND i.ajuste = 'N' AND i.empresa = :empresa AND i.categoriaLancamento.nome != 'Retirada de lucro' ";
+		String condition = "AND i.conta = 'N' AND i.ajuste = 'N' AND i.empresa.id = :empresa AND i.categoriaLancamento.nome != 'Retirada de lucro' ";
 		String select_Condition = "";
 		String sum_Condition = "";
 		String groupBy_Condition = "";
@@ -549,7 +573,7 @@ public class Lancamentos implements Serializable {
 				+ groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("mesInicio", Long.parseLong(mes01))
 				.setParameter("mesFim", Long.parseLong(mes02)).setParameter("ano", Long.parseLong(ano))
-				.setParameter("empresa", empresa);
+				.setParameter("empresa", empresa.getId());
 
 		List<Object[]> result = q.getResultList();
 
@@ -602,9 +626,9 @@ public class Lancamentos implements Serializable {
 	
 	
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalLancamentosPorAno(String ano01, String ano02, boolean chartCondition, String empresa) {
+	public List<Object[]> totalLancamentosPorAno(String ano01, String ano02, boolean chartCondition, Empresa empresa) {
 		
-		String condition = "AND i.conta = 'N' AND i.ajuste = 'N' AND i.empresa = :empresa AND i.categoriaLancamento.nome != 'Retirada de lucro' ";
+		String condition = "AND i.conta = 'N' AND i.ajuste = 'N' AND i.empresa.id = :empresa AND i.categoriaLancamento.nome != 'Retirada de lucro' ";
 		String select_Condition = "";
 		String sum_Condition = "";
 		String groupBy_Condition = "";
@@ -628,7 +652,7 @@ public class Lancamentos implements Serializable {
 				+ condition + "group by "
 				+ groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("anoInicio", Long.parseLong(ano01))
-				.setParameter("anoFim", Long.parseLong(ano02)).setParameter("empresa", empresa);
+				.setParameter("anoFim", Long.parseLong(ano02)).setParameter("empresa", empresa.getId());
 
 
 		List<Object[]> result = q.getResultList();
@@ -711,7 +735,7 @@ public class Lancamentos implements Serializable {
 	}
 
 	/* DEPRECIADO */
-	public Number totalDespesasPorMes(Number mes, Number ano) {
+	public Number totalDespesasPorMes(Number mes, Number ano, Empresa empresa) {
 
 		String condition = "";
 		String select_Condition = "";
@@ -723,9 +747,16 @@ public class Lancamentos implements Serializable {
 		sum_Condition = "sum(i.valor)";
 		groupBy_Condition = "i.mes, i.ano ";
 		orderBy_Condition = "i.mes asc, i.ano asc";
+		
+		String condition_retiradas = "";
+		if(empresa.getId() == 7111 || empresa.getId() == 7112) {
+			condition_retiradas = "AND i.categoriaLancamento.id != 44903 ";
+		} else {
+			condition_retiradas = "AND i.categoriaLancamento.id != 36 ";
+		}
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Lancamento i " + "WHERE " + "i.mes = :mes "
-				+ "AND i.ano = :ano " + "AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento "
+				+ "AND i.ano = :ano " + "AND i.conta = 'N' AND i.ajuste = 'N' " + condition_retiradas + "AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento "
 				+ condition + "group by " + groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("mes", Long.parseLong(String.valueOf(mes)))
 				.setParameter("ano", Long.parseLong(String.valueOf(ano)))
@@ -780,12 +811,12 @@ public class Lancamentos implements Serializable {
 	}
 	
 	
-	public Number totalLancamentosReceitasPorDiaValor(Calendar calendarStart, Calendar calendarStop, String empresa) {
+	public Number totalLancamentosReceitasPorDiaValor(Calendar calendarStart, Calendar calendarStop, Empresa empresa) {
 
 		String jpql = "SELECT sum(i.valor) FROM Lancamento i "
-				+ "WHERE i.empresa = :empresa AND i.dataLancamento BETWEEN :dataInicio AND :dataFim "
+				+ "WHERE i.empresa.id = :empresa AND i.dataLancamento BETWEEN :dataInicio AND :dataFim "
 				+ "AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.conta = 'N' AND i.ajuste = 'N'";
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
 				calendarStop.getTime()).setParameter("origemLancamento", OrigemLancamento.CREDITO);
 
 		Number count = 0;
@@ -804,12 +835,12 @@ public class Lancamentos implements Serializable {
 	}
 
 	
-	public Number totalLancamentosDespesasPorDiaValor(Calendar calendarStart, Calendar calendarStop, String empresa) {
+	public Number totalLancamentosDespesasPorDiaValor(Calendar calendarStart, Calendar calendarStop, Empresa empresa) {
 
 		String jpql = "SELECT sum(i.valor) FROM Lancamento i "
-				+ "WHERE i.empresa = :empresa AND i.dataLancamento BETWEEN :dataInicio AND :dataFim "
+				+ "WHERE i.empresa.id = :empresa AND i.dataLancamento BETWEEN :dataInicio AND :dataFim "
 				+ "AND i.categoriaLancamento.nome != 'Retirada de lucro' AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.conta = 'N' AND i.ajuste = 'N'";
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
 				calendarStop.getTime()).setParameter("origemLancamento", OrigemLancamento.DEBITO);
 
 		Number count = 0;
@@ -828,7 +859,7 @@ public class Lancamentos implements Serializable {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalLancamentosDespesasPorData(Calendar calendarStart, Calendar calendarStop, String empresa) {
+	public List<Object[]> totalLancamentosDespesasPorData(Calendar calendarStart, Calendar calendarStop, Empresa empresa) {
 
 		String condition = "";
 		String select_Condition = "";
@@ -842,10 +873,10 @@ public class Lancamentos implements Serializable {
 		orderBy_Condition = "i.dia asc, i.mes asc, i.ano asc, i.categoriaLancamento.tipoLancamento.origem";
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Lancamento i "
-				+ "WHERE i.empresa = :empresa AND i.dataLancamento BETWEEN :dataInicio AND :dataFim "
+				+ "WHERE i.empresa.id = :empresa AND i.dataLancamento BETWEEN :dataInicio AND :dataFim "
 				+ "AND i.categoriaLancamento.nome != 'Retirada de lucro' AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.conta = 'N' AND i.ajuste = 'N' " + condition + "group by " + groupBy_Condition
 				+ " order by " + orderBy_Condition;
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
 				calendarStop.getTime()).setParameter("origemLancamento", OrigemLancamento.DEBITO);
 		
 		List<Object[]> result = q.getResultList();
@@ -862,7 +893,7 @@ public class Lancamentos implements Serializable {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalLancamentosReceitasPorData(Calendar calendarStart, Calendar calendarStop, String empresa) {
+	public List<Object[]> totalLancamentosReceitasPorData(Calendar calendarStart, Calendar calendarStop, Empresa empresa) {
 
 		String condition = "";
 		String select_Condition = "";
@@ -876,10 +907,10 @@ public class Lancamentos implements Serializable {
 		orderBy_Condition = "i.dia asc, i.mes asc, i.ano asc, i.categoriaLancamento.tipoLancamento.origem";
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Lancamento i "
-				+ "WHERE i.empresa = :empresa AND i.dataLancamento BETWEEN :dataInicio AND :dataFim "
+				+ "WHERE i.empresa.id = :empresa AND i.dataLancamento BETWEEN :dataInicio AND :dataFim "
 				+ "AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.conta = 'N' AND i.ajuste = 'N' " + condition + "group by " + groupBy_Condition
 				+ " order by " + orderBy_Condition;
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
 				calendarStop.getTime()).setParameter("origemLancamento", OrigemLancamento.CREDITO);
 		
 		List<Object[]> result = q.getResultList();

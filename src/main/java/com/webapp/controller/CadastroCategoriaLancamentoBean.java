@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.User;
 import com.webapp.model.CategoriaLancamento;
 import com.webapp.model.DestinoLancamento;
 import com.webapp.model.Empresa;
-import com.webapp.model.Grupo;
 import com.webapp.model.OrigemLancamento;
 import com.webapp.model.TipoLancamento;
 import com.webapp.model.Usuario;
@@ -70,20 +69,7 @@ public class CadastroCategoriaLancamentoBean implements Serializable {
 		if (FacesUtil.isNotPostback()) {
 			
 			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();			
-			usuario = usuarios.porNome(user.getUsername());
-			
-			List<Grupo> grupos = usuario.getGrupos();
-			
-			if(grupos.size() > 0) {
-				for (Grupo grupo : grupos) {
-					if(grupo.getNome().equals("ADMINISTRADOR")) {
-						EmpresaBean empresaBean = (EmpresaBean) FacesUtil.getObjectSession("empresaBean");
-						if(empresaBean != null && empresaBean.getEmpresa() != null) {
-							usuario.setEmpresa(empresaBean.getEmpresa());
-						}
-					}
-				}
-			}
+			usuario = usuarios.porLogin(user.getUsername());
 			
 			listarTodos();
 		}
@@ -99,13 +85,14 @@ public class CadastroCategoriaLancamentoBean implements Serializable {
 
 	public void salvar() {
 
-		categoriaDespesa.setEmpresa(usuario.getEmpresa());
+		//categoriaDespesa.setEmpresa(usuario.getEmpresa());
 		categoriaDespesa.setDestinoLancamento(null);
 		categoriasDespesas.save(categoriaDespesa);
 
 		categoriaDespesaSelecionada = null;
 
-		listarTodos();
+		//listarTodos();
+		pesquisar();
 
 		PrimeFaces.current().executeScript(
 				"PF('downloadLoading').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Categoria de lançamento salva com sucesso!' });");

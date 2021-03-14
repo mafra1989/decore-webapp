@@ -1,5 +1,6 @@
 package com.webapp.model;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,7 @@ public class EspelhoVenda implements Serializable {
 	private static final long serialVersionUID = 203356217547759664L;
 	
 	/* Dados da Empresa */
+	private InputStream logo;
 	private String xNome = "DECORE";
 	private String CNPJ = "32.783.038/0001-74";
 	private String xLgr = "Rua Rio Andirá";
@@ -16,6 +18,7 @@ public class EspelhoVenda implements Serializable {
 	private String xBairro = "São José Operário";
 	private String xMun = "Manaus";
 	private String UF = "AM";
+	private String contato = "(99) 9 9999-9999";
 	
 	private String totalItens = "30";
 	private String subTotal = "0,00";
@@ -25,24 +28,41 @@ public class EspelhoVenda implements Serializable {
 	private String valorAPagar = "0,00";
 	private String troco = "0,00";
 	private String valorRecebido = "0,00";
+	
+	private String entrega = "N";
 
 	/* Dados da Venda */
 	private String vendaNum;
 	private String tipoVenda;
-	private String bairro;
+	//private String bairro;
 	private String dataVenda;
 	private String vendedor;
+	
+	/* Dados do Cliente */
+	private String cliente = "";
+	private String telefone = "";
+	private String cpf = "";
 
 	/* Dados da Entrega */
 	private String responsavel;
 	private String localizacao;
 	private String observacao;
+	
+	private String endereco = "";
+	private String bairro = "";
 
 	/* Lista de Produtos */
 	private List<Object> itensPedidos;
+	
+	/* Lista de Pagamentos */
+	private List<Object> itensPagamentos;
 
 	/* Total da Venda */
 	private String totalVenda;
+	
+	private String vendaPaga;
+	
+	
 
 	public String getVendaNum() {
 		return vendaNum;
@@ -119,6 +139,17 @@ public class EspelhoVenda implements Serializable {
 		this.itensPedidos = itensPedidos;
 	}
 
+	public List<Object> getItensPagamentos() {
+		if (itensPagamentos == null) {
+			itensPagamentos = new ArrayList<Object>();
+		}
+		return itensPagamentos;
+	}
+
+	public void setItensPagamentos(List<Object> itensPagamentos) {
+		this.itensPagamentos = itensPagamentos;
+	}
+
 	public String getTotalVenda() {
 		return totalVenda;
 	}
@@ -184,6 +215,14 @@ public class EspelhoVenda implements Serializable {
 		UF = uF;
 	}
 
+	public String getContato() {
+		return contato;
+	}
+
+	public void setContato(String contato) {
+		this.contato = contato;
+	}
+
 	public String getTotalItens() {
 		return totalItens;
 	}
@@ -238,6 +277,62 @@ public class EspelhoVenda implements Serializable {
 
 	public void setValorRecebido(String valorRecebido) {
 		this.valorRecebido = valorRecebido;
+	}
+
+	public String getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(String cliente) {
+		this.cliente = cliente;
+	}
+
+	public String getTelefone() {
+		return telefone;
+	}
+
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
+	}
+
+	public String getCpf() {
+		return cpf;
+	}
+
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
+
+	public String getEntrega() {
+		return entrega;
+	}
+
+	public void setEntrega(String entrega) {
+		this.entrega = entrega;
+	}
+
+	public InputStream getLogo() {
+		return logo;
+	}
+
+	public void setLogo(InputStream logo) {
+		this.logo = logo;
+	}
+
+	public String getEndereco() {
+		return endereco;
+	}
+
+	public void setEndereco(String endereco) {
+		this.endereco = endereco;
+	}
+
+	public String getVendaPaga() {
+		return vendaPaga;
+	}
+
+	public void setVendaPaga(String vendaPaga) {
+		this.vendaPaga = vendaPaga;
 	}
 
 }

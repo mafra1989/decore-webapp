@@ -25,10 +25,10 @@ public class AcessoAutorizadoListener implements AuthenticationSuccessHandler {
 		} else 
 		*/
 		if(roles.contains("ROLE_VENDEDOR")) {
-			httpServletResponse.sendRedirect("/PDV.xhtml");
+			httpServletResponse.sendRedirect("PDV.xhtml");
 			
 		} else {
-			httpServletResponse.sendRedirect("/Dashboard.xhtml");
+			httpServletResponse.sendRedirect("Dashboard.xhtml");
 		}
 		
 	}

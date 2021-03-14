@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import javax.enterprise.context.SessionScoped;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -19,9 +18,7 @@ import org.primefaces.PrimeFaces;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
-import com.webapp.model.Compra;
 import com.webapp.model.Conta;
-import com.webapp.model.Grupo;
 import com.webapp.model.Lancamento;
 import com.webapp.model.OrigemConta;
 import com.webapp.model.TipoOperacao;
@@ -82,35 +79,16 @@ public class ConsultaContasBean implements Serializable {
 
 	private Date mes = new Date();
 	
-	private String empresa = "";
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
 			// todosUsuarios = usuarios.todos();
 			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();	
-			usuario = usuarios.porNome(user.getUsername());
-			
-			List<Grupo> grupos = usuario.getGrupos();
-			
-			if(grupos.size() > 0) {
-				for (Grupo grupo : grupos) {
-					if(grupo.getNome().equals("ADMINISTRADOR")) {
-						EmpresaBean empresaBean = (EmpresaBean) FacesUtil.getObjectSession("empresaBean");
-						if(empresaBean != null && empresaBean.getEmpresa() != null) {
-							usuario.setEmpresa(empresaBean.getEmpresa());
-						}
-					}
-				}
-			}
-			
+			usuario = usuarios.porLogin(user.getUsername());
 		}
 	}
 
 	public void pesquisar() {
-		
-		if(!empresa.equals(usuario.getEmpresa())) {			
-			empresa = usuario.getEmpresa();
-		}
 		
 		Calendar calendarioTemp = Calendar.getInstance();
 		calendarioTemp.setTime(vencimento);
@@ -132,13 +110,13 @@ public class ConsultaContasBean implements Serializable {
 			}
 			
 			if(conta.getOperacao().equals(TipoOperacao.COMPRA.toString())) {
-				Compra compra = compras.porNumeroCompra(conta.getCodigoOperacao(), usuario.getEmpresa());
-				conta.setDescricao(compra.getUsuario().getNome());
+				//Compra compra = compras.porNumeroCompra(conta.getCodigoOperacao(), usuario.getEmpresa());
+				//conta.setDescricao("Compra realizada");
 			}
 			
 			if(conta.getOperacao().equals(TipoOperacao.VENDA.toString())) {
 				Venda venda = vendas.porNumeroVenda(conta.getCodigoOperacao(), usuario.getEmpresa());
-				conta.setDescricao(venda.getUsuario().getNome());
+				conta.setDescricao("Cliente: " + venda.getCliente().getNome());
 			}
 			
 		}

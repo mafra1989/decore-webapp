@@ -26,7 +26,6 @@ import com.webapp.model.Compra;
 import com.webapp.model.Conta;
 import com.webapp.model.Devolucao;
 import com.webapp.model.Entrega;
-import com.webapp.model.Grupo;
 import com.webapp.model.ItemCaixa;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemDevolucao;
@@ -149,31 +148,18 @@ public class ConsultaComprasBean implements Serializable {
 	
 	private List<Produto> todosProdutos;
 	
-	private String empresa = "";
-	
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
 			
 			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();			
-			usuario_ = usuarios.porNome(user.getUsername());
-			
-			List<Grupo> grupos = usuario_.getGrupos();
-			
-			if(grupos.size() > 0) {
-				for (Grupo grupo : grupos) {
-					if(grupo.getNome().equals("ADMINISTRADOR")) {
-						EmpresaBean empresaBean = (EmpresaBean) FacesUtil.getObjectSession("empresaBean");
-						if(empresaBean != null && empresaBean.getEmpresa() != null) {
-							usuario_.setEmpresa(empresaBean.getEmpresa());
-						}
-					}
-				}
-			}
+			usuario_ = usuarios.porLogin(user.getUsername());
 			
 			todosUsuarios = usuarios.todos(usuario_.getEmpresa());
 			
 			listarTodasCategoriasProdutos();
+			
+			numeroCompra = null;
 		}
 	}
 	
@@ -190,10 +176,6 @@ public class ConsultaComprasBean implements Serializable {
 	}
 
 	public void pesquisar() {
-		
-		if(!empresa.equals(usuario_.getEmpresa())) {			
-			empresa = usuario_.getEmpresa();
-		}
 		
 		Calendar calendarioTemp = Calendar.getInstance();
 		calendarioTemp.setTime(dateStop);
@@ -332,63 +314,69 @@ public class ConsultaComprasBean implements Serializable {
 					for (ItemCompra itemCompra : itensCompra) {
 						
 						Produto produto = produtos.porId(itemCompra.getProduto().getId());
-						produto.setQuantidadeAtual(produto.getQuantidadeAtual() - itemCompra.getQuantidade());
+						
+						/*if(produto.isEstoque()) {
+							produto.setQuantidadeAtual(new BigDecimal(produto.getQuantidadeAtual().doubleValue() - itemCompra.getQuantidade().doubleValue()));							
+						}*/						
 						
 						itensCompras.remove(itemCompra);
 											
 						if(!compraSelecionada.isAjuste()) {
-							/* RE-CALCULAR CUSTO MEDIO UNITARIO DOS PRODUTOS DESSA COMPRA */
-							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - (itemCompra.getQuantidade().longValue() * itemCompra.getValorUnitario().doubleValue())));											
-
-							itensCompras.remove(itemCompra);
 							
+							if(produto.isEstoque()) {
 							
-							
-							Object[] result = itensCompras.porQuantidadeDisponivel(produto);
-							
-							if((Long) result[0] != null) {
-							
-								Double estorno = ((BigDecimal) result[1]).doubleValue() - produto.getCustoTotal().doubleValue();
+								/* RE-CALCULAR CUSTO MEDIO UNITARIO DOS PRODUTOS DESSA COMPRA */
+								produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - (itemCompra.getQuantidade().longValue() * itemCompra.getValorUnitario().doubleValue())));											
+	
+								//itensCompras.remove(itemCompra);
 								
-								//Double estorno = (produto.getQuantidadeAtual().longValue() * produto.getCustoMedioUnitario().doubleValue()) - produto.getCustoTotal().doubleValue();
-								produto.setEstorno(new BigDecimal(produto.getEstorno().doubleValue() + estorno));
+								/*								
+								Object[] result = itensCompras.porQuantidadeDisponivel(produto);
 								
-								produto.setCustoMedioUnitario(new BigDecimal(((BigDecimal) result[1]).doubleValue() / produto.getQuantidadeAtual().longValue()));
+								if((BigDecimal) result[0] != null) {
 								
-								produto.setCustoTotal((BigDecimal) result[1]);	
-							}
-
-							
-							
-							if(produto.getQuantidadeAtual().longValue() <= 0) {
-								produto.setCustoMedioUnitario(BigDecimal.ZERO);
-								
-								if(produto.getCustoTotal().doubleValue() > 0) {
-									produto.setEstorno(new BigDecimal(produto.getEstorno().doubleValue() - produto.getCustoTotal().doubleValue()));													
+									Double estorno = ((BigDecimal) result[1]).doubleValue() - produto.getCustoTotal().doubleValue();
 									
-								} else if(produto.getCustoTotal().doubleValue() < 0) {
-									produto.setEstorno(new BigDecimal(produto.getEstorno().doubleValue() + (-1 * produto.getCustoTotal().doubleValue())));								
-								
-								} else {
-									//produto.setEstorno(BigDecimal.ZERO);
+									//Double estorno = (produto.getQuantidadeAtual().longValue() * produto.getCustoMedioUnitario().doubleValue()) - produto.getCustoTotal().doubleValue();
+									produto.setEstorno(new BigDecimal(produto.getEstorno().doubleValue() + estorno));
+									
+									produto.setCustoMedioUnitario(new BigDecimal(((BigDecimal) result[1]).doubleValue() / produto.getQuantidadeAtual().longValue()));
+									
+									produto.setCustoTotal((BigDecimal) result[1]);	
 								}
+
+							
+							
+								if(produto.getQuantidadeAtual().longValue() <= 0) {
+									produto.setCustoMedioUnitario(BigDecimal.ZERO);
+									
+									if(produto.getCustoTotal().doubleValue() > 0) {
+										produto.setEstorno(new BigDecimal(produto.getEstorno().doubleValue() - produto.getCustoTotal().doubleValue()));													
+										
+									} else if(produto.getCustoTotal().doubleValue() < 0) {
+										produto.setEstorno(new BigDecimal(produto.getEstorno().doubleValue() + (-1 * produto.getCustoTotal().doubleValue())));								
+									
+									} else {
+										//produto.setEstorno(BigDecimal.ZERO);
+									}
+									
+									produto.setCustoTotal(BigDecimal.ZERO);
+								}
+								*/
 								
-								produto.setCustoTotal(BigDecimal.ZERO);
+								produtos.save(produto);
 							}
-							
-							
-							produtos.save(produto);
 							
 							
 						} else {
 							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() - (itemCompra.getQuantidade().longValue() * produto.getCustoMedioUnitario().doubleValue())));							
 						}
 				
-						
-						if(produto.getQuantidadeAtual().longValue() <= 0) {
+						/*
+						if(produto.getQuantidadeAtual().doubleValue() <= 0) {
 							produto.setCustoMedioUnitario(BigDecimal.ZERO);
 							//produto.setEstorno(BigDecimal.ZERO);
-						}
+						}*/
 						
 						produtos.save(produto);
 
@@ -398,8 +386,10 @@ public class ConsultaComprasBean implements Serializable {
 					compras.remove(compraSelecionada);
 					
 					
-					List<Compra> todasCompras = compras.todas(usuario_.getEmpresa());					
-					if(todasCompras.size() == 0) {
+					List<Compra> todasCompras = compras.todas(usuario_.getEmpresa());	
+					List<Venda> todasVendas_ = vendas.todas_(usuario_.getEmpresa());	
+					
+					if(todasCompras.size() == 0 && todasVendas_.size() == 0) {
 						
 						List<ItemDevolucao> todosItensDevolucoes = itensDevolucoes.todos(usuario_.getEmpresa());
 						for (ItemDevolucao itemDevolucao : todosItensDevolucoes) {

@@ -387,7 +387,7 @@
 							columnClasses="ui-grid-col-4, ui-grid-col-4">
 
 							<p:outputLabel value="Custo Médio Un." for="fornecedor" />
-							<p:inputNumber id="fornecedor" readonly="true" decimalPlaces="2" placeholder="R$ 0,00" symbol="R$ "
+							<p:inputNumber id="fornecedor" readonly="true" decimalPlaces="4" placeholder="R$ 0,0000" symbol="R$ "
 								value="#{registroVendasBean.itemVenda.produto.custoMedioUnitario}">
 							</p:inputNumber>
 						</p:panelGrid>
@@ -407,7 +407,7 @@
 
 								<f:selectItems value="#{registroVendasBean.itensCompra}"
 									var="itemCompra"
-									itemLabel="#{itemCompra.quantidadeDisponivel ge 2 ? ''.concat(itemCompra.quantidadeDisponivel).concat(' Itens | Compra: ').concat(itemCompra.compra.dataCompraFormatada).concat(' | ').concat(itemCompra.valorUnitarioFormatado) : ''.concat(itemCompra.quantidadeDisponivel).concat(' Item | Compra: ').concat(itemCompra.compra.dataCompraFormatada).concat(' | ').concat(itemCompra.valorUnitarioFormatado) }"
+									itemLabel="#{itemCompra.quantidadeDisponivel ge 2 ? ''.concat(itemCompra.quantidadeDisponivel_).concat(' Itens | Compra: ').concat(itemCompra.compra.dataCompraFormatada).concat(' | ').concat(itemCompra.valorUnitarioFormatado) : ''.concat(itemCompra.quantidadeDisponivel_).concat(' Item | Compra: ').concat(itemCompra.compra.dataCompraFormatada).concat(' | ').concat(itemCompra.valorUnitarioFormatado) }"
 									itemValue="#{itemCompra}" />
 							</p:selectOneMenu>
 						</p:panelGrid>
@@ -492,14 +492,37 @@
 								</p:column>
 
 								<p:column headerText="Qtd." width="20%">
-									<h:outputText value="#{item.quantidade}" />
+									<h:outputText value="#{item.quantidade}" rendered="#{item.produto.unidadeMedida == 'Kg' or item.produto.unidadeMedida == 'Lt'}">
+										<f:convertNumber minFractionDigits="3" />
+									</h:outputText>
+									
+									<h:outputText value=" #{item.produto.unidadeMedida}" rendered="#{(item.produto.unidadeMedida == 'Kg' or item.produto.unidadeMedida == 'Lt')}">
+									</h:outputText>
+									
+									
+									<h:outputText value="#{item.quantidade}" rendered="#{item.produto.unidadeMedida == 'Pt'}">
+										<f:convertNumber minFractionDigits="1" />
+									</h:outputText>
+									
+									<h:outputText value=" #{item.produto.unidadeMedida}" rendered="#{item.produto.unidadeMedida == 'Pt'}">
+									</h:outputText>
+									
+									
+									<h:outputText value="#{item.quantidade}" rendered="#{(item.produto.unidadeMedida != 'Kg' and item.produto.unidadeMedida != 'Lt' and item.produto.unidadeMedida != 'Pt')}">
+										<f:convertNumber minFractionDigits="0" />
+									</h:outputText>
+									
+									<h:outputText value=" #{item.produto.unidadeMedida}" rendered="#{(item.produto.unidadeMedida != 'Kg' and item.produto.unidadeMedida != 'Lt' and item.produto.unidadeMedida != 'Pt')}">
+									</h:outputText>
 								</p:column>
-
+								
+								
 								<p:column headerText="Sub-Total" width="20%">
 									<h:outputText value="#{item.total}">
 										<f:convertNumber type="currency" />
 									</h:outputText>
 								</p:column>
+								
 
 								<p:column headerText="Lucro" width="20%">
 									<h:outputText value="#{item.lucro}">
@@ -652,7 +675,7 @@
 						<p:inputText id="nome"
 							value="#{registroVendasBean.entregaVenda.nome}" placeholder="" />
 
-						<p:outputLabel value="Localização para entrega" />
+						<p:outputLabel value="Endereço para entrega" />
 						<p:inputTextarea id="localizacao-whatsapp"
 							value="#{registroVendasBean.entregaVenda.localizacao}"
 							placeholder="" />

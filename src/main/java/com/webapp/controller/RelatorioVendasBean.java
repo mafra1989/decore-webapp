@@ -33,7 +33,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.CategoriaProduto;
-import com.webapp.model.Grupo;
 import com.webapp.model.Produto;
 import com.webapp.model.Target;
 import com.webapp.model.Usuario;
@@ -43,7 +42,6 @@ import com.webapp.repository.Produtos;
 import com.webapp.repository.Targets;
 import com.webapp.repository.Usuarios;
 import com.webapp.repository.Vendas;
-import com.webapp.util.jsf.FacesUtil;
 
 @Named
 @ViewScoped
@@ -193,20 +191,7 @@ public class RelatorioVendasBean implements Serializable {
 	public void init() {
 		
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();	
-		usuario = usuarios.porNome(user.getUsername());
-		
-		List<Grupo> grupos = usuario.getGrupos();
-		
-		if(grupos.size() > 0) {
-			for (Grupo grupo : grupos) {
-				if(grupo.getNome().equals("ADMINISTRADOR")) {
-					EmpresaBean empresaBean = (EmpresaBean) FacesUtil.getObjectSession("empresaBean");
-					if(empresaBean != null && empresaBean.getEmpresa() != null) {
-						usuario.setEmpresa(empresaBean.getEmpresa());
-					}
-				}
-			}
-		}
+		usuario = usuarios.porLogin(user.getUsername());
 		
 		listarTodasCategoriasProdutos();
 
@@ -422,7 +407,7 @@ public class RelatorioVendasBean implements Serializable {
 		List<Number> values = new ArrayList<>();
 
 		LineChartDataSet dataSet2 = new LineChartDataSet();
-		List<Number> values2 = new ArrayList<>();
+		List<Object> values2 = new ArrayList<>();
 
 		Calendar calendarStart = Calendar.getInstance();
 		calendarStart.setTime(dateStart);
@@ -449,6 +434,8 @@ public class RelatorioVendasBean implements Serializable {
 
 				List<Object[]> resultTemp = vendas.totalVendasPorData(calendarStartTemp, calendarStopTemp,
 						categoriaPorDia, categoriasPorDia, produto01, usuarioPorDia, true, usuario.getEmpresa());
+				
+				Number totalDescontosHoje = vendas.totalDescontosPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
 
 				System.out.println("Data: " + calendarStartTemp.getTime() + " - " + resultTemp.size());
 				System.out.println("Data Stop: " + calendarStopTemp.getTime());
@@ -483,6 +470,11 @@ public class RelatorioVendasBean implements Serializable {
 						if ((long) object[1] < 10) {
 							object[1] = "0" + object[1];
 						}
+
+						if(categoriasPorDia == null || categoriasPorDia.length == 0) {
+							object[3] = ((BigDecimal)object[3]).doubleValue() - totalDescontosHoje.doubleValue();
+						}
+						
 						
 						result.add(object);
 					}
@@ -572,7 +564,7 @@ public class RelatorioVendasBean implements Serializable {
 		List<Number> values = new ArrayList<>();
 		
 		LineChartDataSet dataSet2 = new LineChartDataSet();
-		List<Number> values2 = new ArrayList<>();
+		List<Object> values2 = new ArrayList<>();
 
 		List<String> labels = new ArrayList<>();
 
@@ -594,6 +586,8 @@ public class RelatorioVendasBean implements Serializable {
 
 				List<Object[]> resultTemp = vendas.totalVendasPorSemana(ano01, semana01, semana01, categoriaPorSemana,
 						categoriasPorSemana, produto02, usuarioPorSemana, true, usuario.getEmpresa());
+				
+				Number totalDescontos = vendas.totalDescontosPorSemana(ano01, semana01, semana01, usuario.getEmpresa());			
 
 				if (resultTemp.size() == 0) {
 
@@ -607,6 +601,9 @@ public class RelatorioVendasBean implements Serializable {
 					result.add(object);
 				} else {
 					for (Object[] object : resultTemp) {
+						if(categoriasPorSemana == null || categoriasPorSemana.length == 0) {
+							object[2] = ((BigDecimal)object[2]).doubleValue() - totalDescontos.doubleValue();
+						}
 						result.add(object);
 					}
 				}
@@ -757,7 +754,7 @@ public class RelatorioVendasBean implements Serializable {
 		List<Number> values = new ArrayList<>();
 		
 		LineChartDataSet dataSet2 = new LineChartDataSet();
-		List<Number> values2 = new ArrayList<>();
+		List<Object> values2 = new ArrayList<>();
 
 		List<Object[]> result = new ArrayList<>();
 
@@ -772,6 +769,8 @@ public class RelatorioVendasBean implements Serializable {
 				}
 				List<Object[]> resultTemp = vendas.totalVendasPorMes(ano02, mes01, mes01, categoriaPorMes,
 						categoriasPorMes, produto03, usuarioPorMes, true, usuario.getEmpresa());
+				
+				Number totalDescontos = vendas.totalDescontosPorMes(ano02, mes01, mes01, usuario.getEmpresa());
 
 				if (resultTemp.size() == 0) {
 
@@ -786,6 +785,11 @@ public class RelatorioVendasBean implements Serializable {
 
 				} else {
 					for (Object[] object : resultTemp) {
+						
+						if(categoriasPorMes == null || categoriasPorMes.length == 0) {
+							object[2] = ((BigDecimal)object[2]).doubleValue() - totalDescontos.doubleValue();
+						}
+						
 						result.add(object);
 					}
 				}
@@ -865,7 +869,7 @@ public class RelatorioVendasBean implements Serializable {
 		List<Number> values = new ArrayList<>();
 		
 		LineChartDataSet dataSet2 = new LineChartDataSet();
-		List<Number> values2 = new ArrayList<>();
+		List<Object> values2 = new ArrayList<>();
 
 		List<String> labels = new ArrayList<>();
 
@@ -878,6 +882,8 @@ public class RelatorioVendasBean implements Serializable {
 
 				List<Object[]> resultTemp = vendas.totalVendasPorAno(ano03, ano03, categoriaPorAno, categoriasPorAno,
 						produto04, usuarioPorAno, true, usuario.getEmpresa());
+				
+				Number totalDescontos = vendas.totalDescontosPorAno(ano03, usuario.getEmpresa());
 
 				if (resultTemp.size() == 0) {
 
@@ -890,6 +896,11 @@ public class RelatorioVendasBean implements Serializable {
 
 				} else {
 					for (Object[] object : resultTemp) {
+						
+						if(categoriasPorAno == null || categoriasPorAno.length == 0) {
+							object[1] = ((BigDecimal)object[1]).doubleValue() - totalDescontos.doubleValue();
+						}
+						
 						result.add(object);
 					}
 				}
@@ -1025,6 +1036,7 @@ public class RelatorioVendasBean implements Serializable {
 			vendaPorProduto.setValue((Number) object[1]);
 			vendaPorProduto.setQuantidade((Number) object[2]);
 			vendaPorProduto.setCodigo(object[3].toString());
+			vendaPorProduto.setUnidadeMedida(object[4].toString());
 
 			totalValorVenda += vendaPorProduto.getValue().doubleValue();
 			totalItensVenda += vendaPorProduto.getQuantidade().doubleValue();
@@ -1033,7 +1045,9 @@ public class RelatorioVendasBean implements Serializable {
 		}
 		
 		this.totalValorVenda = nf.format(totalValorVenda);
-		this.totalItensVenda = String.valueOf(totalItensVenda);
+		
+		NumberFormat nf = new DecimalFormat("###,##0.000", REAL);
+		this.totalItensVenda = nf.format(totalItensVenda);
 		
 		System.out.println(totalItensVenda);
 

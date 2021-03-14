@@ -357,6 +357,7 @@ body {
         .ui-tabmenu-nav {
             padding: 0;
             background: $primaryColor;
+            border: 0 none;
             @include box-sizing(border-box);
             @include border-radius(0);
             
@@ -370,8 +371,9 @@ body {
                 margin-right: 0;
                 
                 .ui-menuitem-link {
-                    color: $headerTextColor;
+                    color: $primaryTextColor;
                     padding: $headerPadding;
+                    @include border-radius(0);
                     
                     .ui-menuitem-icon, .ui-menuitem-text {
                         vertical-align: middle;
@@ -380,7 +382,7 @@ body {
                     }
                     
                     .ui-menuitem-icon {
-                        color: $headerIconColor;
+                        color: $primaryTextColor;
                     }
                 }
                 
@@ -388,17 +390,16 @@ body {
                     background-color: darken($primaryColor, 15%);
                                         
                     .ui-menuitem-icon {
-                        color: $headerIconHoverColor;
+                        color: lighten($primaryColor,35%);
                     }
                 }
-                
+
                 &.ui-state-active {
                     .ui-menuitem-link {
-                        background-color:$primaryColor;
-                        color:$primaryTextColor;
+                        background-color: $highlightBgColor;
                         
-                        .ui-menuitem-icon {
-                            color:$primaryTextColor;
+                        .ui-menuitem-icon, .ui-menuitem-text {
+                            color: $highlightTextColor;
                         }
                     }
                 }

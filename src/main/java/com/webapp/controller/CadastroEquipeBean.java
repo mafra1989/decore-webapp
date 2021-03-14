@@ -15,10 +15,10 @@ import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.PrimeFaces;
-import org.primefaces.json.JSONObject;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
-import org.primefaces.model.UploadedFile;
+import org.primefaces.model.file.UploadedFile;
+import org.primefaces.shaded.json.JSONObject;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -71,25 +71,15 @@ public class CadastroEquipeBean implements Serializable {
 	private UploadedFile file;
 	
 	private byte[] fileContent;
+	
+	private boolean entregador = false;
+	
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
 			
 			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();			
-			usuario_ = usuarios.porNome(user.getUsername());
-			
-			List<Grupo> grupos = usuario_.getGrupos();
-			
-			if(grupos.size() > 0) {
-				for (Grupo grupo : grupos) {
-					if(grupo.getNome().equals("ADMINISTRADOR")) {
-						EmpresaBean empresaBean = (EmpresaBean) FacesUtil.getObjectSession("empresaBean");
-						if(empresaBean != null && empresaBean.getEmpresa() != null) {
-							usuario_.setEmpresa(empresaBean.getEmpresa());
-						}
-					}
-				}
-			}
+			usuario_ = usuarios.porLogin(user.getUsername());
 			
 			listarTodos();
 		}
@@ -101,9 +91,11 @@ public class CadastroEquipeBean implements Serializable {
 	}
 
 	public void prepararEditarCadastro() {
+		
 		usuario = membroSelecionado;
 		usuario.setSenha("");
 		Usuario usuarioTemp = usuarios.porId(usuario.getId());
+		entregador = usuario.isEntregador();
 		
 		try {
 			grupo = usuarioTemp.getGrupos().get(0);
@@ -112,15 +104,14 @@ public class CadastroEquipeBean implements Serializable {
 			grupo = null;
 		}
 		
-		todosGrupos = grupos.todos();
-		
+		todosGrupos = grupos.todos();	
 	}
 
 	public void salvar() {
 		
 		//usuario.setEmpresa(usuario_.getEmpresa());
 
-		try {
+        try {
 			
 			if(usuario != null && usuario.getLogin() != null && usuario.getSenha() != null && grupo != null && grupo.getId() != null) {
 				
@@ -133,7 +124,54 @@ public class CadastroEquipeBean implements Serializable {
 					
 					List<Grupo> listaDeGrupos = new ArrayList<Grupo>();
 					listaDeGrupos.add(grupo);
-					usuario.setGrupos(listaDeGrupos);					
+					usuario.setGrupos(listaDeGrupos);		
+					
+					if(usuario.getId() != null) {
+						
+						Usuario usuarioTemp_ = usuarios.porLogin(usuario.getLogin(), usuario.getId());					
+						
+						if(usuarioTemp_ == null) {
+							
+							usuario.setEntregador(entregador);
+							usuarios.save(usuario);
+							
+							membroSelecionado = null;
+
+							listarTodos();
+							
+							PrimeFaces.current().executeScript(
+									"PF('downloadLoading').hide(); PF('usuario-dialog').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Membro de equipe atualizado com sucesso!' });");
+						
+							PrimeFaces.current().ajax().update("msg", "form-dialog", "form");
+							
+						} else {
+							PrimeFaces.current().executeScript(
+									"PF('downloadLoading').hide(); swal({ type: 'error', title: 'Erro!', text: 'O login informado já existe!' });");
+						}
+						
+					} else {
+						
+						Usuario usuarioTemp_ = usuarios.porLogin(usuario.getLogin());					
+						
+						if(usuarioTemp_ == null) {
+							
+							usuario.setEntregador(entregador);
+							usuarios.save(usuario);
+							
+							membroSelecionado = null;
+
+							listarTodos();
+							
+							PrimeFaces.current().executeScript(
+									"PF('downloadLoading').hide(); PF('usuario-dialog').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Membro de equipe salvo com sucesso!' });");
+						
+							PrimeFaces.current().ajax().update("msg", "form-dialog", "form");
+							
+						} else {
+							PrimeFaces.current().executeScript(
+									"PF('downloadLoading').hide(); swal({ type: 'error', title: 'Erro!', text: 'O login informado já existe!' });");
+						}
+					}
 
 				} else {
 					
@@ -141,11 +179,33 @@ public class CadastroEquipeBean implements Serializable {
 						usuario.setLogin(null);
 						usuario.setSenha(null);
 						usuario.setGrupos(null);
+						
+						membroSelecionado = null;
+
+						listarTodos();
+						
+						PrimeFaces.current().executeScript(
+								"PF('downloadLoading').hide(); PF('usuario-dialog').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Membro de equipe salvo com sucesso!' });");
+						
+						PrimeFaces.current().ajax().update("msg", "form-dialog", "form");
+						
 					} else {
 						Usuario usuarioTemp = usuarios.porId(usuario.getId());
 						usuario.setLogin(usuarioTemp.getLogin());
 						usuario.setSenha(usuarioTemp.getSenha());					
 						usuario.setGrupos(usuarioTemp.getGrupos());
+						
+						usuario.setEntregador(entregador);
+						usuarios.save(usuario);
+						
+						membroSelecionado = null;
+
+						listarTodos();
+						
+						PrimeFaces.current().executeScript(
+								"PF('downloadLoading').hide(); PF('usuario-dialog').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Membro de equipe atualizado com sucesso!' });");
+					
+						PrimeFaces.current().ajax().update("msg", "form-dialog", "form");
 					}
 				}
 			} else {
@@ -154,24 +214,60 @@ public class CadastroEquipeBean implements Serializable {
 					usuario.setLogin(null);
 					usuario.setSenha(null);
 					usuario.setGrupos(null);
+					
+					if(usuario.getEmpresa() != null && usuario.getFuncao() != null) {
+						
+						usuario.setEntregador(entregador);
+						usuarios.save(usuario);
+						
+						membroSelecionado = null;
+
+						listarTodos();
+						
+						PrimeFaces.current().executeScript(
+								"PF('downloadLoading').hide(); PF('usuario-dialog').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Membro de equipe salvo com sucesso!' });");
+						
+						PrimeFaces.current().ajax().update("msg", "form-dialog", "form");
+						
+					} else {
+						PrimeFaces.current().executeScript(
+								"PF('downloadLoading').hide(); swal({ type: 'error', title: 'Erro!', text: 'Informe a função e a empresa do membro da equipe!' });");
+					}			
+					
 				} else {
 					Usuario usuarioTemp = usuarios.porId(usuario.getId());
 					usuario.setLogin(usuarioTemp.getLogin());
 					usuario.setSenha(usuarioTemp.getSenha());					
 					usuario.setGrupos(usuarioTemp.getGrupos());
+					
+					Usuario usuarioTemp_ = null;
+					if(usuario.getLogin() != null) {
+						usuarioTemp_ = usuarios.porLogin(usuario.getLogin());
+					}
+					
+					
+					if(usuarioTemp_ == null) {
+						
+						usuario.setEntregador(entregador);
+						usuarios.save(usuario);
+						
+						membroSelecionado = null;
+
+						listarTodos();
+						
+						PrimeFaces.current().executeScript(
+								"PF('downloadLoading').hide(); PF('usuario-dialog').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Membro de equipe salvo com sucesso!' });");
+					
+						PrimeFaces.current().ajax().update("msg", "form-dialog", "form");
+						
+					} else {
+						PrimeFaces.current().executeScript(
+								"PF('downloadLoading').hide(); swal({ type: 'error', title: 'Erro!', text: 'O login informado já existe!' });");
+					}
+					
 				}
 			}
-
-			System.out.println(usuario.getEmpresa());
-			usuarios.save(usuario);
-
-			membroSelecionado = null;
-
-			listarTodos();
-
-			PrimeFaces.current().executeScript(
-					"PF('downloadLoading').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Membro de equipe salvo com sucesso!' });");
-
+			
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -337,6 +433,14 @@ public class CadastroEquipeBean implements Serializable {
 
 	public void setTodasEmpresas(List<Empresa> todasEmpresas) {
 		this.todasEmpresas = todasEmpresas;
+	}
+
+	public boolean isEntregador() {
+		return entregador;
+	}
+
+	public void setEntregador(boolean entregador) {
+		this.entregador = entregador;
 	}
 
 }

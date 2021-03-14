@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
 import com.webapp.model.CategoriaProduto;
+import com.webapp.model.Empresa;
 import com.webapp.repository.filter.CategoriaProdutoFilter;
 import com.webapp.util.jpa.Transacional;
 
@@ -35,14 +36,14 @@ public class CategoriasProdutos implements Serializable {
 		this.manager.remove(categoriaProdutoTemp);
 	}
 
-	public List<CategoriaProduto> todos(String empresa) {
-		return this.manager.createQuery("from CategoriaProduto c where c.empresa = :empresa order by c.nome", CategoriaProduto.class)
-				.setParameter("empresa", empresa).getResultList();
+	public List<CategoriaProduto> todos(Empresa empresa) {
+		return this.manager.createQuery("from CategoriaProduto c where c.empresa.id = :empresa order by c.nome", CategoriaProduto.class)
+				.setParameter("empresa", empresa.getId()).getResultList();
 	}
 	
-	public List<CategoriaProduto> todosEmDestaque(String empresa) {
-		return this.manager.createQuery("from CategoriaProduto c where c.empresa = :empresa order by c.id", CategoriaProduto.class)
-				.setParameter("empresa", empresa).getResultList();
+	public List<CategoriaProduto> todosEmDestaque(Empresa empresa) {
+		return this.manager.createQuery("from CategoriaProduto c where c.empresa.id = :empresa order by c.id", CategoriaProduto.class)
+				.setParameter("empresa", 1L).getResultList();
 	}
 	
 	public CategoriaProduto porNome(String nome) {
@@ -56,11 +57,11 @@ public class CategoriasProdutos implements Serializable {
 		return null;
 	}
 	
-	public CategoriaProduto porNome(String nome, String empresa) {
+	public CategoriaProduto porNome(String nome, Empresa empresa) {
 		
 		try {
-			return this.manager.createQuery("from CategoriaProduto i where i.nome = :nome and i.empresa = :empresa order by nome", CategoriaProduto.class)
-					.setParameter("nome", nome).setParameter("empresa", empresa).getSingleResult();
+			return this.manager.createQuery("from CategoriaProduto i where i.nome = :nome and i.empresa.id = :empresa order by nome", CategoriaProduto.class)
+					.setParameter("nome", nome).setParameter("empresa", empresa.getId()).getSingleResult();
 		} catch(NoResultException e) {		
 		}
 		
@@ -69,9 +70,9 @@ public class CategoriasProdutos implements Serializable {
 
 	public List<CategoriaProduto> filtrados(CategoriaProdutoFilter filter) {
 		
-		return this.manager.createQuery("from CategoriaProduto i where i.nome like :nome and empresa = :empresa order by nome", CategoriaProduto.class)
+		return this.manager.createQuery("from CategoriaProduto i where i.nome like :nome and i.empresa.id = :empresa order by nome", CategoriaProduto.class)
 				.setParameter("nome", "%" + filter.getNome() + "%")
-				.setParameter("empresa", filter.getEmpresa()).getResultList();	
+				.setParameter("empresa", filter.getEmpresa().getId()).getResultList();	
 	}
 
 }

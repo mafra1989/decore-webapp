@@ -15,7 +15,6 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
-import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "caixa")
@@ -38,7 +37,7 @@ public class Caixa implements Serializable {
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal saldoInicial;
 	
-	@Column(nullable = false)
+	@Column(nullable = true)
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal saldoFinal;
 	
@@ -47,9 +46,10 @@ public class Caixa implements Serializable {
 	@JoinColumn
 	private Usuario usuario;
 	
-	@NotBlank
-	@Column
-	private String empresa;
+	@NotNull
+	@ManyToOne
+	@JoinColumn
+	private Empresa empresa;
 
 	@Type(type = "yes_no")
 	@Column(nullable = false)
@@ -109,11 +109,11 @@ public class Caixa implements Serializable {
 		this.usuario = usuario;
 	}
 
-	public String getEmpresa() {
+	public Empresa getEmpresa() {
 		return empresa;
 	}
 
-	public void setEmpresa(String empresa) {
+	public void setEmpresa(Empresa empresa) {
 		this.empresa = empresa;
 	}
 

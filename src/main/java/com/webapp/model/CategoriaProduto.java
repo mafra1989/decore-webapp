@@ -6,7 +6,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -15,21 +18,24 @@ import org.hibernate.validator.constraints.NotBlank;
 public class CategoriaProduto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	
+	@Id
+	@GeneratedValue//(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@NotBlank
+	@Column(nullable = false, length = 120)
 	private String nome;
 	
 	@Column
 	private String urlImagem;
 	
-	@NotBlank
-	@Column
-	private String empresa;
+	@NotNull
+	@ManyToOne
+	@JoinColumn
+	private Empresa empresa;
 	
-	@Id
-	@GeneratedValue//(strategy = GenerationType.IDENTITY)
+	
 	public Long getId() {
 		return id;
 	}
@@ -38,7 +44,6 @@ public class CategoriaProduto implements Serializable {
 		this.id = id;
 	}
 
-	@Column(nullable = false, length = 120)
 	public String getNome() {
 		return nome;
 	}
@@ -55,11 +60,12 @@ public class CategoriaProduto implements Serializable {
 		this.urlImagem = urlImagem;
 	}
 
-	public String getEmpresa() {
+
+	public Empresa getEmpresa() {
 		return empresa;
 	}
 
-	public void setEmpresa(String empresa) {
+	public void setEmpresa(Empresa empresa) {
 		this.empresa = empresa;
 	}
 

@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 import com.webapp.model.Devolucao;
+import com.webapp.model.Empresa;
 import com.webapp.util.jpa.Transacional;
 
 public class Devolucoes implements Serializable {
@@ -33,8 +34,8 @@ public class Devolucoes implements Serializable {
 		this.manager.remove(devolucaoTemp);
 	}
 
-	public List<Devolucao> todas(String empresa) {
-		return this.manager.createQuery("from Devolucao where empresa = :empresa order by id", Devolucao.class)
-				.setParameter("empresa", empresa).getResultList();
+	public List<Devolucao> todas(Empresa empresa) {
+		return this.manager.createQuery("from Devolucao where empresa.id = :empresa order by id", Devolucao.class)
+				.setParameter("empresa", empresa.getId()).getResultList();
 	}
 }

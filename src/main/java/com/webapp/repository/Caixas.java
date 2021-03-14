@@ -9,6 +9,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import com.webapp.model.Caixa;
+import com.webapp.model.Empresa;
 import com.webapp.model.FormaPagamento;
 import com.webapp.model.ItemCaixa;
 import com.webapp.model.Usuario;
@@ -38,33 +39,33 @@ public class Caixas implements Serializable {
 		this.manager.remove(caixaTemp);
 	}
 	
-	public List<Caixa> todos(String empresa) {
-		return this.manager.createQuery("from Caixa where empresa = :empresa order by id", Caixa.class)
-				.setParameter("empresa", empresa).getResultList();
+	public List<Caixa> todos(Empresa empresa) {
+		return this.manager.createQuery("from Caixa where empresa.id = :empresa order by id", Caixa.class)
+				.setParameter("empresa", empresa.getId()).getResultList();
 	}
 
-	public Caixa porUsuario(Usuario usuario, String empresa) {
+	public Caixa porUsuario(Usuario usuario, Empresa empresa) {
 		try {
 			return this.manager
-					.createQuery("select e from Caixa e where e.status = 'N' and e.usuario.id = :id and e.empresa = :empresa", Caixa.class)
+					.createQuery("select e from Caixa e where e.status = 'N' and e.usuario.id = :id and e.empresa.id = :empresa", Caixa.class)
 					.setParameter("id", usuario.getId())
-					.setParameter("empresa", empresa).getSingleResult();
+					.setParameter("empresa", empresa.getId()).getSingleResult();
 		} catch(NoResultException e) {
 			return null;
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<ItemCaixa> porFormaPagamento(Usuario usuario, FormaPagamento formaPagamento, String empresa) {
+	public List<ItemCaixa> porFormaPagamento(Usuario usuario, FormaPagamento formaPagamento, Empresa empresa) {
 		
 		String pagamento = "";
 		if(formaPagamento != null) {
 			pagamento = "e.formaPagamento.id = :formaPagamentoID and";
 		}
 		
-		String jpql = "select e from ItemCaixa e where " + pagamento + " e.caixa.usuario.id = :id and e.caixa.empresa = :empresa and e.caixa.status = 'N'";
+		String jpql = "select e from ItemCaixa e where " + pagamento + " e.caixa.usuario.id = :id and e.caixa.empresa.id = :empresa and e.caixa.status = 'N'";
 		Query q = manager.createQuery(jpql).setParameter("id", usuario.getId())
-				.setParameter("empresa", empresa);
+				.setParameter("empresa", empresa.getId());
 
 		if(formaPagamento != null) {
 			q.setParameter("formaPagamentoID", formaPagamento.getId());

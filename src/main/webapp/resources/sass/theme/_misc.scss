@@ -45,17 +45,17 @@ body {
         .ui-log-header {
             padding: $headerPadding;
             border: 0 none;
-            border-bottom: 1px solid $headerBorderColor;
+            border-bottom: 1px solid $primaryDarkColor;
             
             .ui-log-button {
                 display: inline-block;
                 position: static;
                 margin-right: 4px;
-                color: $headerIconColor;
+                color: $primaryTextColor;
                 padding: 2px;
                 
                 &.ui-state-hover {
-                    color: $headerIconHoverColor;
+                    color: lighten($primaryColor,35%);
                 }
                 
                 &.ui-state-active {

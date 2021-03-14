@@ -37,9 +37,10 @@
 		background-color: #f2f2f200;
 	}
 	.inventario.ui-button {
-	    width: auto !important;;
-	    color: #000000 !important;;
-	    background-color: transparent !important;;
+	    width: auto !important;
+	    color: #000000 !important;
+	    background-color: transparent !important;
+	    margin-left:10px;
     }
 	body .ui-button.ui-button-text-icon-left .ui-button-text {
 	    font-weight: bold;
@@ -176,7 +177,7 @@
 			<p:remoteCommand name="setarItemID" process="@this comprasTable"
 				update="form" action="#{consultaComprasBean.excluir}"
 				onstart="PF('downloadLoading').show();"
-				oncomplete="PF('downloadLoading').hide();" />
+				oncomplete="PF('downloadLoading').hide();" />		
 
 			<p:toolbar id="toolbar">
 				<f:facet name="left">
@@ -325,14 +326,18 @@
 								<p:commandButton icon="fa fa-fw fa-edit" styleClass="inventario" rendered="#{compra.ajuste}" />
 							</p:column>
 
-							<p:column headerText="Data da compra" width="10%">
+							<p:column headerText="Data da compra" width="15%">
 								<h:outputText value="#{compra.dataCompra}">
 									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" dateStyle="short" />
 								</h:outputText>
 							</p:column>
 
-							<p:column headerText="Comprador" width="30%">
+							<p:column headerText="Comprador" width="25%">
 								<h:outputText value="#{compra.usuario.nome}" />
+							</p:column>
+							
+							<p:column headerText="Pagamento" width="10%">
+								<h:outputText value="#{compra.ajuste ? '-' : (compra.tipoPagamento == 'PARCELADO' ? 'Parcelado' : 'À vista')}" />
 							</p:column>
 
 							<p:column headerText="Qtd. Itens" width="10%">
@@ -343,6 +348,10 @@
 								<h:outputText value="#{compra.valorTotal}">
 									<f:convertNumber type="currency" />
 								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Pago?" width="8%">
+								<h:outputText value="#{compra.tipoPagamento == 'PARCELADO' ? 'Compra Parc.' : (compra.conta ? 'À pagar' : (compra.ajuste ? '-' : (compra.compraPaga ? 'Sim' : 'Não')))}" />
 							</p:column>
 
 						</p:dataTable>

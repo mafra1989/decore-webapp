@@ -9,6 +9,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import com.webapp.model.Caixa;
+import com.webapp.model.Empresa;
 import com.webapp.model.ItemCaixa;
 import com.webapp.model.TipoOperacao;
 import com.webapp.util.jpa.Transacional;
@@ -37,9 +38,9 @@ public class ItensCaixas implements Serializable {
 		this.manager.remove(itemCaixaTemp);
 	}
 
-	public List<ItemCaixa> todos(String empresa) {
-		return this.manager.createQuery("from ItemCaixa i where i.caixa.empresa = :empresa order by i.id", ItemCaixa.class)
-				.setParameter("empresa", empresa).getResultList();
+	public List<ItemCaixa> todos(Empresa empresa) {
+		return this.manager.createQuery("from ItemCaixa i where i.caixa.empresa.id = :empresa order by i.id", ItemCaixa.class)
+				.setParameter("empresa", empresa.getId()).getResultList();
 	}
 
 	public List<ItemCaixa> porCaixa(Caixa caixa) {
@@ -48,21 +49,14 @@ public class ItensCaixas implements Serializable {
 				.setParameter("id",caixa.getId()).getResultList();
 	}
 	
-	public ItemCaixa porCodigoOperacao(Long codigoOperacao, TipoOperacao operacao, String empresa) {
+	@SuppressWarnings("unchecked")
+	public List<ItemCaixa> porCodigoOperacao(Long codigoOperacao, TipoOperacao operacao, Empresa empresa) {
 
-		String jpql = "SELECT i FROM ItemCaixa i WHERE i.caixa.empresa = :empresa AND i.operacao = :operacao AND i.codigoOperacao = :codigoOperacao";
+		String jpql = "SELECT i FROM ItemCaixa i WHERE i.caixa.empresa.id = :empresa AND i.operacao = :operacao AND i.codigoOperacao = :codigoOperacao";
 		Query q = manager.createQuery(jpql).setParameter("codigoOperacao", codigoOperacao).setParameter("operacao", operacao)
-				.setParameter("empresa", empresa);
+				.setParameter("empresa", empresa.getId());
 
-		try {
-			ItemCaixa itemCaixa = (ItemCaixa) q.getSingleResult();
-			return itemCaixa;
-
-		} catch (NoResultException e) {
-
-		}
-
-		return null;
+		return q.getResultList();
 	}
 	
 }

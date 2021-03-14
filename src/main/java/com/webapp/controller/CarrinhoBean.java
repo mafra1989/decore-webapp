@@ -78,7 +78,7 @@ public class CarrinhoBean implements Serializable {
 	
 	private Integer token;
 	
-	private static String TEST_ACCESS_TOKEN = "APP_USR-6700550009431141-031319-269e140a8c94d1e1e756e64f97ba8eef-176290424";
+	private static String TEST_ACCESS_TOKEN = "TEST-1852237905175376-080820-c7142e78a910796fbc26999ef2fa808d-277250128";
 	
 	private Preference preference;
 	
@@ -139,8 +139,7 @@ public class CarrinhoBean implements Serializable {
 		
 		PrimeFaces.current().ajax().update("form");	
 		
-		*/
-		
+		*/		
 		
 		Long totalDeItens = 0L;
 		Double totalGeral = 0D;
@@ -183,6 +182,7 @@ public class CarrinhoBean implements Serializable {
 	}
 	
 	
+	@SuppressWarnings("unused")
 	private void sendMailAndSavePedido() {
 					
 		pedido.setDataPedido(new Date());
@@ -230,7 +230,7 @@ public class CarrinhoBean implements Serializable {
 		
 		boolean emailEnviado = orderService.sendOrderConfirmation(getDummyOrder());
 		
-		((AbstractApplicationContext) context).close();
+		context.close();
 		
 		
 		

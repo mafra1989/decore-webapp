@@ -141,7 +141,7 @@
 						action="#{cadastroTipoVendaBean.prepararEditarCadastro}"
 						process="@this" update="tipoVenda-dialog"
 						oncomplete="PF('tipoVenda-dialog').show()"
-						disabled="#{cadastroTipoVendaBean.tipoVendaSelecionado == null}">
+						disabled="#{cadastroTipoVendaBean.tipoVendaSelecionado == null or cadastroTipoVendaBean.tipoVendaSelecionado.id == 8}">
 
 						<p:resetInput target="tipoVenda-dialog" />
 					</p:commandButton>
@@ -152,7 +152,7 @@
 					<p:commandButton icon="fa fa-fw fa-trash" value="Excluir"
 						process="@this"
 						onclick="deleteItem(#{cadastroTipoVendaBean.tipoVendaSelecionado.id});"
-						disabled="#{cadastroTipoVendaBean.tipoVendaSelecionado == null}" />
+						disabled="#{cadastroTipoVendaBean.tipoVendaSelecionado == null or cadastroTipoVendaBean.tipoVendaSelecionado.id == 8}" />
 				</f:facet>
 			</p:toolbar>
 
@@ -174,7 +174,7 @@
 					<p:dataTable id="tipoVendaTable" reflow="true"
 						paginatorAlwaysVisible="false"
 						value="#{cadastroTipoVendaBean.todosTiposVendas}" var="tipoVenda"
-						emptyMessage="Nenhum tipo de venda encontrado." rows="10"
+						emptyMessage="Nenhum tipo de venda encontrado." scrollable="true" scrollHeight="470"
 						paginator="true" paginatorPosition="bottom" selectionMode="single"
 						selection="#{cadastroTipoVendaBean.tipoVendaSelecionado}"
 						rowKey="#{tipoVenda.id}" style="margin-top: 10px">

@@ -5,9 +5,11 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -15,6 +17,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "categoria_lancamentos")
+@SequenceGenerator(name="CategoriaLancamento_Seq", sequenceName="categoria_lancamentos_sequence", allocationSize=1, initialValue = 37)
 public class CategoriaLancamento implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -28,14 +31,11 @@ public class CategoriaLancamento implements Serializable {
 	
 	private DestinoLancamento destinoLancamento;// = new DestinoLancamento();
 	
-	@Column
-	private String empresa;
-	
-	@Column
-	private Empresa empresa_;
+	private Empresa empresa;
 	
 	@Id
-	@GeneratedValue//(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue//(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="CategoriaLancamento_Seq")
 	public Long getId() {
 		return id;
 	}
@@ -74,22 +74,14 @@ public class CategoriaLancamento implements Serializable {
 		this.destinoLancamento = destinoLancamento;
 	}
 
-	public String getEmpresa() {
+	@ManyToOne
+	@JoinColumn
+	public Empresa getEmpresa() {
 		return empresa;
 	}
 
-	public void setEmpresa(String empresa) {
+	public void setEmpresa(Empresa empresa) {
 		this.empresa = empresa;
-	}
-
-	@ManyToOne
-	@JoinColumn
-	public Empresa getEmpresa_() {
-		return empresa_;
-	}
-
-	public void setEmpresa_(Empresa empresa_) {
-		this.empresa_ = empresa_;
 	}
 
 	@Override

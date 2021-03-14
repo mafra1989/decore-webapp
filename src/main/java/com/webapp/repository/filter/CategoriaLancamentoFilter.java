@@ -2,13 +2,15 @@ package com.webapp.repository.filter;
 
 import java.io.Serializable;
 
+import com.webapp.model.Empresa;
+
 public class CategoriaLancamentoFilter implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private String nome = "";
 	
-	private String empresa = "";
+	private Empresa empresa;
 
 	public String getNome() {
 		return nome;
@@ -18,11 +20,11 @@ public class CategoriaLancamentoFilter implements Serializable {
 		this.nome = nome;
 	}
 
-	public String getEmpresa() {
+	public Empresa getEmpresa() {
 		return empresa;
 	}
 
-	public void setEmpresa(String empresa) {
+	public void setEmpresa(Empresa empresa) {
 		this.empresa = empresa;
 	}
 

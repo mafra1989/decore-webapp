@@ -288,7 +288,7 @@
 		width: 90px;
 	}
 	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
-		right: 113px;
+		right: -35px;
 		height: 32px;
 		top: -2px;
 	}
@@ -866,10 +866,10 @@
 
 		</h:form>
 		
-		<p:dialog header="Produtos vs Quantidade"
+		<p:dialog header="Produtos vs Quantidade" 
 			widgetVar="produtos-qty" id="produtos-qty"
-			resizable="false" modal="true" position="top"
-			style="margin-top: 100px" closeOnEscape="true" responsive="true"
+			resizable="false" modal="true" position="center"
+			closeOnEscape="true" responsive="true"
 			width="350px">
 
 			<h:form id="form-dialog" style="margin-top: 10px;">
@@ -930,8 +930,19 @@
 
 							<p:column headerText="Qty"
 								style="text-align:right;width:20%">
-								<h:outputText value="#{produto.quantidade}">
+								
+								<h:outputText value="#{produto.quantidade}" rendered="#{produto.unidadeMedida == 'Un' or produto.unidadeMedida == 'Cx'}">
+									<f:convertNumber minFractionDigits="0" />
 								</h:outputText>
+								
+								<h:outputText value="#{produto.quantidade}" rendered="#{produto.unidadeMedida != 'Un' and produto.unidadeMedida != 'Cx'  and produto.unidadeMedida != 'Pt'}">
+									<f:convertNumber minFractionDigits="3" />
+								</h:outputText>
+								
+								<h:outputText value="#{produto.quantidade}" rendered="#{produto.unidadeMedida == 'Pt'}">
+									<f:convertNumber minFractionDigits="1" />
+								</h:outputText>
+								
 							</p:column>
 
 						</p:dataTable>

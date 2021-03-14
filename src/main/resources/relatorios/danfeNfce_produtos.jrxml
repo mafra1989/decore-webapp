@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="danfeNfce_pagamentos" pageWidth="135" pageHeight="802" columnWidth="135" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="cddba3ca-c76e-4d04-9136-200cf1f741bc">
+	<property name="ireport.zoom" value="3.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString language="xPath">
+		<![CDATA[/nfeProc/NFe/infNFe/pag]]>
+	</queryString>
+	<field name="codigo" class="java.lang.String">
+		<property name="codigo" value=""/>
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="descricao" class="java.lang.String"/>
+	<field name="quantidade" class="java.lang.String"/>
+	<field name="valorUnitario" class="java.lang.String">
+		<fieldDescription><![CDATA[valor]]></fieldDescription>
+	</field>
+	<field name="UN" class="java.lang.String"/>
+	<field name="subTotal" class="java.lang.String"/>
+	<field name="observacao" class="java.lang.String"/>
+	<variable name="CONTADOR" class="java.lang.Integer">
+		<variableExpression><![CDATA[$V{CONTADOR} + 1]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<detail>
+		<band height="8">
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="12" y="0" width="103" height="8" uuid="69f4089a-b7dc-4c38-9d1a-ca42a5b53b0b"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="5" isBold="true" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="">
+				<reportElement positionType="Float" x="115" y="0" width="20" height="8" uuid="edcd48d9-80ef-4f91-a408-ba163a38edc3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Courier New" size="5" isBold="true" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{subTotal}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="">
+				<reportElement positionType="Float" x="0" y="0" width="12" height="8" uuid="b9a63c85-dbb5-4f2a-95ec-a04cf904068d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Courier New" size="5" isBold="true" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{CONTADOR}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="8">
+			<printWhenExpression><![CDATA[$F{observacao} != null && !$F{observacao}.equals("")]]></printWhenExpression>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="12" y="0" width="103" height="8" uuid="72d9c9c6-aab6-4cff-ac46-720a2ed5dbbc">
+					<printWhenExpression><![CDATA[$F{observacao} != null && !$F{observacao}.equals("")]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Courier New" size="5" isBold="true" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Obs: " + $F{observacao}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

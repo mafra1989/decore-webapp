@@ -24,7 +24,6 @@ import com.webapp.model.Caixa;
 import com.webapp.model.CategoriaLancamento;
 import com.webapp.model.Conta;
 import com.webapp.model.DestinoLancamento;
-import com.webapp.model.Grupo;
 import com.webapp.model.ItemCaixa;
 import com.webapp.model.Lancamento;
 import com.webapp.model.OrigemLancamento;
@@ -166,20 +165,7 @@ public class RegistroLancamentosBean implements Serializable {
 		if (FacesUtil.isNotPostback()) {
 			
 			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();			
-			usuario_ = usuarios.porNome(user.getUsername());
-			
-			List<Grupo> grupos = usuario_.getGrupos();
-			
-			if(grupos.size() > 0) {
-				for (Grupo grupo : grupos) {
-					if(grupo.getNome().equals("ADMINISTRADOR")) {
-						EmpresaBean empresaBean = (EmpresaBean) FacesUtil.getObjectSession("empresaBean");
-						if(empresaBean != null && empresaBean.getEmpresa() != null) {
-							usuario_.setEmpresa(empresaBean.getEmpresa());
-						}
-					}
-				}
-			}
+			usuario_ = usuarios.porLogin(user.getUsername());
 			
 			todasCategoriasDespesas = categoriasLancamentos.todasDespesas(usuario_.getEmpresa());
 			todasCategoriasReceitas = categoriasLancamentos.todasReceitas(usuario_.getEmpresa());
@@ -223,6 +209,21 @@ public class RegistroLancamentosBean implements Serializable {
 			}
 		}
 
+	}
+	
+	
+	public void preparaNovoLancamentoReceita() {
+		receita.setDataLancamento(new Date());
+		receita.setDescricao("");
+		receita.setValor(null);
+		categoriaLancamentoReceita = new CategoriaLancamento();
+	}
+
+	public void preparaNovoLancamentoDespesa() {
+		despesa.setDataLancamento(new Date());
+		despesa.setDescricao("");
+		despesa.setValor(null);
+		categoriaLancamentoDespesa = new CategoriaLancamento();
 	}
 	
 	
@@ -691,7 +692,29 @@ public class RegistroLancamentosBean implements Serializable {
 		}
 	}
 	
+	
+	public void confirmarLancamentoViaDashboard() {
+		confirmarLancamento();	
+		
+		if(!lancamento.isConta()) {
+			if(lancamento.getCategoriaLancamento().getTipoLancamento().getOrigem() == OrigemLancamento.CREDITO) {
+				PrimeFaces.current().executeScript("PF('receita-dialog').hide();atualizaSaldo(" + lancamento.getNumeroLancamento() + ");");
+			} else {
+				PrimeFaces.current().executeScript("PF('despesa-dialog').hide();atualizaSaldo(" + lancamento.getNumeroLancamento() + ");");
+			}		
+		} else {
+			if(lancamento.getCategoriaLancamento().getTipoLancamento().getOrigem() == OrigemLancamento.CREDITO) {
+				PrimeFaces.current().executeScript("PF('receita-dialog').hide();");
+			} else {
+				PrimeFaces.current().executeScript("PF('despesa-dialog').hide();");
+			}			
+		}
+		
+		lancamento = new Lancamento();
 
+	}
+
+	
 	public void confirmarLancamento() {
 
 		boolean contasPagas = false;
@@ -850,7 +873,7 @@ public class RegistroLancamentosBean implements Serializable {
 						itemCaixa.setCodigoOperacao(lancamento.getNumeroLancamento());
 						itemCaixa.setData(new Date());
 						itemCaixa.setDescricao("Lançamento Nº " + lancamento.getNumeroLancamento());
-						itemCaixa.setFormaPagamento(formasPagamentos.porNome("Dinheiro"));
+						itemCaixa.setFormaPagamento(formasPagamentos.porId(1L));
 						itemCaixa.setOperacao(TipoOperacao.LANCAMENTO);
 						itemCaixa.setTipoPagamento(lancamento.getCategoriaLancamento().getTipoLancamento().getOrigem() == OrigemLancamento.CREDITO ? "Entrada" : "Saída");
 						
@@ -895,26 +918,29 @@ public class RegistroLancamentosBean implements Serializable {
 
 			} else {
 				
-				ItemCaixa itemCaixa = itensCaixas.porCodigoOperacao(lancamento.getNumeroLancamento(), TipoOperacao.LANCAMENTO, lancamento.getEmpresa());
+				List<ItemCaixa> itensCaixa = itensCaixas.porCodigoOperacao(lancamento.getNumeroLancamento(), TipoOperacao.LANCAMENTO, lancamento.getEmpresa());
 
-				if(itemCaixa != null) {
+				if(itensCaixa.size() > 0) {
 					
-					if(!lancamento.isConta()) {
-						
-						itemCaixa.setData(new Date());
-						itemCaixa.setDescricao("Lançamento Nº" + lancamento.getNumeroLancamento());
-						
-						itemCaixa.setValor(lancamento.getValor());						
-						
-						itemCaixa.setFormaPagamento(formasPagamentos.porNome("Dinheiro"));
-						itemCaixa.setTipoPagamento(lancamento.getCategoriaLancamento().getTipoLancamento().getOrigem() == OrigemLancamento.CREDITO ? "Entrada" : "Saída");
-															
-						itensCaixas.save(itemCaixa);
-						
-					} else {
-						
-						itensCaixas.remove(itemCaixa);
+					for (ItemCaixa itemCaixa : itensCaixa) {
+						if(!lancamento.isConta()) {
+							
+							itemCaixa.setData(new Date());
+							itemCaixa.setDescricao("Lançamento Nº" + lancamento.getNumeroLancamento());
+							
+							itemCaixa.setValor(lancamento.getValor());						
+							
+							itemCaixa.setFormaPagamento(formasPagamentos.porId(1L));
+							itemCaixa.setTipoPagamento(lancamento.getCategoriaLancamento().getTipoLancamento().getOrigem() == OrigemLancamento.CREDITO ? "Entrada" : "Saída");
+																
+							itensCaixas.save(itemCaixa);
+							
+						} else {
+							
+							itensCaixas.remove(itemCaixa);
+						}
 					}
+					
 					
 				} else if(!lancamento.isConta()) {
 					
@@ -922,13 +948,13 @@ public class RegistroLancamentosBean implements Serializable {
 					
 					if(caixa != null) {
 						
-						itemCaixa = new ItemCaixa();
+						ItemCaixa itemCaixa = new ItemCaixa();
 						itemCaixa.setData(new Date());
 						itemCaixa.setDescricao("Lançamento Nº" + lancamento.getNumeroLancamento());
 						
 						itemCaixa.setValor(lancamento.getValor());						
 						
-						itemCaixa.setFormaPagamento(formasPagamentos.porNome("Dinheiro"));
+						itemCaixa.setFormaPagamento(formasPagamentos.porId(1L));
 						itemCaixa.setTipoPagamento(lancamento.getCategoriaLancamento().getTipoLancamento().getOrigem() == OrigemLancamento.CREDITO ? "Entrada" : "Saída");
 						
 						itensCaixas.save(itemCaixa);

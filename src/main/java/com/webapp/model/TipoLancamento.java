@@ -7,7 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -15,6 +17,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "tipos_lancamentos")
+@SequenceGenerator(name="TipoLancamento_Seq", sequenceName="tipos_lancamentos_sequence", allocationSize=1, initialValue = 8)
 public class TipoLancamento implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -30,7 +33,8 @@ public class TipoLancamento implements Serializable {
 	private OrigemLancamento origem;
 	
 	@Id
-	@GeneratedValue//(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue//(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="TipoLancamento_Seq")
 	public Long getId() {
 		return id;
 	}

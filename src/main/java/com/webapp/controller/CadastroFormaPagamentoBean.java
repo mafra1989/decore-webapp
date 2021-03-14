@@ -48,14 +48,21 @@ public class CadastroFormaPagamentoBean implements Serializable {
 
 	public void salvar() {
 
-		formasPagamentos.save(formaPagamento);
+		if(formaPagamento.getAcrescimo().doubleValue() >= 0) {
+			
+			formasPagamentos.save(formaPagamento);
 
-		formaPagamentoSelecionada = null;
+			formaPagamentoSelecionada = null;
 
-		listarTodos();
+			listarTodos();
 
-		PrimeFaces.current().executeScript(
-				"PF('downloadLoading').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Forma de Pagamento salva com sucesso!' });");
+			PrimeFaces.current().executeScript(
+					"PF('formapagamento-dialog').hide();PF('downloadLoading').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Forma de Pagamento salva com sucesso!' });");
+		} else {
+			
+			PrimeFaces.current().executeScript(
+					"PF('downloadLoading').hide(); swal({ type: 'error', title: 'Ops!', text: 'Taxa de Pagamento não pode ser menor que zero!' });");
+		}
 	}
 
 	public void excluir() {

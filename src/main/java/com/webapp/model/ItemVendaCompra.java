@@ -1,6 +1,7 @@
 package com.webapp.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -23,7 +25,8 @@ public class ItemVendaCompra implements Serializable {
 
 	@NotNull
 	@Column(nullable = false)
-	private Long quantidade;
+	@Digits(integer = 10 /* precision */, fraction = 3 /* scale */)
+	private BigDecimal quantidade;
 	
 
 	@ManyToOne
@@ -42,12 +45,12 @@ public class ItemVendaCompra implements Serializable {
 		this.id = id;
 	}
 
-	public Long getQuantidade() {
+	public BigDecimal getQuantidade() {
 		return quantidade;
 	}
 
-	public void setQuantidade(Long quantidade) {
-		this.quantidade = quantidade;
+	public void setQuantidade(BigDecimal quantidade) {
+		this.quantidade = quantidade.setScale(3, BigDecimal.ROUND_HALF_EVEN);;
 	}
 /*
 	public BigDecimal getTotal() {

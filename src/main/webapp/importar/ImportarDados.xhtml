@@ -11,6 +11,9 @@
 
 		<style>
 @media ( min-width :220px) {
+	.invalid {
+		background-color: #ff5959 !important;
+	}
 	.ui-fluid .ui-button {
 		width: auto;
 	}
@@ -127,36 +130,124 @@
 
 			<p:toolbar id="toolbar">
 				<f:facet name="left">
-					<p:commandButton icon="fa fa-fw fa-upload" value="Importar" widgetVar="pesquisar-button"
+					<p:commandButton icon="fa fa-fw fa-files-o" value="Processar arquivo" widgetVar="pesquisar-button"
 						id="pesquisar-button" style="margin-left: 3px;font-weight:bold"
-						action="#{importarDadosBean.importar}" process="@this" 
+						action="#{importarDadosBean.processarArquivo}" process="@this" update="@form"
 						ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);"></p:commandButton>
 				</f:facet>
 
 				<f:facet name="right">
 					<p:selectOneMenu id="console" value="#{importarDadosBean.opcao}"
 						style="width:125px">
-						<f:selectItem itemLabel="Selecione" itemValue="" />
-						<f:selectItem itemLabel="Compras" itemValue="Compras" />
-						<f:selectItem itemLabel="Vendas" itemValue="Vendas" />
-						<f:selectItem itemLabel="Lançamentos" itemValue="Lançamentos" />
+						
+						<p:ajax event="change" process="@this" update="panel import-button produtosTable" listener="#{importarDadosBean.changeImport}" />
+						
+						<f:selectItem itemLabel="Produtos" itemValue="Produtos" />
+						<f:selectItem itemLabel="Clientes" itemValue="Clientes" />
 					</p:selectOneMenu>
 				</f:facet>
-
-
 
 			</p:toolbar>
 
 			<div class="ui-g-12 ui-lg-12">
 
-				<p:panel class="card card-w-title ui-fluid itens-add"
+				<p:panel class="card card-w-title ui-fluid itens-add" id="panel"
 					style="padding-bottom: 0px !important; margin-top:10px">
 
 					<p:fileUpload styleClass="btn-upload"
 						value="#{importarDadosBean.file}" label="Anexar" process="@this"
-						style="margin-left:8px;margin-top:5px" mode="simple"
+						style="margin-top:5px" mode="simple"
 						skinSimple="true">
 					</p:fileUpload>
+					
+					<p:commandButton icon="fa fa-fw fa-upload" value="Importar Dados" widgetVar="import-button"
+						id="import-button" style="float:right;margin-top:5px;font-weight:bold"
+						action="#{importarDadosBean.importarDados}" process="@this" update="@form"
+						disabled="#{importarDadosBean.produtosSize le 0 and importarDadosBean.clientesSize le 0}" oncomplete="PF('downloadLoading').hide();"
+						onstart="PF('downloadLoading').show();"></p:commandButton>
+					
+					<p:dataTable id="produtosTable" paginatorAlwaysVisible="false" rowStyleClass="#{produto.valid ? 'null' : 'invalid'}"
+							scrollable="true" scrollHeight="470" style="margin-top: 15px;"
+							value="#{importarDadosBean.produtos}" var="produto"
+							emptyMessage="Nenhum produto encontrado." 
+							rendered="#{importarDadosBean.opcao == 'Produtos'}"
+							reflow="true" paginator="false">
+
+							<p:ajax process="@this produtosTable" event="rowSelect"
+								onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();" />
+								
+							<p:ajax process="@this produtosTable" event="rowUnselect" onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();" />
+
+							<p:column headerText="Cód." width="15%">
+								<h:outputText value="#{produto.codigo}" />
+							</p:column>
+							
+							<p:column headerText="Nome" width="20%">
+								<h:outputText value="#{produto.nome}" />
+							</p:column>
+
+							<p:column headerText="Desc." width="25%">
+								<h:outputText value="#{produto.descricao}" />
+							</p:column>
+							
+							<p:column headerText="Tamanho" width="15%">
+								<h:outputText value="#{produto.numeracao}" />
+							</p:column>
+							
+							<p:column headerText="Preço Custo" width="15%">
+								<h:outputText value="#{produto.custoMedioUnitario}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Preço Venda" width="15%">
+								<h:outputText value="#{produto.precoDeVenda}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Categoria" width="15%">
+								<h:outputText value="#{produto.categoriaProduto.nome}" />
+							</p:column>
+
+						</p:dataTable>
+						
+						
+						
+						<p:dataTable id="clienteTable" paginatorAlwaysVisible="false" rowStyleClass="#{cliente.valid ? 'null' : 'invalid'}"
+							scrollable="true" scrollHeight="470" style="margin-top: 15px;"
+							value="#{importarDadosBean.clientes}" var="cliente"
+							emptyMessage="Nenhum cliente encontrado." 
+							rendered="#{importarDadosBean.opcao == 'Clientes'}"
+							reflow="true" paginator="false">
+	
+							<p:ajax event="rowSelect" update="form:toolbar" />
+							<p:ajax event="rowUnselect" update="form:toolbar" />
+	
+							<p:column headerText="Nome" width="15%">
+								<h:outputText value="#{cliente.nome}" />
+							</p:column>
+							
+							<p:column headerText="CPF/CNPJ" width="10%">
+								<h:outputText value="#{cliente.documento}" />
+							</p:column>
+	
+							<p:column headerText="Contato" width="10%">
+								<h:outputText
+									value="#{cliente.contato != null ? cliente.contato : '-' }" />
+							</p:column>
+							
+							<p:column headerText="Endereço" width="25%">
+								<h:outputText value="#{cliente.endereco}" />
+							</p:column>
+							
+							<p:column headerText="Bairro" width="15%">
+								<h:outputText value="#{cliente.bairro.nome}" />
+							</p:column>
+	
+						</p:dataTable>
 				</p:panel>
 
 			</div>

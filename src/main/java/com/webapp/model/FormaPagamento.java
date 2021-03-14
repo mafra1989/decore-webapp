@@ -6,21 +6,26 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "formas_pagamentos")
+@SequenceGenerator(name="FormaPagamento_Seq", sequenceName="formas_pagamentos_sequence", allocationSize=1, initialValue = 4)
 public class FormaPagamento implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue//(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue//(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="FormaPagamento_Seq")
 	private Long id;
 	
 	@NotBlank
@@ -31,6 +36,12 @@ public class FormaPagamento implements Serializable {
 	@Column(nullable = false)
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
 	private BigDecimal acrescimo = BigDecimal.ZERO;
+	
+	@Type(type = "yes_no")
+	@Column(nullable = true)
+	private boolean clientePaga = true;
+	
+	
 
 	public Long getId() {
 		return id;
@@ -54,6 +65,14 @@ public class FormaPagamento implements Serializable {
 
 	public void setAcrescimo(BigDecimal acrescimo) {
 		this.acrescimo = acrescimo.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+	}
+
+	public boolean isClientePaga() {
+		return clientePaga;
+	}
+
+	public void setClientePaga(boolean clientePaga) {
+		this.clientePaga = clientePaga;
 	}
 
 	@Override

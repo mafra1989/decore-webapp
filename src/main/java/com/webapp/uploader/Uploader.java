@@ -28,7 +28,7 @@ import java.util.List;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.primefaces.model.UploadedFile;
+import org.primefaces.model.file.UploadedFile;
 
 /**
  * Controls all interface with the web and the Imgur API.
@@ -99,7 +99,7 @@ public class Uploader
     {
         try
         {
-            return URLEncoder.encode(DatatypeConverter.printBase64Binary(file.getContents()), "UTF-8");
+            return URLEncoder.encode(DatatypeConverter.printBase64Binary(file.getContent()), "UTF-8");
         }
         catch (IOException e)
         {

@@ -19,7 +19,6 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
-import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "vendas")
@@ -107,9 +106,10 @@ public class Venda implements Serializable {
 	private Long ano;
 	
 	
-	@NotBlank
-	@Column
-	private String empresa;
+	@NotNull
+	@ManyToOne
+	@JoinColumn
+	private Empresa empresa;
 	
 	
 	@Type(type = "yes_no")
@@ -121,7 +121,7 @@ public class Venda implements Serializable {
 	@Column(nullable = true)
 	private boolean recuperarValores = false;
 	
-	@NotNull
+	//@NotNull
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = true)
 	private TipoPagamento tipoPagamento;
@@ -132,7 +132,7 @@ public class Venda implements Serializable {
 	private FormaPagamento formaPagamento;
 	
 	
-	@NotNull
+	//@NotNull
 	@Column(nullable = false)
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
 	private BigDecimal taxaDeEntrega = BigDecimal.ZERO;
@@ -142,6 +142,10 @@ public class Venda implements Serializable {
 	@Column(nullable = false)
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
 	private BigDecimal acrescimo = BigDecimal.ZERO;
+	
+	@Column
+	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	private BigDecimal taxaDeAcrescimo;
 	
 	
 	@NotNull
@@ -178,6 +182,35 @@ public class Venda implements Serializable {
 	@Column(nullable = false)
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal saldoParaTroca = BigDecimal.ZERO;
+	
+	
+	@NotNull
+	@ManyToOne
+	@JoinColumn
+	private Cliente cliente = new Cliente();
+	
+	
+	@Column
+	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	private BigDecimal desconto;
+	
+	
+	@ManyToOne
+	@JoinColumn
+	private Usuario entregador;
+	
+	
+	@Column
+	private String mesa;
+	
+	
+	@Column
+	private String statusMesa;
+	
+	
+	@Type(type = "yes_no")
+	@Column(nullable = true)
+	private boolean clientePagouTaxa;
 	
 	
 
@@ -317,11 +350,11 @@ public class Venda implements Serializable {
 		this.ano = ano;
 	}
 
-	public String getEmpresa() {
+	public Empresa getEmpresa() {
 		return empresa;
 	}
 
-	public void setEmpresa(String empresa) {
+	public void setEmpresa(Empresa empresa) {
 		this.empresa = empresa;
 	}
 
@@ -397,12 +430,20 @@ public class Venda implements Serializable {
 		this.acrescimo = acrescimo.setScale(2, BigDecimal.ROUND_HALF_EVEN);
 	}
 
+	public BigDecimal getTaxaDeAcrescimo() {
+		return taxaDeAcrescimo;
+	}
+
+	public void setTaxaDeAcrescimo(BigDecimal taxaDeAcrescimo) {
+		this.taxaDeAcrescimo = taxaDeAcrescimo;
+	}
+
 	public BigDecimal getValorRecebido() {
 		return valorRecebido;
 	}
 
 	public void setValorRecebido(BigDecimal valorRecebido) {
-		this.valorRecebido = valorRecebido.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+		this.valorRecebido = valorRecebido != null ? valorRecebido.setScale(2, BigDecimal.ROUND_HALF_EVEN) : BigDecimal.ZERO;
 	}
 
 	public BigDecimal getFaltando() {
@@ -410,7 +451,7 @@ public class Venda implements Serializable {
 	}
 
 	public void setFaltando(BigDecimal faltando) {
-		this.faltando = faltando.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+		this.faltando = faltando != null ? faltando.setScale(2, BigDecimal.ROUND_HALF_EVEN) : BigDecimal.ZERO;
 	}
 
 	public BigDecimal getTroco() {
@@ -418,7 +459,7 @@ public class Venda implements Serializable {
 	}
 
 	public void setTroco(BigDecimal troco) {
-		this.troco = troco.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+		this.troco = troco != null ? troco.setScale(2, BigDecimal.ROUND_HALF_EVEN) : BigDecimal.ZERO;
 	}
 
 	public boolean isVendaPaga() {
@@ -453,6 +494,54 @@ public class Venda implements Serializable {
 		this.saldoParaTroca = saldoParaTroca.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
+	public BigDecimal getDesconto() {
+		return desconto;
+	}
+
+	public void setDesconto(BigDecimal desconto) {
+		this.desconto = desconto != null ? desconto.setScale(2, BigDecimal.ROUND_HALF_EVEN) : null;
+	}
+
+	public Usuario getEntregador() {
+		return entregador;
+	}
+
+	public void setEntregador(Usuario entregador) {
+		this.entregador = entregador;
+	}
+
+	public String getMesa() {
+		return mesa;
+	}
+
+	public void setMesa(String mesa) {
+		this.mesa = mesa;
+	}
+
+	public String getStatusMesa() {
+		return statusMesa;
+	}
+
+	public void setStatusMesa(String statusMesa) {
+		this.statusMesa = statusMesa;
+	}
+	
+	public boolean isClientePagouTaxa() {
+		return clientePagouTaxa;
+	}
+
+	public void setClientePagouTaxa(boolean clientePagouTaxa) {
+		this.clientePagouTaxa = clientePagouTaxa;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -480,6 +569,12 @@ public class Venda implements Serializable {
 
 	@Transient
 	private List<ItemVenda> itensVenda;
+	
+	@Transient
+	private BigDecimal valorTotalComDesconto = BigDecimal.ZERO;
+	
+	@Transient
+	private String pagamento = "";
 
 	public List<ItemVenda> getItensVenda() {
 		return itensVenda;
@@ -487,6 +582,22 @@ public class Venda implements Serializable {
 
 	public void setItensVenda(List<ItemVenda> itensVenda) {
 		this.itensVenda = itensVenda;
+	}
+
+	public BigDecimal getValorTotalComDesconto() {
+		return valorTotalComDesconto;
+	}
+
+	public void setValorTotalComDesconto(BigDecimal valorTotalComDesconto) {
+		this.valorTotalComDesconto = valorTotalComDesconto.setScale(4, BigDecimal.ROUND_HALF_EVEN);
+	}
+
+	public String getPagamento() {
+		return pagamento;
+	}
+
+	public void setPagamento(String pagamento) {
+		this.pagamento = pagamento;
 	}
 
 }

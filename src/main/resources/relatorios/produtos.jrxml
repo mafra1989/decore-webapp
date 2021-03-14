@@ -25,6 +25,7 @@
 	<field name="subTotal" class="java.lang.String">
 		<fieldDescription><![CDATA[subTotal]]></fieldDescription>
 	</field>
+	<field name="UN" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -52,7 +53,7 @@
 				<textFieldExpression><![CDATA["R$ " + $F{valorUnitario}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement style="borda" stretchType="RelativeToBandHeight" x="374" y="0" width="97" height="20" uuid="920b2140-107c-4a39-97ff-7827e00a1e30"/>
+				<reportElement style="borda" stretchType="RelativeToBandHeight" x="374" y="0" width="68" height="20" uuid="920b2140-107c-4a39-97ff-7827e00a1e30"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
@@ -64,6 +65,13 @@
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA["R$ " + $F{subTotal}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement style="borda" stretchType="RelativeToBandHeight" x="442" y="0" width="29" height="20" uuid="c4306ede-7f3d-4d2c-8d0d-1e939b15dcac"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{UN}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

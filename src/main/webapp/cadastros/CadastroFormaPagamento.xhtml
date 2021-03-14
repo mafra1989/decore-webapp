@@ -141,7 +141,7 @@
 						action="#{cadastroFormaPagamentoBean.prepararEditarCadastro}"
 						process="@this" update="formapagamento-dialog"
 						oncomplete="PF('formapagamento-dialog').show()"
-						disabled="#{cadastroFormaPagamentoBean.formaPagamentoSelecionada == null}">
+						disabled="#{cadastroFormaPagamentoBean.formaPagamentoSelecionada == null or cadastroFormaPagamentoBean.formaPagamentoSelecionada.id == 1}">
 
 						<p:resetInput target="formapagamento-dialog" />
 					</p:commandButton>
@@ -152,7 +152,7 @@
 					<p:commandButton icon="fa fa-fw fa-trash" value="Excluir"
 						process="@this"
 						onclick="deleteItem(#{cadastroFormaPagamentoBean.formaPagamentoSelecionada.id});"
-						disabled="#{cadastroFormaPagamentoBean.formaPagamentoSelecionada == null}" />
+						disabled="#{cadastroFormaPagamentoBean.formaPagamentoSelecionada == null or cadastroFormaPagamentoBean.formaPagamentoSelecionada.id == 1}" />
 				</f:facet>
 			</p:toolbar>
 
@@ -174,7 +174,7 @@
 					<p:dataTable id="formaPagamentoTable" reflow="true"
 						paginatorAlwaysVisible="false"
 						value="#{cadastroFormaPagamentoBean.todasFormasPagamentos}" var="formaPagamento"
-						emptyMessage="Nenhuma forma de pagamento encontrada." rows="10"
+						emptyMessage="Nenhuma forma de pagamento encontrada." scrollable="true" scrollHeight="470"
 						paginator="true" paginatorPosition="bottom" selectionMode="single"
 						selection="#{cadastroFormaPagamentoBean.formaPagamentoSelecionada}"
 						rowKey="#{formaPagamento.id}" style="margin-top: 10px">
@@ -186,9 +186,14 @@
 							<h:outputText value="#{formaPagamento.nome}" />
 						</p:column>
 						
-						<p:column headerText="Acréscimo">
+						<p:column headerText="Taxa de Pagamento">
 							<h:outputText value="#{formaPagamento.acrescimo}%">
 								<f:convertNumber pattern="#0.00" />
+							</h:outputText>
+						</p:column>
+						
+						<p:column headerText="Repassar para cliente" visible="false">
+							<h:outputText value="#{formaPagamento.nome == 'Dinheiro' ? '-' : (formaPagamento.clientePaga ? 'Sim' : 'Não')}">
 							</h:outputText>
 						</p:column>
 
@@ -221,12 +226,21 @@
 
 							<p:outputLabel value="Nome" for="nome" />
 							<p:inputText id="nome"
-								value="#{cadastroFormaPagamentoBean.formaPagamento.nome}" />
+								value="#{cadastroFormaPagamentoBean.formaPagamento.nome}"
+								readonly="#{cadastroFormaPagamentoBean.formaPagamento.id == 1}" />
 								
-							<p:outputLabel value="Acréscimo" for="acrescimo" />
+							<p:outputLabel value="Taxa de Pagamento" for="acrescimo" />
 							<p:inputNumber id="acrescimo" decimalPlaces="2" 
 								placeholder="% 0,00" symbol="% "  thousandSeparator="."	 decimalSeparator=","				
 								value="#{cadastroFormaPagamentoBean.formaPagamento.acrescimo}" />
+								
+							<p:outputLabel value="Repassar para cliente" style="float: left;margin-top: 10px;" rendered="false" />
+							<p:selectBooleanCheckbox rendered="false"
+								value="#{cadastroFormaPagamentoBean.formaPagamento.clientePaga}"
+								style="margin-left: 3px;float: right;margin-top: -25px;">
+								
+								<p:ajax event="change" process="@this" />
+							</p:selectBooleanCheckbox>
 								
 						</p:panelGrid>
 
@@ -240,7 +254,6 @@
 								widgetVar="btn-save"
 								onstart="PF('downloadLoading').show(); PF('btn-save').disable();"
 								onsuccess="PF('downloadLoading').hide(); PF('btn-save').enable();"
-								oncomplete="if (!args.validationFailed) PF('formapagamento-dialog').hide();"
 								update="msg form-dialog form"
 								action="#{cadastroFormaPagamentoBean.salvar}"
 								process="@this form-dialog" style="font-weight: bold" />

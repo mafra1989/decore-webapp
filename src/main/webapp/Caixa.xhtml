@@ -5,7 +5,7 @@
 	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
 	template="/WEB-INF/template.xhtml">
 
-	<ui:define name="title">Abrir / Fechar Caixa</ui:define>
+	<ui:define name="title">Controle de Caixa</ui:define>
 
 	<f:metadata>
 		<f:viewAction action="#{caixaBean.inicializar}" />
@@ -15,10 +15,16 @@
 
 		<style>
 @media ( min-width :220px) {
+	.layout-wrapper .layout-main .layout-content {
+    	padding: 55px 17px 4px 17px;
+    }
 	.resumo .ui-panel .ui-panel-content {
 	    border: none;
 	    padding: 0px 0px;
 	}
+	.resumo .ui-widget-content {
+    	background-color: transparent;
+    }
 	.resumo.ui-panelgrid .ui-panelgrid-cell {
     	padding: 4px 0px;
     }
@@ -50,7 +56,7 @@
 	    background-color: #16a00ac2;
 	}
 	.dashboard.card_ .overview-box.overview-box-2 .overview-box-details {
-	    color: #286323;
+	    color: #f1f1f1;
 	}
 	.dashboard.card_ .overview-box.overview-box-2 .overview-box-icon {
     	background-color: #448238;
@@ -65,6 +71,7 @@
 		padding:0px;
 		padding-bottom:3px;
 		margin-bottom: 0px;
+		background: transparent;
 	}
 	#pagamento-dialog .ui-inputfield {
 		width: 96%;
@@ -229,7 +236,7 @@
 </style>
 
 		<div class="page-header">
-			<h1>Abrir / Fechar Caixa</h1>
+			<h1>Controle de Caixa</h1>
 		</div>
 
 		<p:growl id="msg" closable="true" life="500" showSummary="false"
@@ -243,35 +250,9 @@
 				onstart="PF('downloadLoading').show();"
 				oncomplete="PF('downloadLoading').hide();" />
 
-			<p:toolbar id="toolbar">
-				<f:facet name="left">
-					<p:commandButton icon="fa fa-fw fa-search" value="Pesquisar"
-						id="pesquisar-button" update="panel-table itensTable"
-						style="margin-left: 3px;font-weight:bold" process="@this form pagamento"
-						action="#{caixaBean.filtrarRegistrosCaixa}"
-						onstart="PF('downloadLoading').show();"
-						oncomplete="PF('downloadLoading').hide();"></p:commandButton>
-				</f:facet>
-				
-				<f:facet name="right">
-					<p:commandButton icon="fa fa-fw fa-check-square-o"
-							style="font-weight: bold;float: right;width: 140px;margin-right: 3px;background-color: #e21f1ab5;"
-							value="Fechar Caixa" onstart="PF('downloadLoading').show();"
-							oncomplete="PF('downloadLoading').hide();fecharCaixa(#{caixaBean.totalEmDinheiro})"
-							process="@this" rendered="#{caixaBean.caixaAberto}"	 />
-					
-					<p:commandButton icon="fa fa-fw fa-sign-in" 
-							rendered="#{not caixaBean.caixaAberto}"		
-							style="font-weight: bold;float: right;width: 140px;margin-right: 3px;background:#0d8819b5"
-							value="Abrir Caixa" onstart="PF('downloadLoading').show();" oncomplete="PF('downloadLoading').hide();PF('pagamento-dialog').show();" 
-							process="@this" update="pagamento-dialog" />
-				</f:facet>
+			<div class="card">
 
-			</p:toolbar>
-
-			<div class="ui-g-12 ui-lg-12">
-
-				<p:panel class="card card-w-title ui-fluid itens-add"
+				<p:panel class="card card-w-title ui-fluid itens-add" rendered="false"
 					style="padding-bottom: 0px !important; margin-bottom:20px;margin-top:5px">
 
 					<p:panelGrid columns="2" layout="grid"
@@ -282,6 +263,10 @@
 						<p:selectOneMenu id="pagamento" value="#{caixaBean.formaPagamento}">
 							            
 				            <f:selectItem itemLabel="Selecione" />
+				            
+				             <p:ajax listener="#{caixaBean.filtrarRegistrosCaixa}"
+								onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();" />
 
 				            <f:selectItems value="#{caixaBean.todasFormasPagamentos}" var="formaPagamento" itemLabel="#{formaPagamento.nome}" itemValue="#{formaPagamento}"/>
 				        </p:selectOneMenu>
@@ -294,8 +279,116 @@
 				<p:panel class="card card-w-title itens-add"
 					id="panel-table"
 					style="padding-bottom: 0px !important;margin-top:-10px;margin-bottom:5px;">
+					
+					
+					<p:panelGrid columns="2" layout="grid" style="margin-top: 12px;"
+							styleClass="panelgrid-noborder disabled disabled resumo"
+							columnClasses="ui-grid-col-6, ui-grid-col-6">
+							
+						<p:panel>
+						
+							<div class="ui-g dashboard card card_" style="margin-top: -12px;width:100%;">
+					
+								<div class="ui-g-12 ui-lg-6 ui-xl-6">
+									<div class="ui-g overview-box overview-box-2">
+										<div class="overview-box-icon">
+											<i class="fa fa-money" />
+										</div>
+										<div class="overview-box-content">
+											<div class="overview-box-title">Total em Dinheiro</div>
+											<div class="overview-box-stats"><h:outputText value="#{caixaBean.totalEmDinheiro}"><f:convertNumber type="currency" /></h:outputText></div>
+											<div class="overview-box-details">Em caixa</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="ui-g-12 ui-lg-6 ui-xl-6">
+									<div class="ui-g overview-box overview-box-1">
+										<div class="overview-box-icon">
+											<i class="fa fa-credit-card" /> 
+										</div>  
+										<div class="overview-box-content">
+											<div class="overview-box-title">Total em Débito/Crédito</div>
+											<div class="overview-box-stats"><p:outputLabel
+														value="#{caixaBean.totalEmVendasDebitoCredito}"><f:convertNumber type="currency" /></p:outputLabel></div>
+											<div class="overview-box-details" style="color: #ececec;">Pagtos com cartão</div>
+										</div>
+									</div>
+								</div>
+					
+							</div>
+						</p:panel>
+						
+						<p:panel>
+						
+							<p:panelGrid columns="2" layout="grid" style="margin-top:-5px;"
+									styleClass="panelgrid-noborder disabled disabled resumo"
+									columnClasses="ui-grid-col-6, ui-grid-col-6">
+									
+									<p:panelGrid columns="2" layout="grid" style="margin-top:-5px;"
+										styleClass="panelgrid-noborder disabled disabled resumo"
+										columnClasses="ui-grid-col-8, ui-grid-col-4">
+								
+										<p:outputLabel value="Total em Vendas:" style="font-weight:bold;font-size:13px;color: #6f6f6f;"></p:outputLabel>
+										<p:outputLabel
+											value="#{caixaBean.totalEmVendas}"
+											style="font-size: 13px;"><f:convertNumber type="currency" /></p:outputLabel>
+										
+										<p:outputLabel value="Devoluções/Trocas:" style="font-weight:bold;font-size:13px;color: #6f6f6f;"></p:outputLabel>
+										<p:outputLabel
+											value="#{caixaBean.totalEmDevolucaoTrocas}"
+											style="font-size: 13px;"><f:convertNumber type="currency" /></p:outputLabel>
+										
+										<p:outputLabel value="Vendas no Dinheiro:" style="font-weight:bold;font-size:13px;color: #6f6f6f;"></p:outputLabel>
+										<p:outputLabel
+											value="#{caixaBean.totalEmVendasEmDinheiro}"
+											style="font-size: 13px;"><f:convertNumber type="currency" /></p:outputLabel>
+										
+										<p:outputLabel value="Vendas no Débito/Crédito:" style="font-weight:bold;font-size:13px;color: #6f6f6f;"></p:outputLabel>
+										<p:outputLabel
+											value="#{caixaBean.totalEmVendasDebitoCredito}"
+											style="font-size: 13px;"><f:convertNumber type="currency" /></p:outputLabel>			
+									</p:panelGrid>
+									
+									<p:panelGrid columns="2" layout="grid" style="margin-bottom:15px;margin-top:-5px;"
+										styleClass="panelgrid-noborder disabled disabled resumo"
+										columnClasses="ui-grid-col-8, ui-grid-col-4">
+										
+										<p:outputLabel value="Lançamento de Despesas:" style="font-weight:bold;font-size:13px;color: #6f6f6f;"></p:outputLabel>
+										<p:outputLabel
+											value="#{caixaBean.totalDespesas}"
+											style="font-size: 13px;"><f:convertNumber type="currency" /></p:outputLabel>
+										
+										<p:outputLabel value="Lançamento de Receitas:" style="font-weight:bold;font-size:13px;color: #6f6f6f;"></p:outputLabel>
+										<p:outputLabel
+											value="#{caixaBean.totalReceitas}"
+											style="font-size: 13px;"><f:convertNumber type="currency" /></p:outputLabel>
+									</p:panelGrid>
+							</p:panelGrid>
+						
+						</p:panel>
+							
+					</p:panelGrid>
+					
+				</p:panel>
+				
+				<p:panel class="card card-w-title itens-add"
+					style="padding-bottom: 0px !important;margin-top:6px;margin-bottom:10px;">				
 
-					<h3 style="font-weight: bold">Registros do Caixa</h3>
+					<h3 style="font-weight: bold;font-size: 14px;color: #585757;">Registros do Caixa</h3>
+					
+					<p:commandButton icon="fa fa-fw fa-check-square-o"
+							style="font-weight: bold;float: right;width: 140px;margin-top: -40px;margin-right: 10px;background-color: #e21f1ab5;"
+							value="Fechar Caixa" onstart="PF('downloadLoading').show();"
+							oncomplete="PF('downloadLoading').hide();fecharCaixa(#{caixaBean.totalEmDinheiro})"
+							process="@this" rendered="#{caixaBean.caixaAberto}"	 />
+					
+					<p:commandButton icon="fa fa-fw fa-sign-in" 
+							rendered="#{not caixaBean.caixaAberto}"		
+							style="font-weight: bold;float: right;width: 140px;margin-right: 10px;margin-top: -40px;"
+							value="Abrir Caixa" onstart="PF('downloadLoading').show();" oncomplete="PF('downloadLoading').hide();PF('pagamento-dialog').show();" 
+							process="@this" update="pagamento-dialog" />
+							
 
 					<p:menuButton id="menu-btn" value="Opções" rendered="false"
 						style="width: 80px;float: right;margin-top: -40px;margin-right: 10px"
@@ -314,7 +407,7 @@
 							onclick="estornarConta(#{consultaContasBean.contaSelecionada.id});" />
 					</p:menuButton>
 
-					<p:panelGrid columns="1" layout="grid"
+					<p:panelGrid columns="1" layout="grid" style="margin-bottom:10px;"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-12">
 
@@ -322,9 +415,7 @@
 							scrollable="true" scrollHeight="288"
 							value="#{caixaBean.itensCaixaFiltrados}" var="itemCaixa"
 							emptyMessage="Nenhum registro encontrado." reflow="true"
-							paginator="false" rowKey="#{itemCaixa.id}"
-							selection="#{caixaBean.itemCaixaSelecionado}"
-							selectionMode="single">
+							paginator="false">
 
 							<p:ajax process="@this" event="rowSelect"
 								onstart="PF('downloadLoading').show();"
@@ -370,98 +461,7 @@
 					
 					
 					
-					<p:panelGrid columns="2" layout="grid" style="margin-top: 8px;"
-							styleClass="panelgrid-noborder disabled disabled resumo"
-							columnClasses="ui-grid-col-6, ui-grid-col-6">
-							
-						<p:panel>
-						
-							<h3 style="font-weight: bold">Dinheiro x Débito/Crédito</h3>
-							
-							<div class="ui-g dashboard card card_" style="margin-top: -12px;width:100%;">
 					
-								<div class="ui-g-12 ui-lg-6 ui-xl-6">
-									<div class="ui-g overview-box overview-box-2">
-										<div class="overview-box-icon">
-											<i class="fa fa-money" />
-										</div>
-										<div class="overview-box-content">
-											<div class="overview-box-title">Total em Dinheiro</div>
-											<div class="overview-box-stats"><h:outputText value="#{caixaBean.totalEmDinheiro}"><f:convertNumber type="currency" /></h:outputText></div>
-											<div class="overview-box-details">Em caixa</div>
-										</div>
-									</div>
-								</div>
-								
-								<div class="ui-g-12 ui-lg-6 ui-xl-6">
-									<div class="ui-g overview-box overview-box-1">
-										<div class="overview-box-icon">
-											<i class="fa fa-credit-card" /> 
-										</div>  
-										<div class="overview-box-content">
-											<div class="overview-box-title">Total em Débito/Crédito</div>
-											<div class="overview-box-stats"><p:outputLabel
-														value="#{caixaBean.totalEmVendasDebitoCredito}"><f:convertNumber type="currency" /></p:outputLabel></div>
-											<div class="overview-box-details" style="color: #ececec;">Pagtos com cartão</div>
-										</div>
-									</div>
-								</div>
-					
-							</div>
-						</p:panel>
-						
-						<p:panel>
-						
-							<h3 style="font-weight: bold">Detalhamento do Caixa</h3>
-							
-							<p:panelGrid columns="2" layout="grid" style="margin-top:-5px;"
-									styleClass="panelgrid-noborder disabled disabled resumo"
-									columnClasses="ui-grid-col-6, ui-grid-col-6">
-									
-									<p:panelGrid columns="2" layout="grid" style="margin-top:-5px;"
-										styleClass="panelgrid-noborder disabled disabled resumo"
-										columnClasses="ui-grid-col-8, ui-grid-col-4">
-								
-										<p:outputLabel value="Total em Vendas:" style="font-weight:bold;font-size:13px;"></p:outputLabel>
-										<p:outputLabel
-											value="#{caixaBean.totalEmVendas}"
-											style="font-size: 13px;"><f:convertNumber type="currency" /></p:outputLabel>
-										
-										<p:outputLabel value="Devoluções/Trocas:" style="font-weight:bold;font-size:13px;"></p:outputLabel>
-										<p:outputLabel
-											value="#{caixaBean.totalEmDevolucaoTrocas}"
-											style="font-size: 13px;"><f:convertNumber type="currency" /></p:outputLabel>
-										
-										<p:outputLabel value="Vendas no Dinheiro:" style="font-weight:bold;font-size:13px;"></p:outputLabel>
-										<p:outputLabel
-											value="#{caixaBean.totalEmVendasEmDinheiro}"
-											style="font-size: 13px;"><f:convertNumber type="currency" /></p:outputLabel>
-										
-										<p:outputLabel value="Vendas no Débito/Crédito:" style="font-weight:bold;font-size:13px;"></p:outputLabel>
-										<p:outputLabel
-											value="#{caixaBean.totalEmVendasDebitoCredito}"
-											style="font-size: 13px;"><f:convertNumber type="currency" /></p:outputLabel>			
-									</p:panelGrid>
-									
-									<p:panelGrid columns="2" layout="grid" style="margin-bottom:15px;margin-top:-5px;"
-										styleClass="panelgrid-noborder disabled disabled resumo"
-										columnClasses="ui-grid-col-8, ui-grid-col-4">
-										
-										<p:outputLabel value="Lançamento de Despesas:" style="font-weight:bold;font-size:13px;"></p:outputLabel>
-										<p:outputLabel
-											value="#{caixaBean.totalDespesas}"
-											style="font-size: 13px;"><f:convertNumber type="currency" /></p:outputLabel>
-										
-										<p:outputLabel value="Lançamento de Receitas:" style="font-weight:bold;font-size:13px;"></p:outputLabel>
-										<p:outputLabel
-											value="#{caixaBean.totalReceitas}"
-											style="font-size: 13px;"><f:convertNumber type="currency" /></p:outputLabel>
-									</p:panelGrid>
-							</p:panelGrid>
-						
-						</p:panel>
-							
-					</p:panelGrid>
 
 				</p:panel>
 

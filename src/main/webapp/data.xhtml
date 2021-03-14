@@ -1,0 +1,77 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <style type="text/css">
+            .cars-datalist .text-column p:last-child{
+                color:#757575;
+            }
+
+            .cars-datalist .car-item {
+                padding: 8px 14px;
+            }
+
+            .cars-datalist .car-item img, .cars-datalist .car-item .car-details {
+                display: inline-block;
+                vertical-align: middle;
+                margin-right: 14px;
+            }
+
+            .cars-datalist .car-item button {
+                float: right;
+            }
+            
+            .cars-datalist .ui-datalist-item:not(:last-child) {
+                border-bottom: 1px solid #dee4e9;
+            }
+
+            .cars-datalist ul {
+                margin: 0;
+                padding: 0;
+            }
+
+            .ui-car-display td:last-child {
+                font-weight: 700;
+            }
+
+            @media (max-width:640px) {
+                .cars-datalist .text-column {
+                    text-align: center;
+                }
+
+                .ui-tree {
+                    width: 100%;
+                }
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="title">Data</ui:define>
+
+    <ui:define name="content">
+        <h:form id="form">
+            <div class="ui-g">
+
+                <div class="ui-g-12 ui-md-8">
+                    <div class="card card-w-title">
+                        <h1>PickList</h1>
+                        <p:pickList id="pickList" value="#{pickListView.cities}" var="cities" itemLabel="#{cities}" itemValue="#{cities}" converter="#{ProdutoConverter}"
+                                    showSourceControls="true" showTargetControls="true" showSourceFilter="true" showTargetFilter="true" responsive="true">
+                            <f:facet name="sourceCaption">From</f:facet>
+                            <f:facet name="targetCaption">To</f:facet>
+                            
+                            <p:ajax event="select" listener="#{pickListView.onSelect}"/>
+                        </p:pickList>
+                    </div>
+                </div>
+
+            </div>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

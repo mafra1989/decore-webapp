@@ -355,7 +355,7 @@ function trocarItens() {
 	}).then((result) => {
 	  /* Read more about handling dismissals below */
 	  if (result.dismiss === Swal.DismissReason.timer) {
-		  $(location).attr('href','/decore-webapp/PDV.xhtml');
+		  $(location).attr('href','PDV.xhtml');
 	  }
 	})
 }
@@ -387,6 +387,45 @@ function fecharCaixa(valor) {
 			  setarItemID();
 			  		 
 		  }
-		})
-		
+		})	
+}
+
+function abrirDialogLancamentoReceita() {
+	setarItemID();
+}
+
+function abrirDialogLancamentoDespesa() {
+	setarItemID_();
+}
+
+function atualizaSaldo(lancamento) {
+	
+	let timerInterval;
+	Swal.fire({
+	  type: 'success',
+	  title: 'Concluído!',
+	  html: 'Lançamento N.'
+			+ lancamento + ' registrado com sucesso! <br/>Atualizando saldo.<br/><b></b>',
+	  timer: 3000,
+	  allowOutsideClick: false,
+	  timerProgressBar: true,
+	  onBeforeOpen: () => {
+	    Swal.showLoading()
+	    timerInterval = setInterval(() => {
+	      
+	    }, 100)
+	  },
+	  onClose: () => {
+	    clearInterval(timerInterval)
+	  }
+	}).then((result) => {
+	  /* Read more about handling dismissals below */
+	  if (result.dismiss === Swal.DismissReason.timer) {
+		  $(location).attr('href','Dashboard.xhtml');
+	  }
+	})
+}
+
+function downloadPDF() {
+	$('.download-pdf').click();
 }

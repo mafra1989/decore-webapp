@@ -19,7 +19,6 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
-import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "compras")
@@ -51,9 +50,10 @@ public class Compra implements Serializable {
 	@JoinColumn
 	private Usuario usuario;
 	
-	@NotBlank
-	@Column
-	private String empresa;
+	@NotNull
+	@ManyToOne
+	@JoinColumn
+	private Empresa empresa;
 	
 	/*
 	@NotNull
@@ -84,7 +84,7 @@ public class Compra implements Serializable {
 	
 	
 	
-	@NotNull
+	//@NotNull
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = true)
 	private TipoPagamento tipoPagamento;
@@ -157,11 +157,11 @@ public class Compra implements Serializable {
 	}
 	*/
 
-	public String getEmpresa() {
+	public Empresa getEmpresa() {
 		return empresa;
 	}
 
-	public void setEmpresa(String empresa) {
+	public void setEmpresa(Empresa empresa) {
 		this.empresa = empresa;
 	}
 

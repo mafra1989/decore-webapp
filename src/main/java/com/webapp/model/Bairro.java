@@ -8,7 +8,9 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
@@ -17,6 +19,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "bairros")
+@SequenceGenerator(name="Bairro_Seq", sequenceName="bairros_sequence", allocationSize=1,initialValue = 2)
 public class Bairro implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -31,7 +34,8 @@ public class Bairro implements Serializable {
 	private BigDecimal taxaDeEntrega = BigDecimal.ZERO;
 
 	@Id
-	@GeneratedValue
+	//@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="Bairro_Seq")
 	public Long getId() {
 		return id;
 	}
@@ -50,9 +54,8 @@ public class Bairro implements Serializable {
 		this.nome = nome;
 	}
 
-	@NotNull
 	@Enumerated(EnumType.STRING)
-	@Column(nullable = false, length = 20)
+	@Column(nullable = true, length = 20)
 	public Zona getZona() {
 		return zona;
 	}

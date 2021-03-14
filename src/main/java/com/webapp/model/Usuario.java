@@ -4,20 +4,29 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "usuarios")
+@SequenceGenerator(name="Usuario_Seq", sequenceName="usuarios_sequence", allocationSize=1, initialValue = 3)
 public class Usuario implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -31,9 +40,9 @@ public class Usuario implements Serializable {
 	@Column
 	private String funcao;
 	
-	@NotBlank
+	@NotNull
 	@Column
-	private String empresa;
+	private Empresa empresa;
 	
 	@NotBlank
 	@Column
@@ -41,7 +50,7 @@ public class Usuario implements Serializable {
 	
 	private String contato;
 
-	//private byte[] foto;
+	private byte[] foto;
 	
 	@Column
 	private String urlImagem;
@@ -50,9 +59,13 @@ public class Usuario implements Serializable {
 	private String senha;
 	
 	private List<Grupo> grupos = new ArrayList<>();
+	
+	private boolean entregador;
+	
 
 	@Id
-	@GeneratedValue//(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue//(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="Usuario_Seq")
 	public Long getId() {
 		return id;
 	}
@@ -78,11 +91,13 @@ public class Usuario implements Serializable {
 		this.funcao = funcao;
 	}
 
-	public String getEmpresa() {
+	@ManyToOne
+	@JoinColumn
+	public Empresa getEmpresa() {
 		return empresa;
 	}
 
-	public void setEmpresa(String empresa) {
+	public void setEmpresa(Empresa empresa) {
 		this.empresa = empresa;
 	}
 
@@ -102,7 +117,7 @@ public class Usuario implements Serializable {
 	public void setContato(String telefone) {
 		this.contato = telefone;
 	}
-/*
+
 	@Lob @Basic(fetch = FetchType.LAZY)
 	@Column(length=100000)
 	public byte[] getFoto() {
@@ -112,7 +127,7 @@ public class Usuario implements Serializable {
 	public void setFoto(byte[] foto) {
 		this.foto = foto;
 	}
-*/
+
 	public String getUrlImagem() {
 		return urlImagem;
 	}
@@ -147,6 +162,16 @@ public class Usuario implements Serializable {
 
 	public void setGrupos(List<Grupo> grupos) {
 		this.grupos = grupos;
+	}
+
+	@Type(type = "yes_no")
+	@Column
+	public boolean isEntregador() {
+		return entregador;
+	}
+
+	public void setEntregador(boolean entregador) {
+		this.entregador = entregador;
 	}
 
 	@Override

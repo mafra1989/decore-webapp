@@ -51,8 +51,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			
 			.antMatchers(
 					"/Dashboard.xhtml",
+					"/Financeiro.xhtml",
 					"/Contas.xhtml", 
+					"/Caixa.xhtml", 
 					"/PDV.xhtml", 
+					"/DevolucaoTroca.xhtml", 
 					"/cadastros/CadastroProdutos.xhtml",
 					"/operacoes/RegistroCompras.xhtml",
 					"/operacoes/RegistroVendas.xhtml",
@@ -63,11 +66,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					"/consultas/Lancamentos.xhtml",
 					"/relatorios/Vendas.xhtml",
 					"/relatorios/Lucros.xhtml",
-					"/relatorios/Lancamentos.xhtml")
+					"/relatorios/Lancamentos.xhtml",
+					"Configuracoes.xhtml")
 			.hasAnyRole("ADMINISTRADOR", "USUARIO_AVANCADO", "USUARIO_COMUM")
 			
 			.antMatchers(
-					"/PDV.xhtml", 
+					"/Caixa.xhtml",
+					"/PDV.xhtml",
+					"/DevolucaoTroca.xhtml", 
 					"/cadastros/CadastroProdutos.xhtml",
 					"/consultas/Estoque.xhtml",
 					"/consultas/Vendas.xhtml")
@@ -81,8 +87,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					"/cadastros/CadastroBairros.xhtml", 
 					"/cadastros/CadastroCategoriaLancamento.xhtml", 
 					"/cadastros/CadastroCategoriaProduto.xhtml", 
+					"/cadastros/CadastroClientes.xhtml",
 					"/cadastros/CadastroDestinoLancamento.xhtml", 
+					"/cadastros/CadastroEmpresas.xhtml",
 					"/cadastros/CadastroEquipe.xhtml", 
+					"/cadastros/CadastroFormaPagamento.xhtml",
 					"/cadastros/CadastroFornecedores.xhtml", 
 					"/cadastros/CadastroTipoLancamento.xhtml", 
 					"/cadastros/CadastroTipoVenda.xhtml", 

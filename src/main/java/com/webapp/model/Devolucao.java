@@ -33,24 +33,28 @@ public class Devolucao implements Serializable {
 
 	@NotNull
 	@Column(nullable = false)
-	private Long quantidade = 1L;
+	@Digits(integer = 10 /* precision */, fraction = 3 /* scale */)
+	private BigDecimal quantidade;// = BigDecimal.ZERO;
 
 	@Column(nullable = false)
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal valorTotal = BigDecimal.ZERO;
 	
+	
 	@ManyToOne
 	@JoinColumn
 	private Produto produto = new Produto();
+	
 
 	@NotNull
 	@ManyToOne
 	@JoinColumn
 	private Usuario usuario;
 	
-	@NotBlank
-	@Column(nullable = false, length = 60)
-	private String empresa;
+	@NotNull
+	@ManyToOne
+	@JoinColumn
+	private Empresa empresa;
 	
 	@NotBlank
 	@Column(nullable = false, length = 10)
@@ -77,12 +81,12 @@ public class Devolucao implements Serializable {
 		this.dataDevolucao = dataDevolucao;
 	}
 
-	public Long getQuantidade() {
+	public BigDecimal getQuantidade() {
 		return quantidade;
 	}
 
-	public void setQuantidade(Long quantidade) {
-		this.quantidade = quantidade;
+	public void setQuantidade(BigDecimal quantidade) {
+		this.quantidade = quantidade.setScale(3, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public BigDecimal getValorTotal() {
@@ -90,7 +94,7 @@ public class Devolucao implements Serializable {
 	}
 
 	public void setValorTotal(BigDecimal valorTotal) {
-		this.valorTotal = valorTotal;
+		this.valorTotal = valorTotal.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public Produto getProduto() {
@@ -109,11 +113,11 @@ public class Devolucao implements Serializable {
 		this.usuario = usuario;
 	}
 
-	public String getEmpresa() {
+	public Empresa getEmpresa() {
 		return empresa;
 	}
 
-	public void setEmpresa(String empresa) {
+	public void setEmpresa(Empresa empresa) {
 		this.empresa = empresa;
 	}
 

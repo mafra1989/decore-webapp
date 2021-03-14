@@ -141,7 +141,7 @@
 						action="#{cadastroBairroBean.prepararEditarCadastro}"
 						process="@this" update="bairro-dialog"
 						oncomplete="PF('bairro-dialog').show()"
-						disabled="#{cadastroBairroBean.bairroSelecionado == null}">
+						disabled="#{cadastroBairroBean.bairroSelecionado == null or cadastroBairroBean.bairroSelecionado.id == 1}">
 
 						<p:resetInput target="bairro-dialog" />
 					</p:commandButton>
@@ -152,7 +152,7 @@
 					<p:commandButton icon="fa fa-fw fa-trash" value="Excluir"
 						process="@this"
 						onclick="deleteItem(#{cadastroBairroBean.bairroSelecionado.id});"
-						disabled="#{cadastroBairroBean.bairroSelecionado == null}" />
+						disabled="#{cadastroBairroBean.bairroSelecionado == null or cadastroBairroBean.bairroSelecionado.id == 1}" />
 				</f:facet>
 			</p:toolbar>
 
@@ -174,7 +174,7 @@
 					<p:dataTable id="bairroTable" reflow="true"
 						paginatorAlwaysVisible="false"
 						value="#{cadastroBairroBean.todosBairros}" var="bairro"
-						emptyMessage="Nenhum bairro encontrado." rows="10"
+						emptyMessage="Nenhum bairro encontrado." scrollable="true" scrollHeight="470"
 						paginator="true" paginatorPosition="bottom" selectionMode="single"
 						selection="#{cadastroBairroBean.bairroSelecionado}"
 						rowKey="#{bairro.id}" style="margin-top: 10px">
@@ -187,7 +187,7 @@
 						</p:column>
 						
 						<p:column headerText="Zona">
-							<h:outputText value="#{bairro.zona.descricao}" />
+							<h:outputText value="#{bairro.zona.descricao != null ? bairro.zona.descricao : '-' }" />
 						</p:column>
 						
 						<p:column headerText="Taxa de Entrega">

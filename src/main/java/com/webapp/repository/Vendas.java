@@ -12,7 +12,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.webapp.model.CategoriaProduto;
+import com.webapp.model.Cliente;
+import com.webapp.model.Empresa;
 import com.webapp.model.Entrega;
 import com.webapp.model.Produto;
 import com.webapp.model.StatusPedido;
@@ -46,26 +50,42 @@ public class Vendas implements Serializable {
 		this.manager.remove(vendaTemp);
 	}
 
-	public List<Venda> todas(String empresa) {
-		return this.manager.createQuery("from Venda where empresa = :empresa order by numeroVenda desc", Venda.class)
-				.setParameter("empresa", empresa).getResultList();
+	public List<Venda> todas(Empresa empresa) {
+		return this.manager.createQuery("from Venda where empresa.id = :empresa order by numeroVenda desc", Venda.class)
+				.setParameter("empresa", empresa.getId()).getResultList();
+	}
+	
+	public List<Venda> todas_(Empresa empresa) {
+		return this.manager.createQuery("from Venda where empresa.id = :empresa and quantidadeItens > 0 order by numeroVenda desc", Venda.class)
+				.setParameter("empresa", empresa.getId()).getResultList();
 	}
 
-	public Venda ultimoNVenda(String empresa) {
+	public Venda ultimoNVenda(Empresa empresa) {
 
 		try {
-			return this.manager.createQuery("from Venda e WHERE e.empresa = :empresa order by e.numeroVenda desc", Venda.class).setMaxResults(1)
-					.setParameter("empresa", empresa).getSingleResult();
+			return this.manager.createQuery("from Venda e WHERE e.empresa.id = :empresa order by e.numeroVenda desc", Venda.class).setMaxResults(1)
+					.setParameter("empresa", empresa.getId()).getSingleResult();
 		} catch (NoResultException e) {
 			return null;
 		}
 
 	}
 
-	public Venda porNumeroVenda(Long numeroVenda, String empresa) {
+	public Venda porNumeroVenda(Long numeroVenda, Empresa empresa) {
 		try {
-			return this.manager.createQuery("from Venda e where e.empresa = :empresa AND e.numeroVenda = :numeroVenda", Venda.class)
-					.setParameter("empresa", empresa).setParameter("numeroVenda", numeroVenda).getSingleResult();
+			return this.manager.createQuery("from Venda e where e.empresa.id = :empresa AND e.numeroVenda = :numeroVenda", Venda.class)
+					.setParameter("empresa", empresa.getId()).setParameter("numeroVenda", numeroVenda).getSingleResult();
+		} catch (NoResultException e) {
+
+		}
+
+		return null;
+	}
+	
+	public Venda porStatusMesa(String numeroMesa, String statusMesa, Empresa empresa) {
+		try {
+			return this.manager.createQuery("from Venda e where e.empresa.id = :empresa AND e.mesa = :numeroMesa AND e.statusMesa IS NULL", Venda.class)
+					.setParameter("empresa", empresa.getId()).setParameter("numeroMesa", numeroMesa).getSingleResult();
 		} catch (NoResultException e) {
 
 		}
@@ -80,18 +100,31 @@ public class Vendas implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public List<Venda> vendasFiltradas(Long numeroVenda, Date dateStart, Date dateStop, boolean vendasNormais,
-			StatusPedido[] statusPedido, Usuario usuario, String empresa) {
+			StatusPedido[] statusPedido, Usuario usuario, Cliente cliente, Usuario entregador, Empresa empresa) {
 
 		List<Venda> vendas = new ArrayList<>();
 
 		String condition = "";
 		if (usuario != null && usuario.getId() != null) {
-			condition = "AND i.usuario.id = :idUsuario ";
+			condition += "AND i.usuario.id = :idUsuario ";
+		}
+		
+		if (cliente != null && cliente.getId() != null) {
+			condition += "AND i.cliente.id = :idCliente ";
+		}
+		
+		if (entregador != null && entregador.getId() != null) {
+			condition += "AND i.entregador.id = :idEntregador ";
 		}
 
-		String conditionNumeroVenda = "";
+		String conditionNumeroVenda = "";		
 		if (numeroVenda != null) {
-			conditionNumeroVenda = "AND i.numeroVenda = :numeroVenda ";
+			if (StringUtils.isNotBlank(String.valueOf(numeroVenda))) {
+				if(!String.valueOf(numeroVenda).trim().equals("0")) {
+					System.out.println(numeroVenda + " - " + String.valueOf(numeroVenda));
+					conditionNumeroVenda = "AND i.numeroVenda = :numeroVenda ";
+				}			
+			}
 		}
 		
 		String orderBy = " order by i.numeroVenda desc";
@@ -102,17 +135,30 @@ public class Vendas implements Serializable {
 		}
 
 		String jpql = "SELECT i, (select e from Entrega e where e.venda.id = i.id) FROM Venda i "
-				+ "WHERE i.quantidadeItens > 0 AND i.empresa = :empresa AND i.dataVenda between :dateStart and :dateStop " + condition + conditionNumeroVenda
+				+ "WHERE i.quantidadeItens > 0 AND i.empresa.id = :empresa AND i.ajuste = 'N' AND i.dataVenda between :dateStart and :dateStop " + condition + conditionNumeroVenda
 				+ orderBy;
 
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
 
 		if (usuario != null && usuario.getId() != null) {
 			q.setParameter("idUsuario", usuario.getId());
 		}
+		
+		if (cliente != null && cliente.getId() != null) {
+			q.setParameter("idCliente", cliente.getId());
+		}
+		
+		if (entregador != null && entregador.getId() != null) {
+			q.setParameter("idEntregador", entregador.getId());
+		}
 
 		if (numeroVenda != null) {
-			q.setParameter("numeroVenda", numeroVenda);
+			if (StringUtils.isNotBlank(String.valueOf(numeroVenda))) {
+				if(!String.valueOf(numeroVenda).trim().equals("0")) {
+					System.out.println(numeroVenda + " - " + String.valueOf(numeroVenda));
+					q.setParameter("numeroVenda", Long.parseLong(String.valueOf(numeroVenda).trim()));
+				}
+			}
 		}
 
 		List<Object[]> objects = q.getResultList();
@@ -180,7 +226,7 @@ public class Vendas implements Serializable {
 	
 	
 	@SuppressWarnings("unchecked")
-	public List<Venda> vendasFiltradasPDV(Long numeroVenda, Date dateStart, Date dateStop, Usuario usuario, String empresa) {
+	public List<Venda> vendasFiltradasPDV(Long numeroVenda, Date dateStart, Date dateStop, Usuario usuario, Empresa empresa) {
 
 		List<Venda> vendas = new ArrayList<>();
 
@@ -191,22 +237,32 @@ public class Vendas implements Serializable {
 
 		String conditionNumeroVenda = "";
 		if (numeroVenda != null) {
-			conditionNumeroVenda = "AND i.numeroVenda = :numeroVenda ";
+			if (StringUtils.isNotBlank(String.valueOf(numeroVenda))) {
+				if(!String.valueOf(numeroVenda).trim().equals("0")) {
+					System.out.println(numeroVenda + " - " + String.valueOf(numeroVenda));
+					conditionNumeroVenda = "AND i.numeroVenda = :numeroVenda ";
+				}			
+			}
 		}
 		
 		String orderBy = " order by i.numeroVenda desc";
 
 		String jpql = "SELECT i, (select e from Entrega e where e.venda.id = i.id) FROM Venda i "
-				+ "WHERE i.empresa = :empresa AND i.pdv = 'Y' AND i.ajuste = 'N' AND i.conta = 'N' AND i.status = 'Y' AND i.quantidadeItens > 0 AND i.dataVenda between :dateStart and :dateStop " + condition + conditionNumeroVenda + orderBy;
+				+ "WHERE i.empresa.id = :empresa AND i.pdv = 'Y' AND i.ajuste = 'N' AND (i.conta = 'N' OR (i.conta = 'Y' AND i.mesa is not null)) AND i.status = 'Y' AND i.quantidadeItens > 0 AND i.dataVenda between :dateStart and :dateStop  " + condition + conditionNumeroVenda + orderBy;
 
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
 
 		if (usuario != null && usuario.getId() != null) {
 			q.setParameter("idUsuario", usuario.getId());
 		}
 
 		if (numeroVenda != null) {
-			q.setParameter("numeroVenda", numeroVenda);
+			if (StringUtils.isNotBlank(String.valueOf(numeroVenda))) {
+				if(!String.valueOf(numeroVenda).trim().equals("0")) {
+					System.out.println(numeroVenda + " - " + String.valueOf(numeroVenda));
+					q.setParameter("numeroVenda", Long.parseLong(String.valueOf(numeroVenda).trim()));
+				}
+			}
 		}
 
 		List<Object[]> objects = q.getResultList();
@@ -224,9 +280,9 @@ public class Vendas implements Serializable {
 	
 	
 	// i.status = 'Y' AND 
-	public Number totalVendas(String empresa) {
-		String jpql = "SELECT sum(i.total) FROM ItemVenda i WHERE i.venda.empresa = :empresa AND i.venda.vendaPaga = 'Y' AND i.venda.ajuste = 'N'";
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa);
+	public Number totalVendas(Empresa empresa) { 
+		String jpql = "SELECT sum(i.total) FROM ItemVenda i WHERE i.venda.empresa.id = :empresa AND i.venda.vendaPaga = 'Y' AND i.venda.ajuste = 'N'";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
 
 		Number count = 0;
 		try {
@@ -244,9 +300,47 @@ public class Vendas implements Serializable {
 	}
 	
 	
-	public Number totalLucros(String empresa) {
-		String jpql = "SELECT sum(i.lucro) FROM ItemVenda i WHERE i.venda.empresa = :empresa AND i.venda.conta = 'N' AND i.venda.vendaPaga = 'Y' AND i.venda.ajuste = 'N'";
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa);
+	public Number totalLucros(Empresa empresa) {
+		String jpql = "SELECT sum(i.lucro) FROM ItemVenda i WHERE i.venda.empresa.id = :empresa AND i.venda.conta = 'N' AND i.venda.vendaPaga = 'Y' AND i.venda.ajuste = 'N'";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
+
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+	
+	public Number totalDescontos(Empresa empresa) {
+		String jpql = "SELECT sum(v.desconto) FROM Venda v WHERE v.empresa.id = :empresa AND v.conta = 'N' AND v.vendaPaga = 'Y' AND v.ajuste = 'N'";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
+
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+	
+	public Number totalEmTaxas(Empresa empresa) {
+		String jpql = "SELECT sum((v.valorTotal - v.desconto) * v.taxaDeAcrescimo/100) FROM Venda v WHERE v.empresa.id = :empresa AND v.conta = 'N' AND v.vendaPaga = 'Y' AND v.ajuste = 'N' AND v.clientePagouTaxa = 'N' AND v.taxaDeAcrescimo > 0";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
 
 		Number count = 0;
 		try {
@@ -265,9 +359,9 @@ public class Vendas implements Serializable {
 	
 	
 	// i.status = 'Y' AND 
-	public Number totalComprasVendidas(String empresa) {
-		String jpql = "SELECT sum(i.valorCompra) FROM ItemVenda i WHERE i.venda.empresa = :empresa AND i.venda.vendaPaga = 'Y' AND i.venda.ajuste = 'N'";
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa);
+	public Number totalComprasVendidas(Empresa empresa) {
+		String jpql = "SELECT sum(i.valorCompra) FROM ItemVenda i WHERE i.venda.empresa.id = :empresa AND i.venda.vendaPaga = 'Y' AND i.venda.ajuste = 'N'";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
 
 		Number count = 0;
 		try {
@@ -285,10 +379,30 @@ public class Vendas implements Serializable {
 	}
 	
 	
-	public Number vendasAvistaPagas(String empresa) {
-		String jpql = "SELECT sum(i.total) FROM ItemVenda i Where i.venda.empresa = :empresa AND i.venda.ajuste = 'N' AND i.venda.vendaPaga = 'Y' AND i.venda.conta = 'N'";
+	public Number vendasAvistaPagas(Empresa empresa) {
+		String jpql = "SELECT sum(i.total) FROM ItemVenda i Where i.venda.empresa.id = :empresa AND i.venda.ajuste = 'N' AND i.venda.vendaPaga = 'Y' AND i.venda.conta = 'N'";
 		
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa);
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
+
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+	
+	public Number descontoVendasAvistaPagas(Empresa empresa) {
+		String jpql = "SELECT sum(i.desconto) FROM Venda i Where i.empresa.id = :empresa AND i.ajuste = 'N' AND i.vendaPaga = 'Y' AND i.conta = 'N'";
+		
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
 
 		Number count = 0;
 		try {
@@ -307,10 +421,10 @@ public class Vendas implements Serializable {
 		
 		
 	// i.status = 'Y' AND 
-	public Number totalVendasPorDiaDaSemana(Long nomeDia, String empresa) {
+	public Number totalVendasPorDiaDaSemana(Long nomeDia, Empresa empresa) {
 
-		String jpql = "SELECT sum(i.valorTotal) FROM Venda i WHERE i.empresa = :empresa AND i.nomeDia = :nomeDia AND i.vendaPaga = 'Y' AND i.ajuste = 'N'";
-		Query q = manager.createQuery(jpql).setParameter("nomeDia", nomeDia).setParameter("empresa", empresa);
+		String jpql = "SELECT sum(i.valorTotal) FROM Venda i WHERE i.empresa.id = :empresa AND i.nomeDia = :nomeDia AND i.vendaPaga = 'Y' AND i.ajuste = 'N'";
+		Query q = manager.createQuery(jpql).setParameter("nomeDia", nomeDia).setParameter("empresa", empresa.getId());
 
 		Number count = (Number) q.getSingleResult();
 
@@ -322,30 +436,30 @@ public class Vendas implements Serializable {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalVendasPorCategoria(String empresa) {
+	public List<Object[]> totalVendasPorCategoria(Empresa empresa) {
 		//  i.venda.status = 'Y' AND
-		String jpql = "SELECT p.categoriaProduto.nome, SUM(i.total), SUM(i.quantidade) FROM ItemVenda i JOIN i.produto p WHERE i.venda.empresa = :empresa AND ((i.venda.vendaPaga = 'Y' AND i.venda.conta = 'N') OR (i.venda.vendaPaga = 'N' AND i.venda.conta = 'Y')) AND i.venda.ajuste = 'N' GROUP BY p.categoriaProduto.nome ORDER BY SUM(i.total) DESC";
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa);
+		String jpql = "SELECT p.categoriaProduto.nome, SUM(i.total), SUM(i.quantidade) FROM ItemVenda i JOIN i.produto p WHERE i.venda.empresa.id = :empresa AND ((i.venda.vendaPaga = 'Y' AND i.venda.conta = 'N') OR (i.venda.vendaPaga = 'N' AND i.venda.conta = 'Y')) AND i.venda.ajuste = 'N' GROUP BY p.categoriaProduto.nome ORDER BY SUM(i.total) DESC";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
 		List<Object[]> result = q.getResultList();
 
 		return result;
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalVendasPorProduto(String categoriaProduto, String empresa) {
+	public List<Object[]> totalVendasPorProduto(String categoriaProduto, Empresa empresa) {
 		//  i.venda.status = 'Y' AND
-		String jpql = "SELECT p.descricao, SUM(i.total), SUM(i.quantidade), p.codigo FROM ItemVenda i JOIN i.produto p where i.venda.empresa = :empresa AND p.categoriaProduto.nome = :categoriaProduto AND ((i.venda.vendaPaga = 'Y' AND i.venda.conta = 'N') OR (i.venda.vendaPaga = 'N' AND i.venda.conta = 'Y')) AND i.venda.ajuste = 'N' GROUP BY p.codigo, p.descricao ORDER BY SUM(i.total) DESC";
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("categoriaProduto", categoriaProduto);
+		String jpql = "SELECT p.descricao, SUM(i.total), SUM(i.quantidade), p.codigo, p.unidadeMedida FROM ItemVenda i JOIN i.produto p where i.venda.empresa.id = :empresa AND p.categoriaProduto.nome = :categoriaProduto AND ((i.venda.vendaPaga = 'Y' AND i.venda.conta = 'N') OR (i.venda.vendaPaga = 'N' AND i.venda.conta = 'Y')) AND i.venda.ajuste = 'N' GROUP BY p.codigo, p.descricao, p.unidadeMedida ORDER BY SUM(i.total) DESC";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("categoriaProduto", categoriaProduto);
 		List<Object[]> result = q.getResultList();
 
 		return result;
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalParaVendasPorCategoria(String empresa) {
+	public List<Object[]> totalParaVendasPorCategoria(Empresa empresa) {
 
-		String jpql = "SELECT i.produto.categoriaProduto.nome, sum(i.quantidadeDisponivel * i.produto.precoDeVenda), SUM(i.quantidadeDisponivel) from ItemCompra i where i.compra.empresa = :empresa AND i.quantidadeDisponivel > 0 group by i.produto.categoriaProduto.nome order by sum(i.quantidadeDisponivel * i.valorUnitario * (1+(i.produto.margemLucro/100))) desc";
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa);
+		String jpql = "SELECT i.produto.categoriaProduto.nome, sum(i.quantidadeDisponivel * i.produto.precoDeVenda), SUM(i.quantidadeDisponivel) from ItemCompra i where i.produto.estoque = 'Y' AND i.compra.empresa.id = :empresa AND i.quantidadeDisponivel > 0 group by i.produto.categoriaProduto.nome order by sum(i.quantidadeDisponivel * i.valorUnitario * (1+(i.produto.margemLucro/100))) desc";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
 		List<Object[]> result = q.getResultList();
 		
 		System.out.println(jpql);
@@ -354,20 +468,10 @@ public class Vendas implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalParaVendasPorProduto(String categoriaProduto, String empresa) {
+	public List<Object[]> totalParaVendasPorProduto(String categoriaProduto, Empresa empresa) {
 
-		String jpql = "SELECT i.produto.descricao, sum(i.quantidadeDisponivel * i.produto.precoDeVenda), SUM(i.quantidadeDisponivel), i.produto.codigo from ItemCompra i where i.compra.empresa = :empresa AND i.quantidadeDisponivel > 0 AND i.produto.categoriaProduto.nome = :categoriaProduto group by i.produto.codigo, i.produto.descricao order by sum(i.quantidadeDisponivel * i.valorUnitario * (1+(i.produto.margemLucro/100))) desc";
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("categoriaProduto", categoriaProduto);
-		List<Object[]> result = q.getResultList();
-
-		return result;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public List<Object[]> totalParaVendasPorProdutoGeral(String categoriaProduto, String empresa) {
-
-		String jpql = "SELECT i.produto.descricao, sum(i.quantidadeDisponivel * i.produto.precoDeVenda), SUM(i.quantidadeDisponivel), i.produto.codigo from ItemCompra i where i.compra.empresa = :empresa AND i.produto.categoriaProduto.nome = :categoriaProduto group by i.produto.codigo, i.produto.descricao order by sum(i.quantidadeDisponivel * i.valorUnitario * (1+(i.produto.margemLucro/100))) desc";
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("categoriaProduto", categoriaProduto);
+		String jpql = "SELECT i.produto.descricao, sum(i.quantidadeDisponivel * i.produto.precoDeVenda), SUM(i.quantidadeDisponivel), i.produto.codigo, i.produto.unidadeMedida from ItemCompra i where i.produto.estoque = 'Y' AND i.compra.empresa.id = :empresa AND i.quantidadeDisponivel > 0 AND i.produto.categoriaProduto.nome = :categoriaProduto group by i.produto.codigo, i.produto.descricao, i.produto.unidadeMedida order by sum(i.quantidadeDisponivel * i.valorUnitario * (1+(i.produto.margemLucro/100))) desc";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("categoriaProduto", categoriaProduto);
 		List<Object[]> result = q.getResultList();
 
 		return result;
@@ -376,7 +480,7 @@ public class Vendas implements Serializable {
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalVendasPorData(Calendar calendarStart, Calendar calendarStop,
 			CategoriaProduto categoriaProduto, String[] categorias, Produto produto, Usuario usuario,
-			boolean chartCondition, String empresa) {
+			boolean chartCondition, Empresa empresa) {
 
 		String condition = "";
 		String select_Condition = "";
@@ -407,15 +511,15 @@ public class Vendas implements Serializable {
 			orderBy_Condition = "p.ano asc,p.mes asc,p.dia asc ";
 		} else {
 			select_Condition = "i.produto.descricao, ";
-			sum_Condition = "sum(i.total), sum(i.quantidade), i.produto.codigo";
-			groupBy_Condition = "i.produto.id, i.produto.codigo, i.produto.descricao ";
+			sum_Condition = "sum(i.total), sum(i.quantidade), i.produto.codigo, i.produto.unidadeMedida";
+			groupBy_Condition = "i.produto.id, i.produto.codigo, i.produto.descricao, i.produto.unidadeMedida ";
 			orderBy_Condition = "sum(i.quantidade) desc, sum(i.total) desc";
 		}
 		//  AND p.status = 'Y'
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.empresa = :empresa AND p.dataVenda BETWEEN :dataInicio AND :dataFim AND p.vendaPaga = 'Y' AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition
+				+ "WHERE p.empresa.id = :empresa AND p.dataVenda BETWEEN :dataInicio AND :dataFim AND p.vendaPaga = 'Y' AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition
 				+ " order by " + orderBy_Condition;
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
 				calendarStop.getTime());
 
 		if (categoriaProduto != null && categoriaProduto.getId() != null) {
@@ -454,7 +558,7 @@ public class Vendas implements Serializable {
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalVendasPorSemana(String ano, String semana01, String semana02,
 			CategoriaProduto categoriaProduto, String[] categorias, Produto produto, Usuario usuario,
-			boolean chartCondition, String empresa) {
+			boolean chartCondition, Empresa empresa) {
 
 		String condition = "";
 		String select_Condition = "";
@@ -484,15 +588,15 @@ public class Vendas implements Serializable {
 			orderBy_Condition = "p.semana asc, p.ano asc";
 		} else {
 			select_Condition = "i.produto.descricao, ";
-			sum_Condition = "sum(i.total), sum(i.quantidade), i.produto.codigo";
-			groupBy_Condition = "i.produto.id, i.produto.codigo, i.produto.descricao ";
+			sum_Condition = "sum(i.total), sum(i.quantidade), i.produto.codigo, i.produto.unidadeMedida";
+			groupBy_Condition = "i.produto.id, i.produto.codigo, i.produto.descricao, i.produto.unidadeMedida ";
 			orderBy_Condition = "sum(i.quantidade) desc, sum(i.total) desc";
 		}
 		//  AND p.status = 'Y'
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.empresa = :empresa AND p.semana BETWEEN :semanaInicio AND :semanaFim AND p.vendaPaga = 'Y' AND p.ajuste = 'N' " + "AND p.ano = :ano " + condition + "group by "
+				+ "WHERE p.empresa.id = :empresa AND p.semana BETWEEN :semanaInicio AND :semanaFim AND p.vendaPaga = 'Y' AND p.ajuste = 'N' " + "AND p.ano = :ano " + condition + "group by "
 				+ groupBy_Condition + " order by " + orderBy_Condition;
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("semanaInicio", Long.parseLong(semana01.replace("W", "")))
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("semanaInicio", Long.parseLong(semana01.replace("W", "")))
 				.setParameter("semanaFim", Long.parseLong(semana02.replace("W", "")))
 				.setParameter("ano", Long.parseLong(ano));
 
@@ -519,7 +623,7 @@ public class Vendas implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalVendasPorMes(String ano, String mes01, String mes02, CategoriaProduto categoriaProduto,
-			String[] categorias, Produto produto, Usuario usuario, boolean chartCondition, String empresa) {
+			String[] categorias, Produto produto, Usuario usuario, boolean chartCondition, Empresa empresa) {
 
 		String condition = "";
 		String select_Condition = "";
@@ -549,15 +653,15 @@ public class Vendas implements Serializable {
 			orderBy_Condition = "p.mes asc, p.ano asc";
 		} else {
 			select_Condition = "i.produto.descricao, ";
-			sum_Condition = "sum(i.total), sum(i.quantidade), i.produto.codigo";
-			groupBy_Condition = "i.produto.id, i.produto.codigo, i.produto.descricao ";
+			sum_Condition = "sum(i.total), sum(i.quantidade), i.produto.codigo, i.produto.unidadeMedida";
+			groupBy_Condition = "i.produto.id, i.produto.codigo, i.produto.descricao, i.produto.unidadeMedida ";
 			orderBy_Condition = "sum(i.quantidade) desc, sum(i.total) desc";
 		}
 		//  AND p.status = 'Y'
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.empresa = :empresa AND p.mes BETWEEN :mesInicio AND :mesFim AND p.vendaPaga = 'Y' AND p.ajuste = 'N' " + "AND p.ano = :ano " + condition + "group by "
+				+ "WHERE p.empresa.id = :empresa AND p.mes BETWEEN :mesInicio AND :mesFim AND p.conta = 'N' AND p.vendaPaga = 'Y' AND p.ajuste = 'N' " + "AND p.ano = :ano " + condition + "group by "
 				+ groupBy_Condition + " order by " + orderBy_Condition;
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("mesInicio", Long.parseLong(mes01))
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("mesInicio", Long.parseLong(mes01))
 				.setParameter("mesFim", Long.parseLong(mes02)).setParameter("ano", Long.parseLong(ano));
 
 		if (categoriaProduto != null && categoriaProduto.getId() != null) {
@@ -583,7 +687,7 @@ public class Vendas implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalVendasPorAno(String ano01, String ano02, CategoriaProduto categoriaProduto,
-			String[] categorias, Produto produto, Usuario usuario, boolean chartCondition, String empresa) {
+			String[] categorias, Produto produto, Usuario usuario, boolean chartCondition, Empresa empresa) {
 
 		String condition = "";
 		String select_Condition = "";
@@ -613,15 +717,15 @@ public class Vendas implements Serializable {
 			orderBy_Condition = "p.ano asc";
 		} else {
 			select_Condition = "i.produto.descricao, ";
-			sum_Condition = "sum(i.total), sum(i.quantidade), i.produto.codigo";
-			groupBy_Condition = "i.produto.id, i.produto.codigo, i.produto.descricao ";
+			sum_Condition = "sum(i.total), sum(i.quantidade), i.produto.codigo, i.produto.unidadeMedida";
+			groupBy_Condition = "i.produto.id, i.produto.codigo, i.produto.descricao, i.produto.unidadeMedida ";
 			orderBy_Condition = "sum(i.quantidade) desc, sum(i.total) desc";
 		}
 		//  AND p.status = 'Y'
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.empresa = :empresa AND p.ano BETWEEN :anoInicio AND :anoFim AND p.vendaPaga = 'Y' AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition
+				+ "WHERE p.empresa.id = :empresa AND p.ano BETWEEN :anoInicio AND :anoFim AND p.vendaPaga = 'Y' AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition
 				+ " order by " + orderBy_Condition;
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("anoInicio", Long.parseLong(ano01)).setParameter("anoFim",
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("anoInicio", Long.parseLong(ano01)).setParameter("anoFim",
 				Long.parseLong(ano02));
 
 		if (categoriaProduto != null && categoriaProduto.getId() != null) {
@@ -648,7 +752,7 @@ public class Vendas implements Serializable {
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalLucrosPorData(Calendar calendarStart, Calendar calendarStop,
 			CategoriaProduto categoriaProduto, String[] categorias, Produto produto, Usuario usuario, 
-			boolean chartCondition, String empresa) {
+			boolean chartCondition, Empresa empresa) {
 
 		String condition = "";
 		String select_Condition = "";
@@ -686,7 +790,7 @@ public class Vendas implements Serializable {
 		}
 		// AND p.status = 'Y'
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.empresa = :empresa AND p.dataVenda BETWEEN :dataInicio AND :dataFim AND p.vendaPaga = 'Y' AND p.ajuste = 'N' "
+				+ "WHERE p.empresa.id = :empresa AND p.dataVenda BETWEEN :dataInicio AND :dataFim AND p.vendaPaga = 'Y' AND p.ajuste = 'N' "
 				/*
 				 * + "WHERE p.ano BETWEEN :anoInicio AND :anoFim " +
 				 * "AND p.mes BETWEEN :mesInicio AND :mesFim " +
@@ -694,7 +798,7 @@ public class Vendas implements Serializable {
 				 */
 				+ condition + "group by " + groupBy_Condition + " order by " + orderBy_Condition;
 
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("dataInicio", calendarStart.getTime())// calendarStart.getTime()
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime())// calendarStart.getTime()
 				.setParameter("dataFim", calendarStop.getTime());// calendarStop.getTime()
 		/*
 		 * .setParameter("diaInicio",
@@ -743,11 +847,12 @@ public class Vendas implements Serializable {
 
 		return result;
 	}
+	
 
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalLucrosPorSemana(String ano, String semana01, String semana02,
 			CategoriaProduto categoriaProduto, String[] categorias, Produto produto, Usuario usuario, 
-			boolean chartCondition, String empresa) {
+			boolean chartCondition, Empresa empresa) {
 
 		String condition = "";
 		String select_Condition = "";
@@ -785,9 +890,9 @@ public class Vendas implements Serializable {
 		}
 		// AND p.status = 'Y' 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.empresa = :empresa AND p.semana = :semanaInicio " + "AND p.ano = :ano AND p.vendaPaga = 'Y'  AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition
+				+ "WHERE p.empresa.id = :empresa AND p.semana = :semanaInicio " + "AND p.ano = :ano AND p.vendaPaga = 'Y'  AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition
 				+ " order by " + orderBy_Condition;
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("semanaInicio", Long.parseLong(semana01.replace("W", "")))
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("semanaInicio", Long.parseLong(semana01.replace("W", "")))
 				.setParameter("ano", Long.parseLong(ano));
 
 		if (categoriaProduto != null && categoriaProduto.getId() != null) {
@@ -813,7 +918,7 @@ public class Vendas implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalLucrosPorMes(String ano, String mes01, String mes02, CategoriaProduto categoriaProduto,
-			String[] categorias, Produto produto, Usuario usuario, boolean chartCondition, String empresa) {
+			String[] categorias, Produto produto, Usuario usuario, boolean chartCondition, Empresa empresa) {
 
 		String condition = "";
 		String select_Condition = "";
@@ -851,9 +956,9 @@ public class Vendas implements Serializable {
 		}
 		// AND p.status = 'Y' 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.empresa = :empresa AND p.mes = :mesInicio " + "AND p.ano = :ano AND p.vendaPaga = 'Y' AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition
+				+ "WHERE p.empresa.id = :empresa AND p.mes = :mesInicio " + "AND p.ano = :ano AND p.vendaPaga = 'Y' AND p.conta = 'N' AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition
 				+ " order by " + orderBy_Condition;
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("mesInicio", Long.parseLong(mes01)).setParameter("ano",
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("mesInicio", Long.parseLong(mes01)).setParameter("ano",
 				Long.parseLong(ano));
 
 		if (categorias != null && categorias.length > 0) {
@@ -879,7 +984,7 @@ public class Vendas implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalLucrosPorLote(String ano, String mes01, String mes02, CategoriaProduto categoriaProduto,
-			String[] categorias, Produto produto, boolean chartCondition, String empresa) {
+			String[] categorias, Produto produto, boolean chartCondition, Empresa empresa) {
 
 		String condition = "";
 		String select_Condition = "";
@@ -911,9 +1016,9 @@ public class Vendas implements Serializable {
 		}
 		//  AND p.status = 'Y'
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.empresa = i.compra.empresa AND p.empresa = :empresa AND i.compra.mes BETWEEN :mesInicio AND :mesFim " + "AND i.compra.ano = :ano AND p.vendaPaga = 'Y' AND p.ajuste = 'N' " + condition
+				+ "WHERE p.empresa.id = i.compra.empresa.id AND p.empresa.id = :empresa AND i.compra.mes BETWEEN :mesInicio AND :mesFim " + "AND i.compra.ano = :ano AND p.vendaPaga = 'Y' AND p.ajuste = 'N' " + condition
 				+ "group by " + groupBy_Condition + " order by " + orderBy_Condition;
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("mesInicio", Long.parseLong(mes01))
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("mesInicio", Long.parseLong(mes01))
 				.setParameter("mesFim", Long.parseLong(mes02)).setParameter("ano", Long.parseLong(ano));
 
 		if (categoriaProduto != null && categoriaProduto.getId() != null) {
@@ -935,7 +1040,7 @@ public class Vendas implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalLucrosPorAno(String ano01, String ano02, CategoriaProduto categoriaProduto,
-			String[] categorias, Produto produto, Usuario usuario, boolean chartCondition, String empresa) {
+			String[] categorias, Produto produto, Usuario usuario, boolean chartCondition, Empresa empresa) {
 
 		String condition = "";
 		String select_Condition = "";
@@ -973,9 +1078,9 @@ public class Vendas implements Serializable {
 		}
 		// AND p.status = 'Y' 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.empresa = :empresa AND p.ano = :anoInicio AND p.vendaPaga = 'Y' AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition + " order by "
+				+ "WHERE p.empresa.id = :empresa AND p.ano = :anoInicio AND p.vendaPaga = 'Y' AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition + " order by "
 				+ orderBy_Condition;
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("anoInicio", Long.parseLong(ano01));
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("anoInicio", Long.parseLong(ano01));
 
 		if (categoriaProduto != null && categoriaProduto.getId() != null) {
 			q.setParameter("categoriaProduto", categoriaProduto.getNome());
@@ -999,30 +1104,10 @@ public class Vendas implements Serializable {
 	}
 	
 	
-	public Number totalVendasPorDiaValor(Date dateStart, Date dateStop, String empresa) {
+	public Number totalVendasPorDiaValor(Date dateStart, Date dateStop, Empresa empresa) {
 		
-		String jpql = "SELECT sum(i.valorTotal) FROM Venda i WHERE i.quantidadeItens > 0 AND i.empresa = :empresa AND i.dataVenda between :dateStart and :dateStop AND i.vendaPaga = 'Y' AND i.conta = 'N' AND i.ajuste = 'N'";
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
-
-		Number count = 0;
-		try {
-			count = (Number) q.getSingleResult();
-
-		} catch (NoResultException e) {
-
-		}
-
-		if (count == null) {
-			count = 0;
-		}
-
-		return count;
-	}
-	
-	public Number totalVendasPorDiaQuantidade(Date dateStart, Date dateStop, String empresa) {
-		
-		String jpql = "SELECT count(i.id) FROM Venda i WHERE i.quantidadeItens > 0 AND i.empresa = :empresa AND i.dataVenda between :dateStart and :dateStop AND i.vendaPaga = 'Y' AND i.conta = 'N' AND i.ajuste = 'N'";
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
+		String jpql = "SELECT sum(i.valorTotal) FROM Venda i WHERE i.quantidadeItens > 0 AND i.empresa.id = :empresa AND i.dataVenda between :dateStart and :dateStop AND i.vendaPaga = 'Y' AND i.conta = 'N' AND i.ajuste = 'N'";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
 
 		Number count = 0;
 		try {
@@ -1039,10 +1124,10 @@ public class Vendas implements Serializable {
 		return count;
 	}
 
-	public Number totalLucrosPorDia(Date dateStart, Date dateStop, String empresa) {
+	public Number totalDescontosPorDiaValor(Date dateStart, Date dateStop, Empresa empresa) {
 		
-		String jpql = "SELECT sum(i.lucro) FROM ItemVenda i WHERE i.venda.quantidadeItens > 0 AND i.venda.empresa = :empresa AND i.venda.dataVenda between :dateStart and :dateStop AND i.venda.vendaPaga = 'Y' AND i.venda.conta = 'N' AND i.venda.ajuste = 'N'";
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
+		String jpql = "SELECT sum(i.desconto) FROM Venda i WHERE i.quantidadeItens > 0 AND i.empresa.id = :empresa AND i.dataVenda between :dateStart and :dateStop AND i.vendaPaga = 'Y' AND i.conta = 'N' AND i.ajuste = 'N'";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
 	
 		Number count = 0;
 		try {
@@ -1059,11 +1144,10 @@ public class Vendas implements Serializable {
 		return count;
 	}
 	
-	
-	public Number totalEstornosPorDia(Date dateStart, Date dateStop, String empresa) {
+	public Number totalTaxasPorDiaValor(Date dateStart, Date dateStop, Empresa empresa) {
 		
-		String jpql = "SELECT sum(i.estorno) FROM Venda i WHERE i.empresa = :empresa AND i.dataVenda between :dateStart and :dateStop AND i.vendaPaga = 'Y' AND i.conta = 'N' AND i.ajuste = 'N'";
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
+		String jpql = "SELECT sum((i.valorTotal - i.desconto) * i.taxaDeAcrescimo/100) FROM Venda i WHERE i.quantidadeItens > 0 AND i.empresa.id = :empresa AND i.dataVenda between :dateStart and :dateStop AND i.vendaPaga = 'Y' AND i.conta = 'N' AND i.ajuste = 'N' AND i.clientePagouTaxa = 'N' AND i.taxaDeAcrescimo > 0";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
 	
 		Number count = 0;
 		try {
@@ -1082,14 +1166,242 @@ public class Vendas implements Serializable {
 	
 	
 	
+	public Number totalTaxasValor(Empresa empresa) {
+		
+		String jpql = "SELECT sum((i.valorTotal - i.desconto) * i.taxaDeAcrescimo/100) FROM Venda i WHERE i.quantidadeItens > 0 AND i.empresa.id = :empresa AND i.vendaPaga = 'Y' AND i.conta = 'N' AND i.ajuste = 'N' AND i.clientePagouTaxa = 'N' AND i.taxaDeAcrescimo > 0";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
 	
-	public Number totalEstornosPorSemana(String ano, String semana01, String semana02, String empresa) {
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+	
+		} catch (NoResultException e) {
+	
+		}
+	
+		if (count == null) {
+			count = 0;
+		}
+	
+		return count;
+	}
+	
+	
+	public Number totalVendasPorDiaQuantidade(Date dateStart, Date dateStop, Empresa empresa) {
+		
+		String jpql = "SELECT count(i.id) FROM Venda i WHERE i.quantidadeItens > 0 AND i.empresa.id = :empresa AND i.dataVenda between :dateStart and :dateStop AND i.vendaPaga = 'Y' AND i.conta = 'N' AND i.ajuste = 'N'";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
+
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+
+	public Number totalLucrosPorDia(Date dateStart, Date dateStop, Empresa empresa) {
+		
+		String jpql = "SELECT sum(i.lucro) FROM ItemVenda i WHERE i.venda.quantidadeItens > 0 AND i.venda.empresa.id = :empresa AND i.venda.dataVenda between :dateStart and :dateStop AND i.venda.vendaPaga = 'Y' AND i.venda.conta = 'N' AND i.venda.ajuste = 'N'";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
+	
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+	
+		} catch (NoResultException e) {
+	
+		}
+	
+		if (count == null) {
+			count = 0;
+		}
+	
+		return count;
+	}
+	
+	
+	public Number totalEstornosPorDia(Date dateStart, Date dateStop, Empresa empresa) {
+		
+		String jpql = "SELECT sum(i.estorno) FROM Venda i WHERE i.empresa.id = :empresa AND i.dataVenda between :dateStart and :dateStop AND i.vendaPaga = 'Y' AND i.conta = 'N' AND i.ajuste = 'N'";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
+	
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+	
+		} catch (NoResultException e) {
+	
+		}
+	
+		if (count == null) {
+			count = 0;
+		}
+	
+		return count;
+	}
+	
+	
+	public Number totalDescontosPorDia(Date dateStart, Date dateStop, Empresa empresa) {
+		
+		String jpql = "SELECT sum(i.desconto) FROM Venda i WHERE i.empresa.id = :empresa AND i.dataVenda between :dateStart and :dateStop AND i.vendaPaga = 'Y' AND i.conta = 'N' AND i.ajuste = 'N'";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
+	
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+	
+		} catch (NoResultException e) {
+	
+		}
+	
+		if (count == null) {
+			count = 0;
+		}
+	
+		return count;
+	}
+	
+	
+	
+	
+	public Number totalEstornosPorSemana(String ano, String semana01, String semana02, Empresa empresa) {
 		
 		String jpql = "SELECT sum(p.estorno) FROM Venda p "
-				+ "WHERE p.empresa = :empresa AND p.semana = :semanaInicio " 
+				+ "WHERE p.empresa.id = :empresa AND p.semana = :semanaInicio " 
 				+ "AND p.ano = :ano AND p.vendaPaga = 'Y' AND p.conta = 'N' AND p.ajuste = 'N' ";
 		
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("semanaInicio", Long.parseLong(semana01.replace("W", "")))
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("semanaInicio", Long.parseLong(semana01.replace("W", "")))
+				.setParameter("ano", Long.parseLong(ano));
+		
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+	
+		} catch (NoResultException e) {
+	
+		}
+	
+		if (count == null) {
+			count = 0;
+		}
+	
+		return count;
+	}
+
+	public Number totalDescontosPorSemana(String ano, String semana01, String semana02, Empresa empresa) {
+		
+		String jpql = "SELECT sum(p.desconto) FROM Venda p "
+				+ "WHERE p.empresa.id = :empresa AND p.semana = :semanaInicio " 
+				+ "AND p.ano = :ano AND p.vendaPaga = 'Y' AND p.conta = 'N' AND p.ajuste = 'N' ";
+		
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("semanaInicio", Long.parseLong(semana01.replace("W", "")))
+				.setParameter("ano", Long.parseLong(ano));
+		
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+	
+		} catch (NoResultException e) {
+	
+		}
+	
+		if (count == null) {
+			count = 0;
+		}
+	
+		return count;
+	}
+	
+	
+	public Number totalEstornosPorMes(String ano, String mes01, String mes02, Empresa empresa) {
+		
+		String jpql = "SELECT sum(p.estorno) FROM Venda p "
+				+ "WHERE p.empresa.id = :empresa AND p.mes = :mesInicio " 
+				+ "AND p.ano = :ano AND p.vendaPaga = 'Y' AND p.conta = 'N' AND p.ajuste = 'N' ";
+		
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("mesInicio", Long.parseLong(mes01))
+				.setParameter("ano", Long.parseLong(ano));
+		
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+	
+		} catch (NoResultException e) {
+	
+		}
+	
+		if (count == null) {
+			count = 0;
+		}
+	
+		return count;
+	}
+
+	public Number totalDescontosPorMes(String ano, String mes01, String mes02, Empresa empresa) {
+		
+		String jpql = "SELECT sum(p.desconto) FROM Venda p "
+				+ "WHERE p.empresa.id = :empresa AND p.mes = :mesInicio " 
+				+ "AND p.ano = :ano AND p.vendaPaga = 'Y' AND p.conta = 'N' AND p.ajuste = 'N' ";
+		
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("mesInicio", Long.parseLong(mes01.replace("W", "")))
+				.setParameter("ano", Long.parseLong(ano));
+		
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+	
+		} catch (NoResultException e) {
+	
+		}
+	
+		if (count == null) {
+			count = 0;
+		}
+	
+		return count;
+	}
+	
+	
+	
+	public Number totalEstornosPorAno(String ano, Empresa empresa) {
+		
+		String jpql = "SELECT sum(p.estorno) FROM Venda p "
+				+ "WHERE p.empresa.id = :empresa " 
+				+ "AND p.ano = :ano AND p.vendaPaga = 'Y' AND p.conta = 'N' AND p.ajuste = 'N' ";
+		
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId())
+				.setParameter("ano", Long.parseLong(ano));
+		
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+	
+		} catch (NoResultException e) {
+	
+		}
+	
+		if (count == null) {
+			count = 0;
+		}
+	
+		return count;
+	}
+
+	public Number totalDescontosPorAno(String ano, Empresa empresa) {
+		
+		String jpql = "SELECT sum(p.desconto) FROM Venda p "
+				+ "WHERE p.empresa.id = :empresa " 
+				+ "AND p.ano = :ano AND p.vendaPaga = 'Y' AND p.conta = 'N' AND p.ajuste = 'N' ";
+		
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId())
 				.setParameter("ano", Long.parseLong(ano));
 		
 		Number count = 0;
@@ -1108,10 +1420,30 @@ public class Vendas implements Serializable {
 	}
 
 	
-	public Number totalEntregasPendentesValor(String empresa) {
+	public Number totalEntregasPendentesValor(Empresa empresa) {
 		
-		String jpql = "SELECT sum(i.valorTotal) FROM Venda i WHERE i.quantidadeItens > 0 AND i.empresa = :empresa AND i.vendaPaga = 'N' AND i.status = 'N' AND i.ajuste = 'N'";
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa);
+		String jpql = "SELECT sum(i.valorTotal) FROM Venda i WHERE i.quantidadeItens > 0 AND i.empresa.id = :empresa AND i.statusMesa = 'PAGO' AND i.vendaPaga = 'N' AND i.status = 'N' AND i.ajuste = 'N'";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
+	
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+	
+		} catch (NoResultException e) {
+	
+		}
+	
+		if (count == null) {
+			count = 0;
+		}
+	
+		return count;
+	}
+
+	public Number totalDescontosPendentesValor(Empresa empresa) {
+		
+		String jpql = "SELECT sum(i.desconto) FROM Venda i WHERE i.quantidadeItens > 0 AND i.empresa.id = :empresa AND i.vendaPaga = 'N' AND i.status = 'N' AND i.ajuste = 'N'";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
 	
 		Number count = 0;
 		try {
@@ -1128,10 +1460,10 @@ public class Vendas implements Serializable {
 		return count;
 	}
 	
-	public Number totalEntregasPendentesQuantidade(String empresa) {
+	public Number totalEntregasPendentesQuantidade(Empresa empresa) {
 		
-		String jpql = "SELECT count(i.id) FROM Venda i WHERE i.quantidadeItens > 0 AND i.empresa = :empresa AND i.status = 'N' AND i.ajuste = 'N'";
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa);
+		String jpql = "SELECT count(i.id) FROM Venda i WHERE i.quantidadeItens > 0 AND i.empresa.id = :empresa AND i.statusMesa = 'PAGO' AND i.status = 'N' AND i.ajuste = 'N'";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
 	
 		Number count = 0;
 		try {
@@ -1148,10 +1480,10 @@ public class Vendas implements Serializable {
 		return count;
 	}
 	
-	public Number totalEntregasPendentesAReceber(String empresa) {
+	public Number totalEntregasPendentesAReceber(Empresa empresa) {
 		
-		String jpql = "SELECT count(i.id) FROM Venda i WHERE i.quantidadeItens > 0 AND i.empresa = :empresa AND i.vendaPaga = 'N' AND i.status = 'N' AND i.ajuste = 'N'";
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa);
+		String jpql = "SELECT count(i.id) FROM Venda i WHERE i.quantidadeItens > 0 AND i.empresa.id = :empresa AND i.statusMesa = 'PAGO' AND i.vendaPaga = 'N' AND i.status = 'N' AND i.ajuste = 'N'";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
 	
 		Number count = 0;
 		try {
@@ -1168,10 +1500,10 @@ public class Vendas implements Serializable {
 		return count;
 	}
 	
-	public Number totalEntregasPendentesPagas(String empresa) {
+	public Number totalEntregasPendentesPagas(Empresa empresa) {
 		
-		String jpql = "SELECT count(i.id) FROM Venda i WHERE i.quantidadeItens > 0 AND i.empresa = :empresa AND i.vendaPaga = 'Y' AND i.conta = 'N' AND i.status = 'N' AND i.ajuste = 'N'";
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa);
+		String jpql = "SELECT count(i.id) FROM Venda i WHERE i.quantidadeItens > 0 AND i.empresa.id = :empresa AND i.statusMesa = 'PAGO' AND i.vendaPaga = 'Y' AND i.conta = 'N' AND i.status = 'N' AND i.ajuste = 'N'";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
 	
 		Number count = 0;
 		try {
@@ -1186,5 +1518,63 @@ public class Vendas implements Serializable {
 		}
 	
 		return count;
+	}
+	
+	public Number totalVendasPorMes(Number mes, Number ano, CategoriaProduto categoriaProduto, Produto produto,
+			boolean chartCondition) {
+
+		String condition = "";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+		
+		if (categoriaProduto != null && categoriaProduto.getId() != null) {
+			condition = "AND i.produto.categoriaProduto.nome = :categoriaProduto ";
+		}
+
+		if (produto != null && produto.getId() != null) {
+			condition += "AND i.produto.id = :id ";
+		}
+
+		if (chartCondition != false) {
+			select_Condition = "";
+			sum_Condition = "sum(i.total)";//sum(i.valorTotal)
+			groupBy_Condition = "p.mes, p.ano ";
+			orderBy_Condition = "p.mes asc, p.ano asc";
+		} else {
+			select_Condition = "i.produto.nome, ";
+			sum_Condition = "sum(i.quantidade)";
+			groupBy_Condition = "i.produto.nome ";
+			orderBy_Condition = "sum(i.quantidade) asc";
+		}
+
+		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
+				+ "WHERE p.mes = :mes AND p.ano = :ano AND p.vendaPaga = 'Y' AND p.conta = 'N' AND p.ajuste = 'N'" + condition + "group by " + groupBy_Condition + " order by "
+				+ orderBy_Condition;
+		Query q = manager.createQuery(jpql).setParameter("mes", Long.parseLong(String.valueOf(mes))).setParameter("ano",
+				Long.parseLong(String.valueOf(ano)));
+
+		if (categoriaProduto != null && categoriaProduto.getId() != null) {
+			q.setParameter("categoriaProduto", categoriaProduto.getNome());
+		}
+
+		if (produto != null && produto.getId() != null) {
+			q.setParameter("id", produto.getId());
+		}
+
+		Number value = 0;
+		try {
+			value = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (value == null) {
+			value = 0;
+		}
+
+		return value;
 	}
 }

@@ -5,13 +5,16 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "tipos_vendas")
+@SequenceGenerator(name="TipoVenda_Seq", sequenceName="tipos_vendas_sequence", allocationSize=1, initialValue = 9)
 public class TipoVenda implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -22,7 +25,8 @@ public class TipoVenda implements Serializable {
 	private String descricao;
 	
 	@Id
-	@GeneratedValue//(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue//(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="TipoVenda_Seq")
 	public Long getId() {
 		return id;
 	}
