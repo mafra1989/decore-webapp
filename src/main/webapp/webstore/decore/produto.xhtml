@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<f:metadata>
+		<f:viewAction action="#{carrinhoBean.inicializar}" />
+	
+		<f:viewParam name="id" value="#{cadastroProdutoBean.produto.id}" />
+		<f:viewAction action="#{cadastroProdutoBean.buscar}"
+			if="#{param.id ne null}" />
+	</f:metadata>
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+
+	<title>Produtos | Decore Web Store</title>
+
+	<link href="css/bootstrap.css" rel="stylesheet" />
+	<link href="css/style.css" rel="stylesheet" />
+	
+	<link rel="stylesheet" href="css/footer-with-button-logo.css" />
+	
+	<script src="js/jquery.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	
+	<style>
+		@media ( min-width :220px) {
+			.navbar-inverse {
+			    z-index: 999999;
+			}
+			.navbar-brand {
+			    padding: 15px 5px;
+			}
+			.logotipo {
+				margin-left: 14px;
+			    width: 33px;
+			    height: 35px;
+			    margin-top: 8px;
+			    padding: 0px;
+			}
+			#myFooter .footer-copyright p {
+			    font-size: 12px;
+			}
+			.logo {
+				width:225px;
+			}
+			#myFooter .row {
+			    margin-bottom: 25px;
+			}
+			footer {
+    			padding: 0px 0;
+    		}
+    		#myFooter ul {
+			    font-size: 12px;
+			}
+			.badge-light {
+				float: right;
+			    margin-top: -8px;
+			    font-size: 11px;
+			    padding: 2px 4px;
+			    background-color: #FEB10F;
+			    color: #333333;
+			}
+			.pedido {
+				display:block;
+				color: #9d9d9d;
+			}
+			.pedido a {
+				color: #9d9d9d;
+				text-decoration:none;
+			}
+			.pedido a:hover {
+				color: white;
+			}
+			.pedido-menu {
+				display:none !important;
+			}
+			
+			 	.spinner {
+				  width: 40px;
+				  height: 40px;
+				  background-color: #f1f1f1;
+				
+				  margin: 100px auto;
+				  -webkit-animation: sk-rotateplane 1.2s infinite ease-in-out;
+				  animation: sk-rotateplane 1.2s infinite ease-in-out;
+				}
+		
+				@-webkit-keyframes sk-rotateplane {
+				  0% { -webkit-transform: perspective(120px) }
+				  50% { -webkit-transform: perspective(120px) rotateY(180deg) }
+				  100% { -webkit-transform: perspective(120px) rotateY(180deg)  rotateX(180deg) }
+				}
+				
+				@keyframes sk-rotateplane {
+				  0% { 
+				    transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+				    -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg) 
+				  } 50% { 
+				    transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
+				    -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg) 
+				  } 100% { 
+				    transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+				    -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+				  }
+				}
+				
+				
+				
+				
+			.spinner_ {
+			  margin: 100px auto;
+			  width: 50px;
+			  height: 40px;
+			  text-align: center;
+			  font-size: 10px;
+			}
+			
+			.spinner_ > div {
+			  background-color: white;
+			  height: 100%;
+			  width: 6px;
+			  display: inline-block;
+			  
+			  -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+			  animation: sk-stretchdelay 1.2s infinite ease-in-out;
+			}
+			
+			.spinner_ .rect2 {
+			  -webkit-animation-delay: -1.1s;
+			  animation-delay: -1.1s;
+			}
+			
+			.spinner_ .rect3 {
+			  -webkit-animation-delay: -1.0s;
+			  animation-delay: -1.0s;
+			}
+			
+			.spinner_ .rect4 {
+			  -webkit-animation-delay: -0.9s;
+			  animation-delay: -0.9s;
+			}
+			
+			.spinner_ .rect5 {
+			  -webkit-animation-delay: -0.8s;
+			  animation-delay: -0.8s;
+			}
+			
+			@-webkit-keyframes sk-stretchdelay {
+			  0%, 40%, 100% { -webkit-transform: scaleY(0.4) }  
+			  20% { -webkit-transform: scaleY(1.0) }
+			}
+			
+			@keyframes sk-stretchdelay {
+			  0%, 40%, 100% { 
+			    transform: scaleY(0.4);
+			    -webkit-transform: scaleY(0.4);
+			  }  20% { 
+			    transform: scaleY(1.0);
+			    -webkit-transform: scaleY(1.0);
+			  }
+			}
+				
+			.loading-spinner_ {
+		        background: #2980b9b8;
+		        position: fixed;
+		        top: 0;
+		        right: 0;
+		        bottom: 0;
+		        left: 0;
+		        overflow: hidden;
+		        display: none;
+		        z-index: 99999;
+		    }
+		
+		    .loading-spinner_.active {
+		        display: block;
+		    }
+		
+		
+				
+				body .ui-panel .ui-panel-content {
+			    	border: none; 
+				    padding: 4px 4px;
+		    	}
+		    	body .ui-widget-content {
+				    border: none; 
+				} 
+				.panel-produto .ui-panelgrid-cell:nth-child(1n) {
+			    	text-align: center;
+			    }
+			    .panel-desc .ui-panelgrid-cell:nth-child(1n) {
+			    	text-align: left;
+			    }
+			    .ui-widget-content .ui-inputfield {
+				    width: 125px;
+				}
+				.panel-qtd.ui-panel .ui-panel-content {
+				    padding: 0px;
+				}
+				.ql-align-justify {
+					text-align: justify;
+				}
+				
+				.loading-spinner {
+			        background: #d35400ab;
+			        position: fixed;
+			        top: 0;
+			        right: 0;
+			        bottom: 0;
+			        left: 0;
+			        overflow: hidden;
+			        display: none;
+			        z-index: 1;
+			    }
+			
+			    .loading-spinner.active {
+			        display: block;
+			    }
+			
+			    #hourglass { /* centraliza no meio da tela */
+			        position: absolute;
+			        top: 50%;
+			        left: 50%;
+			        margin: -32px 0 0 -32px;
+			    }
+		}
+		
+		@media ( min-width :640px) {
+			.logotipo {
+				margin-left: 4px;
+				margin-top: 7px;
+			}
+			.navbar > .container .navbar-brand {
+			    margin-left: 0px;
+			}
+			.pedido {
+				display:none;
+			}
+			.pedido-menu {
+				display:block !important;
+			}
+			#myFooter ul {
+			    font-size: 14px;
+			}
+			.logo {
+				width:300px;
+			}
+			#myFooter .row {
+			    margin-bottom: 60px;
+			}
+			#myFooter .footer-copyright p {
+			    font-size: 14px;
+			}
+			.container {
+			    padding-right: 0px;
+			    padding-left: 0px;
+			}
+			#myFooter .footer-copyright p {
+			    font-size: 14px;
+			}
+		}   
+	</style>
+
+</h:head>
+
+
+
+<h:body>
+
+<h:form>	
+
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#myNavbar">
+					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				
+				<img class="navbar-brand logotipo" src="img/logo.png" />
+				<a class="navbar-brand" onclick="start_(this);" href="products.xhtml">Decore Web Store</a>
+			</div>
+			
+			<div class="pedido" style="float: right;margin-top: -32px;margin-right: 56px;">
+				<a onclick="start_(this);" href="cart.xhtml">Meu Pedido<span class="badge badge-light">#{carrinhoBean.totalDeItens}</span></a>
+			</div>
+			
+			<div class="collapse navbar-collapse" id="myNavbar">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="pedido-menu"><a onclick="start_(this);" href="cart.xhtml"><span
+							class="glyphicon glyphicon-shopping-cart"></span>
+							 Meu Pedido 
+							 <span class="badge badge-light">#{carrinhoBean.totalDeItens}</span></a></li>
+					<li><a onclick="start_(this);" href="/Dashboard.xhtml"><span
+							class="glyphicon glyphicon-log-in"></span> Login</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div class="container" id="content" style="margin-bottom:50px;margin-top: -30px;">
+
+		<p:breadCrumb style="margin-bottom:16px;">
+			<p:menuitem value="Home" onclick="start_(this);" url="products.xhtml" />
+		    <p:menuitem value="Categorias" onclick="start_(this);" url="products.xhtml" />
+		    <p:menuitem value="#{cadastroProdutoBean.produto.categoriaProduto.nome}" onclick="start_(this);" outcome="categoria.xhtml">
+		    	<f:param name="id" value="#{cadastroProdutoBean.produto.categoriaProduto.id}" />
+		    </p:menuitem>
+		    <p:menuitem value="Produto" url="#" />
+		</p:breadCrumb>
+									
+
+		<p:panelGrid id="panel-desc" columns="2" layout="grid" 
+			styleClass="panelgrid-noborder disabled disabled panel-produto"
+			columnClasses="ui-grid-col-6, ui-grid-col-6">
+
+			<ui:fragment id="photo"
+				rendered="#{cadastroProdutoBean.produto.urlImagem == null}">
+				<img width="100%"
+					src="img/sem-foto01.png" alt="" />
+			</ui:fragment>
+				
+			<p:graphicImage url="#{cadastroProdutoBean.produto.urlImagem}" styleClass="image-produto"
+				style="border: 5px solid #c5c5c5;border-radius:5px;max-width: 100%;max-height: 500px;"
+				rendered="#{cadastroProdutoBean.produto.urlImagem != null}" />
+		
+
+			<p:panelGrid columns="1" layout="grid" 
+				styleClass="panelgrid-noborder disabled disabled panel-desc"
+				columnClasses="ui-grid-col-12">				
+					
+				<p:outputLabel
+					value="Estoque Indisponível"
+					style="padding: 4px;background: #dc0808;font-size: 9px;font-weight: bold;float: left;color: white;margin-top: 25px; margin-right: -2px;"
+					rendered="#{cadastroProdutoBean.produto.quantidadeAtual le 0}" />
+			
+				<p:outputLabel
+					value="Estoque Disponível"
+					style="padding: 4px;font-size: 9px;font-weight: bold;float: left;background: #29b140;color: white;margin-top: 25px; margin-right: -2px;"
+					rendered="#{cadastroProdutoBean.produto.quantidadeAtual ge 1}" />
+											
+				<p:outputLabel
+					value="Leia o código de barras ou informe a descrição do produto."
+					style="font-size: 28px;font-weight: bold;"
+					rendered="#{cadastroProdutoBean.produto.id == null}" />
+					
+				<p:outputLabel
+					value="#{cadastroProdutoBean.produto.descricaoConvertida}"
+					style="font-size: 22px;font-weight: bold;"
+					rendered="#{cadastroProdutoBean.produto.id != null}" />
+					
+
+				<p:outputLabel value="cod.: 0000" style="margin-top: -13px;float: left;font-weight:normal;font-size: 12px;" rendered="#{cadastroProdutoBean.produto.id == null}" />
+				
+				<p:outputLabel value="cod.: #{cadastroProdutoBean.produto.codigo}" style="margin-top: -13px;float: left;font-weight:normal;font-size: 12px;" rendered="#{cadastroProdutoBean.produto.id != null}" />
+				
+				<p:outputLabel escape="false"
+					value="#{cadastroProdutoBean.produto.informacaoExtra}"
+					style="font-weight: normal;"
+					rendered="#{cadastroProdutoBean.produto.id != null}" />
+
+				<p:outputLabel value="R$ 0,00"
+					style="font-size: 22px;float: left;margin-top: -6px;"
+					rendered="#{cadastroProdutoBean.produto.id == null}" />
+					
+				<p:outputLabel id="preco-unitario" value="#{cadastroProdutoBean.produto.precoDeVenda}"
+					style="font-size: 22px;float: left;margin-top: -6px;"
+					rendered="#{cadastroProdutoBean.produto.id != null}">
+					
+					<f:convertNumber type="currency" />
+				</p:outputLabel>
+				
+				<p:panel 
+				styleClass="panelgrid-noborder disabled disabled panel-qtd">
+					
+					 <p:inputText id="quantidade" style="width:120px;margin-right:3px;"
+						placeholder="0" styleClass="quantidade" maxlength="4" onkeypress="return onlynumber();"
+						value="#{cadastroProdutoBean.produto.quantidadePedido}">
+					</p:inputText>
+				
+					<p:commandButton value="Adicionar ao pedido" id="btn-adicionar"
+						onstart="start();" icon="fa fa-shopping-cart" iconPos="right"
+						action="#{carrinhoBean.adicionarNoCarrinho(cadastroProdutoBean.produto)}"
+						style="font-weight: normal;height: 34px;background-color: #337ab7;border-color: #2e6da4;">
+					</p:commandButton>
+				</p:panel>
+
+			</p:panelGrid>
+
+		</p:panelGrid>
+
+
+	</div>
+	
+</h:form>
+
+
+	<footer id="myFooter">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-5">
+                    <a href="javascript:void(0);">
+                    		<img class="logo" src="img/decore-logo.jpg" /></a>
+                </div>
+                <div class="col-sm-2">
+                    <h5>Inicio</h5>
+                    <ul>
+                        <li><a onclick="start_(this);" href="index.xhtml">Home</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-2">
+                    <h5>Contato</h5>
+                    <ul>
+                        <li><a href="javascript:void(0);">+55 92 99427-9086</a></li>
+                        <li><a href="javascript:void(0);">decoreportas@gmail.com</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-3">
+                    <div class="social-networks">
+                        <a href="javascript:void(0);" class="twitter"><i class="fa fa-twitter"></i></a>
+                        <a href="javascript:void(0);" class="facebook"><i class="fa fa-facebook"></i></a>
+                        <a href="javascript:void(0);" class="instagram"><i class="fa fa-instagram"></i></a>
+                    </div>
+                    <a href="javascript:void(0);" style="display:none;">
+                        <button type="button" class="btn btn-default">Contato</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <p>Copyright © Decore Web Store. Todos os direitos
+					reservados.</p>
+        </div>
+    </footer>
+	
+	<div class="loading-spinner">
+		<div id="hourglass"  class="spinner"></div>
+	</div>
+	
+	<div class="loading-spinner_">
+		<div id="hourglass" class="spinner_">
+		  <div class="rect1"></div>
+		  <div class="rect2"></div>
+		  <div class="rect3"></div>
+		  <div class="rect4"></div>
+		  <div class="rect5"></div>
+		</div>
+	</div>
+	
+	
+	<script type="text/javascript">
+		var delay = (function() {
+		    var timer = 0;
+		    return function(callback, ms) {
+		        clearTimeout (timer);
+		        timer = setTimeout(callback, ms);
+		    };
+		})();
+		
+		function start_(url) {
+			event.preventDefault();
+			jQuery(".loading-spinner_").fadeIn("slow");
+			
+			delay(function() {     
+					$(location).attr('href',url);
+				}, 1500);
+		}		
+
+		function start() {
+			jQuery(".loading-spinner").fadeIn("slow");
+		}
+		
+		function onlynumber(evt) {
+		   var theEvent = evt || window.event;
+		   var key = theEvent.keyCode || theEvent.which;
+		   key = String.fromCharCode( key );
+		   //var regex = /^[0-9.,]+$/;
+		   var regex = /^[0-9]+$/;
+		   if( !regex.test(key) ) {
+		      theEvent.returnValue = false;
+		      if(theEvent.preventDefault) theEvent.preventDefault();
+		   }
+		}
+	</script>
+
+</h:body>
+</html>

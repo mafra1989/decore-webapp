@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	
+	<title>Welcome | Decore Web Store</title>
+	
+    <link href="css/bootstrap.css" rel="stylesheet"/>
+    <!-- Custom CSS -->
+    <link href="css/style.css" rel="stylesheet"/>
+    
+    <link rel="stylesheet" href="css/footer-with-button-logo.css" />
+    
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script> 
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+    
+    <style>
+    	@media ( min-width :220px) {
+    		#myFooter .footer-copyright p {
+			    font-size: 12px;
+			}
+			.logo {
+				width:225px;
+			}
+			#myFooter .row {
+			    margin-bottom: 25px;
+			}
+			footer {
+	  			padding: 0px 0;
+	  		}
+	  		#myFooter ul {
+			    font-size: 12px;
+			}
+	    	body {
+			    padding-top: 50px;
+			}
+	     	.badge-light {
+				float: right;
+			    margin-top: -8px;
+			    font-size: 11px;
+			    padding: 2px 4px;
+			    background-color: #FEB10F;
+			    color: #333333;
+			}
+			.pedido {
+				display:block;
+				color: #9d9d9d;
+			}
+			.pedido a {
+				color: #9d9d9d;
+				text-decoration:none;
+			}
+			.pedido a:hover {
+				color: white;
+			}
+			.pedido-menu {
+				display:none !important;
+			}
+			a {
+				font-weight: normal;
+			}
+			a:hover, a:focus {
+			    text-decoration:none
+			}
+			footer {
+			    font-weight: normal;
+			}
+			.navbar a {
+				font-weight: bold;
+			}
+			.navbar-brand {
+			    padding: 15px 5px;
+			}
+			.logotipo {
+				margin-left: 14px;
+			    width: 33px;
+			    height: 35px;
+			    margin-top: 8px;
+			    padding: 0px;
+			}
+			
+			.spinner {
+			  margin: 100px auto;
+			  width: 50px;
+			  height: 40px;
+			  text-align: center;
+			  font-size: 10px;
+			}
+			
+			.spinner > div {
+			  background-color: white;
+			  height: 100%;
+			  width: 6px;
+			  display: inline-block;
+			  
+			  -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+			  animation: sk-stretchdelay 1.2s infinite ease-in-out;
+			}
+			
+			.spinner .rect2 {
+			  -webkit-animation-delay: -1.1s;
+			  animation-delay: -1.1s;
+			}
+			
+			.spinner .rect3 {
+			  -webkit-animation-delay: -1.0s;
+			  animation-delay: -1.0s;
+			}
+			
+			.spinner .rect4 {
+			  -webkit-animation-delay: -0.9s;
+			  animation-delay: -0.9s;
+			}
+			
+			.spinner .rect5 {
+			  -webkit-animation-delay: -0.8s;
+			  animation-delay: -0.8s;
+			}
+			
+			@-webkit-keyframes sk-stretchdelay {
+			  0%, 40%, 100% { -webkit-transform: scaleY(0.4) }  
+			  20% { -webkit-transform: scaleY(1.0) }
+			}
+			
+			@keyframes sk-stretchdelay {
+			  0%, 40%, 100% { 
+			    transform: scaleY(0.4);
+			    -webkit-transform: scaleY(0.4);
+			  }  20% { 
+			    transform: scaleY(1.0);
+			    -webkit-transform: scaleY(1.0);
+			  }
+			}
+				
+			.loading-spinner {
+		        background: #2980b9b8;
+		        position: fixed;
+		        top: 0;
+		        right: 0;
+		        bottom: 0;
+		        left: 0;
+		        overflow: hidden;
+		        display: none;
+		        z-index: 99999;
+		    }
+		
+		    .loading-spinner.active {
+		        display: block;
+		        z-index: 99999;
+		    }
+		
+		    #hourglass { /* centraliza no meio da tela */
+		        position: absolute;
+		        top: 50%;
+		        left: 50%;
+		        margin: -32px 0 0 -32px;
+		    }
+		    .navbar-inverse {
+			    z-index: 999999;
+			}
+		}
+		
+		@media ( min-width :640px) {
+			.logotipo {
+				margin-left: 4px;
+				margin-top: 7px;
+			}
+			.navbar > .container .navbar-brand {
+			    margin-left: 0px;
+			}
+			.pedido-menu {
+				display:block !important;
+			}
+			.logotipo {
+				margin-left: 4px;
+				margin-top: 7px;
+			}
+			.navbar > .container .navbar-brand {
+			    margin-left: 0px;
+			}
+			.logo {
+				width:300px;
+			}
+			#myFooter .row {
+			    margin-bottom: 60px;
+			}
+			#myFooter ul {
+			    font-size: 14px;
+			}
+			#myFooter .footer-copyright p {
+			    font-size: 14px;
+			}
+			.container {
+			    padding-right: 0px;
+			    padding-left: 0px;
+			}
+		}
+     </style>
+</h:head>
+
+<h:body>
+
+<h:form id="form">
+
+        <!-- Header -->
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>                        
+                    </button>
+                    
+                    <img class="navbar-brand logotipo" src="img/logo.png" />
+                    <a class="navbar-brand" onclick="start(this);" href="products.xhtml">Decore Web Store</a>
+                </div>
+                
+                <div class="pedido" style="float: right;margin-top: -32px;margin-right: 56px;">
+					<a onclick="start(this);" href="cart.xhtml">Meu Pedido<span class="badge badge-light">#{carrinhoBean.totalDeItens}</span></a>
+				</div>
+			
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav navbar-right">
+                    	<li class="pedido-menu"><a onclick="start(this);" href="cart.xhtml"><span
+							class="glyphicon glyphicon-shopping-cart"></span>
+							 Meu Pedido 
+							 <span class="badge badge-light">#{carrinhoBean.totalDeItens}</span></a></li>
+							 
+                    	<li><a onclick="start(this);" href="/Dashboard.xhtml"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!--Header end-->
+
+        <div id="content">
+            <!--Main banner image-->
+            <div id = "banner_image">
+                <div class="container">	
+                    <center>
+                        <div id="banner_content">
+                            <h1>Bem vindo à Decore Web Store. Nossa loja On-line!</h1>
+                            <p>Temos as melhores portas, fechaduras e móveis planejados para você.</p>
+                            <br/>
+                            <a onclick="start(this);" href="products.xhtml" class="btn btn-danger btn-lg active">Faça seu pedido!</a>
+                        </div>
+                    </center>
+                </div>
+            </div>
+            <!--Main banner image end-->
+
+            <!--Item categories listing-->
+            <div class="container">
+                <div class="row text-center" id="item_list">
+                    <div class="col-sm-4">
+                        <a href="javascript:void(0);" >
+                            <div class="thumbnail">
+                                <img  src="img/portas04.jpg" alt="" />
+                                <div class="caption">
+                                    <h3>Portas de Madeira Frisada</h3>
+                                    <p>Escolha entre as melhores disponíveis no mercado.</p>
+                                </div>
+                            </div> 
+                        </a>
+                    </div>
+                    
+
+                    <div class="col-sm-4">
+                        <a href="javascript:void(0);" >
+                            <div class="thumbnail">
+                                <img src="img/decorados02.jpg" alt="" />
+                                <div class="caption">
+                                    <h3>Móveis Planejados</h3>
+                                    <p>Móveis confeccionados sob encomenda, repeitamos sua preferência.</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    
+                    <div class="col-sm-4">
+                        <a href="javascript:void(0);" >
+                            <div class="thumbnail">
+                                <img src="img/fechaduras14.jpg" alt="" />
+                                <div class="caption">
+                                    <h3>Fechaduras</h3>
+                                    <p>Fechaduras originais das melhores marcas.</p>
+                                </div>
+                            </div> 
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!--Item categories listing end-->
+        </div>
+
+        <!--Footer-->
+        <footer id="myFooter">
+	        <div class="container">
+	            <div class="row">
+	                <div class="col-sm-5">
+	                    <a href="javascript:void(0);">
+	                    		<img class="logo" src="img/decore-logo.jpg" /></a>
+	                </div>
+	                <div class="col-sm-2">
+	                    <h5>Inicio</h5>
+	                    <ul>
+	                        <li><a href="#">Home</a></li>
+	                    </ul>
+	                </div>
+	                <div class="col-sm-2">
+	                    <h5>Contato</h5>
+	                    <ul>
+	                        <li><a href="javascript:void(0);">+55 92 99427-9086</a></li>
+	                        <li><a href="javascript:void(0);">decoreportas@gmail.com</a></li>
+	                    </ul>
+	                </div>
+	                <div class="col-sm-3">
+	                    <div class="social-networks">
+	                        <a href="javascript:void(0);" class="twitter"><i class="fa fa-twitter"></i></a>
+	                        <a href="javascript:void(0);" class="facebook"><i class="fa fa-facebook"></i></a>
+	                        <a href="javascript:void(0);" class="instagram"><i class="fa fa-instagram"></i></a>
+	                    </div>
+	                    <a href="javascript:void(0);" style="display:none;">
+	                        <button type="button" class="btn btn-default">Contato</button>
+	                    </a>
+	                </div>
+	            </div>
+	        </div>
+	        <div class="footer-copyright">
+	            <p>Copyright © Decore Web Store. Todos os direitos
+						reservados.</p>
+	        </div>
+	    </footer>
+        <!--Footer end-->
+</h:form>
+
+	<div class="loading-spinner">
+		<div id="hourglass" class="spinner">
+		  <div class="rect1"></div>
+		  <div class="rect2"></div>
+		  <div class="rect3"></div>
+		  <div class="rect4"></div>
+		  <div class="rect5"></div>
+		</div>
+	</div>
+	
+	
+	<script type="text/javascript">
+		var delay = (function() {
+		    var timer = 0;
+		    return function(callback, ms) {
+		        clearTimeout (timer);
+		        timer = setTimeout(callback, ms);
+		    };
+		})();
+		
+		function start(url) {
+			event.preventDefault();
+			jQuery(".loading-spinner").fadeIn("slow");
+			
+			delay(function() {     
+					$(location).attr('href',url);
+				}, 1500);
+		}		
+	</script>
+	
+</h:body>
+</html>
