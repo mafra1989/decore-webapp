@@ -302,7 +302,7 @@ public class RegistroComprasBean implements Serializable {
 
 					//totalDeItens += itemCompra.getQuantidade();
 					
-					if(!produto.getUnidadeMedida().equals("KG") && !produto.getUnidadeMedida().equals("LT") && !produto.getUnidadeMedida().equals("PT")) {
+					if(!produto.getUnidadeMedida().toUpperCase().equals("KG") && !produto.getUnidadeMedida().toUpperCase().equals("LT") && !produto.getUnidadeMedida().toUpperCase().equals("PT")) {
 						totalDeItens += itemCompra.getQuantidade().doubleValue();				
 					} else {
 						totalDeItens += 1;
@@ -671,7 +671,7 @@ public class RegistroComprasBean implements Serializable {
 				produtos.save(produto);
 
 				//totalDeItens += itemCompra.getQuantidade();
-				if(!produto.getUnidadeMedida().equals("KG") && !produto.getUnidadeMedida().equals("LT") && !produto.getUnidadeMedida().equals("PT")) {
+				if(!produto.getUnidadeMedida().toUpperCase().equals("KG") && !produto.getUnidadeMedida().toUpperCase().equals("LT") && !produto.getUnidadeMedida().toUpperCase().equals("PT")) {
 					totalDeItens += itemCompra.getQuantidade().doubleValue();				
 				} else {
 					totalDeItens += 1;
@@ -793,7 +793,7 @@ public class RegistroComprasBean implements Serializable {
 			quantidadeItensComprados += itemCompra.getValorUnitario().doubleValue() * itemCompra.getQuantidade().doubleValue();
 			
 			//totalItensComprados += itemCompra.getQuantidade();
-			if(!produto.getUnidadeMedida().equals("KG") && !produto.getUnidadeMedida().equals("LT") && !produto.getUnidadeMedida().equals("PT")) {
+			if(!produto.getUnidadeMedida().toUpperCase().equals("KG") && !produto.getUnidadeMedida().toUpperCase().equals("LT") && !produto.getUnidadeMedida().toUpperCase().equals("PT")) {
 				totalItensComprados += itemCompra.getQuantidade().doubleValue();				
 			} else {
 				totalItensComprados += 1;

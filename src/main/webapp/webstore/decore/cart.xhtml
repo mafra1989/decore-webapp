@@ -1,0 +1,813 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	
+	<title>Meu Pedido</title>
+
+	<link href="css/bootstrap.css" rel="stylesheet" />
+	<link href="css/style.css" rel="stylesheet" />
+	
+	<link rel="stylesheet" href="css/footer-with-button-logo.css" />
+	
+	<h:outputScript library="webjars"
+		name="bootstrap/3.2.0/js/bootstrap.min.js" />
+	<script src="js/bootstrap.min.js"></script>
+	
+	<style>
+	@media ( min-width :220px) {
+		.navbar-inverse {
+		    z-index: 999999;
+		}
+		#myFooter .footer-copyright p {
+		    font-size: 12px;
+		}
+		.logo {
+			width:225px;
+		}
+		#myFooter .row {
+		    margin-bottom: 25px;
+		}
+		footer {
+   			padding: 0px 0;
+   		}
+   		#myFooter ul {
+		    font-size: 12px;
+		}
+		body .ui-panel .ui-panel-content {
+	    	border: none; 
+		    padding: 4px 4px;
+    	}
+    	body .ui-widget-content {
+		    border: none; 
+		}
+		body .ui-datatable .ui-datatable-data > tr td {
+		    text-align: center;
+		    color: #000;
+		    /*font-weight: normal;*/
+		    font-size: 10px;
+		}
+		body .ui-datatable .ui-datatable-data > tr td:nth-child(2) {
+		    font-size: 12px;
+		}
+		.ui-widget-content .ui-inputfield {
+		    width: 40px;
+		    font-size: 11px;
+		    text-align: center;
+		}
+		body .ui-datatable .ui-datatable-data > tr {
+		    background-color: #F2F0EE;
+		    border-color: #e4e4e4;
+		    height: 50px;
+			text-align: center;
+		}
+		body .ui-datatable .ui-datatable-data > tr.ui-datatable-even {
+		    background-color: #F2F0EE;
+		}
+		body .ui-datatable thead th {
+		    background-color: #E4E1DE;
+		    border-color: #E4E1DE;
+		    color: #000000;
+		}
+		body .ui-datatable thead th:nth-child(2) {
+		    width: 158px;
+		}
+		body .ui-datatable thead th:nth-child(3) {
+		    width: 58px;
+		}
+		body .ui-datatable thead th:nth-child(4) {
+		    width: 48px;
+		}
+		body .ui-datatable thead th:nth-child(5) {
+		    width: 58px;
+		}
+		body .ui-datatable thead th:nth-child(6) {
+		    width: 20px;
+		}
+		hr {
+	    	border-top: 1px solid #c3c3c3;
+	    	margin-top: -3px;
+    		margin-bottom: 20px;
+	    }
+	    
+	    body {
+	    	background-color: #fbfaf9;
+	    }
+		body .ui-datatable .ui-datatable-data > tr td:nth-child(1) {
+		    padding: 0px;
+		}
+		body .ui-datatable .ui-datatable-data > tr td:nth-child(3) {
+		    padding: 0px;
+		    font-size: 10px !important;
+		}
+		body .ui-datatable .ui-datatable-data > tr td:nth-child(4) {
+		    padding: 0px;
+		}	
+		body .ui-datatable .ui-datatable-data > tr td:nth-child(5) {
+		    padding: 0px;
+		}
+		body .ui-datatable .ui-datatable-data > tr td:nth-child(6) {
+		    padding: 0px;
+		}
+		.remove-item.ui-button {
+		    color: #020202;
+		    background-color: transparent;
+	    }
+	    .remove-item.ui-button {
+		    color: #020202;
+		    background-color: transparent;
+	    }
+	    .remove-item.ui-button.ui-state-focus {
+		    outline: none;
+		    background-color: transparent;
+     	}
+     	.remove-item.ui-button.ui-state-hover {
+		    outline: none;
+		    background-color: transparent;
+     	}
+  
+	    .remove-item.ui-button-icon-only .ui-icon {
+		    font-size: 16px;
+		}
+		body .ui-datatable tfoot td {
+		    background-color: #e4e1de;
+		    padding: 12px 4px;
+		    border-color: #e4e1de;
+		    color: #000000;
+		}
+		.finalizar.ui-button {
+		    background-color: #b9a52b;
+		    width: 190px;
+		    padding: 3px;
+		    margin-top: -83px;
+		    margin-left: 5px;
+		    float: left;
+		}
+		.finalizar.ui-button.ui-state-hover {
+		    background-color: #ad981c;
+		}
+		.finalizar.ui-button.ui-state-focus {
+		    background-color: #ad981c;
+		}
+		.ui-datatable .ui-datatable-scrollable-body {
+		    outline: none;
+		}
+		.loading-spinner {
+	        background: #2c3e509c;
+	        position: fixed;
+	        top: 0;
+	        right: 0;
+	        bottom: 0;
+	        left: 0;
+	        overflow: hidden;
+	        display: none;
+	        z-index: 1;
+	    }
+	
+	    .loading-spinner.active {
+	        display: block;
+	    }
+	
+	    #hourglass { /* centraliza no meio da tela */
+	        position: absolute;
+	        top: 50%;
+	        left: 50%;
+	        margin: -32px 0 0 -32px;
+	    }
+	    
+	    .continuar-comprando.ui-panel .ui-panel-content {
+		    border: 1px solid #9a9a9a;
+		    padding: 4px 4px;
+		    border-radius: 5px;
+		}
+		
+		.continuar-comprando:hover {
+		    background: #f2f0ee;
+		}
+		
+		.atualizar-carrinho.ui-button.ui-state-hover {
+			background: #f2f0ee;
+		}
+	    
+	    .sk-chase {
+		  width: 40px;
+		  height: 40px;
+		  position: relative;
+		  animation: sk-chase 2.5s infinite linear both;
+		}
+
+		.sk-chase-dot {
+		  width: 100%;
+		  height: 100%;
+		  position: absolute;
+		  left: 0;
+		  top: 0; 
+		  animation: sk-chase-dot 2.0s infinite ease-in-out both; 
+		}
+		
+		.sk-chase-dot:before {
+		  content: '';
+		  display: block;
+		  width: 25%;
+		  height: 25%;
+		  background-color: #fff;
+		  border-radius: 100%;
+		  animation: sk-chase-dot-before 2.0s infinite ease-in-out both; 
+		}
+		
+		.sk-chase-dot:nth-child(1) { animation-delay: -1.1s; }
+		.sk-chase-dot:nth-child(2) { animation-delay: -1.0s; }
+		.sk-chase-dot:nth-child(3) { animation-delay: -0.9s; }
+		.sk-chase-dot:nth-child(4) { animation-delay: -0.8s; }
+		.sk-chase-dot:nth-child(5) { animation-delay: -0.7s; }
+		.sk-chase-dot:nth-child(6) { animation-delay: -0.6s; }
+		.sk-chase-dot:nth-child(1):before { animation-delay: -1.1s; }
+		.sk-chase-dot:nth-child(2):before { animation-delay: -1.0s; }
+		.sk-chase-dot:nth-child(3):before { animation-delay: -0.9s; }
+		.sk-chase-dot:nth-child(4):before { animation-delay: -0.8s; }
+		.sk-chase-dot:nth-child(5):before { animation-delay: -0.7s; }
+		.sk-chase-dot:nth-child(6):before { animation-delay: -0.6s; }
+
+		@keyframes sk-chase {
+		  100% { transform: rotate(360deg); } 
+		}
+		
+		@keyframes sk-chase-dot {
+		  80%, 100% { transform: rotate(360deg); } 
+		}
+		
+		@keyframes sk-chase-dot-before {
+		  50% {
+		    transform: scale(0.4); 
+		  } 100%, 0% {
+		    transform: scale(1.0); 
+		  } 
+		}
+		
+		.total-geral {
+			font-size: 12px;
+		}
+		
+		body .ui-button.ui-button-icon-only .ui-icon {
+		    margin-top: -11px;
+		}
+		.imagem-produto {
+			max-width: 100%; 
+			max-height: 50px;
+		}
+		.badge-light {
+			float: right;
+		    margin-top: -8px;
+		    font-size: 11px;
+		    padding: 2px 4px;
+		    background-color: #FEB10F;
+		    color: #333333;
+		}
+		.pedido {
+			display:block;
+			color: #9d9d9d;
+		}
+		.pedido a {
+			color: #9d9d9d;
+			text-decoration:none;
+		}
+		.pedido a:hover {
+			color: white;
+		}
+		.pedido-menu {
+			display:none !important;
+		}
+		
+		.box {
+		  position: relative;
+		  display: inline-block;
+		  /*width: 100px;
+		  height: 100px;*/
+		  background-color: #fff;
+		  /*border-radius: 5px;*/
+		  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+		  -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+		  transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+		}
+		
+		.box::after {
+		  content: "";
+		  border-radius: 5px;
+		  position: absolute;
+		  z-index: -1;
+		  top: 0;
+		  left: 0;
+		  width: 100%;
+		  height: 100%;
+		  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+		  opacity: 0;
+		  -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+		  transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+		}
+		
+		.box:hover {
+		  -webkit-transform: scale(1.05, 1.05);
+		  transform: scale(1.05, 1.05);
+		}
+		
+		.box:hover::after {
+		    opacity: 1;
+		}
+		.navbar-brand {
+		    padding: 15px 5px;
+		}
+		.logotipo {
+			margin-left: 14px;
+		    width: 33px;
+		    height: 35px;
+		    margin-top: 8px;
+		    padding: 0px;
+		}
+		
+		.spinner_ {
+			  margin: 100px auto;
+			  width: 50px;
+			  height: 40px;
+			  text-align: center;
+			  font-size: 10px;
+			}
+			
+			.spinner_ > div {
+			  background-color: white;
+			  height: 100%;
+			  width: 6px;
+			  display: inline-block;
+			  
+			  -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+			  animation: sk-stretchdelay 1.2s infinite ease-in-out;
+			}
+			
+			.spinner_ .rect2 {
+			  -webkit-animation-delay: -1.1s;
+			  animation-delay: -1.1s;
+			}
+			
+			.spinner_ .rect3 {
+			  -webkit-animation-delay: -1.0s;
+			  animation-delay: -1.0s;
+			}
+			
+			.spinner_ .rect4 {
+			  -webkit-animation-delay: -0.9s;
+			  animation-delay: -0.9s;
+			}
+			
+			.spinner_ .rect5 {
+			  -webkit-animation-delay: -0.8s;
+			  animation-delay: -0.8s;
+			}
+			
+			@-webkit-keyframes sk-stretchdelay {
+			  0%, 40%, 100% { -webkit-transform: scaleY(0.4) }  
+			  20% { -webkit-transform: scaleY(1.0) }
+			}
+			
+			@keyframes sk-stretchdelay {
+			  0%, 40%, 100% { 
+			    transform: scaleY(0.4);
+			    -webkit-transform: scaleY(0.4);
+			  }  20% { 
+			    transform: scaleY(1.0);
+			    -webkit-transform: scaleY(1.0);
+			  }
+			}
+				
+			.loading-spinner_ {
+		        background: #2980b9b8;
+		        position: fixed;
+		        top: 0;
+		        right: 0;
+		        bottom: 0;
+		        left: 0;
+		        overflow: hidden;
+		        display: none;
+		        z-index: 99999;
+		    }
+		
+		    .loading-spinner_.active {
+		        display: block;
+		    }
+		    
+		    
+		    .spinner__ {
+			  width: 40px;
+			  height: 40px;
+			
+			  position: relative;
+			  margin: 100px auto;
+			}
+			
+			.double-bounce1, .double-bounce2 {
+			  width: 100%;
+			  height: 100%;
+			  border-radius: 50%;
+			  background-color: white;
+			  opacity: 0.6;
+			  position: absolute;
+			  top: 0;
+			  left: 0;
+			  
+			  -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
+			  animation: sk-bounce 2.0s infinite ease-in-out;
+			}
+			
+			.double-bounce2 {
+			  -webkit-animation-delay: -1.0s;
+			  animation-delay: -1.0s;
+			}
+			
+			@-webkit-keyframes sk-bounce {
+			  0%, 100% { -webkit-transform: scale(0.0) }
+			  50% { -webkit-transform: scale(1.0) }
+			}
+			
+			@keyframes sk-bounce {
+			  0%, 100% { 
+			    transform: scale(0.0);
+			    -webkit-transform: scale(0.0);
+			  } 50% { 
+			    transform: scale(1.0);
+			    -webkit-transform: scale(1.0);
+			  }
+			}
+			
+			.loading-spinner__ {
+		        background: #27ae60b3;
+		        position: fixed;
+		        top: 0;
+		        right: 0;
+		        bottom: 0;
+		        left: 0;
+		        overflow: hidden;
+		        display: none;
+		        z-index: 99999;
+		    }
+		
+		    .loading-spinner__.active {
+		        display: block;
+		    }
+	}
+	@media ( min-width :640px) {
+		.logotipo {
+			margin-left: 4px;
+			margin-top: 7px;
+		}
+		.navbar > .container .navbar-brand {
+		    margin-left: 0px;
+		}
+		#myFooter .footer-copyright p {
+		    font-size: 14px;
+		}
+		body .ui-datatable .ui-datatable-data > tr td:nth-child(1) {
+		    padding: 3px;
+		}
+		.imagem-produto { 
+			max-height: 80px;
+		}
+		.finalizar.ui-button {
+		    margin-top: -87px;
+		}
+		.remove-item.ui-button-icon-only .ui-icon {
+		    font-size: 19px;
+		}
+		.total-geral {
+			font-size: 20px;
+		}
+		body .ui-datatable thead th:nth-child(1) {
+		    width: 38px;
+		}
+		body .ui-datatable thead th:nth-child(2) {
+		    width: 258px;
+		    font-size: 16px;
+		}
+		body .ui-datatable thead th:nth-child(3) {
+		    width: 28px;
+		    font-size: 16px;
+		}
+		body .ui-datatable thead th:nth-child(4) {
+		    width: 28px;
+		    font-size: 16px;
+		}
+		body .ui-datatable thead th:nth-child(5) {
+		    width: 28px;
+		    font-size: 16px;
+		}
+		body .ui-datatable thead th:nth-child(6) {
+		    width: 20px;
+		    font-size: 16px;
+		}
+		body .ui-datatable .ui-datatable-data > tr td:nth-child(3) {
+		    font-size: 12px !important;
+		    font-weight: normal;
+	    }
+	    body .ui-datatable .ui-datatable-data > tr td {
+		    font-weight: normal;
+		    font-size: 12px;
+		}
+		.pedido {
+			display:none;
+		}
+		.pedido-menu {
+			display:block !important;
+		}
+		#myFooter ul {
+		    font-size: 14px;
+		}
+		.logo {
+			width:300px;
+		}
+		#myFooter .row {
+		    margin-bottom: 60px;
+		}
+		#myFooter .footer-copyright p {
+		    font-size: 14px;
+		}
+		.container {
+		    padding-right: 0px;
+		    padding-left: 0px;
+		}
+	}
+	</style>
+	
+</h:head>
+
+<h:body>
+
+
+<h:form id="form">
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#myNavbar">
+					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				
+				<img class="navbar-brand logotipo" src="img/logo.png" />
+				<a class="navbar-brand" onclick="start_(this);" href="products.xhtml">Decore Web Store</a>
+			</div>
+			
+			<div class="pedido" style="float: right;margin-top: -32px;margin-right: 56px;">
+				<p:link id="link1" onclick="start_(this);" href="cart.xhtml">Meu Pedido<span class="badge badge-light">#{carrinhoBean.totalDeItens}</span></p:link>
+			</div>
+			
+			<div class="collapse navbar-collapse" id="myNavbar">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="pedido-menu"><p:link id="link2" onclick="start_(this);" href="cart.xhtml"><span
+							class="glyphicon glyphicon-shopping-cart"></span>
+							 Meu Pedido 
+							 <span class="badge badge-light">#{carrinhoBean.totalDeItens}</span></p:link></li>
+					<li><a onclick="start_(this);" href="/Dashboard.xhtml"><span
+							class="glyphicon glyphicon-log-in"></span> Login</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	
+
+   	
+    <div class="container" id="content" style="margin-bottom:50px;margin-top: -30px;">
+    
+    	<p:breadCrumb>
+			<p:menuitem value="Home" onclick="start_(this);" url="products.xhtml" />
+		    <p:menuitem value="Categorias" onclick="start_(this);" url="products.xhtml" />
+		    <p:menuitem value="Meu pedido" url="#" />
+		</p:breadCrumb>
+    
+    	<h2 style="color:#73716f;">Meu pedido</h2>	    	
+	    <hr/>
+	    
+	    <p:commandButton value="Atualizar" icon="fa fa-fw fa-refresh" iconPos="right"  styleClass="remove-item atualizar-carrinho" 
+							action="#{carrinhoBean.atualizarCarrinho}"
+							process="@this meu-carrinho" update="meu-carrinho form:link1 form:link2 form:btn-finalizar form:msg1 form:msg2" onstart="start();" oncomplete="stop();"
+							style="float: right;margin-top: -14px;margin-right: 0px;border: 1px solid #c3c3c3;font-weight: normal;" />
+	    
+    	<p:dataTable var="produto" value="#{carrinhoBean.listaDeProdutos}" 
+	        paginator="false" style="margin-top:40px;margin-bottom:25px;font-size:14px;" id="meu-carrinho"
+	        paginatorAlwaysVisible="false" emptyMessage="Você ainda não adicionou nenhum item ao seu pedido.">
+	        
+	        <p:column>
+		        <ui:fragment 
+					rendered="#{produto.urlImagem == null}">
+					<p:link onclick="start_(this);" href="produto.xhtml?id=#{produto.id}">
+						<img class="imagem-produto box"
+						src="img/sem-foto01.png" alt="" />
+					</p:link>				
+				</ui:fragment>
+				
+				<ui:fragment
+					rendered="#{produto.urlImagem != null}">
+					<p:link onclick="start_(this);" href="produto.xhtml?id=#{produto.id}">
+						<img class="imagem-produto box"
+							src="#{produto.urlImagem}" />
+					</p:link>
+				</ui:fragment>
+		    </p:column>
+		 
+		    <p:column headerText="Item">
+		        <h:outputText value="#{produto.descricao}" />
+		    </p:column>
+		 
+		    <p:column headerText="Preço">
+		        <h:outputText value="#{produto.precoDeVenda}">
+		        	<f:convertNumber type="currency" maxFractionDigits="2" />
+		        </h:outputText>
+		    </p:column>
+		 
+		    <p:column headerText="Qtd">
+		        <p:inputText id="quantidade" 
+					placeholder="0" styleClass="quantidade" maxlength="4" onkeypress="return onlynumber();"
+					value="#{produto.quantidadePedido}">
+				</p:inputText>
+		    </p:column>
+		    
+		    <p:column headerText="Total">
+		        <h:outputText value="#{produto.precoDeVenda * produto.quantidadePedido}">
+		        	<f:convertNumber type="currency" maxFractionDigits="2" />
+		        </h:outputText>
+		    </p:column>
+		 
+		    <p:column>
+		        <p:commandButton icon="fa fa-fw fa-trash" styleClass="remove-item"
+							title="Remover" action="#{carrinhoBean.removerDoCarrinho(produto)}"
+							process="@this" update="meu-carrinho form:link1 form:link2 form:btn-finalizar form:msg1 form:msg2" onstart="start();" oncomplete="stop();"
+							style=" width: 10px" />
+		    </p:column>
+		    
+		    <p:columnGroup type="footer"> 	
+	            <p:row>
+	            	<p:column colspan="2">
+	            		
+	            	</p:column>
+	                <p:column colspan="2" style="text-align:right" footerText="Total geral:">
+	                	
+	                </p:column>
+	                <p:column colspan="2" styleClass="total-geral" footerText="R$ #{carrinhoBean.totalGeralEmString}" />
+	            </p:row>
+	        </p:columnGroup>        
+      
+	    </p:dataTable>
+
+		<hr style="border-top: 1px solid #c3c3c3;" />
+		
+		<p:commandButton id="btn-finalizar" value="Finalizar Pedido" icon="fa fa-fw fa-shopping-cart" onstart="checkout();"
+							styleClass="finalizar" disabled="#{carrinhoBean.totalDeItens eq 0}"
+							process="@this meu-carrinho" action="#{carrinhoBean.finalizarPedido}" />
+							
+		<p:panel id="msg1" styleClass="continuar-comprando" style="text-align:center;display:none;"
+			rendered="#{carrinhoBean.totalDeItens ge 1}">
+			<p:link style="color: #bf5306;font-weight: normal;font-size:12px;" href="/webstore/decore/products.xhtml"
+								onclick="start_(this);">
+								Clique aqui para adicionar mais itens ao seu pedido.</p:link>
+		</p:panel>	
+		
+		<p:panel id="msg2" styleClass="continuar-comprando" style="text-align:center;display:none;"
+			rendered="#{carrinhoBean.totalDeItens eq 0}">
+			<p:link style="color: #bf5306;font-weight: normal;font-size:12px;" href="/webstore/decore/products.xhtml"
+								onclick="start_(this);">
+								Clique aqui e adicione itens ao seu pedido.</p:link>
+		</p:panel>					
+							
+		
+    </div>
+</h:form>    
+        
+	<footer id="myFooter">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-5">
+                    <a href="javascript:void(0);">
+                    		<img class="logo" src="img/decore-logo.jpg" /></a>
+                </div>
+                <div class="col-sm-2">
+                    <h5>Inicio</h5>
+                    <ul>
+                        <li><a href="index.xhtml">Home</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-2">
+                    <h5>Contato</h5>
+                    <ul>
+                        <li><a href="javascript:void(0);">+55 92 99427-9086</a></li>
+                        <li><a href="javascript:void(0);">decoreportas@gmail.com</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-3">
+                    <div class="social-networks">
+                        <a href="javascript:void(0);" class="twitter"><i class="fa fa-twitter"></i></a>
+                        <a href="javascript:void(0);" class="facebook"><i class="fa fa-facebook"></i></a>
+                        <a href="javascript:void(0);" class="instagram"><i class="fa fa-instagram"></i></a>
+                    </div>
+                    <a href="javascript:void(0);" style="display:none;">
+                        <button type="button" class="btn btn-default">Contato</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <p>Copyright © Decore Web Store. Todos os direitos
+					reservados.</p>
+        </div>
+    </footer>
+	
+	<div class="loading-spinner">
+		<div id="hourglass" class="sk-chase">
+		  <div class="sk-chase-dot"></div>
+		  <div class="sk-chase-dot"></div>
+		  <div class="sk-chase-dot"></div>
+		  <div class="sk-chase-dot"></div>
+		  <div class="sk-chase-dot"></div>
+		  <div class="sk-chase-dot"></div>
+		</div>
+	</div>
+	
+	
+	<div class="loading-spinner_">
+		<div id="hourglass" class="spinner_">
+		  <div class="rect1"></div>
+		  <div class="rect2"></div>
+		  <div class="rect3"></div>
+		  <div class="rect4"></div>
+		  <div class="rect5"></div>
+		</div>
+	</div>
+	
+	
+	<div class="loading-spinner__">
+		<div id="hourglass" class="spinner__">
+		  <div class="double-bounce1"></div>
+		  <div class="double-bounce2"></div>
+		</div>
+	</div>
+	
+			
+	<script type="text/javascript">
+		var delay = (function() {
+		    var timer = 0;
+		    return function(callback, ms) {
+		        clearTimeout (timer);
+		        timer = setTimeout(callback, ms);
+		    };
+		})();
+		
+		function start_(url) {
+			event.preventDefault();
+			jQuery(".loading-spinner_").fadeIn("slow");
+			
+			delay(function() {     
+					$(location).attr('href',url);
+				}, 1500);
+		}
+		
+		function checkout() {
+			jQuery(".loading-spinner_").fadeIn("slow");
+		}
+		
+		function start__() {
+			jQuery(".loading-spinner__").fadeIn("slow");
+		}
+		
+		function start() {
+			jQuery(".loading-spinner").fadeIn("slow");
+		}
+
+		function stop() {
+			jQuery(".loading-spinner").fadeOut("slow");
+		}
+
+		function onlynumber(evt) {
+			   var theEvent = evt || window.event;
+			   var key = theEvent.keyCode || theEvent.which;
+			   key = String.fromCharCode( key );
+			   //var regex = /^[0-9.,]+$/;
+			   var regex = /^[0-9]+$/;
+			   if( !regex.test(key) ) {
+			      theEvent.returnValue = false;
+			      if(theEvent.preventDefault) theEvent.preventDefault();
+			   }
+			}
+
+	 </script>
+
+</h:body>
+</html>

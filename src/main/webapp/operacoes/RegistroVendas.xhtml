@@ -413,7 +413,7 @@
 						</p:panelGrid>
 
 
-						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+						<p:panelGrid id="panel-valores" columns="2" layout="grid" style="margin-bottom: 5px"
 							styleClass="panelgrid-noborder disabled disabled" 
 							columnClasses="ui-grid-col-4, ui-grid-col-4">
 
@@ -425,13 +425,39 @@
 								<p:ajax event="keydown" process="@this" update="btn-adicionar"></p:ajax>
 							</p:inputNumber>
 
-							<p:outputLabel value="Quantidade" for="quantidade" />
-							<p:inputNumber id="quantidade" decimalPlaces="0" placeholder="0" 
-								onkeyup="ajaxDelay()" styleClass="quantidade"
-								value="#{registroVendasBean.itemVenda.quantidade}">
+							
+							
+							
+							
+							<p:outputLabel value="Quantidade (Un)" for="quantidade" rendered="#{registroVendasBean.itemVenda.produto == null}" />
+							<p:outputLabel value="Quantidade (#{registroVendasBean.itemVenda.produto.unidadeMedida})" for="quantidade" rendered="#{registroVendasBean.itemVenda.produto != null}" />
+							
+							<p:inputNumber id="quantidade" decimalPlaces="0" placeholder="0"
+								styleClass="quantidade" onkeyup="ajaxDelayQtd()"
+								value="#{registroVendasBean.itemVenda.quantidade}"
+								rendered="#{registroVendasBean.itemVenda.produto.unidadeMedida == 'Un' or registroVendasBean.itemVenda.produto.unidadeMedida == 'Cx' or registroVendasBean.itemVenda.produto == null}">
 
-								<p:ajax event="keydown" process="@this" update="btn-adicionar"></p:ajax>
+								<p:ajax event="keydown" update="btn-adicionar"></p:ajax>
 							</p:inputNumber>
+							
+							<p:inputNumber id="quantidade_" decimalPlaces="3" placeholder="0,000"
+								styleClass="quantidade_" onkeyup="ajaxDelayQtd_()"
+								value="#{registroVendasBean.itemVenda.quantidade}"
+								rendered="#{registroVendasBean.itemVenda.produto.unidadeMedida == 'Kg' or registroVendasBean.itemVenda.produto.unidadeMedida == 'Lt'}">
+
+								<p:ajax event="keydown" update="btn-adicionar"></p:ajax>
+							</p:inputNumber>
+							
+							<p:inputNumber id="quantidade__" decimalPlaces="1" placeholder="0,0"
+								styleClass="quantidade__" onkeyup="ajaxDelayQtd__()"
+								value="#{registroVendasBean.itemVenda.quantidade}"
+								rendered="#{registroVendasBean.itemVenda.produto.unidadeMedida == 'Pt'}">
+
+								<p:ajax event="keydown" update="btn-adicionar"></p:ajax>
+							</p:inputNumber>
+							
+							
+							
 
 							<p:outputLabel value="Sub-Total" for="valor-total" />
 							<p:inputNumber id="valor-total" decimalPlaces="2" readonly="true"
@@ -449,7 +475,7 @@
 								onstart="PF('downloadLoading').show();"
 								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
 								onsuccess="PF('downloadLoading').hide();" icon="fa fa-plus"
-								update="msg codigo descricao fornecedor total-venda id valor-unitario quantidade valor-total panel-table lote "
+								update="msg panel-valores codigo descricao fornecedor total-venda id valor-unitario quantidade valor-total panel-table lote "
 								action="#{registroVendasBean.adicionarItem}"
 								process="@this codigo valor-unitario quantidade valor-total id lote"
 								style="font-weight: bold;" />
@@ -634,7 +660,7 @@
 								<p:commandButton icon="fa fa-fw fa-check"
 									action="#{registroVendasBean.selecionarProduto(produto)}"
 									title="Selecionar Produto" styleClass="btn-select"
-									update="form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote "
+									update="form:panel-valores form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:quantidade_ form:quantidade__ form:valor-total form:lote "
 									process="@this" onstart="PF('downloadLoading').show();"
 									oncomplete="PF('downloadLoading').hide();PF('item-dialog').hide();">
 								</p:commandButton>

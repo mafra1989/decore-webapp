@@ -607,16 +607,16 @@ public class RegistroVendasBean implements Serializable {
 			}
 			
 			if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Kg") || itemCompraTemp.getProduto().getUnidadeMedida().equals("Lt")) {
-				itemCompraTemp.setQuantidadeDisponivel_(new BigDecimal(
-						itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(3, BigDecimal.ROUND_HALF_EVEN));
+				itemCompraTemp.setQuantidadeDisponivel_(nf.format(new BigDecimal(
+						itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(3, BigDecimal.ROUND_HALF_EVEN)));
 
 			} else if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Pt")) {
-				itemCompraTemp.setQuantidadeDisponivel_(new BigDecimal(
-						itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(1, BigDecimal.ROUND_HALF_EVEN));
+				itemCompraTemp.setQuantidadeDisponivel_(nf.format(new BigDecimal(
+						itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(1, BigDecimal.ROUND_HALF_EVEN)));
 			
 			} else if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Un") || itemCompraTemp.getProduto().getUnidadeMedida().equals("Cx")) {
-				itemCompraTemp.setQuantidadeDisponivel_(new BigDecimal(
-						itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(0, BigDecimal.ROUND_HALF_EVEN));
+				itemCompraTemp.setQuantidadeDisponivel_(nf.format(new BigDecimal(
+						itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(0, BigDecimal.ROUND_HALF_EVEN)));
 			}
 		}
 
@@ -746,16 +746,16 @@ public class RegistroVendasBean implements Serializable {
 								}
 								
 								if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Kg") || itemCompraTemp.getProduto().getUnidadeMedida().equals("Lt")) {
-									itemCompraTemp.setQuantidadeDisponivel_(new BigDecimal(
-											itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(3, BigDecimal.ROUND_HALF_EVEN));
+									itemCompraTemp.setQuantidadeDisponivel_(nf.format(new BigDecimal(
+											itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(3, BigDecimal.ROUND_HALF_EVEN)));
 					
 								} else if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Pt")) {
-									itemCompraTemp.setQuantidadeDisponivel_(new BigDecimal(
-											itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(1, BigDecimal.ROUND_HALF_EVEN));
+									itemCompraTemp.setQuantidadeDisponivel_(nf.format(new BigDecimal(
+											itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(1, BigDecimal.ROUND_HALF_EVEN)));
 								
 								} else if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Un") || itemCompraTemp.getProduto().getUnidadeMedida().equals("Cx")) {
-									itemCompraTemp.setQuantidadeDisponivel_(new BigDecimal(
-											itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(0, BigDecimal.ROUND_HALF_EVEN));
+									itemCompraTemp.setQuantidadeDisponivel_(nf.format(new BigDecimal(
+											itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(0, BigDecimal.ROUND_HALF_EVEN)));
 								}
 							}
 		
@@ -839,16 +839,16 @@ public class RegistroVendasBean implements Serializable {
 				}
 				
 				if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Kg") || itemCompraTemp.getProduto().getUnidadeMedida().equals("Lt")) {
-					itemCompraTemp.setQuantidadeDisponivel_(new BigDecimal(
-							itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(3, BigDecimal.ROUND_HALF_EVEN));
+					itemCompraTemp.setQuantidadeDisponivel_(nf.format(new BigDecimal(
+							itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(3, BigDecimal.ROUND_HALF_EVEN)));
 	
 				} else if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Pt")) {
-					itemCompraTemp.setQuantidadeDisponivel_(new BigDecimal(
-							itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(1, BigDecimal.ROUND_HALF_EVEN));
+					itemCompraTemp.setQuantidadeDisponivel_(nf.format(new BigDecimal(
+							itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(1, BigDecimal.ROUND_HALF_EVEN)));
 				
 				} else if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Un") || itemCompraTemp.getProduto().getUnidadeMedida().equals("Cx")) {
-					itemCompraTemp.setQuantidadeDisponivel_(new BigDecimal(
-							itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(0, BigDecimal.ROUND_HALF_EVEN));
+					itemCompraTemp.setQuantidadeDisponivel_(nf.format(new BigDecimal(
+							itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(0, BigDecimal.ROUND_HALF_EVEN)));
 				}
 			}
 
@@ -920,16 +920,16 @@ public class RegistroVendasBean implements Serializable {
 				}
 				
 				if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Kg") || itemCompraTemp.getProduto().getUnidadeMedida().equals("Lt")) {
-					itemCompraTemp.setQuantidadeDisponivel_(new BigDecimal(
-							itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(3, BigDecimal.ROUND_HALF_EVEN));
+					itemCompraTemp.setQuantidadeDisponivel_(nf.format(new BigDecimal(
+							itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(3, BigDecimal.ROUND_HALF_EVEN)));
 	
 				} else if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Pt")) {
-					itemCompraTemp.setQuantidadeDisponivel_(new BigDecimal(
-							itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(1, BigDecimal.ROUND_HALF_EVEN));
+					itemCompraTemp.setQuantidadeDisponivel_(nf.format(new BigDecimal(
+							itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(1, BigDecimal.ROUND_HALF_EVEN)));
 				
 				} else if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Un") || itemCompraTemp.getProduto().getUnidadeMedida().equals("Cx")) {
-					itemCompraTemp.setQuantidadeDisponivel_(new BigDecimal(
-							itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(0, BigDecimal.ROUND_HALF_EVEN));
+					itemCompraTemp.setQuantidadeDisponivel_(nf.format(new BigDecimal(
+							itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(0, BigDecimal.ROUND_HALF_EVEN)));
 				}
 			}
 

@@ -1,0 +1,1093 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	
+	<title>Checkout</title>
+
+	<link href="css/bootstrap.css" rel="stylesheet" />
+	<link href="css/style.css" rel="stylesheet" />
+	
+	<link rel="stylesheet" href="css/footer-with-button-logo.css" />
+	
+	<h:outputScript target="body" library="manhattan-layout"
+		name="js/sweetalert2.min.js" />
+		
+	
+	<h:outputScript library="webjars"
+		name="bootstrap/3.2.0/js/bootstrap.min.js" />
+	
+	<h:outputStylesheet name="css/sweetalert2.min.css"
+		library="manhattan-layout" />
+	
+	<style>
+	@media ( min-width :220px) {
+		.grid-card.ui-panelgrid .ui-panelgrid-cell {
+		    padding: 0px;
+		}
+		.pagamento.ui-panelgrid .ui-panelgrid-cell {
+		    padding: 4px 0px;
+	    }
+		.border-field:focus, .border-field:active {
+			border: 1px solid #61a5ef !important;
+			box-shadow: 0 0 3px 0 #61a5ef !important;
+		}
+		.border-field:hover {
+			border: 1px solid #7f8087 !important;
+		}	
+		.swal2-popup #swal2-content {
+			/*font-size:12px;*/
+		}
+		.grid-card.ui-panelgrid .ui-panelgrid-cell {
+		    padding: 0px;
+		}
+		body .ui-datatable thead th {
+		    padding: 4px 12px;
+		}
+		body .ui-autocomplete-panel .ui-autocomplete-items .ui-autocomplete-item {
+			font-size:12px;
+		}
+		.ui-messages-info {
+		    border: 1px solid;
+		    margin: 10px 0;
+		    padding: 5px 5px 5px 5px;
+    	}
+    	.ui-message-error {
+		    border: 1px solid;
+		    margin: 0px 0px;
+		    padding: 3px 4px;
+		    font-size: 10px;
+		}
+		body .ui-accordion .ui-accordion-content {
+		    padding: 0px 0px;
+		}
+		
+		body .ui-accordion .ui-accordion-header.ui-state-active {
+		    background-color: #b5b3b3;
+		    color: #ffffff;
+		}
+		
+		body .ui-accordion .ui-accordion-header.ui-tabs-outline.ui-state-active {
+		    background-color: #b5b3b3;
+		    color: #ffffff;
+		}
+		
+		.ui-datatable table {
+		    width: auto;
+		}
+    
+		.badge-light_ {
+		    float: right;
+		    margin-top: -2px;
+		    font-size: 11px;
+		    padding: 2px 4px;
+		    background-color: #FEB10F;
+		    color: #333333;
+		    position: relative;
+		    right: 0;
+		    margin-right: 1px;
+		    z-index: 1;
+		}
+		
+		.link-foto {
+			float: left;
+			margin-top: -13px;
+		}
+		
+    
+		body .ui-panel .ui-panel-content {
+		    padding: 0px !important;
+		}
+		.voltar {
+		    margin-top: 6px;
+		    float: left;
+		    font-weight: normal;
+		}
+		.navbar-inverse {
+		    z-index: 999999;
+		}
+		#myFooter .footer-copyright p {
+		    font-size: 12px;
+		}
+		.logo {
+			width:225px;
+		}
+		#myFooter .row {
+		    margin-bottom: 25px;
+		}
+		footer {
+   			padding: 0px 0;
+   		}
+   		#myFooter ul {
+		    font-size: 12px;
+		}
+		body .ui-panel .ui-panel-content {
+	    	border: none; 
+		    padding: 4px 4px;
+    	}
+    	body .ui-widget-content {
+		    border: none; 
+		}
+		body .ui-datatable .ui-datatable-data > tr td {
+		    text-align: center;
+		    color: #000;
+		    /*font-weight: normal;*/
+		    font-size: 10px;
+		}
+		body .ui-datatable .ui-datatable-data > tr td:nth-child(2) {
+		    font-size: 12px;
+		}
+		.ui-widget-content .ui-inputfield {
+		    width: 100%;
+		    font-size: 12px;
+		    text-align: left;
+		}
+		body .ui-datatable .ui-datatable-data > tr {
+		    background-color: #F2F0EE;
+		    border-color: #e4e4e4;
+		    height: 50px;
+			text-align: center;
+		}
+		body .ui-datatable .ui-datatable-data > tr.ui-datatable-even {
+		    background-color: #F2F0EE;
+		}
+		body .ui-datatable thead th {
+		    background-color: #E4E1DE;
+		    border-color: #E4E1DE;
+		    color: #000000;
+		}
+		body .ui-datatable thead th:nth-child(2) {
+		    width: 158px;
+		}
+		body .ui-datatable thead th:nth-child(3) {
+		    width: 58px;
+		}
+		body .ui-datatable thead th:nth-child(4) {
+		    width: 48px;
+		}
+		body .ui-datatable thead th:nth-child(5) {
+		    width: 58px;
+		}
+		body .ui-datatable thead th:nth-child(6) {
+		    width: 20px;
+		}
+		hr {
+	    	border-top: 1px solid #636161;
+	    	margin-top: -3px;
+    		margin-bottom: 20px;
+	    }
+	    
+	    body {
+	    	background-color: #fbfaf9;
+	    }
+		body .ui-datatable .ui-datatable-data > tr td:nth-child(1) {
+		    padding: 0px;
+		}
+		body .ui-datatable .ui-datatable-data > tr td:nth-child(3) {
+		    padding: 0px;
+		    font-size: 10px !important;
+		}
+		body .ui-datatable .ui-datatable-data > tr td:nth-child(4) {
+		    padding: 0px;
+		}	
+		body .ui-datatable .ui-datatable-data > tr td:nth-child(5) {
+		    padding: 0px;
+		}
+		body .ui-datatable .ui-datatable-data > tr td:nth-child(6) {
+		    padding: 0px;
+		}
+		.remove-item.ui-button {
+		    color: #020202;
+		    background-color: transparent;
+	    }
+	    .remove-item.ui-button {
+		    color: #020202;
+		    background-color: transparent;
+	    }
+	    .remove-item.ui-button.ui-state-focus {
+		    outline: none;
+		    background-color: transparent;
+     	}
+     	.remove-item.ui-button.ui-state-hover {
+		    outline: none;
+		    background-color: transparent;
+     	}
+  
+	    .remove-item.ui-button-icon-only .ui-icon {
+		    font-size: 16px;
+		}
+		body .ui-datatable tfoot td {
+		    background-color: #e4e1de;
+		    padding: 5px;
+		    border-color: #e4e1de;
+		    color: #000000;
+		}
+		.finalizar.ui-button {
+		    background-color: #337ab7;
+		    width: 190px;
+		    padding: 3px;
+		    margin-top: -83px;
+		    margin-left: 5px;
+		    float: left;
+		}
+		.ui-datatable .ui-datatable-scrollable-body {
+		    outline: none;
+		}
+		.loading-spinner {
+	        background: #2c3e509c;
+	        position: fixed;
+	        top: 0;
+	        right: 0;
+	        bottom: 0;
+	        left: 0;
+	        overflow: hidden;
+	        display: none;
+	        z-index: 1;
+	    }
+	
+	    .loading-spinner.active {
+	        display: block;
+	    }
+	
+	    #hourglass { /* centraliza no meio da tela */
+	        position: absolute;
+	        top: 50%;
+	        left: 50%;
+	        margin: -32px 0 0 -32px;
+	    }
+	    
+	    .continuar-comprando.ui-panel .ui-panel-content {
+		    border: 1px solid #9a9a9a;
+		    padding: 4px 4px;
+		    border-radius: 5px;
+		}
+		
+		.continuar-comprando:hover {
+		    background: #f2f0ee;
+		}
+		
+		.atualizar-carrinho.ui-button.ui-state-hover {
+			background: #f2f0ee;
+		}
+	    
+	    .sk-chase {
+		  width: 40px;
+		  height: 40px;
+		  position: relative;
+		  animation: sk-chase 2.5s infinite linear both;
+		}
+
+		.sk-chase-dot {
+		  width: 100%;
+		  height: 100%;
+		  position: absolute;
+		  left: 0;
+		  top: 0; 
+		  animation: sk-chase-dot 2.0s infinite ease-in-out both; 
+		}
+		
+		.sk-chase-dot:before {
+		  content: '';
+		  display: block;
+		  width: 25%;
+		  height: 25%;
+		  background-color: #fff;
+		  border-radius: 100%;
+		  animation: sk-chase-dot-before 2.0s infinite ease-in-out both; 
+		}
+		
+		.sk-chase-dot:nth-child(1) { animation-delay: -1.1s; }
+		.sk-chase-dot:nth-child(2) { animation-delay: -1.0s; }
+		.sk-chase-dot:nth-child(3) { animation-delay: -0.9s; }
+		.sk-chase-dot:nth-child(4) { animation-delay: -0.8s; }
+		.sk-chase-dot:nth-child(5) { animation-delay: -0.7s; }
+		.sk-chase-dot:nth-child(6) { animation-delay: -0.6s; }
+		.sk-chase-dot:nth-child(1):before { animation-delay: -1.1s; }
+		.sk-chase-dot:nth-child(2):before { animation-delay: -1.0s; }
+		.sk-chase-dot:nth-child(3):before { animation-delay: -0.9s; }
+		.sk-chase-dot:nth-child(4):before { animation-delay: -0.8s; }
+		.sk-chase-dot:nth-child(5):before { animation-delay: -0.7s; }
+		.sk-chase-dot:nth-child(6):before { animation-delay: -0.6s; }
+
+		@keyframes sk-chase {
+		  100% { transform: rotate(360deg); } 
+		}
+		
+		@keyframes sk-chase-dot {
+		  80%, 100% { transform: rotate(360deg); } 
+		}
+		
+		@keyframes sk-chase-dot-before {
+		  50% {
+		    transform: scale(0.4); 
+		  } 100%, 0% {
+		    transform: scale(1.0); 
+		  } 
+		}
+		
+		.total-geral {
+			font-size: 12px;
+		}
+		
+		body .ui-button.ui-button-icon-only .ui-icon {
+		   margin-top: -8px;
+		}
+		.imagem-produto {
+			max-width: 100%; 
+			max-height: 50px;
+		}
+		.badge-light {
+			float: right;
+		    margin-top: -8px;
+		    font-size: 11px;
+		    padding: 2px 4px;
+		    background-color: #FEB10F;
+		    color: #333333;
+		}
+		.pedido {
+			display:block;
+			color: #9d9d9d;
+		}
+		.pedido a {
+			color: #9d9d9d;
+			text-decoration:none;
+		}
+		.pedido a:hover {
+			color: white;
+		}
+		.pedido-menu {
+			display:none !important;
+		}
+		
+		.box {
+		  position: relative;
+		  display: inline-block;
+		  /*width: 100px;
+		  height: 100px;*/
+		  background-color: #fff;
+		  /*border-radius: 5px;*/
+		  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+		  -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+		  transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+		}
+		
+		.box::after {
+		  content: "";
+		  border-radius: 5px;
+		  position: absolute;
+		  z-index: -1;
+		  top: 0;
+		  left: 0;
+		  width: 100%;
+		  height: 100%;
+		  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+		  opacity: 0;
+		  -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+		  transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+		}
+		
+		.box:hover {
+		  -webkit-transform: scale(1.05, 1.05);
+		  transform: scale(1.05, 1.05);
+		}
+		
+		.box:hover::after {
+		    opacity: 1;
+		}
+		.navbar-brand {
+		    padding: 15px 5px;
+		}
+		.logotipo {
+			margin-left: 14px;
+		    width: 33px;
+		    height: 35px;
+		    margin-top: 8px;
+		    padding: 0px;
+		}
+		
+		.spinner_ {
+			  margin: 100px auto;
+			  width: 50px;
+			  height: 40px;
+			  text-align: center;
+			  font-size: 10px;
+			}
+			
+			.spinner_ > div {
+			  background-color: white;
+			  height: 100%;
+			  width: 6px;
+			  display: inline-block;
+			  
+			  -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+			  animation: sk-stretchdelay 1.2s infinite ease-in-out;
+			}
+			
+			.spinner_ .rect2 {
+			  -webkit-animation-delay: -1.1s;
+			  animation-delay: -1.1s;
+			}
+			
+			.spinner_ .rect3 {
+			  -webkit-animation-delay: -1.0s;
+			  animation-delay: -1.0s;
+			}
+			
+			.spinner_ .rect4 {
+			  -webkit-animation-delay: -0.9s;
+			  animation-delay: -0.9s;
+			}
+			
+			.spinner_ .rect5 {
+			  -webkit-animation-delay: -0.8s;
+			  animation-delay: -0.8s;
+			}
+			
+			@-webkit-keyframes sk-stretchdelay {
+			  0%, 40%, 100% { -webkit-transform: scaleY(0.4) }  
+			  20% { -webkit-transform: scaleY(1.0) }
+			}
+			
+			@keyframes sk-stretchdelay {
+			  0%, 40%, 100% { 
+			    transform: scaleY(0.4);
+			    -webkit-transform: scaleY(0.4);
+			  }  20% { 
+			    transform: scaleY(1.0);
+			    -webkit-transform: scaleY(1.0);
+			  }
+			}
+				
+			.loading-spinner_ {
+		        background: #2980b9b8;
+		        position: fixed;
+		        top: 0;
+		        right: 0;
+		        bottom: 0;
+		        left: 0;
+		        overflow: hidden;
+		        display: none;
+		        z-index: 99999;
+		    }
+		
+		    .loading-spinner_.active {
+		        display: block;
+		    }
+		    
+		    .panel-resumo {
+		    	display:none;
+		    }
+		    
+		    body .ui-accordion .ui-accordion-header {
+			    background-color: #f1f2f7;
+			    color: #7e80a5;
+			    font-size: 11px;
+			    font-weight:normal;
+			}
+			
+			.spinner__ {
+			  width: 40px;
+			  height: 40px;
+			
+			  position: relative;
+			  margin: 100px auto;
+			}
+			
+			.double-bounce1, .double-bounce2 {
+			  width: 100%;
+			  height: 100%;
+			  border-radius: 50%;
+			  background-color: white;
+			  opacity: 0.6;
+			  position: absolute;
+			  top: 0;
+			  left: 0;
+			  
+			  -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
+			  animation: sk-bounce 2.0s infinite ease-in-out;
+			}
+			
+			.double-bounce2 {
+			  -webkit-animation-delay: -1.0s;
+			  animation-delay: -1.0s;
+			}
+			
+			@-webkit-keyframes sk-bounce {
+			  0%, 100% { -webkit-transform: scale(0.0) }
+			  50% { -webkit-transform: scale(1.0) }
+			}
+			
+			@keyframes sk-bounce {
+			  0%, 100% { 
+			    transform: scale(0.0);
+			    -webkit-transform: scale(0.0);
+			  } 50% { 
+			    transform: scale(1.0);
+			    -webkit-transform: scale(1.0);
+			  }
+			}
+			
+			.loading-spinner__ {
+		        background: #27ae60b3;
+		        position: fixed;
+		        top: 0;
+		        right: 0;
+		        bottom: 0;
+		        left: 0;
+		        overflow: hidden;
+		        display: none;
+		        z-index: 99999;
+		    }
+		
+		    .loading-spinner__.active {
+		        display: block;
+		    }
+		    	    
+	}
+	@media ( min-width :640px) {
+		body .ui-datatable tfoot td {
+		    padding: 3px;
+		}
+		.panel-resumo {
+	    	display:block;
+	    }
+		.logotipo {
+			margin-left: 4px;
+			margin-top: 7px;
+		}
+		.navbar > .container .navbar-brand {
+		    margin-left: 0px;
+		}
+		#myFooter .footer-copyright p {
+		    font-size: 14px;
+		}
+		body .ui-datatable .ui-datatable-data > tr td:nth-child(1) {
+		    padding: 3px;
+		}
+		.imagem-produto { 
+			max-height: 80px;
+		}
+		.finalizar.ui-button {
+		    margin-top: -87px;
+		}
+		.remove-item.ui-button-icon-only .ui-icon {
+		    font-size: 19px;
+		}
+		.total-geral {
+			font-size: 17px;
+		}
+		body .ui-datatable thead th:nth-child(1) {
+		    width: 38px;
+		}
+		body .ui-datatable thead th:nth-child(2) {
+		    width: 258px;
+		    font-size: 15px;
+		}
+		body .ui-datatable thead th:nth-child(3) {
+		    width: 28px;
+		    font-size: 15px;
+		}
+		body .ui-datatable thead th:nth-child(4) {
+		    width: 28px;
+		    font-size: 15px;
+		}
+		body .ui-datatable thead th:nth-child(5) {
+		    width: 28px;
+		    font-size: 15px;
+		}
+		body .ui-datatable thead th:nth-child(6) {
+		    width: 20px;
+		    font-size: 15px;
+		}
+		body .ui-datatable .ui-datatable-data > tr td:nth-child(3) {
+		    font-size: 12px !important;
+		    font-weight: normal;
+	    }
+	    body .ui-datatable .ui-datatable-data > tr td {
+		    font-weight: normal;
+		    font-size: 12px;
+		}
+		.pedido {
+			display:none;
+		}
+		.pedido-menu {
+			display:block !important;
+		}
+		#myFooter ul {
+		    font-size: 14px;
+		}
+		.logo {
+			width:300px;
+		}
+		#myFooter .row {
+		    margin-bottom: 60px;
+		}
+		#myFooter .footer-copyright p {
+		    font-size: 14px;
+		}
+		.container {
+		    padding-right: 0px;
+		    padding-left: 0px;
+		}
+		.resumo-pedido {
+			display:none;
+		}
+	}
+	</style>
+	
+</h:head>
+
+<h:body>
+
+
+<h:form id="form">
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#myNavbar">
+					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				
+				<img class="navbar-brand logotipo" src="img/logo.png" />
+				<a class="navbar-brand" onclick="start_(this);" href="products.xhtml">Decore Web Store</a>
+			</div>
+			
+			<div class="pedido" style="float: right;margin-top: -32px;margin-right: 56px;">
+				<p:link id="link1" onclick="start_(this);" href="cart.xhtml">Meu Pedido<span class="badge badge-light">#{carrinhoBean.totalDeItens}</span></p:link>
+			</div>
+			
+			<div class="collapse navbar-collapse" id="myNavbar">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="pedido-menu"><p:link id="link2" onclick="start_(this);" href="cart.xhtml"><span
+							class="glyphicon glyphicon-shopping-cart"></span>
+							 Meu Pedido 
+							 <span class="badge badge-light">#{carrinhoBean.totalDeItens}</span></p:link></li>
+					<li><a onclick="start_(this);" href="/Dashboard.xhtml"><span
+							class="glyphicon glyphicon-log-in"></span> Login</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	
+
+   	
+    <div class="container" id="content" style="margin-bottom:50px;margin-top: -30px;">
+    
+    	<p:breadCrumb>
+			<p:menuitem value="Home" onclick="start_(this);" url="products.xhtml" />
+		    <p:menuitem value="Meu pedido" onclick="start_(this);" url="cart.xhtml" />
+		    <p:menuitem value="Checkout" url="#" />
+		</p:breadCrumb>
+		
+		<p:messages id="msg" closable="true" life="2000" showSummary="false"
+			showDetail="true" style="font-size: 12px;" rendered="false" />
+		
+		<p:accordionPanel activeIndex="null" styleClass="resumo-pedido" style="margin-top:12px;">
+			
+			<p:tab title="Resumo do Pedido - Total geral: R$ #{carrinhoBean.totalGeralEmString}">
+			   	
+			    <p:dataTable var="produto" value="#{carrinhoBean.listaDeProdutos}" 
+			        paginator="false" style="margin-top:1px;font-size:14px;" id="meu-carrinho"
+			        paginatorAlwaysVisible="false" emptyMessage="Você ainda não adicionou nenhum item ao seu pedido.">
+			        
+			        <p:column width="10%">
+			        	<span class="badge badge-light_">#{produto.quantidadePedido}</span>
+				        <ui:fragment 
+							rendered="#{produto.urlImagem == null}">
+							<p:link styleClass="link-foto" href="javascript:void(0);">
+								<img class="imagem-produto box"
+								src="img/sem-foto01.png" alt="" />
+							</p:link>				
+						</ui:fragment>
+						
+						<ui:fragment
+							rendered="#{produto.urlImagem != null}">
+							<p:link styleClass="link-foto" href="javascript:void(0);">
+								<img class="imagem-produto box"
+									src="#{produto.urlImagem}" />
+							</p:link>
+						</ui:fragment>
+				    </p:column>
+				 
+				    <p:column headerText="Item" width="65%">
+				        <h:outputText value="#{produto.descricao}" />
+				    </p:column>
+				    
+				    <p:column headerText="Total" width="25%">
+				        <h:outputText value="#{produto.precoDeVenda * produto.quantidadePedido}">
+				        	<f:convertNumber type="currency" maxFractionDigits="2" />
+				        </h:outputText>
+				    </p:column>
+				    
+				    <p:columnGroup type="footer"> 	
+			            <p:row>
+			                <p:column colspan="2" style="text-align:right" footerText="Total geral:">
+			                	
+			                </p:column>
+			                <p:column colspan="2" styleClass="total-geral" footerText="R$ #{carrinhoBean.totalGeralEmString}" />
+			            </p:row>
+			        </p:columnGroup>
+		      
+			    </p:dataTable>
+			
+			</p:tab>
+			
+		</p:accordionPanel>
+		
+					
+		<p:panelGrid id="panel-grid" columns="2" layout="grid" style="font-size:12px;margin-top:10px;"
+			styleClass="panelgrid-noborder disabled disabled"
+			columnClasses="ui-grid-col-6">	
+
+			<p:panel>
+				
+				<p:panelGrid columns="1" layout="grid" style="font-size:12px;"
+					styleClass="panelgrid-noborder disabled disabled pagamento"
+					columnClasses="ui-grid-col-12">
+				
+					<p:outputLabel value="Informações de contato" />
+					<p:outputLabel value="Todas as transações são seguras e criptografadas." style="font-size: 11px;font-weight: normal;margin-top: -12px;float: left;" />	
+				</p:panelGrid>
+				
+				<p:panelGrid columns="1" layout="grid" style="font-size:12px;margin-bottom:15px;"
+					styleClass="panelgrid-noborder disabled disabled"
+					columnClasses="ui-grid-col-12">				
+					
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled grid-card"
+						columnClasses="ui-grid-col-12">
+				
+						<p:outputLabel value="E-mail" style="font-weight: normal;font-size: 12px;" /> 
+						<p:inputText id="email" autocomplete="off" style="width:100%;text-align:left;"
+							requiredMessage="E-mail deve ser informado." label=" " required="true" maxlength="120"
+							value="#{carrinhoBean.pedido.email}" placeholder="E-mail" />
+						<p:message for="email" style="margin-top:5px;" />
+					</p:panelGrid>
+				</p:panelGrid>
+					
+				<p:outputLabel value="Informações de entrega" />
+				
+				<p:panelGrid columns="2" layout="grid" style="font-size:12px;"
+					styleClass="panelgrid-noborder disabled disabled"
+					columnClasses="ui-grid-col-6, ui-grid-col-6">
+					
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled grid-card"
+						columnClasses="ui-grid-col-12">
+				
+						<p:outputLabel value="Nome" style="font-weight: normal;font-size: 12px;" /> 
+						<p:inputText id="nome"  autocomplete="off" style="width:100%;text-align:left;"
+							requiredMessage="Nome deve ser informado." required="true" label="Nome"
+							value="#{carrinhoBean.pedido.nome}" placeholder="Nome" maxlength="120" />
+							
+						<p:message for="nome" style="margin-top:5px;" />
+					</p:panelGrid>
+		
+						
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled grid-card"
+						columnClasses="ui-grid-col-12">
+				
+						<p:outputLabel value="Telefone" style="font-weight: normal;font-size: 12px;" /> 
+						<p:inputMask id="telefone"  autocomplete="off" style="width:100%;text-align:left;" 
+							mask="(99) 99999-9999" autoClear="false"
+							requiredMessage="Telefone deve ser informado." required="true" label="Telefone"
+							value="#{carrinhoBean.pedido.telefone}" placeholder="Telefone" />
+							
+						<p:message for="telefone" style="margin-top:5px;" />
+					</p:panelGrid>
+						
+				</p:panelGrid>
+				
+				
+				<p:panelGrid columns="1" layout="grid" style="font-size:12px;"
+					styleClass="panelgrid-noborder disabled disabled"
+					columnClasses="ui-grid-col-12">
+	
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled grid-card"
+						columnClasses="ui-grid-col-12">
+				
+						<p:outputLabel value="Endereço" style="font-weight: normal;font-size: 12px;" />
+						<p:inputTextarea id="endereco" autocomplete="off" style="width:100%;text-align:left;"
+							requiredMessage="Endereço deve ser informado." required="true" label="Endereço"
+							value="#{carrinhoBean.pedido.endereco}" placeholder="Endereço (com número)" />
+							
+						<p:message for="endereco" />
+					</p:panelGrid>
+							
+				</p:panelGrid>
+
+				
+				<p:panelGrid columns="2" layout="grid" style="font-size:12px;"
+					styleClass="panelgrid-noborder disabled disabled"
+					columnClasses="ui-grid-col-8, ui-grid-col-4">
+								
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled grid-card"
+						columnClasses="ui-grid-col-12">
+				
+						<p:outputLabel value="Bairro" style="font-weight: normal;font-size: 12px;" />
+						<p:autoComplete id="bairro" autocomplete="off" forceSelection="true" dropdown="true" scrollHeight="210"
+							value="#{carrinhoBean.pedido.bairro}" style="width:100%;text-align:left;"
+							var="bairro" itemLabel="#{bairro.nome}" itemValue="#{bairro}" label="Bairro"
+							requiredMessage="Bairro deve ser informado." required="true"
+							completeMethod="#{carrinhoBean.completeText}" placeholder="Bairro" />
+							
+						<p:message for="bairro" style="margin-top:5px;" />							
+					</p:panelGrid>
+						
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled grid-card"
+						columnClasses="ui-grid-col-12">
+				
+						<p:outputLabel value="CEP" style="font-weight: normal;font-size: 12px;" />
+						<p:inputMask id="cep" autocomplete="off" style="width:100%;text-align:left;"
+							mask="99999-999" autoClear="false"
+							requiredMessage="CEP deve ser informado." required="true" label="CEP"
+							value="#{carrinhoBean.pedido.cep}" placeholder="CEP" />
+						
+						<p:message for="cep" styleClass="msg-require" style="margin-top:5px;" />
+					</p:panelGrid>
+			
+				</p:panelGrid>
+								
+				
+				<p:panelGrid columns="1" layout="grid" style="font-size:12px;margin-top:5px;"
+					styleClass="panelgrid-noborder disabled disabled"
+					columnClasses="ui-grid-col-12">
+				
+					<p:panel>
+						<p:link styleClass="voltar" style="margin-top:10px;" onclick="start_(this);" href="cart.xhtml">Voltar ao pedido</p:link>
+						
+						<p:commandButton value="Continuar com o pagamento"
+									disabled="#{carrinhoBean.totalDeItens eq 0}" style="float:right;padding: 4px 4px;font-size: 12px;"
+									update="form" onstart="start__();" onsuccess="stop__();"
+									process="@this form" action="#{carrinhoBean.realizarPagamento}" />													
+					</p:panel>
+			
+				</p:panelGrid>
+			
+			</p:panel>
+			
+			
+			<p:panel styleClass="panel-resumo">
+				
+				<p:outputLabel value="Resumo do Pedido" style="margin-top:5px;" />    	
+			    
+			    <p:dataTable var="produto" value="#{carrinhoBean.listaDeProdutos}" 
+			        paginator="false" style="margin-top:1px;margin-bottom:8px;font-size:14px;" id="meu-carrinho"
+			        paginatorAlwaysVisible="false" emptyMessage="Você ainda não adicionou nenhum item ao seu pedido.">
+			        
+			        <p:column width="10%">
+			        	<span class="badge badge-light_">#{produto.quantidadePedido}</span>
+				        <ui:fragment 
+							rendered="#{produto.urlImagem == null}">
+							<p:link styleClass="link-foto" href="javascript:void(0);">
+								<img class="imagem-produto box"
+								src="img/sem-foto01.png" alt="" />
+							</p:link>				
+						</ui:fragment>
+						
+						<ui:fragment
+							rendered="#{produto.urlImagem != null}">
+							<p:link styleClass="link-foto" href="javascript:void(0);">
+								<img class="imagem-produto box"
+									src="#{produto.urlImagem}" />
+							</p:link>
+						</ui:fragment>
+				    </p:column>
+				 
+				    <p:column headerText="Item" width="70%">
+				        <h:outputText value="#{produto.descricao}" />
+				    </p:column>
+				    
+				    <p:column headerText="Total" width="20%">
+				        <h:outputText value="#{produto.precoDeVenda * produto.quantidadePedido}">
+				        	<f:convertNumber type="currency" maxFractionDigits="2" />
+				        </h:outputText>
+				    </p:column>
+				    
+				    <p:columnGroup type="footer"> 	
+			            <p:row>
+			                <p:column colspan="2" style="text-align:right" footerText="Total geral:">
+			                	
+			                </p:column>
+			                <p:column colspan="2" styleClass="total-geral" footerText="R$ #{carrinhoBean.totalGeralEmString}" />
+			            </p:row>
+			        </p:columnGroup>
+		      
+			    </p:dataTable>
+
+			</p:panel>
+			
+		</p:panelGrid>
+						
+    </div>
+    	
+</h:form> 
+
+
+		
+
+	<p:dialog id="downloadLoading" showHeader="false" modal="true"
+		widgetVar="downloadLoading" header="Status" draggable="false"
+		closable="false" resizable="false">
+		<p:graphicImage name="images/loadingbar.gif"
+			library="manhattan-layout" width="50" />
+	</p:dialog> 
+        
+	<footer id="myFooter">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-5">
+                    <a href="javascript:void(0);">
+                    		<img class="logo" src="img/decore-logo.jpg" /></a>
+                </div>
+                <div class="col-sm-2">
+                    <h5>Inicio</h5>
+                    <ul>
+                        <li><a href="index.xhtml">Home</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-2">
+                    <h5>Contato</h5>
+                    <ul>
+                        <li><a href="javascript:void(0);">+55 92 99427-9086</a></li>
+                        <li><a href="javascript:void(0);">decoreportas@gmail.com</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-3">
+                    <div class="social-networks">
+                        <a href="javascript:void(0);" class="twitter"><i class="fa fa-twitter"></i></a>
+                        <a href="javascript:void(0);" class="facebook"><i class="fa fa-facebook"></i></a>
+                        <a href="javascript:void(0);" class="instagram"><i class="fa fa-instagram"></i></a>
+                    </div>
+                    <a href="javascript:void(0);" style="display:none;">
+                        <button type="button" class="btn btn-default">Contato</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <p>Copyright © Decore Web Store. Todos os direitos
+					reservados.</p>
+        </div>
+    </footer>
+	
+	<div class="loading-spinner">
+		<div id="hourglass" class="sk-chase">
+		  <div class="sk-chase-dot"></div>
+		  <div class="sk-chase-dot"></div>
+		  <div class="sk-chase-dot"></div>
+		  <div class="sk-chase-dot"></div>
+		  <div class="sk-chase-dot"></div>
+		  <div class="sk-chase-dot"></div>
+		</div>
+	</div>
+	
+	
+	<div class="loading-spinner_">
+		<div id="hourglass" class="spinner_">
+		  <div class="rect1"></div>
+		  <div class="rect2"></div>
+		  <div class="rect3"></div>
+		  <div class="rect4"></div>
+		  <div class="rect5"></div>
+		</div>
+	</div>
+	
+	
+	<div class="loading-spinner__">
+		<div id="hourglass" class="spinner__">
+		  <div class="double-bounce1"></div>
+		  <div class="double-bounce2"></div>
+		</div>
+	</div>
+
+
+	<script type="text/javascript">
+		var delay = (function() {
+		    var timer = 0;
+		    return function(callback, ms) {
+		        clearTimeout (timer);
+		        timer = setTimeout(callback, ms);
+		    };
+		})();
+		
+		function start_(url) {
+			event.preventDefault();
+			jQuery(".loading-spinner_").fadeIn("slow");
+			
+			delay(function() {     
+					$(location).attr('href',url);
+				}, 1500);
+		}	
+		
+		function home() {			
+			jQuery(".loading-spinner_").fadeIn("slow");
+			
+			delay(function() {     
+					$(location).attr('href','products.xhtml');
+				}, 1500);
+		}	
+		
+		function pagamento() {
+			event.preventDefault();
+			jQuery(".loading-spinner__").fadeIn("slow");
+			
+			delay(function() {     
+					$(location).attr('href','pagamento.xhtml');
+				}, 2000);
+		}
+		
+		function start() {
+			jQuery(".loading-spinner").fadeIn("slow");
+		}
+		
+		function start__() {
+			jQuery(".loading-spinner__").fadeIn("slow");
+		}
+
+		function stop__() {
+			jQuery(".loading-spinner__").fadeOut("slow");
+		}
+
+		function onlynumber(evt) {
+			   var theEvent = evt || window.event;
+			   var key = theEvent.keyCode || theEvent.which;
+			   key = String.fromCharCode( key );
+			   //var regex = /^[0-9.,]+$/;
+			   var regex = /^[0-9]+$/;
+			   if( !regex.test(key) ) {
+			      theEvent.returnValue = false;
+			      if(theEvent.preventDefault) theEvent.preventDefault();
+			   }
+			}	
+		
+	 </script>
+
+	<h:outputScript target="body" library="same" name="javascripts/app.js" />
+	
+	
+</h:body>
+
+
+						
+</html>

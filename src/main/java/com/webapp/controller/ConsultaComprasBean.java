@@ -221,6 +221,17 @@ public class ConsultaComprasBean implements Serializable {
 					totalComprasTemp += compra.getValorTotal().doubleValue();
 					totalItens += compra.getQuantidadeItens().intValue();
 				}
+				
+				
+				if(compra.isConta()) {
+					compra.setCompraPaga(true);
+					List<Conta> listaDeContas = contas.porCodigoOperacao(compra.getNumeroCompra(), "COMPRA", usuario_.getEmpresa());
+					for (Conta conta : listaDeContas) {
+						if(!conta.isStatus()) {
+							compra.setCompraPaga(false);
+						}
+					}
+				}
 			}
 		/*	
 			if(compra.getNumeroCompra().intValue() == 12 && compra.getId() == 28592) {

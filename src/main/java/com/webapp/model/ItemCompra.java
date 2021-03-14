@@ -150,7 +150,7 @@ public class ItemCompra implements Serializable {
 	private String valorUnitarioFormatado;
 	
 	@Transient
-	private BigDecimal quantidadeDisponivel_;
+	private String quantidadeDisponivel_;
 	
 
 	public String getCode() {
@@ -169,11 +169,11 @@ public class ItemCompra implements Serializable {
 		this.valorUnitarioFormatado = valorUnitarioFormatado;
 	}
 
-	public BigDecimal getQuantidadeDisponivel_() {
+	public String getQuantidadeDisponivel_() {
 		return quantidadeDisponivel_;
 	}
 
-	public void setQuantidadeDisponivel_(BigDecimal quantidadeDisponivel_) {
+	public void setQuantidadeDisponivel_(String quantidadeDisponivel_) {
 		this.quantidadeDisponivel_ = quantidadeDisponivel_;
 	}
 }

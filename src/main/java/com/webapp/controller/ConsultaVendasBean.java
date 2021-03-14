@@ -204,6 +204,17 @@ public class ConsultaVendasBean implements Serializable {
 			if(pagamento != null) {
 				venda.setPagamento(", " + pagamento.getFormaPagamento().getNome());
 			}
+			
+			if(venda.isConta()) {
+				venda.setVendaPaga(true);
+				List<Conta> listaDeContas = contas.porCodigoOperacao(venda.getNumeroVenda(), "VENDA", usuario_.getEmpresa());
+				for (Conta conta : listaDeContas) {
+					if(!conta.isStatus()) {
+						venda.setVendaPaga(false);
+					}
+				}
+			}
+			
 		}
 
 		totalVendas = nf.format(totalVendasTemp - totalDesconto);

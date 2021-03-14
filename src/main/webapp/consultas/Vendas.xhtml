@@ -380,7 +380,7 @@
 							</p:column>
 							
 							<p:column headerText="Pago?" width="8%">
-								<h:outputText value="#{venda.tipoPagamento == 'PARCELADO' ? 'Venda Parc.' : (venda.conta ? 'À receber' : (venda.ajuste ? '-' : (venda.vendaPaga ? 'Sim' : 'Não')))}" />
+								<h:outputText value="#{venda.tipoPagamento == 'PARCELADO' ? 'Venda Parc.' : ((venda.conta and not venda.vendaPaga) ? 'À receber' : (venda.ajuste ? '-' : (venda.vendaPaga ? 'Sim' : 'Não')))}" />
 							</p:column>
 
 						</p:dataTable>
