@@ -2790,7 +2790,7 @@ public class PDVBean implements Serializable {
 				}
 				
 				//PrimeFaces.current().executeScript("selectTab1();");
-				PrimeFaces.current().executeScript("ajaxDelay('');");
+				PrimeFaces.current().executeScript("ajaxDelay('', 0);");
 				
 				if(pdvRapido) {
 					PrimeFaces.current().executeScript("adicionaItem();");
@@ -2803,7 +2803,7 @@ public class PDVBean implements Serializable {
 			} else {
 				
 				//PrimeFaces.current().executeScript("selectTab1();");
-				PrimeFaces.current().executeScript("ajaxDelay('');");
+				PrimeFaces.current().executeScript("ajaxDelay('', 0);");
 				
 				if(pdvRapido) {
 					PrimeFaces.current().executeScript("adicionaItem();");
@@ -3043,7 +3043,7 @@ public class PDVBean implements Serializable {
 				
 			}
 			
-			PrimeFaces.current().executeScript("ajaxDelay('');");
+			PrimeFaces.current().executeScript("ajaxDelay('', 0);");
 			
 			if(pdvRapido) {
 				
@@ -3665,7 +3665,7 @@ public class PDVBean implements Serializable {
 			//calculaAcrescimo();
 			confirmaCliente();
 			
-			PrimeFaces.current().executeScript("ajaxDelay('');");
+			PrimeFaces.current().executeScript("ajaxDelay('', 0);");
 			
 			if(venda.getId() != null) {
 				aplicarDesconto__();

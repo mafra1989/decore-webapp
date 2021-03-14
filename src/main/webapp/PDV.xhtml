@@ -147,6 +147,9 @@
 		color: #545454;
 	}
 
+.carrosel-5.carrosel1 {
+	margin-top:0px;
+}
 
 
 .ui-carousel .ui-carousel-header .ui-carousel-header-title {
@@ -858,7 +861,9 @@ body .ui-datatable .ui-paginator {
 	}*/
 }
 @media ( min-width :460px) {
-
+	.carrosel-5.carrosel1 {
+		margin-top:-25px;
+	}
 	body .ui-tabs.ui-tabs-top .ui-tabs-panel {
     	min-height: 528px !important;  /*490*/	
     }
@@ -1350,8 +1355,8 @@ body .ui-datatable .ui-paginator {
 								
 								
 
-								<p:carousel id="carousel-01" headerText="" styleClass="carrosel-5" var="produto"
-									responsive="true" value="#{pDVBean.listaDeProdutos01}" stateful="true" style="margin-top: -25px;"
+								<p:carousel id="carousel-01" headerText="" styleClass="carrosel-5 carrosel1" var="produto"
+									responsive="true" value="#{pDVBean.listaDeProdutos01}" stateful="true"
 									effect="explode" numVisible="4" effectDuration="500">
 
 									<p:tooltip id="toolTipGrow_c1" for="image-prod1" 
@@ -1455,7 +1460,7 @@ body .ui-datatable .ui-paginator {
 								
 								<p:panelGrid columns="2" layout="grid"
 									style="margin-top:-2px;"
-									styleClass="panelgrid-noborder disabled disabled panel-body"
+									styleClass="panelgrid-noborder disabled disabled panel-body carrosel2"
 									columnClasses="ui-grid-col-9, ui-grid-col-3">
 									
 									<p:inputText value="#{pDVBean.keyword_produto2}" placeholder="Digite a descrição do produto" styleClass="busca" onkeypress="if (event.which == 13) return false">
@@ -1801,7 +1806,7 @@ body .ui-datatable .ui-paginator {
 											for="quantidade" />
 										<p:inputNumber id="quantidade" decimalPlaces="0" label="Quantidade"
 											placeholder="0"
-											styleClass="quantidade" onkeyup="ajaxDelay('')"
+											styleClass="quantidade" onkeyup="ajaxDelay('', 0)"
 											value="#{pDVBean.itemVenda.quantidade}"
 											rendered="#{pDVBean.itemVenda.produto.unidadeMedida == 'Un' or pDVBean.itemVenda.produto.unidadeMedida == 'Cx'}">
 
@@ -1810,7 +1815,7 @@ body .ui-datatable .ui-paginator {
 
 										<p:inputNumber id="quantidade_" decimalPlaces="3" label="Quantidade"
 											placeholder="0,000"
-											styleClass="quantidade" onkeyup="ajaxDelay('')"
+											styleClass="quantidade" onkeyup="ajaxDelay('', 0)"
 											value="#{pDVBean.itemVenda.quantidade}"
 											rendered="#{pDVBean.itemVenda.produto.unidadeMedida != 'Un' and pDVBean.itemVenda.produto.unidadeMedida != 'Cx' and pDVBean.itemVenda.produto.unidadeMedida != 'Pt'}">
 
@@ -1819,7 +1824,7 @@ body .ui-datatable .ui-paginator {
 
 										<p:inputNumber id="quantidade__" decimalPlaces="1" label="Quantidade"
 											placeholder="0,0"
-											styleClass="quantidade" onkeyup="ajaxDelay('')"
+											styleClass="quantidade" onkeyup="ajaxDelay('', 0)"
 											value="#{pDVBean.itemVenda.quantidade}"
 											rendered="#{pDVBean.itemVenda.produto.unidadeMedida == 'Pt'}">
 
@@ -1835,7 +1840,7 @@ body .ui-datatable .ui-paginator {
 										<p:outputLabel value="Valor Unitário" for="valor-unitario" />
 										<p:inputNumber id="valor-unitario" decimalPlaces="2"
 											styleClass="valor-unitario" placeholder="R$ 0,00"
-											symbol="R$ " onkeyup="ajaxDelay('')" readonly="#{not seguranca.acessoAdministrador()}"
+											symbol="R$ " onkeyup="ajaxDelay(this.value, 1)" readonly="#{not seguranca.acessoAdministrador()}"
 											value="#{pDVBean.itemVenda.produto.precoDeVenda}">
 											
 											<p:ajax event="keyup" process="@this" update="preco-venda btn-adicionar"></p:ajax>
@@ -1886,7 +1891,7 @@ body .ui-datatable .ui-paginator {
 												readonly="#{pDVBean.itemVenda.id != null}"
 												value="#{pDVBean.itemVenda.produto.margemLucro}" />
 											<p:slider for="margem-lucro" display="margem"
-												onSlideEnd="ajaxDelay('');" displayTemplate="%{value}"
+												onSlideEnd="ajaxDelay('', 0);" displayTemplate="%{value}"
 												minValue="0" maxValue="300">
 
 												<p:ajax event="slideEnd"
@@ -1931,7 +1936,7 @@ body .ui-datatable .ui-paginator {
 											</p:inputNumber>
 											<p:slider style="display:none;" id="slide-desconto"
 												for="percentual-desconto" display="desconto"
-												onSlideEnd="ajaxDelay('');" displayTemplate="%{value}"
+												onSlideEnd="ajaxDelay('', 0);" displayTemplate="%{value}"
 												minValue="0"
 												maxValue="#{pDVBean.itemVenda.produto.descontoMaximo}">
 
@@ -1986,7 +1991,10 @@ body .ui-datatable .ui-paginator {
 									
 											<p:commandButton id="btn-pizza_" icon="fa fa-pie-chart" styleClass="btn-pizza_ blink" update="composicao-dialog" action="#{pDVBean.prepararComposicao}" process="@this"
     disabled="#{(not pDVBean.itemVenda.produto.categoriaProduto.nome.contains('Pizza') and not pDVBean.itemVenda.produto.categoriaProduto.nome.contains('Pizzas') and not pDVBean.itemVenda.produto.categoriaProduto.nome.contains('PIZZA') and not pDVBean.itemVenda.produto.categoriaProduto.nome.contains('PIZZAS')) or pDVBean.itemVenda.produto.estoque}"
+    rendered="#{seguranca.configuracao.controleMesas}"
     oncomplete="PF('composicao-dialog').show();"></p:commandButton>
+    
+    								<p:outputLabel rendered="#{not seguranca.configuracao.controleMesas}" />
 										
 									<p:commandButton id="btn-adicionar" value="Adicionar"
 										onstart="PF('downloadLoading').show();" styleClass="adiciona-item"
@@ -2839,8 +2847,8 @@ body .ui-datatable .ui-paginator {
 
 
 		<p:dialog header="Informe o cliente para iniciar a venda" 
-			widgetVar="cliente-dialog" closable="true" position="top"
-			style="margin-top: 100px;" id="cliente-dialog" width="350px"
+			widgetVar="cliente-dialog" closable="true" position="center"
+			id="cliente-dialog" width="350px"
 			resizable="false" modal="true" closeOnEscape="true" responsive="true">
 
 
@@ -3799,7 +3807,7 @@ body .ui-datatable .ui-paginator {
 						value="Confirmar" 
 						process="@this form-composicao" update="form"
 						action="#{pDVBean.confirmaComposicao}" onstart="start();"
-						oncomplete="stop();PF('composicao-dialog').hide();ajaxDelay('');">
+						oncomplete="stop();PF('composicao-dialog').hide();ajaxDelay('', 0);">
 					</p:commandButton>
 	
 					<p:commandButton icon="fa fa-fw fa-close"
@@ -4056,20 +4064,27 @@ body .ui-datatable .ui-paginator {
 			    };
 			})();
 			
+			
+			
 			function ajaxDelay_(){
 				var desconto_ = $('.campos-percentual .desconto .input-desconto input').val();
 				var percentualDesconto = document.querySelector(".label-desconto");
 				percentualDesconto.innerText = desconto_.replace(' ','');
-				ajaxDelay(desconto_);
+				ajaxDelay(desconto_, 0);
 			}
 			
-			function ajaxDelay(desconto_){ 
-				var quantidade = $('.quantidade input').val(); 
+			function ajaxDelay(desconto_, opt){ 
+				var quantidade = $('.quantidade input').val();
+				
+				var precoDeVendaEditado;
+				if(opt == 1) {
+					precoDeVendaEditado = parseFloat(desconto_.replace('R$ ','').replace(',','.'));			
+				}
 				
 				quantidade = quantidade.replace('.','').replace(',','.');
 				
 				var valorDeCusto = $('.valor-custo').val();
-				var precoDeVenda = $('.valor-unitario input:nth-child(2)').val(); //$('.preco-venda').val();
+				var precoDeVenda = opt == 0 ? $('.valor-unitario input:nth-child(2)').val() : precoDeVendaEditado; //$('.preco-venda').val();
 				var margem = $('.campos-percentual .margem input').val();
 				
 					
@@ -4080,7 +4095,7 @@ body .ui-datatable .ui-paginator {
 				//var margemEmDinheiro = parseFloat(margemEmDinheiroTemp).toFixed(2) * parseFloat(quantidade);
 				
 				
-				var totalSemDesconto = parseFloat(precoDeVenda).toFixed(2) * parseFloat(quantidade);
+				var totalSemDesconto = parseFloat(precoDeVenda).toFixed(2) * parseFloat(quantidade); 
 				
 				if(totalSemDesconto.toString() != 'NaN') { 
 					var f = parseFloat(totalSemDesconto).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
@@ -4100,8 +4115,10 @@ body .ui-datatable .ui-paginator {
 					
 					var desconto = $('.campos-percentual .desconto input').val();
 					if(desconto_) {
-						desconto = desconto_;												
-						console.log(desconto_);
+						if(opt == 0) {
+							desconto = desconto_;												
+							console.log(desconto_);
+						}
 					} else {
 						//$('.campos-percentual .desconto .input-desconto input').val(desconto);
 					}
@@ -4112,7 +4129,6 @@ body .ui-datatable .ui-paginator {
 						desconto = 0;
 					}
 					
-									
 					var total = totalSemDesconto - (totalSemDesconto * parseFloat(desconto)/100);
 					
 					var descontoEmDinheiroTemp = totalSemDesconto * (parseFloat(desconto)/100);
