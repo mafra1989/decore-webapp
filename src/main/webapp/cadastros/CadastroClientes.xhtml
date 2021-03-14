@@ -145,7 +145,7 @@
 						action="#{cadastroClienteBean.prepararEditarCadastro}"
 						process="@this" update="cliente-dialog"
 						oncomplete="PF('cliente-dialog').show()"
-						disabled="#{cadastroClienteBean.clienteSelecionado == null or cadastroClienteBean.clienteSelecionado.id == 1}">
+						disabled="#{cadastroClienteBean.clienteSelecionado == null}">
 
 						<p:resetInput target="cliente-dialog" />
 					</p:commandButton>

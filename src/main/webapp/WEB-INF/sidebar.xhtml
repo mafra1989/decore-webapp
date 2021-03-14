@@ -22,7 +22,7 @@
 
     <div class="layout-sidebar">
         <div class="layout-sidebar-logo">
-            <a href="Dashboard.xhtml">
+            <p:link href="#{seguranca.configuracao.produtosUrlNuvem ? '/Dashboard.xhtml' : '/sistema-pdv/Dashboard.xhtml'}">
                 
                 <p:graphicImage rendered="false"
 						name="images/oie_Ov3NrqjejJJ5.png" library="manhattan-layout"
@@ -34,7 +34,7 @@
 					<img style="height: 64px;width: 270px;"
 						src="data:image/png;base64,#{seguranca.imageContentsAsBase64_Logo}" />
 				</ui:fragment>	
-            </a>
+            </p:link>
             <a href="#" id="layout-sidebar-anchor" class="layout-sidebar-anchor" title="Toggle Menu">
                 <i class="fa"></i>
             </a>
