@@ -23,7 +23,9 @@ import com.webapp.model.Conta;
 import com.webapp.model.DestinoLancamento;
 import com.webapp.model.ItemCaixa;
 import com.webapp.model.Lancamento;
+import com.webapp.model.Log;
 import com.webapp.model.OrigemLancamento;
+import com.webapp.model.TipoAtividade;
 import com.webapp.model.TipoOperacao;
 import com.webapp.model.Usuario;
 import com.webapp.repository.CategoriasLancamentos;
@@ -31,6 +33,7 @@ import com.webapp.repository.Contas;
 import com.webapp.repository.DestinosLancamentos;
 import com.webapp.repository.ItensCaixas;
 import com.webapp.repository.Lancamentos;
+import com.webapp.repository.Logs;
 import com.webapp.repository.Usuarios;
 import com.webapp.util.jsf.FacesUtil;
 
@@ -103,6 +106,11 @@ public class ConsultaLancamentosBean implements Serializable {
 	@Inject
 	private ItensCaixas itensCaixas;
 	
+	@Inject
+	private Logs logs;
+
+	
+	
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -158,6 +166,16 @@ public class ConsultaLancamentosBean implements Serializable {
 				
 			if(!lancamento.isAjuste()) {
 				totalLancamentosTemp += lancamento.getValor().doubleValue();
+			}
+			
+			if(lancamento.isConta()) {
+				lancamento.setLancamentoPago(true);
+				List<Conta> listaDeContas = contas.porCodigoOperacao(lancamento.getNumeroLancamento(), "LANCAMENTO", usuario_.getEmpresa());
+				for (Conta conta : listaDeContas) {
+					if(!conta.isStatus()) {
+						lancamento.setLancamentoPago(false);
+					}
+				}
 			}
 			
 			/*if(!lancamento.getCategoriaLancamento().getNome().contains("Salário")) {
@@ -289,6 +307,23 @@ public class ConsultaLancamentosBean implements Serializable {
 				
 			}
 			
+			Log log = new Log();
+			log.setDataLog(new Date());
+			log.setCodigoOperacao(String.valueOf(lancamento.getNumeroLancamento()));
+			log.setOperacao(TipoAtividade.LANCAMENTO.name());
+			
+			NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
+			
+			String tipoLancamento = "";
+			if (lancamentoSelecionado.getCategoriaLancamento().getTipoLancamento().getOrigem() == OrigemLancamento.DEBITO) {
+				tipoLancamento = "(Débito)";
+			} else {
+				tipoLancamento = "(Crédito)";
+			}
+			
+			log.setDescricao("Deletou lançamento " + tipoLancamento + ", Nº " + lancamentoSelecionado.getNumeroLancamento() + ", valor total R$ " + nf.format(lancamentoSelecionado.getValor()));
+			log.setUsuario(usuario_);		
+			logs.save(log);
 
 			lancamentoSelecionado = null;
 			pesquisar();

@@ -27,7 +27,9 @@ import com.webapp.model.Entrega;
 import com.webapp.model.FormaPagamento;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
+import com.webapp.model.Log;
 import com.webapp.model.Produto;
+import com.webapp.model.TipoAtividade;
 import com.webapp.model.TipoPagamento;
 import com.webapp.model.TipoVenda;
 import com.webapp.model.Usuario;
@@ -38,6 +40,7 @@ import com.webapp.repository.Entregas;
 import com.webapp.repository.FormasPagamentos;
 import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
+import com.webapp.repository.Logs;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.TiposVendas;
 import com.webapp.repository.Usuarios;
@@ -125,6 +128,11 @@ public class RegistroVendasBean implements Serializable {
 	
 	@Inject
 	private FormasPagamentos formasPagamentos;
+	
+	
+	@Inject
+	private Logs logs;
+	
 	
 
 	public void inicializar() {
@@ -503,6 +511,24 @@ public class RegistroVendasBean implements Serializable {
 
 				PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda N."
 						+ venda.getNumeroVenda() + " registrada com sucesso!' });");
+				
+				
+				
+				
+				
+				
+				Log log = new Log();
+				log.setDataLog(new Date());
+				log.setCodigoOperacao(String.valueOf(venda.getNumeroVenda()));
+				log.setOperacao(TipoAtividade.VENDA.name());
+				
+				NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
+				
+				log.setDescricao("Registrou venda, Nº " + venda.getNumeroVenda() + ", quantidade de itens " + venda.getQuantidadeItens() + ", valor total R$ " + nf.format(venda.getValorTotal()));
+				log.setUsuario(usuario);		
+				logs.save(log);
+				
+				
 
 				Venda vendaTemp_ = new Venda();
 				vendaTemp_.setNumeroVenda(null);
@@ -553,6 +579,18 @@ public class RegistroVendasBean implements Serializable {
 				//venda.setLucro(BigDecimal.valueOf(lucro));
 				//venda.setPercentualLucro(BigDecimal.valueOf(percentualLucro / itensVenda.size()));
 				venda = vendas.save(venda);
+				
+				Log log = new Log();
+				log.setDataLog(new Date());
+				log.setCodigoOperacao(String.valueOf(venda.getNumeroVenda()));
+				log.setOperacao(TipoAtividade.VENDA.name());
+				
+				NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
+				
+				log.setDescricao("Alterou venda, Nº " + venda.getNumeroVenda() + ", quantidade de itens " + venda.getQuantidadeItens() + ", valor total R$ " + nf.format(venda.getValorTotal()));
+				log.setUsuario(usuario);		
+				logs.save(log);
+				
 				
 				PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda N."
 						+ venda.getNumeroVenda() + " atualizada com sucesso!' });");
@@ -607,14 +645,17 @@ public class RegistroVendasBean implements Serializable {
 			}
 			
 			if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Kg") || itemCompraTemp.getProduto().getUnidadeMedida().equals("Lt")) {
+				nf = new DecimalFormat("###,##0.000", REAL);
 				itemCompraTemp.setQuantidadeDisponivel_(nf.format(new BigDecimal(
 						itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(3, BigDecimal.ROUND_HALF_EVEN)));
 
 			} else if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Pt")) {
+				nf = new DecimalFormat("###,##0.0", REAL);
 				itemCompraTemp.setQuantidadeDisponivel_(nf.format(new BigDecimal(
 						itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(1, BigDecimal.ROUND_HALF_EVEN)));
 			
 			} else if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Un") || itemCompraTemp.getProduto().getUnidadeMedida().equals("Cx")) {
+				nf = new DecimalFormat("###,##0", REAL);
 				itemCompraTemp.setQuantidadeDisponivel_(nf.format(new BigDecimal(
 						itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(0, BigDecimal.ROUND_HALF_EVEN)));
 			}
@@ -625,6 +666,8 @@ public class RegistroVendasBean implements Serializable {
 					"swal({ type: 'warning', title: 'Atenção!', text: 'Não existe quantidade disponível!' });");
 		} else {
 
+			nf = new DecimalFormat("###,##0.00", REAL);
+			
 			itensCompraTemp = new ArrayList<>();
 			for (int i = itensCompra.size() - 1; i >= 0; i--) {
 				itensCompra.get(i).setValorUnitarioFormatado(
@@ -746,18 +789,23 @@ public class RegistroVendasBean implements Serializable {
 								}
 								
 								if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Kg") || itemCompraTemp.getProduto().getUnidadeMedida().equals("Lt")) {
+									nf = new DecimalFormat("###,##0.000", REAL);
 									itemCompraTemp.setQuantidadeDisponivel_(nf.format(new BigDecimal(
 											itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(3, BigDecimal.ROUND_HALF_EVEN)));
 					
 								} else if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Pt")) {
+									nf = new DecimalFormat("###,##0.0", REAL);
 									itemCompraTemp.setQuantidadeDisponivel_(nf.format(new BigDecimal(
 											itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(1, BigDecimal.ROUND_HALF_EVEN)));
 								
 								} else if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Un") || itemCompraTemp.getProduto().getUnidadeMedida().equals("Cx")) {
+									nf = new DecimalFormat("###,##0", REAL);
 									itemCompraTemp.setQuantidadeDisponivel_(nf.format(new BigDecimal(
 											itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(0, BigDecimal.ROUND_HALF_EVEN)));
 								}
 							}
+							
+							nf = new DecimalFormat("###,##0.00", REAL);
 		
 							itensCompraTemp = new ArrayList<>();
 							for (int i = itensCompra.size() - 1; i >= 0; i--) {
@@ -839,18 +887,23 @@ public class RegistroVendasBean implements Serializable {
 				}
 				
 				if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Kg") || itemCompraTemp.getProduto().getUnidadeMedida().equals("Lt")) {
+					nf = new DecimalFormat("###,##0.000", REAL);
 					itemCompraTemp.setQuantidadeDisponivel_(nf.format(new BigDecimal(
 							itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(3, BigDecimal.ROUND_HALF_EVEN)));
 	
 				} else if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Pt")) {
+					nf = new DecimalFormat("###,##0.0", REAL);
 					itemCompraTemp.setQuantidadeDisponivel_(nf.format(new BigDecimal(
 							itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(1, BigDecimal.ROUND_HALF_EVEN)));
 				
 				} else if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Un") || itemCompraTemp.getProduto().getUnidadeMedida().equals("Cx")) {
+					nf = new DecimalFormat("###,##0", REAL);
 					itemCompraTemp.setQuantidadeDisponivel_(nf.format(new BigDecimal(
 							itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(0, BigDecimal.ROUND_HALF_EVEN)));
 				}
 			}
+			
+			nf = new DecimalFormat("###,##0.00", REAL);
 
 			itensCompraTemp = new ArrayList<>();
 			for (int i = itensCompra.size() - 1; i >= 0; i--) {
@@ -920,18 +973,23 @@ public class RegistroVendasBean implements Serializable {
 				}
 				
 				if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Kg") || itemCompraTemp.getProduto().getUnidadeMedida().equals("Lt")) {
+					nf = new DecimalFormat("###,##0.000", REAL);
 					itemCompraTemp.setQuantidadeDisponivel_(nf.format(new BigDecimal(
 							itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(3, BigDecimal.ROUND_HALF_EVEN)));
 	
 				} else if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Pt")) {
+					nf = new DecimalFormat("###,##0.0", REAL);
 					itemCompraTemp.setQuantidadeDisponivel_(nf.format(new BigDecimal(
 							itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(1, BigDecimal.ROUND_HALF_EVEN)));
 				
 				} else if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Un") || itemCompraTemp.getProduto().getUnidadeMedida().equals("Cx")) {
+					nf = new DecimalFormat("###,##0", REAL);
 					itemCompraTemp.setQuantidadeDisponivel_(nf.format(new BigDecimal(
 							itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(0, BigDecimal.ROUND_HALF_EVEN)));
 				}
 			}
+			
+			nf = new DecimalFormat("###,##0.00", REAL);
 
 			itensCompraTemp = new ArrayList<>();
 			for (int i = itensCompra.size() - 1; i >= 0; i--) {

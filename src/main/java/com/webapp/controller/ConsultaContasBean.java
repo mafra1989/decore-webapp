@@ -20,13 +20,17 @@ import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.Conta;
 import com.webapp.model.Lancamento;
+import com.webapp.model.Log;
 import com.webapp.model.OrigemConta;
+import com.webapp.model.TipoAtividade;
+import com.webapp.model.TipoConta;
 import com.webapp.model.TipoOperacao;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
 import com.webapp.repository.Compras;
 import com.webapp.repository.Contas;
 import com.webapp.repository.Lancamentos;
+import com.webapp.repository.Logs;
 import com.webapp.repository.Usuarios;
 import com.webapp.repository.Vendas;
 import com.webapp.util.jsf.FacesUtil;
@@ -78,6 +82,9 @@ public class ConsultaContasBean implements Serializable {
 	private Conta contaSelecionada;
 
 	private Date mes = new Date();
+	
+	@Inject
+	private Logs logs;
 	
 
 	public void inicializar() {
@@ -150,7 +157,39 @@ public class ConsultaContasBean implements Serializable {
 		conta.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
 		conta.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
 
-		contas.save(conta);
+		conta = contas.save(conta);
+		
+		Log log = new Log();
+		log.setDataLog(new Date());
+		log.setCodigoOperacao(String.valueOf(conta.getCodigoOperacao()));
+	
+		
+		NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
+		
+		String msg = "";
+		if(conta.getOperacao().equals(TipoAtividade.VENDA.name())) {
+			msg = "Recebeu venda";
+			log.setOperacao(TipoAtividade.RECEBIMENTO.name());
+		}
+		
+		if(conta.getOperacao().equals(TipoAtividade.COMPRA.name())) {
+			msg = "Pagou compra";
+			log.setOperacao(TipoAtividade.PAGAMENTO.name());
+		}
+		
+		if(conta.getOperacao().equals(TipoAtividade.LANCAMENTO.name())) {
+			if(conta.getTipo().equals(TipoConta.ARECEBER.name())) {
+				msg = "Recebeu receita";
+				log.setOperacao(TipoAtividade.RECEBIMENTO.name());
+			} else {
+				msg = "Pagou despesa";
+				log.setOperacao(TipoAtividade.PAGAMENTO.name());
+			}
+		}
+		
+		log.setDescricao(msg + ", Nº " + conta.getCodigoOperacao() + ", valor total R$ " + nf.format(conta.getValor()));
+		log.setUsuario(usuario);		
+		logs.save(log);
 		
 		pesquisar();
 
@@ -173,6 +212,40 @@ public class ConsultaContasBean implements Serializable {
 		contaSelecionada.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
 
 		contas.save(contaSelecionada);
+		
+		
+		Log log = new Log();
+		log.setDataLog(new Date());
+		log.setCodigoOperacao(String.valueOf(contaSelecionada.getCodigoOperacao()));
+		
+		
+		NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
+		
+		String msg = "";
+		if(contaSelecionada.getOperacao().equals(TipoAtividade.VENDA.name())) {
+			msg = "Desfez Recebimento, venda Nº ";
+			log.setOperacao(TipoAtividade.RECEBIMENTO.name());
+		}
+		
+		if(contaSelecionada.getOperacao().equals(TipoAtividade.COMPRA.name())) {
+			msg = "Desfez Pagamento, compra Nº ";
+			log.setOperacao(TipoAtividade.PAGAMENTO.name());
+		}
+		
+		if(contaSelecionada.getOperacao().equals(TipoAtividade.LANCAMENTO.name())) {
+			if(contaSelecionada.getTipo().equals(TipoConta.ARECEBER.name())) {
+				msg = "Desfez Recebimento, receita Nº ";
+				log.setOperacao(TipoAtividade.RECEBIMENTO.name());
+			} else {
+				msg = "Desfez Pagamento, despesa Nº ";
+				log.setOperacao(TipoAtividade.PAGAMENTO.name());
+			}
+		}
+		
+		log.setDescricao(msg + contaSelecionada.getCodigoOperacao() + ", valor total R$ " + nf.format(contaSelecionada.getValor()));
+		log.setUsuario(usuario);		
+		logs.save(log);
+		
 
 		pesquisar();
 

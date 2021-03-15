@@ -2006,6 +2006,27 @@ body .ui-datatable .ui-datatable-data>tr td {
 							</p:selectOneMenu>
 
 						</p:panelGrid>
+						
+						<p:panelGrid columns="2" layout="grid" id="panel-favorecido"
+							styleClass="panelgrid-noborder disabled disabled panel-favorecido #{registroLancamentosBean.renderFavorecido ? '' : 'hide'}"
+							columnClasses="ui-grid-col-5, ui-grid-col-7">
+
+							<p:outputLabel value="Funcionário Fav." for="favorecido" style="font-weight:bold;" />
+							<p:selectOneMenu id="favorecido" styleClass="hide"
+								value="#{registroLancamentosBean.usuario}"
+								required="#{registroLancamentosBean.renderFavorecido}"
+								requiredMessage="Funcionário Favorecido deve ser informado."
+								placeholder="selecione">
+
+								<f:selectItem itemLabel="Selecione" />
+
+								<f:selectItems
+									value="#{registroLancamentosBean.todosUsuarios}"
+									var="usuario" itemLabel="#{usuario.nome}"
+									itemValue="#{usuario}" />
+							</p:selectOneMenu>
+
+						</p:panelGrid>
 
 						<p:panelGrid columns="2" layout="grid"
 							style="margin-bottom: 5px"

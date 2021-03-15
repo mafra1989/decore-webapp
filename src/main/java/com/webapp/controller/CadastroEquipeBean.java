@@ -296,7 +296,7 @@ public class CadastroEquipeBean implements Serializable {
 	}
 
 	private void listarTodos() {
-		todosUsuarios = usuarios.todos(usuario_.getEmpresa());
+		todosUsuarios = usuarios.todos_(usuario_.getEmpresa());
 		todosGrupos = grupos.todos();
 		todasEmpresas = empresas.todos();
 	}

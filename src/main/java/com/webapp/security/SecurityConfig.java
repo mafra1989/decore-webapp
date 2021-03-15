@@ -95,6 +95,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					"/cadastros/CadastroFornecedores.xhtml", 
 					"/cadastros/CadastroTipoLancamento.xhtml", 
 					"/cadastros/CadastroTipoVenda.xhtml", 
+					"/Atividades.xhtml",
 					"/importar/ImportarDados.xhtml")
 			.hasAnyRole("ADMINISTRADOR")
 			.and()

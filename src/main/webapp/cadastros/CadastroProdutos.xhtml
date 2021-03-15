@@ -238,6 +238,9 @@
     	margin-bottom: 10px;
     	margin-left: -8px;
 	}
+	.ajuste-estoque.fracao {
+		margin-top: 6px;
+	}
 	
 	.estoque.ui-panelgrid .ui-panelgrid-cell:nth-child(3) {
 		margin-top: 0px;
@@ -722,10 +725,10 @@
 								value="#{cadastroProdutoBean.produto.custoTotal}">
 							</p:inputNumber>
 							
-							<p:outputLabel />
+							<p:outputLabel rendered="#{cadastroProdutoBean.produto.unidadeMedida == 'Un' or cadastroProdutoBean.produto.unidadeMedida == 'Cx'}" />
 							<p:commandLink value="Ajustar Quantidade"
 								actionListener="#{cadastroProdutoBean.prepararRegistroCompra}" process="@this un grid-um" update="form-ajuste-dialog"
-								styleClass="ajuste-estoque" onstart="PF('downloadLoading').show();"
+								styleClass="ajuste-estoque #{(cadastroProdutoBean.produto.unidadeMedida == 'Un' or cadastroProdutoBean.produto.unidadeMedida == 'Cx') ? '' : 'fracao'}" onstart="PF('downloadLoading').show();"
 								oncomplete="PF('downloadLoading').hide();PF('ajuste-dialog').show();">
 								<i style="float:left;margin-top: 2px;" class="fa fa-fw fa-sort"></i>
 							</p:commandLink>

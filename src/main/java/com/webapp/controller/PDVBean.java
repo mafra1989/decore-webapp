@@ -64,11 +64,13 @@ import com.webapp.model.ItemEspelhoVendaPagamentos;
 import com.webapp.model.ItemEspelhoVendaProdutos;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.ItemVendaCompra;
+import com.webapp.model.Log;
 import com.webapp.model.Mesa;
 import com.webapp.model.Pagamento;
 import com.webapp.model.PeriodoPagamento;
 import com.webapp.model.Produto;
 import com.webapp.model.StatusPedido;
+import com.webapp.model.TipoAtividade;
 import com.webapp.model.TipoOperacao;
 import com.webapp.model.TipoPagamento;
 import com.webapp.model.TipoVenda;
@@ -89,6 +91,7 @@ import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensDevolucoes;
 import com.webapp.repository.ItensVendas;
 import com.webapp.repository.ItensVendasCompras;
+import com.webapp.repository.Logs;
 import com.webapp.repository.Pagamentos;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.TiposVendas;
@@ -325,6 +328,9 @@ public class PDVBean implements Serializable {
 	private String keyword_produto1 = "";
 	
 	private String keyword_produto2 = "";
+	
+	@Inject
+	private Logs logs;
 	
 	
 
@@ -2247,6 +2253,19 @@ public class PDVBean implements Serializable {
 			
 			/*emitirCupom(venda);*/
 			//imprimirCupom(itensVenda, venda);
+			
+			
+			Log log = new Log();
+			log.setDataLog(new Date());
+			log.setCodigoOperacao(String.valueOf(venda.getNumeroVenda()));
+			log.setOperacao(TipoAtividade.VENDA.name());
+			
+			NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
+			
+			log.setDescricao("Registrou venda PDV, Nº " + venda.getNumeroVenda() + ", quantidade de itens " + venda.getQuantidadeItens() + ", valor total R$ " + nf.format(venda.getValorTotal()));
+			log.setUsuario(usuario);		
+			logs.save(log);
+			
 
 			
 			venda = new Venda();
@@ -2522,6 +2541,18 @@ public class PDVBean implements Serializable {
 			//venda.setLucro(BigDecimal.valueOf(lucro));
 			//venda.setPercentualLucro(BigDecimal.valueOf(percentualLucro / itensVenda.size()));
 			//venda = vendas.save(venda);
+			
+			
+			Log log = new Log();
+			log.setDataLog(new Date());
+			log.setCodigoOperacao(String.valueOf(venda.getNumeroVenda()));
+			log.setOperacao(TipoAtividade.VENDA.name());
+			
+			NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
+			
+			log.setDescricao("Alterou venda PDV, Nº " + venda.getNumeroVenda() + ", quantidade de itens " + venda.getQuantidadeItens() + ", valor total R$ " + nf.format(venda.getValorTotal()));
+			log.setUsuario(usuario);		
+			logs.save(log);
 				
 				
 			//PF('confirmDialog').hide();

@@ -32,16 +32,17 @@ import com.webapp.model.Conta;
 import com.webapp.model.Devolucao;
 import com.webapp.model.Entrega;
 import com.webapp.model.EspelhoVenda;
-import com.webapp.model.FormaPagamento;
 import com.webapp.model.ItemCaixa;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemDevolucao;
 import com.webapp.model.ItemEspelhoVendaProdutos;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.ItemVendaCompra;
+import com.webapp.model.Log;
 import com.webapp.model.Pagamento;
 import com.webapp.model.Produto;
 import com.webapp.model.StatusPedido;
+import com.webapp.model.TipoAtividade;
 import com.webapp.model.TipoOperacao;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
@@ -57,6 +58,7 @@ import com.webapp.repository.ItensDevolucoes;
 import com.webapp.repository.ItensVendas;
 import com.webapp.repository.ItensVendasCompras;
 import com.webapp.repository.Lancamentos;
+import com.webapp.repository.Logs;
 import com.webapp.repository.Pagamentos;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.Usuarios;
@@ -158,6 +160,9 @@ public class ConsultaVendasBean implements Serializable {
 	private Clientes clientes;
 	
 	private List<Cliente> todosClientes = new ArrayList<Cliente>();
+	
+	@Inject
+	private Logs logs;
 	
 
 	public void inicializar() {
@@ -290,6 +295,16 @@ public class ConsultaVendasBean implements Serializable {
 			
 		}
 		
+		Log log = new Log();
+		log.setDataLog(new Date());
+		log.setCodigoOperacao(String.valueOf(vendaSelecionada.getNumeroVenda()));
+		log.setOperacao(TipoAtividade.VENDA.name());
+		
+		NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
+		
+		log.setDescricao("Entregou venda, Nº " + vendaSelecionada.getNumeroVenda() + ", quantidade de itens " + vendaSelecionada.getQuantidadeItens() + ", valor total R$ " + nf.format(vendaSelecionada.getValorTotal()));
+		log.setUsuario(usuario_);		
+		logs.save(log);
 
 		PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda N."
 				+ vendaSelecionada.getNumeroVenda() + " entregue com sucesso!' });");
@@ -305,6 +320,17 @@ public class ConsultaVendasBean implements Serializable {
 		Venda venda = entrega.getVenda();
 		venda.setStatus(false);
 		venda = vendas.save(venda);
+		
+		Log log = new Log();
+		log.setDataLog(new Date());
+		log.setCodigoOperacao(String.valueOf(vendaSelecionada.getNumeroVenda()));
+		log.setOperacao(TipoAtividade.VENDA.name());
+		
+		NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
+		
+		log.setDescricao("Desfez entrega, venda Nº " + vendaSelecionada.getNumeroVenda() + ", quantidade de itens " + vendaSelecionada.getQuantidadeItens() + ", valor total R$ " + nf.format(vendaSelecionada.getValorTotal()));
+		log.setUsuario(usuario_);		
+		logs.save(log);
 
 		PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Entrega da venda N."
 				+ vendaSelecionada.getNumeroVenda() + " desfeita com sucesso!' });");
@@ -320,6 +346,19 @@ public class ConsultaVendasBean implements Serializable {
 		venda.setStatus(false);
 		venda.setVendaPaga(false);
 		venda = vendas.save(venda);
+		
+		
+		Log log = new Log();
+		log.setDataLog(new Date());
+		log.setCodigoOperacao(String.valueOf(vendaSelecionada.getNumeroVenda()));
+		log.setOperacao(TipoAtividade.VENDA.name());
+		
+		NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
+		
+		log.setDescricao("Desfez entrega e pagamento, venda Nº " + vendaSelecionada.getNumeroVenda() + ", quantidade de itens " + vendaSelecionada.getQuantidadeItens() + ", valor total R$ " + nf.format(vendaSelecionada.getValorTotal()));
+		log.setUsuario(usuario_);		
+		logs.save(log);
+		
 		
 		if(!venda.isVendaPaga()) {
 			List<ItemCaixa> itensCaixa = itensCaixas.porCodigoOperacao(venda.getNumeroVenda(), TipoOperacao.VENDA, usuario_.getEmpresa());
@@ -687,6 +726,17 @@ public class ConsultaVendasBean implements Serializable {
 			}
 
 			vendas.remove(vendaSelecionada);
+			
+			Log log = new Log();
+			log.setDataLog(new Date());
+			log.setCodigoOperacao(String.valueOf(vendaSelecionada.getNumeroVenda()));
+			log.setOperacao(TipoAtividade.VENDA.name());
+			
+			NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
+			
+			log.setDescricao("Deletou venda, Nº " + vendaSelecionada.getNumeroVenda() + ", quantidade de itens " + vendaSelecionada.getQuantidadeItens() + ", valor total R$ " + nf.format(vendaSelecionada.getValorTotal()));
+			log.setUsuario(usuario_);		
+			logs.save(log);
 
 			vendaSelecionada = null;
 

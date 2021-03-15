@@ -6,6 +6,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -87,6 +89,15 @@ public class Lancamento implements Serializable {
 	@Type(type = "yes_no")
 	@Column(nullable = false)
 	private boolean conta;
+	
+	
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = true)
+	private TipoPagamento tipoPagamento;
+	
+	@Type(type = "yes_no")
+	@Column(nullable = false)
+	private boolean lancamentoPago = true;
 	
 
 	public Long getId() {
@@ -217,6 +228,23 @@ public class Lancamento implements Serializable {
 		this.conta = conta;
 	}
 
+	public TipoPagamento getTipoPagamento() {
+		return tipoPagamento;
+	}
+
+	public void setTipoPagamento(TipoPagamento tipoPagamento) {
+		this.tipoPagamento = tipoPagamento;
+	}
+	
+	public boolean isLancamentoPago() {
+		return lancamentoPago;
+	}
+
+	public void setLancamentoPago(boolean lancamentoPago) {
+		this.lancamentoPago = lancamentoPago;
+	}
+	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -241,5 +269,5 @@ public class Lancamento implements Serializable {
 			return false;
 		return true;
 	}
-
+	
 }

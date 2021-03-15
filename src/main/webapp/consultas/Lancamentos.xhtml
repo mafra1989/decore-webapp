@@ -379,6 +379,10 @@
 							<p:column headerText="Destino" width="20%">
 								<h:outputText value="#{lancamento.empresa.nome}" />
 							</p:column>
+							
+							<p:column headerText="Pago?" width="15%">
+								<h:outputText value="#{lancamento.tipoPagamento == 'PARCELADO' ? 'Lançamento Parc.' : ((lancamento.conta and not lancamento.lancamentoPago and lancamento.categoriaLancamento.tipoLancamento.origem == 'CREDITO') ? 'À receber' : ((lancamento.conta and not lancamento.lancamentoPago and lancamento.categoriaLancamento.tipoLancamento.origem == 'DEBITO') ? 'À pagar' : (lancamento.ajuste ? '-' : (lancamento.lancamentoPago ? 'Sim' : 'Não'))))}" />
+							</p:column>
 
 						</p:dataTable>
 

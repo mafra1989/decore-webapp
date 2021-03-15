@@ -32,7 +32,9 @@ import com.webapp.model.ItemDevolucao;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.ItemVendaCompra;
 import com.webapp.model.Lancamento;
+import com.webapp.model.Log;
 import com.webapp.model.Produto;
+import com.webapp.model.TipoAtividade;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
 import com.webapp.repository.Caixas;
@@ -48,6 +50,7 @@ import com.webapp.repository.ItensDevolucoes;
 import com.webapp.repository.ItensVendas;
 import com.webapp.repository.ItensVendasCompras;
 import com.webapp.repository.Lancamentos;
+import com.webapp.repository.Logs;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.Usuarios;
 import com.webapp.repository.Vendas;
@@ -147,6 +150,11 @@ public class ConsultaComprasBean implements Serializable {
 	private Produto produto;
 	
 	private List<Produto> todosProdutos;
+	
+	
+	@Inject
+	private Logs logs;
+	
 	
 
 	public void inicializar() {
@@ -444,6 +452,18 @@ public class ConsultaComprasBean implements Serializable {
 							lancamentos.remove(lancamento);
 						}
 					}
+					
+					
+					Log log = new Log();
+					log.setDataLog(new Date());
+					log.setCodigoOperacao(String.valueOf(compraSelecionada.getNumeroCompra()));
+					log.setOperacao(TipoAtividade.COMPRA.name());
+					
+					NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
+					
+					log.setDescricao("Deletou compra, Nº " + compraSelecionada.getNumeroCompra() + ", quantidade de itens " + compraSelecionada.getQuantidadeItens() + ", valor total R$ " + nf.format(compraSelecionada.getValorTotal()));
+					log.setUsuario(usuario_);		
+					logs.save(log);
 					
 
 					compraSelecionada = null;

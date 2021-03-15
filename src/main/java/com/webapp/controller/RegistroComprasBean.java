@@ -3,12 +3,15 @@ package com.webapp.controller;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -26,8 +29,10 @@ import com.webapp.model.Conta;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.ItemVendaCompra;
+import com.webapp.model.Log;
 import com.webapp.model.PeriodoPagamento;
 import com.webapp.model.Produto;
+import com.webapp.model.TipoAtividade;
 import com.webapp.model.TipoPagamento;
 import com.webapp.model.Usuario;
 import com.webapp.repository.Compras;
@@ -36,6 +41,7 @@ import com.webapp.repository.Contas;
 import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
 import com.webapp.repository.ItensVendasCompras;
+import com.webapp.repository.Logs;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.Usuarios;
 import com.webapp.repository.filter.ProdutoFilter;
@@ -130,6 +136,14 @@ public class RegistroComprasBean implements Serializable {
 	
 	@Inject
 	private Configuracao configuracao;
+	
+	
+	@Inject
+	private Logs logs;
+	
+	private static final Locale BRAZIL = new Locale("pt", "BR");
+
+	private static final DecimalFormatSymbols REAL = new DecimalFormatSymbols(BRAZIL);
 	
 	
 	
@@ -754,6 +768,22 @@ public class RegistroComprasBean implements Serializable {
 						"stop();PF('confirmDialog').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Compra N."
 								+ compra.getNumeroCompra() + " registrada com sucesso!', timer: 1500 });");
 				
+				
+				
+				Log log = new Log();
+				log.setDataLog(new Date());
+				log.setCodigoOperacao(String.valueOf(compra.getNumeroCompra()));
+				log.setOperacao(TipoAtividade.COMPRA.name());
+				
+				NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
+				
+				log.setDescricao("Registrou compra, Nº " + compra.getNumeroCompra() + ", quantidade de itens " + compra.getQuantidadeItens() + ", valor total R$ " + nf.format(compra.getValorTotal()));
+				log.setUsuario(usuario);		
+				logs.save(log);
+				
+				
+				
+				
 				Compra compraTemp_ = new Compra();
 				compraTemp_.setUsuario(compra.getUsuario());
 				
@@ -774,6 +804,18 @@ public class RegistroComprasBean implements Serializable {
 				compra = compraTemp_;
 
 			} else {
+				
+				Log log = new Log();
+				log.setDataLog(new Date());
+				log.setCodigoOperacao(String.valueOf(compra.getNumeroCompra()));
+				log.setOperacao(TipoAtividade.COMPRA.name());
+				
+				NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
+				
+				log.setDescricao("Alterou compra, Nº " + compra.getNumeroCompra() + ", quantidade de itens " + compra.getQuantidadeItens() + ", valor total R$ " + nf.format(compra.getValorTotal()));
+				log.setUsuario(usuario);		
+				logs.save(log);
+				
 				PrimeFaces.current().executeScript(
 						"stop();PF('confirmDialog').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Compra N."
 								+ compra.getNumeroCompra() + " atualizada com sucesso!', timer: 1500 });");

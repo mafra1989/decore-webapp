@@ -1,0 +1,334 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	template="/WEB-INF/template.xhtml">
+
+	<ui:define name="title">Histórico de Atividades</ui:define>
+
+	<f:metadata>
+		<f:viewAction action="#{atividadesBean.inicializar}" />
+	</f:metadata>
+
+	<ui:define name="content">
+
+		<style>
+@media ( min-width :220px) {
+	.ui-datatable tbody td {
+	    height: auto !important;
+	}
+	.ui-fluid .ui-selectcheckboxmenu {
+	    height: 29px;
+	}
+	body .ui-selectcheckboxmenu-panel {
+	    width: 76% !important;
+	}
+	.btn-pie.ui-button {
+		color: #6a6565;
+		background-color: #f2f2f200;
+		border: 1px solid #a8a8a8;
+		width: 32px;
+		float: right;
+		position: relative;
+		margin-top: -4px;
+	}
+	.btn-pie.ui-button.ui-state-hover {
+		background-color: #e8e5e5;
+	}
+	.btn-pie.ui-button.ui-state-focus {
+		background-color: #e8e5e5;
+	}
+	.btn-pie.ui-button.ui-state-active {
+		background-color: #f2f2f200;
+	}
+	.panel-favorecido {
+		overflow: hidden;
+		max-height: 300px;
+		transition: max-height 1s ease-in-out;
+		width: 100%;
+	}
+	.panel-favorecido.hide {
+		max-height: 0;
+		pointer-events: none;
+		margin-bottom: 0px;
+	}
+	.inventario.ui-button {
+		width: auto !important;
+		color: #000000 !important;
+		background-color: transparent !important;
+	}
+	body .ui-button.ui-button-text-icon-left .ui-button-text {
+		font-weight: bold;
+	}
+	.panel-total.ui-panel .ui-panel-content {
+		border: none;
+		padding: 0px;
+	}
+	.fotoDialog {
+		max-height: 380px !important;
+		width: 240px !important;
+		margin-top: -50px;
+	}
+	.categoria-field {
+		width: 100%;
+		height: 32px;
+	}
+	.ui-slider .ui-slider-handle {
+		width: 1.7em;
+		height: 1.7em;
+	}
+	.ui-slider-horizontal {
+		height: 1.2em !important;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 28px !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+		width: 50% !important;
+		float: left !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-6 {
+		width: 50% !important;
+		float: left !important;
+	}
+	.qty-parcelas.ui-panelgrid .ui-panelgrid-cell:nth-child(1) {
+		margin-top: 10px !important;
+	}
+	.percentual-juros.ui-panelgrid .ui-panelgrid-cell:nth-child(1) {
+		margin-top: 8px !important;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+		.ui-datatable tfoot th {
+		font-size: 13px;
+	}
+	body .btn-new.ui-button {
+		color: #676363;
+		background-color: #f9f9f9;
+		border: 1px solid #8a8585;
+	}
+	.swal2-popup {
+		width: 28em;
+		max-width: 100%;
+		padding: 0 0 0.4em 0;
+		font-size: 0.75rem;
+	}
+	.swal2-popup #swal2-content {
+		font-weight: 400;
+	}
+}
+
+@media ( min-width :460px) {
+	body .ui-selectcheckboxmenu-panel {
+		width: auto !important;
+	}
+	.ui-slider .ui-slider-handle {
+		width: 1.7em;
+		height: 1.7em;
+	}
+	.ui-slider-horizontal {
+		height: 1.2em;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 27px !important;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+		.ui-datatable tfoot th {
+		font-size: 14px;
+	}
+	.btn-pie.ui-button {
+	    float: left;
+	    margin-left: -18px;
+	    margin-top: 0px;
+	    height: 29px;
+	}
+}
+
+@media ( min-width :640px) {
+	.categoria-field {
+		width: 60% !important;
+	}
+	.ui-slider-handle {
+		width: 1.2em !important;
+		height: 1.2em !important;
+	}
+	.ui-slider-horizontal {
+		height: 0.8em !important;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 27px !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+		width: 33.33333% !important;
+		float: none;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-6 {
+		width: auto !important;
+		float: none;
+	}
+	.fotoDialog {
+		max-height: 500px !important;
+		width: 240px !important;
+		margin-top: -50px;
+	}
+}
+</style>
+
+		<div class="page-header">
+			<h1>Histórico de Atividades</h1>
+		</div>
+
+		<p:growl id="msg" closable="true" life="500" showSummary="false"
+			showDetail="true" style="text-align: center" />
+
+
+		<h:form id="form" prependId="false">
+
+			<p:remoteCommand name="setarItemID" process="@this atividadesTable"
+				update="form" action="#{atividadesBean.excluir}"
+				onstart="PF('downloadLoading').show();"
+				oncomplete="PF('downloadLoading').hide();" />
+
+			<p:toolbar id="toolbar">
+				<f:facet name="left">
+					<p:commandButton icon="fa fa-fw fa-search" value="Pesquisar"
+						id="pesquisar-button" update="panel-table atividadesTable"
+						style="margin-left: 3px;font-weight:bold" process="form"
+						action="#{atividadesBean.pesquisar}"
+						onstart="PF('downloadLoading').show();"
+						oncomplete="PF('downloadLoading').hide();"></p:commandButton>
+				</f:facet>
+
+			</p:toolbar>
+
+			<div class="ui-g-12 ui-lg-12">
+
+				<p:panel id="filters" class="card card-w-title ui-fluid itens-add"
+					style="padding-bottom: 0px !important; margin-top:10px">
+
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3">
+
+						<p:outputLabel value="Tipo de operação" for="operacao" />
+						<p:selectOneMenu id="operacao" 
+							value="#{atividadesBean.tipoAtividade}">
+
+							<f:selectItem itemLabel="Selecione" />
+
+							<f:selectItems value="#{atividadesBean.tiposAtividades}" 
+								var="tipoAtividade" itemLabel="#{tipoAtividade.descricao}"
+								itemValue="#{tipoAtividade}" />
+						</p:selectOneMenu>
+					</p:panelGrid>
+
+					<p:panelGrid columns="4" id="painel" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-1, ui-grid-col-2">
+
+						<p:outputLabel value="Período" for="data01" />
+						<p:datePicker id="data01"
+							value="#{atividadesBean.dateStart}" readonlyInput="true"
+							pattern="dd/MM/yyyy" locale="pt" showIcon="true">
+						</p:datePicker>
+
+
+						<p:outputLabel value="até" id="data02" />
+						<p:datePicker id="data-02"
+							value="#{atividadesBean.dateStop}" readonlyInput="true"
+							styleClass="dateStop" pattern="dd/MM/yyyy" locale="pt"
+							showIcon="true">
+						</p:datePicker>
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" layout="grid" 
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3">
+						
+						<p:outputLabel value="Usuário do Sistema" for="usuario" />
+						<p:selectOneMenu id="usuario"
+							value="#{atividadesBean.usuario}" placeholder="selecione">
+
+							<f:selectItem itemLabel="Selecione" />
+
+							<f:selectItems value="#{atividadesBean.todosUsuarios}"
+								var="usuario" itemLabel="#{usuario.nome}"
+								itemValue="#{usuario}" />
+						</p:selectOneMenu>
+
+						
+					</p:panelGrid>
+
+				</p:panel>
+
+				<p:panel class="card card-w-title ui-fluid itens-add"
+					id="panel-table"
+					style="padding-bottom: 0px !important;margin-top:-10px">
+
+					<h3 style="font-weight: bold">Resultado da consulta</h3>
+
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-12">
+
+						<p:dataTable id="atividadesTable" paginatorAlwaysVisible="false"
+							scrollable="true" scrollHeight="505"
+							value="#{atividadesBean.logsFiltrados}"
+							var="log" emptyMessage="Nenhum resultado encontrado."
+							reflow="true" paginator="false" rowKey="#{log.id}"
+							selection="#{atividadesBean.logSelecionado}"
+							selectionMode="single">
+							
+							<p:column headerText="Data" width="20%">
+								<h:outputText value="#{log.dataLog}">
+									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy"
+										dateStyle="short" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Usuário" width="20%">
+								<h:outputText value="#{log.usuario.nome}" />
+							</p:column>
+
+							<p:column headerText="Descrição" width="40%">
+								<h:outputText value="#{log.descricao}" />
+							</p:column>
+							
+							<p:column headerText="Tipo de operação" width="20%">
+								<h:outputText
+									value="#{log.operacao}" />
+							</p:column>
+
+						</p:dataTable>
+						
+					</p:panelGrid>
+
+				</p:panel>
+
+			</div>
+
+		</h:form>
+
+
+
+		<p:dialog id="downloadLoading" showHeader="false" modal="true"
+			widgetVar="downloadLoading" header="Status" draggable="false"
+			closable="false" resizable="false">
+			<p:graphicImage name="images/loadingbar.gif"
+				library="manhattan-layout" width="50" />
+		</p:dialog>
+
+		<script type="text/javascript">
+			function start() {
+				PF('downloadLoading').show();
+			}
+
+			function stop() {
+				PF('downloadLoading').hide();
+			}
+		</script>
+
+	</ui:define>
+
+</ui:composition>

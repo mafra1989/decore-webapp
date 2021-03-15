@@ -205,7 +205,10 @@
                                 <p:menuitem id="pm_layout_toggle" value="Toggle" icon="fa fa-chevron-left" actionListener="#{guestPreferences.updateLayoutMode('TOGGLE')}" ajax="false"></p:menuitem>
                             </p:submenu>
                             
-                            
+                            <p:menuitem id="pm_Logs" styleClass="pm_Logs" rendered="#{seguranca.acessoAdministrador() and true}"
+								value="Atividades" icon="fa fa-terminal"
+								outcome="/Atividades.xhtml" />
+								
                             <p:menuitem id="pm_Import" styleClass="pm_Import" rendered="#{seguranca.acessoAdministrador() and true}"
 								value="Importar Dados" icon="fa fa-laptop"
 								outcome="/importar/ImportarDados.xhtml" />

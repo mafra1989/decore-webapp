@@ -712,21 +712,21 @@
 							<p:inputNumber id="nova-quantidade" decimalPlaces="0" placeholder="0" minValue="0"
 								styleClass="quantidade" onkeyup="ajaxDelayQtd()" onchange="ajaxDelayQtd()" onblur="ajaxDelayQtd()"
 								value="#{estoqueBean.novaQuantidadeAtual}"
-								rendered="#{estoqueBean.itemCompra.produto.unidadeMedida == 'Un' or estoqueBean.itemCompra.produto.unidadeMedida == 'Cx' or estoqueBean.itemCompra.produto == null}">
+								rendered="#{estoqueBean.produtoSelecionado.unidadeMedida == 'Un' or estoqueBean.produtoSelecionado.unidadeMedida == 'Cx'}">
 
 							</p:inputNumber>
 							
 							<p:inputNumber id="nova-quantidade_" decimalPlaces="3" placeholder="0,000" minValue="0"
 								styleClass="quantidade_" onkeyup="ajaxDelayQtd_()" onchange="ajaxDelayQtd_()" onblur="ajaxDelayQtd_()"
 								value="#{estoqueBean.novaQuantidadeAtual}"
-								rendered="#{estoqueBean.itemCompra.produto.unidadeMedida == 'Kg' or estoqueBean.itemCompra.produto.unidadeMedida == 'Lt'}">
+								rendered="#{estoqueBean.produtoSelecionado.unidadeMedida == 'Kg' or estoqueBean.produtoSelecionado.unidadeMedida == 'Lt'}">
 
 							</p:inputNumber>
 							
 							<p:inputNumber id="nova-quantidade__" decimalPlaces="1" placeholder="0,0" minValue="0"
 								styleClass="quantidade__" onkeyup="ajaxDelayQtd__()" onchange="ajaxDelayQtd__()" onblur="ajaxDelayQtd__()"
 								value="#{estoqueBean.novaQuantidadeAtual}"
-								rendered="#{estoqueBean.itemCompra.produto.unidadeMedida == 'Pt'}">
+								rendered="#{estoqueBean.produtoSelecionado.unidadeMedida == 'Pt'}">
 
 							</p:inputNumber>
 

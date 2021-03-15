@@ -7,11 +7,14 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
@@ -28,7 +31,10 @@ import com.webapp.model.Configuracao;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.ItemVendaCompra;
+import com.webapp.model.Log;
 import com.webapp.model.Produto;
+import com.webapp.model.TipoAtividade;
+import com.webapp.model.TipoOperacao;
 import com.webapp.model.TipoPagamento;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
@@ -40,6 +46,7 @@ import com.webapp.repository.Configuracoes;
 import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
 import com.webapp.repository.ItensVendasCompras;
+import com.webapp.repository.Logs;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.TiposVendas;
 import com.webapp.repository.Usuarios;
@@ -153,6 +160,13 @@ public class EstoqueBean implements Serializable {
 	@Inject
 	private Configuracao configuracao;
 	
+	
+	@Inject
+	private Logs logs;
+	
+	private static final Locale BRAZIL = new Locale("pt", "BR");
+
+	private static final DecimalFormatSymbols REAL = new DecimalFormatSymbols(BRAZIL);
 	
 	
 
@@ -722,10 +736,22 @@ public class EstoqueBean implements Serializable {
 		if(produtoSelecionado.getId() != null) {
 			
 			if(novoCustoMedio.doubleValue() >= 0) {
+
+				Log log = new Log();
+				log.setDataLog(new Date());
+				log.setCodigoOperacao(String.valueOf(produtoSelecionado.getCodigo()));
+				log.setOperacao(TipoAtividade.ESTOQUE.name());
 				
-				produtoSelecionado.setCustoMedioUnitario(novoCustoMedio);
+				NumberFormat nf = new DecimalFormat("###,##0.0000", REAL);
 				
+				log.setDescricao("Alterou custo médio, produto " + produtoSelecionado.getCodigo() + ", " + produtoSelecionado.getDescricao() + ", de R$ " + nf.format(produtoSelecionado.getCustoMedioUnitario()) + " para R$ " + nf.format(novoCustoMedio));
+				log.setUsuario(usuario);		
+				logs.save(log);
+				
+				
+				produtoSelecionado.setCustoMedioUnitario(novoCustoMedio);		
 				produtoSelecionado = produtos.save(produtoSelecionado);
+				
 				
 				Produto produtoSelecionadoTemp = produtos.porId(produtoSelecionado.getId());
 				pesquisar();
@@ -949,6 +975,40 @@ public class EstoqueBean implements Serializable {
 					}
 					
 					
+					
+					Log log = new Log();
+					log.setDataLog(new Date());
+					log.setCodigoOperacao(String.valueOf(produtoSelecionado.getCodigo()));
+					log.setOperacao(TipoAtividade.ESTOQUE.name());
+					
+					NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
+					String novaQuantidadeAtualFormatada = "";
+					
+					if(produtoSelecionado.getUnidadeMedida().equals("Kg") || produtoSelecionado.getUnidadeMedida().equals("Lt")) {
+						nf = new DecimalFormat("###,##0.000", REAL);
+						produtoSelecionado.setQuantidadeAtualFormatada(nf.format(new BigDecimal(
+								produtoSelecionado.getQuantidadeAtual().doubleValue() - itemCompra.getQuantidade().doubleValue()).setScale(3, BigDecimal.ROUND_HALF_EVEN)));
+						novaQuantidadeAtualFormatada = nf.format(novaQuantidadeAtual);
+						
+					} else if(produtoSelecionado.getUnidadeMedida().equals("Pt")) {
+						nf = new DecimalFormat("###,##0.0", REAL);
+						produtoSelecionado.setQuantidadeAtualFormatada(nf.format(new BigDecimal(
+								produtoSelecionado.getQuantidadeAtual().doubleValue() - itemCompra.getQuantidade().doubleValue()).setScale(1, BigDecimal.ROUND_HALF_EVEN)));
+						novaQuantidadeAtualFormatada = nf.format(novaQuantidadeAtual);
+						
+					} else if(produtoSelecionado.getUnidadeMedida().equals("Un") || produtoSelecionado.getUnidadeMedida().equals("Cx")) {
+						nf = new DecimalFormat("###,##0", REAL);
+						produtoSelecionado.setQuantidadeAtualFormatada(nf.format(new BigDecimal(
+								produtoSelecionado.getQuantidadeAtual().doubleValue() - itemCompra.getQuantidade().doubleValue()).setScale(0, BigDecimal.ROUND_HALF_EVEN)));
+						novaQuantidadeAtualFormatada = nf.format(novaQuantidadeAtual);
+					}
+					
+					log.setDescricao("Ajustou estoque, produto " + produtoSelecionado.getCodigo() + ", " + produtoSelecionado.getDescricao() + ", de " + produtoSelecionado.getQuantidadeAtualFormatada() + " " + produtoSelecionado.getUnidadeMedida() + " para " + novaQuantidadeAtualFormatada + " " + produtoSelecionado.getUnidadeMedida());
+					log.setUsuario(usuario);		
+					logs.save(log);
+					
+					
+					
 					Produto produtoSelecionadoTemp = produtos.porId(produtoSelecionado.getId());
 					pesquisar();
 					produtoSelecionado = produtoSelecionadoTemp;
@@ -1136,10 +1196,45 @@ public class EstoqueBean implements Serializable {
 			itensVendasCompras.save(itemVendaCompra);
 		}
 		
+		
+		Log log = new Log();
+		log.setDataLog(new Date());
+		log.setCodigoOperacao(String.valueOf(produtoSelecionado.getCodigo()));
+		log.setOperacao(TipoAtividade.ESTOQUE.name());
+		
+		NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
+		String novaQuantidadeAtualFormatada = "";
+		
+		if(produtoSelecionado.getUnidadeMedida().equals("Kg") || produtoSelecionado.getUnidadeMedida().equals("Lt")) {
+			nf = new DecimalFormat("###,##0.000", REAL);
+			produtoSelecionado.setQuantidadeAtualFormatada(nf.format(new BigDecimal(
+					produtoSelecionado.getQuantidadeAtual().doubleValue() + itemVenda.getQuantidade().doubleValue()).setScale(3, BigDecimal.ROUND_HALF_EVEN)));
+			novaQuantidadeAtualFormatada = nf.format(novaQuantidadeAtual);
+			
+		} else if(produtoSelecionado.getUnidadeMedida().equals("Pt")) {
+			nf = new DecimalFormat("###,##0.0", REAL);
+			produtoSelecionado.setQuantidadeAtualFormatada(nf.format(new BigDecimal(
+					produtoSelecionado.getQuantidadeAtual().doubleValue() + itemVenda.getQuantidade().doubleValue()).setScale(1, BigDecimal.ROUND_HALF_EVEN)));
+			novaQuantidadeAtualFormatada = nf.format(novaQuantidadeAtual);
+			
+		} else if(produtoSelecionado.getUnidadeMedida().equals("Un") || produtoSelecionado.getUnidadeMedida().equals("Cx")) {
+			nf = new DecimalFormat("###,##0", REAL);
+			produtoSelecionado.setQuantidadeAtualFormatada(nf.format(new BigDecimal(
+					produtoSelecionado.getQuantidadeAtual().doubleValue() + itemVenda.getQuantidade().doubleValue()).setScale(0, BigDecimal.ROUND_HALF_EVEN)));
+			novaQuantidadeAtualFormatada = nf.format(novaQuantidadeAtual);
+		}
+		
+		log.setDescricao("Ajustou estoque, produto " + produtoSelecionado.getCodigo() + ", " + produtoSelecionado.getDescricao() + ", de " + produtoSelecionado.getQuantidadeAtualFormatada() + " " + produtoSelecionado.getUnidadeMedida() + " para " + novaQuantidadeAtualFormatada + " " + produtoSelecionado.getUnidadeMedida());
+		log.setUsuario(usuario);		
+		logs.save(log);
+		
+		
+		
 		Produto produtoSelecionadoTemp = produtos.porId(produtoSelecionado.getId());
 		pesquisar();
 		produtoSelecionado = produtoSelecionadoTemp;
-					
+				
+		
 
 		venda = new Venda();
 		itemVenda = new ItemVenda();

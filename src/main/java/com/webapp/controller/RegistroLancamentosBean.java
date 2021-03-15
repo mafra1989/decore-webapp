@@ -3,6 +3,8 @@ package com.webapp.controller;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,10 +26,13 @@ import com.webapp.model.Caixa;
 import com.webapp.model.CategoriaLancamento;
 import com.webapp.model.Conta;
 import com.webapp.model.DestinoLancamento;
+import com.webapp.model.FormaPagamento;
 import com.webapp.model.ItemCaixa;
 import com.webapp.model.Lancamento;
+import com.webapp.model.Log;
 import com.webapp.model.OrigemLancamento;
 import com.webapp.model.PeriodoPagamento;
+import com.webapp.model.TipoAtividade;
 import com.webapp.model.TipoConta;
 import com.webapp.model.TipoLancamento;
 import com.webapp.model.TipoOperacao;
@@ -40,6 +45,7 @@ import com.webapp.repository.DestinosLancamentos;
 import com.webapp.repository.FormasPagamentos;
 import com.webapp.repository.ItensCaixas;
 import com.webapp.repository.Lancamentos;
+import com.webapp.repository.Logs;
 import com.webapp.repository.Usuarios;
 import com.webapp.util.jsf.FacesUtil;
 
@@ -158,6 +164,12 @@ public class RegistroLancamentosBean implements Serializable {
 	
 	@Inject
 	private ItensCaixas itensCaixas;
+	
+	
+	@Inject
+	private Logs logs;
+
+	private static final DecimalFormatSymbols REAL = new DecimalFormatSymbols(BRAZIL);
 	
 	
 
@@ -778,6 +790,15 @@ public class RegistroLancamentosBean implements Serializable {
 				lancamento.setUsuario(renderFavorecido ? usuario : null);
 			}
 
+			lancamento.setTipoPagamento(tipoPagamento);
+			lancamento.setLancamentoPago(lancamentoPago);
+			
+			if (tipoPagamento == TipoPagamento.PARCELADO) {
+				lancamento.setConta(true);
+			} else {
+				lancamento.setConta(lancamentoPago != true ? true : false);
+			}
+			
 			lancamento.setEmpresa(usuario_.getEmpresa());
 			lancamentos.save(lancamento);
 			
@@ -872,20 +893,37 @@ public class RegistroLancamentosBean implements Serializable {
 						itemCaixa.setCaixa(caixa);
 						itemCaixa.setCodigoOperacao(lancamento.getNumeroLancamento());
 						itemCaixa.setData(new Date());
-						itemCaixa.setDescricao("Lançamento Nº " + lancamento.getNumeroLancamento());
-						itemCaixa.setFormaPagamento(formasPagamentos.porId(1L));
+						itemCaixa.setDescricao("Lançamento Nº " + lancamento.getNumeroLancamento());					
+
+						if(usuario_.getEmpresa().getId() == 7111 || usuario_.getEmpresa().getId() == 7112) {
+							itemCaixa.setFormaPagamento(formasPagamentos.porId(13987L));
+						} else {
+							itemCaixa.setFormaPagamento(formasPagamentos.porId(1L));
+						}
+						
 						itemCaixa.setOperacao(TipoOperacao.LANCAMENTO);
 						itemCaixa.setTipoPagamento(lancamento.getCategoriaLancamento().getTipoLancamento().getOrigem() == OrigemLancamento.CREDITO ? "Entrada" : "Saída");
 						
 						itemCaixa.setValor(lancamento.getValor());
 							
-						
+						itemCaixa.setCaixa(caixa);
 						itensCaixas.save(itemCaixa);
 					}
 					
 				}
 
 				if (lancamento.getCategoriaLancamento().getTipoLancamento().getOrigem() == OrigemLancamento.DEBITO) {
+					
+					Log log = new Log();
+					log.setDataLog(new Date());
+					log.setCodigoOperacao(String.valueOf(lancamento.getNumeroLancamento()));
+					log.setOperacao(TipoAtividade.LANCAMENTO.name());
+					
+					NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
+					
+					log.setDescricao("Registrou lançamento (Despesa), Nº " + lancamento.getNumeroLancamento() + ", valor total R$ " + nf.format(lancamento.getValor()));
+					log.setUsuario(usuario_);		
+					logs.save(log);
 
 					PrimeFaces.current()
 							.executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Lançamento N."
@@ -900,6 +938,18 @@ public class RegistroLancamentosBean implements Serializable {
 					PrimeFaces.current().executeScript("ocultarFavorecido();");
 
 				} else {
+					
+					Log log = new Log();
+					log.setDataLog(new Date());
+					log.setCodigoOperacao(String.valueOf(lancamento.getNumeroLancamento()));
+					log.setOperacao(TipoAtividade.LANCAMENTO.name());
+					
+					NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
+					
+					log.setDescricao("Registrou lançamento (Receita), Nº " + lancamento.getNumeroLancamento() + ", valor total R$ " + nf.format(lancamento.getValor()));
+					log.setUsuario(usuario_);		
+					logs.save(log);
+					
 					PrimeFaces.current()
 							.executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Lançamento N."
 									+ lancamento.getNumeroLancamento() + " registrado com sucesso!' });");
@@ -930,9 +980,14 @@ public class RegistroLancamentosBean implements Serializable {
 							
 							itemCaixa.setValor(lancamento.getValor());						
 							
-							itemCaixa.setFormaPagamento(formasPagamentos.porId(1L));
+							if(usuario_.getEmpresa().getId() == 7111 || usuario_.getEmpresa().getId() == 7112) {
+								itemCaixa.setFormaPagamento(formasPagamentos.porId(13987L));
+							} else {
+								itemCaixa.setFormaPagamento(formasPagamentos.porId(1L));
+							}
+							
 							itemCaixa.setTipoPagamento(lancamento.getCategoriaLancamento().getTipoLancamento().getOrigem() == OrigemLancamento.CREDITO ? "Entrada" : "Saída");
-																
+								
 							itensCaixas.save(itemCaixa);
 							
 						} else {
@@ -954,13 +1009,38 @@ public class RegistroLancamentosBean implements Serializable {
 						
 						itemCaixa.setValor(lancamento.getValor());						
 						
-						itemCaixa.setFormaPagamento(formasPagamentos.porId(1L));
+						if(usuario_.getEmpresa().getId() == 7111 || usuario_.getEmpresa().getId() == 7112) {
+							itemCaixa.setFormaPagamento(formasPagamentos.porId(13987L));
+						} else {
+							itemCaixa.setFormaPagamento(formasPagamentos.porId(1L));
+						}
+						
+						
 						itemCaixa.setTipoPagamento(lancamento.getCategoriaLancamento().getTipoLancamento().getOrigem() == OrigemLancamento.CREDITO ? "Entrada" : "Saída");
 						
+						itemCaixa.setCaixa(caixa);
 						itensCaixas.save(itemCaixa);
 					}
 					
 				}
+				
+				Log log = new Log();
+				log.setDataLog(new Date());
+				log.setCodigoOperacao(String.valueOf(lancamento.getNumeroLancamento()));
+				log.setOperacao(TipoAtividade.LANCAMENTO.name());
+				
+				NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
+				
+				String tipoLancamento = "";
+				if (lancamento.getCategoriaLancamento().getTipoLancamento().getOrigem() == OrigemLancamento.DEBITO) {
+					tipoLancamento = "(Débito)";
+				} else {
+					tipoLancamento = "(Crédito)";
+				}
+				
+				log.setDescricao("Alterou lançamento " + tipoLancamento + ", Nº " + lancamento.getNumeroLancamento() + ", valor total R$ " + nf.format(lancamento.getValor()));
+				log.setUsuario(usuario_);		
+				logs.save(log);
 
 				PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Lançamento N."
 						+ lancamento.getNumeroLancamento() + " atualizado com sucesso!' });");
