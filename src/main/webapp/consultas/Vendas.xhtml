@@ -255,6 +255,16 @@
 								itemValue="#{statusPedido}" />
 						</p:selectManyCheckbox>
 					</p:panelGrid>
+					
+					<p:panelGrid columns="2" layout="grid" style="margin-top:5px;"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3">
+
+						<p:outputLabel value="Somente vendas pagas" for="vendasPagas" />
+						<p:inputSwitch offLabel="Não" onLabel="Sim" id="vendasPagas"
+							value="#{consultaVendasBean.vendasPagas}">
+						</p:inputSwitch>
+					</p:panelGrid>
 
 				</p:panel>
 
@@ -355,6 +365,10 @@
 							
 							<p:column headerText="Cliente" width="10%">
 								<h:outputText value="#{venda.cliente.nome}" />
+							</p:column>
+							
+							<p:column headerText="Vendedor" width="10%">
+								<h:outputText value="#{venda.usuario.nome}" />
 							</p:column>
 
 							<p:column headerText="Bairro" width="10%">

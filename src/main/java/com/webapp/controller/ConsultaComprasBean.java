@@ -155,6 +155,8 @@ public class ConsultaComprasBean implements Serializable {
 	@Inject
 	private Logs logs;
 	
+	private boolean comprasPagas;
+	
 	
 
 	public void inicializar() {
@@ -191,7 +193,7 @@ public class ConsultaComprasBean implements Serializable {
 		calendarioTemp.set(Calendar.MINUTE, 59);
 		calendarioTemp.set(Calendar.SECOND, 59);
 
-		comprasFiltradas = compras.comprasFiltradas(numeroCompra, dateStart, calendarioTemp.getTime(), usuario, usuario_.getEmpresa());
+		comprasFiltradas = compras.comprasFiltradas(numeroCompra, dateStart, calendarioTemp.getTime(), usuario, comprasPagas, usuario_.getEmpresa());
 		
 		compraSelecionada = null;
 		
@@ -590,6 +592,14 @@ public class ConsultaComprasBean implements Serializable {
 
 	public List<Produto> getTodosProdutos() {
 		return todosProdutos;
+	}
+
+	public boolean isComprasPagas() {
+		return comprasPagas;
+	}
+
+	public void setComprasPagas(boolean comprasPagas) {
+		this.comprasPagas = comprasPagas;
 	}
 
 }

@@ -299,6 +299,16 @@
 								itemValue="#{destinoLancamento}" />
 						</p:selectOneMenu>
 					</p:panelGrid>
+					
+					<p:panelGrid columns="2" layout="grid" style="margin-top:5px;"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3">
+
+						<p:outputLabel value="Somente lançamentos pagos" for="lancamentosPagas" />
+						<p:inputSwitch offLabel="Não" onLabel="Sim" id="lancamentosPagas"
+							value="#{consultaLancamentosBean.lancamentosPagos}">
+						</p:inputSwitch>
+					</p:panelGrid>
 
 				</p:panel>
 

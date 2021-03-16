@@ -87,13 +87,21 @@ public class Lancamentos implements Serializable {
 	@SuppressWarnings("unchecked")
 	public List<Lancamento> lancamentosFiltrados(Long numeroLancamento, Date dateStart, Date dateStop,
 			OrigemLancamento[] origemLancamento, CategoriaLancamento categoriaLancamento,
-			DestinoLancamento destinoLancamento, Usuario usuario, String[] categorias, Empresa empresa) {
+			DestinoLancamento destinoLancamento, Usuario usuario, String[] categorias, boolean lancamentosPagos, Empresa empresa) {
 
 		String conditionOrigem = "";
 		String conditionCategoria = "";
 		String conditionDestino = "";
 		String conditionNumeroLancamento = "";
 		String conditionUsuario = "";
+		
+		String conditionLancamentosPagos = "";
+		if (lancamentosPagos) {
+			conditionLancamentosPagos = "AND i.lancamentoPago = 'Y' ";
+		} else {
+			conditionLancamentosPagos = "AND (i.lancamentoPago = 'N' OR i.lancamentoPago = 'Y') ";
+		}
+
 
 		if (origemLancamento.length > 0) {
 			conditionOrigem = "AND i.categoriaLancamento.tipoLancamento.origem in (:origemLancamento) ";
@@ -123,7 +131,8 @@ public class Lancamentos implements Serializable {
 		}
 
 		String jpql = "SELECT i FROM Lancamento i WHERE i.empresa.id = :empresa AND i.dataLancamento between :dateStart and :dateStop "
-				+ conditionOrigem + conditionCategoria + conditionUsuario + conditionDestino + conditionNumeroLancamento
+				+ conditionOrigem + conditionCategoria + conditionUsuario 
+				+ conditionDestino + conditionNumeroLancamento + conditionLancamentosPagos
 				+ "order by i.numeroLancamento desc";
 
 		System.out.println(jpql);
@@ -240,7 +249,7 @@ public class Lancamentos implements Serializable {
 	
 	public Number totalDespesasAvistaPagas(Empresa empresa) {
 
-		String jpql = "SELECT sum(c.valor) FROM Lancamento c WHERE c.empresa.id = :empresa AND "
+		String jpql = "SELECT sum(c.valor) FROM Lancamento c WHERE c.categoriaLancamento.nome != 'Retirada de lucro' AND c.empresa.id = :empresa AND "
 				+ "c.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND c.conta = 'N' AND c.ajuste = 'N' "
 				+ "";
 		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.DEBITO)
@@ -348,9 +357,9 @@ public class Lancamentos implements Serializable {
 	}
 
 	/* DEPRECIADO */
-	public Number totalDeReceitasPorMes(Long mes, Long ano) {
-		String jpql = "SELECT sum(i.valor) FROM Lancamento i WHERE i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.conta = 'N' AND i.ajuste = 'N' AND i.mes = :mes AND i.ano = :ano";
-		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.CREDITO)
+	public Number totalDeReceitasPorMes(Long mes, Long ano, Empresa empresa) {
+		String jpql = "SELECT sum(i.valor) FROM Lancamento i WHERE i.empresa.id = :empresa AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.conta = 'N' AND i.ajuste = 'N' AND i.mes = :mes AND i.ano = :ano";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("origemLancamento", OrigemLancamento.CREDITO)
 				.setParameter("mes", mes).setParameter("ano", ano);
 		Number count = (Number) q.getSingleResult();
 
@@ -755,10 +764,10 @@ public class Lancamentos implements Serializable {
 			condition_retiradas = "AND i.categoriaLancamento.id != 36 ";
 		}
 
-		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Lancamento i " + "WHERE " + "i.mes = :mes "
+		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Lancamento i " + "WHERE i.empresa.id = :empresa AND  " + "i.mes = :mes "
 				+ "AND i.ano = :ano " + "AND i.conta = 'N' AND i.ajuste = 'N' " + condition_retiradas + "AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento "
 				+ condition + "group by " + groupBy_Condition + " order by " + orderBy_Condition;
-		Query q = manager.createQuery(jpql).setParameter("mes", Long.parseLong(String.valueOf(mes)))
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("mes", Long.parseLong(String.valueOf(mes)))
 				.setParameter("ano", Long.parseLong(String.valueOf(ano)))
 				.setParameter("origemLancamento", OrigemLancamento.DEBITO);
 

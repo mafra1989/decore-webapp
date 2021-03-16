@@ -116,11 +116,18 @@ public class Compras implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Compra> comprasFiltradas(Long numeroCompra, Date dateStart, Date dateStop, Usuario usuario, Empresa empresa) {
+	public List<Compra> comprasFiltradas(Long numeroCompra, Date dateStart, Date dateStop, Usuario usuario, boolean comprasPagas, Empresa empresa) {
 
 		String condition = "";
 		if (usuario != null && usuario.getId() != null) {
 			condition = "AND i.usuario.id = :idUsuario ";
+		}
+		
+		String conditionComprasPagas = "";
+		if (comprasPagas) {
+			conditionComprasPagas = "AND i.compraPaga = 'Y' ";
+		} else {
+			conditionComprasPagas = "AND (i.compraPaga = 'N' OR  i.compraPaga = 'Y') ";
 		}
 
 		String conditionNumeroCompra = "";
@@ -134,7 +141,7 @@ public class Compras implements Serializable {
 		}
 
 		String jpql = "SELECT i FROM Compra i " + "WHERE i.empresa.id = :empresa AND i.ajuste = 'N' AND i.dataCompra between :dateStart and :dateStop " + condition
-				+ conditionNumeroCompra + " order by i.numeroCompra desc";
+				+ conditionNumeroCompra + conditionComprasPagas+ " order by i.numeroCompra desc";
 		Query q = manager.createQuery(jpql).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
 
 		if (usuario != null && usuario.getId() != null) {
@@ -214,7 +221,7 @@ public class Compras implements Serializable {
 	}
 
 	public Number totalComprasPorMes(Number mes, Number ano, CategoriaProduto categoriaProduto, Produto produto,
-			boolean chartCondition) {
+			boolean chartCondition, Empresa empresa) {
 
 		String condition = "";
 		String select_Condition = "";
@@ -242,10 +249,10 @@ public class Compras implements Serializable {
 		}
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemCompra i join i.compra p "
-				+ "WHERE p.mes = :mes AND p.ano = :ano AND p.compraPaga = 'Y' AND p.conta = 'N' AND p.ajuste = 'N'" + condition + "group by " + groupBy_Condition + " order by "
+				+ "WHERE p.empresa.id = :empresa AND p.mes = :mes AND p.ano = :ano AND p.compraPaga = 'Y' AND p.conta = 'N' AND p.ajuste = 'N'" + condition + "group by " + groupBy_Condition + " order by "
 				+ orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("mes", Long.parseLong(String.valueOf(mes))).setParameter("ano",
-				Long.parseLong(String.valueOf(ano)));
+				Long.parseLong(String.valueOf(ano))).setParameter("empresa", empresa.getId());
 
 		if (categoriaProduto != null && categoriaProduto.getId() != null) {
 			q.setParameter("categoriaProduto", categoriaProduto.getNome());

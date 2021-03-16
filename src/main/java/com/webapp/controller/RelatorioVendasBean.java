@@ -471,7 +471,7 @@ public class RelatorioVendasBean implements Serializable {
 							object[1] = "0" + object[1];
 						}
 
-						if(categoriasPorDia == null || categoriasPorDia.length == 0) {
+						if(categoriasPorDia == null || categoriasPorDia.length == 0 || categoriasPorDia.length == todasCategoriasProduto.size()) {
 							object[3] = ((BigDecimal)object[3]).doubleValue() - totalDescontosHoje.doubleValue();
 						}
 						
@@ -601,7 +601,7 @@ public class RelatorioVendasBean implements Serializable {
 					result.add(object);
 				} else {
 					for (Object[] object : resultTemp) {
-						if(categoriasPorSemana == null || categoriasPorSemana.length == 0) {
+						if(categoriasPorSemana == null || categoriasPorSemana.length == 0 || categoriasPorSemana.length == todasCategoriasProduto.size()) {
 							object[2] = ((BigDecimal)object[2]).doubleValue() - totalDescontos.doubleValue();
 						}
 						result.add(object);
@@ -786,7 +786,7 @@ public class RelatorioVendasBean implements Serializable {
 				} else {
 					for (Object[] object : resultTemp) {
 						
-						if(categoriasPorMes == null || categoriasPorMes.length == 0) {
+						if(categoriasPorMes == null || categoriasPorMes.length == 0 || categoriasPorMes.length == todasCategoriasProduto.size()) {
 							object[2] = ((BigDecimal)object[2]).doubleValue() - totalDescontos.doubleValue();
 						}
 						
@@ -897,7 +897,7 @@ public class RelatorioVendasBean implements Serializable {
 				} else {
 					for (Object[] object : resultTemp) {
 						
-						if(categoriasPorAno == null || categoriasPorAno.length == 0) {
+						if(categoriasPorAno == null || categoriasPorAno.length == 0  || categoriasPorAno.length == todasCategoriasProduto.size()) {
 							object[1] = ((BigDecimal)object[1]).doubleValue() - totalDescontos.doubleValue();
 						}
 						

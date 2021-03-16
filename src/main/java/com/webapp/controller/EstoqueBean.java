@@ -179,6 +179,9 @@ public class EstoqueBean implements Serializable {
 			todasCategoriasProdutos();
 			
 			configuracao = configuracoes.porId(1L);
+			
+			NumberFormat nf_ = new DecimalFormat("###,##0.000");
+			estoqueTotal = nf_.format(0);
 		}
 	}
 	
@@ -270,8 +273,8 @@ public class EstoqueBean implements Serializable {
 			}
 		}
 		
-
-		estoqueTotal = String.valueOf(value);
+		NumberFormat nf_ = new DecimalFormat("###,##0.000");
+		estoqueTotal = nf_.format(value);
 
 		produtoSelecionado = null;
 

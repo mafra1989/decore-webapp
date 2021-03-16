@@ -60,7 +60,7 @@ public class Contas implements Serializable {
 	
 	public Number vendasAPagarPagas(String tipo, String operacao, Empresa empresa) {
 
-		String jpql = "SELECT sum(c.subTotal) FROM Conta c WHERE c.empresa.id = :empresa AND c.tipo = :tipo AND c.operacao = :operacao AND c.status = 'Y' AND c.ajuste = 'N'";
+		String jpql = "SELECT sum(c.subTotal) FROM Conta c WHERE c.parcela <> 'AVISTA' AND c.empresa.id = :empresa AND c.tipo = :tipo AND c.operacao = :operacao AND c.status = 'Y' AND c.ajuste = 'N'";
 		Query q = manager.createQuery(jpql).setParameter("tipo", tipo).setParameter("operacao", operacao)
 				.setParameter("empresa", empresa.getId());
 
@@ -81,7 +81,7 @@ public class Contas implements Serializable {
 	
 	public Number porContasPagas(String tipo, String operacao, Empresa empresa) {
 
-		String jpql = "SELECT sum(c.valor) FROM Conta c WHERE c.empresa.id = :empresa AND c.tipo = :tipo AND c.operacao = :operacao AND c.status = 'Y' AND c.ajuste = 'N'";
+		String jpql = "SELECT sum(c.valor) FROM Conta c WHERE c.parcela <> 'AVISTA' AND c.empresa.id = :empresa AND c.tipo = :tipo AND c.operacao = :operacao AND c.status = 'Y' AND c.ajuste = 'N'";
 		Query q = manager.createQuery(jpql).setParameter("tipo", tipo).setParameter("operacao", operacao)
 				.setParameter("empresa", empresa.getId());
 
@@ -102,7 +102,7 @@ public class Contas implements Serializable {
 	
 	public Number lucroEmVendasAPagarPagas(String tipo, String operacao, Empresa empresa) {
 
-		String jpql = "SELECT sum(c.lucro) FROM Conta c WHERE c.empresa.id = :empresa AND c.tipo = :tipo AND c.operacao = :operacao AND c.status = 'Y' AND c.ajuste = 'N'";
+		String jpql = "SELECT sum(c.lucro) FROM Conta c WHERE c.parcela <> 'AVISTA' AND c.empresa.id = :empresa AND c.tipo = :tipo AND c.operacao = :operacao AND c.status = 'Y' AND c.ajuste = 'N'";
 		Query q = manager.createQuery(jpql).setParameter("tipo", tipo).setParameter("operacao", operacao)
 				.setParameter("empresa", empresa.getId());
 
@@ -339,7 +339,7 @@ public class Contas implements Serializable {
 	}
 
 	public Number totalDeReceitasPorMes(Long mes, Long ano, Empresa empresa) {
-		String jpql = "SELECT sum(i.valor) FROM Conta i WHERE i.empresa.id = :empresa AND i.tipo = 'CREDITO' AND i.status = 'Y' AND i.mes = :mes AND i.ano = :ano AND i.ajuste = 'N'";
+		String jpql = "SELECT sum(i.valor) FROM Conta i WHERE i.operacao = 'LANCAMENTO' AND i.empresa.id = :empresa AND i.tipo = 'CREDITO' AND i.status = 'Y' AND i.mes = :mes AND i.ano = :ano AND i.ajuste = 'N'";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("mes", mes).setParameter("ano", ano);
 		Number count = (Number) q.getSingleResult();
 
@@ -363,7 +363,7 @@ public class Contas implements Serializable {
 		groupBy_Condition = "i.mes, i.ano ";
 		orderBy_Condition = "i.mes asc, i.ano asc";
 
-		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i WHERE i.empresa.id = :empresa AND i.mes = :mes "
+		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i WHERE i.operacao = 'LANCAMENTO' AND i.empresa.id = :empresa AND i.mes = :mes "
 				+ "AND i.ano = :ano AND i.tipo = 'DEBITO' AND i.status = 'Y' AND i.ajuste = 'N' "
 				+ condition + "group by " + groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("mes", Long.parseLong(String.valueOf(mes))).setParameter("ano",

@@ -100,7 +100,7 @@ public class Vendas implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public List<Venda> vendasFiltradas(Long numeroVenda, Date dateStart, Date dateStop, boolean vendasNormais,
-			StatusPedido[] statusPedido, Usuario usuario, Cliente cliente, Usuario entregador, Empresa empresa) {
+			StatusPedido[] statusPedido, Usuario usuario, Cliente cliente, Usuario entregador, boolean vendasPagas, Empresa empresa) {
 
 		List<Venda> vendas = new ArrayList<>();
 
@@ -115,6 +115,13 @@ public class Vendas implements Serializable {
 		
 		if (entregador != null && entregador.getId() != null) {
 			condition += "AND i.entregador.id = :idEntregador ";
+		}
+		
+		String conditionVendasPagas = "";
+		if (vendasPagas) {
+			conditionVendasPagas = "AND i.status = 'Y' ";
+		} else {
+			conditionVendasPagas = "AND (i.status = 'N' OR i.status = 'Y') ";
 		}
 
 		String conditionNumeroVenda = "";		
@@ -135,7 +142,8 @@ public class Vendas implements Serializable {
 		}
 
 		String jpql = "SELECT i, (select e from Entrega e where e.venda.id = i.id) FROM Venda i "
-				+ "WHERE i.quantidadeItens > 0 AND i.empresa.id = :empresa AND i.ajuste = 'N' AND i.dataVenda between :dateStart and :dateStop " + condition + conditionNumeroVenda
+				+ "WHERE i.quantidadeItens > 0 AND i.empresa.id = :empresa AND i.ajuste = 'N' AND i.dataVenda between :dateStart and :dateStop " + condition 
+				+ conditionNumeroVenda + conditionVendasPagas
 				+ orderBy;
 
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
@@ -167,55 +175,61 @@ public class Vendas implements Serializable {
 		for (Object[] objectTemp : objects) {
 			System.out.println(Arrays.toString(objectTemp));
 
-			if (vendasNormais & statusPedido.length == 2) {
+			if(vendasPagas && ((Venda) objectTemp[0]).isVendaPaga()) {
 				vendas.add((Venda) objectTemp[0]);
-
-			} else if (vendasNormais & statusPedido.length == 1) {
-
-				if (vendasNormais & statusPedido[0] == StatusPedido.ENTREGUE) {
-
-					if (objectTemp[1] == null
-							|| ((Entrega) objectTemp[1]).getStatus().equalsIgnoreCase(StatusPedido.ENTREGUE.name())) {
+				
+			} else if(!vendasPagas) {
+								
+				if (vendasNormais && statusPedido.length == 2) {
+					vendas.add((Venda) objectTemp[0]);
+	
+				} else if (vendasNormais && statusPedido.length == 1) {
+	
+					if (vendasNormais && statusPedido[0] == StatusPedido.ENTREGUE) {
+	
+						if (objectTemp[1] == null
+								|| ((Entrega) objectTemp[1]).getStatus().equalsIgnoreCase(StatusPedido.ENTREGUE.name())) {
+							vendas.add((Venda) objectTemp[0]);
+						}
+	
+					} else if (vendasNormais && statusPedido[0] == StatusPedido.PENDENTE) {
+	
+						if (objectTemp[1] == null
+								|| ((Entrega) objectTemp[1]).getStatus().equalsIgnoreCase(StatusPedido.PENDENTE.name())) {
+							vendas.add((Venda) objectTemp[0]);
+						}
+					}
+	
+				} if (!vendasNormais && statusPedido.length == 2) {
+					if(objectTemp[1] != null) {
 						vendas.add((Venda) objectTemp[0]);
 					}
-
-				} else if (vendasNormais & statusPedido[0] == StatusPedido.PENDENTE) {
-
-					if (objectTemp[1] == null
-							|| ((Entrega) objectTemp[1]).getStatus().equalsIgnoreCase(StatusPedido.PENDENTE.name())) {
+					
+				} else if (!vendasNormais && statusPedido.length == 1) {
+					
+					if (!vendasNormais && statusPedido[0] == StatusPedido.ENTREGUE) {
+	
+						if (objectTemp[1] != null
+								&& ((Entrega) objectTemp[1]).getStatus().equalsIgnoreCase(StatusPedido.ENTREGUE.name())) {
+							vendas.add((Venda) objectTemp[0]);
+						}
+	
+					} else if (!vendasNormais && statusPedido[0] == StatusPedido.PENDENTE) {
+	
+						if (objectTemp[1] != null
+								&& ((Entrega) objectTemp[1]).getStatus().equalsIgnoreCase(StatusPedido.PENDENTE.name())) {
+							vendas.add((Venda) objectTemp[0]);
+						}
+					}
+					
+				} else if(vendasNormais && statusPedido.length == 0) {
+					if(objectTemp[1] == null) {
 						vendas.add((Venda) objectTemp[0]);
 					}
-				}
-
-			} if (!vendasNormais & statusPedido.length == 2) {
-				if(objectTemp[1] != null) {
+					
+				} else if(!vendasNormais && statusPedido.length == 0) {
 					vendas.add((Venda) objectTemp[0]);
 				}
-				
-			} else if (!vendasNormais & statusPedido.length == 1) {
-				
-				if (!vendasNormais & statusPedido[0] == StatusPedido.ENTREGUE) {
-
-					if (objectTemp[1] != null
-							&& ((Entrega) objectTemp[1]).getStatus().equalsIgnoreCase(StatusPedido.ENTREGUE.name())) {
-						vendas.add((Venda) objectTemp[0]);
-					}
-
-				} else if (!vendasNormais & statusPedido[0] == StatusPedido.PENDENTE) {
-
-					if (objectTemp[1] != null
-							&& ((Entrega) objectTemp[1]).getStatus().equalsIgnoreCase(StatusPedido.PENDENTE.name())) {
-						vendas.add((Venda) objectTemp[0]);
-					}
-				}
-				
-			} else if(vendasNormais & statusPedido.length == 0) {
-				if(objectTemp[1] == null) {
-					vendas.add((Venda) objectTemp[0]);
-				}
-				
-			} else if(!vendasNormais & statusPedido.length == 0) {
-				vendas.add((Venda) objectTemp[0]);
 			}
 		}
 
@@ -1521,7 +1535,7 @@ public class Vendas implements Serializable {
 	}
 	
 	public Number totalVendasPorMes(Number mes, Number ano, CategoriaProduto categoriaProduto, Produto produto,
-			boolean chartCondition) {
+			boolean chartCondition, Empresa empresa) {
 
 		String condition = "";
 		String select_Condition = "";
@@ -1550,10 +1564,10 @@ public class Vendas implements Serializable {
 		}
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
-				+ "WHERE p.mes = :mes AND p.ano = :ano AND p.vendaPaga = 'Y' AND p.conta = 'N' AND p.ajuste = 'N'" + condition + "group by " + groupBy_Condition + " order by "
+				+ "WHERE p.empresa.id = :empresa AND p.mes = :mes AND p.ano = :ano AND p.vendaPaga = 'Y' AND p.conta = 'N' AND p.ajuste = 'N'" + condition + "group by " + groupBy_Condition + " order by "
 				+ orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("mes", Long.parseLong(String.valueOf(mes))).setParameter("ano",
-				Long.parseLong(String.valueOf(ano)));
+				Long.parseLong(String.valueOf(ano))).setParameter("empresa", empresa.getId());
 
 		if (categoriaProduto != null && categoriaProduto.getId() != null) {
 			q.setParameter("categoriaProduto", categoriaProduto.getNome());

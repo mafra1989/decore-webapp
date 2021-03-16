@@ -275,6 +275,16 @@
 								itemValue="#{produto}" />
 						</p:selectOneMenu>
 					</p:panelGrid>
+					
+					<p:panelGrid columns="2" layout="grid" style="margin-top:5px;"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3">
+
+						<p:outputLabel value="Somente compras pagas" for="comprasPagas" />
+						<p:inputSwitch offLabel="Não" onLabel="Sim" id="comprasPagas"
+							value="#{consultaComprasBean.comprasPagas}">
+						</p:inputSwitch>
+					</p:panelGrid>
 
 				</p:panel>
 

@@ -267,7 +267,7 @@ public class DashboardBean implements Serializable {
 			Number descontoEmVendasAVistaPagas = vendas.totalDescontos(usuario.getEmpresa()).doubleValue();
 			Number taxasEmVendasAVistaPagas = vendas.totalEmTaxas(usuario.getEmpresa()).doubleValue();
 			
-			Number saldoEstorno = produtos.saldoEstorno(usuario.getEmpresa());
+			Number saldoEstorno = 0;//produtos.saldoEstorno(usuario.getEmpresa());
 			
 		
 			saldoLucroEmVendas = (((saldoLucroEmVendasAVistaPagas.doubleValue() + saldoLucroEmVendasAPagarPagas.doubleValue()) + saldoEstorno.doubleValue()) - totalDeRetiradas.doubleValue()) - (descontoEmVendasAVistaPagas.doubleValue() + taxasEmVendasAVistaPagas.doubleValue());
@@ -297,7 +297,7 @@ public class DashboardBean implements Serializable {
 			
 			totalVendasHojeQuantidade = vendas.totalVendasPorDiaQuantidade(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
 			
-			Number totalEstornosHoje = vendas.totalEstornosPorDia(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
+			Number totalEstornosHoje = 0;//vendas.totalEstornosPorDia(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
 			
 			Number totalLucrosHojeTemp = vendas.totalLucrosPorDia(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
 			
@@ -643,7 +643,7 @@ public class DashboardBean implements Serializable {
 			totalDeRetiradas = lancamentos.totalDeRetiradas(usuario.getEmpresa(), categoriaLancamento);
 		}
 		
-		values.add(totalDespesasPagas.doubleValue() - totalDeRetiradas.doubleValue());// Despesas
+		values.add(totalDespesasPagas.doubleValue()/* - totalDeRetiradas.doubleValue()*/);// Despesas
 		
 		// values.add(0);//Contas à Pagar
 		Number avender = produtos.totalAVender(usuario.getEmpresa());
@@ -1491,7 +1491,7 @@ public class DashboardBean implements Serializable {
 				List<Object[]> resultTemp = vendas.totalLucrosPorData(calendarStartTemp, calendarStopTemp,
 						null, null, null, null, true, usuario.getEmpresa());
 				
-				Number totalEstornosHoje = vendas.totalEstornosPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
+				Number totalEstornosHoje = 0;//vendas.totalEstornosPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
 				Number totalDescontosHoje = vendas.totalDescontosPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
 				Number totalTaxasHoje = vendas.totalTaxasPorDiaValor(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
 
@@ -1695,7 +1695,7 @@ public class DashboardBean implements Serializable {
 				List<Object[]> resultTemp = vendas.totalLucrosPorSemana(ano01, semana01_, semana01_, null,
 						null, null, null, true, usuario.getEmpresa());
 				
-				Number totalEstornos = vendas.totalEstornosPorSemana(ano01, semana01_, semana01_, usuario.getEmpresa());
+				Number totalEstornos = 0;//vendas.totalEstornosPorSemana(ano01, semana01_, semana01_, usuario.getEmpresa());
 				Number totalDescontos = vendas.totalDescontosPorSemana(ano01, semana01_, semana01_, usuario.getEmpresa());
 
 				if (resultTemp.size() == 0) {
@@ -1884,7 +1884,7 @@ public class DashboardBean implements Serializable {
 				Number descontoEmVendasAVistaPagas = vendas.totalDescontos(usuario.getEmpresa()).doubleValue();
 				Number taxasEmVendasAVistaPagas = vendas.totalEmTaxas(usuario.getEmpresa()).doubleValue();
 				
-				Number saldoEstorno = produtos.saldoEstorno(usuario.getEmpresa());
+				Number saldoEstorno = 0;//produtos.saldoEstorno(usuario.getEmpresa());
 
 				saldoLucroEmVendas = (((saldoLucroEmVendasAVistaPagas.doubleValue() + saldoLucroEmVendasAPagarPagas.doubleValue()) + saldoEstorno.doubleValue()) - totalDeRetiradas.doubleValue()) - (descontoEmVendasAVistaPagas.doubleValue() + taxasEmVendasAVistaPagas.doubleValue());
 				

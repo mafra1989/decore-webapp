@@ -164,6 +164,8 @@ public class ConsultaVendasBean implements Serializable {
 	@Inject
 	private Logs logs;
 	
+	private boolean vendasPagas;
+	
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -190,7 +192,7 @@ public class ConsultaVendasBean implements Serializable {
 		calendarioTemp.set(Calendar.SECOND, 59);
 
 		vendasFiltradas = vendas.vendasFiltradas(numeroVenda, dateStart, calendarioTemp.getTime(), vendasNormais,
-				statusPedido, usuario, cliente, entregador, usuario_.getEmpresa());
+				statusPedido, usuario, cliente, entregador, vendasPagas, usuario_.getEmpresa());
 
 		double totalVendasTemp = 0;
 		double totalDesconto = 0;
@@ -901,6 +903,14 @@ public class ConsultaVendasBean implements Serializable {
 
 	public List<Cliente> getTodosClientes() {
 		return todosClientes;
+	}
+
+	public boolean isVendasPagas() {
+		return vendasPagas;
+	}
+
+	public void setVendasPagas(boolean vendasPagas) {
+		this.vendasPagas = vendasPagas;
 	}
 
 }
