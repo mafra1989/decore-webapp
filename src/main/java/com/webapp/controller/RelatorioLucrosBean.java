@@ -1083,6 +1083,8 @@ public class RelatorioLucrosBean implements Serializable {
 				String mes = "";
 				if (Long.parseLong(object[0].toString()) < 10) {
 					mes = "0" + object[0].toString();
+				} else {
+					mes = object[0].toString();
 				}
 				
 				Number totalDescontos = vendas.totalDescontosPorMes(object[1].toString(), mes,
