@@ -536,6 +536,8 @@ public class RegistroVendasBean implements Serializable {
 				vendaTemp_.setBairro(venda.getBairro());
 				vendaTemp_.setUsuario(venda.getUsuario());	
 				vendaTemp_.setStatusMesa("PAGO");
+				Cliente cliente = clientes.porId(1L);
+				vendaTemp_.setCliente(cliente);
 				
 				venda = new Venda();
 				itensVenda = new ArrayList<ItemVenda>();
