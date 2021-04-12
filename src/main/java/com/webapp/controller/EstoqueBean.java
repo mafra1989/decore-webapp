@@ -34,7 +34,6 @@ import com.webapp.model.ItemVendaCompra;
 import com.webapp.model.Log;
 import com.webapp.model.Produto;
 import com.webapp.model.TipoAtividade;
-import com.webapp.model.TipoOperacao;
 import com.webapp.model.TipoPagamento;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
@@ -43,6 +42,7 @@ import com.webapp.repository.CategoriasProdutos;
 import com.webapp.repository.Clientes;
 import com.webapp.repository.Compras;
 import com.webapp.repository.Configuracoes;
+import com.webapp.repository.Empresas;
 import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
 import com.webapp.repository.ItensVendasCompras;
@@ -73,6 +73,9 @@ public class EstoqueBean implements Serializable {
 	
 	@Inject
 	private Vendas vendas;
+	
+	@Inject
+	private Empresas empresas;
 
 	@Inject
 	private ItensVendas itensVendas;
@@ -434,7 +437,7 @@ public class EstoqueBean implements Serializable {
 	}
 
 	private void todasCategoriasProdutos() {
-		todasCategoriasProdutos = categoriasProdutos.todos(usuario.getEmpresa());
+		todasCategoriasProdutos = categoriasProdutos.todos(empresas.porId(7111L));
 	}
 
 	public ProdutoFilter getFilter() {
@@ -531,7 +534,8 @@ public class EstoqueBean implements Serializable {
 		CategoriaProduto categoriaProduto = new CategoriaProduto();
 		categoriaProduto.setNome(categoria);
 		filter.setCategoriaProduto(categoriaProduto);		
-		filter.setEmpresa(usuario.getEmpresa());
+		//filter.setEmpresa(usuario.getEmpresa());
+		filter.setEmpresa(empresas.porId(7111L));
 		produtosFiltrados = produtos.filtrados(filter);
 		
 		
@@ -558,7 +562,8 @@ public class EstoqueBean implements Serializable {
 	
 	public void buscarProdutosEmDestaque() {
 				
-		filter.setEmpresa(usuario.getEmpresa());
+		//filter.setEmpresa(usuario.getEmpresa());
+		filter.setEmpresa(empresas.porId(7111L));
 		produtosEmDestaque = produtos.produtosEmDestaque(filter);
 		
 		for (Produto produto : produtosEmDestaque) {
