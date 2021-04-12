@@ -166,7 +166,8 @@ public class ItensVendas implements Serializable {
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
 				+ "WHERE p.empresa.nome = :empresa AND p.vendaPaga = 'Y' AND p.ajuste = 'N' " + condition + "group by " + groupBy_Condition + " order by "
 				+ orderBy_Condition;
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa).setParameter("anoInicio", Long.parseLong(ano));
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa);
+		//.setParameter("anoInicio", Long.parseLong(ano))
 
 		if (produto != null && produto.getId() != null) {
 			q.setParameter("id", produto.getId());
