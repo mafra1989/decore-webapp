@@ -437,7 +437,7 @@ public class EstoqueBean implements Serializable {
 	}
 
 	private void todasCategoriasProdutos() {
-		todasCategoriasProdutos = categoriasProdutos.todos(empresas.porId(7111L));
+		todasCategoriasProdutos = categoriasProdutos.todos(usuario.getEmpresa());
 	}
 
 	public ProdutoFilter getFilter() {
@@ -530,6 +530,8 @@ public class EstoqueBean implements Serializable {
 	
 	public void buscarProdutos(String categoria) {
 		
+		//<f:viewAction action="#{estoqueBean.buscarProdutos('FECHADURA')}" />
+		
 		filter.setDescricao("");
 		CategoriaProduto categoriaProduto = new CategoriaProduto();
 		categoriaProduto.setNome(categoria);
@@ -620,7 +622,7 @@ public class EstoqueBean implements Serializable {
 
 
 	public void buscarCategorias() {		
-		todasCategoriasProdutos = categoriasProdutos.todosEmDestaque(usuario.getEmpresa());		
+		todasCategoriasProdutos = categoriasProdutos.todosEmDestaque(empresas.porId(7111L));		
 	}
 	
 	
