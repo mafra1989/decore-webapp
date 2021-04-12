@@ -43,7 +43,7 @@ public class CategoriasProdutos implements Serializable {
 	
 	public List<CategoriaProduto> todosEmDestaque(Empresa empresa) {
 		return this.manager.createQuery("from CategoriaProduto c where c.empresa.id = :empresa order by c.id", CategoriaProduto.class)
-				.setParameter("empresa", 1L).getResultList();
+				.setParameter("empresa", empresa.getId()).getResultList();
 	}
 	
 	public CategoriaProduto porNome(String nome) {
