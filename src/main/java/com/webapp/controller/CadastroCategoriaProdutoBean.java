@@ -17,6 +17,7 @@ import com.webapp.model.CategoriaProduto;
 import com.webapp.model.Produto;
 import com.webapp.model.Usuario;
 import com.webapp.repository.CategoriasProdutos;
+import com.webapp.repository.Empresas;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.Usuarios;
 import com.webapp.repository.filter.CategoriaProdutoFilter;
@@ -42,6 +43,9 @@ public class CadastroCategoriaProdutoBean implements Serializable {
 	
 	@Inject
 	private Usuarios usuarios;
+	
+	@Inject
+	private Empresas empresas;
 
 	private List<CategoriaProduto> todasCategoriasProduto;
 
@@ -187,7 +191,8 @@ public class CadastroCategoriaProdutoBean implements Serializable {
 	
 	public void buscar() {
 		categoriaProduto = categoriasProdutos.porId(categoriaProduto.getId());
-		filter.setEmpresa(usuario.getEmpresa());
+		//filter.setEmpresa(usuario.getEmpresa());
+		filter.setEmpresa(empresas.porId(7111L));
 		filter.setCategoriaProduto(categoriaProduto);
 		produtosFiltrados = produtos.filtrados(filter);
 		
