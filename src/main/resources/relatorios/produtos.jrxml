@@ -30,49 +30,48 @@
 		<band splitType="Stretch"/>
 	</background>
 	<detail>
-		<band height="20" splitType="Stretch">
-			<textField>
-				<reportElement style="borda" stretchType="RelativeToBandHeight" x="0" y="0" width="66" height="20" uuid="cf339614-2c3d-4b74-9654-1bcc68d7501d"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{codigo}]]></textFieldExpression>
-			</textField>
+		<band height="24" splitType="Stretch">
 			<textField isStretchWithOverflow="true">
-				<reportElement style="borda" stretchType="RelativeToBandHeight" x="66" y="0" width="213" height="20" uuid="bf89e981-5405-43ea-a5b3-241ba8d6ea1f"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="279" height="20" uuid="bf89e981-5405-43ea-a5b3-241ba8d6ea1f"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement style="borda" stretchType="RelativeToBandHeight" x="279" y="0" width="95" height="20" uuid="99eb87d3-651c-4a79-9ae0-ca6a7faa4c34"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
+				<reportElement stretchType="RelativeToBandHeight" x="279" y="0" width="95" height="20" uuid="99eb87d3-651c-4a79-9ae0-ca6a7faa4c34"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA["R$ " + $F{valorUnitario}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement style="borda" stretchType="RelativeToBandHeight" x="374" y="0" width="68" height="20" uuid="920b2140-107c-4a39-97ff-7827e00a1e30"/>
+				<reportElement stretchType="RelativeToBandHeight" x="374" y="0" width="68" height="20" uuid="920b2140-107c-4a39-97ff-7827e00a1e30"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{quantidade}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement style="borda" stretchType="RelativeToBandHeight" x="471" y="0" width="85" height="20" uuid="01f089a6-cfbd-4b72-adf3-78b502a4404f"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
+				<reportElement stretchType="RelativeToBandHeight" x="471" y="0" width="85" height="20" uuid="01f089a6-cfbd-4b72-adf3-78b502a4404f"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA["R$ " + $F{subTotal}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement style="borda" stretchType="RelativeToBandHeight" x="442" y="0" width="29" height="20" uuid="c4306ede-7f3d-4d2c-8d0d-1e939b15dcac"/>
+				<reportElement stretchType="RelativeToBandHeight" x="442" y="0" width="29" height="20" uuid="c4306ede-7f3d-4d2c-8d0d-1e939b15dcac"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{UN}]]></textFieldExpression>
 			</textField>
+			<line>
+				<reportElement x="0" y="21" width="556" height="1" uuid="43852d43-7bbb-4340-b05b-eab44cf3423e"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
 		</band>
 	</detail>
 </jasperReport>

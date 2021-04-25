@@ -24,6 +24,7 @@ public class EspelhoVenda implements Serializable {
 	private String subTotal = "0,00";
 	private String desconto = "0,00";
 	private String acrescimo = "0,00";
+	private String frete = "0,00";
 	
 	private String valorAPagar = "0,00";
 	private String troco = "0,00";
@@ -253,6 +254,14 @@ public class EspelhoVenda implements Serializable {
 
 	public void setAcrescimo(String acrescimo) {
 		this.acrescimo = acrescimo;
+	}
+
+	public String getFrete() {
+		return frete;
+	}
+
+	public void setFrete(String frete) {
+		this.frete = frete;
 	}
 
 	public String getValorAPagar() {

@@ -469,6 +469,10 @@ public class ConsultaVendasBean implements Serializable {
 		pedido.setContato(usuario_.getEmpresa().getContato() != null ? usuario_.getEmpresa().getContato() : "");
 		
 		pedido.setTotalVenda(nf.format(vendaSelecionada.getValorTotal()));
+		
+		pedido.setFrete(nf.format(vendaSelecionada.getTaxaDeEntrega()));
+		pedido.setSubTotal(nf.format(vendaSelecionada.getValorTotal().doubleValue() + vendaSelecionada.getDesconto().doubleValue() - vendaSelecionada.getTaxaDeEntrega().doubleValue()));
+		pedido.setDesconto(nf.format(vendaSelecionada.getDesconto()));
 
 		List<EspelhoVenda> pedidos = new ArrayList<>();
 		pedidos.add(pedido);
