@@ -54,7 +54,7 @@ import com.webapp.model.VendaPorCategoria;
 import com.webapp.report.Relatorio;
 import com.webapp.repository.CategoriasLancamentos;
 import com.webapp.repository.Compras;
-import com.webapp.repository.Contas;
+import com.webapp.repository.Contas_;
 import com.webapp.repository.Lancamentos;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.Usuarios;
@@ -83,7 +83,7 @@ public class DashboardBean implements Serializable {
 	private Produtos produtos;
 
 	@Inject
-	private Contas contas;
+	private Contas_ contas;
 
 	private PieChartModel pieModel;
 

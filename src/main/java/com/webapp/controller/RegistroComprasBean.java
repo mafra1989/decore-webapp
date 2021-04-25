@@ -37,7 +37,7 @@ import com.webapp.model.TipoPagamento;
 import com.webapp.model.Usuario;
 import com.webapp.repository.Compras;
 import com.webapp.repository.Configuracoes;
-import com.webapp.repository.Contas;
+import com.webapp.repository.Contas_;
 import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
 import com.webapp.repository.ItensVendasCompras;
@@ -88,7 +88,7 @@ public class RegistroComprasBean implements Serializable {
 	private ItensVendasCompras itensVendasCompras;
 
 	@Inject
-	private Contas contas;
+	private Contas_ contas;
 
 	private List<Conta> todasContas = new ArrayList<>();
 

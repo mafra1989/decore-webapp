@@ -49,7 +49,7 @@ import com.webapp.model.Venda;
 import com.webapp.report.Relatorio;
 import com.webapp.repository.Caixas;
 import com.webapp.repository.Clientes;
-import com.webapp.repository.Contas;
+import com.webapp.repository.Contas_;
 import com.webapp.repository.Devolucoes;
 import com.webapp.repository.Entregas;
 import com.webapp.repository.ItensCaixas;
@@ -102,7 +102,7 @@ public class ConsultaVendasBean implements Serializable {
 	private ItensVendas itensVendas;
 	
 	@Inject
-	private Contas contas;
+	private Contas_ contas;
 	
 	@Inject
 	private Lancamentos lancamentos;

@@ -17,7 +17,7 @@ import com.webapp.model.OrigemConta;
 import com.webapp.model.TipoOperacao;
 import com.webapp.util.jpa.Transacional;
 
-public class Contas implements Serializable {
+public class Contas_ implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -338,8 +338,8 @@ public class Contas implements Serializable {
 		return value;
 	}
 
-	public Number totalDeReceitasPorMes(Long mes, Long ano, Empresa empresa) {// i.operacao = 'LANCAMENTO' AND
-		String jpql = "SELECT sum(i.valor) FROM Conta i WHERE i.empresa.id = :empresa AND i.tipo = 'CREDITO' AND i.status = 'Y' AND i.mes = :mes AND i.ano = :ano AND i.ajuste = 'N'";
+	public Number totalDeReceitasPorMes(Long mes, Long ano, Empresa empresa) {
+		String jpql = "SELECT sum(i.valor) FROM Conta i WHERE i.operacao = 'LANCAMENTO' AND i.empresa.id = :empresa AND i.tipo = 'CREDITO' AND i.status = 'Y' AND i.mes = :mes AND i.ano = :ano AND i.ajuste = 'N'";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("mes", mes).setParameter("ano", ano);
 		Number count = (Number) q.getSingleResult();
 
@@ -362,42 +362,7 @@ public class Contas implements Serializable {
 		sum_Condition = "sum(i.valor)";
 		groupBy_Condition = "i.mes, i.ano ";
 		orderBy_Condition = "i.mes asc, i.ano asc";
-		
-		// i.operacao = 'LANCAMENTO' AND
-		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i WHERE i.empresa.id = :empresa AND i.mes = :mes "
-				+ "AND i.ano = :ano AND i.tipo = 'DEBITO' AND i.status = 'Y' AND i.ajuste = 'N' "
-				+ condition + "group by " + groupBy_Condition + " order by " + orderBy_Condition;
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("mes", Long.parseLong(String.valueOf(mes))).setParameter("ano",
-				Long.parseLong(String.valueOf(ano)));
 
-		Number value = 0;
-		try {
-			value = (Number) q.getSingleResult();
-		} catch (NoResultException e) {
-
-		}
-
-		if (value == null) {
-			value = 0;
-		}
-
-		return value;
-	}
-	
-	
-	public Number totalDespesasPorMes_(Number mes, Number ano, Empresa empresa) {
-
-		String condition = "";
-		String select_Condition = "";
-		String sum_Condition = "";
-		String groupBy_Condition = "";
-		String orderBy_Condition = "";
-
-		select_Condition = "";
-		sum_Condition = "sum(i.valor)";
-		groupBy_Condition = "i.mes, i.ano ";
-		orderBy_Condition = "i.mes asc, i.ano asc";
-		
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i WHERE i.operacao = 'LANCAMENTO' AND i.empresa.id = :empresa AND i.mes = :mes "
 				+ "AND i.ano = :ano AND i.tipo = 'DEBITO' AND i.status = 'Y' AND i.ajuste = 'N' "
 				+ condition + "group by " + groupBy_Condition + " order by " + orderBy_Condition;
@@ -417,7 +382,6 @@ public class Contas implements Serializable {
 
 		return value;
 	}
-	
 
 	public Number totalDeReceitasPorAno(Long ano, Empresa empresa) {
 		String jpql = "SELECT sum(i.valor) FROM Conta i WHERE i.empresa.id = :empresa AND i.tipo = 'CREDITO' AND i.status = 'Y' AND i.ano = :ano AND i.ajuste = 'N'";

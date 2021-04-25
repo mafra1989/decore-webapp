@@ -107,12 +107,6 @@
 		/*border: 1px solid #e8e8e8;*/
 		white-space: normal;
 	}
-	.msg-mes {
-		margin-top: 0px;
-	}
-	.incluir-despesas {
-		margin-top: 15px;
-	}
 	#target-dialog .ui-inputtext {
 		text-align: center;
 	}
@@ -207,12 +201,6 @@
 	body .ui-chkbox {
 	    float: left !important;
 	    margin-left: -6px !important;
-	}
-	.msg-mes {
-		margin-top: -26px !important;
-	}
-	.incluir-despesas {
-		margin-top: 0px;
 	}
 	.target {
 		margin-top: 0px;
@@ -635,7 +623,7 @@
 							process="@this painel-ano2 panel-mensal panel-mensal-categoria"
 							styleClass="btn-pie" title="Atualizar" onstart="start();"
 							oncomplete="stop();"
-							update="produto3 barChart-lucrosPorMes check-box incluir-despesas" />
+							update="produto3 barChart-lucrosPorMes check-box" />
 
 					</p:panelGrid>
 
@@ -669,24 +657,6 @@
 						</p:selectBooleanCheckbox>
 
 					</p:panelGrid>
-					
-					
-					<p:panelGrid columns="2" layout="grid" id="incluir-despesas"
-						styleClass="panelgrid-noborder disabled disabled incluir-despesas"
-						columnClasses="ui-grid-col-3, ui-grid-col-5">
-
-						<p:outputLabel value="Incluir despesas" rendered="#{not(relatorioLucrosBean.categoriasPorMesSize() le 0)}" />
-						<p:inputSwitch offLabel="Não" onLabel="Sim" 
-							rendered="#{not(relatorioLucrosBean.categoriasPorMesSize() le 0)}"
-							value="#{relatorioLucrosBean.incluirDespesas}">
-							<p:ajax event="change" process="@this" update="barChart-lucrosPorMes"
-								listener="#{relatorioLucrosBean.createMixedModelPorMes}"
-								onstart="PF('downloadLoading').show();"
-								oncomplete="PF('downloadLoading').hide();" />
-						</p:inputSwitch>
-
-					</p:panelGrid>
-					
 
 					<p:commandButton rendered="false" icon="fa fa-pie-chart"
 						actionListener="#{relatorioLucrosBean.prepareDonutModelPorMes}"
@@ -698,8 +668,8 @@
 					<p:barChart model="#{relatorioLucrosBean.mixedModelPorMes}"
 						id="barChart-lucrosPorMes" styleClass="barChart-01" />
 
-					<p:panelGrid columns="1" layout="grid" style="text-align: center;"
-						styleClass="panelgrid-noborder disabled disabled target msg-mes"
+					<p:panelGrid columns="1" layout="grid" style="text-align: center;margin-top: -26px;"
+						styleClass="panelgrid-noborder disabled disabled target"
 						columnClasses="ui-grid-col-12">
 						
 						<p:outputLabel style="font-size: 11px;" value="* Obs: Marque pelo menos uma categoria para ver o lucro em vendas mensal por categoria/produto." />

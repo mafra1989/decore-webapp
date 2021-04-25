@@ -41,7 +41,7 @@ import com.webapp.repository.Caixas;
 import com.webapp.repository.CategoriasLancamentos;
 import com.webapp.repository.CategoriasProdutos;
 import com.webapp.repository.Compras;
-import com.webapp.repository.Contas;
+import com.webapp.repository.Contas_;
 import com.webapp.repository.Devolucoes;
 import com.webapp.repository.Entregas;
 import com.webapp.repository.ItensCaixas;
@@ -120,7 +120,7 @@ public class ConsultaComprasBean implements Serializable {
 	private CategoriasLancamentos categoriasLancamentos;
 	
 	@Inject
-	private Contas contas;
+	private Contas_ contas;
 	
 	private Long numeroCompra;
 

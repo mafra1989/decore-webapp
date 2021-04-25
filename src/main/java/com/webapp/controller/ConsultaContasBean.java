@@ -30,7 +30,7 @@ import com.webapp.model.TipoPagamento;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
 import com.webapp.repository.Compras;
-import com.webapp.repository.Contas;
+import com.webapp.repository.Contas_;
 import com.webapp.repository.Lancamentos;
 import com.webapp.repository.Logs;
 import com.webapp.repository.Usuarios;
@@ -44,7 +44,7 @@ public class ConsultaContasBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Inject
-	private Contas contas;
+	private Contas_ contas;
 	
 	@Inject
 	private Lancamentos lancamentos;

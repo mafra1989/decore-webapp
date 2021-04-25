@@ -34,7 +34,7 @@ import com.webapp.model.Produto;
 import com.webapp.model.Target;
 import com.webapp.model.Usuario;
 import com.webapp.repository.CategoriasLancamentos;
-import com.webapp.repository.Contas;
+import com.webapp.repository.Contas_;
 import com.webapp.repository.Lancamentos;
 import com.webapp.repository.Targets;
 import com.webapp.repository.Usuarios;
@@ -76,7 +76,7 @@ public class RelatorioLancamentosBean implements Serializable {
 	private List<CategoriaLancamento> todasCategoriasLancamento;
 
 	@Inject
-	private Contas contas;
+	private Contas_ contas;
 	
 	@Inject
 	private Targets targets;

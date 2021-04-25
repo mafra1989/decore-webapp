@@ -35,7 +35,7 @@ import com.webapp.model.Target;
 import com.webapp.model.Usuario;
 import com.webapp.repository.CategoriasProdutos;
 import com.webapp.repository.Compras;
-import com.webapp.repository.Contas;
+import com.webapp.repository.Contas_;
 import com.webapp.repository.Lancamentos;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.Targets;
@@ -44,7 +44,7 @@ import com.webapp.repository.Vendas;
 
 @Named
 @ViewScoped
-public class RelatorioLucrosBean implements Serializable {
+public class RelatorioLucrosBean_ implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -55,7 +55,7 @@ public class RelatorioLucrosBean implements Serializable {
 	private Produtos produtos;
 
 	@Inject
-	private Contas contas;
+	private Contas_ contas;
 	
 	@Inject
 	private Lancamentos lancamentos;
@@ -180,8 +180,6 @@ public class RelatorioLucrosBean implements Serializable {
 	
 	@Inject
 	private Usuario usuario;
-	
-	private boolean incluirDespesas =  false;
 
 
 	@PostConstruct
@@ -1125,33 +1123,13 @@ public class RelatorioLucrosBean implements Serializable {
 
 			} else {
 				
-				Double despesasTotais = 0D;
-				
-				if(incluirDespesas) {
-					/* Contas de Despesas Pagas */
-					totalDeDespesas = contas
-							.totalDespesasPorMes_(Long.parseLong(object[0].toString()),
-									Long.parseLong(object[1].toString()), 
-									usuario.getEmpresa())
-							.doubleValue();
-					
-					/* Lançamentos de despesas pagas */
-					Number despesas = lancamentos.totalDespesasPorMes(Long.parseLong(object[0].toString()),
-							Long.parseLong(object[1].toString()), usuario.getEmpresa());
-					
-					Number totalDescontos = vendas.totalDescontosPorMes(object[1].toString(), object[0].toString(),
-							object[0].toString(), usuario.getEmpresa());
-					
-					despesasTotais = totalDeDespesas.doubleValue() + despesas.doubleValue() + totalDescontos.doubleValue();
-				}
-				
 				percentualMensal = true;			
 
-				values.add(totalDeLucroEmVendas - despesasTotais/* - totalDeCompras */);
+				values.add(totalDeLucroEmVendas/* - totalDeCompras */);
 
 				if (totalDeLucroEmVendas > 0) {
 					//values2.add((totalDeVendas / totalCompras) * 100);
-					values2.add((totalVendasComPrecoVenda - totalCompras - despesasTotais)/totalVendasComPrecoVenda * 100);
+					values2.add((totalVendasComPrecoVenda - totalCompras)/totalVendasComPrecoVenda * 100);
 				} else {
 					values2.add(0);
 				}
@@ -1906,13 +1884,5 @@ public class RelatorioLucrosBean implements Serializable {
 
 	public List<Usuario> getTodosVendedores() {
 		return todosVendedores;
-	}
-
-	public boolean isIncluirDespesas() {
-		return incluirDespesas;
-	}
-
-	public void setIncluirDespesas(boolean incluirDespesas) {
-		this.incluirDespesas = incluirDespesas;
 	}
 }

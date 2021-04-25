@@ -40,7 +40,7 @@ import com.webapp.model.TipoPagamento;
 import com.webapp.model.Usuario;
 import com.webapp.repository.Caixas;
 import com.webapp.repository.CategoriasLancamentos;
-import com.webapp.repository.Contas;
+import com.webapp.repository.Contas_;
 import com.webapp.repository.DestinosLancamentos;
 import com.webapp.repository.FormasPagamentos;
 import com.webapp.repository.ItensCaixas;
@@ -105,7 +105,7 @@ public class RegistroLancamentosBean implements Serializable {
 	private Integer activeIndex = 0;
 
 	@Inject
-	private Contas contas;
+	private Contas_ contas;
 
 	private List<Conta> entradas = new ArrayList<>();
 	

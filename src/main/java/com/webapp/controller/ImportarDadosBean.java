@@ -50,7 +50,7 @@ import com.webapp.repository.CategoriasLancamentos;
 import com.webapp.repository.CategoriasProdutos;
 import com.webapp.repository.Clientes;
 import com.webapp.repository.Compras;
-import com.webapp.repository.Contas;
+import com.webapp.repository.Contas_;
 import com.webapp.repository.DestinosLancamentos;
 import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
@@ -89,7 +89,7 @@ public class ImportarDadosBean implements Serializable {
 	private Lancamentos lancamentosRepository;
 	
 	@Inject
-	private Contas contasRepository;
+	private Contas_ contasRepository;
 	
 	@Inject
 	private CategoriasLancamentos categoriasLancamentosRepository;

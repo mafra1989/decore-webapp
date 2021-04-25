@@ -29,7 +29,7 @@ import com.webapp.model.TipoAtividade;
 import com.webapp.model.TipoOperacao;
 import com.webapp.model.Usuario;
 import com.webapp.repository.CategoriasLancamentos;
-import com.webapp.repository.Contas;
+import com.webapp.repository.Contas_;
 import com.webapp.repository.DestinosLancamentos;
 import com.webapp.repository.ItensCaixas;
 import com.webapp.repository.Lancamentos;
@@ -89,7 +89,7 @@ public class ConsultaLancamentosBean implements Serializable {
 	private DestinoLancamento destinoLancamento;
 	
 	@Inject
-	private Contas contas;
+	private Contas_ contas;
 
 	private static final Locale BRAZIL = new Locale("pt", "BR");
 
