@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="produtos" pageWidth="556" pageHeight="842" columnWidth="556" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="fec26e42-79b7-4cba-b6f5-880441f51903">
-	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="0"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="produtos" pageWidth="532" pageHeight="842" columnWidth="532" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="fec26e42-79b7-4cba-b6f5-880441f51903">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="272"/>
 	<property name="ireport.y" value="0"/>
 	<style name="borda">
 		<box topPadding="0" leftPadding="0" rightPadding="0">
@@ -15,10 +15,6 @@
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
-	<field name="codigo" class="java.lang.String">
-		<property name="codigo" value=""/>
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
 	<field name="descricao" class="java.lang.String"/>
 	<field name="valorUnitario" class="java.lang.String"/>
 	<field name="quantidade" class="java.lang.String"/>
@@ -32,42 +28,42 @@
 	<detail>
 		<band height="24" splitType="Stretch">
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="279" height="20" uuid="bf89e981-5405-43ea-a5b3-241ba8d6ea1f"/>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="258" height="20" uuid="bf89e981-5405-43ea-a5b3-241ba8d6ea1f"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="279" y="0" width="95" height="20" uuid="99eb87d3-651c-4a79-9ae0-ca6a7faa4c34"/>
+				<reportElement stretchType="RelativeToBandHeight" x="258" y="0" width="78" height="20" uuid="99eb87d3-651c-4a79-9ae0-ca6a7faa4c34"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA["R$ " + $F{valorUnitario}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="374" y="0" width="68" height="20" uuid="920b2140-107c-4a39-97ff-7827e00a1e30"/>
+				<reportElement stretchType="RelativeToBandHeight" x="336" y="0" width="70" height="20" uuid="920b2140-107c-4a39-97ff-7827e00a1e30"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{quantidade}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="471" y="0" width="85" height="20" uuid="01f089a6-cfbd-4b72-adf3-78b502a4404f"/>
+				<reportElement stretchType="RelativeToBandHeight" x="459" y="0" width="72" height="20" uuid="01f089a6-cfbd-4b72-adf3-78b502a4404f"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA["R$ " + $F{subTotal}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="442" y="0" width="29" height="20" uuid="c4306ede-7f3d-4d2c-8d0d-1e939b15dcac"/>
+				<reportElement stretchType="RelativeToBandHeight" x="413" y="0" width="43" height="20" uuid="c4306ede-7f3d-4d2c-8d0d-1e939b15dcac"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{UN}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="0" y="21" width="556" height="1" uuid="43852d43-7bbb-4340-b05b-eab44cf3423e"/>
+				<reportElement x="1" y="20" width="530" height="2" uuid="43852d43-7bbb-4340-b05b-eab44cf3423e"/>
 				<graphicElement>
 					<pen lineStyle="Dashed"/>
 				</graphicElement>

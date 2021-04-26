@@ -473,7 +473,7 @@ public class ConsultaVendasBean implements Serializable {
 		pedido.setFrete(nf.format(vendaSelecionada.getTaxaDeEntrega()));
 		
 		if(vendaSelecionada.getDesconto() != null) {
-			pedido.setSubTotal(nf.format(vendaSelecionada.getValorTotal().doubleValue() + vendaSelecionada.getDesconto().doubleValue() - vendaSelecionada.getTaxaDeEntrega().doubleValue()));
+			pedido.setSubTotal(nf.format(vendaSelecionada.getValorTotal().doubleValue() - vendaSelecionada.getTaxaDeEntrega().doubleValue()));
 			pedido.setDesconto(nf.format(vendaSelecionada.getDesconto()));
 		} else {
 			pedido.setSubTotal(nf.format(vendaSelecionada.getValorTotal().doubleValue() - vendaSelecionada.getTaxaDeEntrega().doubleValue()));

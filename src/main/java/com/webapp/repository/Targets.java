@@ -37,8 +37,8 @@ public class Targets implements Serializable {
 	public Target porPeriodoTipo(String periodo, String tipo, Empresa empresa) {
 		try {
 			return this.manager
-					.createQuery("from Target e where e.empresa.id = :empresa AND e.periodo = :periodo and e.tipo = :tipo", Target.class)
-					.setParameter("empresa", empresa.getId()).setParameter("periodo", periodo).setParameter("tipo", tipo).getSingleResult();
+					.createQuery("from Target e where e.empresa = :empresa AND e.periodo = :periodo and e.tipo = :tipo", Target.class)
+					.setParameter("empresa", String.valueOf(empresa.getId())).setParameter("periodo", periodo).setParameter("tipo", tipo).getSingleResult();
 		} catch(NoResultException e) {
 			return null;
 		}

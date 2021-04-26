@@ -5256,7 +5256,7 @@ public class PDVBean implements Serializable {
 		pedido.setFrete(nf.format(venda.getTaxaDeEntrega()));
 
 		if(venda.getDesconto() != null) {
-			pedido.setSubTotal(nf.format(venda.getValorTotal().doubleValue() + venda.getDesconto().doubleValue() - venda.getTaxaDeEntrega().doubleValue()));
+			pedido.setSubTotal(nf.format(venda.getValorTotal().doubleValue() - venda.getTaxaDeEntrega().doubleValue()));
 			pedido.setDesconto(nf.format(venda.getDesconto()));
 		} else {
 			pedido.setSubTotal(nf.format(venda.getValorTotal().doubleValue() - venda.getTaxaDeEntrega().doubleValue()));

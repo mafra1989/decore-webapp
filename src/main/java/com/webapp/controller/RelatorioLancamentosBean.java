@@ -1812,6 +1812,8 @@ public class RelatorioLancamentosBean implements Serializable {
 			targetDiario = target;
 			createMixedModelPorDia();
 
+			targetTemp.setEmpresa(String.valueOf(usuario.getEmpresa().getId()));
+			
 			targets.save(targetTemp);
 
 			PrimeFaces.current().executeScript(
@@ -1834,6 +1836,8 @@ public class RelatorioLancamentosBean implements Serializable {
 			targetSemanal = target;
 			createMixedModelPorSemana();
 
+			targetTemp.setEmpresa(String.valueOf(usuario.getEmpresa().getId()));
+			
 			targets.save(targetTemp);
 
 			PrimeFaces.current().executeScript(
@@ -1856,6 +1860,8 @@ public class RelatorioLancamentosBean implements Serializable {
 			targetMensal = target;
 			createMixedModelPorMes();
 
+			targetTemp.setEmpresa(String.valueOf(usuario.getEmpresa().getId()));
+			
 			targets.save(targetTemp);
 
 			PrimeFaces.current().executeScript(
@@ -1878,6 +1884,8 @@ public class RelatorioLancamentosBean implements Serializable {
 			targetAnual = target;
 			createMixedModelPorAno();
 
+			targetTemp.setEmpresa(String.valueOf(usuario.getEmpresa().getId()));
+			
 			targets.save(targetTemp);
 
 			PrimeFaces.current().executeScript(
