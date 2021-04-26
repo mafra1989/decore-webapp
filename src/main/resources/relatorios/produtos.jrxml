@@ -35,14 +35,14 @@
 				<textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="258" y="0" width="78" height="20" uuid="99eb87d3-651c-4a79-9ae0-ca6a7faa4c34"/>
+				<reportElement stretchType="RelativeToBandHeight" x="258" y="0" width="82" height="20" uuid="99eb87d3-651c-4a79-9ae0-ca6a7faa4c34"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA["R$ " + $F{valorUnitario}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="336" y="0" width="70" height="20" uuid="920b2140-107c-4a39-97ff-7827e00a1e30"/>
+				<reportElement stretchType="RelativeToBandHeight" x="340" y="0" width="70" height="20" uuid="920b2140-107c-4a39-97ff-7827e00a1e30"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>

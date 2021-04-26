@@ -44,7 +44,7 @@
 		<groupHeader>
 			<band height="22">
 				<staticText>
-					<reportElement x="339" y="2" width="70" height="20" backcolor="#FF0000" uuid="537bea7d-64aa-4af9-a158-6a093390547c"/>
+					<reportElement x="343" y="2" width="70" height="20" backcolor="#FF0000" uuid="537bea7d-64aa-4af9-a158-6a093390547c"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="10" isBold="true"/>
 					</textElement>
@@ -58,7 +58,7 @@
 					<text><![CDATA[Descrição]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="261" y="2" width="78" height="20" backcolor="#FF0000" uuid="a4a9ae75-3f5a-42bb-817d-056ad1d2a3ce"/>
+					<reportElement x="261" y="2" width="82" height="20" backcolor="#FF0000" uuid="a4a9ae75-3f5a-42bb-817d-056ad1d2a3ce"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="10" isBold="true"/>
 					</textElement>
@@ -197,7 +197,7 @@
 				<text><![CDATA[Descrição]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="339" y="39" width="70" height="20" backcolor="#FF0000" uuid="64619cef-324c-45ca-8441-405f45ed32f2"/>
+				<reportElement x="343" y="39" width="70" height="20" backcolor="#FF0000" uuid="64619cef-324c-45ca-8441-405f45ed32f2"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="true"/>
 				</textElement>
@@ -218,7 +218,7 @@
 				<text><![CDATA[Unidade]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="261" y="39" width="78" height="20" backcolor="#FF0000" uuid="94ebc6db-5654-4551-a7b4-3ce702bb4911"/>
+				<reportElement x="261" y="39" width="82" height="20" backcolor="#FF0000" uuid="94ebc6db-5654-4551-a7b4-3ce702bb4911"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="true"/>
 				</textElement>
@@ -253,14 +253,14 @@
 				<textFieldExpression><![CDATA[$F{frete}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="261" y="59" width="78" height="20" backcolor="#FF0000" uuid="00dfbd96-05a2-4f87-a50b-22802a3c4773"/>
+				<reportElement x="261" y="59" width="82" height="20" backcolor="#FF0000" uuid="00dfbd96-05a2-4f87-a50b-22802a3c4773"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
 					<font fontName="SansSerif" size="10" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{frete}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="339" y="59" width="70" height="20" backcolor="#FF0000" uuid="8419345f-b33b-4709-8293-f1b48179c108"/>
+				<reportElement x="343" y="59" width="70" height="20" backcolor="#FF0000" uuid="8419345f-b33b-4709-8293-f1b48179c108"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="false"/>
 				</textElement>
