@@ -169,7 +169,7 @@
 	</background>
 	<pageHeader>
 		<band height="237" splitType="Stretch">
-			<image scaleImage="FillFrame">
+			<image scaleImage="FillFrame" onErrorType="Blank">
 				<reportElement style="Column header" x="212" y="12" width="109" height="109" uuid="425b6d9a-1b97-4950-ab37-dde6c8e3e2e3"/>
 				<imageExpression><![CDATA["/relatorios/decore.png"]]></imageExpression>
 			</image>
