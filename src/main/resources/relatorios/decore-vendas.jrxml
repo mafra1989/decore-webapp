@@ -169,9 +169,9 @@
 	</background>
 	<pageHeader>
 		<band height="237" splitType="Stretch">
-			<image scaleImage="FillFrame" isLazy="true">
-				<reportElement style="Column header" x="210" y="12" width="109" height="109" uuid="425b6d9a-1b97-4950-ab37-dde6c8e3e2e3"/>
-				<imageExpression><![CDATA[$F{logo}]]></imageExpression>
+			<image scaleImage="FillFrame">
+				<reportElement style="Column header" x="212" y="12" width="109" height="109" uuid="425b6d9a-1b97-4950-ab37-dde6c8e3e2e3"/>
+				<imageExpression><![CDATA["/relatorios/decore.png"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement x="1" y="127" width="534" height="20" forecolor="#333333" uuid="c6c8443c-c0b1-4a31-aec9-2509b789f3c0"/>
