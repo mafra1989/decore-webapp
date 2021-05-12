@@ -516,7 +516,7 @@ public class RegistroOrcamentosBean implements Serializable {
 				Log log = new Log();
 				log.setDataLog(new Date());
 				log.setCodigoOperacao(String.valueOf(venda.getNumeroVenda()));
-				log.setOperacao(TipoAtividade.VENDA.name());
+				log.setOperacao("ORÇAMENTO");
 				
 				NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
 				
@@ -581,7 +581,7 @@ public class RegistroOrcamentosBean implements Serializable {
 				Log log = new Log();
 				log.setDataLog(new Date());
 				log.setCodigoOperacao(String.valueOf(venda.getNumeroVenda()));
-				log.setOperacao(TipoAtividade.VENDA.name());
+				log.setOperacao("ORÇAMENTO");
 				
 				NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
 				
