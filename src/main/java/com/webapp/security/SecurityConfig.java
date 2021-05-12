@@ -64,6 +64,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					"/consultas/Compras.xhtml",
 					"/consultas/Vendas.xhtml",
 					"/consultas/Lancamentos.xhtml",
+					
+					"/operacoes/RegistroLancamentos.xhtml",
+					"/consultas/Orcamentos.xhtml",				
+					
 					"/relatorios/Vendas.xhtml",
 					"/relatorios/Lucros.xhtml",
 					"/relatorios/Lancamentos.xhtml",

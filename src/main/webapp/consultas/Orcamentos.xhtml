@@ -1,0 +1,443 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	template="/WEB-INF/template.xhtml">
+
+	<ui:define name="title">Consultar Vendas</ui:define>
+
+	<f:metadata>
+		<f:viewAction action="#{consultaOrcamentosBean.inicializar}" />
+	</f:metadata>
+
+	<ui:define name="content">
+
+		<style>
+@media ( min-width :220px) {
+	.inventario.ui-button {
+	    width: auto !important;
+	    color: #000000 !important;
+	    background-color: transparent !important;
+	    margin-left: 10px;
+    }
+	body .ui-button.ui-button-text-icon-left .ui-button-text {
+		font-weight: bold;
+	}
+	.panel-total.ui-panel .ui-panel-content {
+		border: none;
+		padding: 0px;
+	}
+	.fotoDialog {
+		max-height: 380px !important;
+		width: 240px !important;
+		margin-top: -50px;
+	}
+	.categoria-field {
+		width: 100%;
+		height: 32px;
+	}
+	.ui-slider .ui-slider-handle {
+		width: 1.7em;
+		height: 1.7em;
+	}
+	.ui-slider-horizontal {
+		height: 1.2em !important;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 28px !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+		width: 50% !important;
+		float: left !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-6 {
+		width: 50% !important;
+		float: left !important;
+	}
+	.qty-parcelas.ui-panelgrid .ui-panelgrid-cell:nth-child(1) {
+		margin-top: 10px !important;
+	}
+	.percentual-juros.ui-panelgrid .ui-panelgrid-cell:nth-child(1) {
+		margin-top: 8px !important;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+		.ui-datatable tfoot th {
+		font-size: 13px;
+	}
+	body .btn-new.ui-button {
+		color: #676363;
+		background-color: #f9f9f9;
+		border: 1px solid #8a8585;
+	}
+	.swal2-popup {
+		width: 28em;
+		max-width: 100%;
+		padding: 0 0 0.4em 0;
+		font-size: 0.75rem;
+	}
+	.swal2-popup #swal2-content {
+		font-weight: 400;
+	}
+}
+
+@media ( min-width :460px) {
+	.ui-slider .ui-slider-handle {
+		width: 1.7em;
+		height: 1.7em;
+	}
+	.ui-slider-horizontal {
+		height: 1.2em;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 27px !important;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+		.ui-datatable tfoot th {
+		font-size: 14px;
+	}
+	.venda-entrega {
+		margin-top: 7px;
+		float: left;
+	}
+}
+
+@media ( min-width :640px) {
+	.categoria-field {
+		width: 60% !important;
+	}
+	.ui-slider-handle {
+		width: 1.2em !important;
+		height: 1.2em !important;
+	}
+	.ui-slider-horizontal {
+		height: 0.8em !important;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 27px !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+		width: 33.33333% !important;
+		float: none;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-6 {
+		width: auto !important;
+		float: none;
+	}
+	.fotoDialog {
+		max-height: 500px !important;
+		width: 240px !important;
+		margin-top: -50px;
+	}
+}
+</style>
+
+		<div class="page-header">
+			<h1>Consultar Vendas</h1>
+		</div>
+
+		<p:growl id="msg" closable="true" life="500" showSummary="false"
+			showDetail="true" style="text-align: center" />
+
+
+
+		<h:form id="form" prependId="false">
+
+			<p:remoteCommand name="setarItemID" process="@this vendasTable"
+				update="form" action="#{consultaOrcamentosBean.excluir}"
+				onstart="PF('downloadLoading').show();"
+				oncomplete="PF('downloadLoading').hide();" />
+
+			<p:toolbar id="toolbar">
+				<f:facet name="left">
+					<p:commandButton icon="fa fa-fw fa-search" value="Pesquisar"
+						id="pesquisar-button" update="panel-table vendasTable"
+						style="margin-left: 3px;font-weight:bold" process="form"
+						action="#{consultaOrcamentosBean.pesquisar}"
+						onstart="PF('downloadLoading').show();"
+						oncomplete="PF('downloadLoading').hide();"></p:commandButton>
+				</f:facet>
+
+			</p:toolbar>
+
+			<div class="ui-g-12 ui-lg-12">
+
+				<p:panel class="card card-w-title ui-fluid itens-add"
+					style="padding-bottom: 0px !important; margin-top:10px">
+
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3">
+
+						<p:outputLabel value="Venda N." for="codigo" />
+						<p:inputNumber id="codigo" decimalPlaces="0" thousandSeparator=""
+							value="#{consultaOrcamentosBean.numeroVenda}">
+						</p:inputNumber>
+					</p:panelGrid>
+
+					<p:panelGrid columns="4" id="painel" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-1, ui-grid-col-2">
+
+						<p:outputLabel value="Data da venda" for="data01" />
+						<p:datePicker id="data01" value="#{consultaOrcamentosBean.dateStart}"
+							readonlyInput="true" pattern="dd/MM/yyyy" locale="pt" 
+							showIcon="true">
+						</p:datePicker>
+
+
+						<p:outputLabel value="até" id="data02" />
+						<p:datePicker id="data-02" value="#{consultaOrcamentosBean.dateStop}"
+							readonlyInput="true" styleClass="dateStop" pattern="dd/MM/yyyy"
+							locale="pt" showIcon="true">
+						</p:datePicker>
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3">
+						
+						<p:outputLabel value="Vendedor" for="vendedor" />
+						<p:selectOneMenu id="vendedor"
+							value="#{consultaOrcamentosBean.usuario}" placeholder="selecione">
+
+							<f:selectItem itemLabel="Selecione" />
+
+							<f:selectItems value="#{consultaOrcamentosBean.todosUsuarios}"
+								var="vendedor" itemLabel="#{vendedor.nome}"
+								itemValue="#{vendedor}" />
+						</p:selectOneMenu>
+						
+						<p:outputLabel value="Cliente" for="cliente" />
+						<p:selectOneMenu id="cliente"
+							value="#{consultaOrcamentosBean.cliente}" placeholder="selecione">
+
+							<f:selectItem itemLabel="Selecione" />
+
+							<f:selectItems value="#{consultaOrcamentosBean.todosClientes}"
+								var="cliente" itemLabel="#{cliente.nome}"
+								itemValue="#{cliente}" />
+						</p:selectOneMenu>
+						
+						<p:outputLabel value="Entregador" for="entregador" />
+						<p:selectOneMenu id="entregador"
+							value="#{consultaOrcamentosBean.entregador}" placeholder="selecione">
+
+							<f:selectItem itemLabel="Selecione" />
+
+							<f:selectItems value="#{consultaOrcamentosBean.todosEntregadores}"
+								var="entregador" itemLabel="#{entregador.nome}"
+								itemValue="#{entregador}" />
+						</p:selectOneMenu>
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-4">
+
+						<p:outputLabel value="Vendas sem entrega" />
+						<p:selectBooleanCheckbox
+							value="#{consultaOrcamentosBean.vendasNormais}"
+							style="margin-left: 3px;" />
+
+					</p:panelGrid>
+
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-4">
+
+						<p:outputLabel value="Vendas com entrega"
+							styleClass="venda-entrega" />
+						<p:selectManyCheckbox unselectable="true"
+							value="#{consultaOrcamentosBean.statusPedido}">
+							<f:selectItems value="#{consultaOrcamentosBean.statusPedidos}"
+								var="statusPedido" itemLabel="#{statusPedido.descricao}"
+								itemValue="#{statusPedido}" />
+						</p:selectManyCheckbox>
+					</p:panelGrid>
+					
+					<p:panelGrid columns="2" layout="grid" style="margin-top:5px;"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3">
+
+						<p:outputLabel value="Somente vendas pagas" for="vendasPagas" />
+						<p:inputSwitch offLabel="Não" onLabel="Sim" id="vendasPagas"
+							value="#{consultaOrcamentosBean.vendasPagas}">
+						</p:inputSwitch>
+					</p:panelGrid>
+
+				</p:panel>
+
+				<p:panel class="card card-w-title ui-fluid itens-add"
+					id="panel-table"
+					style="padding-bottom: 0px !important;margin-top:-10px">
+
+					<h3 style="font-weight: bold">Resultado da consulta</h3>
+
+					<p:menuButton id="menu-btn" value="Opções"
+						style="width: 80px;float: right;margin-top: -40px;margin-right: 10px"
+						disabled="#{(consultaOrcamentosBean.vendasFiltradasSize eq 0) or consultaOrcamentosBean.vendaSelecionada.id == null}">
+
+						<p:menuitem value="Visualizar" icon="fa fa-fw fa-eye"
+							id="btn-view" outcome="#{consultaOrcamentosBean.vendaSelecionada.pdv ? '/PDV.xhtml' : '/operacoes/RegistroVendas.xhtml'}"
+							onclick="PF('downloadLoading').show();">
+							<f:param name="id"
+								value="#{consultaOrcamentosBean.vendaSelecionada.id}" />
+						</p:menuitem>
+						
+						<p:separator />
+						<p:menuitem icon="fa fa-fw fa-trash" id="btn-trash"
+							value="Excluir" process="@this" disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
+							onclick="deleteItem(#{consultaOrcamentosBean.vendaSelecionada.id});" />
+						<p:separator />
+
+						<p:menuitem value="Entregar venda" icon="fa fa-fw fa-money"
+							onstart="start();" oncomplete="stop();"
+							action="#{consultaOrcamentosBean.entregarVenda}" update="form"
+							process="@this"
+							rendered="#{consultaOrcamentosBean.entrega.id != null and consultaOrcamentosBean.entrega.status == 'PENDENTE' and consultaOrcamentosBean.vendaSelecionada.tipoPagamento != null}">
+						</p:menuitem>
+						<p:separator />
+						<p:menuitem value="Desfazer entrega" icon="fa fa-fw fa-undo"
+							onstart="start();" oncomplete="stop();"
+							action="#{consultaOrcamentosBean.desfazerEntrega}" update="form"
+							process="@this"
+							rendered="#{consultaOrcamentosBean.entrega.id != null and consultaOrcamentosBean.entrega.status == 'ENTREGUE'}">
+						</p:menuitem>
+						<p:menuitem value="Desfazer entrega e pagamento" icon="fa fa-fw fa-undo"
+							onstart="start();" oncomplete="stop();"
+							action="#{consultaOrcamentosBean.desfazerEntregaPagamento}" update="form"
+							process="@this"
+							rendered="#{consultaOrcamentosBean.entrega.id != null and consultaOrcamentosBean.entrega.status == 'ENTREGUE' and consultaOrcamentosBean.vendaSelecionada.tipoPagamento == 'AVISTA'}">
+						</p:menuitem>
+						<p:menuitem value="Ver localização" icon="fa fa-fw fa-map-marker"
+							onstart="start();" oncomplete="stop();"
+							url="https://maps.google.com/maps?daddr=#{consultaOrcamentosBean.entrega.localizacao}"
+							target="_blank"
+							rendered="#{consultaOrcamentosBean.entrega.id != null and consultaOrcamentosBean.vendaSelecionada.tipoPagamento != null}">
+						</p:menuitem>
+						<p:menuitem value="Baixar PDF" icon="fa fa-fw fa-cloud-download"
+							action="#{consultaOrcamentosBean.emitirPedido}"
+							ajax="false" target="_blank" disabled="#{seguranca.usuarioLogado.usuario.empresa eq 'Havaianas'}">
+						</p:menuitem>
+
+					</p:menuButton>
+
+
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-12">
+
+						<p:dataTable id="vendasTable" paginatorAlwaysVisible="false"
+							scrollable="true" scrollHeight="500"
+							value="#{consultaOrcamentosBean.vendasFiltradas}" var="venda"
+							emptyMessage="Nenhum resultado encontrado." reflow="true"
+							paginator="false" rowKey="#{venda.id}"
+							selection="#{consultaOrcamentosBean.vendaSelecionada}"
+							selectionMode="single">
+
+							<p:ajax process="@this" event="rowSelect" update="menu-btn"
+								onstart="PF('downloadLoading').show();"
+								listener="#{consultaOrcamentosBean.prepararEntrega}"
+								oncomplete="PF('downloadLoading').hide();" />
+							<p:ajax process="@this" event="rowUnselect" update="menu-btn"
+								onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();" />
+
+							<p:column headerText="N. Venda" width="8%">
+								<h:outputText value="#{venda.numeroVenda}" />
+								<p:commandButton icon="fa fa-fw fa-edit" styleClass="inventario" rendered="#{venda.ajuste}" />
+							</p:column>
+
+							<p:column headerText="Data da venda" width="10%">
+								<h:outputText value="#{venda.dataVenda}">
+									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" dateStyle="short" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Tipo de venda" width="10%">
+								<h:outputText value="#{venda.tipoVenda.descricao}" />
+							</p:column>
+							
+							<p:column headerText="Mesa" width="7%" rendered="#{seguranca.configuracao.controleMesas}">
+								<h:outputText value="#{venda.mesa != null ? venda.mesa : '-'}" />
+							</p:column>
+							
+							<p:column headerText="Cliente" width="10%">
+								<h:outputText value="#{venda.cliente.nome}" />
+							</p:column>
+							
+							<p:column headerText="Vendedor" width="10%">
+								<h:outputText value="#{venda.usuario.nome}" />
+							</p:column>
+
+							<p:column headerText="Bairro" width="10%">
+								<h:outputText value="#{venda.pdv ? venda.cliente.bairro.nome : venda.bairro.nome}" />
+							</p:column>
+
+							<p:column headerText="Vendedor" width="10%" visible="false">
+								<h:outputText value="#{venda.usuario.nome}" />
+							</p:column>
+							
+							<p:column headerText="Pagamento" width="10%">
+								<h:outputText value="#{venda.tipoPagamento != null ? venda.tipoPagamento.descricao.concat(', ').concat(venda.formaPagamento.nome).concat(venda.pagamento) : '-'}" />
+							</p:column>
+
+							<p:column headerText="Qtd. Itens" width="8%">
+								<h:outputText value="#{venda.quantidadeItens}" />
+							</p:column>
+
+							<p:column headerText="Valor Total" width="10%">
+								<h:outputText value="#{venda.valorTotal - venda.desconto}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Pago?" width="8%">
+								<h:outputText value="#{venda.tipoPagamento == 'PARCELADO' ? 'Venda Parc.' : ((venda.conta and not venda.vendaPaga) ? 'À receber' : (venda.ajuste ? '-' : (venda.vendaPaga ? 'Sim' : 'Não')))}" />
+							</p:column>
+
+						</p:dataTable>
+
+						<p:panel
+							styleClass="panelgrid-noborder disabled disabled panel-total">
+
+							<p:outputLabel
+								value="Total de Vendas: R$ #{consultaOrcamentosBean.totalVendas}"
+								style="float:left;margin-top:10px;margin-bottom:5px;margin-left:-10px;font-size: 13px;font-family: inherit;" />
+
+							<p:outputLabel
+								value="Total de Itens: #{consultaOrcamentosBean.totalItens}"
+								style="float:right;margin-top:10px;margin-bottom:5px;margin-right:0px;font-size: 13px;font-family: inherit;" />
+
+						</p:panel>
+					</p:panelGrid>
+
+				</p:panel>
+
+			</div>
+
+		</h:form>
+
+
+
+		<p:dialog id="downloadLoading" showHeader="false" modal="true"
+			widgetVar="downloadLoading" header="Status" draggable="false"
+			closable="false" resizable="false">
+			<p:graphicImage name="images/loadingbar.gif"
+				library="manhattan-layout" width="50" />
+		</p:dialog>
+
+		<script type="text/javascript">
+			function start() {
+				PF('downloadLoading').show();
+			}
+
+			function stop() {
+				PF('downloadLoading').hide();
+			}
+		</script>
+
+	</ui:define>
+
+</ui:composition>

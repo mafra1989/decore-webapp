@@ -240,6 +240,62 @@ public class Vendas implements Serializable {
 	
 	
 	@SuppressWarnings("unchecked")
+	public List<Venda> orcamentosFiltradas(Long numeroVenda, Date dateStart, Date dateStop, Usuario usuario, Empresa empresa) {
+
+		List<Venda> vendas = new ArrayList<>();
+
+		String condition = "";
+		if (usuario != null && usuario.getId() != null) {
+			condition += "AND i.usuario.id = :idUsuario ";
+		}
+
+		String conditionNumeroVenda = "";		
+		if (numeroVenda != null) {
+			if (StringUtils.isNotBlank(String.valueOf(numeroVenda))) {
+				if(!String.valueOf(numeroVenda).trim().equals("0")) {
+					System.out.println(numeroVenda + " - " + String.valueOf(numeroVenda));
+					conditionNumeroVenda = "AND i.numeroVenda = :numeroVenda ";
+				}			
+			}
+		}
+		
+		String orderBy = " order by i.numeroVenda desc";
+
+		String jpql = "SELECT i, (select e from Entrega e where e.venda.id = i.id) FROM Venda i "
+				+ "WHERE i.quantidadeItens > 0 AND i.empresa.id = :empresa AND i.ajuste = 'Y' AND i.conta = 'Y' AND i.dataVenda between :dateStart and :dateStop " + condition 
+				+ conditionNumeroVenda
+				+ orderBy;
+
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
+
+		if (usuario != null && usuario.getId() != null) {
+			q.setParameter("idUsuario", usuario.getId());
+		}
+
+		if (numeroVenda != null) {
+			if (StringUtils.isNotBlank(String.valueOf(numeroVenda))) {
+				if(!String.valueOf(numeroVenda).trim().equals("0")) {
+					System.out.println(numeroVenda + " - " + String.valueOf(numeroVenda));
+					q.setParameter("numeroVenda", Long.parseLong(String.valueOf(numeroVenda).trim()));
+				}
+			}
+		}
+
+		List<Object[]> objects = q.getResultList();
+		System.out.println(objects.size() + " - " + jpql);
+
+		for (Object[] objectTemp : objects) {
+			
+			vendas.add((Venda) objectTemp[0]);
+			
+		}
+
+		return vendas;
+
+	}
+	
+	
+	@SuppressWarnings("unchecked")
 	public List<Venda> vendasFiltradasPDV(Long numeroVenda, Date dateStart, Date dateStop, Usuario usuario, Empresa empresa) {
 
 		List<Venda> vendas = new ArrayList<>();
