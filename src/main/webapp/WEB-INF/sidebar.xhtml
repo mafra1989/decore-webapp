@@ -98,6 +98,10 @@
 
 								<p:menuitem id="pm_lancamento" value="Lançamentos" rendered="#{not seguranca.acessoVendedor()}"
 									icon="fa fa-list-ol" outcome="/consultas/Lancamentos.xhtml" />
+									
+								<p:menuitem id="pm_orcamento" styleClass="pm_orcamento"
+									value="Orçamentos" icon="fa fa-edit"
+									outcome="/consultas/Orcamentos.xhtml" />
 
 							</p:submenu>
 
@@ -172,6 +176,10 @@
 								<p:menuitem id="pm_lancamentos" styleClass="pm_lancamento"
 									value="Registrar Lançamentos" icon="fa fa-list-ol"
 									outcome="/operacoes/RegistroLancamentos.xhtml" />
+								
+								<p:menuitem id="pm_orcamentos" styleClass="pm_orcamentos"
+									value="Orçamentos" icon="fa fa-edit"
+									outcome="/operacoes/RegistroOrcamentos.xhtml" />
 							</p:submenu>
 
 							<p:submenu id="pm_relatorio" styleClass="pm_relatorio"
