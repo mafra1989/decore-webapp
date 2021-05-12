@@ -1,0 +1,785 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="title">#{registroOrcamentosBean.venda.id == null ? 'Registrar Orçamento' : 'Informações do Orçamento'}</ui:define>
+
+	<f:metadata>
+		<f:viewAction action="#{registroOrcamentosBean.inicializar}" />
+
+		<f:viewParam name="id" value="#{registroOrcamentosBean.venda.id}" />
+		<f:viewAction action="#{registroOrcamentosBean.buscar}"
+			if="#{param.id ne null}" />
+	</f:metadata>
+
+	<ui:define name="content">
+
+		<style>
+@media ( min-width :220px) {
+	body .ui-state-disabled {
+    	opacity: .85;
+    }
+	.layout-wrapper .layout-main .layout-content {
+	    padding: 55px 17px 4px 17px;
+	}
+	.ui-datepicker-touch-ui.ui-datepicker td a, .ui-datepicker-touch-ui.ui-datepicker td span, .ui-datepicker-touch-ui.ui-datepicker th {
+	    padding: 10px;   
+	}
+	.p-datepicker .ui-datepicker-touch-ui, .ui-datepicker-touch-ui {
+	    min-width: 300px;
+	    border: none;
+    }
+	.grid-table.ui-panelgrid .ui-panelgrid-cell {
+	    padding: 0px 10px;
+	}
+	body .ui-panel .ui-panel-content {
+	    padding: 0px;
+	}
+	.card {
+	    padding: 0px;
+	}
+	.ui-datatable tbody td {
+		height: auto !important;
+	}
+	.btn-select.ui-button.ui-button-icon-only .ui-icon {
+		margin-top: -8px;
+		font-size: 18px;
+		color: #0f5baf;
+	}
+	.produtosTable .btn-select.ui-button {
+		height: 30px;
+		width: 30px;
+		background-color: transparent;
+		border: 1px solid #0f5baf;
+		border-radius: 50px;
+	}
+	.produtosTable .btn-select.ui-button:hover {
+		background-color: #e0dada;
+	}
+	.ui-datatable-scrollable-body {
+		overflow: auto;
+		max-height: 395px;
+	}
+	.itens-add {
+		margin-top: -15px;
+	}
+	body .ui-panel .ui-panel-content {
+		border: none;
+	}
+	.ui-blockui-content {
+		padding: 0.25em;
+	}
+	.ui-slider .ui-slider-handle {
+		width: 1.7em;
+		height: 1.7em;
+	}
+	.ui-slider-horizontal {
+		height: 1.2em !important;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 28px !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+		width: 50% !important;
+		float: left !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-6 {
+		width: 50% !important;
+		float: left !important;
+	}
+	.qty-parcelas.ui-panelgrid .ui-panelgrid-cell:nth-child(1) {
+		margin-top: 10px !important;
+	}
+	.percentual-juros.ui-panelgrid .ui-panelgrid-cell:nth-child(1) {
+		margin-top: 8px !important;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+		.ui-datatable tfoot th {
+		font-size: 13px;
+	}
+	body .btn-new.ui-button {
+		color: #676363;
+		background-color: #f9f9f9;
+		border: 1px solid #8a8585;
+	}
+	.swal2-popup {
+		width: 28em;
+		max-width: 100%;
+		padding: 0 0 0.4em 0;
+		font-size: 0.75rem;
+	}
+	.swal2-popup #swal2-content {
+		font-weight: 400;
+	}
+	body #item-dialog.ui-dialog .ui-dialog-content {
+		background-color: #ffffff;
+		padding: 10px 0px 0px 0px;
+	}
+	body .ui-datatable .ui-paginator {
+		padding: 2px 0px !important;
+	}
+	.panel-entrega.ui-widget a {
+		float: left !important;
+		margin-top: -29px !important;
+		margin-left: 80px;
+		font-size: 13px;
+	}
+	.panel-entrega .ui-state-disabled {
+		float: left !important;
+		margin-top: -29px !important;
+		margin-left: 80px;
+		font-size: 13px;
+	}
+	#entrega-dialog .ui-panel .ui-panel-content {
+		padding: 0px;
+	}
+	.panel-entrega {
+		margin-top: 8px;
+	}
+	.panel-ajuste {
+		margin-top: -10px;
+	}
+}
+
+@media ( min-width :460px) {
+	.panel-entrega {
+		margin-top: 0px;
+	}
+	.panel-ajuste {
+		margin-top: 0px;
+	}
+	.panel-entrega .ui-state-disabled {
+		float: left !important;
+		margin-top: 10px !important;
+		margin-left: 0px;
+		font-size: 13px;
+	}
+	.ui-panelgrid .ui-widget a {
+		float: left !important;
+		margin-top: 10px !important;
+		margin-left: 0px;
+		font-size: 13px;
+	}
+	.ui-slider .ui-slider-handle {
+		width: 1.7em;
+		height: 1.7em;
+	}
+	.ui-slider-horizontal {
+		height: 1.2em;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 27px !important;
+	}
+	.ui-datatable thead th, .ui-datatable tbody td, .ui-datatable tfoot td,
+		.ui-datatable tfoot th {
+		font-size: 14px;
+	}
+}
+
+@media ( min-width :640px) {
+	.ui-slider-handle {
+		width: 1.2em !important;
+		height: 1.2em !important;
+	}
+	.ui-slider-horizontal {
+		height: 0.8em !important;
+	}
+	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		height: 27px !important;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-4 {
+		width: 33.33333% !important;
+		float: none;
+	}
+	.result .apply-result .ui-grid-responsive .ui-grid-col-6 {
+		width: auto !important;
+		float: none;
+	}
+	.itens-add {
+		margin-top: 15px;
+	}
+	.ui-datatable tbody td {
+		height: 28px !important;
+	}
+}
+
+@media ( min-width :641px) {
+	.ui-datatable-scrollable-body {
+		overflow: auto;
+		max-height: 320px;
+	}
+}
+</style>
+
+		<div class="page-header">
+			<h1>#{registroOrcamentosBean.venda.id == null ? 'Registrar Orçamento' : 'Informações do Orçamento'}</h1>
+		</div>
+
+		<p:growl id="msg" closable="true" life="2000" showSummary="false"
+			showDetail="true" style="text-align: center" />
+
+		<div class="ui-g-12 ui-lg-12 card" style="margin-top: -10px;">
+
+			<h:form id="form">
+
+				<p:defaultCommand target="btn-calcular" />
+
+				<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+					styleClass="panelgrid-noborder disabled disabled" 
+					columnClasses="ui-grid-col-6, ui-grid-col-6">
+
+					<p:panel class="card card-w-title ui-fluid" id="panel-itens" 
+						style="margin-bottom: 0px;margin-top: 10px; padding-bottom: 0px !important">
+						
+					<p:panel>
+
+						<h3 style="font-weight: bold">Dados do Orçamento</h3>
+						
+						<p:accordionPanel id="accordion-panel" activeIndex="null" styleClass="accordion-panel" style="margin-top:12px;">
+			
+							<p:tab title="Detalhes do Orçamento">
+							
+								<p:panelGrid columns="2" layout="grid" style="margin-top: 10px;"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-4, ui-grid-col-4">
+		
+									<p:outputLabel value="Orçamento N." />
+									<p:inputText value="#{registroOrcamentosBean.venda.numeroVenda}"
+										readonly="true" placeholder="Gerado automaticamente." />
+		
+									<p:outputLabel value="Data do Orçamento" for="data-venda" />
+									<p:datePicker value="#{registroOrcamentosBean.venda.dataVenda}" touchUI="true"
+										readonlyInput="true" id="data-venda" pattern="dd/MM/yyyy"
+										locale="pt" showIcon="true" />
+		
+									<p:outputLabel value="Bairro" for="bairro" />
+									<p:autoComplete id="bairro" forceSelection="true" dropdown="true" scrollHeight="210"
+										value="#{registroOrcamentosBean.venda.bairro}"
+										var="bairro" itemLabel="#{bairro.nome}" itemValue="#{bairro}" 
+										completeMethod="#{registroOrcamentosBean.completeText}" />
+		
+									<p:outputLabel value="Vendedor" for="vendedor" />
+									<p:selectOneMenu id="vendedor"
+										value="#{registroOrcamentosBean.venda.usuario}"
+										placeholder="selecione">
+		
+										<f:selectItem itemLabel="Selecione" />
+		
+										<f:selectItems value="#{registroOrcamentosBean.todosUsuarios}"
+											var="vendedor" itemLabel="#{vendedor.nome}"
+											itemValue="#{vendedor}" />
+									</p:selectOneMenu>
+								</p:panelGrid>
+		
+								<p:panelGrid columns="3" layout="grid" id="panel-entrega"
+									styleClass="panelgrid-noborder disabled disabled panel-entrega"
+									columnClasses="ui-grid-col-4, ui-grid-col-2, ui-grid-col-4">
+		
+									<p:outputLabel value="Venda para entrega?" for="entrega" />
+									<p:inputSwitch offLabel="Não" onLabel="Sim" id="entrega"
+										value="#{registroOrcamentosBean.entrega}">
+		
+										<p:ajax process="@this" update="@parent" />
+									</p:inputSwitch>
+		
+									<p:commandLink styleClass="btn-new entrega" id="localizacao"
+										update="entrega-dialog" value="Dados da entrega"
+										onstart="PF('downloadLoading').show();"
+										oncomplete="PF('downloadLoading').hide();PF('entrega-dialog').show()"
+										process="@this" disabled="#{not registroOrcamentosBean.entrega}" />
+								</p:panelGrid>
+		
+								<p:panelGrid columns="2" layout="grid" id="panel-ajuste" rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado()}"
+									styleClass="panelgrid-noborder disabled disabled panel-ajuste"
+									columnClasses="ui-grid-col-4, ui-grid-col-8">
+		
+									<p:outputLabel value="Ajuste de estoque" for="ajuste" style="display:none;" />
+									<p:selectBooleanCheckbox id="ajuste" style="margin-bottom: 9px;display:none;"
+										value="#{registroOrcamentosBean.venda.ajuste}" disabled="#{registroOrcamentosBean.venda.id != null}">
+										
+										<p:ajax process="@this" update="@parent" />
+									</p:selectBooleanCheckbox>	
+									
+									<p:outputLabel value="Deseja recuperar os valores de custo medio dos produtos desta venda?" rendered="false" />
+									<p:inputSwitch offLabel="Não" onLabel="Sim" id="recuperar" style="width:150px"
+										value="#{registroOrcamentosBean.venda.recuperarValores}" rendered="false"
+										disabled="#{registroOrcamentosBean.venda.id != null}"> 
+		
+										<p:ajax process="@this" update="@parent" />
+									</p:inputSwitch>
+									
+									<p:outputLabel rendered="false" />
+									<p:outputLabel value="Ok, então os valores de custo médio de cada produto dessa venda poderão ser somados aos valores totais de custo de suas próximas entradas."
+										rendered="false" />	
+		
+								</p:panelGrid>
+		
+								<p:panelGrid columns="2" layout="grid" style="margin-bottom: 5px"
+									styleClass="panelgrid-noborder disabled disabled"
+									rendered="false" columnClasses="ui-grid-col-4, ui-grid-col-4">
+		
+									<p:outputLabel value="Quantidade de itens" for="itens" />
+									<p:inputNumber id="itens" decimalPlaces="0" readonly="true"
+										placeholder="0"
+										value="#{registroOrcamentosBean.venda.quantidadeItens}" />
+		
+									<p:outputLabel value="Valor total" for="total" />
+									<p:inputNumber id="total" decimalPlaces="0" readonly="true"
+										placeholder="0" value="#{registroOrcamentosBean.venda.valorTotal}" />
+								</p:panelGrid>
+							</p:tab>
+						</p:accordionPanel>
+
+						
+						</p:panel>
+						
+						<p:panel id="itens-venda-panel">
+						
+						<p:defaultCommand target="btn-adicionar" scope="itens-venda-panel" />
+
+						<h3 style="font-weight: bold">Itens da venda</h3>
+
+						<p:commandButton styleClass="btn-new" icon="fa fa-fw fa-cubes"
+							title="Buscar produto" onstart="PF('downloadLoading').show();"
+							oncomplete="PF('downloadLoading').hide();PF('item-dialog').show()"
+							process="@this"
+							disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
+							style="position: relative; float: right; margin-top: -38px; margin-right: 8px; width: 40px" />
+
+						<p:inputText id="id" type="hidden"
+							value="#{registroOrcamentosBean.itemVenda.code}" required="true"
+							requiredMessage="Produto deve ser informado." />
+
+						<p:panelGrid columns="2" layout="grid" 
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-4, ui-grid-col-4">
+
+							<p:outputLabel value="Código" for="codigo" />
+							<p:inputText id="codigo"
+								value="#{registroOrcamentosBean.itemVenda.produto.codigo}"
+								readonly="true" />
+						</p:panelGrid>
+								
+						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 0px"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-4, ui-grid-col-6">
+
+							<p:outputLabel value="Descrição" for="descricao" />
+							<p:inputTextarea id="descricao"
+								value="#{registroOrcamentosBean.itemVenda.produto.descricao}"
+								readonly="true" />
+						</p:panelGrid>
+						
+						<p:panelGrid columns="2" layout="grid" style="margin-top:-4px"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-4, ui-grid-col-4">
+
+							<p:outputLabel value="Custo Médio Un." for="fornecedor" />
+							<p:inputNumber id="fornecedor" readonly="true" decimalPlaces="4" placeholder="R$ 0,0000" symbol="R$ "
+								value="#{registroOrcamentosBean.itemVenda.produto.custoMedioUnitario}">
+							</p:inputNumber>
+						</p:panelGrid>
+
+						<p:panelGrid id="panel-lote" columns="2" layout="grid"
+							style="margin-bottom: 0px"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-4, ui-grid-col-6">
+
+							<p:outputLabel value="Qtd. Disponível / Lote" for="lote" />
+							<p:selectOneMenu id="lote"
+								value="#{registroOrcamentosBean.itemCompra}" placeholder="selecione">
+
+								<f:selectItem itemLabel="Selecione" />
+
+								<p:ajax event="change" process="@this" />
+
+								<f:selectItems value="#{registroOrcamentosBean.itensCompra}"
+									var="itemCompra"
+									itemLabel="#{itemCompra.quantidadeDisponivel ge 2 ? ''.concat(itemCompra.quantidadeDisponivel_).concat(' Itens | Compra: ').concat(itemCompra.compra.dataCompraFormatada).concat(' | ').concat(itemCompra.valorUnitarioFormatado) : ''.concat(itemCompra.quantidadeDisponivel_).concat(' Item | Compra: ').concat(itemCompra.compra.dataCompraFormatada).concat(' | ').concat(itemCompra.valorUnitarioFormatado) }"
+									itemValue="#{itemCompra}" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+
+
+						<p:panelGrid id="panel-valores" columns="2" layout="grid" style="margin-bottom: 5px"
+							styleClass="panelgrid-noborder disabled disabled" 
+							columnClasses="ui-grid-col-4, ui-grid-col-4">
+
+							<p:outputLabel value="Valor Unitário" for="valor-unitario" />
+							<p:inputNumber id="valor-unitario" decimalPlaces="2" placeholder="R$ 0,00" symbol="R$ "
+								onkeyup="ajaxDelay()" styleClass="valor-unitario"
+								value="#{registroOrcamentosBean.itemVenda.valorUnitario}">
+								
+								<p:ajax event="keydown" process="@this" update="btn-adicionar"></p:ajax>
+							</p:inputNumber>
+
+							
+							
+							
+							
+							<p:outputLabel value="Quantidade (Un)" for="quantidade" rendered="#{registroOrcamentosBean.itemVenda.produto == null}" />
+							<p:outputLabel value="Quantidade (#{registroOrcamentosBean.itemVenda.produto.unidadeMedida})" for="quantidade" rendered="#{registroOrcamentosBean.itemVenda.produto != null}" />
+							
+							<p:inputNumber id="quantidade" decimalPlaces="0" placeholder="0"
+								styleClass="quantidade" onkeyup="ajaxDelayQtd()"
+								value="#{registroOrcamentosBean.itemVenda.quantidade}"
+								rendered="#{registroOrcamentosBean.itemVenda.produto.unidadeMedida == 'Un' or registroOrcamentosBean.itemVenda.produto.unidadeMedida == 'Cx' or registroOrcamentosBean.itemVenda.produto == null}">
+
+								<p:ajax event="keydown" update="btn-adicionar"></p:ajax>
+							</p:inputNumber>
+							
+							<p:inputNumber id="quantidade_" decimalPlaces="3" placeholder="0,000"
+								styleClass="quantidade_" onkeyup="ajaxDelayQtd_()"
+								value="#{registroOrcamentosBean.itemVenda.quantidade}"
+								rendered="#{registroOrcamentosBean.itemVenda.produto.unidadeMedida == 'Kg' or registroOrcamentosBean.itemVenda.produto.unidadeMedida == 'Lt'}">
+
+								<p:ajax event="keydown" update="btn-adicionar"></p:ajax>
+							</p:inputNumber>
+							
+							<p:inputNumber id="quantidade__" decimalPlaces="1" placeholder="0,0"
+								styleClass="quantidade__" onkeyup="ajaxDelayQtd__()"
+								value="#{registroOrcamentosBean.itemVenda.quantidade}"
+								rendered="#{registroOrcamentosBean.itemVenda.produto.unidadeMedida == 'Pt'}">
+
+								<p:ajax event="keydown" update="btn-adicionar"></p:ajax>
+							</p:inputNumber>
+							
+							
+							
+
+							<p:outputLabel value="Sub-Total" for="valor-total" />
+							<p:inputNumber id="valor-total" decimalPlaces="2" disabled="true"
+								styleClass="sub-total" placeholder="R$ 0,00" symbol="R$ "
+								value="#{registroOrcamentosBean.itemVenda.total}" />
+							
+						</p:panelGrid>
+
+						<p:panelGrid columns="2" layout="grid"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-4, ui-grid-col-4">
+
+							<p:outputLabel />
+							<p:commandButton id="btn-adicionar" value="Adicionar"
+								onstart="PF('downloadLoading').show();"
+								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
+								onsuccess="PF('downloadLoading').hide();" icon="fa fa-plus"
+								update="msg panel-valores codigo descricao fornecedor total-venda id valor-unitario quantidade valor-total panel-table lote "
+								action="#{registroOrcamentosBean.adicionarItem}"
+								process="@this codigo valor-unitario quantidade valor-total id lote"
+								style="font-weight: bold;" />
+						</p:panelGrid>
+						
+						</p:panel>
+					</p:panel>
+
+
+					<p:panel class="card card-w-title ui-fluid itens-add"
+						id="panel-table" style="padding-bottom: 0px !important">
+
+						<h3 style="font-weight: bold">Itens adicionados</h3>
+
+						<p:panelGrid columns="1" layout="grid" 
+							styleClass="panelgrid-noborder disabled disabled grid-table"
+							columnClasses="ui-grid-col-12">
+
+
+
+							<p:dataTable id="itensTable" paginatorAlwaysVisible="false" 
+								scrollable="true" value="#{registroOrcamentosBean.itensVenda}"
+								var="item" emptyMessage="Nenhum item adicionado." reflow="true"
+								paginator="false" rowKey="#{item.code}"
+								selection="#{registroOrcamentosBean.itemSelecionado}"
+								selectionMode="single">
+
+								<p:column headerText="Cód." width="20%">
+									<h:outputText value="#{item.produto.codigo}" />
+								</p:column>
+
+								<p:column headerText="Desc." width="20%">
+									<h:outputText value="#{item.produto.descricao}" />
+								</p:column>
+
+								<p:column headerText="Val. Unit." width="20%">
+									<h:outputText value="#{item.valorUnitario}">
+										<f:convertNumber type="currency" />
+									</h:outputText>
+								</p:column>
+
+								<p:column headerText="Qtd." width="20%">
+									<h:outputText value="#{item.quantidade}" rendered="#{item.produto.unidadeMedida == 'Kg' or item.produto.unidadeMedida == 'Lt'}">
+										<f:convertNumber minFractionDigits="3" />
+									</h:outputText>
+									
+									<h:outputText value=" #{item.produto.unidadeMedida}" rendered="#{(item.produto.unidadeMedida == 'Kg' or item.produto.unidadeMedida == 'Lt')}">
+									</h:outputText>
+									
+									
+									<h:outputText value="#{item.quantidade}" rendered="#{item.produto.unidadeMedida == 'Pt'}">
+										<f:convertNumber minFractionDigits="1" />
+									</h:outputText>
+									
+									<h:outputText value=" #{item.produto.unidadeMedida}" rendered="#{item.produto.unidadeMedida == 'Pt'}">
+									</h:outputText>
+									
+									
+									<h:outputText value="#{item.quantidade}" rendered="#{(item.produto.unidadeMedida != 'Kg' and item.produto.unidadeMedida != 'Lt' and item.produto.unidadeMedida != 'Pt')}">
+										<f:convertNumber minFractionDigits="0" />
+									</h:outputText>
+									
+									<h:outputText value=" #{item.produto.unidadeMedida}" rendered="#{(item.produto.unidadeMedida != 'Kg' and item.produto.unidadeMedida != 'Lt' and item.produto.unidadeMedida != 'Pt')}">
+									</h:outputText>
+								</p:column>
+								
+								
+								<p:column headerText="Sub-Total" width="20%">
+									<h:outputText value="#{item.total}">
+										<f:convertNumber type="currency" />
+									</h:outputText>
+								</p:column>
+								
+
+								<p:column headerText="Lucro" width="20%">
+									<h:outputText value="#{item.lucro}">
+										<f:convertNumber type="currency" />
+									</h:outputText>
+								</p:column>
+
+								<p:column headerText="Perc." width="20%">
+									<h:outputText value="#{item.percentualLucro}%">
+										<f:convertNumber pattern="#0.00" />
+									</h:outputText>
+
+								</p:column>
+							</p:dataTable>
+						</p:panelGrid>
+
+						<p:contextMenu id="menu-item" for="itensTable">
+							<p:menuitem value="Remover Item" id="btn-remove"
+								update="panel-table  form:id form:codigo form:descricao form:fornecedor form:lote form:total-venda"
+								process="@this panel-table"
+								action="#{registroOrcamentosBean.removeItem}" onstart="start();"
+								oncomplete="stop();" icon="fa fa-fw fa-trash"
+								disabled="#{registroOrcamentosBean.itensVendaSize eq 0}" />
+
+							<p:menuitem value="Editar Item" id="btn-editar"
+								update="panel-table form:id form:codigo form:total-venda form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote "
+								process="@this panel-table"
+								action="#{registroOrcamentosBean.editarItem}" onstart="start();"
+								oncomplete="stop();" icon="fa fa-fw fa-edit"
+								disabled="#{registroOrcamentosBean.itensVendaSize eq 0}" />
+						</p:contextMenu>
+
+						<p:panelGrid columns="2"
+							style="margin-top: 5px;float: right; margin-right: 10px;margin-bottom: 10px;"
+							styleClass="panelgrid-noborder disabled disabled">
+							<p:outputLabel value="Total: " />
+							<p:outputLabel id="total-venda"
+								value="#{registroOrcamentosBean.venda.valorTotal}"
+								style="margin-bottom:5px; font-weight:bold;margin-left:8px;color:#5b5656">
+
+								<f:convertNumber type="currency" />
+							</p:outputLabel>
+						</p:panelGrid>
+
+						<div
+							style="width: 80%; margin-left: 10%; margin-top: 18px; margin-bottom: 10px; border-top: 1px solid #ccc"></div>
+
+						<p:panelGrid columns="2" layout="grid"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-4, ui-grid-col-3">
+
+							<p:commandButton id="btn-calcular" value="Salvar Orçamento"
+								onstart="PF('downloadLoading').show();" icon="fa fa-save"
+								onsuccess="PF('downloadLoading').hide();"
+								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
+								update="msg accordion-panel panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote"
+								action="#{registroOrcamentosBean.salvar}"
+								process="@this panel-table accordion-panel"
+								style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;" />
+						</p:panelGrid>
+
+					</p:panel>
+
+				</p:panelGrid>
+			</h:form>
+
+		</div>
+
+		<p:dialog header="Buscar produto" widgetVar="item-dialog"
+			position="top" style="margin-top: 100px" id="item-dialog"
+			resizable="false" modal="true" closeOnEscape="true" responsive="true"
+			width="350px">
+
+			<h:form id="form-dialog">
+
+				<div class="ui-g-12 ui-lg-12">
+					<p:panel class="card card-w-title ui-fluid"
+						style="padding-bottom: 0px;">
+
+						<p:defaultCommand target="pesquisar-button" />
+
+						<p:inputText id="search"
+							value="#{registroOrcamentosBean.filter.descricao}"
+							placeholder="Digite o código ou descrição" style="width: 180px" />
+						<p:commandButton icon="fa fa-fw fa-search" title="Pesquisar"
+							id="pesquisar-button" update="produtosTable"
+							style="margin-left: 3px; width: 40px" process="@parent"
+							action="#{registroOrcamentosBean.pesquisar}"
+							onstart="PF('downloadLoading').show();"
+							oncomplete="PF('downloadLoading').hide();">
+						</p:commandButton>
+
+						<p:dataTable id="produtosTable" paginatorAlwaysVisible="false"
+							scrollable="true" scrollHeight="337"
+							value="#{registroOrcamentosBean.produtosFiltrados}" var="produto"
+							emptyMessage="Nenhum produto encontrado." paginator="false"
+							styleClass="produtosTable"
+							style="margin-top: 10px;border: 1px solid #147df0;">
+
+							<p:column headerText="Código" width="30%">
+								<h:outputText value="#{produto.codigo}" />
+							</p:column>
+
+							<p:column headerText="Descrição" width="60%">
+								<h:outputText value="#{produto.descricao}" />
+							</p:column>
+
+							<p:column width="20%" style="text-align: center">
+								<p:commandButton icon="fa fa-fw fa-check"
+									action="#{registroOrcamentosBean.selecionarProduto(produto)}"
+									title="Selecionar Produto" styleClass="btn-select"
+									update="form:panel-valores form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:quantidade_ form:quantidade__ form:valor-total form:lote "
+									process="@this" onstart="PF('downloadLoading').show();"
+									oncomplete="PF('downloadLoading').hide();PF('item-dialog').hide();">
+								</p:commandButton>
+							</p:column>
+
+						</p:dataTable>
+						
+						<div
+						style="width: 80%; margin: auto; border-top: 1px solid #ccc; margin-top: 10px; margin-bottom: 10px"></div>
+
+						<p:commandButton icon="fa fa-fw fa-close" styleClass="btn-close"
+							style="margin-bottom: 5px;font-weight: bold;width: 100px;background:#e15e5ef0;float: right;"
+							value="Fechar"
+							onstart="PF('downloadLoading').show();" 
+							oncomplete="PF('downloadLoading').hide();PF('item-dialog').hide();">
+						</p:commandButton>
+					</p:panel>
+				</div>
+
+			</h:form>
+		</p:dialog>
+
+		<p:dialog id="entrega-dialog" header="Dados da entrega" modal="true"
+			widgetVar="entrega-dialog" draggable="true" width="260"
+			closable="false" resizable="false" position="top"
+			style="margin-top: 100px">
+
+			<h:form id="form-entrega">
+
+				<p:panel class="card card-w-title ui-fluid"
+					style="padding-bottom: 0px; margin-top: 5px;">
+
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-12">
+
+						<p:outputLabel value="Entregar para:" />
+						<p:inputText id="nome"
+							value="#{registroOrcamentosBean.entregaVenda.nome}" placeholder="" />
+
+						<p:outputLabel value="Endereço para entrega" />
+						<p:inputTextarea id="localizacao-whatsapp"
+							value="#{registroOrcamentosBean.entregaVenda.localizacao}"
+							placeholder="" />
+
+						<p:outputLabel value="Observações gerais" />
+						<p:inputTextarea id="observacao"
+							value="#{registroOrcamentosBean.entregaVenda.observacao}"
+							placeholder="" />
+					</p:panelGrid>
+				</p:panel>
+
+				<p:panel styleClass="panelgrid-noborder disabled disabled">
+					<p:commandButton icon="fa fa-fw fa-check"
+						style="float: right;font-weight: bold;font-size: 13px;margin-top: -5px;margin-bottom:5px;background-color: #089a29c7;position: relative;margin-right: 10px;"
+						value="Confirmar" process="@this entrega-dialog form-entrega"
+						onstart="start();"
+						oncomplete="stop();PF('entrega-dialog').hide();">
+					</p:commandButton>
+
+					<p:commandButton icon="fa fa-fw fa-close"
+						style="float: right;font-weight: bold;font-size: 13px;margin-top: -5px;margin-bottom:5px;background-color: #ab3705b5;position: relative;margin-right: 3px;"
+						value="Cancelar" onstart="start();"
+						oncomplete="PF('entrega-dialog').hide();stop();">
+					</p:commandButton>
+				</p:panel>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog id="downloadLoading" showHeader="false" modal="true"
+			widgetVar="downloadLoading" header="Status" draggable="false"
+			closable="false" resizable="false">
+			<p:graphicImage name="images/loadingbar.gif"
+				library="manhattan-layout" width="50" />
+		</p:dialog>
+
+		<script type="text/javascript">
+			function start() {
+				PF('downloadLoading').show();
+			}
+
+			function stop() {
+				PF('downloadLoading').hide();
+			}
+			
+			var delay = (function() {
+			    var timer = 0;
+			    return function(callback, ms) {
+			        clearTimeout (timer);
+			        timer = setTimeout(callback, ms);
+			    };
+			})();
+			
+			
+			function ajaxDelayQtd(){
+				var quantidade = $('.quantidade input').val(); 
+				ajaxDelay(quantidade);
+			}
+			
+			function ajaxDelayQtd_(){
+				var quantidade = $('.quantidade_ input').val(); 
+				ajaxDelay(quantidade);
+			}
+			
+			function ajaxDelayQtd__(){
+				var quantidade = $('.quantidade__ input').val(); 
+				ajaxDelay(quantidade);
+			}
+			
+			
+			function ajaxDelay(quantidade_){ 
+				var valorUnitario = $('.valor-unitario input').val();
+				var quantidade = quantidade_; 
+				var subtotal = parseFloat(valorUnitario.replace('R$ ','').replace('.','').replace(',','.')) * parseFloat(quantidade);
+				
+				if(subtotal.toString() != 'NaN') { 
+					var f = parseFloat(subtotal).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+					$('.sub-total input').val(f);
+				}
+				    
+				delay(function() { 
+					//sendAjaxical(); 
+					}, 500);
+			}
+			
+			
+			
+		</script>
+
+	</ui:define>
+
+</ui:composition>
