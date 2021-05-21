@@ -93,7 +93,6 @@ public class RegistroOrcamentosBean implements Serializable {
 	@Inject
 	private ItemVenda itemVenda;
 
-	@NotNull
 	@Inject
 	private ItemCompra itemCompra;
 
@@ -615,19 +614,23 @@ public class RegistroOrcamentosBean implements Serializable {
 
 			boolean produtoNaLista = false;
 			for (ItemVenda itemVenda : itensVenda) {
-				if (itemCompraTemp.getCompra().getId().longValue() == itemVenda.getCompra().getId().longValue()) {
-					if (itemCompraTemp.getProduto().getId().longValue() == itemVenda.getProduto().getId().longValue()) {
+				
+				if(itemVenda.getCompra() != null) {
+					if (itemCompraTemp.getCompra().getId().longValue() == itemVenda.getCompra().getId().longValue()) {
+						if (itemCompraTemp.getProduto().getId().longValue() == itemVenda.getProduto().getId().longValue()) {
 
-						produtoNaLista = true;
-						if (itemVenda.getId() == null && venda.getId() == null) {
-							
-							itemCompraTemp.setQuantidadeDisponivel(new BigDecimal(
-									itemCompraTemp.getQuantidadeDisponivel().doubleValue() - itemVenda.getQuantidade().doubleValue()));
-					
+							produtoNaLista = true;
+							if (itemVenda.getId() == null && venda.getId() == null) {
+								
+								itemCompraTemp.setQuantidadeDisponivel(new BigDecimal(
+										itemCompraTemp.getQuantidadeDisponivel().doubleValue() - itemVenda.getQuantidade().doubleValue()));
+						
+							}
+
 						}
-
 					}
 				}
+				
 			}
 
 			if (produtoNaLista != false) {
@@ -660,8 +663,8 @@ public class RegistroOrcamentosBean implements Serializable {
 		}
 
 		if (itensCompra.size() == 0) {
-			PrimeFaces.current().executeScript(
-					"swal({ type: 'warning', title: 'Atenção!', text: 'Não existe quantidade disponível!' });");
+			//PrimeFaces.current().executeScript(
+					//"swal({ type: 'warning', title: 'Atenção!', text: 'Não existe quantidade disponível!' });");
 		} else {
 
 			nf = new DecimalFormat("###,##0.00", REAL);
@@ -680,7 +683,7 @@ public class RegistroOrcamentosBean implements Serializable {
 
 	public void adicionarItem() {
 
-		if(itemVenda.getQuantidade().doubleValue() > 0) {
+		//if(itemVenda.getQuantidade().doubleValue() > 0) {
 			
 			if(itemVenda.getValorUnitario().doubleValue() >= 0) {
 		
@@ -707,15 +710,15 @@ public class RegistroOrcamentosBean implements Serializable {
 		
 					//if (itemVenda.getQuantidade().doubleValue() <= quantidadeDisponivel.doubleValue()) {
 						
-							if (itemVenda.getValorUnitario().doubleValue() <= itemCompra.getValorUnitario().doubleValue()) {					
+							/*if (itemVenda.getValorUnitario().doubleValue() <= itemCompra.getValorUnitario().doubleValue()) {					
 								PrimeFaces.current().executeScript(
 										"swal({ type: 'warning', title: 'Atenção!', text: 'Produto adicionado com valor unitário menor ou igual ao valor de compra.' });");
-							}
+							}*/
 						
 							itemVenda.setTotal(BigDecimal.valueOf(
 									itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().longValue()));
 							itemVenda.setVenda(venda);
-							itemVenda.setCompra(itemCompra.getCompra());
+							//itemVenda.setCompra(itemCompra.getCompra());
 		
 							/* Calculo do Lucro em valor e percentual */
 							Double valorDeCustoUnitario = itemVenda.getProduto().getCustoMedioUnitario().doubleValue();	
@@ -839,10 +842,10 @@ public class RegistroOrcamentosBean implements Serializable {
 					.executeScript("swal({ type: 'error', title: 'Erro!', text: 'Valor unitário não pode ser menor que zero!' });");
 			}
 			
-		} else {
+		/*} else {
 			PrimeFaces.current()
 				.executeScript("swal({ type: 'error', title: 'Erro!', text: 'Quantidade não pode ser menor ou igual a zero!' });");
-		}
+		}*/
 	}
 
 	public void removeItem() {
