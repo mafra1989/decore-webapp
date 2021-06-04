@@ -7,17 +7,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "empresas")
-@SequenceGenerator(name="Empresa_Seq", sequenceName="empresas_sequence", allocationSize=1, initialValue = 2)
 public class Empresa implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -40,8 +37,7 @@ public class Empresa implements Serializable {
 	private byte[] logoRelatorio;
 
 	@Id
-	//@GeneratedValue
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="Empresa_Seq")
+	@GeneratedValue
 	public Long getId() {
 		return id;
 	}

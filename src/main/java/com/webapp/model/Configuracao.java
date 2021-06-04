@@ -7,11 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -20,13 +18,12 @@ import com.webapp.manhattan.view.GuestPreferences.LayoutMode;
 
 @Entity
 @Table(name = "configuracoes")
-@SequenceGenerator(name="Configuracao_Seq", sequenceName="configuracoes_sequence", allocationSize=1,initialValue = 2)
 public class Configuracao implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="Configuracao_Seq")
+	@GeneratedValue//(strategy=GenerationType.SEQUENCE, generator="Configuracao_Seq")
 	private Long id;
 	
 	@Type(type = "yes_no")

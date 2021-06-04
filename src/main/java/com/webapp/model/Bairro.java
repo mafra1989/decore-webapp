@@ -19,7 +19,6 @@ import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "bairros")
-@SequenceGenerator(name="Bairro_Seq", sequenceName="bairros_sequence", allocationSize=1,initialValue = 2)
 public class Bairro implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -34,8 +33,7 @@ public class Bairro implements Serializable {
 	private BigDecimal taxaDeEntrega = BigDecimal.ZERO;
 
 	@Id
-	//@GeneratedValue
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="Bairro_Seq")
+	@GeneratedValue
 	public Long getId() {
 		return id;
 	}

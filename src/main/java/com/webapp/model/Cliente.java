@@ -18,7 +18,6 @@ import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "clientes")
-@SequenceGenerator(name="Cliente_Seq", sequenceName="clientes_sequence", allocationSize=1,initialValue = 2)
 public class Cliente implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -32,8 +31,7 @@ public class Cliente implements Serializable {
 	
 
 	@Id
-	//@GeneratedValue
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="Cliente_Seq")
+	@GeneratedValue
 	public Long getId() {
 		return id;
 	}

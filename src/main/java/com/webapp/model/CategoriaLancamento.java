@@ -17,7 +17,6 @@ import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "categoria_lancamentos")
-@SequenceGenerator(name="CategoriaLancamento_Seq", sequenceName="categoria_lancamentos_sequence", allocationSize=1, initialValue = 37)
 public class CategoriaLancamento implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -34,8 +33,7 @@ public class CategoriaLancamento implements Serializable {
 	private Empresa empresa;
 	
 	@Id
-	//@GeneratedValue//(strategy = GenerationType.IDENTITY)
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="CategoriaLancamento_Seq")
+	@GeneratedValue//(strategy = GenerationType.IDENTITY)
 	public Long getId() {
 		return id;
 	}
