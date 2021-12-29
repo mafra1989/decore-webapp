@@ -955,8 +955,8 @@ public class DashboardBean implements Serializable {
 
 		ListaProduto listaProduto = new ListaProduto();
 		listaProduto.setCategoria(estoquePorCategoriaSelecionada.getItem());
-		listaProduto.setValorEmEstoque(nf.format(estoquePorCategoriaSelecionada.getValue()));
-		listaProduto.setTotalDeItens(String.valueOf(estoquePorCategoriaSelecionada.getQuantidade()));
+		listaProduto.setValorEmEstoque(this.nf.format(estoquePorCategoriaSelecionada.getValue()));
+		listaProduto.setTotalDeItens(nf.format(estoquePorCategoriaSelecionada.getQuantidade()));
 		
 		for (VendaPorCategoria produto : detalhesEstoquePorProduto) {
 			
