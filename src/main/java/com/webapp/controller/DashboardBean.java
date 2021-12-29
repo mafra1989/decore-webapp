@@ -515,7 +515,7 @@ public class DashboardBean implements Serializable {
 		double totalValorEstoque = 0;
 		double totalItensEstoque = 0;
 		
-		NumberFormat nf = new DecimalFormat("###,##0.000", REAL);
+		NumberFormat nf = new DecimalFormat("###,##0", REAL);
 		
 		List<Object[]> totalParaVendasPorCategoria = vendas.totalParaVendasPorCategoria(usuario.getEmpresa());
 		for (Object[] object : totalParaVendasPorCategoria) {
@@ -858,7 +858,7 @@ public class DashboardBean implements Serializable {
 		double totalValorVenda = 0;
 		double totalItensVenda = 0;
 		
-		NumberFormat nf = new DecimalFormat("###,##0.000", REAL);
+		NumberFormat nf = new DecimalFormat("###,##0", REAL);
 
 		List<Object[]> result = vendas.totalVendasPorCategoria(usuario.getEmpresa());
 		for (Object[] object : result) {
