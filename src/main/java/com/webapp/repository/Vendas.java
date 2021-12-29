@@ -540,7 +540,7 @@ public class Vendas implements Serializable {
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalParaVendasPorProduto(String categoriaProduto, Empresa empresa) {
 
-		String jpql = "SELECT i.produto.descricao, sum(i.quantidadeDisponivel * i.produto.precoDeVenda), SUM(i.quantidadeDisponivel), i.produto.codigo, i.produto.unidadeMedida from ItemCompra i where i.produto.estoque = 'Y' AND i.compra.empresa.id = :empresa AND i.quantidadeDisponivel > 0 AND i.produto.categoriaProduto.nome = :categoriaProduto group by i.produto.codigo, i.produto.descricao, i.produto.unidadeMedida order by sum(i.quantidadeDisponivel * i.valorUnitario * (1+(i.produto.margemLucro/100))) desc";
+		String jpql = "SELECT i.produto.descricao, sum(i.quantidadeDisponivel * i.produto.precoDeVenda), SUM(i.quantidadeDisponivel), i.produto.codigo, i.produto.unidadeMedida from ItemCompra i where i.produto.estoque = 'Y' AND i.compra.empresa.id = :empresa AND i.quantidadeDisponivel >= 0 AND i.produto.categoriaProduto.nome = :categoriaProduto group by i.produto.codigo, i.produto.descricao, i.produto.unidadeMedida order by sum(i.quantidadeDisponivel * i.valorUnitario * (1+(i.produto.margemLucro/100))) desc";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("categoriaProduto", categoriaProduto);
 		List<Object[]> result = q.getResultList();
 
