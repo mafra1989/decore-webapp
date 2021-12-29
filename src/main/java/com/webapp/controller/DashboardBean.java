@@ -950,6 +950,8 @@ public class DashboardBean implements Serializable {
 	}
 	
 	public void baixarLista() {
+		
+		NumberFormat nf = new DecimalFormat("###,##0", REAL);
 
 		ListaProduto listaProduto = new ListaProduto();
 		listaProduto.setCategoria(estoquePorCategoriaSelecionada.getItem());
@@ -961,8 +963,8 @@ public class DashboardBean implements Serializable {
 			Produto produtoTemp = new Produto();
 			produtoTemp.setCodigo(produto.getCodigo());
 			produtoTemp.setDescricao(produto.getItem());
-			produtoTemp.setValor(nf.format(produto.getValue()));
-			produtoTemp.setQuantidade(String.valueOf(produto.getQuantidade()));
+			produtoTemp.setValor(this.nf.format(produto.getValue()));
+			produtoTemp.setQuantidade(nf.format(produto.getQuantidade()));
 			
 			listaProduto.getListaDeItens().add(produtoTemp);
 		}
