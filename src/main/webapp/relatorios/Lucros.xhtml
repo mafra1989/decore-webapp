@@ -30,9 +30,9 @@
 							label : function(tooltipItem, data) {
 								var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
 
-								if(data.datasets.length > 2) {
+								if(data.datasets.length > 3) {
 									if (tooltipItem.datasetIndex == 0
-											|| tooltipItem.datasetIndex == 2) {
+											|| tooltipItem.datasetIndex == 2 || tooltipItem.datasetIndex == 3) {
 										var valor = "R$ " + numberToReal(amount);
 										if (valor.includes("-.")) {
 											valor = valor.replace("-.", "-");
@@ -43,7 +43,7 @@
 									}
 								} else {
 									if (tooltipItem.datasetIndex == 0
-											|| tooltipItem.datasetIndex == 1) {
+											|| tooltipItem.datasetIndex == 1 || tooltipItem.datasetIndex == 2) {
 										var valor = "R$ " + numberToReal(amount);
 										if (valor.includes("-.")) {
 											valor = valor.replace("-.", "-");
@@ -103,6 +103,12 @@
 
 		<style>
 @media ( min-width :220px) {
+	body .ui-chkbox.chk-despesas {
+	    float: left !important;
+	    margin-left: 5px !important;
+	    margin-top: 5px;
+	    font-size: 13px;
+    }
 	.ui-selectonemenu-panel .ui-selectonemenu-list-item {
 		/*border: 1px solid #e8e8e8;*/
 		white-space: normal;
@@ -204,6 +210,12 @@
 }
 
 @media ( min-width :460px) {
+	body .ui-chkbox.chk-despesas {
+	    float: left !important;
+	    margin-left: 5px !important;
+	    margin-top: -20px;
+	    font-size: 13px;
+    } 
 	body .ui-chkbox {
 	    float: left !important;
 	    margin-left: -6px !important;
@@ -697,6 +709,11 @@
 
 					<p:barChart model="#{relatorioLucrosBean.mixedModelPorMes}"
 						id="barChart-lucrosPorMes" styleClass="barChart-01" />
+						
+					<p:selectBooleanCheckbox value="#{relatorioLucrosBean.mostrarDespesas}" styleClass="chk-despesas" itemLabel="Mostrar despesas">
+						<p:ajax event="change" process="@this" update="barChart-lucrosPorMes"
+								listener="#{relatorioLucrosBean.createMixedModelPorMes}"/>
+					</p:selectBooleanCheckbox>
 
 					<p:panelGrid columns="1" layout="grid" style="text-align: center;"
 						styleClass="panelgrid-noborder disabled disabled target msg-mes"

@@ -181,7 +181,9 @@ public class RelatorioLucrosBean implements Serializable {
 	@Inject
 	private Usuario usuario;
 	
-	private boolean incluirDespesas =  false;
+	private boolean incluirDespesas = false;
+	
+	private boolean mostrarDespesas = false;
 
 
 	@PostConstruct
@@ -1025,6 +1027,9 @@ public class RelatorioLucrosBean implements Serializable {
 
 		LineChartDataSet dataSet3 = new LineChartDataSet();
 		List<Object> values3 = new ArrayList<>();
+		
+		BarChartDataSet dataSet4 = new BarChartDataSet();
+		List<Number> values4 = new ArrayList<>();
 
 		List<String> labels = new ArrayList<>();
 		
@@ -1044,6 +1049,9 @@ public class RelatorioLucrosBean implements Serializable {
 
 			Double totalDeReceitas = 0D;
 			Double totalDeDespesas = 0D;
+			
+			Number totalDeDebitos = 0;
+			totalDeDebitos = totalDeDebitos(object);
 
 			/*
 			 * Double totalDeCompras = compras
@@ -1066,22 +1074,6 @@ public class RelatorioLucrosBean implements Serializable {
 				Number totalVendasPagas = vendas.totalVendasPorMes(Long.parseLong(object[0].toString()),
 						Long.parseLong(object[1].toString()), null, null, true, usuario.getEmpresa());
 				
-
-				/* Contas de Despesas e Compras Pagas */
-				totalDeDespesas = contas
-						.totalDespesasPorMes(Long.parseLong(object[0].toString()),
-								Long.parseLong(object[1].toString()), 
-								usuario.getEmpresa())
-						.doubleValue();
-				
-				/* Lançamentos de despesas pagas */
-				Number despesas = lancamentos.totalDespesasPorMes(Long.parseLong(object[0].toString()),
-						Long.parseLong(object[1].toString()), usuario.getEmpresa());
-				
-				/* Compras pagas */
-				Number totalComprasPagas = compras.totalComprasPorMes(Long.parseLong(object[0].toString()),
-						Long.parseLong(object[1].toString()), null, null, true, usuario.getEmpresa());
-				
 				String mes = "";
 				if (Long.parseLong(object[0].toString()) < 10) {
 					mes = "0" + object[0].toString();
@@ -1091,10 +1083,19 @@ public class RelatorioLucrosBean implements Serializable {
 				
 				Number totalDescontos = vendas.totalDescontosPorMes(object[1].toString(), mes,
 						mes, usuario.getEmpresa());
+								
+				/* Contas de Despesas e Compras Pagas */
+				totalDeDespesas = contas
+						.totalDespesasPorMes(Long.parseLong(object[0].toString()),
+								Long.parseLong(object[1].toString()), 
+								usuario.getEmpresa())
+						.doubleValue();
 				
-				
+				/* Compras pagas */
+				Number totalComprasPagas = compras.totalComprasPorMes(Long.parseLong(object[0].toString()),
+						Long.parseLong(object[1].toString()), null, null, true, usuario.getEmpresa());
 
-				values.add(((totalVendasPagas.doubleValue() + totalDeReceitas + receitas.doubleValue()) - (totalDescontos.doubleValue() + totalDeDespesas + totalComprasPagas.doubleValue() + despesas.doubleValue())));
+				values.add(((totalVendasPagas.doubleValue() + totalDeReceitas + receitas.doubleValue()) - (totalDescontos.doubleValue() + totalDeDebitos.doubleValue() + totalDeDespesas.doubleValue() + totalComprasPagas.doubleValue())));
 
 				/*
 				if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) == 0 && totalDeDespesas > 0) {
@@ -1162,10 +1163,15 @@ public class RelatorioLucrosBean implements Serializable {
 					labels.add(nameMes((Integer.parseInt(object[4].toString()))));
 				}
 			}
+			
+			if(true) {			
+				totalDeDebitos = totalDeDebitos(object);
+				values4.add(totalDeDebitos);
+			}
 
 			values3.add(targetMensal);
 		}
-
+		
 		dataSet.setData(values);
 		dataSet.setLabel("Valor Total");
 		dataSet.setYaxisID("left-y-axis");
@@ -1200,6 +1206,15 @@ public class RelatorioLucrosBean implements Serializable {
 			data.addChartDataSet(dataSet2);
 		}
 		data.addChartDataSet(dataSet);
+		
+		if(mostrarDespesas) {
+			dataSet4.setData(values4);
+			dataSet4.setLabel("Despesas");
+			dataSet4.setBorderColor("rgb(255, 73, 112)");
+			dataSet4.setBackgroundColor("rgba(255, 73, 112)");
+			
+			data.addChartDataSet(dataSet4);
+		}
 
 		data.setLabels(labels);
 
@@ -1232,6 +1247,17 @@ public class RelatorioLucrosBean implements Serializable {
 		mixedModelPorMes.setOptions(options);
 
 		mixedModelPorMes.setExtender("percentExtender2");
+	}
+
+	private Number totalDeDebitos(Object[] object) {
+		
+		/* Lançamentos de despesas pagas */
+		Number despesas = lancamentos.totalDespesasPorMes(Long.parseLong(object[0].toString()),
+				Long.parseLong(object[1].toString()), usuario.getEmpresa());
+		
+		Number totalDeDebitos = despesas.doubleValue();
+		
+		return totalDeDebitos;
 	}
 
 	public void createMixedModelPorAno() {
@@ -1922,5 +1948,13 @@ public class RelatorioLucrosBean implements Serializable {
 
 	public void setIncluirDespesas(boolean incluirDespesas) {
 		this.incluirDespesas = incluirDespesas;
+	}
+
+	public boolean isMostrarDespesas() {
+		return mostrarDespesas;
+	}
+
+	public void setMostrarDespesas(boolean mostrarDespesas) {
+		this.mostrarDespesas = mostrarDespesas;
 	}
 }
