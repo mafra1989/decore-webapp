@@ -202,36 +202,12 @@ public class ConsultaComprasBean implements Serializable {
 
 		double totalComprasTemp = 0; //double valorTotal = 0; double valorTotalTemp = 0;
 		totalItens = 0;
+		
+		List<Compra> listaParaRemover = new ArrayList<>();
+		
 		for (Compra compra : comprasFiltradas) {
 			
 			if(!compra.isAjuste()) {
-				
-				if(produto != null) {					
-					ItemCompra itemCompra = itensCompras.porCompra(compra, produto);
-					if(itemCompra != null) {
-						comprasFiltradasPorProduto.add(compra);
-						totalComprasTemp += itemCompra.getTotal().doubleValue();
-						totalItens += itemCompra.getQuantidade().intValue();
-					}
-					
-				} else if (categorias != null && categorias.length > 0) {
-									
-					List<ItemCompra> itens = itensCompras.porCategoria(compra, categorias);
-					for (ItemCompra itemCompra : itens) {
-						
-						if(!comprasFiltradasPorCategoria.contains(compra)) {
-							comprasFiltradasPorCategoria.add(compra);
-						}						
-						
-						totalComprasTemp += itemCompra.getTotal().doubleValue();
-						totalItens += itemCompra.getQuantidade().intValue();
-					}
-					
-				} else {
-					totalComprasTemp += compra.getValorTotal().doubleValue();
-					totalItens += compra.getQuantidadeItens().intValue();
-				}
-				
 				
 				if(compra.isConta()) {
 					compra.setCompraPaga(true);
@@ -242,7 +218,44 @@ public class ConsultaComprasBean implements Serializable {
 						}
 					}
 				}
-			}
+				
+				boolean continuar = true;
+				if(comprasPagas && !compra.isCompraPaga()) {
+					listaParaRemover.add(compra);
+					continuar = false;
+				}
+				
+				if(continuar) {
+
+					if(produto != null) {					
+						ItemCompra itemCompra = itensCompras.porCompra(compra, produto);
+						if(itemCompra != null) {
+							comprasFiltradasPorProduto.add(compra);
+							totalComprasTemp += itemCompra.getTotal().doubleValue();
+							totalItens += itemCompra.getQuantidade().intValue();
+						}
+						
+					} else if (categorias != null && categorias.length > 0) {
+										
+						List<ItemCompra> itens = itensCompras.porCategoria(compra, categorias);
+						for (ItemCompra itemCompra : itens) {
+							
+							if(!comprasFiltradasPorCategoria.contains(compra)) {
+								comprasFiltradasPorCategoria.add(compra);
+							}						
+							
+							totalComprasTemp += itemCompra.getTotal().doubleValue();
+							totalItens += itemCompra.getQuantidade().intValue();
+						}
+						
+					} else {
+						totalComprasTemp += compra.getValorTotal().doubleValue();
+						totalItens += compra.getQuantidadeItens().intValue();
+					}
+				}
+				
+			}			
+
 		/*	
 			if(compra.getNumeroCompra().intValue() == 12 && compra.getId() == 28592) {
 				compra.setNumeroCompra(7L);
@@ -300,6 +313,10 @@ public class ConsultaComprasBean implements Serializable {
 		}
 
 		totalCompras = nf.format(totalComprasTemp);
+		
+		for (Compra compra : listaParaRemover) {
+			comprasFiltradas.remove(compra);
+		}
 	}
 
 	public void excluir() {
