@@ -718,7 +718,7 @@ public class RegistroVendasBean implements Serializable {
 							itemVenda.setCompra(itemCompra.getCompra());
 		
 							/* Calculo do Lucro em valor e percentual */
-							Double valorDeCustoUnitario = itemVenda.getProduto().getCustoMedioUnitario().doubleValue();	
+							Double valorDeCustoUnitario = itemCompra.getValorUnitario().doubleValue(); //itemVenda.getProduto().getCustoMedioUnitario().doubleValue();	
 							
 							/*itemVenda.setLucro(BigDecimal.valueOf((itemVenda.getQuantidade().doubleValue()
 									* itemVenda.getValorUnitario().doubleValue())
