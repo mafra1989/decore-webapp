@@ -30,7 +30,7 @@
 							label : function(tooltipItem, data) {
 								var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
 
-								if(data.datasets.length > 3) {
+								if(data.datasets.length > 2) {
 									if (tooltipItem.datasetIndex == 0
 											|| tooltipItem.datasetIndex == 2 || tooltipItem.datasetIndex == 3) {
 										var valor = "R$ " + numberToReal(amount);
