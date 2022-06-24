@@ -28,11 +28,11 @@
 						callbacks : {
 
 							label : function(tooltipItem, data) {
-								var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-
+								var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];								
 								if(data.datasets.length > 2) {
-									if (tooltipItem.datasetIndex == 0
-											|| tooltipItem.datasetIndex == 2 || tooltipItem.datasetIndex == 3) {
+									if (data.datasets[tooltipItem.datasetIndex].label === 'Target'
+											|| data.datasets[tooltipItem.datasetIndex].label === 'Valor Total'
+											|| data.datasets[tooltipItem.datasetIndex].label === 'Despesas') {
 										var valor = "R$ " + numberToReal(amount);
 										if (valor.includes("-.")) {
 											valor = valor.replace("-.", "-");
