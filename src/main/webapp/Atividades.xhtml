@@ -185,7 +185,12 @@
 		<h:form id="form" prependId="false">
 
 			<p:remoteCommand name="setarItemID" process="@this atividadesTable"
-				update="form" action="#{atividadesBean.excluir}"
+				update="form" action="#{atividadesBean.excluirPraSempre}"
+				onstart="PF('downloadLoading').show();"
+				oncomplete="PF('downloadLoading').hide();" />
+				
+			<p:remoteCommand name="desfazer" process="@this atividadesTable"
+				update="form" action="#{atividadesBean.desfazerExclusao}"
 				onstart="PF('downloadLoading').show();"
 				oncomplete="PF('downloadLoading').hide();" />
 
@@ -267,6 +272,27 @@
 					style="padding-bottom: 0px !important;margin-top:-10px">
 
 					<h3 style="font-weight: bold">Resultado da consulta</h3>
+					
+					<p:menuButton id="menu-btn" value="Opções"
+						style="width: 80px;float: right;margin-top: -40px;margin-right: 10px"
+						disabled="#{(atividadesBean.logsFiltradosSize eq 0) or atividadesBean.logSelecionado.id == null or not atividadesBean.habilitaOpcoes}">
+
+						<p:menuitem value="Visualizar" icon="fa fa-fw fa-eye"
+							id="btn-view" outcome="#{atividadesBean.venda.pdv ? '/PDV.xhtml' : '/operacoes/RegistroVendas.xhtml'}"
+							onclick="PF('downloadLoading').show();">
+							<f:param name="id"
+								value="#{atividadesBean.venda.id}" />
+						</p:menuitem>	
+						
+						<p:menuitem icon="fa fa-mail-reply-all" id="btn-trash"
+							value="Desfazer exclusão" process="@this" disabled="#{not seguranca.acessoAdministrador()}"
+							onclick="desfazerExclusao(#{atividadesBean.venda.id});" />
+							
+						<p:menuitem value="Excluir pra sempre" icon="fa fa-fw fa-trash"
+							process="@this" disabled="#{not seguranca.acessoAdministrador()}"
+							onclick="deleteItem(#{atividadesBean.venda.id});" />
+
+					</p:menuButton>
 
 					<p:panelGrid columns="1" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
@@ -279,6 +305,14 @@
 							reflow="true" paginator="false" rowKey="#{log.id}"
 							selection="#{atividadesBean.logSelecionado}"
 							selectionMode="single">
+							
+							<p:ajax process="@this" event="rowSelect" update="menu-btn"
+								onstart="PF('downloadLoading').show();"
+								listener="#{atividadesBean.prepararOpcoes}"
+								oncomplete="PF('downloadLoading').hide();" />
+							<p:ajax process="@this" event="rowUnselect" update="menu-btn"
+								onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();" />
 							
 							<p:column headerText="Data" width="20%">
 								<h:outputText value="#{log.dataLog}">

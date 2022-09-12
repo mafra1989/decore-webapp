@@ -28,6 +28,64 @@ PrimeFaces.locales['pt'] = {
 	allDayText : 'Todo o Dia'
 };
 
+function deleteItemTemporariamente(itemID) {
+	
+	const swalWithBootstrapButtons = swal.mixin({
+		  confirmButtonClass: 'btn btn-success',
+		  cancelButtonClass: 'btn btn-danger',
+		  buttonsStyling: false,
+		})
+
+		swalWithBootstrapButtons({
+		  title: 'Tem certeza?',
+		  text: "O registro será apagado temporariamente!",
+		  type: 'warning',
+		  showCancelButton: true,
+		  confirmButtonText: 'Sim, apague!',
+		  cancelButtonText: 'Não, cancele!',
+		  reverseButtons: true
+		}).then((result) => {
+		  if (result.value) {
+			  
+			  setarItemID([ {
+					name : 'itemID',
+					value : itemID
+				} ]);
+			  		 
+		  }
+		})
+		
+}
+
+function desfazerExclusao(itemID) {
+	
+	const swalWithBootstrapButtons = swal.mixin({
+		  confirmButtonClass: 'btn btn-success',
+		  cancelButtonClass: 'btn btn-danger',
+		  buttonsStyling: false,
+		})
+
+		swalWithBootstrapButtons({
+		  title: 'Tem certeza?',
+		  text: "A exclusão será desfeita !",
+		  type: 'warning',
+		  showCancelButton: true,
+		  confirmButtonText: 'Sim, desfaça!',
+		  cancelButtonText: 'Não, cancele!',
+		  reverseButtons: true
+		}).then((result) => {
+		  if (result.value) {
+			  
+			  desfazer([ {
+					name : 'itemID',
+					value : itemID
+				} ]);
+			  		 
+		  }
+		})
+		
+}
+
 function deleteItem(itemID) {
 	
 	const swalWithBootstrapButtons = swal.mixin({

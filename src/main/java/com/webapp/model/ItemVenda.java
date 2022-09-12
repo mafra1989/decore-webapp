@@ -90,6 +90,11 @@ public class ItemVenda implements Serializable {
 	private String composicao;
 	
 	
+	@Type(type = "yes_no")
+	@Column(nullable = true)
+	private boolean exclusao = false;
+	
+	
 
 	public Long getId() {
 		return id;
@@ -207,6 +212,14 @@ public class ItemVenda implements Serializable {
 
 	public void setComposicao(String composicao) {
 		this.composicao = composicao;
+	}
+
+	public boolean isExclusao() {
+		return exclusao;
+	}
+
+	public void setExclusao(boolean exclusao) {
+		this.exclusao = exclusao;
 	}
 
 	@Override

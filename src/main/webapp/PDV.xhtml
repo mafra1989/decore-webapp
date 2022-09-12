@@ -2635,7 +2635,7 @@ body .ui-datatable .ui-paginator {
 								onstart="PF('downloadLoading').show();" icon="fa fa-save"
 								onsuccess="PF('downloadLoading').hide();" action="#{pDVBean.salvarVendaMesa}"
 								styleClass="btn-cancelar" 
-								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado() and not seguranca.acessoVendedor() or pDVBean.mesa.codigo == null}"				
+								disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado() and not seguranca.acessoVendedor()) or pDVBean.mesa.codigo == null or pDVBean.venda.exclusao}"				
 								process="@this panel-table tabView:data-venda tabView:vendedor tabView:bairro tabView:entregador_ tabView:cliente tabView:tipo-venda tabView:panel-ajuste" 
 								update="@this msg cliente-dialog mesa-dialog mesa-dialog_ panel-itens confirm-dialog confirmDialog tabView:data-venda tabView:tipo-venda tabView:panel-entrega tabView:panel-ajuste tabView:vendedor tabView:bairro tabView:cliente panel-table tabView:id tabView:codigo tabView:descricao tabView:fornecedor tabView:valor-unitario tabView:quantidade tabView:valor-total tabView:lote" />
 
@@ -2646,12 +2646,12 @@ body .ui-datatable .ui-paginator {
 								onclick="selectTab2();"
 								onsuccess="PF('downloadLoading').hide();"
 								styleClass="btn-finalizar"
-								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado() and not seguranca.acessoVendedor()}"
+								disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado() and not seguranca.acessoVendedor()) or pDVBean.venda.exclusao}"
 								update="msg mesa-dialog mesa-dialog_ confirm-dialog confirmDialog tabView:data-venda tabView:tipo-venda tabView:panel-entrega tabView:panel-ajuste tabView:vendedor tabView:bairro tabView:cliente panel-table tabView:id tabView:codigo tabView:descricao tabView:fornecedor tabView:valor-unitario tabView:quantidade tabView:valor-total tabView:lote"
 								process="@this panel-table tabView:data-venda tabView:vendedor tabView:bairro tabView:entregador_ tabView:cliente tabView:tipo-venda tabView:panel-ajuste" />
 								
 							<p:commandLink id="nova-venda" process="@this" onstart="start();"
-								oncomplete="stop();"
+								oncomplete="stop();" 
 								action="#{pDVBean.novaVenda}" update="form cliente-dialog mesa-dialog mesa-dialog_" 
 								style="float:right !important;margin-top: 7px;
 							    margin-right: -18px; font-weight: bold;" value="Nova venda"

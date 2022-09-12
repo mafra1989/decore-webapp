@@ -16,6 +16,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Type;
+
 @Entity
 @Table(name = "itens_caixa")
 public class ItemCaixa implements Serializable {
@@ -55,6 +57,10 @@ public class ItemCaixa implements Serializable {
 	@ManyToOne
 	@JoinColumn
 	private Caixa caixa;
+	
+	@Type(type = "yes_no")
+	@Column(nullable = true)
+	private boolean exclusao = false;
 	
 
 	public Long getId() {
@@ -127,6 +133,14 @@ public class ItemCaixa implements Serializable {
 
 	public void setCaixa(Caixa caixa) {
 		this.caixa = caixa;
+	}
+
+	public boolean isExclusao() {
+		return exclusao;
+	}
+
+	public void setExclusao(boolean exclusao) {
+		this.exclusao = exclusao;
 	}
 
 	@Override

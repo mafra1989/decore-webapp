@@ -13,6 +13,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Type;
+
 
 @Entity
 @Table(name = "pagamentos")
@@ -38,6 +40,10 @@ public class Pagamento implements Serializable {
 	@Column(nullable = true)
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
 	private BigDecimal valor;
+	
+	@Type(type = "yes_no")
+	@Column(nullable = true)
+	private boolean exclusao = false;
 	
 	
 	public Long getId() {
@@ -70,6 +76,14 @@ public class Pagamento implements Serializable {
 
 	public void setValor(BigDecimal valor) {
 		this.valor = valor;
+	}
+
+	public boolean isExclusao() {
+		return exclusao;
+	}
+
+	public void setExclusao(boolean exclusao) {
+		this.exclusao = exclusao;
 	}
 
 	@Override

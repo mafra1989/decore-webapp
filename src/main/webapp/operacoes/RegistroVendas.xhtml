@@ -604,7 +604,7 @@
 							<p:commandButton id="btn-calcular" value="Salvar Venda"
 								onstart="PF('downloadLoading').show();" icon="fa fa-save"
 								onsuccess="PF('downloadLoading').hide();"
-								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
+								disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()) or registroVendasBean.venda.exclusao}"
 								update="msg accordion-panel panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote"
 								action="#{registroVendasBean.salvar}"
 								process="@this panel-table accordion-panel"

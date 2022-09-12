@@ -213,6 +213,11 @@ public class Venda implements Serializable {
 	private boolean clientePagouTaxa;
 	
 	
+	@Type(type = "yes_no")
+	@Column(nullable = true)
+	private boolean exclusao = false;
+	
+	
 
 	public Long getId() {
 		return id;
@@ -540,6 +545,14 @@ public class Venda implements Serializable {
 
 	public void setClientePagouTaxa(boolean clientePagouTaxa) {
 		this.clientePagouTaxa = clientePagouTaxa;
+	}
+
+	public boolean isExclusao() {
+		return exclusao;
+	}
+
+	public void setExclusao(boolean exclusao) {
+		this.exclusao = exclusao;
 	}
 
 	@Override

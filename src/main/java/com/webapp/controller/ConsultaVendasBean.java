@@ -499,7 +499,10 @@ public class ConsultaVendasBean implements Serializable {
 			
 			List<Conta> contasTemp = contas.porCodigoOperacao(vendaSelecionada.getNumeroVenda(), "VENDA", usuario_.getEmpresa());
 			for (Conta conta : contasTemp) {
-				contas.remove(conta);
+				conta.setExclusao(true);
+				contas.save(conta);
+				/* Comentado para exclusão temporaria */
+				//contas.remove(conta);
 			}
 			
 			/*
@@ -511,9 +514,10 @@ public class ConsultaVendasBean implements Serializable {
 			
 			List<ItemVenda> itensVenda = itensVendas.porVenda(vendaSelecionada);
 			for (ItemVenda itemVenda : itensVenda) {
-								
+					
 				Produto produto = itemVenda.getProduto();
 				
+				/* Comentado para exclusão temporaria	
 				if(produto.isEstoque()) {
 					
 					produto.setQuantidadeAtual(new BigDecimal(produto.getQuantidadeAtual().doubleValue() + itemVenda.getQuantidade().doubleValue()));
@@ -553,8 +557,9 @@ public class ConsultaVendasBean implements Serializable {
 						}
 					}
 				}
+				*/
 				
-			
+				/* Comentado para exclusão temporaria 
 				List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porItemVenda(itemVenda);
 				
 				for(ItemVendaCompra itemVendaCompra : itensVendaCompra) {
@@ -562,6 +567,17 @@ public class ConsultaVendasBean implements Serializable {
 				}
 
 				itensVendas.remove(itemVenda);	
+				*/
+			
+				List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porItemVenda(itemVenda);
+				
+				for(ItemVendaCompra itemVendaCompra : itensVendaCompra) {
+					itemVendaCompra.setExclusao(true);
+					itensVendasCompras.save(itemVendaCompra);
+				}
+	
+				itemVenda.setExclusao(true);
+				itensVendas.save(itemVenda);
 				
 				
 				
@@ -574,7 +590,9 @@ public class ConsultaVendasBean implements Serializable {
 							
 							//List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porItemVenda(itemVenda);
 							//for (ItemVendaCompra itemVendaCompra : itensVendaCompra) {
+							/* Comentado para exclusão temporaria	
 							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemVenda.getQuantidade().doubleValue() * produto.getCustoMedioUnitario().doubleValue())));					
+							*/
 							//}
 						}
 												
@@ -627,15 +645,21 @@ public class ConsultaVendasBean implements Serializable {
 
 						if(itensCaixa.size() > 0) {
 							
-							for (ItemCaixa itemVenda_ : itensCaixa) {
-								itensCaixas.remove(itemVenda_);
+							for (ItemCaixa itemCaixa : itensCaixa) {
+								itemCaixa.setExclusao(true);
+								itensCaixas.save(itemCaixa);
+								/* Comentado para exclusão temporaria	
+								itensCaixas.remove(itemCaixa); */
 							}
 							
 						}
 						
 						Pagamento pagamento = pagamentos.porVenda(vendaSelecionada, vendaSelecionada.getEmpresa());
 						if(pagamento != null) {
-							pagamentos.remove(pagamento);
+							pagamento.setExclusao(true);
+							pagamentos.save(pagamento);
+							/* Comentado para exclusão temporaria
+							pagamentos.remove(pagamento); */
 						}
 						
 						
@@ -646,8 +670,10 @@ public class ConsultaVendasBean implements Serializable {
 					if(vendaSelecionada.isAjuste()) {
 						
 						if(!vendaSelecionada.isRecuperarValores()) {
-							//ItemCompra itemCompra = itensCompras.porCompra(itemVenda.getCompra(), itemVenda.getProduto());						
+							//ItemCompra itemCompra = itensCompras.porCompra(itemVenda.getCompra(), itemVenda.getProduto());												
+							/* Comentado para exclusão temporaria
 							produto.setCustoTotal(new BigDecimal(produto.getCustoTotal().doubleValue() + (itemVenda.getQuantidade().doubleValue() * produto.getCustoMedioUnitario().doubleValue())));					
+							*/
 						}
 												
 					} else {					
@@ -721,7 +747,10 @@ public class ConsultaVendasBean implements Serializable {
 				}
 				*/
 				
-				itensDevolucoes.remove(itemDevolucao);
+				itemDevolucao.setExclusao(true);
+				itensDevolucoes.save(itemDevolucao);
+				/* Comentado para exclusão temporaria
+				itensDevolucoes.remove(itemDevolucao); */
 			}
 			
 			for (Devolucao devolucao : listaDeDevolucoes) {
@@ -733,10 +762,17 @@ public class ConsultaVendasBean implements Serializable {
 			entrega = entregas.porVenda(vendaSelecionada);
 			
 			if (entrega.getId() != null) {
-				entregas.remove(entrega);
+				
+				entrega.setExclusao(true);
+				entregas.save(entrega);
+				/* Comentado para exclusão temporaria
+				entregas.remove(entrega); */
 			}
 
-			vendas.remove(vendaSelecionada);
+			vendaSelecionada.setExclusao(true);
+			vendas.save(vendaSelecionada);
+			/* Comentado para exclusão temporaria
+			vendas.remove(vendaSelecionada); */
 			
 			Log log = new Log();
 			log.setDataLog(new Date());

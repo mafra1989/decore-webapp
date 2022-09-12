@@ -96,6 +96,11 @@ public class Conta implements Serializable {
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal taxaEntrega = BigDecimal.ZERO;
 	
+	
+	@Type(type = "yes_no")
+	@Column(nullable = true)
+	private boolean exclusao = false;
+	
 
 	public Long getId() {
 		return id;
@@ -255,6 +260,14 @@ public class Conta implements Serializable {
 
 	public void setTaxaEntrega(BigDecimal taxaEntrega) {
 		this.taxaEntrega = taxaEntrega.setScale(4, BigDecimal.ROUND_HALF_EVEN);
+	}
+
+	public boolean isExclusao() {
+		return exclusao;
+	}
+
+	public void setExclusao(boolean exclusao) {
+		this.exclusao = exclusao;
 	}
 
 	@Override

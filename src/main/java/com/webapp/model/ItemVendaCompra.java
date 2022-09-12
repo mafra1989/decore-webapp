@@ -13,6 +13,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Type;
+
 @Entity
 @Table(name = "itemvenda_compra")
 public class ItemVendaCompra implements Serializable {
@@ -36,6 +38,10 @@ public class ItemVendaCompra implements Serializable {
 	@ManyToOne
 	@JoinColumn
 	private Compra compra;
+	
+	@Type(type = "yes_no")
+	@Column(nullable = true)
+	private boolean exclusao = false;
 
 	public Long getId() {
 		return id;
@@ -75,6 +81,14 @@ public class ItemVendaCompra implements Serializable {
 
 	public void setCompra(Compra compra) {
 		this.compra = compra;
+	}
+
+	public boolean isExclusao() {
+		return exclusao;
+	}
+
+	public void setExclusao(boolean exclusao) {
+		this.exclusao = exclusao;
 	}
 
 	@Override

@@ -11,6 +11,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
@@ -29,6 +30,10 @@ public class Entrega implements Serializable {
 	private String status;
 
 	private Venda venda;
+	
+	@Type(type = "yes_no")
+	@Column(nullable = true)
+	private boolean exclusao = false;
 
 	@Id
 	@GeneratedValue
@@ -113,6 +118,14 @@ public class Entrega implements Serializable {
 
 	public void setVenda(Venda venda) {
 		this.venda = venda;
+	}
+
+	public boolean isExclusao() {
+		return exclusao;
+	}
+
+	public void setExclusao(boolean exclusao) {
+		this.exclusao = exclusao;
 	}
 
 }
