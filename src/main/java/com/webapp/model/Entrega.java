@@ -31,9 +31,7 @@ public class Entrega implements Serializable {
 
 	private Venda venda;
 	
-	@Type(type = "yes_no")
-	@Column(nullable = true)
-	private boolean exclusao = false;
+	private boolean exclusao;
 
 	@Id
 	@GeneratedValue
@@ -120,6 +118,8 @@ public class Entrega implements Serializable {
 		this.venda = venda;
 	}
 
+	@Type(type = "yes_no")
+	@Column(nullable = true)
 	public boolean isExclusao() {
 		return exclusao;
 	}
