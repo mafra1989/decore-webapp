@@ -4,8 +4,12 @@ import java.io.Serializable;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 
+import com.webapp.model.Bairro;
 import com.webapp.model.Configuracao;
+import com.webapp.model.Empresa;
+import com.webapp.model.Usuario;
 import com.webapp.util.jpa.Transacional;
 
 public class Configuracoes implements Serializable {
@@ -22,6 +26,21 @@ public class Configuracoes implements Serializable {
 	@Transacional
 	public Configuracao save(Configuracao configuracao) {
 		return this.manager.merge(configuracao);
+	}
+	
+	public Configuracao porUsuario(Usuario usuario) {
+		Configuracao configuracao = null;
+		
+		try {
+			configuracao = this.manager.createQuery("from Configuracao c where c.usuario.id = :id", Configuracao.class)
+					.setParameter("id", usuario.getId())
+					.getSingleResult();
+			
+		} catch (NoResultException e) {
+			System.out.println("nenhuma configuracao encontrada para o usuario");
+		}
+		
+		return configuracao;
 	}
 	
 }

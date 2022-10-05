@@ -346,10 +346,10 @@ public class PDVBean implements Serializable {
 			}
 			
 			todosUsuarios = usuarios.todosVendedores(usuario.getEmpresa());
-			todosTiposVendas = tiposVendas.todos();
-			todosBairros = bairros.todos();
-			todasFormasPagamentos = formasPagamentos.todos();
-			todosClientes = clientes.todos();
+			todosTiposVendas = tiposVendas.todos(usuario.getEmpresa());
+			todosBairros = bairros.todos(usuario.getEmpresa());
+			todasFormasPagamentos = formasPagamentos.todos(usuario.getEmpresa());
+			todosClientes = clientes.todos(usuario.getEmpresa());
 			
 			todosEntregadores = usuarios.todosEntregadores(usuario.getEmpresa());
 						
@@ -361,9 +361,9 @@ public class PDVBean implements Serializable {
 				venda.setBairro(bairros.porId(3008L));
 			} else {
 				venda.setTipoVenda(tiposVendas.porId(3L));
-				FormaPagamento formaPagamento = formasPagamentos.porId(1L);
+				FormaPagamento formaPagamento = formasPagamentos.porNome("Dinheiro", usuario.getEmpresa());
 				venda.setFormaPagamento(formaPagamento);
-				venda.setBairro(bairros.porId(1L));
+				venda.setBairro(bairros.porNome("Nao Informado", usuario.getEmpresa()));
 			}
 			
 					
@@ -384,7 +384,7 @@ public class PDVBean implements Serializable {
 				trocaPendente = true;
 			}			
 			
-			configuracao = configuracoes.porId(1L);
+			configuracao = configuracoes.porUsuario(usuario);
 			leitor = configuracao.isLeitorPDV();
 			imprimirCupom = configuracao.isCupomAtivado();
 			
@@ -419,7 +419,7 @@ public class PDVBean implements Serializable {
 				if(configuracao.isPopupCliente()) {
 					PrimeFaces.current().executeScript("PF('cliente-dialog').show();");
 				} else {
-					venda.setCliente(clientes.porId(1L));
+					venda.setCliente(clientes.porNome("Nao Informado", usuario.getEmpresa()));
 				}
 			}
 			
@@ -645,7 +645,7 @@ public class PDVBean implements Serializable {
 					taxaDeEntrega = (venda.getCliente().getBairro() != null && entrega) ? venda.getTaxaDeEntrega() : BigDecimal.ZERO;			
 				}
 			} else {
-				venda.setCliente(clientes.porId(1L));
+				venda.setCliente(clientes.porNome("Nao Informado", usuario.getEmpresa()));
 			}
 			
 			subtotal += taxaDeEntrega.doubleValue();
@@ -710,7 +710,7 @@ public class PDVBean implements Serializable {
 	        
 		} else {
 			if(venda.getCliente() == null || venda.getCliente().getId() == null) {
-				venda.setCliente(clientes.porId(1L));
+				venda.setCliente(clientes.porNome("Nao Informado", usuario.getEmpresa()));
 			}
 			PrimeFaces.current().executeScript("swal({ type: 'error', title: 'Caixa Fechado!', text: 'Para usar o PDV, primeiro você deve abrir o caixa!'});");		
 		}
@@ -735,12 +735,12 @@ public class PDVBean implements Serializable {
 		
 		edit = false;
 		
-		venda.setTipoVenda(tiposVendas.porId(3L));
-		venda.setBairro(bairros.porId(1L));
+		venda.setTipoVenda(tiposVendas.porDescricao("Nao Informado", usuario.getEmpresa()));
+		venda.setBairro(bairros.porNome("Nao Informado", usuario.getEmpresa()));
 		venda.setCliente(null);
 		venda.setUsuario(usuario);
 		
-		FormaPagamento formaPagamento = formasPagamentos.porId(1L);
+		FormaPagamento formaPagamento = formasPagamentos.porNome("Dinheiro", usuario.getEmpresa());
 		venda.setFormaPagamento(formaPagamento);
 		
 		filter = new ProdutoFilter();
@@ -753,7 +753,7 @@ public class PDVBean implements Serializable {
 		if(configuracao.isPopupCliente()) {
 			PrimeFaces.current().executeScript("PF('cliente-dialog').show();");
 		} else {
-			venda.setCliente(clientes.porId(1L));
+			venda.setCliente(clientes.porNome("Nao Informado", usuario.getEmpresa()));
 		}
         
 		entrega = false;
@@ -787,7 +787,7 @@ public class PDVBean implements Serializable {
         BairroFilter filtro = new BairroFilter();
         filtro.setNome(query);
         
-        List<Bairro> listaDeBairros = bairros.filtrados(filtro);       
+        List<Bairro> listaDeBairros = bairros.filtrados(filtro, usuario.getEmpresa());       
         
         return listaDeBairros;
     }
@@ -2281,7 +2281,7 @@ public class PDVBean implements Serializable {
 			entrega = false;
 			
 			venda = vendaTemp_;
-			FormaPagamento formaPagamento = formasPagamentos.porNome("Dinheiro");
+			FormaPagamento formaPagamento = formasPagamentos.porNome("Dinheiro", usuario.getEmpresa());
 			venda.setFormaPagamento(formaPagamento);
 			
 			filter = new ProdutoFilter();
@@ -2296,7 +2296,7 @@ public class PDVBean implements Serializable {
 			if(configuracao.isPopupCliente()) {
 				PrimeFaces.current().executeScript("PF('cliente-dialog').show();");
 			} else {
-				venda.setCliente(clientes.porId(1L));
+				venda.setCliente(clientes.porNome("Nao Informado", usuario.getEmpresa()));
 			}
 
 		} else {
@@ -4312,7 +4312,7 @@ public class PDVBean implements Serializable {
 			
 		} else {
 			
-			venda.setFormaPagamento(formasPagamentos.porNome("Dinheiro"));
+			venda.setFormaPagamento(formasPagamentos.porNome("Dinheiro", usuario.getEmpresa()));
 			parcelasConfirmadas = false;			
 			//calculaAcrescimo();
 			confirmaCliente();
@@ -5002,7 +5002,7 @@ public class PDVBean implements Serializable {
 		pedido.setVendedor(venda.getUsuario().getNome().toUpperCase());
 		
 		pedido.setCliente(venda.getCliente().getNome());
-		if(venda.getCliente().getId() != 1L) {
+		if(!venda.getCliente().getNome().equals("Nao Informado")) {
 			pedido.setCpf(venda.getCliente().getDocumento());
 			pedido.setTelefone(venda.getCliente().getContato());
 			pedido.setEndereco(venda.getCliente().getEndereco());
@@ -5172,7 +5172,7 @@ public class PDVBean implements Serializable {
 		pedido.setDataVenda(sdf.format(venda.getDataVenda()));
 		pedido.setVendedor(venda.getUsuario().getNome().toUpperCase());
 		
-		if(venda.getCliente().getId() != 1L) {
+		if(!venda.getCliente().getNome().equals("Nao Informado")) {
 			pedido.setCliente(venda.getCliente().getNome());
 		} else {
 			pedido.setCliente("-");
@@ -5697,7 +5697,7 @@ public class PDVBean implements Serializable {
 		if(usuario.getEmpresa().getId() == 7111 || usuario.getEmpresa().getId() == 7112) {
 			cliente.setBairro(bairros.porId(3008L));
 		} else {
-			cliente.setBairro(bairros.porId(1L));
+			cliente.setBairro(bairros.porNome("Nao Informado", usuario.getEmpresa()));
 		}
 	}
     
@@ -5929,7 +5929,7 @@ public class PDVBean implements Serializable {
 		itemCaixa.setData(caixa.getDataAbertura());
 		itemCaixa.setDescricao("SALDO INICIAL");
 		itemCaixa.setValor(caixa.getSaldoInicial());
-		itemCaixa.setFormaPagamento(formasPagamentos.porNome("Dinheiro"));
+		itemCaixa.setFormaPagamento(formasPagamentos.porNome("Dinheiro", usuario.getEmpresa()));
 		itemCaixa.setTipoPagamento("Entrada");
 		
 		itemCaixa = itensCaixas.save(itemCaixa);

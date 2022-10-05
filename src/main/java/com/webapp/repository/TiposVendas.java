@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
+import com.webapp.model.Empresa;
 import com.webapp.model.TipoVenda;
 import com.webapp.repository.filter.TipoVendaFilter;
 import com.webapp.util.jpa.Transacional;
@@ -35,20 +36,24 @@ public class TiposVendas implements Serializable {
 		this.manager.remove(tipoVendaTemp);
 	}
 
-	public List<TipoVenda> todos() {
-		return this.manager.createQuery("from TipoVenda order by descricao", TipoVenda.class).getResultList();
-	}
-
-	public List<TipoVenda> filtrados(TipoVendaFilter filter) {
-		return this.manager.createQuery("from TipoVenda i where lower(i.descricao) like lower(:descricao) order by descricao", TipoVenda.class)
-				.setParameter("descricao", "%" + filter.getDescricao() + "%").getResultList();
+	public List<TipoVenda> todos(Empresa empresa) {
+		return this.manager.createQuery("from TipoVenda t where t.empresa.id = :id order by t.descricao", TipoVenda.class)
+				.setParameter("id", empresa.getId()).getResultList();
 	}
 	
-	public TipoVenda porDescricao(String descricao) {
+	public List<TipoVenda> filtrados(TipoVendaFilter filter, Empresa empresa) {
+		return this.manager.createQuery("from TipoVenda i where i.empresa.id = :id and lower(i.descricao) like lower(:descricao) order by descricao", TipoVenda.class)
+				.setParameter("descricao", "%" + filter.getDescricao() + "%")
+				.setParameter("id", empresa.getId()).getResultList();
+	}
+	
+	public TipoVenda porDescricao(String descricao, Empresa empresa) {
 		TipoVenda tipoVenda = null;
 		try {
-			tipoVenda = this.manager.createQuery("from TipoVenda i where lower(i.descricao) like lower(:descricao) order by descricao", TipoVenda.class)
-					.setParameter("descricao", "%" + descricao + "%").getSingleResult();
+			tipoVenda = this.manager.createQuery("from TipoVenda i where i.empresa.id = :id and lower(i.descricao) like lower(:descricao) order by descricao", TipoVenda.class)
+					.setParameter("descricao", "%" + descricao + "%")
+					.setParameter("id", empresa.getId())
+					.getSingleResult();
 			return tipoVenda;
 			
 		} catch (NoResultException e) {

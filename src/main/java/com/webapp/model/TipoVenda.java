@@ -6,7 +6,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -20,6 +23,8 @@ public class TipoVenda implements Serializable {
 	
 	@NotBlank
 	private String descricao;
+	
+	private Empresa empresa;
 	
 	@Id
 	@GeneratedValue//(strategy = GenerationType.IDENTITY)
@@ -38,6 +43,17 @@ public class TipoVenda implements Serializable {
 
 	public void setDescricao(String nome) {
 		this.descricao = nome;
+	}
+	
+	@NotNull
+	@ManyToOne
+	@JoinColumn
+	public Empresa getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
 	}
 
 	@Override

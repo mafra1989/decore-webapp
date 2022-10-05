@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
 import com.webapp.model.Bairro;
-import com.webapp.model.Usuario;
+import com.webapp.model.Empresa;
 import com.webapp.repository.filter.BairroFilter;
 import com.webapp.util.jpa.Transacional;
 
@@ -36,16 +36,19 @@ public class Bairros implements Serializable {
 		this.manager.remove(bairroTemp);
 	}
 	
-	public List<Bairro> todos() {
-		return this.manager.createQuery("from Bairro order by nome", Bairro.class).getResultList();
+	public List<Bairro> todos(Empresa empresa) {
+		return this.manager.createQuery("from Bairro b where b.empresa.id = :id order by nome", Bairro.class)
+				.setParameter("id", empresa.getId()).getResultList();
 	}
 	
-	public Bairro porNome(String nome) {
+	public Bairro porNome(String nome, Empresa empresa) {
 		Bairro bairro = null;
 		
 		try {
-			bairro = this.manager.createQuery("from Bairro i where i.nome = :nome", Bairro.class)
-					.setParameter("nome", nome).getSingleResult();
+			bairro = this.manager.createQuery("from Bairro i where i.empresa.id = :id and i.nome = :nome", Bairro.class)
+					.setParameter("nome", nome)
+					.setParameter("id", empresa.getId())
+					.getSingleResult();
 			
 		} catch (NoResultException e) {
 			System.out.println("nenhum bairro encontrado com o nome informado");
@@ -54,9 +57,10 @@ public class Bairros implements Serializable {
 		return bairro;
 	}
 	
-	public List<Bairro> filtrados(BairroFilter filter) {
-		return this.manager.createQuery("from Bairro i where upper(i.nome) like :nome order by nome", Bairro.class)
-				.setParameter("nome", "%" + filter.getNome().toUpperCase() + "%").getResultList();
+	public List<Bairro> filtrados(BairroFilter filter, Empresa empresa) {
+		return this.manager.createQuery("from Bairro i where i.empresa.id = :id and upper(i.nome) like :nome order by nome", Bairro.class)
+				.setParameter("nome", "%" + filter.getNome().toUpperCase() + "%")
+				.setParameter("id", empresa.getId()).getResultList();
 	}
 	
 }

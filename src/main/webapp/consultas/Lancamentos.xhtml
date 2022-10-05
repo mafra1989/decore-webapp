@@ -325,6 +325,7 @@
 
 						<p:menuitem value="Visualizar" icon="fa fa-fw fa-eye"
 							id="btn-view" outcome="/operacoes/RegistroLancamentos.xhtml"
+							rendered="#{not (consultaLancamentosBean.lancamentoSelecionado.categoriaLancamento.nome eq 'Retirada de lucro')}"
 							onclick="PF('downloadLoading').show();">
 							<f:param name="id"
 								value="#{consultaLancamentosBean.lancamentoSelecionado.id}" />

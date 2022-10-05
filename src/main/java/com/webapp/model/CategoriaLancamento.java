@@ -72,6 +72,7 @@ public class CategoriaLancamento implements Serializable {
 		this.destinoLancamento = destinoLancamento;
 	}
 
+	@NotNull
 	@ManyToOne
 	@JoinColumn
 	public Empresa getEmpresa() {

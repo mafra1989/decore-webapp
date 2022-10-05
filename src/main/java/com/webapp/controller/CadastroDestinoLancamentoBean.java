@@ -8,9 +8,13 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.DestinoLancamento;
+import com.webapp.model.Usuario;
 import com.webapp.repository.DestinosLancamentos;
+import com.webapp.repository.Usuarios;
 import com.webapp.repository.filter.DestinoLancamentoFilter;
 import com.webapp.util.jsf.FacesUtil;
 
@@ -31,9 +35,18 @@ public class CadastroDestinoLancamentoBean implements Serializable {
 	private DestinoLancamento destinoLancamentoSelecionado;
 
 	private DestinoLancamentoFilter filtro = new DestinoLancamentoFilter();
+	
+	@Inject
+	private Usuario usuario;
+	
+	@Inject
+	private Usuarios usuarios;
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();			
+			usuario = usuarios.porLogin(user.getUsername());
+			
 			listarTodos();
 		}
 	}
@@ -72,12 +85,12 @@ public class CadastroDestinoLancamentoBean implements Serializable {
 	}
 
 	public void pesquisar() {
-		todosDestinosLancamentos = destinosLancamentos.filtrados(filtro);
+		todosDestinosLancamentos = destinosLancamentos.filtrados(filtro, usuario.getEmpresa());
 		destinoLancamentoSelecionado = null;
 	}
 
 	private void listarTodos() {
-		todosDestinosLancamentos = destinosLancamentos.todos();
+		todosDestinosLancamentos = destinosLancamentos.todos(usuario.getEmpresa());
 	}
 
 	public List<DestinoLancamento> getTodosDestinosLancamentos() {

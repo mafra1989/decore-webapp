@@ -253,7 +253,7 @@ public class DashboardBean implements Serializable {
 			createMixedModelPorSemana();
 			
 			
-			CategoriaLancamento categoriaLancamento = categoriasLancamentos.porId(36L);
+			CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome("Retirada de lucro", usuario.getEmpresa());
 			
 			Number totalDeRetiradas = 0;
 			if(categoriaLancamento != null) {
@@ -1865,7 +1865,7 @@ public class DashboardBean implements Serializable {
 				
 				lancamento.setUsuario(usuario);
 				
-				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porId(36L);
+				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome("Retirada de lucro", usuario.getEmpresa());
 				lancamento.setCategoriaLancamento(categoriaLancamento);
 				
 				lancamento.setDescricao(categoriaLancamento.getNome());

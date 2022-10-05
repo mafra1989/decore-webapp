@@ -142,13 +142,13 @@ public class RegistroVendasBean implements Serializable {
 			usuario = usuarios.porLogin(user.getUsername());
 			
 			todosUsuarios = usuarios.todos(usuario.getEmpresa());
-			todosTiposVendas = tiposVendas.todos();
-			todosBairros = bairros.todos();
+			todosTiposVendas = tiposVendas.todos(usuario.getEmpresa());
+			todosBairros = bairros.todos(usuario.getEmpresa());
 			
 			venda.setUsuario(usuario);
 			venda.setStatusMesa("PAGO");
 			
-			Cliente cliente = clientes.porId(1L);
+			Cliente cliente = clientes.porNome("Nao Informado", usuario.getEmpresa());
 			venda.setCliente(cliente);
 			
 			if(usuario.getEmpresa().getId() == 7111 || usuario.getEmpresa().getId() == 7112) {
@@ -157,10 +157,10 @@ public class RegistroVendasBean implements Serializable {
 				venda.setFormaPagamento(formaPagamento);
 				venda.setBairro(bairros.porId(3008L));
 			} else {
-				venda.setTipoVenda(tiposVendas.porId(3L));
-				FormaPagamento formaPagamento = formasPagamentos.porId(1L);
+				venda.setTipoVenda(tiposVendas.porDescricao("Nao Informado", usuario.getEmpresa()));
+				FormaPagamento formaPagamento = formasPagamentos.porNome("Dinheiro", usuario.getEmpresa());
 				venda.setFormaPagamento(formaPagamento);
-				venda.setBairro(bairros.porId(1L));
+				venda.setBairro(bairros.porNome("Nao Informado", usuario.getEmpresa()));
 			}
 		}
 	}
@@ -176,7 +176,7 @@ public class RegistroVendasBean implements Serializable {
         BairroFilter filtro = new BairroFilter();
         filtro.setNome(query);
         
-        List<Bairro> listaDeBairros = bairros.filtrados(filtro);       
+        List<Bairro> listaDeBairros = bairros.filtrados(filtro, usuario.getEmpresa());       
         
         return listaDeBairros;
     }
@@ -234,7 +234,7 @@ public class RegistroVendasBean implements Serializable {
 			
 			venda.setTipoPagamento(TipoPagamento.AVISTA);
 
-			FormaPagamento formaPagamento = formasPagamentos.porNome("Dinheiro");
+			FormaPagamento formaPagamento = formasPagamentos.porNome("Dinheiro", usuario.getEmpresa());
 			venda.setFormaPagamento(formaPagamento);
 			
 			
@@ -536,7 +536,7 @@ public class RegistroVendasBean implements Serializable {
 				vendaTemp_.setBairro(venda.getBairro());
 				vendaTemp_.setUsuario(venda.getUsuario());	
 				vendaTemp_.setStatusMesa("PAGO");
-				Cliente cliente = clientes.porId(1L);
+				Cliente cliente = clientes.porNome("Nao Informado", usuario.getEmpresa());
 				vendaTemp_.setCliente(cliente);
 				
 				venda = new Venda();

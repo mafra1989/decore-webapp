@@ -172,29 +172,12 @@
 
 				<f:facet name="right">
 					<p:commandButton icon="fa fa-fw fa-trash" value="Excluir"
-						process="@this"
+						process="@this" rendered="false"
 						onclick="deleteItem(#{cadastroEmpresaBean.empresaSelecionada.id});"
 						disabled="#{cadastroEmpresaBean.empresaSelecionada == null or cadastroEmpresaBean.empresaSelecionada.id == 1}" />
-				</f:facet>
-			</p:toolbar>
-
-
-			<div class="ui-g-12 ui-lg-12">
-				<p:panel class="card card-w-title ui-fluid"
-					style="padding-bottom: 0px;">
-
-					<p:defaultCommand target="pesquisar-button" />
-
-					<p:inputText id="search" value="#{cadastroEmpresaBean.filtro.nome}"
-						placeholder="Buscar pelo nome" style="width: 180px" />
-					<p:commandButton icon="fa fa-fw fa-search" title="Pesquisar"
-						id="pesquisar-button" update="empresaTable toolbar logo"
-						style="margin-left: 3px; width: 40px" process="@parent"
-						action="#{cadastroEmpresaBean.pesquisar}">
-					</p:commandButton>
-					
+				
 					<p:menuButton id="logo" value="Adicione"
-						style="width: 100px;float: right;font-weight:bold;"
+						style="font-weight:bold;"
 						disabled="#{cadastroEmpresaBean.empresaSelecionada.id == null}">
 
 						<p:menuitem value="Logo ao Sistema" icon="fa fa-fw fa-desktop"
@@ -208,6 +191,24 @@
 						</p:menuitem>
 
 					</p:menuButton>
+				</f:facet>
+			</p:toolbar>
+
+
+			<div class="ui-g-12 ui-lg-12">
+				<p:panel class="card card-w-title ui-fluid"
+					style="padding-bottom: 0px;">
+
+					<p:defaultCommand target="pesquisar-button" />
+
+					<p:inputText id="search" value="#{cadastroEmpresaBean.filtro.nome}"
+						placeholder="Buscar pelo nome" style="width: 180px" rendered="false" />
+					<p:commandButton icon="fa fa-fw fa-search" title="Pesquisar"
+						id="pesquisar-button" update="empresaTable toolbar logo"
+						style="margin-left: 3px; width: 40px" process="@parent"
+						action="#{cadastroEmpresaBean.pesquisar}"
+						rendered="false">
+					</p:commandButton>				
 
 					<p:dataTable id="empresaTable" reflow="true"
 						paginatorAlwaysVisible="false"

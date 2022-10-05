@@ -85,7 +85,7 @@ public class CadastroCategoriaLancamentoBean implements Serializable {
 
 	public void salvar() {
 
-		//categoriaDespesa.setEmpresa(usuario.getEmpresa());
+		categoriaDespesa.setEmpresa(usuario.getEmpresa());
 		categoriaDespesa.setDestinoLancamento(null);
 		categoriasDespesas.save(categoriaDespesa);
 
@@ -119,9 +119,9 @@ public class CadastroCategoriaLancamentoBean implements Serializable {
 
 	private void listarTodos() {
 		todasCategoriasDespesas = categoriasDespesas.todos(usuario.getEmpresa());
-		todosDestinosLancamentos = destinosLancamentos.todos();
-		todosTiposLancamentos = tiposLancamentos.todos();
-		todasEmpresas = empresas.todos();
+		todosDestinosLancamentos = destinosLancamentos.todos(usuario.getEmpresa());
+		todosTiposLancamentos = tiposLancamentos.todos(usuario.getEmpresa());
+		todasEmpresas = empresas.todos(usuario.getEmpresa());
 	}
 
 	public List<CategoriaLancamento> getTodasCategoriasDespesas() {

@@ -8,9 +8,13 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.FormaPagamento;
+import com.webapp.model.Usuario;
 import com.webapp.repository.FormasPagamentos;
+import com.webapp.repository.Usuarios;
 import com.webapp.repository.filter.FormaPagamentoFilter;
 import com.webapp.util.jsf.FacesUtil;
 
@@ -31,9 +35,18 @@ public class CadastroFormaPagamentoBean implements Serializable {
 	private FormaPagamento formaPagamentoSelecionada;
 
 	private FormaPagamentoFilter filtro = new FormaPagamentoFilter();
+	
+	@Inject
+	private Usuario usuario;
+	
+	@Inject
+	private Usuarios usuarios;
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();			
+			usuario = usuarios.porLogin(user.getUsername());
+			
 			listarTodos();
 		}
 	}
@@ -50,6 +63,7 @@ public class CadastroFormaPagamentoBean implements Serializable {
 
 		if(formaPagamento.getAcrescimo().doubleValue() >= 0) {
 			
+			formaPagamento.setEmpresa(usuario.getEmpresa());
 			formasPagamentos.save(formaPagamento);
 
 			formaPagamentoSelecionada = null;
@@ -79,12 +93,12 @@ public class CadastroFormaPagamentoBean implements Serializable {
 	}
 
 	public void pesquisar() {
-		todasFormasPagamentos = formasPagamentos.filtrados(filtro);
+		todasFormasPagamentos = formasPagamentos.filtrados(filtro, usuario.getEmpresa());
 		formaPagamentoSelecionada = null;
 	}
 
 	private void listarTodos() {
-		todasFormasPagamentos = formasPagamentos.todos();
+		todasFormasPagamentos = formasPagamentos.todos(usuario.getEmpresa());
 	}
 
 	public List<FormaPagamento> getTodasFormasPagamentos() {

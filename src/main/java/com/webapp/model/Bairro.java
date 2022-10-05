@@ -8,9 +8,9 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
@@ -26,6 +26,7 @@ public class Bairro implements Serializable {
 	private Long id;
 	private String nome;
 	private Zona zona;
+	private Empresa empresa;
 
 	@NotNull
 	@Column(nullable = false)
@@ -68,6 +69,16 @@ public class Bairro implements Serializable {
 
 	public void setTaxaDeEntrega(BigDecimal taxaDeEntrega) {
 		this.taxaDeEntrega = taxaDeEntrega.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+	}
+	
+	@ManyToOne
+	@JoinColumn
+	public Empresa getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
 	}
 
 	@Override

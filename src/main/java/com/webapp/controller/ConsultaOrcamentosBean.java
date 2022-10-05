@@ -175,7 +175,7 @@ public class ConsultaOrcamentosBean implements Serializable {
 			
 			todosUsuarios = usuarios.todos(usuario_.getEmpresa());
 			
-			todosClientes = clientes.todos();
+			todosClientes = clientes.todos(usuario_.getEmpresa());
 			
 			todosEntregadores = usuarios.todosEntregadores(usuario_.getEmpresa());
 			

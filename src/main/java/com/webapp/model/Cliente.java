@@ -5,11 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -28,6 +26,7 @@ public class Cliente implements Serializable {
 	private String documento;
 	private String endereco;
 	private Bairro bairro;
+	private Empresa empresa;
 	
 
 	@Id
@@ -87,6 +86,17 @@ public class Cliente implements Serializable {
 
 	public void setBairro(Bairro bairro) {
 		this.bairro = bairro;
+	}
+	
+	@NotNull
+	@ManyToOne
+	@JoinColumn
+	public Empresa getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
 	}
 
 	@Override

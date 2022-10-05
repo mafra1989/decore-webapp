@@ -198,7 +198,7 @@
 							label : function(tooltipItem, data) {
 								var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
 
-								return numberToReal(amount);
+								return "R$ " + numberToReal(amount);
 							}
 						}
 					},
@@ -222,7 +222,7 @@
 							label : function(tooltipItem, data) {
 								var amount = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
 
-								return numberToReal(amount);
+								return "R$ " + numberToReal(amount);
 							}
 						}
 					},

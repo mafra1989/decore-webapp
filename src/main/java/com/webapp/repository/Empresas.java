@@ -35,8 +35,9 @@ public class Empresas implements Serializable {
 		return this.manager.find(Empresa.class, id);
 	}
 	
-	public List<Empresa> todos() {
-		return this.manager.createQuery("from Empresa order by nome", Empresa.class).getResultList();
+	public List<Empresa> todos(Empresa empresa) {
+		return this.manager.createQuery("from Empresa where id = :id order by nome", Empresa.class)
+				.setParameter("id", empresa.getId()).getResultList();
 	}
 	
 	public Empresa porNome(String nome) {

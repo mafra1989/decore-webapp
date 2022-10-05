@@ -6,6 +6,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
+import com.webapp.model.Empresa;
 import com.webapp.model.Grupo;
 import com.webapp.util.jpa.Transacional;
 
@@ -25,8 +26,17 @@ public class Grupos implements Serializable {
 		return this.manager.merge(usuario);
 	}
 
-	public List<Grupo> todos() {
-		return this.manager.createQuery("from Grupo order by nome", Grupo.class).getResultList();
+	public List<Grupo> todos(Empresa empresa) {
+		return this.manager.createQuery("from Grupo g where g.empresa.id = :id order by g.nome", Grupo.class)
+				.setParameter("id", empresa.getId()).getResultList();
+	}
+	
+	@Transacional
+	public void saveUsuarioGrupo(String insert) {
+		//EntityTransaction et = manager.getTransaction();
+		//et.begin();
+		manager.createNativeQuery(insert).executeUpdate();
+		//et.commit();
 	}
 
 }

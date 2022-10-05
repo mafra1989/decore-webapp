@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
 import com.webapp.model.DestinoLancamento;
+import com.webapp.model.Empresa;
 import com.webapp.repository.filter.DestinoLancamentoFilter;
 import com.webapp.util.jpa.Transacional;
 
@@ -47,13 +48,15 @@ public class DestinosLancamentos implements Serializable {
 		}
 	}
 
-	public List<DestinoLancamento> todos() {
-		return this.manager.createQuery("from DestinoLancamento order by descricao", DestinoLancamento.class).getResultList();
+	public List<DestinoLancamento> todos(Empresa empresa) {
+		return this.manager.createQuery("from DestinoLancamento d where d.empresa.id = :empresa order by d.descricao", DestinoLancamento.class)
+				.setParameter("empresa", empresa.getId()).getResultList();
 	}
 
-	public List<DestinoLancamento> filtrados(DestinoLancamentoFilter filter) {
-		return this.manager.createQuery("from DestinoLancamento i where i.descricao like :descricao order by descricao", DestinoLancamento.class)
-				.setParameter("descricao", "%" + filter.getDescricao() + "%").getResultList();
+	public List<DestinoLancamento> filtrados(DestinoLancamentoFilter filter, Empresa empresa) {
+		return this.manager.createQuery("from DestinoLancamento i where i.empresa.id = :id and i.descricao like :descricao order by descricao", DestinoLancamento.class)
+				.setParameter("descricao", "%" + filter.getDescricao() + "%")
+				.setParameter("id", empresa.getId()).getResultList();
 	}
 	
 }

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:p="http://primefaces.org/ui">
+    
+    <h:head>
+        <f:facet name="first">
+			<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+			<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+			<meta name="viewport"
+				content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+			<meta name="apple-mobile-web-app-capable" content="yes" />
+		</f:facet>
+		
+        <title>Cadastro</title>
+
+		<h:outputScript target="body" library="manhattan-layout"
+		name="js/sweetalert2.min.js" />
+		
+		<h:outputStylesheet name="css/login/main.css" library="myapp" />
+        <h:outputStylesheet name="css/login/custom.css" library="myapp" />
+        
+        <h:outputStylesheet name="css/sweetalert2.min.css"
+			library="manhattan-layout" />
+        
+        <style>
+	        @media ( min-width :220px) {
+	        	.cadastre-se {
+	        		margin-top: 21px;
+				    float: right;
+				    position: absolute;
+				    right: 0;
+				    margin-right: 37px;
+				    font-weight: normal;
+	        	}
+	        	.swal2-popup {
+					width: 28em;
+					max-width: 100%;
+					padding: 0 0 0.4em 0;
+					font-size: 0.75rem;
+				}
+				.swal2-popup #swal2-content {
+					font-weight: 400;
+				}
+	        		        	
+	 		}       
+        	@media ( min-width :460px) {
+        		.cadastre-se {
+        			margin-right: 100px;
+        		}
+      			.wrap-login100 {
+				    width: 553px !important;
+				}
+        	}
+        </style>
+        
+    </h:head>
+    
+    <h:body>      	
+    	
+    	<div class="limiter">
+			<div class="container-login100"
+				style="background: #363738d1 !important;">
+				<div class="wrap-login100">
+				
+					<div class="login100-form-title">
+						<p:graphicImage library="myapp" name="images/login/myapp.jpg"
+							style="width: inherit;" />
+					</div>
+		
+					<p:panel id="progressPanel" widgetVar="progressPanel"
+						visible="false" 
+						style="border:none; background-color:transparent; border:none; padding-bottom:1px;width: 100%;float: right;position: absolute;"
+						closable="true" toggleable="true">
+						<p:progressBar style="height:4px;" mode="indeterminate"
+							animationDuration="3" interval="3" />
+					</p:panel>
+		
+					<h:form id="form"
+						styleClass="login100-form validate-form">
+		
+						<p:messages id="msgs" showSummary="false" closable="true" life="3000" showDetail="true"
+						style="font-family: verdana;width: 100%;padding-bottom: 5px;" styleClass="msg" />
+						
+						<div class="wrap-input100 validate-input m-b-26 input100"
+							data-validate="E-mail deve ser informado">
+							<span class="label-input100">E-mail</span>
+							<p:inputText value="#{cadastroBean.email}" label="E-mail:"
+								id="login" placeholder="Informe seu email"
+								style="font-family: verdana;" required="true"
+								styleClass="input100" autocomplete="off" />
+							<span class="focus-input100"></span>
+						</div>														
+						
+						<div class="container-login100-form-btn">
+							<p:commandButton value="Cadastrar" action="#{cadastroBean.cadastrar}" ajax="false"  
+								style="background: #1c82d3;border-radius: 30px;margin-top: 10px;font-family: sans-serif;font-weight: normal;font-size: 13px;"
+								widgetVar="btn-cadastro" styleClass="login100-form-btn btn-cadastro" 
+								onclick="PF('progressPanel').show();"
+								onsuccess="PF('progressPanel').close();" >
+								
+							</p:commandButton>	
+							
+							<p:link href="Login.xhtml" 
+								value="Fazer Login" styleClass="cadastre-se">
+							</p:link>					
+						</div>
+						
+					
+		
+					</h:form>
+		
+				</div>
+			</div>
+		</div>
+		
+		<h:outputScript target="body" library="myapp" name="js/login/main.js" />
+		
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$(".btn-cadastro").click(function(event){
+					  event.stopPropagation();
+					  //alert("The span element was clicked.");
+		
+					  		Swal.fire({
+							  position: 'center',
+							  type: 'info',
+							  title: 'Aguarde!',
+							  html : 'Estamos processando sua requisição . .',
+							  showConfirmButton: true,
+							  timer: 2500
+							})
+				});
+			});
+		</script>	
+	
+    </h:body>
+</html>

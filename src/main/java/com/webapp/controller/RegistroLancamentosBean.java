@@ -182,7 +182,7 @@ public class RegistroLancamentosBean implements Serializable {
 			todasCategoriasDespesas = categoriasLancamentos.todasDespesas(usuario_.getEmpresa());
 			todasCategoriasReceitas = categoriasLancamentos.todasReceitas(usuario_.getEmpresa());
 
-			todosDestinosLancamentos = destinosLancamentos.todos();
+			todosDestinosLancamentos = destinosLancamentos.todos(usuario_.getEmpresa());
 
 			Calendar calendar = Calendar.getInstance(BRAZIL);
 			despesa.setDataLancamento(calendar.getTime());
@@ -898,7 +898,7 @@ public class RegistroLancamentosBean implements Serializable {
 						if(usuario_.getEmpresa().getId() == 7111 || usuario_.getEmpresa().getId() == 7112) {
 							itemCaixa.setFormaPagamento(formasPagamentos.porId(13987L));
 						} else {
-							itemCaixa.setFormaPagamento(formasPagamentos.porId(1L));
+							itemCaixa.setFormaPagamento(formasPagamentos.porNome("Dinheiro", usuario_.getEmpresa())); 
 						}
 						
 						itemCaixa.setOperacao(TipoOperacao.LANCAMENTO);
@@ -983,7 +983,7 @@ public class RegistroLancamentosBean implements Serializable {
 							if(usuario_.getEmpresa().getId() == 7111 || usuario_.getEmpresa().getId() == 7112) {
 								itemCaixa.setFormaPagamento(formasPagamentos.porId(13987L));
 							} else {
-								itemCaixa.setFormaPagamento(formasPagamentos.porId(1L));
+								itemCaixa.setFormaPagamento(formasPagamentos.porNome("Dinheiro", usuario_.getEmpresa()));
 							}
 							
 							itemCaixa.setTipoPagamento(lancamento.getCategoriaLancamento().getTipoLancamento().getOrigem() == OrigemLancamento.CREDITO ? "Entrada" : "Saída");
@@ -1012,7 +1012,7 @@ public class RegistroLancamentosBean implements Serializable {
 						if(usuario_.getEmpresa().getId() == 7111 || usuario_.getEmpresa().getId() == 7112) {
 							itemCaixa.setFormaPagamento(formasPagamentos.porId(13987L));
 						} else {
-							itemCaixa.setFormaPagamento(formasPagamentos.porId(1L));
+							itemCaixa.setFormaPagamento(formasPagamentos.porNome("Dinheiro", usuario_.getEmpresa()));
 						}
 						
 						

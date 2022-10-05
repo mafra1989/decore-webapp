@@ -47,8 +47,8 @@ public class Usuarios implements Serializable {
 	}
 	
 	public List<Usuario> todos_(Empresa empresa) {//WHERE u.empresa.id = :empresa
-		return this.manager.createQuery("from Usuario u order by u.nome", Usuario.class)
-				/*.setParameter("empresa", empresa.getId())*/.getResultList();
+		return this.manager.createQuery("from Usuario u WHERE u.empresa.id = :empresa order by u.nome", Usuario.class)
+				.setParameter("empresa", empresa.getId()).getResultList();
 	}
 	
 	public List<Usuario> todosEntregadores(Empresa empresa) {//WHERE u.empresa.id = :empresa

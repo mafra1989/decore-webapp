@@ -109,7 +109,7 @@ public class CadastroEmpresaBean implements Serializable {
 	}
 
 	private void listarTodos() {
-		todasEmpresas = empresas.todos();
+		todasEmpresas = empresas.todos(usuario.getEmpresa());
 	}
 
 	public List<Empresa> getTodasEmpresas() {

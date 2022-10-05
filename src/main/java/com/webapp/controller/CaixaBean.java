@@ -133,7 +133,7 @@ public class CaixaBean implements Serializable {
 				caixa = new Caixa();
 			}
 			
-			todasFormasPagamentos = formasPagamentos.todos();
+			todasFormasPagamentos = formasPagamentos.todos(usuario.getEmpresa());
 			
 		}
 	}
@@ -216,7 +216,7 @@ public class CaixaBean implements Serializable {
 		itemCaixa.setData(caixa.getDataAbertura());
 		itemCaixa.setDescricao("SALDO INICIAL");
 		itemCaixa.setValor(caixa.getSaldoInicial());
-		itemCaixa.setFormaPagamento(formasPagamentos.porNome("Dinheiro"));
+		itemCaixa.setFormaPagamento(formasPagamentos.porNome("Dinheiro", usuario.getEmpresa()));
 		itemCaixa.setTipoPagamento("Entrada");
 		
 		itemCaixa = itensCaixas.save(itemCaixa);

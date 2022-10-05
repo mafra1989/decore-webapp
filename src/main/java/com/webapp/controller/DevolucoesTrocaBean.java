@@ -579,7 +579,7 @@ public class DevolucoesTrocaBean implements Serializable {
 				itemCaixa.setCodigoOperacao(devolucao.getId());
 				
 				itemCaixa.setTipoPagamento("Saída");
-				itemCaixa.setFormaPagamento(formasPagamentos.porNome("Dinheiro"));
+				itemCaixa.setFormaPagamento(formasPagamentos.porNome("Dinheiro", usuario_.getEmpresa()));
 				
 				Double saldo = 0D;
 				
@@ -643,7 +643,7 @@ public class DevolucoesTrocaBean implements Serializable {
 					itemCaixa.setCodigoOperacao(devolucao.getId());
 					
 					itemCaixa.setTipoPagamento("Saída");
-					itemCaixa.setFormaPagamento(formasPagamentos.porNome("Dinheiro"));
+					itemCaixa.setFormaPagamento(formasPagamentos.porNome("Dinheiro", usuario_.getEmpresa()));
 					
 					Double saldo = 0D;
 					

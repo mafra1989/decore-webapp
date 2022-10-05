@@ -190,7 +190,7 @@
 							<h:outputText value="#{categoriaDespesa.tipoLancamento.descricao}" />
 						</p:column>
 						
-						<p:column headerText="Empresa">
+						<p:column headerText="Empresa" visible="false">
 							<h:outputText value="#{categoriaDespesa.empresa.id != null ? categoriaDespesa.empresa.nome : 'Todas'}" />
 						</p:column>
 
@@ -239,8 +239,8 @@
 									itemValue="#{tipoLancamento}" />
 							</p:selectOneMenu>
 							
-							<p:outputLabel value="Empresa" for="empresa" />
-							<p:selectOneMenu id="empresa"
+							<p:outputLabel value="Empresa" for="empresa" rendered="false" />
+							<p:selectOneMenu id="empresa" rendered="false"
 								value="#{cadastroCategoriaLancamentoBean.categoriaDespesa.empresa}"
 								placeholder="selecione">
 

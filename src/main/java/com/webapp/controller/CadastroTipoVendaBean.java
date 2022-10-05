@@ -8,9 +8,13 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.TipoVenda;
+import com.webapp.model.Usuario;
 import com.webapp.repository.TiposVendas;
+import com.webapp.repository.Usuarios;
 import com.webapp.repository.filter.TipoVendaFilter;
 import com.webapp.util.jsf.FacesUtil;
 
@@ -31,9 +35,18 @@ public class CadastroTipoVendaBean implements Serializable {
 	private TipoVenda tipoVendaSelecionado;
 
 	private TipoVendaFilter filtro = new TipoVendaFilter();
+	
+	@Inject
+	private Usuario usuario;
+	
+	@Inject
+	private Usuarios usuarios;
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();			
+			usuario = usuarios.porLogin(user.getUsername());
+			
 			listarTodos();
 		}
 	}
@@ -48,6 +61,7 @@ public class CadastroTipoVendaBean implements Serializable {
 
 	public void salvar() {
 
+		tipoVenda.setEmpresa(usuario.getEmpresa());
 		tiposVendas.save(tipoVenda);
 
 		tipoVendaSelecionado = null;
@@ -72,12 +86,12 @@ public class CadastroTipoVendaBean implements Serializable {
 	}
 
 	public void pesquisar() {
-		todosTiposVendas = tiposVendas.filtrados(filtro);
+		todosTiposVendas = tiposVendas.filtrados(filtro, usuario.getEmpresa());
 		tipoVendaSelecionado = null;
 	}
 
 	private void listarTodos() {
-		todosTiposVendas = tiposVendas.todos();
+		todosTiposVendas = tiposVendas.todos(usuario.getEmpresa());
 	}
 
 	public List<TipoVenda> getTodosTiposVendas() {

@@ -8,10 +8,14 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.Bairro;
+import com.webapp.model.Usuario;
 import com.webapp.model.Zona;
 import com.webapp.repository.Bairros;
+import com.webapp.repository.Usuarios;
 import com.webapp.repository.filter.BairroFilter;
 import com.webapp.util.jsf.FacesUtil;
 
@@ -32,9 +36,18 @@ public class CadastroBairroBean implements Serializable {
 	private Bairro bairroSelecionado;
 
 	private BairroFilter filtro = new BairroFilter();
+	
+	@Inject
+	private Usuario usuario;
+	
+	@Inject
+	private Usuarios usuarios;
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();		
+			usuario = usuarios.porLogin(user.getUsername());
+			
 			listarTodos();
 		}
 	}
@@ -49,6 +62,7 @@ public class CadastroBairroBean implements Serializable {
 
 	public void salvar() {
 
+		bairro.setEmpresa(usuario.getEmpresa());
 		bairros.save(bairro);
 
 		bairroSelecionado = null;
@@ -73,12 +87,12 @@ public class CadastroBairroBean implements Serializable {
 	}
 
 	public void pesquisar() {
-		todosBairros = bairros.filtrados(filtro);
+		todosBairros = bairros.filtrados(filtro, usuario.getEmpresa());
 		bairroSelecionado = null;
 	}
 
 	private void listarTodos() {
-		todosBairros = bairros.todos();
+		todosBairros = bairros.todos(usuario.getEmpresa());
 	}
 
 	public List<Bairro> getTodosBairros() {

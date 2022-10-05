@@ -12,7 +12,7 @@ import com.webapp.model.TipoLancamento;
 import com.webapp.repository.filter.TipoLancamentoFilter;
 import com.webapp.util.jpa.Transacional;
 
-public class TiposDespesas implements Serializable {
+public class TiposLancamentos implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -37,16 +37,17 @@ public class TiposDespesas implements Serializable {
 	}
 
 	public List<TipoLancamento> todos(Empresa empresa) {
-		return this.manager.createQuery("from TipoLancamento t where t.empresa.id = :id and t.descricao != 'Lucros distribuidos' order by t.descricao", TipoLancamento.class)
+		return this.manager.createQuery("from TipoLancamento t where t.empresa.id = :id and t.id != 7 order by t.descricao", TipoLancamento.class)
 				.setParameter("id", empresa.getId()).getResultList();
 	}
-
-	public List<TipoLancamento> porOrigem(OrigemLancamento origem) {
-		return this.manager.createQuery("from TipoLancamento t where t.origem = :origem order by t.descricao", TipoLancamento.class).setParameter("origem", origem).getResultList();
+	
+	public List<TipoLancamento> porOrigem(OrigemLancamento origem, Empresa empresa) {
+		return this.manager.createQuery("from TipoLancamento t where t.empresa.id = :empresa and t.origem = :origem order by t.descricao", TipoLancamento.class)
+				.setParameter("empresa", empresa.getId()).setParameter("origem", origem).getResultList();
 	}
 
 	public List<TipoLancamento> filtrados(TipoLancamentoFilter filter, Empresa empresa) {
-		return this.manager.createQuery("from TipoLancamento i where i.empresa.id = :id and i.descricao != 'Lucros distribuidos' AND i.descricao like :descricao order by descricao", TipoLancamento.class)
+		return this.manager.createQuery("from TipoLancamento i where i.empresa.id = :id and i.id != 7 AND i.descricao like :descricao order by descricao", TipoLancamento.class)
 				.setParameter("id", empresa.getId()).setParameter("descricao", "%" + filter.getDescricao() + "%").getResultList();
 	}
 	

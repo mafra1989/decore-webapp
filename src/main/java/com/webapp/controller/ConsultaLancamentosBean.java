@@ -120,7 +120,7 @@ public class ConsultaLancamentosBean implements Serializable {
 			
 			todosUsuarios = usuarios.todos(usuario_.getEmpresa());
 			todasCategoriasDespesas = categoriasDespesas.todos(usuario_.getEmpresa());
-			todosDestinosLancamentos = destinosLancamentos.todos();
+			todosDestinosLancamentos = destinosLancamentos.todos(usuario_.getEmpresa());
 			
 			numeroLancamento = null;
 		}
@@ -139,7 +139,7 @@ public class ConsultaLancamentosBean implements Serializable {
 		boolean favorecido = false;
 		
 		for (String categoria : categorias) {
-			categoriaLancamento = categoriasDespesas.porNome(categoria, null);
+			categoriaLancamento = categoriasDespesas.porNome(categoria, usuario_.getEmpresa());
 			if(categoriaLancamento.getId() == 25835L || categoriaLancamento.getId() == 5423L ||
 					categoriaLancamento.getId() == 5424L || categoriaLancamento.getId() == 5425L ||
 							categoriaLancamento.getId() == 5426L || categoriaLancamento.getId() == 5427L) {
@@ -249,7 +249,7 @@ public class ConsultaLancamentosBean implements Serializable {
 		boolean favorecido = false;
 		
 		for (String categoria : categorias) {
-			categoriaLancamento = categoriasDespesas.porNome(categoria, null);
+			categoriaLancamento = categoriasDespesas.porNome(categoria, usuario_.getEmpresa());
 			if(categoriaLancamento.getId() == 25835L || categoriaLancamento.getId() == 5423L ||
 					categoriaLancamento.getId() == 5424L || categoriaLancamento.getId() == 5425L ||
 							categoriaLancamento.getId() == 5426L || categoriaLancamento.getId() == 5427L) {

@@ -158,7 +158,7 @@ public class RegistroComprasBean implements Serializable {
 			
 			compra.setUsuario(usuario);
 			
-			configuracao = configuracoes.porId(1L);
+			configuracao = configuracoes.porUsuario(usuario);
 			leitor = configuracao.isLeitorPDV();
 		}
 	}

@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
+import com.webapp.model.Empresa;
 import com.webapp.model.FormaPagamento;
 import com.webapp.repository.filter.FormaPagamentoFilter;
 import com.webapp.util.jpa.Transacional;
@@ -35,19 +36,22 @@ public class FormasPagamentos implements Serializable {
 		this.manager.remove(formaPagamentoTemp);
 	}
 
-	public List<FormaPagamento> todos() {
-		return this.manager.createQuery("from FormaPagamento order by nome", FormaPagamento.class).getResultList();
+	public List<FormaPagamento> todos(Empresa empresa) {
+		return this.manager.createQuery("from FormaPagamento f where f.empresa.id = :id order by f.nome", FormaPagamento.class)
+				.setParameter("id", empresa.getId()).getResultList();
 	}
 
-	public List<FormaPagamento> filtrados(FormaPagamentoFilter filter) {
-		return this.manager.createQuery("from FormaPagamento i where lower(i.nome) like lower(:nome) order by nome", FormaPagamento.class)
-				.setParameter("nome", "%" + filter.getNome() + "%").getResultList();
+	public List<FormaPagamento> filtrados(FormaPagamentoFilter filter, Empresa empresa) {
+		return this.manager.createQuery("from FormaPagamento i where i.empresa.id = :id and lower(i.nome) like lower(:nome) order by nome", FormaPagamento.class)
+				.setParameter("nome", "%" + filter.getNome() + "%")
+				.setParameter("id", empresa.getId()).getResultList();
 	}
 	
-	public FormaPagamento porNome(String nome) {
+	public FormaPagamento porNome(String nome, Empresa empresa) {
 		FormaPagamento formaPagamento = null;
 		try {
-			formaPagamento = this.manager.createQuery("from FormaPagamento i where lower(i.nome) like lower(:nome) order by nome", FormaPagamento.class)
+			formaPagamento = this.manager.createQuery("from FormaPagamento i where i.empresa.id = :id and lower(i.nome) like lower(:nome) order by nome", FormaPagamento.class)
+					.setParameter("id", empresa.getId())
 					.setParameter("nome", "%" + nome + "%").getSingleResult();
 			return formaPagamento;
 			

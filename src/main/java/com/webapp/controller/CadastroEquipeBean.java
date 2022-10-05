@@ -104,7 +104,7 @@ public class CadastroEquipeBean implements Serializable {
 			grupo = null;
 		}
 		
-		todosGrupos = grupos.todos();	
+		todosGrupos = grupos.todos(usuario_.getEmpresa());	
 	}
 
 	public void salvar() {
@@ -297,8 +297,8 @@ public class CadastroEquipeBean implements Serializable {
 
 	private void listarTodos() {
 		todosUsuarios = usuarios.todos_(usuario_.getEmpresa());
-		todosGrupos = grupos.todos();
-		todasEmpresas = empresas.todos();
+		todosGrupos = grupos.todos(usuario_.getEmpresa());
+		todasEmpresas = empresas.todos(usuario_.getEmpresa());
 	}
 
 	public List<Usuario> getTodosUsuarios() {

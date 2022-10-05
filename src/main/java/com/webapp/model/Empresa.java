@@ -1,6 +1,7 @@
 package com.webapp.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -10,7 +11,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
@@ -20,6 +23,9 @@ public class Empresa implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
+
+	private Date dataCadastro;
+
 	private String nome;
 	
 	private String cnpj;
@@ -35,6 +41,18 @@ public class Empresa implements Serializable {
 	private byte[] logo;
 	
 	private byte[] logoRelatorio;
+	
+	
+	private String chaveDeAcesso;
+	
+	private boolean ativo;
+
+	private Date dataRenovacao;
+
+	private Date dataVencimento;
+	
+	private String urlImagem;
+	
 
 	@Id
 	@GeneratedValue
@@ -44,6 +62,16 @@ public class Empresa implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+	
+	@NotNull
+	@Column
+	public Date getDataCadastro() {
+		return dataCadastro;
+	}
+
+	public void setDataCadastro(Date dataCadastro) {
+		this.dataCadastro = dataCadastro;
 	}
 
 	@NotBlank
@@ -139,6 +167,52 @@ public class Empresa implements Serializable {
 
 	public void setLogoRelatorio(byte[] logoRelatorio) {
 		this.logoRelatorio = logoRelatorio;
+	}
+	
+	@Column(length = 20)
+	public String getChaveDeAcesso() {
+		return chaveDeAcesso;
+	}
+
+	public void setChaveDeAcesso(String chaveDeAcesso) {
+		this.chaveDeAcesso = chaveDeAcesso;
+	}
+
+	@Type(type = "yes_no")
+	@Column
+	public boolean isAtivo() {
+		return ativo;
+	}
+
+	public void setAtivo(boolean ativo) {
+		this.ativo = ativo;
+	}
+
+	@Column
+	public Date getDataRenovacao() {
+		return dataRenovacao;
+	}
+
+	public void setDataRenovacao(Date dataRenovacao) {
+		this.dataRenovacao = dataRenovacao;
+	}
+
+	@Column
+	public Date getDataVencimento() {
+		return dataVencimento;
+	}
+
+	public void setDataVencimento(Date dataVencimento) {
+		this.dataVencimento = dataVencimento;
+	}
+
+	@Column
+	public String getUrlImagem() {
+		return urlImagem;
+	}
+
+	public void setUrlImagem(String urlImagem) {
+		this.urlImagem = urlImagem;
 	}
 
 	@Override

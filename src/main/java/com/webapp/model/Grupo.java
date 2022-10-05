@@ -6,7 +6,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "grupos")
@@ -17,6 +20,7 @@ public class Grupo implements Serializable {
 	private Long id;
 	private String nome;
 	private String descricao;
+	private Empresa empresa;
 
 	@Id
 	@GeneratedValue
@@ -43,6 +47,17 @@ public class Grupo implements Serializable {
 
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
+	}
+	
+	@NotNull
+	@ManyToOne
+	@JoinColumn
+	public Empresa getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
 	}
 
 	@Override

@@ -8,6 +8,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -28,6 +30,8 @@ public class TipoLancamento implements Serializable {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, length = 10)
 	private OrigemLancamento origem;
+	
+	private Empresa empresa;
 	
 	@Id
 	@GeneratedValue//(strategy = GenerationType.IDENTITY)
@@ -54,6 +58,17 @@ public class TipoLancamento implements Serializable {
 
 	public void setOrigem(OrigemLancamento origem) {
 		this.origem = origem;
+	}
+	
+	@NotNull
+	@ManyToOne
+	@JoinColumn
+	public Empresa getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
 	}
 
 	@Override

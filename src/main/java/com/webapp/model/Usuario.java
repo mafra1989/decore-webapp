@@ -41,7 +41,7 @@ public class Usuario implements Serializable {
 	@Column
 	private Empresa empresa;
 	
-	@NotBlank
+	//@NotBlank
 	@Column
 	private String cpf;
 	

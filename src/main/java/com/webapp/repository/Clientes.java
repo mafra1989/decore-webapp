@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 import com.webapp.model.Cliente;
+import com.webapp.model.Empresa;
 import com.webapp.repository.filter.ClienteFilter;
 import com.webapp.util.jpa.Transacional;
 
@@ -34,18 +35,22 @@ public class Clientes implements Serializable {
 		this.manager.remove(clienteTemp);
 	}
 	
-	public List<Cliente> todos() {
-		return this.manager.createQuery("from Cliente order by nome", Cliente.class).getResultList();
+	public List<Cliente> todos(Empresa empresa) {
+		return this.manager.createQuery("from Cliente c where c.empresa.id = :id order by nome", Cliente.class)
+				.setParameter("id", empresa.getId()).getResultList();
 	}
 	
-	public Cliente porNome(String nome) {
-		return this.manager.createQuery("from Cliente i where i.nome = :nome", Cliente.class)
-				.setParameter("nome", nome).getSingleResult();
+	public Cliente porNome(String nome, Empresa empresa) {
+		return this.manager.createQuery("from Cliente i where i.empresa.id = :id and i.nome = :nome", Cliente.class)
+				.setParameter("nome", nome)
+				.setParameter("id", empresa.getId())
+				.getSingleResult();
 	}
 	
-	public List<Cliente> filtrados(ClienteFilter filter) {
-		return this.manager.createQuery("from Cliente i where upper(i.nome) like :nome order by nome", Cliente.class)
-				.setParameter("nome", "%" + filter.getNome().toUpperCase() + "%").getResultList();
+	public List<Cliente> filtrados(ClienteFilter filter, Empresa empresa) {
+		return this.manager.createQuery("from Cliente i where i.empresa.id = :id and upper(i.nome) like :nome order by nome", Cliente.class)
+				.setParameter("nome", "%" + filter.getNome().toUpperCase() + "%")
+				.setParameter("id", empresa.getId()).getResultList();
 	}
 	
 	public List<Cliente> filtrados_(ClienteFilter filter) {

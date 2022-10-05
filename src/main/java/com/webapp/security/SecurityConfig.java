@@ -46,7 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	            */
 		
 		.authorizeRequests()
-			.antMatchers("/Login.xhtml", "/404.xhtml", "/500.xhtml", "/javax.faces.resource/**").permitAll()
+			.antMatchers("/Login.xhtml", "/Cadastro.xhtml", "/404.xhtml", "/500.xhtml", "/javax.faces.resource/**").permitAll()
 			.antMatchers("/403.xhtml").authenticated()
 			
 			.antMatchers(

@@ -7,6 +7,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
@@ -36,6 +38,11 @@ public class FormaPagamento implements Serializable {
 	@Type(type = "yes_no")
 	@Column(nullable = true)
 	private boolean clientePaga = true;
+	
+	@NotNull
+	@ManyToOne
+	@JoinColumn
+	private Empresa empresa;
 	
 	
 
@@ -69,6 +76,14 @@ public class FormaPagamento implements Serializable {
 
 	public void setClientePaga(boolean clientePaga) {
 		this.clientePaga = clientePaga;
+	}
+	
+	public Empresa getEmpresa() {
+		return empresa;
+	}
+
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
 	}
 
 	@Override
