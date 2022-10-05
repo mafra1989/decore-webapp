@@ -387,7 +387,7 @@ public class ImportarDadosBean implements Serializable {
 
 						/* Venda */
 						/* Tipo de Venda e Bairro */
-						TipoVenda tipoVenda = tiposVendas.porDescricao(row.getCell(2).toString());
+						TipoVenda tipoVenda = tiposVendas.porDescricao(row.getCell(2).toString(), usuario.getEmpresa());
 						if(tipoVenda != null) {
 							venda.setTipoVenda(tipoVenda);// Producao
 						} else {
@@ -858,7 +858,7 @@ public class ImportarDadosBean implements Serializable {
 						
 						cliente = new Cliente();
 						
-						Bairro bairro = bairrosRepository.porNome(row.getCell(3).toString());
+						Bairro bairro = bairrosRepository.porNome(row.getCell(3).toString(), usuario.getEmpresa());
 						
 						if(bairro == null) {
 							bairro = new Bairro();
@@ -1022,7 +1022,7 @@ public class ImportarDadosBean implements Serializable {
 				for (Cliente cliente : clientes) {	
 					if(cliente.isValid()) {
 						
-						Bairro bairro = bairrosRepository.porNome(cliente.getBairro().getNome());			
+						Bairro bairro = bairrosRepository.porNome(cliente.getBairro().getNome(), usuario.getEmpresa());			
 						
 						if(bairro == null) {
 							bairro = cliente.getBairro();

@@ -93,7 +93,7 @@ public class CarrinhoBean implements Serializable {
         BairroFilter filtro = new BairroFilter();
         filtro.setNome(query);
         
-        List<Bairro> listaDeBairros = bairros.filtrados(filtro);       
+        List<Bairro> listaDeBairros = bairros.filtrados(filtro, null);       
         
         return listaDeBairros;
     }	
