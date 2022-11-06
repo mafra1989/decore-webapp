@@ -288,7 +288,7 @@
 						<p:separator />
 						<p:menuitem icon="fa fa-fw fa-trash" id="btn-trash"
 							value="Excluir" process="@this" disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
-							onclick="deleteItemTemporariamente(#{consultaVendasBean.vendaSelecionada.id});" />
+							onclick="deleteItem(#{consultaVendasBean.vendaSelecionada.id});" />
 						<p:separator />
 
 						<p:menuitem value="Entregar venda" icon="fa fa-fw fa-money"
