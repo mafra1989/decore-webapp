@@ -546,7 +546,7 @@ public class ConsultaVendasBean implements Serializable {
 		try {
 			
 			String path = "";
-			if(vendaSelecionada.getId().equals(7111L)) {
+			if(vendaSelecionada.getEmpresa().getId().equals(7111L)) {
 				path = "/relatorios/decore-vendas_RECIBO_DECORE.jasper";
 			} else {
 				path = "/relatorios/decore-vendas_RECIBO_OURO_DA_AMAZONIA.jasper";
