@@ -85,6 +85,8 @@ public class RegistroVendasBean implements Serializable {
 	private List<Usuario> todosUsuarios;
 
 	private List<Bairro> todosBairros;
+	
+	private List<Cliente> todosClientes = new ArrayList<Cliente>();
 
 	private List<TipoVenda> todosTiposVendas;
 
@@ -144,6 +146,7 @@ public class RegistroVendasBean implements Serializable {
 			todosUsuarios = usuarios.todos(usuario.getEmpresa());
 			todosTiposVendas = tiposVendas.todos(usuario.getEmpresa());
 			todosBairros = bairros.todos(usuario.getEmpresa());
+			todosClientes = clientes.todos(usuario.getEmpresa());
 			
 			venda.setUsuario(usuario);
 			venda.setStatusMesa("PAGO");
@@ -1105,6 +1108,10 @@ public class RegistroVendasBean implements Serializable {
 
 	public boolean isDisableAjuste() {
 		return disableAjuste;
+	}
+	
+	public List<Cliente> getTodosClientes() {
+		return todosClientes;
 	}
 
 }

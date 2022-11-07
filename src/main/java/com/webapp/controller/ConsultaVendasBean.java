@@ -401,14 +401,74 @@ public class ConsultaVendasBean implements Serializable {
 		pedido.setTipoVenda(vendaSelecionada.getTipoVenda().getDescricao().toUpperCase());
 		pedido.setBairro(vendaSelecionada.getBairro().getNome().toUpperCase());
 		pedido.setDataVenda(sdf.format(vendaSelecionada.getDataVenda()));
-		pedido.setVendedor(vendaSelecionada.getUsuario().getNome().toUpperCase());
 		
-		if(vendaSelecionada.getCliente().getId() != 1L) {
-			pedido.setCliente(vendaSelecionada.getCliente().getNome());
+		String vendedor = vendaSelecionada.getUsuario().getNome().split(" ")[0].toUpperCase();
+		pedido.setVendedor(vendedor);
+		
+		if(vendaSelecionada.getCliente().getNome().toUpperCase().equals("NAO INFORMADO") || vendaSelecionada.getCliente().getNome().toUpperCase().equals("NÃO INFORMADO")) {
+			Entrega entrega = entregas.porVenda(vendaSelecionada);
+			if (entrega != null) {
+				if(!vendaSelecionada.getBairro().getNome().toUpperCase().equals("NAO INFORMADO") && !vendaSelecionada.getBairro().getNome().toUpperCase().equals("NÃO INFORMADO")) {
+					if(entrega.getNome() == null || entrega.getNome() != null && entrega.getNome().equals("")) {
+						pedido.setCliente("Não Informado");
+					} else {
+						pedido.setCliente(entrega.getNome());
+					}
+					
+					pedido.setEnderecoCliente(entrega.getLocalizacao() != null ? entrega.getLocalizacao() : "");
+					//implementar observação/contato
+					pedido.setTelefone(entrega.getContato() != null ? entrega.getContato() : "");
+					
+				} else {
+					pedido.setCliente("Não Informado");
+					pedido.setEnderecoCliente("");
+					//implementar observação/contato
+					pedido.setTelefone("");
+				}						
+			} else {
+				pedido.setCliente("Não Informado");
+				pedido.setEnderecoCliente("");	
+				pedido.setTelefone("");
+			}
+			
+			pedido.setCpfCnpj("");			
+			pedido.setCodigoCliente("");
+			pedido.setBairroCliente(vendaSelecionada.getBairro().getNome());
+			
 		} else {
-			pedido.setCliente("-");
+			if(vendaSelecionada.getBairro().getNome().toUpperCase().equals("NAO INFORMADO") || vendaSelecionada.getBairro().getNome().toUpperCase().equals("NÃO INFORMADO")) {
+				pedido.setCliente(vendaSelecionada.getCliente().getNome());
+				pedido.setCpfCnpj(vendaSelecionada.getCliente().getDocumento());
+				pedido.setTelefone(vendaSelecionada.getCliente().getContato());
+				pedido.setCodigoCliente(String.valueOf(vendaSelecionada.getCliente().getId().longValue()));
+				pedido.setEnderecoCliente(vendaSelecionada.getCliente().getEndereco());
+				pedido.setBairroCliente(vendaSelecionada.getCliente().getBairro().getNome());
+			} else {
+				Entrega entrega = entregas.porVenda(vendaSelecionada);
+				if (entrega != null) {
+					if(entrega.getNome() == null || entrega.getNome() != null && entrega.getNome().equals("")) {
+						pedido.setCliente(vendaSelecionada.getCliente().getNome());
+					} else {
+						pedido.setCliente(entrega.getNome());
+					}
+					
+					pedido.setEnderecoCliente(entrega.getLocalizacao() != null ? entrega.getLocalizacao() : "");
+					
+					//implementar observação/contato
+					if(entrega.getContato() == null || entrega.getContato() != null && entrega.getContato().equals("")) {
+						pedido.setTelefone(vendaSelecionada.getCliente().getContato());
+					} else {
+						pedido.setTelefone(entrega.getContato());
+					}
+				}
+								
+				pedido.setCpfCnpj(vendaSelecionada.getCliente().getDocumento());
+				pedido.setCodigoCliente(String.valueOf(vendaSelecionada.getCliente().getId().longValue()));
+				pedido.setBairroCliente(vendaSelecionada.getBairro().getNome());
+			}
 		}
 
+		/*
 		Entrega entrega = entregas.porVenda(vendaSelecionada);
 		if (entrega != null) {
 			pedido.setResponsavel(entrega.getNome());
@@ -419,7 +479,7 @@ public class ConsultaVendasBean implements Serializable {
 			if(entrega.getStatus() == StatusPedido.ENTREGUE.name()) {
 				pedido.setEntrega("Y");
 			}
-		}
+		}*/
 		
 		NumberFormat nf_ = new DecimalFormat("###,##0.000", REAL);
 		NumberFormat nf__ = new DecimalFormat("###,##0", REAL);

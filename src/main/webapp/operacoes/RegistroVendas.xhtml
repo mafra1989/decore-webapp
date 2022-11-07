@@ -263,12 +263,27 @@
 											var="tipoVenda" itemLabel="#{tipoVenda.descricao}"
 											itemValue="#{tipoVenda}" />
 									</p:selectOneMenu>
+									
+									<p:outputLabel value="Cliente" for="cliente" />
+									<p:selectOneMenu id="cliente"
+										value="#{registroVendasBean.venda.cliente}"
+										placeholder="selecione">
+		
+										<f:selectItem itemLabel="Selecione" />
+		
+										<f:selectItems value="#{registroVendasBean.todosClientes}"
+											var="cliente" itemLabel="#{cliente.nome}"
+											itemValue="#{cliente}" />
+									</p:selectOneMenu>
 		
 									<p:outputLabel value="Bairro" for="bairro" />
 									<p:autoComplete id="bairro" forceSelection="true" dropdown="true" scrollHeight="210"
 										value="#{registroVendasBean.venda.bairro}"
 										var="bairro" itemLabel="#{bairro.nome}" itemValue="#{bairro}" 
-										completeMethod="#{registroVendasBean.completeText}" />
+										completeMethod="#{registroVendasBean.completeText}">
+										
+										<p:ajax event="blur" process="@this" update="panel-entrega" />
+									</p:autoComplete>
 		
 									<p:outputLabel value="Vendedor" for="vendedor" />
 									<p:selectOneMenu id="vendedor"
@@ -291,14 +306,14 @@
 									<p:inputSwitch offLabel="Não" onLabel="Sim" id="entrega"
 										value="#{registroVendasBean.entrega}">
 		
-										<p:ajax process="@this" update="@parent" />
+										<p:ajax process="@this" update="@parent localizacao" />
 									</p:inputSwitch>
 		
 									<p:commandLink styleClass="btn-new entrega" id="localizacao"
 										update="entrega-dialog" value="Dados da entrega"
 										onstart="PF('downloadLoading').show();"
 										oncomplete="PF('downloadLoading').hide();PF('entrega-dialog').show()"
-										process="@this" disabled="#{not registroVendasBean.entrega}" />
+										process="@this" disabled="#{not registroVendasBean.entrega or registroVendasBean.venda.bairro.nome eq 'Não Informado'}" />
 								</p:panelGrid>
 		
 								<p:panelGrid columns="2" layout="grid" id="panel-ajuste" rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado()}"
@@ -706,14 +721,22 @@
 						<p:inputTextarea id="localizacao-whatsapp"
 							value="#{registroVendasBean.entregaVenda.localizacao}"
 							placeholder="" />
+							
+						<p:outputLabel value="Contato" />
+						<p:inputText
+							value="#{registroVendasBean.entregaVenda.contato}"
+							placeholder="" />
 
-						<p:outputLabel value="Observações gerais" />
-						<p:inputTextarea id="observacao"
+						<p:outputLabel value="Observações gerais" rendered="false" />
+						<p:inputTextarea id="observacao" rendered="false"
 							value="#{registroVendasBean.entregaVenda.observacao}"
 							placeholder="" />
 					</p:panelGrid>
 				</p:panel>
 
+				<div
+						style="width: 80%; margin: auto; border-top: 1px solid #ccc; margin-top: 10px; margin-bottom: 20px"></div>
+				
 				<p:panel styleClass="panelgrid-noborder disabled disabled">
 					<p:commandButton icon="fa fa-fw fa-check"
 						style="float: right;font-weight: bold;font-size: 13px;margin-top: -5px;margin-bottom:5px;background-color: #089a29c7;position: relative;margin-right: 10px;"

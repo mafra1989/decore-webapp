@@ -42,7 +42,10 @@ public class EspelhoVenda implements Serializable {
 	/* Dados do Cliente */
 	private String cliente = "";
 	private String telefone = "";
-	private String cpf = "";
+	private String cpfCnpj = "";
+	private String codigoCliente = "";
+	private String enderecoCliente = "";
+	private String bairroCliente = "";
 
 	/* Dados da Entrega */
 	private String responsavel;
@@ -304,12 +307,36 @@ public class EspelhoVenda implements Serializable {
 		this.telefone = telefone;
 	}
 
-	public String getCpf() {
-		return cpf;
+	public String getCpfCnpj() {
+		return cpfCnpj;
 	}
 
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
+	public void setCpfCnpj(String cpfCnpj) {
+		this.cpfCnpj = cpfCnpj;
+	}
+
+	public String getCodigoCliente() {
+		return codigoCliente;
+	}
+
+	public void setCodigoCliente(String codigoCliente) {
+		this.codigoCliente = codigoCliente;
+	}
+
+	public String getEnderecoCliente() {
+		return enderecoCliente;
+	}
+
+	public void setEnderecoCliente(String enderecoCliente) {
+		this.enderecoCliente = enderecoCliente;
+	}
+
+	public String getBairroCliente() {
+		return bairroCliente;
+	}
+
+	public void setBairroCliente(String bairroCliente) {
+		this.bairroCliente = bairroCliente;
 	}
 
 	public String getEntrega() {
