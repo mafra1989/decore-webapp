@@ -107,10 +107,10 @@ public class Relatorio<T> {
 	}
 	
 	
-	public void getRelatorio_(List<T> lista, String filename) throws SQLException {
+	public void getRelatorio_(List<T> lista, String filename, String path) throws SQLException {
 		try {
 
-			InputStream relatorioStream = this.getClass().getResourceAsStream("/relatorios/decore-vendas_RECIBO.jasper");
+			InputStream relatorioStream = this.getClass().getResourceAsStream(path);
 			
 			System.out.println(relatorioStream);
 

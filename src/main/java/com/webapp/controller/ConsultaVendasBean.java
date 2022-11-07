@@ -544,7 +544,15 @@ public class ConsultaVendasBean implements Serializable {
 
 		Relatorio<EspelhoVenda> report = new Relatorio<EspelhoVenda>();
 		try {
-			report.getRelatorio_(pedidos, "Venda-N" + vendaSelecionada.getNumeroVenda().longValue());
+			
+			String path = "";
+			if(vendaSelecionada.getId().equals(7111L)) {
+				path = "/relatorios/decore-vendas_RECIBO_DECORE.jasper";
+			} else {
+				path = "/relatorios/decore-vendas_RECIBO_OURO_DA_AMAZONIA.jasper";
+			}
+			
+			report.getRelatorio_(pedidos, "Venda-N" + vendaSelecionada.getNumeroVenda().longValue(), path);
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="decore-vendas" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="0" bottomMargin="0" uuid="519bb040-d2f6-44c8-b08c-2225ab2837bc">
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="0.75"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="361"/>
+	<property name="ireport.y" value="0"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -151,72 +151,79 @@
 	<pageHeader>
 		<band height="292" splitType="Stretch">
 			<image scaleImage="FillFrame" onErrorType="Blank">
-				<reportElement uuid="425b6d9a-1b97-4950-ab37-dde6c8e3e2e3" style="Column header" x="168" y="12" width="203" height="109"/>
-				<imageExpression><![CDATA["/relatorios/ouro-da-amazonia-v2.png"]]></imageExpression>
+				<reportElement uuid="425b6d9a-1b97-4950-ab37-dde6c8e3e2e3" style="Column header" x="212" y="12" width="109" height="109"/>
+				<imageExpression><![CDATA["/relatorios/decore.png"]]></imageExpression>
 			</image>
+			<staticText>
+				<reportElement uuid="c6c8443c-c0b1-4a31-aec9-2509b789f3c0" x="1" y="127" width="534" height="20" forecolor="#333333"/>
+				<textElement textAlignment="Center">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Decore seu Lar]]></text>
+			</staticText>
 			<rectangle>
-				<reportElement uuid="b7786c9d-7630-4410-ba59-2f9bfe429855" x="-1" y="136" width="537" height="40" backcolor="#CCCCCC"/>
+				<reportElement uuid="b7786c9d-7630-4410-ba59-2f9bfe429855" x="-1" y="151" width="537" height="40" backcolor="#CCCCCC"/>
 				<graphicElement>
 					<pen lineColor="#FFFFFF"/>
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement uuid="a44afe69-71c3-4790-9599-e85c17c21a6b" mode="Transparent" x="1" y="142" width="534" height="30" backcolor="#FFFFFF"/>
+				<reportElement uuid="a44afe69-71c3-4790-9599-e85c17c21a6b" mode="Transparent" x="1" y="157" width="534" height="30" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Center">
 					<font size="20" isBold="true"/>
 				</textElement>
 				<text><![CDATA[RECIBO]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement uuid="a886d1b9-0ed4-44f0-b242-38533c9bd0a8" x="-1" y="187" width="537" height="30" backcolor="#CCCCCC"/>
+				<reportElement uuid="a886d1b9-0ed4-44f0-b242-38533c9bd0a8" x="-1" y="202" width="537" height="30" backcolor="#CCCCCC"/>
 				<graphicElement>
 					<pen lineColor="#FFFFFF"/>
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement uuid="153e2832-42b4-439b-b30b-d14490240e23" mode="Transparent" x="3" y="192" width="532" height="22" backcolor="#FFFFFF"/>
+				<reportElement uuid="153e2832-42b4-439b-b30b-d14490240e23" mode="Transparent" x="3" y="207" width="532" height="22" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Left">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[DADOS DO CLIENTE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="7da8ff0a-0891-4fbf-bd3a-52e5f8d2af04" x="0" y="217" width="82" height="20" backcolor="#FF0000"/>
+				<reportElement uuid="7da8ff0a-0891-4fbf-bd3a-52e5f8d2af04" x="0" y="232" width="82" height="20" backcolor="#FF0000"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Nome:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="7da8ff0a-0891-4fbf-bd3a-52e5f8d2af04" x="0" y="237" width="82" height="20" backcolor="#FF0000"/>
+				<reportElement uuid="7da8ff0a-0891-4fbf-bd3a-52e5f8d2af04" x="0" y="252" width="82" height="20" backcolor="#FF0000"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[CPF/CNPJ:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="7da8ff0a-0891-4fbf-bd3a-52e5f8d2af04" x="261" y="237" width="82" height="20" backcolor="#FF0000"/>
+				<reportElement uuid="7da8ff0a-0891-4fbf-bd3a-52e5f8d2af04" x="261" y="252" width="82" height="20" backcolor="#FF0000"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Contato:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="7da8ff0a-0891-4fbf-bd3a-52e5f8d2af04" x="0" y="257" width="82" height="20" backcolor="#FF0000"/>
+				<reportElement uuid="7da8ff0a-0891-4fbf-bd3a-52e5f8d2af04" x="0" y="272" width="82" height="20" backcolor="#FF0000"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Endereço:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="7da8ff0a-0891-4fbf-bd3a-52e5f8d2af04" x="261" y="217" width="82" height="20" backcolor="#FF0000"/>
+				<reportElement uuid="7da8ff0a-0891-4fbf-bd3a-52e5f8d2af04" x="261" y="232" width="82" height="20" backcolor="#FF0000"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Cód. Cliente:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="7da8ff0a-0891-4fbf-bd3a-52e5f8d2af04" x="261" y="257" width="82" height="20" backcolor="#FF0000"/>
+				<reportElement uuid="7da8ff0a-0891-4fbf-bd3a-52e5f8d2af04" x="261" y="272" width="82" height="20" backcolor="#FF0000"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="false"/>
 				</textElement>
@@ -251,34 +258,34 @@
 				<textFieldExpression><![CDATA[$F{vendedor}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="e5cd59ef-157a-44ae-8580-7ed9c66abd0c" x="82" y="217" width="173" height="20"/>
+				<reportElement uuid="e5cd59ef-157a-44ae-8580-7ed9c66abd0c" x="82" y="232" width="173" height="20"/>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cliente}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="3ac52060-4edf-4f9c-b56f-5ba7c34125aa" x="82" y="237" width="173" height="20"/>
+				<reportElement uuid="3ac52060-4edf-4f9c-b56f-5ba7c34125aa" x="82" y="252" width="173" height="20"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{cpfCnpj}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="f4be6942-183c-430b-b8c6-2b159d9349b8" x="82" y="257" width="173" height="20"/>
+				<reportElement uuid="f4be6942-183c-430b-b8c6-2b159d9349b8" x="82" y="272" width="173" height="20"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{enderecoCliente}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="4e3f4b37-8da7-48e7-808c-005cad070e48" x="343" y="217" width="191" height="20"/>
+				<reportElement uuid="4e3f4b37-8da7-48e7-808c-005cad070e48" x="343" y="232" width="191" height="20"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{codigoCliente}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="b69c6d72-2472-4cdc-88de-87bedfdab95c" x="343" y="237" width="191" height="20"/>
+				<reportElement uuid="b69c6d72-2472-4cdc-88de-87bedfdab95c" x="343" y="252" width="191" height="20"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{telefone}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="9dc48464-9986-4efb-ab8c-9ccfb375dbfe" x="343" y="257" width="191" height="20"/>
+				<reportElement uuid="9dc48464-9986-4efb-ab8c-9ccfb375dbfe" x="343" y="272" width="191" height="20"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{bairroCliente}]]></textFieldExpression>
 			</textField>
@@ -406,32 +413,61 @@
 				<reportElement uuid="7bac3dfa-bbf6-4fa9-8a97-39605cd89747" x="2" y="104" width="532" height="1" forecolor="#333333"/>
 			</line>
 			<textField>
-				<reportElement uuid="6f2abd16-d068-4ef3-8ad3-38f2d7888ce0" x="11" y="125" width="250" height="14"/>
+				<reportElement uuid="0648df8c-caba-4a02-82e4-285b9cc18190" x="11" y="151" width="250" height="14"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{contato}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="01f95121-7477-43cc-ad97-abbbecd8824f" x="11" y="106" width="250" height="20"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DECORE PORTAS E MÓVEIS PLANEJADOS]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="1de88a96-1cea-4c2f-af18-90731aabd783" x="278" y="126" width="250" height="14"/>
+				<textElement markup="none">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{xMun} + " - " + $F{UF} + " | CEP 69086-632"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6f2abd16-d068-4ef3-8ad3-38f2d7888ce0" x="11" y="138" width="250" height="14"/>
 				<textElement verticalAlignment="Middle" markup="none">
 					<font size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["CNPJ: " + $F{CNPJ}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="74f97f9a-8fe8-4818-af7e-7ac109e13486" x="11" y="151" width="250" height="14"/>
+				<reportElement uuid="74f97f9a-8fe8-4818-af7e-7ac109e13486" x="11" y="164" width="250" height="14"/>
 				<textElement verticalAlignment="Middle" markup="none">
 					<font size="8" isBold="false"/>
 				</textElement>
-				<text><![CDATA[]]></text>
+				<text><![CDATA[decoreportas@gmail.com]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e0cc4994-1e75-4ae8-952e-a4d3eec223fe" x="11" y="125" width="250" height="14"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Mais Empreendimentos]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="bbc9aa23-3f6d-4fe3-9544-2caecbf28aa9" x="1" y="30" width="533" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[DISTRIBUIDORA E EMPACOTADORA DANTAS MONTEIRO]]></text>
+				<text><![CDATA[DECORE PORTAS E MÓVEIS PLANEJADOS
+]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="a132efe2-62a0-4247-ae6d-17daeb03f926" x="1" y="51" width="533" height="13"/>
 				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
 					<font size="10" isBold="false"/>
 				</textElement>
-				<text><![CDATA[Ouro da Amazônia]]></text>
+				<text><![CDATA[Decore Portas]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="b0e2f6b0-42d6-438e-ab45-aeffc7ae8e85" style="Detail" positionType="Float" x="0" y="11" width="534" height="20" forecolor="#333333"/>
@@ -443,27 +479,6 @@
 			<line>
 				<reportElement uuid="15b5cfe8-0d06-47d5-aa53-692eda094a70" x="219" y="9" width="97" height="1" forecolor="#333333"/>
 			</line>
-			<textField>
-				<reportElement uuid="0648df8c-caba-4a02-82e4-285b9cc18190" x="11" y="138" width="250" height="14"/>
-				<textElement verticalAlignment="Middle" markup="none">
-					<font size="8" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{contato}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement uuid="01f95121-7477-43cc-ad97-abbbecd8824f" x="11" y="106" width="250" height="20"/>
-				<textElement verticalAlignment="Middle" markup="none">
-					<font size="8" isBold="true"/>
-				</textElement>
-				<text><![CDATA[DISTRIBUIDORA E EMPACOTADORA DANTAS MONTEIRO]]></text>
-			</staticText>
-			<textField>
-				<reportElement uuid="1de88a96-1cea-4c2f-af18-90731aabd783" x="278" y="126" width="250" height="14"/>
-				<textElement markup="none">
-					<font size="8" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{xMun} + " - " + $F{UF} + " | CEP 69086-632"]]></textFieldExpression>
-			</textField>
 		</band>
 	</columnFooter>
 	<summary>
