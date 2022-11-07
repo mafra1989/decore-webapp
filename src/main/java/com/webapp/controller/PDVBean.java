@@ -5003,7 +5003,7 @@ public class PDVBean implements Serializable {
 		
 		pedido.setCliente(venda.getCliente().getNome());
 		if(!venda.getCliente().getNome().equals("Nao Informado")) {
-			pedido.setCpf(venda.getCliente().getDocumento());
+			pedido.setCpfCnpj(venda.getCliente().getDocumento());
 			pedido.setTelefone(venda.getCliente().getContato());
 			pedido.setEndereco(venda.getCliente().getEndereco());
 			pedido.setBairro(venda.getCliente().getBairro().getNome());
