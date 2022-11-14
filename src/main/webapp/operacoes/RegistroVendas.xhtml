@@ -881,7 +881,7 @@
 								action="#{registroVendasBean.salvar}"
 								process="@this panel-table accordion-panel"
 								style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;"
-								rendered="false" />
+								rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 7111 or seguranca.usuarioLogado.usuario.empresa.id == 7112}" />
 								
 							<p:commandButton id="btn-calcular" value="Finalizar Venda"
 								onstart="PF('downloadLoading').show();" icon="fa fa-save"
@@ -891,7 +891,7 @@
 								disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()) or registroVendasBean.venda.exclusao}"
 								update="msg panel-table accordion-panel form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote panel-itens confirm-dialog confirmDialog"
 								process="@this panel-table accordion-panel"
-								rendered="true" />
+								rendered="#{seguranca.usuarioLogado.usuario.empresa.id != 7111 and seguranca.usuarioLogado.usuario.empresa.id != 7112}" />
 							
 						</p:panelGrid>
 
