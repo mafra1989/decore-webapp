@@ -206,11 +206,12 @@ public class ConsultaVendasBean implements Serializable {
 					totalDesconto += venda.getDesconto().doubleValue();
 				}
 			}
-			
+			/*
 			Pagamento pagamento = pagamentos.porVenda(venda, venda.getEmpresa());
 			if(pagamento != null) {
 				venda.setPagamento(", " + pagamento.getFormaPagamento().getNome());
 			}
+			*/
 			
 			if(venda.isConta()) {
 				venda.setVendaPaga(true);
@@ -573,6 +574,11 @@ public class ConsultaVendasBean implements Serializable {
 				
 				/* Comentado para exclusão temporaria - desfeito */
 				contas.remove(conta);
+			}
+			
+			List<Pagamento> pagamentosTemp = pagamentos.todosPorVenda(vendaSelecionada, usuario_.getEmpresa());
+			for (Pagamento pagamento : pagamentosTemp) {
+				pagamentos.remove(pagamento);
 			}
 			
 			/*

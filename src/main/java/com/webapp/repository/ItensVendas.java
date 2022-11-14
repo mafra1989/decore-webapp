@@ -10,6 +10,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import com.webapp.model.Compra;
+import com.webapp.model.Empresa;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.Produto;
@@ -89,6 +90,13 @@ public class ItensVendas implements Serializable {
 				.setParameter("id", venda.getId())
 				.setParameter("produto", produto.getId()).getResultList();
 			
+	}
+	
+	
+	public List<ItemVenda> porVenda(Venda venda, Empresa empresa) {
+		return this.manager.createQuery("from ItemVenda e join fetch e.venda c where c.empresa.id = :empresa and c.id = :id order by e.id asc",
+				ItemVenda.class).setParameter("id", venda.getId())
+				.setParameter("empresa", empresa.getId()).getResultList();
 	}
 	
 	

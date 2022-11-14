@@ -856,6 +856,12 @@ body .ui-datatable .ui-paginator {
 	overflow: auto;
 	max-height: 280px;
 }
+
+#confirmDialog .pagamentos-realizados {
+	display:flex;justify-content:center;align-items:center;
+    font-size: 14px;
+    margin-top: 5px;
+}
 /*body {
 	    background-color: #ffffff;
 	}*/
@@ -3087,8 +3093,7 @@ body .ui-datatable .ui-paginator {
 		
 		
 		
-		<p:dialog
-			header="Adicionar pagamento"
+		<p:dialog header="Adicionar pagamento"
 			widgetVar="pagamento-dialog" id="pagamento-dialog" resizable="false"
 			modal="true" closeOnEscape="true" responsive="true" width="250px" position="top"
 			style="margin-top: 140px">
@@ -3421,7 +3426,7 @@ body .ui-datatable .ui-paginator {
 							
 							</p:panelGrid>
 								
-							<p:panelGrid columns="1" layout="grid" 
+							<p:panelGrid columns="1" layout="grid" id="pagamentos-realizados"
 								styleClass="panelgrid-noborder disabled disabled"
 								columnClasses="ui-grid-col-12">
 
@@ -3460,6 +3465,17 @@ body .ui-datatable .ui-paginator {
 										var="formaPagamento" itemLabel="#{formaPagamento.nome}"
 										itemValue="#{formaPagamento}" />
 								</p:selectOneMenu>
+								
+								<p:panel styleClass="pagamentos-realizados" 
+									rendered="#{pDVBean.tipoPagamento == 'AVISTA' and pDVBean.vendaPaga and true}">
+									<p:commandLink 
+										value="Listar pagamentos" onstart="start();"
+										oncomplete="PF('pagamentoPara-dialog').show();stop();"
+										icon="fa fa-fw fa-edit"
+										actionListener="#{pDVBean.preparaPagamentoPara}"
+										update="pagamentoPara-dialog form-pagamentoPara:inline">
+									</p:commandLink>
+								</p:panel>
 
 								<p:outputLabel value="Saldo p/ troca: " 
 									rendered="#{pDVBean.vendaPaga and pDVBean.venda.formaPagamento.nome == 'Dinheiro' and pDVBean.tipoPagamento == 'AVISTA'}"
@@ -3671,7 +3687,7 @@ body .ui-datatable .ui-paginator {
 									rendered="#{pDVBean.tipoPagamento == 'AVISTA'}">
 
 									<p:ajax event="change" process="@this"
-										update="@this pagamento-grid grid-valores pagamento_para valor-recebido"
+										update="@this pagamentos-realizados pagamento-grid grid-valores pagamento_para valor-recebido"
 										listener="#{pDVBean.changeStatusPago}"
 										onstart="PF('downloadLoading').show();"
 										oncomplete="PF('downloadLoading').hide();" />

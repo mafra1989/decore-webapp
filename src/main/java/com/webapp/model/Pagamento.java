@@ -2,6 +2,7 @@ package com.webapp.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
@@ -40,6 +42,26 @@ public class Pagamento implements Serializable {
 	@Column(nullable = true)
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
 	private BigDecimal valor;
+	
+	@NotNull
+	@Column(nullable = true)
+	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	private BigDecimal troco = BigDecimal.ZERO;
+	
+	@NotNull
+	@Column(nullable = true)
+	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	private BigDecimal acrescimo;
+	
+	@NotNull
+	@Column(nullable = true)
+	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	private BigDecimal taxaDeAcrescimo;
+	
+	@NotNull
+	@Column(nullable = true)
+	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	private BigDecimal valorDeAcrescimo;
 	
 	@Type(type = "yes_no")
 	@Column(nullable = true)
@@ -78,6 +100,38 @@ public class Pagamento implements Serializable {
 		this.valor = valor;
 	}
 
+	public BigDecimal getTroco() {
+		return troco;
+	}
+
+	public void setTroco(BigDecimal troco) {
+		this.troco = troco;
+	}
+
+	public BigDecimal getAcrescimo() {
+		return acrescimo;
+	}
+
+	public void setAcrescimo(BigDecimal acrescimo) {
+		this.acrescimo = acrescimo;
+	}
+
+	public BigDecimal getTaxaDeAcrescimo() {
+		return taxaDeAcrescimo;
+	}
+
+	public void setTaxaDeAcrescimo(BigDecimal taxaDeAcrescimo) {
+		this.taxaDeAcrescimo = taxaDeAcrescimo;
+	}
+
+	public BigDecimal getValorDeAcrescimo() {
+		return valorDeAcrescimo;
+	}
+
+	public void setValorDeAcrescimo(BigDecimal valorDeAcrescimo) {
+		this.valorDeAcrescimo = valorDeAcrescimo;
+	}
+
 	public boolean isExclusao() {
 		return exclusao;
 	}
@@ -85,13 +139,10 @@ public class Pagamento implements Serializable {
 	public void setExclusao(boolean exclusao) {
 		this.exclusao = exclusao;
 	}
-
+	
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
+		return Objects.hash(code, id);
 	}
 
 	@Override
@@ -103,12 +154,18 @@ public class Pagamento implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Pagamento other = (Pagamento) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
+		return Objects.equals(code, other.code) && Objects.equals(id, other.id);
+	}
+
+	@Transient
+	private String code;
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 }

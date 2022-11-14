@@ -37,6 +37,10 @@ public class ItemVendaCompra implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn
+	private ItemCompra itemCompra;
+	
+	@ManyToOne
+	@JoinColumn
 	private Compra compra;
 	
 	@Type(type = "yes_no")
@@ -73,6 +77,14 @@ public class ItemVendaCompra implements Serializable {
 
 	public void setItemVenda(ItemVenda itemVenda) {
 		this.itemVenda = itemVenda;
+	}
+	
+	public ItemCompra getItemCompra() {
+		return itemCompra;
+	}
+
+	public void setItemCompra(ItemCompra itemCompra) {
+		this.itemCompra = itemCompra;
 	}
 
 	public Compra getCompra() {

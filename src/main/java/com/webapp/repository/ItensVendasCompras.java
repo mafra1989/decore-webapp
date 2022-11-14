@@ -41,6 +41,14 @@ public class ItensVendasCompras implements Serializable {
 		return this.manager
 				.createQuery("from ItemVendaCompra e join fetch e.itemVenda c where c.id = :id order by e.id asc", ItemVendaCompra.class)
 				.setParameter("id", itemVenda.getId()).getResultList();
+	} 
+	
+	public List<ItemVendaCompra> porItemVenda_(ItemVenda itemVenda) { // c.venda.empresa.id = :empresa and 
+		return this.manager
+				.createQuery("from ItemVendaCompra e join fetch e.compra c where e.itemVenda.id = :id and c.empresa.id = :empresa order by e.id asc", ItemVendaCompra.class)
+				.setParameter("id", itemVenda.getId())
+				.setParameter("empresa", itemVenda.getVenda().getEmpresa().getId())
+				.getResultList();
 	}
 	
 	public List<ItemVendaCompra> porCompra(Compra compra, Produto produto) {
