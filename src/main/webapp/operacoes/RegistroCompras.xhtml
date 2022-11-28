@@ -21,6 +21,9 @@
 
 		<style>
 @media ( min-width :220px) {
+	.sub-total > .ui-state-disabled {
+    	opacity: 0.95;
+    }
 	.parcela-unica.hide {
 		max-height: 0;
 		pointer-events: none;
@@ -383,6 +386,7 @@
 							<p:selectBooleanButton id="leitor" 
 								value="#{registroComprasBean.leitor}" onLabel="ATIVADO"
 								offLabel="DESATIVADO" onIcon="fa fa-fw fa-check"
+								disabled="#{registroComprasBean.itemCompra.id != null}"
 								offIcon="fa fa-fw fa-close" style="position: relative; float: right; margin-top: -38px; margin-right: 8px; font-size:11px;width:105px;">
 								
 								<p:ajax process="@this" update="panel-busca" listener="#{registroComprasBean.ativarLeitor}" />										
@@ -397,7 +401,7 @@
 						<p:focus for="busca" rendered="#{registroComprasBean.itemCompra.produto.id == null and not registroComprasBean.leitor}" />
 						<p:focus for="busca-por-leitor" rendered="#{registroComprasBean.itemCompra.produto.id == null and registroComprasBean.leitor}" />
 									
-						<p:focus id="focus-valor-unitario" for="valor-unitario" rendered="#{registroComprasBean.itemCompra.produto.id != null}"  />
+						<p:focus id="focus-valor-unitario" for="preco-venda" rendered="#{registroComprasBean.itemCompra.produto.id != null}"  />
 							
 						<p:defaultCommand scope="panel-itens_" target="btn-adicionar" id="default-busca"
 									rendered="#{registroComprasBean.itemCompra.produto.id != null}" />	
@@ -414,23 +418,26 @@
 											placeholder="Digite o código ou descrição do produto"
 											var="produto" styleClass="busca" rendered="#{not registroComprasBean.leitor}"
 											itemLabel="#{produto.codigo.concat(' | ').concat(produto.descricao)}" itemValue="#{produto}"
-											completeMethod="#{registroComprasBean.completeText_Produto}">
+											completeMethod="#{registroComprasBean.completeText_Produto}"
+											disabled="#{registroComprasBean.itemCompra.id != null}">
 											
 											<p:ajax event="itemSelect" listener="#{registroComprasBean.onItemSelect}" 
 												update="panel-itens_ form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:quantidade_ form:quantidade__ form:valor-total" />
 										</p:autoComplete>
 										
 										<p:inputText id="busca-por-leitor" value="#{registroComprasBean.filter.codigo}" styleClass="field-barcode busca-por-leitor"
-											placeholder="Escaneie ou digite o código do produto" rendered="#{registroComprasBean.leitor}" />
+											placeholder="Escaneie ou digite o código do produto" rendered="#{registroComprasBean.leitor}"
+											disabled="#{registroComprasBean.itemCompra.id != null}" />
 											
 										<p:commandButton id="btn-barcode" icon="fa fa-fw fa-barcode" rendered="#{registroComprasBean.leitor}"
 											action="#{registroComprasBean.pesquisar_}" process="@this busca-por-leitor"
 											update="panel-itens_ form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:quantidade_ form:quantidade__ form:valor-total" 
-											style="float:right;width:35px;height:29px" styleClass="white-button btn-barcode btn-barcode_" />
+											style="float:right;width:35px;height:29px" styleClass="white-button btn-barcode btn-barcode_"
+											disabled="#{registroComprasBean.itemCompra.id != null}" />
 										
 										
 										<p:commandButton id="enter-barcode" icon="fa fa-fw fa-camera-retro"  rendered="#{registroComprasBean.leitor}"
-											onstart="readBarcode();" disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
+											onstart="readBarcode();" disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado() or registroComprasBean.itemCompra.id != null}"
 											oncomplete="PF('barcode-dialog').show();" styleClass="btn-camera white-button white-button_" />
 										
 									
@@ -438,7 +445,7 @@
 											title="Buscar produto" onstart="PF('downloadLoading').show();"
 											oncomplete="PF('downloadLoading').hide();PF('item-dialog').show()"
 											process="@this" rendered="#{not registroComprasBean.leitor}" 
-											disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}" />
+											disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado() or registroComprasBean.itemCompra.id != null}" />
 										
 									
 									</p:panel>
@@ -482,13 +489,13 @@
 						
 						
 						<p:panelGrid columns="2" layout="grid" style="margin-top:-4px;margin-bottom: 0px"
-							styleClass="panelgrid-noborder disabled disabled" rendered="false"
+							styleClass="panelgrid-noborder disabled disabled" rendered="true"
 							columnClasses="ui-grid-col-4, ui-grid-col-4">
 							
-								<p:outputLabel value="Preço Médio de Compra" />
-								<p:inputNumber decimalPlaces="2" 
-									placeholder="R$ 0,00" symbol="R$ " 
-									value="#{registroComprasBean.itemCompra.produto.precoMedioCompra}">
+								<p:outputLabel value="Preço de Venda" for="preco-venda" />
+								<p:inputNumber decimalPlaces="4" id="preco-venda"
+									placeholder="R$ 0,0000" symbol="R$ " 
+									value="#{registroComprasBean.itemCompra.precoDeVenda}">
 								</p:inputNumber>
 								
 						</p:panelGrid>
@@ -499,7 +506,7 @@
 							columnClasses="ui-grid-col-4, ui-grid-col-4">
 
 							<p:outputLabel value="Valor Unitário" for="valor-unitario" />
-							<p:inputNumber id="valor-unitario" decimalPlaces="4" onkeyup="ajaxDelay()"
+							<p:inputNumber id="valor-unitario" decimalPlaces="4" 
 								placeholder="R$ 0,0000" symbol="R$ " styleClass="valor-unitario"
 								value="#{registroComprasBean.itemCompra.valorUnitario}">
 								
@@ -534,7 +541,7 @@
 							</p:inputNumber>
 
 							<p:outputLabel value="Sub-Total" for="valor-total" />
-							<p:inputNumber id="valor-total" decimalPlaces="2" readonly="true"
+							<p:inputNumber id="valor-total" decimalPlaces="2" disabled="true"
 								styleClass="sub-total" placeholder="R$ 0,00" symbol="R$ "
 								value="#{registroComprasBean.itemCompra.total}" />
 						</p:panelGrid>
@@ -603,7 +610,7 @@
 								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
 								update="panel-itens_ msg codigo descricao fornecedor total-compra id valor-unitario quantidade quantidade_ quantidade__  valor-total panel-table"
 								action="#{registroComprasBean.adicionarItem}"
-								process="@this codigo valor-unitario quantidade quantidade_ quantidade__ valor-total id"
+								process="@this preco-venda codigo valor-unitario quantidade quantidade_ quantidade__ valor-total id"
 								style="font-weight: bold;" />
 						</p:panelGrid>
 					</p:panel>
@@ -675,17 +682,17 @@
 
 						<p:contextMenu id="menu-item" for="itensTable">
 							<p:menuitem value="Remover Item" id="btn-remove"
-								update="panel-table panel-itens_ total-compra" process="@this panel-table"
+								update="panel-table panel-itens_ total-compra menu-item" process="@this panel-table"
 								action="#{registroComprasBean.removeItem}" onstart="start();"
 								oncomplete="stop();" icon="fa fa-fw fa-trash"
-								disabled="#{registroComprasBean.itensCompraSize eq 0}" />
+								disabled="#{registroComprasBean.itensCompraSize eq 0 or registroComprasBean.itemCompra.id != null}" />
 
 							<p:menuitem value="Editar Item" id="btn-editar"
-								update="panel-table panel-itens_ default-busca form:total-compra form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:quantidade_ form:quantidade__ form:valor-total"
+								update="panel-table panel-itens_ default-busca form:total-compra form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:quantidade_ form:quantidade__ form:valor-total menu-item"
 								process="@this panel-table"
 								action="#{registroComprasBean.editarItem}" onstart="start();"
 								oncomplete="stop();" icon="fa fa-fw fa-edit"
-								disabled="#{registroComprasBean.itensCompraSize eq 0}" />
+								disabled="#{registroComprasBean.itensCompraSize eq 0 or registroComprasBean.itemCompra.id != null}" />
 						</p:contextMenu>
 
 						<p:panelGrid columns="2"  style="margin-top: 5px;float: right; margin-right: 10px;margin-bottom: 10px;"
@@ -709,7 +716,7 @@
 							<p:commandButton id="btn-calcular" value="Salvar Compra"
 								onstart="PF('downloadLoading').show();" icon="fa fa-save"
 								onsuccess="PF('downloadLoading').hide();"
-								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
+								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado() or registroComprasBean.itemCompra.id != null}"
 								update="msg confirmDialog panel-ajuste data-compra comprador panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:quantidade_ form:quantidade__ form:valor-total"
 								action="#{registroComprasBean.salvar}"
 								process="@this panel-table data-compra comprador"
@@ -1214,17 +1221,17 @@
 			
 			function ajaxDelay(quantidade_){ 
 				var valorUnitario = $('.valor-unitario input').val();
-				var quantidade = quantidade_;  
-				var subtotal = parseFloat(valorUnitario.replace('R$ ','').replace('.','').replace(',','.')) * parseFloat(quantidade.replace('.','').replace(',','.'));
+				var quantidade = quantidade_; 
+				
+				if(quantidade == '') {quantidade = parseFloat(0);}
+				else {quantidade = parseFloat(quantidade.replace('.','').replace(',','.'));}
+				
+				var subtotal = parseFloat(valorUnitario.replace('R$ ','').replace('.','').replace(',','.')) * quantidade;
 				
 				if(subtotal.toString() != 'NaN') { 
 					var f = parseFloat(subtotal).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
 					$('.sub-total input').val(f);
 				}
-				    
-				delay(function() { 
-					sendAjaxical(); 
-					}, 500);
 			}
 			
 			

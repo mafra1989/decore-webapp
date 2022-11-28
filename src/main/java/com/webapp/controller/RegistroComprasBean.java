@@ -858,18 +858,78 @@ public class RegistroComprasBean implements Serializable {
 			if(itemCompra.getQuantidade().doubleValue() > 0) {
 				
 				if(itemCompra.getValorUnitario().doubleValue() >= 0) {
-					itemCompra.setTotal(BigDecimal
-							.valueOf(itemCompra.getValorUnitario().doubleValue() * itemCompra.getQuantidade().doubleValue()));
-					itemCompra.setQuantidadeDisponivel(itemCompra.getQuantidade());
-					itemCompra.setCompra(compra);
-					itensCompra.add(itemCompra);
-
-					compra.setValorTotal(
-							BigDecimal.valueOf(compra.getValorTotal().doubleValue() + itemCompra.getTotal().doubleValue()));
-
-					itemCompra = new ItemCompra();
 					
-					produto = new Produto();
+					if(itemCompra.getId() == null) {
+						
+						itemCompra.setTotal(BigDecimal
+								.valueOf(itemCompra.getValorUnitario().doubleValue() * itemCompra.getQuantidade().doubleValue()));
+						itemCompra.setQuantidadeDisponivel(itemCompra.getQuantidade());
+						itemCompra.setCompra(compra);
+						itensCompra.add(itemCompra);
+
+						compra.setValorTotal(
+								BigDecimal.valueOf(compra.getValorTotal().doubleValue() + itemCompra.getTotal().doubleValue()));
+
+						itemCompra = new ItemCompra();
+						
+						produto = new Produto();
+						
+					} else {
+						
+						List<ItemVenda> itensVenda = itensVendas.porCompra(compra, itemCompra);
+						List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porItemCompra(itemCompra);
+						
+						BigDecimal quantidadeBaixadaDesseLote = BigDecimal.ZERO;
+						if(itensVendaCompra.size() > 0) {
+							quantidadeBaixadaDesseLote = itensVendaCompra.stream().map((x) -> x.getQuantidade()).reduce((x, y) -> x.add(y)).get();
+						
+						} else if(itensVenda.size() > 0) {
+							quantidadeBaixadaDesseLote = itensVenda.stream().map((x) -> x.getQuantidade()).reduce((x, y) -> x.add(y)).get();						
+						}
+						
+						if(itemCompra.getQuantidade().doubleValue() < quantidadeBaixadaDesseLote.doubleValue()) {
+							
+							NumberFormat nf_ = new DecimalFormat("###,##0.000", REAL);
+							NumberFormat nf__ = new DecimalFormat("###,##0", REAL);
+							NumberFormat nf___ = new DecimalFormat("###,##0.0", REAL);
+							
+							String quantidadeBaixadaDesseLoteEmString;
+							
+							if(itemCompra.getProduto().getUnidadeMedida().equals("Kg") || itemCompra.getProduto().getUnidadeMedida().equals("Lt"))  {
+								quantidadeBaixadaDesseLoteEmString = nf_.format(quantidadeBaixadaDesseLote);
+							} else if(itemCompra.getProduto().getUnidadeMedida().equals("Pt"))  {
+								quantidadeBaixadaDesseLoteEmString = nf___.format(quantidadeBaixadaDesseLote);
+							} else {
+								quantidadeBaixadaDesseLoteEmString = nf__.format(quantidadeBaixadaDesseLote);
+							}
+							
+							if(quantidadeBaixadaDesseLote.doubleValue() > 1) {
+								PrimeFaces.current()
+									.executeScript("swal({ type: 'error', title: 'Erro!', text: 'Atenção! " + quantidadeBaixadaDesseLoteEmString + " " +  itemCompra.getProduto().getUnidadeMedida().toLowerCase() + "(s) desse lote já saíram, a quantidade informada não é permitida. Deve ser >= " + quantidadeBaixadaDesseLoteEmString + " " + itemCompra.getProduto().getUnidadeMedida().toLowerCase() + "(s)!' });");					
+							} else {
+								PrimeFaces.current()
+									.executeScript("swal({ type: 'error', title: 'Erro!', text: 'Atenção! " + quantidadeBaixadaDesseLoteEmString + " " +  itemCompra.getProduto().getUnidadeMedida().toLowerCase() + " desse lote já saiu, a quantidade informada não é permitida. Deve ser >= " + quantidadeBaixadaDesseLoteEmString + " " + itemCompra.getProduto().getUnidadeMedida().toLowerCase() + "!' });");					
+							}
+							
+						} else {
+							itemCompra.setTotal(BigDecimal
+									.valueOf(itemCompra.getValorUnitario().doubleValue() * itemCompra.getQuantidade().doubleValue()));
+							
+							itemCompra.setQuantidadeDisponivel(new BigDecimal(itemCompra.getQuantidade().doubleValue() - quantidadeBaixadaDesseLote.doubleValue()));
+							
+							itemCompra.setCompra(compra);
+							itensCompra.add(itemCompra);
+
+							compra.setValorTotal(
+									BigDecimal.valueOf(compra.getValorTotal().doubleValue() + itemCompra.getTotal().doubleValue()));
+
+							itemCompra = new ItemCompra();
+							
+							produto = new Produto();
+						}
+						
+					}
+					
 				} else {
 					
 					PrimeFaces.current()
@@ -911,17 +971,17 @@ public class RegistroComprasBean implements Serializable {
 		List<ItemVenda> itensVenda = itensVendas.porCompra(compra, itemSelecionado);
 		List<ItemVendaCompra> itensVendaCompra = itensVendasCompras.porCompra(itemSelecionado.getCompra(), itemSelecionado.getProduto());
 
-		if (itensVenda.size() == 0 && itensVendaCompra.size() == 0) {
+		//if (itensVenda.size() == 0 && itensVendaCompra.size() == 0) {
 
 			itemCompra = itemSelecionado;
 			compra.setValorTotal(BigDecimal
 					.valueOf(compra.getValorTotal().doubleValue() - itemSelecionado.getTotal().doubleValue()));
 			itensCompra.remove(itemSelecionado);
 			itemSelecionado = null;
-		} else {
+		/*} else {
 			PrimeFaces.current().executeScript(
 					"swal({ type: 'error', title: 'Erro!', text: 'Este item já está vinculado a uma ou mais vendas!' });");
-		}
+		}*/
 
 	}
 	

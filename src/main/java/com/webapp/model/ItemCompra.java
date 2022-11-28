@@ -2,6 +2,7 @@ package com.webapp.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -45,6 +46,11 @@ public class ItemCompra implements Serializable {
 	@ManyToOne
 	@JoinColumn
 	private Produto produto;
+	
+	@NotNull
+	@Column(nullable = false)
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
+	private BigDecimal precoDeVenda;
 
 	/*
 	 * @ManyToOne
@@ -118,12 +124,18 @@ public class ItemCompra implements Serializable {
 		this.compra = compra;
 	}
 
+	public BigDecimal getPrecoDeVenda() {
+		return precoDeVenda;
+	}
+
+	public void setPrecoDeVenda(BigDecimal precoDeVenda) {
+		this.precoDeVenda = precoDeVenda;
+	}
+
+
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((code == null) ? 0 : code.hashCode());
-		return result;
+		return Objects.hash(code, id);
 	}
 
 	@Override
@@ -135,13 +147,9 @@ public class ItemCompra implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		ItemCompra other = (ItemCompra) obj;
-		if (code == null) {
-			if (other.code != null)
-				return false;
-		} else if (!code.equals(other.code))
-			return false;
-		return true;
+		return Objects.equals(code, other.code) && Objects.equals(id, other.id);
 	}
+
 
 	@Transient
 	private String code;

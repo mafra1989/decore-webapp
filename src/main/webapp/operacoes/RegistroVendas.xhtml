@@ -18,6 +18,9 @@
 
 		<style>
 @media ( min-width :220px) {
+	.sub-total > .ui-state-disabled {
+    	opacity: 0.95;
+    }
 	.layout-wrapper .layout-main .layout-content {
 	    padding: 55px 17px 4px 17px;
 	}
@@ -102,13 +105,14 @@
 		border: 1px solid #8a8585;
 	}
 	.swal2-popup {
-		width: 28em;
-		max-width: 100%;
-		padding: 0 0 0.4em 0;
+		width: max-content !important;
 		font-size: 0.75rem;
 	}
 	.swal2-popup #swal2-content {
 		font-weight: 400;
+	}
+	.swal2-popup .swal2-content {
+		width:23em;
 	}
 	body #item-dialog.ui-dialog .ui-dialog-content {
 		background-color: #ffffff;
@@ -622,12 +626,14 @@
 						<p:defaultCommand target="btn-adicionar" scope="itens-venda-panel" />
 
 						<h3 style="font-weight: bold">Itens da venda</h3>
+						
+						<p:focus id="focus-valor-unitario" for="valor-unitario" />
 
 						<p:commandButton styleClass="btn-new" icon="fa fa-fw fa-cubes"
 							title="Buscar produto" onstart="PF('downloadLoading').show();"
 							oncomplete="PF('downloadLoading').hide();PF('item-dialog').show()"
-							process="@this"
-							disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
+							process="@this" id="btn-novo"
+							disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado() or registroVendasBean.itemVenda.id != null}"
 							style="position: relative; float: right; margin-top: -38px; margin-right: 8px; width: 40px" />
 
 						<p:inputText id="id" type="hidden"
@@ -655,13 +661,13 @@
 						</p:panelGrid>
 						
 						<p:panelGrid columns="2" layout="grid" style="margin-top:-4px"
-							styleClass="panelgrid-noborder disabled disabled"
+							styleClass="panelgrid-noborder disabled disabled" id="preco-venda"
 							columnClasses="ui-grid-col-4, ui-grid-col-4"
-							rendered="false">
+							rendered="true">
 
-							<p:outputLabel value="Custo Médio Un." for="fornecedor" />
+							<p:outputLabel value="Preço de Venda" for="fornecedor" />
 							<p:inputNumber id="fornecedor" readonly="true" decimalPlaces="4" placeholder="R$ 0,0000" symbol="R$ "
-								value="#{registroVendasBean.itemVenda.produto.custoMedioUnitario}">
+								value="#{registroVendasBean.itemCompra.precoDeVenda}">
 							</p:inputNumber>
 						</p:panelGrid>
 
@@ -675,16 +681,16 @@
 								value="#{registroVendasBean.itemCompra}" placeholder="selecione">
 
 								<f:selectItem itemLabel="Selecione" />
-
-								<p:ajax event="change" process="@this" />
+ 
+ 								<p:ajax event="change" process="@this panel-lote" update="preco-venda" />
 
 								<f:selectItems value="#{registroVendasBean.itensCompra}"
-									var="itemCompra"
-									itemLabel="#{itemCompra.quantidadeDisponivel ge 2 ? ''.concat(itemCompra.quantidadeDisponivel_).concat(' Itens | Compra: ').concat(itemCompra.compra.dataCompraFormatada).concat(' | ').concat(itemCompra.valorUnitarioFormatado) : ''.concat(itemCompra.quantidadeDisponivel_).concat(' Item | Compra: ').concat(itemCompra.compra.dataCompraFormatada).concat(' | ').concat(itemCompra.valorUnitarioFormatado) }"
+									var="itemCompra" 
+									itemLabel="#{itemCompra.quantidadeDisponivel ge 2 ? ''.concat(itemCompra.quantidadeDisponivel_).concat(' ').concat(itemCompra.produto.unidadeMedida).concat(' | Compra: ').concat(itemCompra.compra.dataCompraFormatada).concat(' | ').concat(itemCompra.valorUnitarioFormatado) : ''.concat(itemCompra.quantidadeDisponivel_).concat(' ').concat(itemCompra.produto.unidadeMedida).concat(' | Compra: ').concat(itemCompra.compra.dataCompraFormatada).concat(' | ').concat(itemCompra.valorUnitarioFormatado) }"
 									itemValue="#{itemCompra}" />
 							</p:selectOneMenu>
 						</p:panelGrid>
-
+												
 
 						<p:panelGrid id="panel-valores" columns="2" layout="grid" style="margin-bottom: 5px"
 							styleClass="panelgrid-noborder disabled disabled" 
@@ -692,7 +698,7 @@
 
 							<p:outputLabel value="Valor Unitário" for="valor-unitario" />
 							<p:inputNumber id="valor-unitario" decimalPlaces="2" placeholder="R$ 0,00" symbol="R$ "
-								onkeyup="ajaxDelay()" styleClass="valor-unitario"
+								styleClass="valor-unitario" 
 								value="#{registroVendasBean.itemVenda.valorUnitario}">
 								
 								<p:ajax event="keydown" process="@this" update="btn-adicionar"></p:ajax>
@@ -733,7 +739,7 @@
 							
 
 							<p:outputLabel value="Sub-Total" for="valor-total" />
-							<p:inputNumber id="valor-total" decimalPlaces="2" readonly="true"
+							<p:inputNumber id="valor-total" decimalPlaces="2" disabled="true"
 								styleClass="sub-total" placeholder="R$ 0,00" symbol="R$ "
 								value="#{registroVendasBean.itemVenda.total}" />
 							
@@ -748,9 +754,9 @@
 								onstart="PF('downloadLoading').show();"
 								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
 								onsuccess="PF('downloadLoading').hide();" icon="fa fa-plus"
-								update="msg panel-valores codigo descricao fornecedor total-venda id valor-unitario quantidade valor-total panel-table lote "
+								update="itens-venda-panel form:btn-novo preco-venda panel-lote msg panel-valores codigo descricao fornecedor total-venda id valor-unitario quantidade valor-total panel-table lote "
 								action="#{registroVendasBean.adicionarItem}"
-								process="@this codigo panel-valores valor-unitario quantidade quantidade_ quantidade__ valor-total id lote"
+								process="@this panel-lote codigo panel-valores valor-unitario quantidade quantidade_ quantidade__ valor-total id lote"
 								style="font-weight: bold;" />
 						</p:panelGrid>
 						
@@ -840,18 +846,18 @@
 
 						<p:contextMenu id="menu-item" for="itensTable">
 							<p:menuitem value="Remover Item" id="btn-remove"
-								update="panel-table  form:id form:codigo form:descricao form:fornecedor form:lote form:total-venda"
+								update="panel-table  form:id form:codigo form:descricao form:fornecedor form:lote form:total-venda menu-item"
 								process="@this panel-table"
 								action="#{registroVendasBean.removeItem}" onstart="start();"
 								oncomplete="stop();" icon="fa fa-fw fa-trash"
-								disabled="#{registroVendasBean.itensVendaSize eq 0}" />
+								disabled="#{registroVendasBean.itensVendaSize eq 0 or registroVendasBean.itemVenda.id != null}" />
 
 							<p:menuitem value="Editar Item" id="btn-editar"
-								update="panel-table form:id form:codigo form:total-venda form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote "
+								update="form:btn-calcular_old form:btn-novo panel-table form:id form:codigo form:total-venda form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote menu-item"
 								process="@this panel-table"
 								action="#{registroVendasBean.editarItem}" onstart="start();"
 								oncomplete="stop();" icon="fa fa-fw fa-edit"
-								disabled="#{registroVendasBean.itensVendaSize eq 0}" />
+								disabled="#{registroVendasBean.itensVendaSize eq 0 or registroVendasBean.itemVenda.id != null}" />
 						</p:contextMenu>
 
 						<p:panelGrid columns="2"
@@ -876,7 +882,7 @@
 							<p:commandButton id="btn-calcular_old" value="Salvar Venda"
 								onstart="PF('downloadLoading').show();" icon="fa fa-save"
 								onsuccess="PF('downloadLoading').hide();"
-								disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()) or registroVendasBean.venda.exclusao}"
+								disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()) or registroVendasBean.venda.exclusao or registroVendasBean.itemVenda.id != null}"
 								update="msg accordion-panel panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote"
 								action="#{registroVendasBean.salvar}"
 								process="@this panel-table accordion-panel"
@@ -945,7 +951,7 @@
 								<p:commandButton icon="fa fa-fw fa-check"
 									action="#{registroVendasBean.selecionarProduto(produto)}"
 									title="Selecionar Produto" styleClass="btn-select"
-									update="form:panel-valores form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:quantidade_ form:quantidade__ form:valor-total form:lote "
+									update="form:focus-valor-unitario form:fornecedor form:panel-valores form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:quantidade_ form:quantidade__ form:valor-total form:lote "
 									process="@this" onstart="PF('downloadLoading').show();"
 									oncomplete="PF('downloadLoading').hide();PF('item-dialog').hide();">
 								</p:commandButton>
@@ -1228,6 +1234,11 @@
 
 									<p:selectOneMenu value="#{registroVendasBean.periodoPagamento}"
 										id="qtd-periodo" placeholder="selecione">
+										
+										<p:ajax event="change" listener="#{registroVendasBean.atualizaPrimeiraParcela}" process="@this" 
+										update="entrada editar-parcelas 
+											gerar-parcelas primeira-parcela 
+											qtd-parcelas qtd-periodo btn-salvar primeira-parcela" />
 
 										<f:selectItems value="#{registroVendasBean.periodosPagamentos}"
 											var="periodoPagamento"
@@ -1283,7 +1294,7 @@
 									
 									<p:inputNumber id="valor-recebido" decimalPlaces="2"
 										placeholder="R$ 0,00" autocomplete="off" symbol="R$ "
-										styleClass="entrada val-recebido" onkeyup="enter(event);"
+										styleClass="entrada val-recebido" 
 										value="#{registroVendasBean.valorRecebido}">
 	
 										<p:ajax event="change" process="@parent"
@@ -1310,7 +1321,7 @@
 									columnClasses="ui-grid-col-8, ui-grid-col-4">
 									<p:inputNumber id="faltando" decimalPlaces="2" readonly="true"
 										placeholder="R$ 0,00" autocomplete="off" symbol="R$ "
-										onkeyup="enter(event);" styleClass="entrada falta"
+										styleClass="entrada falta"
 										value="#{registroVendasBean.faltando}">
 									</p:inputNumber>
 
@@ -1328,7 +1339,7 @@
 
 								<p:inputNumber id="troco" decimalPlaces="2" readonly="true"
 									placeholder="R$ 0,00" autocomplete="off" symbol="R$ "
-									onkeyup="enter(event);" styleClass="entrada troco"
+									styleClass="entrada troco"
 									value="#{registroVendasBean.troco}">
 								</p:inputNumber>
 
@@ -1785,7 +1796,7 @@
 				library="manhattan-layout" width="50" />
 		</p:dialog>
 
-		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+		<script src="https:////cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 		<script type="text/javascript">
 			function start() {
 				PF('downloadLoading').show();
@@ -1801,10 +1812,10 @@
 				  showConfirmButton: false,
 				  timer: 1000,
 				  timerProgressBar: true,
-				  onOpen: (toast) => {
-				    toast.addEventListener('mouseenter', Swal.stopTimer)
-				    toast.addEventListener('mouseleave', Swal.resumeTimer)
-				  }
+				  didOpen: (toast) => {
+					    toast.addEventListener('mouseenter', Swal.stopTimer)
+					    toast.addEventListener('mouseleave', Swal.resumeTimer)
+					  }
 				});
 			
 			const Toast_ = Swal.mixin({
@@ -1813,10 +1824,10 @@
 			  showConfirmButton: false,
 			  timer: 1000,
 			  timerProgressBar: true,
-			  onOpen: (toast) => {
-			    toast.addEventListener('mouseenter', Swal.stopTimer)
-			    toast.addEventListener('mouseleave', Swal.resumeTimer)
-			  }
+			  didOpen: (toast) => {
+				    toast.addEventListener('mouseenter', Swal.stopTimer)
+				    toast.addEventListener('mouseleave', Swal.resumeTimer)
+				  }
 			});
 			
 			var delay = (function() {
@@ -1827,20 +1838,36 @@
 			    };
 			})();
 			
-			function ajaxDelay(){ 
-				var valorUnitario = $('.valor-unitario input').val();
+			
+			function ajaxDelayQtd(){
 				var quantidade = $('.quantidade input').val(); 
-				var subtotal = parseFloat(valorUnitario.replace('R$ ','').replace('.','').replace(',','.')) * parseFloat(quantidade);
+				ajaxDelay(quantidade);
+			}
+			
+			function ajaxDelayQtd_(){
+				var quantidade = $('.quantidade_ input').val(); 
+				ajaxDelay(quantidade);
+			}
+			
+			function ajaxDelayQtd__(){
+				var quantidade = $('.quantidade__ input').val(); 
+				ajaxDelay(quantidade);
+			}
+			
+			function ajaxDelay(quantidade_){ 
+				var valorUnitario = $('.valor-unitario input').val();
+				var quantidade = quantidade_; 
 				
+				if(quantidade == '') {quantidade = parseFloat(0);}
+				else {quantidade = parseFloat(quantidade.replace('.','').replace(',','.'));}
+					
+				var subtotal = parseFloat(valorUnitario.replace('R$ ','').replace('.','').replace(',','.')) * quantidade;
 				if(subtotal.toString() != 'NaN') { 
 					var f = parseFloat(subtotal).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
 					$('.sub-total input').val(f);
 				}
-				    
-				delay(function() { 
-					sendAjaxical(); 
-					}, 500);
 			}
+			
 			
 			
 			function ocultar() {

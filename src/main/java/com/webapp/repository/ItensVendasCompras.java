@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 import com.webapp.model.Compra;
+import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.ItemVendaCompra;
 import com.webapp.model.Produto;
@@ -62,5 +63,11 @@ public class ItensVendasCompras implements Serializable {
 				.createQuery("from ItemVendaCompra e join fetch e.compra c where c.id = :id order by e.id asc", ItemVendaCompra.class)
 				.setParameter("id", compra.getId()).getResultList();
 	}
+	
+	public List<ItemVendaCompra> porItemCompra(ItemCompra itemCompra) {
+		return this.manager
+				.createQuery("from ItemVendaCompra e join fetch e.itemCompra c where c.id = :id order by e.id asc", ItemVendaCompra.class)
+				.setParameter("id", itemCompra.getId()).getResultList();
+	} 
 
 }

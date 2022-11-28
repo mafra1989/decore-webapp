@@ -268,6 +268,9 @@ public class ItemVenda implements Serializable {
 	@Transient
 	private boolean pizza;
 	
+	@Transient
+	private boolean novo = false;
+	
 	
 	public String getCode() {
 		return code;
@@ -307,6 +310,14 @@ public class ItemVenda implements Serializable {
 
 	public void setPizza(boolean pizza) {
 		this.pizza = pizza;
+	}
+
+	public boolean isNovo() {
+		return novo;
+	}
+
+	public void setNovo(boolean novo) {
+		this.novo = novo;
 	}
 
 }
