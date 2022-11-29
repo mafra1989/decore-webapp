@@ -302,6 +302,7 @@ public class CadastroProdutoBean implements Serializable {
 		
 		produto.setTotalAjusteItensVendidos(totalAjusteItensVendidos);
 		
+		produto.setQuantidadeAtual(new BigDecimal(itensCompras.quantidadeDisponivelPorProduto(produto).doubleValue()));
 		
 		//produto.setTotalAcumulado(BigDecimal.valueOf(itensCompras.aVender(produto).doubleValue() * (1 + (produto.getMargemLucro().doubleValue()/100))));
 		produto.setTotalAcumulado(BigDecimal.valueOf(produto.getQuantidadeAtual().doubleValue() * produto.getPrecoDeVenda().doubleValue()));
@@ -325,7 +326,7 @@ public class CadastroProdutoBean implements Serializable {
 		
 		produto.setQuantidadeItensVendidos(totalItensVendidos);
 		
-		produto.setQuantidadeAtual(new BigDecimal(itensCompras.quantidadeDisponivelPorProduto(produto).doubleValue()));
+		//produto.setQuantidadeAtual(new BigDecimal(itensCompras.quantidadeDisponivelPorProduto(produto).doubleValue()));
 		
 		calculaMargens();
 		
