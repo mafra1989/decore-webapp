@@ -507,8 +507,8 @@ public class Vendas implements Serializable {
 	
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalVendasPorCategoria(Empresa empresa) {
-		//  i.venda.status = 'Y' AND
-		String jpql = "SELECT p.categoriaProduto.nome, SUM(i.total), SUM(i.quantidade) FROM ItemVenda i JOIN i.produto p WHERE i.venda.empresa.id = :empresa AND ((i.venda.vendaPaga = 'Y' AND i.venda.conta = 'N') OR (i.venda.vendaPaga = 'N' AND i.venda.conta = 'Y')) AND i.venda.ajuste = 'N' and i.venda.exclusao = 'N' and i.exclusao = 'N' GROUP BY p.categoriaProduto.nome ORDER BY SUM(i.total) DESC";
+		//  i.venda.status = 'Y' AND //AND ((i.venda.vendaPaga = 'Y' AND i.venda.conta = 'N') OR (i.venda.vendaPaga = 'N' AND i.venda.conta = 'Y'))
+		String jpql = "SELECT p.categoriaProduto.nome, SUM(i.total), SUM(i.quantidade) FROM ItemVenda i JOIN i.produto p WHERE i.venda.empresa.id = :empresa AND i.venda.ajuste = 'N' and i.venda.exclusao = 'N' and i.exclusao = 'N' GROUP BY p.categoriaProduto.nome ORDER BY SUM(i.total) DESC";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
 		List<Object[]> result = q.getResultList();
 
@@ -517,8 +517,8 @@ public class Vendas implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalVendasPorProduto(String categoriaProduto, Empresa empresa) {
-		//  i.venda.status = 'Y' AND
-		String jpql = "SELECT p.descricao, SUM(i.total), SUM(i.quantidade), p.codigo, p.unidadeMedida FROM ItemVenda i JOIN i.produto p where i.venda.empresa.id = :empresa AND p.categoriaProduto.nome = :categoriaProduto AND ((i.venda.vendaPaga = 'Y' AND i.venda.conta = 'N') OR (i.venda.vendaPaga = 'N' AND i.venda.conta = 'Y')) AND i.venda.ajuste = 'N' and i.venda.exclusao = 'N' and i.exclusao = 'N' GROUP BY p.codigo, p.descricao, p.unidadeMedida ORDER BY SUM(i.total) DESC";
+		//  i.venda.status = 'Y' AND //AND ((i.venda.vendaPaga = 'Y' AND i.venda.conta = 'N') OR (i.venda.vendaPaga = 'N' AND i.venda.conta = 'Y'))
+		String jpql = "SELECT p.descricao, SUM(i.total), SUM(i.quantidade), p.codigo, p.unidadeMedida FROM ItemVenda i JOIN i.produto p where i.venda.empresa.id = :empresa AND p.categoriaProduto.nome = :categoriaProduto AND i.venda.ajuste = 'N' and i.venda.exclusao = 'N' and i.exclusao = 'N' GROUP BY p.codigo, p.descricao, p.unidadeMedida ORDER BY SUM(i.total) DESC";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("categoriaProduto", categoriaProduto);
 		List<Object[]> result = q.getResultList();
 
