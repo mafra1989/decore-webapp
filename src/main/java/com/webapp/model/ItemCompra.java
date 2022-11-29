@@ -47,8 +47,8 @@ public class ItemCompra implements Serializable {
 	@JoinColumn
 	private Produto produto;
 	
-	@NotNull
-	@Column(nullable = false)
+	//@NotNull
+	@Column(nullable = true)
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal precoDeVenda;
 

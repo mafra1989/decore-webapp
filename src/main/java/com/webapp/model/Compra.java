@@ -267,6 +267,9 @@ public class Compra implements Serializable {
 	
 	@Transient
 	private List<ItemCompra> itensCompra;
+	
+	@Transient
+	private String tipoCompra;
 
 	public String getDataCompraFormatada() {
 		return dataCompraFormatada;
@@ -282,6 +285,10 @@ public class Compra implements Serializable {
 
 	public void setItensCompra(List<ItemCompra> itensCompra) {
 		this.itensCompra = itensCompra;
+	}
+
+	public String getTipoCompra() {
+		return this.ajuste ? "Ajuste: " : "Compra: ";
 	}
 
 }

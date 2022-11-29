@@ -200,17 +200,20 @@ public class RegistroComprasBean implements Serializable {
 	public void pesquisar_() {
 		System.out.println("Código escaneado: " + filter.getCodigo());
 		
-		Produto produto = produtos.porCodigoDeBarras_(filter.getCodigo(), usuario.getEmpresa());	
+		if(!this.filter.getCodigo().equals("")) {
 		
-		if(produto != null) {
-			filter = new ProdutoFilter();
-			selecionarProduto(produto);
+			Produto produto = produtos.porCodigoDeBarras_(filter.getCodigo(), usuario.getEmpresa());	
 			
-		} else {
-			filter = new ProdutoFilter();
-			itemCompra = new ItemCompra();
-			//itemCompra.getProduto().setMargemLucro(BigDecimal.ZERO);
-			PrimeFaces.current().executeScript("swal({ type: 'error', title: 'Erro!', text: 'Produto não encontrado!', timer: 1500 });");
+			if(produto != null) {
+				filter = new ProdutoFilter();
+				selecionarProduto(produto);
+				
+			} else {
+				filter = new ProdutoFilter();
+				itemCompra = new ItemCompra();
+				//itemCompra.getProduto().setMargemLucro(BigDecimal.ZERO);
+				PrimeFaces.current().executeScript("swal({ type: 'error', title: 'Erro!', text: 'Produto não encontrado!', timer: 1500 });");
+			}
 		}
 		
 	}

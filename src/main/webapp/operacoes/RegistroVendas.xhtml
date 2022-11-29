@@ -686,7 +686,7 @@
 
 								<f:selectItems value="#{registroVendasBean.itensCompra}"
 									var="itemCompra" 
-									itemLabel="#{itemCompra.quantidadeDisponivel ge 2 ? ''.concat(itemCompra.quantidadeDisponivel_).concat(' ').concat(itemCompra.produto.unidadeMedida).concat(' | Compra: ').concat(itemCompra.compra.dataCompraFormatada).concat(' | ').concat(itemCompra.valorUnitarioFormatado) : ''.concat(itemCompra.quantidadeDisponivel_).concat(' ').concat(itemCompra.produto.unidadeMedida).concat(' | Compra: ').concat(itemCompra.compra.dataCompraFormatada).concat(' | ').concat(itemCompra.valorUnitarioFormatado) }"
+									itemLabel="#{itemCompra.quantidadeDisponivel ge 2 ? ''.concat(itemCompra.quantidadeDisponivel_).concat(' ').concat(itemCompra.produto.unidadeMedida).concat(' | ').concat(itemCompra.compra.tipoCompra).concat(itemCompra.compra.dataCompraFormatada).concat(' | ').concat(itemCompra.valorUnitarioFormatado) : ''.concat(itemCompra.quantidadeDisponivel_).concat(' ').concat(itemCompra.produto.unidadeMedida).concat(' | ').concat(itemCompra.compra.tipoCompra).concat(itemCompra.compra.dataCompraFormatada).concat(' | ').concat(itemCompra.valorUnitarioFormatado) }"
 									itemValue="#{itemCompra}" />
 							</p:selectOneMenu>
 						</p:panelGrid>
@@ -698,7 +698,7 @@
 
 							<p:outputLabel value="Valor Unitário" for="valor-unitario" />
 							<p:inputNumber id="valor-unitario" decimalPlaces="2" placeholder="R$ 0,00" symbol="R$ "
-								styleClass="valor-unitario" 
+								styleClass="valor-unitario" onkeyup="ajaxDelayValor()"
 								value="#{registroVendasBean.itemVenda.valorUnitario}">
 								
 								<p:ajax event="keydown" process="@this" update="btn-adicionar"></p:ajax>
@@ -887,7 +887,7 @@
 								action="#{registroVendasBean.salvar}"
 								process="@this panel-table accordion-panel"
 								style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;"
-								rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 7111 or seguranca.usuarioLogado.usuario.empresa.id == 7112}" />
+								rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 7111 and seguranca.usuarioLogado.usuario.empresa.id == 7112}" />
 								
 							<p:commandButton id="btn-calcular" value="Finalizar Venda"
 								onstart="PF('downloadLoading').show();" icon="fa fa-save"
@@ -897,7 +897,7 @@
 								disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()) or registroVendasBean.venda.exclusao}"
 								update="msg panel-table accordion-panel form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote panel-itens confirm-dialog confirmDialog"
 								process="@this panel-table accordion-panel"
-								rendered="#{seguranca.usuarioLogado.usuario.empresa.id != 7111 and seguranca.usuarioLogado.usuario.empresa.id != 7112}" />
+								rendered="#{seguranca.usuarioLogado.usuario.empresa.id != 7111 and seguranca.usuarioLogado.usuario.empresa.id != 7112 or true}" />
 							
 						</p:panelGrid>
 
@@ -1854,14 +1854,36 @@
 				ajaxDelay(quantidade);
 			}
 			
+			function ajaxDelayValor(){
+				var quantidade = $('.quantidade input').val(); 
+				if(!(quantidade == undefined)) {					
+					ajaxDelay(quantidade);
+				} else {
+					quantidade = $('.quantidade_ input').val(); 
+					if(!(quantidade == undefined)) {
+						alert(quantidade);
+						ajaxDelay(quantidade);
+					} else {
+						quantidade = $('.quantidade__ input').val(); 
+						if(!(quantidade == undefined)) {
+							ajaxDelay(quantidade);
+						}
+					}
+				}					
+			}
+			
 			function ajaxDelay(quantidade_){ 
 				var valorUnitario = $('.valor-unitario input').val();
+								
+				if(valorUnitario == 'R$' || valorUnitario == 'R$ ') {valorUnitario = parseFloat(0);}
+				else {valorUnitario = parseFloat(valorUnitario.replace('R$ ','').replace('.','').replace(',','.'));}
+				
 				var quantidade = quantidade_; 
 				
 				if(quantidade == '') {quantidade = parseFloat(0);}
 				else {quantidade = parseFloat(quantidade.replace('.','').replace(',','.'));}
 					
-				var subtotal = parseFloat(valorUnitario.replace('R$ ','').replace('.','').replace(',','.')) * quantidade;
+				var subtotal = valorUnitario * quantidade;
 				if(subtotal.toString() != 'NaN') { 
 					var f = parseFloat(subtotal).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
 					$('.sub-total input').val(f);

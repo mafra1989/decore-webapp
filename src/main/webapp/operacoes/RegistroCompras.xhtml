@@ -506,7 +506,7 @@
 							columnClasses="ui-grid-col-4, ui-grid-col-4">
 
 							<p:outputLabel value="Valor Unitário" for="valor-unitario" />
-							<p:inputNumber id="valor-unitario" decimalPlaces="4" 
+							<p:inputNumber id="valor-unitario" decimalPlaces="4" onkeyup="ajaxDelayValor()" 
 								placeholder="R$ 0,0000" symbol="R$ " styleClass="valor-unitario"
 								value="#{registroComprasBean.itemCompra.valorUnitario}">
 								
@@ -1219,15 +1219,36 @@
 				ajaxDelay(quantidade);
 			}
 			
+			function ajaxDelayValor(){
+				var quantidade = $('.quantidade input').val(); 
+				if(!(quantidade == undefined)) {					
+					ajaxDelay(quantidade);
+				} else {
+					quantidade = $('.quantidade_ input').val(); 
+					if(!(quantidade == undefined)) {
+						alert(quantidade);
+						ajaxDelay(quantidade);
+					} else {
+						quantidade = $('.quantidade__ input').val(); 
+						if(!(quantidade == undefined)) {
+							ajaxDelay(quantidade);
+						}
+					}
+				}					
+			}
+			
 			function ajaxDelay(quantidade_){ 
 				var valorUnitario = $('.valor-unitario input').val();
+				
+				if(valorUnitario == 'R$' || valorUnitario == 'R$ ') {valorUnitario = parseFloat(0);}
+				else {valorUnitario = parseFloat(valorUnitario.replace('R$ ','').replace('.','').replace(',','.'));}
+				
 				var quantidade = quantidade_; 
 				
 				if(quantidade == '') {quantidade = parseFloat(0);}
 				else {quantidade = parseFloat(quantidade.replace('.','').replace(',','.'));}
 				
-				var subtotal = parseFloat(valorUnitario.replace('R$ ','').replace('.','').replace(',','.')) * quantidade;
-				
+				var subtotal = valorUnitario * quantidade;				
 				if(subtotal.toString() != 'NaN') { 
 					var f = parseFloat(subtotal).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
 					$('.sub-total input').val(f);
