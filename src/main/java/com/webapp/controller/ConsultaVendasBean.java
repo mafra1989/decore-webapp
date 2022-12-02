@@ -14,6 +14,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.ExternalContext;
@@ -35,6 +36,9 @@ import com.webapp.model.EspelhoVenda;
 import com.webapp.model.ItemCaixa;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemDevolucao;
+import com.webapp.model.ItemEspelhoVendaPagamento;
+import com.webapp.model.ItemEspelhoVendaPagamentos;
+import com.webapp.model.ItemEspelhoVendaParcelamentos;
 import com.webapp.model.ItemEspelhoVendaProdutos;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.ItemVendaCompra;
@@ -44,6 +48,7 @@ import com.webapp.model.Produto;
 import com.webapp.model.StatusPedido;
 import com.webapp.model.TipoAtividade;
 import com.webapp.model.TipoOperacao;
+import com.webapp.model.TipoPagamento;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
 import com.webapp.report.Relatorio;
@@ -395,6 +400,8 @@ public class ConsultaVendasBean implements Serializable {
 
 	public void emitirPedido() {
 
+		vendaSelecionada = vendas.porId(vendaSelecionada.getId());
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 		EspelhoVenda pedido = new EspelhoVenda();
@@ -507,7 +514,55 @@ public class ConsultaVendasBean implements Serializable {
 			
 			pedido.getItensPedidos().add(itemPedido);
 		}
-
+		
+		Double troco = 0D;
+		List<Pagamento> listaPagamentos = pagamentos.todosPorVenda(vendaSelecionada, usuario_.getEmpresa());
+		for (Pagamento pagamento : listaPagamentos) {
+			
+			troco += pagamento.getTroco().doubleValue();
+				
+			ItemEspelhoVendaPagamentos pagamentosPedido = new ItemEspelhoVendaPagamentos();
+			pagamentosPedido.setFormaPagamento(pagamento.getFormaPagamento().getNome());
+			pagamentosPedido.setValor(nf.format(pagamento.getValor().doubleValue()));
+			
+			pedido.getItensPagamentos().add(pagamentosPedido);
+			
+		}
+		
+		if(listaPagamentos.size() == 0) {
+			
+			if(vendaSelecionada.isConta() && vendaSelecionada.getTipoPagamento() == TipoPagamento.AVISTA) {
+				List<Conta> listaContas = contas.porCodigoOperacao(vendaSelecionada.getNumeroVenda(), "VENDA", usuario_.getEmpresa());
+				
+				Optional<Conta> conta = listaContas.stream().findFirst();
+				
+				ItemEspelhoVendaPagamento pagamentosPedido = new ItemEspelhoVendaPagamento();
+				pagamentosPedido.setValorPagar(nf.format(conta.get().getValor().doubleValue()));
+				pagamentosPedido.setVencimento(sdf.format(conta.get().getVencimento()));
+				
+				pedido.getItensPagamento().add(pagamentosPedido);
+				
+			} else if(vendaSelecionada.isConta() && vendaSelecionada.getTipoPagamento() == TipoPagamento.PARCELADO) {
+				List<Conta> listaContas = contas.porCodigoOperacao(vendaSelecionada.getNumeroVenda(), "VENDA", usuario_.getEmpresa());
+				
+				listaContas.forEach(f -> {
+					ItemEspelhoVendaParcelamentos parcelamentosPedido = new ItemEspelhoVendaParcelamentos();
+					parcelamentosPedido.setParcela(f.getParcela());
+					parcelamentosPedido.setValor(nf.format(f.getValor().doubleValue()));
+					parcelamentosPedido.setVencimento(sdf.format(f.getVencimento()));
+					
+					if(f.getParcela().equals("Entrada")) { parcelamentosPedido.setStatus("✓"); }
+		            
+		            pedido.getItensParcelamentos().add(parcelamentosPedido);
+		        });
+				
+			}
+		}	
+		
+		pedido.setTipoPagamento(vendaSelecionada.getTipoPagamento().name());
+		pedido.setConta(vendaSelecionada.isConta());
+		
+		pedido.setTroco(nf.format(troco.doubleValue()));
 		
 		if(usuario_.getEmpresa().getLogoRelatorio() != null) {
 			

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="produtos" pageWidth="184" pageHeight="842" columnWidth="184" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="fec26e42-79b7-4cba-b6f5-880441f51903">
+	<property name="ireport.zoom" value="4.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="borda">
+		<box topPadding="0" leftPadding="0" rightPadding="0">
+			<pen lineWidth="1.0" lineColor="#666666"/>
+			<topPen lineWidth="1.0" lineColor="#666666"/>
+			<leftPen lineWidth="1.0" lineColor="#666666"/>
+			<bottomPen lineWidth="1.0" lineColor="#666666"/>
+			<rightPen lineWidth="1.0" lineColor="#666666"/>
+		</box>
+	</style>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="valor" class="java.lang.String"/>
+	<field name="parcela" class="java.lang.String"/>
+	<field name="vencimento" class="java.lang.String"/>
+	<field name="status" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="99eb87d3-651c-4a79-9ae0-ca6a7faa4c34" stretchType="RelativeToBandHeight" x="64" y="0" width="60" height="13"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="43852d43-7bbb-4340-b05b-eab44cf3423e" x="1" y="14" width="184" height="2"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement uuid="d7d8af66-95ac-4fe5-aab6-2fc687d32f8e" x="0" y="0" width="51" height="13"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{parcela}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e9a39acf-2cd8-4c77-bbf1-e702f7fbf5b4" x="124" y="0" width="60" height="13"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{vencimento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="5ff668c1-c9bf-4ba5-b951-0e53f7c1adb7" x="51" y="0" width="13" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[R$]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

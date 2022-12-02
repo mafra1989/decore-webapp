@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="danfeNfce" pageWidth="139" pageHeight="800" columnWidth="135" leftMargin="2" rightMargin="2" topMargin="5" bottomMargin="5" isIgnorePagination="true" uuid="43e8f7d9-a4a8-4ac1-b35c-59d8ae725204">
-	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.zoom" value="5.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="73"/>
+	<property name="ireport.y" value="609"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String">
 		<defaultValueExpression><![CDATA["D:\\Temporaria\\Eliane\\Relatorios_NFCe\\"]]></defaultValueExpression>
 	</parameter>
@@ -86,14 +86,14 @@
 	<title>
 		<band height="110" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="36" width="135" height="10" uuid="a74bdaf5-df36-457e-915f-27347bcbf72a"/>
+				<reportElement uuid="a74bdaf5-df36-457e-915f-27347bcbf72a" x="0" y="36" width="135" height="10"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Courier New" size="7" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{xNome}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="46" width="135" height="10" isRemoveLineWhenBlank="true" uuid="efbe58b5-c163-41b7-bdad-14f10309f24e">
+				<reportElement uuid="efbe58b5-c163-41b7-bdad-14f10309f24e" x="0" y="46" width="135" height="10" isRemoveLineWhenBlank="true">
 					<printWhenExpression><![CDATA[!$F{CNPJ}.equals("")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -102,7 +102,7 @@
 				<textFieldExpression><![CDATA["CNPJ: " + $F{CNPJ}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="0" y="56" width="135" height="10" isRemoveLineWhenBlank="true" uuid="8c8898fc-cecb-4cc3-bf1a-885d8066d68d">
+				<reportElement uuid="8c8898fc-cecb-4cc3-bf1a-885d8066d68d" positionType="Float" x="0" y="56" width="135" height="10" isRemoveLineWhenBlank="true">
 					<printWhenExpression><![CDATA[!$F{xLgr}.equals("") &&
 !$F{nro}.equals("") &&
 !$F{xBairro}.equals("")]]></printWhenExpression>
@@ -113,7 +113,7 @@
 				<textFieldExpression><![CDATA[$F{xLgr}+", " + $F{nro}+" - "+$F{xBairro}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="0" y="66" width="135" height="10" isRemoveLineWhenBlank="true" uuid="388fa089-5bd5-40e5-98a8-b314039a2d7c">
+				<reportElement uuid="388fa089-5bd5-40e5-98a8-b314039a2d7c" positionType="Float" x="0" y="66" width="135" height="10" isRemoveLineWhenBlank="true">
 					<printWhenExpression><![CDATA[!$F{xMun}.equals("") &&
 !$F{UF}.equals("")]]></printWhenExpression>
 				</reportElement>
@@ -123,7 +123,7 @@
 				<textFieldExpression><![CDATA[$F{xMun} + " - " + $F{UF}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="0" y="86" width="135" height="13" uuid="9463903d-cde9-464e-8086-4c56f6732f6f"/>
+				<reportElement uuid="9463903d-cde9-464e-8086-4c56f6732f6f" positionType="Float" x="0" y="86" width="135" height="13"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true" isPdfEmbedded="true"/>
 					<paragraph tabStopWidth="40"/>
@@ -131,24 +131,24 @@
 				<text><![CDATA[*** NAO E DOCUMENTO FISCAL ***]]></text>
 			</staticText>
 			<line>
-				<reportElement positionType="Float" x="0" y="109" width="135" height="1" uuid="25ef40bb-8deb-4ae8-ac80-d9cbc6a44a02"/>
+				<reportElement uuid="25ef40bb-8deb-4ae8-ac80-d9cbc6a44a02" positionType="Float" x="0" y="109" width="135" height="1"/>
 			</line>
 			<textField>
-				<reportElement positionType="Float" x="0" y="100" width="63" height="8" uuid="45be684f-e507-41cf-8ae9-ccc3bf7b1250"/>
+				<reportElement uuid="45be684f-e507-41cf-8ae9-ccc3bf7b1250" positionType="Float" x="0" y="100" width="63" height="8"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
 					<font fontName="Courier New" size="4" isBold="true" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["IMPRESSO EM: " + $F{dataVenda}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" evaluationTime="Report" pattern="">
-				<reportElement positionType="Float" x="63" y="100" width="72" height="8" uuid="1b11afbb-c562-473f-97bc-057160d453b2"/>
+				<reportElement uuid="1b11afbb-c562-473f-97bc-057160d453b2" positionType="Float" x="63" y="100" width="72" height="8"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Courier New" size="4" isBold="true" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["N. Venda: " + $F{vendaNum}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="76" width="135" height="10" isRemoveLineWhenBlank="true" uuid="b72c4ee3-cdf9-42e5-a89c-a0289ac825db">
+				<reportElement uuid="b72c4ee3-cdf9-42e5-a89c-a0289ac825db" x="0" y="76" width="135" height="10" isRemoveLineWhenBlank="true">
 					<printWhenExpression><![CDATA[!$F{contato}.equals("")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
@@ -157,7 +157,7 @@
 				<textFieldExpression><![CDATA["Contato: " + $F{contato}]]></textFieldExpression>
 			</textField>
 			<image scaleImage="FillFrame">
-				<reportElement x="47" y="1" width="40" height="35" isRemoveLineWhenBlank="true" uuid="75c2b78a-1ff4-43df-8b84-029ae5d12457"/>
+				<reportElement uuid="75c2b78a-1ff4-43df-8b84-029ae5d12457" x="47" y="1" width="40" height="35" isRemoveLineWhenBlank="true"/>
 				<imageExpression><![CDATA[$F{logo}]]></imageExpression>
 			</image>
 		</band>
@@ -165,52 +165,52 @@
 	<columnHeader>
 		<band height="8" splitType="Stretch">
 			<staticText>
-				<reportElement positionType="Float" x="12" y="0" width="20" height="8" uuid="33ec2538-78cd-4c9b-8e6e-5961dcd7daf3"/>
+				<reportElement uuid="33ec2538-78cd-4c9b-8e6e-5961dcd7daf3" positionType="Float" x="12" y="0" width="20" height="8"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Courier New" size="5" isBold="true" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[Código]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="32" y="0" width="31" height="8" uuid="5682caf3-87e8-4ae9-a467-a9cac9987c9b"/>
+				<reportElement uuid="5682caf3-87e8-4ae9-a467-a9cac9987c9b" positionType="Float" x="32" y="0" width="31" height="8"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Courier New" size="5" isBold="true" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[Descrição]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="63" y="0" width="17" height="8" uuid="94a37a3b-3f7d-4207-b565-23277958c977"/>
+				<reportElement uuid="94a37a3b-3f7d-4207-b565-23277958c977" positionType="Float" x="63" y="0" width="17" height="8"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Courier New" size="5" isBold="true" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[Qtde]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="80" y="0" width="10" height="8" uuid="240ddd12-814e-49d0-8fe7-bb4c0256f2ab"/>
+				<reportElement uuid="240ddd12-814e-49d0-8fe7-bb4c0256f2ab" positionType="Float" x="80" y="0" width="10" height="8"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Courier New" size="5" isBold="true" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[UN]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="90" y="0" width="25" height="8" uuid="c3dfb502-20f7-46be-b202-73ff6ac21966"/>
+				<reportElement uuid="c3dfb502-20f7-46be-b202-73ff6ac21966" positionType="Float" x="90" y="0" width="25" height="8"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Courier New" size="5" isBold="true" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[Val. Un.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="115" y="0" width="20" height="8" uuid="b00a3df6-72f7-4ee1-86ea-9277bcef1d0c"/>
+				<reportElement uuid="b00a3df6-72f7-4ee1-86ea-9277bcef1d0c" positionType="Float" x="115" y="0" width="20" height="8"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Courier New" size="5" isBold="true" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[Total]]></text>
 			</staticText>
 			<line>
-				<reportElement x="0" y="7" width="135" height="1" uuid="5eb54958-c192-4e82-83ba-1baf8531f0a9"/>
+				<reportElement uuid="5eb54958-c192-4e82-83ba-1baf8531f0a9" x="0" y="7" width="135" height="1"/>
 			</line>
 			<staticText>
-				<reportElement positionType="Float" x="0" y="0" width="12" height="8" uuid="17789a5e-1eb0-4978-89f6-24374580ada5"/>
+				<reportElement uuid="17789a5e-1eb0-4978-89f6-24374580ada5" positionType="Float" x="0" y="0" width="12" height="8"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Courier New" size="5" isBold="true" isPdfEmbedded="true"/>
 				</textElement>
@@ -221,7 +221,7 @@
 	<detail>
 		<band height="10" splitType="Stretch">
 			<subreport>
-				<reportElement positionType="Float" x="0" y="1" width="135" height="8" uuid="d7b4f6dc-c1b8-4e9d-8f8c-a5415218d341"/>
+				<reportElement uuid="d7b4f6dc-c1b8-4e9d-8f8c-a5415218d341" positionType="Float" x="0" y="1" width="135" height="8"/>
 				<subreportParameter name="XML_DATA_DOCUMENT">
 					<subreportParameterExpression><![CDATA[$P{XML_DATA_DOCUMENT}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -233,21 +233,21 @@
 	<columnFooter>
 		<band height="151" splitType="Stretch">
 			<staticText>
-				<reportElement positionType="Float" x="0" y="2" width="80" height="9" uuid="d3739f27-b8c8-4bd9-98bf-8ed5f1fd6fae"/>
+				<reportElement uuid="d3739f27-b8c8-4bd9-98bf-8ed5f1fd6fae" positionType="Float" x="0" y="2" width="80" height="9"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Courier New" size="6" isBold="true" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[QTD. TOTAL DE ITENS]]></text>
 			</staticText>
 			<textField>
-				<reportElement positionType="Float" x="0" y="34" width="80" height="9" uuid="6e03a8d7-2284-4123-8853-ff5da9fcdd2b"/>
+				<reportElement uuid="6e03a8d7-2284-4123-8853-ff5da9fcdd2b" positionType="Float" x="0" y="34" width="80" height="9"/>
 				<textElement verticalAlignment="Middle" markup="none">
 					<font fontName="Courier New" size="7" isBold="true" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{vendaPaga}.equals("N") ? "VALOR A PAGAR R$" : "VALOR A RECEBER R$"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="0" y="43" width="80" height="7" isRemoveLineWhenBlank="true" uuid="e5247c5a-3b97-4d3b-bbe1-fc58882e4244">
+				<reportElement uuid="e5247c5a-3b97-4d3b-bbe1-fc58882e4244" positionType="Float" x="0" y="43" width="80" height="7" isRemoveLineWhenBlank="true">
 					<printWhenExpression><![CDATA[$F{vendaPaga}.equals("N")]]></printWhenExpression>
 				</reportElement>
 				<textElement verticalAlignment="Bottom">
@@ -256,7 +256,7 @@
 				<text><![CDATA[FORMA DE PAGAMENTO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="80" y="43" width="55" height="7" isRemoveLineWhenBlank="true" uuid="01c9d871-04c7-4dda-b13b-cd9578ee0043">
+				<reportElement uuid="01c9d871-04c7-4dda-b13b-cd9578ee0043" positionType="Float" x="80" y="43" width="55" height="7" isRemoveLineWhenBlank="true">
 					<printWhenExpression><![CDATA[$F{vendaPaga}.equals("N")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Bottom">
@@ -265,21 +265,21 @@
 				<text><![CDATA[VALOR PAGO]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00;-#,##0.00">
-				<reportElement positionType="Float" x="80" y="34" width="55" height="9" uuid="31931ce0-d3ab-46ce-a739-654c9b83d06d"/>
+				<reportElement uuid="31931ce0-d3ab-46ce-a739-654c9b83d06d" positionType="Float" x="80" y="34" width="55" height="9"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Courier New" size="7" isBold="true" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{valorAPagar}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" evaluationTime="Report" pattern="#,##0;-#,##0">
-				<reportElement positionType="Float" x="80" y="2" width="55" height="9" uuid="7df46ae2-c87b-4a53-ba0a-3ca8ba18c6aa"/>
+				<reportElement uuid="7df46ae2-c87b-4a53-ba0a-3ca8ba18c6aa" positionType="Float" x="80" y="2" width="55" height="9"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Courier New" size="6" isBold="true" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{totalItens}]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement positionType="Float" x="0" y="50" width="135" height="10" isRemoveLineWhenBlank="true" uuid="89963771-0fb4-49e7-a298-e816ac96915a">
+				<reportElement uuid="89963771-0fb4-49e7-a298-e816ac96915a" positionType="Float" x="0" y="50" width="135" height="10" isRemoveLineWhenBlank="true">
 					<printWhenExpression><![CDATA[$F{vendaPaga}.equals("N")]]></printWhenExpression>
 				</reportElement>
 				<subreportParameter name="XML_DATA_DOCUMENT">
@@ -289,52 +289,52 @@
 				<subreportExpression><![CDATA["/relatorios/danfeNfce_pagamentos.jasper"]]></subreportExpression>
 			</subreport>
 			<line>
-				<reportElement positionType="Float" x="0" y="68" width="135" height="1" uuid="ce54d3d3-5414-4b7d-a60a-c678b21ecb31"/>
+				<reportElement uuid="ce54d3d3-5414-4b7d-a60a-c678b21ecb31" positionType="Float" x="0" y="68" width="135" height="1"/>
 			</line>
 			<staticText>
-				<reportElement positionType="Float" x="0" y="18" width="80" height="7" isRemoveLineWhenBlank="true" uuid="2eb9facb-0e83-4376-b401-74ad5164ecf6"/>
+				<reportElement uuid="2eb9facb-0e83-4376-b401-74ad5164ecf6" positionType="Float" x="0" y="18" width="80" height="7" isRemoveLineWhenBlank="true"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Courier New" size="6" isBold="true" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[Desconto R$]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00;-#,##0.00">
-				<reportElement positionType="Float" x="80" y="18" width="55" height="7" isRemoveLineWhenBlank="true" uuid="101f0ad3-2843-4302-a20c-3ba82296a8a5"/>
+				<reportElement uuid="101f0ad3-2843-4302-a20c-3ba82296a8a5" positionType="Float" x="80" y="18" width="55" height="7" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Courier New" size="6" isBold="true" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{desconto}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
-				<reportElement positionType="Float" x="80" y="11" width="55" height="7" isRemoveLineWhenBlank="true" uuid="296d3e37-2cbb-42d7-99bf-fb85e0a7e3a6"/>
+				<reportElement uuid="296d3e37-2cbb-42d7-99bf-fb85e0a7e3a6" positionType="Float" x="80" y="11" width="55" height="7" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Courier New" size="6" isBold="true" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{subTotal}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="0" y="11" width="80" height="7" isRemoveLineWhenBlank="true" uuid="b6dc889a-9459-4d1a-8c06-4639c007286b"/>
+				<reportElement uuid="b6dc889a-9459-4d1a-8c06-4639c007286b" positionType="Float" x="0" y="11" width="80" height="7" isRemoveLineWhenBlank="true"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Courier New" size="6" isBold="true" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[Subtotal R$]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="0" y="25" width="80" height="7" isRemoveLineWhenBlank="true" uuid="1110c99f-0a8a-4695-ab68-94094fe38819"/>
+				<reportElement uuid="1110c99f-0a8a-4695-ab68-94094fe38819" positionType="Float" x="0" y="25" width="80" height="7" isRemoveLineWhenBlank="true"/>
 				<textElement verticalAlignment="Top">
 					<font fontName="Arial" size="4" isBold="true" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[Acréscimos(Frete e Outras Despesas) R$]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00;-#,##0.00">
-				<reportElement positionType="Float" x="80" y="25" width="55" height="7" isRemoveLineWhenBlank="true" uuid="eeef11fb-e754-44a7-9866-7f6d3e613784"/>
+				<reportElement uuid="eeef11fb-e754-44a7-9866-7f6d3e613784" positionType="Float" x="80" y="25" width="55" height="7" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Courier New" size="6" isBold="true" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{acrescimo}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="0" y="60" width="80" height="9" isRemoveLineWhenBlank="true" uuid="dc61cb32-069a-4af5-a39e-ab10d166d31e">
+				<reportElement uuid="dc61cb32-069a-4af5-a39e-ab10d166d31e" positionType="Float" x="0" y="60" width="80" height="9" isRemoveLineWhenBlank="true">
 					<printWhenExpression><![CDATA[$F{vendaPaga}.equals("N")]]></printWhenExpression>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -343,7 +343,7 @@
 				<text><![CDATA[TROCO R$]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00;-#,##0.00">
-				<reportElement positionType="Float" x="80" y="60" width="55" height="9" isRemoveLineWhenBlank="true" uuid="0473e2a0-eee8-4a23-a129-c7afb78d0ddb">
+				<reportElement uuid="0473e2a0-eee8-4a23-a129-c7afb78d0ddb" positionType="Float" x="80" y="60" width="55" height="9" isRemoveLineWhenBlank="true">
 					<printWhenExpression><![CDATA[$F{vendaPaga}.equals("N")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -352,34 +352,34 @@
 				<textFieldExpression><![CDATA[$F{troco}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="0" y="142" width="135" height="8" uuid="e0b65733-abe3-4348-b954-4af37a6b1bf6"/>
+				<reportElement uuid="e0b65733-abe3-4348-b954-4af37a6b1bf6" positionType="Float" x="0" y="142" width="135" height="8"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Courier New" size="6" isBold="true" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[Volte Sempre!]]></text>
 			</staticText>
 			<line>
-				<reportElement x="0" y="0" width="135" height="1" uuid="4598051c-0c66-4bd9-952c-9e546c9b00d9"/>
+				<reportElement uuid="4598051c-0c66-4bd9-952c-9e546c9b00d9" x="0" y="0" width="135" height="1"/>
 				<graphicElement>
 					<pen lineWidth="0.5" lineStyle="Dashed"/>
 				</graphicElement>
 			</line>
 			<staticText>
-				<reportElement positionType="Float" x="0" y="134" width="135" height="8" uuid="10a6b94b-19f2-4040-bad3-a20270c81682"/>
+				<reportElement uuid="10a6b94b-19f2-4040-bad3-a20270c81682" positionType="Float" x="0" y="134" width="135" height="8"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="6" isBold="false" isUnderline="false" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[* Obrigado pela Preferencia! *]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" pattern="">
-				<reportElement positionType="Float" x="0" y="119" width="135" height="8" isRemoveLineWhenBlank="true" uuid="0f560dff-d15a-47d3-b5a3-0db64c10e999"/>
+				<reportElement uuid="0f560dff-d15a-47d3-b5a3-0db64c10e999" positionType="Float" x="0" y="119" width="135" height="8" isRemoveLineWhenBlank="true"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Courier New" size="6" isBold="true" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Atendente: " + $F{vendedor}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="">
-				<reportElement positionType="Float" x="0" y="74" width="135" height="8" isRemoveLineWhenBlank="true" uuid="40e6eaa4-f762-4df8-9955-cc0096c79a60">
+				<reportElement uuid="40e6eaa4-f762-4df8-9955-cc0096c79a60" positionType="Float" x="0" y="74" width="135" height="8" isRemoveLineWhenBlank="true">
 					<printWhenExpression><![CDATA[!$F{cliente}.equals("Nao Informado")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -388,7 +388,7 @@
 				<textFieldExpression><![CDATA["Cliente: " + $F{cliente}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="">
-				<reportElement positionType="Float" x="0" y="98" width="135" height="8" isRemoveLineWhenBlank="true" uuid="9f9d172e-1b0f-446d-9798-d92f0417c018">
+				<reportElement uuid="9f9d172e-1b0f-446d-9798-d92f0417c018" positionType="Float" x="0" y="98" width="135" height="8" isRemoveLineWhenBlank="true">
 					<printWhenExpression><![CDATA[!$F{cliente}.equals("Nao Informado") && !$F{endereco}.equals("")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -397,7 +397,7 @@
 				<textFieldExpression><![CDATA["End.:    " + $F{endereco}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="">
-				<reportElement positionType="Float" x="0" y="82" width="135" height="8" isRemoveLineWhenBlank="true" uuid="1aab60e9-adfe-4a4e-ad76-e7139333cf35">
+				<reportElement uuid="1aab60e9-adfe-4a4e-ad76-e7139333cf35" positionType="Float" x="0" y="82" width="135" height="8" isRemoveLineWhenBlank="true">
 					<printWhenExpression><![CDATA[!$F{cliente}.equals("Nao Informado") && !$F{cpf}.equals("")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -406,7 +406,7 @@
 				<textFieldExpression><![CDATA["CPF:     " + $F{cpf}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="">
-				<reportElement positionType="Float" x="0" y="90" width="135" height="8" isRemoveLineWhenBlank="true" uuid="9684bbf3-70f8-4e92-977f-6e048b6fbacb">
+				<reportElement uuid="9684bbf3-70f8-4e92-977f-6e048b6fbacb" positionType="Float" x="0" y="90" width="135" height="8" isRemoveLineWhenBlank="true">
 					<printWhenExpression><![CDATA[!$F{cliente}.equals("Nao Informado")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -415,7 +415,7 @@
 				<textFieldExpression><![CDATA["Contato: " + $F{telefone}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="">
-				<reportElement positionType="Float" x="0" y="106" width="135" height="8" isRemoveLineWhenBlank="true" uuid="137845a8-1149-41fa-971c-e9654b4e94b5">
+				<reportElement uuid="137845a8-1149-41fa-971c-e9654b4e94b5" positionType="Float" x="0" y="106" width="135" height="8" isRemoveLineWhenBlank="true">
 					<printWhenExpression><![CDATA[!$F{cliente}.equals("Nao Informado")  && !$F{bairro}.equals("Nao Informado")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">

@@ -6,14 +6,14 @@ public class ItemEspelhoVendaPagamentos implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private String tipo;
+	private String formaPagamento;
 	private String valor;
 	
-	public String getTipo() {
-		return tipo;
+	public String getFormaPagamento() {
+		return formaPagamento;
 	}
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
+	public void setFormaPagamento(String formaPagamento) {
+		this.formaPagamento = formaPagamento;
 	}
 	public String getValor() {
 		return valor;

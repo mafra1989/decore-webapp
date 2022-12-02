@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="decore-vendas" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="0" bottomMargin="0" uuid="519bb040-d2f6-44c8-b08c-2225ab2837bc">
-	<property name="ireport.zoom" value="0.75"/>
+	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="756"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -47,6 +47,12 @@
 	<field name="codigoCliente" class="java.lang.String"/>
 	<field name="telefone" class="java.lang.String"/>
 	<field name="bairroCliente" class="java.lang.String"/>
+	<field name="troco" class="java.lang.String"/>
+	<field name="itensPagamentos" class="java.util.List"/>
+	<field name="conta" class="java.lang.Boolean"/>
+	<field name="tipoPagamento" class="java.lang.String"/>
+	<field name="itensPagamento" class="java.util.Collection"/>
+	<field name="itensParcelamentos" class="java.util.Collection"/>
 	<group name="Group2">
 		<groupExpression><![CDATA[(int)($V{REPORT_COUNT}/5)]]></groupExpression>
 		<groupHeader>
@@ -89,7 +95,7 @@
 			</band>
 		</groupHeader>
 		<groupFooter>
-			<band height="97">
+			<band height="192">
 				<rectangle>
 					<reportElement uuid="c5e8f44a-b13d-40d6-9d38-9cb78aca4b62" x="0" y="57" width="537" height="40" backcolor="#CCCCCC"/>
 					<graphicElement>
@@ -141,6 +147,124 @@
 						<font size="10" isBold="true" isItalic="true"/>
 					</textElement>
 					<text><![CDATA[Desconto]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" positionType="Float" mode="Transparent" x="462" y="122" width="73" height="13" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+						<printWhenExpression><![CDATA[!$F{itensPagamentos}.isEmpty()]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Courier New" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+					</textElement>
+					<text><![CDATA[VALOR PAGO]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="e0311087-e72c-4445-a530-fe46866aa387" positionType="Float" x="462" y="159" width="73" height="13" isRemoveLineWhenBlank="true">
+						<printWhenExpression><![CDATA[!$F{itensPagamentos}.isEmpty()]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Courier New" size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["R$ " + $F{troco}]]></textFieldExpression>
+				</textField>
+				<subreport>
+					<reportElement uuid="b94c6c09-3e88-4114-98af-c4fbbd9785ce" stretchType="RelativeToBandHeight" x="351" y="136" width="184" height="20">
+						<printWhenExpression><![CDATA[!$F{itensPagamentos}.isEmpty()]]></printWhenExpression>
+					</reportElement>
+					<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{itensPagamentos}, false)]]></dataSourceExpression>
+					<subreportExpression><![CDATA["/relatorios/pagamentos.jasper"]]></subreportExpression>
+				</subreport>
+				<staticText>
+					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" mode="Transparent" x="351" y="97" width="184" height="24" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+						<printWhenExpression><![CDATA[!$F{itensPagamentos}.isEmpty() || ($F{conta} && $F{tipoPagamento}.equals( "AVISTA" )) || ($F{conta} && $F{tipoPagamento}.equals( "PARCELADO" ))]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="10" isBold="true" isItalic="true" isUnderline="false"/>
+					</textElement>
+					<text><![CDATA[Informações de Pagamento:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" positionType="Float" mode="Transparent" x="351" y="122" width="111" height="13" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+						<printWhenExpression><![CDATA[!$F{itensPagamentos}.isEmpty()]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Courier New" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+					</textElement>
+					<text><![CDATA[FORMA DE PAGAMENTO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" positionType="Float" mode="Transparent" x="351" y="159" width="111" height="13" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+						<printWhenExpression><![CDATA[!$F{itensPagamentos}.isEmpty()]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Courier New" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+					</textElement>
+					<text><![CDATA[TROCO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" mode="Transparent" x="351" y="122" width="111" height="13" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+						<printWhenExpression><![CDATA[$F{conta} && $F{tipoPagamento}.equals( "AVISTA" )]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Courier New" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+					</textElement>
+					<text><![CDATA[VALOR A PAGAR]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" positionType="Float" mode="Transparent" x="462" y="122" width="73" height="13" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+						<printWhenExpression><![CDATA[$F{conta} && $F{tipoPagamento}.equals( "AVISTA" )]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Courier New" size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+					</textElement>
+					<text><![CDATA[VENCIMENTO]]></text>
+				</staticText>
+				<subreport>
+					<reportElement uuid="b94c6c09-3e88-4114-98af-c4fbbd9785ce" stretchType="RelativeToBandHeight" x="351" y="136" width="184" height="20">
+						<printWhenExpression><![CDATA[$F{conta} && $F{tipoPagamento}.equals( "AVISTA" )]]></printWhenExpression>
+					</reportElement>
+					<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{itensPagamento}, false)]]></dataSourceExpression>
+					<subreportExpression><![CDATA["/relatorios/pagamento.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport>
+					<reportElement uuid="b94c6c09-3e88-4114-98af-c4fbbd9785ce" stretchType="RelativeToBandHeight" x="351" y="136" width="184" height="20">
+						<printWhenExpression><![CDATA[$F{conta} && $F{tipoPagamento}.equals( "AVISTA" )]]></printWhenExpression>
+					</reportElement>
+					<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{itensPagamento}, false)]]></dataSourceExpression>
+					<subreportExpression><![CDATA["/relatorios/pagamento.jasper"]]></subreportExpression>
+				</subreport>
+				<staticText>
+					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" mode="Transparent" x="351" y="122" width="51" height="13" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+						<printWhenExpression><![CDATA[$F{conta} && $F{tipoPagamento}.equals( "PARCELADO" )]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Courier New" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+					</textElement>
+					<text><![CDATA[PARCELA]]></text>
+				</staticText>
+				<subreport>
+					<reportElement uuid="b94c6c09-3e88-4114-98af-c4fbbd9785ce" x="351" y="136" width="184" height="20">
+						<printWhenExpression><![CDATA[$F{conta} && $F{tipoPagamento}.equals( "PARCELADO" )]]></printWhenExpression>
+					</reportElement>
+					<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{itensParcelamentos}, false)]]></dataSourceExpression>
+					<subreportExpression><![CDATA["/relatorios/parcelamentos.jasper"]]></subreportExpression>
+				</subreport>
+				<staticText>
+					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" positionType="Float" mode="Transparent" x="475" y="122" width="60" height="13" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+						<printWhenExpression><![CDATA[$F{conta} && $F{tipoPagamento}.equals( "PARCELADO" )]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Courier New" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+					</textElement>
+					<text><![CDATA[VENCIMENTO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" positionType="Float" mode="Transparent" x="402" y="122" width="73" height="13" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+						<printWhenExpression><![CDATA[$F{conta} && $F{tipoPagamento}.equals( "PARCELADO" )]]></printWhenExpression>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Courier New" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+					</textElement>
+					<text><![CDATA[VALOR]]></text>
 				</staticText>
 			</band>
 		</groupFooter>
@@ -383,8 +507,8 @@
 				<text><![CDATA[1]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="d7ffe2b8-2b1b-4bac-83a0-9a27cbe024a4" mode="Transparent" x="3" y="98" width="531" height="23" backcolor="#FFFFFF"/>
-				<textElement textAlignment="Left">
+				<reportElement uuid="d7ffe2b8-2b1b-4bac-83a0-9a27cbe024a4" mode="Transparent" x="3" y="95" width="531" height="23" backcolor="#FFFFFF"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[MATERIAIS]]></text>
@@ -401,61 +525,61 @@
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="185" splitType="Stretch">
+		<band height="178" splitType="Stretch">
 			<textField>
-				<reportElement uuid="2267b627-c951-44a9-abc5-50e47f21d7fb" x="278" y="106" width="250" height="20"/>
+				<reportElement uuid="2267b627-c951-44a9-abc5-50e47f21d7fb" x="278" y="100" width="250" height="20"/>
 				<textElement verticalAlignment="Middle" markup="none">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{xLgr}+", " + $F{nro}+" - "+$F{xBairro}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement uuid="7bac3dfa-bbf6-4fa9-8a97-39605cd89747" x="2" y="104" width="532" height="1" forecolor="#333333"/>
+				<reportElement uuid="7bac3dfa-bbf6-4fa9-8a97-39605cd89747" x="2" y="98" width="532" height="1" forecolor="#333333"/>
 			</line>
 			<textField>
-				<reportElement uuid="0648df8c-caba-4a02-82e4-285b9cc18190" x="11" y="151" width="250" height="14"/>
+				<reportElement uuid="0648df8c-caba-4a02-82e4-285b9cc18190" x="11" y="145" width="250" height="14"/>
 				<textElement verticalAlignment="Middle" markup="none">
 					<font size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{contato}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="01f95121-7477-43cc-ad97-abbbecd8824f" x="11" y="106" width="250" height="20"/>
+				<reportElement uuid="01f95121-7477-43cc-ad97-abbbecd8824f" x="11" y="100" width="250" height="20"/>
 				<textElement verticalAlignment="Middle" markup="none">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[DECORE PORTAS E MÓVEIS PLANEJADOS]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="1de88a96-1cea-4c2f-af18-90731aabd783" x="278" y="126" width="250" height="14"/>
+				<reportElement uuid="1de88a96-1cea-4c2f-af18-90731aabd783" x="278" y="120" width="250" height="14"/>
 				<textElement markup="none">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{xMun} + " - " + $F{UF} + " | CEP 69086-632"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="6f2abd16-d068-4ef3-8ad3-38f2d7888ce0" x="11" y="138" width="250" height="14"/>
+				<reportElement uuid="6f2abd16-d068-4ef3-8ad3-38f2d7888ce0" x="11" y="132" width="250" height="14"/>
 				<textElement verticalAlignment="Middle" markup="none">
 					<font size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["CNPJ: " + $F{CNPJ}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="74f97f9a-8fe8-4818-af7e-7ac109e13486" x="11" y="164" width="250" height="14"/>
+				<reportElement uuid="74f97f9a-8fe8-4818-af7e-7ac109e13486" x="11" y="158" width="250" height="14"/>
 				<textElement verticalAlignment="Middle" markup="none">
 					<font size="8" isBold="false"/>
 				</textElement>
 				<text><![CDATA[decoreportas@gmail.com]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e0cc4994-1e75-4ae8-952e-a4d3eec223fe" x="11" y="125" width="250" height="14"/>
+				<reportElement uuid="e0cc4994-1e75-4ae8-952e-a4d3eec223fe" x="11" y="119" width="250" height="14"/>
 				<textElement verticalAlignment="Middle" markup="none">
 					<font size="8" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Mais Empreendimentos]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="bbc9aa23-3f6d-4fe3-9544-2caecbf28aa9" x="1" y="30" width="533" height="20"/>
+				<reportElement uuid="bbc9aa23-3f6d-4fe3-9544-2caecbf28aa9" x="1" y="22" width="533" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="10" isBold="true"/>
 				</textElement>
@@ -463,21 +587,21 @@
 ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="a132efe2-62a0-4247-ae6d-17daeb03f926" x="1" y="51" width="533" height="13"/>
+				<reportElement uuid="a132efe2-62a0-4247-ae6d-17daeb03f926" x="1" y="43" width="533" height="13"/>
 				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
 					<font size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Decore Portas]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="b0e2f6b0-42d6-438e-ab45-aeffc7ae8e85" style="Detail" positionType="Float" x="0" y="11" width="534" height="20" forecolor="#333333"/>
+				<reportElement uuid="b0e2f6b0-42d6-438e-ab45-aeffc7ae8e85" style="Detail" positionType="Float" x="0" y="3" width="534" height="20" forecolor="#333333"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="9" isPdfEmbedded="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{xMun} + ", " + $F{dataVenda}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement uuid="15b5cfe8-0d06-47d5-aa53-692eda094a70" x="219" y="9" width="97" height="1" forecolor="#333333"/>
+				<reportElement uuid="15b5cfe8-0d06-47d5-aa53-692eda094a70" x="219" y="1" width="97" height="1" forecolor="#333333"/>
 			</line>
 		</band>
 	</columnFooter>

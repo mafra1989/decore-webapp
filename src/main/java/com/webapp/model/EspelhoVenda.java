@@ -38,6 +38,8 @@ public class EspelhoVenda implements Serializable {
 	//private String bairro;
 	private String dataVenda;
 	private String vendedor;
+	private String tipoPagamento;
+	private Boolean conta;
 	
 	/* Dados do Cliente */
 	private String cliente = "";
@@ -60,6 +62,12 @@ public class EspelhoVenda implements Serializable {
 	
 	/* Lista de Pagamentos */
 	private List<Object> itensPagamentos;
+	
+	/* Lista de Pagamentos */
+	private List<Object> itensPagamento;
+	
+	/* Lista de Parcelamentos */
+	private List<Object> itensParcelamentos;
 
 	/* Total da Venda */
 	private String totalVenda;
@@ -108,6 +116,22 @@ public class EspelhoVenda implements Serializable {
 		this.vendedor = vendedor;
 	}
 
+	public String getTipoPagamento() {
+		return tipoPagamento;
+	}
+
+	public void setTipoPagamento(String tipoPagamento) {
+		this.tipoPagamento = tipoPagamento;
+	}
+
+	public Boolean getConta() {
+		return conta;
+	}
+
+	public void setConta(Boolean conta) {
+		this.conta = conta;
+	}
+
 	public String getResponsavel() {
 		return responsavel;
 	}
@@ -152,6 +176,28 @@ public class EspelhoVenda implements Serializable {
 
 	public void setItensPagamentos(List<Object> itensPagamentos) {
 		this.itensPagamentos = itensPagamentos;
+	}
+	
+	public List<Object> getItensPagamento() {
+		if (itensPagamento == null) {
+			itensPagamento = new ArrayList<Object>();
+		}
+		return itensPagamento;
+	}
+
+	public void setItensPagamento(List<Object> itensPagamento) {
+		this.itensPagamento = itensPagamento;
+	}
+	
+	public List<Object> getItensParcelamentos() {
+		if (itensParcelamentos == null) {
+			itensParcelamentos = new ArrayList<Object>();
+		}
+		return itensParcelamentos;
+	}
+
+	public void setItensParcelamentos(List<Object> itensParcelamentos) {
+		this.itensParcelamentos = itensParcelamentos;
 	}
 
 	public String getTotalVenda() {
