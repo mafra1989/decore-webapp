@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="decore-vendas" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="0" bottomMargin="0" uuid="519bb040-d2f6-44c8-b08c-2225ab2837bc">
-	<property name="ireport.zoom" value="3.0"/>
-	<property name="ireport.x" value="781"/>
-	<property name="ireport.y" value="1546"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="241"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -409,98 +409,122 @@
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="121" splitType="Stretch">
+		<band height="111" splitType="Stretch">
 			<rectangle>
-				<reportElement uuid="1a3a8bf6-de33-4a1b-9c7d-f9537dc67ed9" x="-1" y="91" width="537" height="30" backcolor="#CCCCCC"/>
+				<reportElement uuid="1a3a8bf6-de33-4a1b-9c7d-f9537dc67ed9" x="-1" y="81" width="537" height="30" backcolor="#CCCCCC"/>
 				<graphicElement>
 					<pen lineColor="#FFFFFF"/>
 				</graphicElement>
 			</rectangle>
 			<rectangle>
-				<reportElement uuid="a886d1b9-0ed4-44f0-b242-38533c9bd0a8" x="-1" y="8" width="537" height="30" backcolor="#CCCCCC"/>
+				<reportElement uuid="a886d1b9-0ed4-44f0-b242-38533c9bd0a8" x="-1" y="8" width="537" height="30" isRemoveLineWhenBlank="true" backcolor="#CCCCCC">
+					<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+				</reportElement>
 				<graphicElement>
 					<pen lineColor="#FFFFFF"/>
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement uuid="5b01f5ab-24b3-4a24-8fcb-c1b91e39c4d8" x="3" y="39" width="258" height="20" backcolor="#FF0000"/>
+				<reportElement uuid="5b01f5ab-24b3-4a24-8fcb-c1b91e39c4d8" x="3" y="39" width="258" height="20" isRemoveLineWhenBlank="true" backcolor="#FF0000">
+					<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Descrição]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="64619cef-324c-45ca-8441-405f45ed32f2" x="343" y="39" width="70" height="20" backcolor="#FF0000"/>
+				<reportElement uuid="64619cef-324c-45ca-8441-405f45ed32f2" x="343" y="39" width="70" height="20" isRemoveLineWhenBlank="true" backcolor="#FF0000">
+					<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Quantidade]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="153e2832-42b4-439b-b30b-d14490240e23" mode="Transparent" x="3" y="12" width="532" height="22" backcolor="#FFFFFF"/>
+				<reportElement uuid="153e2832-42b4-439b-b30b-d14490240e23" mode="Transparent" x="3" y="12" width="532" height="22" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[SERVIÇOS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="fab67f54-5fd9-4dd6-a0cc-cab9febd7620" x="416" y="39" width="43" height="20" backcolor="#FF0000"/>
+				<reportElement uuid="fab67f54-5fd9-4dd6-a0cc-cab9febd7620" x="416" y="39" width="43" height="20" isRemoveLineWhenBlank="true" backcolor="#FF0000">
+					<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Unidade]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="94ebc6db-5654-4551-a7b4-3ce702bb4911" x="261" y="39" width="82" height="20" backcolor="#FF0000"/>
+				<reportElement uuid="94ebc6db-5654-4551-a7b4-3ce702bb4911" x="261" y="39" width="82" height="20" isRemoveLineWhenBlank="true" backcolor="#FF0000">
+					<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Preço Unitário]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="07215b6a-8918-4d33-8276-c12a70a07255" x="462" y="39" width="72" height="20" backcolor="#FF0000"/>
+				<reportElement uuid="07215b6a-8918-4d33-8276-c12a70a07255" x="462" y="39" width="72" height="20" isRemoveLineWhenBlank="true" backcolor="#FF0000">
+					<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Valor]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="7da8ff0a-0891-4fbf-bd3a-52e5f8d2af04" x="3" y="59" width="258" height="20" backcolor="#FF0000"/>
+				<reportElement uuid="7da8ff0a-0891-4fbf-bd3a-52e5f8d2af04" x="3" y="59" width="258" height="20" isRemoveLineWhenBlank="true" backcolor="#FF0000">
+					<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Taxa de embarque]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="dc775de1-32fb-448a-9564-921eed323dea" x="416" y="59" width="43" height="20" backcolor="#FF0000"/>
+				<reportElement uuid="dc775de1-32fb-448a-9564-921eed323dea" x="416" y="59" width="43" height="20" isRemoveLineWhenBlank="true" backcolor="#FF0000">
+					<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="9" isBold="false"/>
 				</textElement>
 				<text><![CDATA[1]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="6d6c747e-29bb-4a7d-b88f-0a9497eba3be" x="462" y="59" width="72" height="20" backcolor="#FF0000"/>
+				<reportElement uuid="6d6c747e-29bb-4a7d-b88f-0a9497eba3be" x="462" y="59" width="72" height="20" isRemoveLineWhenBlank="true" backcolor="#FF0000">
+					<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
 					<font fontName="SansSerif" size="10" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{frete}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="00dfbd96-05a2-4f87-a50b-22802a3c4773" x="261" y="59" width="82" height="20" backcolor="#FF0000"/>
+				<reportElement uuid="00dfbd96-05a2-4f87-a50b-22802a3c4773" x="261" y="59" width="82" height="20" isRemoveLineWhenBlank="true" backcolor="#FF0000">
+					<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
 					<font fontName="SansSerif" size="10" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{frete}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="8419345f-b33b-4709-8293-f1b48179c108" x="343" y="59" width="70" height="20" backcolor="#FF0000"/>
+				<reportElement uuid="8419345f-b33b-4709-8293-f1b48179c108" x="343" y="59" width="70" height="20" isRemoveLineWhenBlank="true" backcolor="#FF0000">
+					<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[1]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="d7ffe2b8-2b1b-4bac-83a0-9a27cbe024a4" mode="Transparent" x="3" y="95" width="531" height="23" backcolor="#FFFFFF"/>
+				<reportElement uuid="d7ffe2b8-2b1b-4bac-83a0-9a27cbe024a4" mode="Transparent" x="3" y="85" width="531" height="23" backcolor="#FFFFFF"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
