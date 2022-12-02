@@ -5090,7 +5090,7 @@ public class PDVBean implements Serializable {
 		if(venda.getValorRecebido().doubleValue() > 0) {
 			
 			ItemEspelhoVendaPagamentos itemPagamento = new ItemEspelhoVendaPagamentos();		
-			itemPagamento.setTipo(venda.getFormaPagamento().getNome());
+			itemPagamento.setFormaPagamento(pagamento.getFormaPagamento().getNome());
 			itemPagamento.setValor(nf.format(venda.getValorRecebido()));
 
 			pedido.getItensPagamentos().add(itemPagamento);
@@ -5100,7 +5100,7 @@ public class PDVBean implements Serializable {
 		if(pagamento != null) {
 			
 			ItemEspelhoVendaPagamentos itemPagamento = new ItemEspelhoVendaPagamentos();		
-			itemPagamento.setTipo(pagamento.getFormaPagamento().getNome());
+			itemPagamento.setFormaPagamento(pagamento.getFormaPagamento().getNome());
 			itemPagamento.setValor(nf.format(pagamento.getValor()));
 
 			pedido.getItensPagamentos().add(itemPagamento);
