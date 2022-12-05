@@ -279,9 +279,7 @@
 					<textFieldExpression><![CDATA[$F{observacoes}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement uuid="6d6c747e-29bb-4a7d-b88f-0a9497eba3be" x="0" y="2" width="275" height="17" isRemoveLineWhenBlank="true" backcolor="#FF0000">
-						<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
-					</reportElement>
+					<reportElement uuid="6d6c747e-29bb-4a7d-b88f-0a9497eba3be" x="0" y="2" width="275" height="17" isRemoveLineWhenBlank="true" backcolor="#FF0000"/>
 					<textElement verticalAlignment="Middle" markup="none">
 						<font fontName="SansSerif" size="10" isBold="true" isItalic="true"/>
 					</textElement>
