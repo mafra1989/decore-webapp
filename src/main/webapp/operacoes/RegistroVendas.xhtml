@@ -2009,7 +2009,7 @@
 				taxaEntregaVenda.innerHTML = numberToReal(taxaEntrega);
 				
 				var valorTotalItensTemp = document.querySelector(".valor-total-itens");
-				var valorTotalItens = parseFloat(valorTotalItensTemp.innerHTML.substring(8,valorTotalItensTemp.lenght).replace('.','').replace(',','.'));
+				var valorTotalItens = parseFloat(valorTotalItensTemp.innerHTML.substring(3,valorTotalItensTemp.lenght).replace('.','').replace(',','.'));
 				
 				subTotalVenda.innerHTML = numberToReal(valorTotalItens + taxaEntrega);
 				
