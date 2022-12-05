@@ -1912,38 +1912,64 @@ public class RegistroVendasBean implements Serializable {
 	
 	
 
-	public void aplicarDesconto_() throws IOException {
+	public void aplicarDescontoVenda() throws IOException {
 		
-		if(venda.getDesconto() != null && venda.getDesconto().doubleValue() >= 0) {
-			
-			if(venda.getDesconto().doubleValue() <= venda.getValorTotal().doubleValue()) {
-	
-				venda.setValorTotalComDesconto(new BigDecimal(venda.getValorTotal().doubleValue() - venda.getDesconto().doubleValue()));
-				finalizar();
-				
+		if(venda.getDesconto() != null) {
+			if(venda.getDesconto().doubleValue() >= 0) {
+				if(venda.getDesconto().doubleValue() <= venda.getValorTotal().doubleValue()) {
+					
+					//venda.setValorTotalComDesconto(new BigDecimal(venda.getValorTotal().doubleValue() - venda.getDesconto().doubleValue()));
+					finalizar();
+					
+				} else {
+					venda.setDesconto(null);
+					//venda.setValorTotalComDesconto(venda.getValorTotal());
+					PrimeFaces.current().executeScript(
+							"swal({ type: 'error', title: 'Erro!', text: 'Informe um valor menor ou igual ao valor da venda!', timer: 3000 });");
+				}
 			} else {
 				venda.setDesconto(null);
-				venda.setValorTotalComDesconto(venda.getValorTotal());
+				//venda.setValorTotalComDesconto(venda.getValorTotal());
 				PrimeFaces.current().executeScript(
-						"swal({ type: 'error', title: 'Erro!', text: 'Informe um valor menor ou igual ao valor da venda!', timer: 3000 });");
-			}
-						
+						"swal({ type: 'error', title: 'Erro!', text: 'Informe um valor maior ou igual a R$ 0,00!', timer: 3000 });");
+			}					
 		} else {
 	
-			if(venda.getDesconto() != null) {				
-				venda.setDesconto(null);
-				venda.setValorTotalComDesconto(venda.getValorTotal());
-				PrimeFaces.current().executeScript(
-						"swal({ type: 'error', title: 'Erro!', text: 'Informe um valor maior que R$ 0,00!', timer: 3000 });");
-			} else {
-				venda.setDesconto(null);
-				venda.setValorTotalComDesconto(venda.getValorTotal());
-				finalizar();
-			}	
+			finalizar();	
 			
 		}	
 		
 		calculaAcrescimo();
+	}
+	
+	
+	public void aplicarDescontoVenda_() throws IOException {
+		
+		if(venda.getDesconto() != null) {
+			
+			if(venda.getDesconto().doubleValue() >= 0) {
+				if(venda.getDesconto().doubleValue() <= venda.getValorTotal().doubleValue()) {
+					
+					//venda.setValorTotalComDesconto(new BigDecimal(venda.getValorTotal().doubleValue() - venda.getDesconto().doubleValue()));
+					salvar();
+					
+				} else {
+					venda.setDesconto(null);
+					//venda.setValorTotalComDesconto(venda.getValorTotal());
+					PrimeFaces.current().executeScript(
+							"swal({ type: 'error', title: 'Erro!', text: 'Informe um valor menor ou igual ao valor da venda!', timer: 3000 });");
+				}
+			} else {
+				venda.setDesconto(null);
+				//venda.setValorTotalComDesconto(venda.getValorTotal());
+				PrimeFaces.current().executeScript(
+						"swal({ type: 'error', title: 'Erro!', text: 'Informe um valor maior ou igual a R$ 0,00!', timer: 3000 });");
+			}						
+		} else {
+	
+			salvar();	
+			
+		}	
 	}
 	
 	

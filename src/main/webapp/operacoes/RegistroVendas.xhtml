@@ -612,7 +612,7 @@
 									<p:inputSwitch offLabel="Não" onLabel="Sim" id="entrega"
 										value="#{registroVendasBean.entrega}">
 		
-										<p:ajax process="@this bairro" update="@parent localizacao taxa-entrega form:panel-total-geral" listener="#{registroVendasBean.exibirTaxaEntrega}" />
+										<p:ajax process="@this bairro form:total" update="@parent localizacao taxa-entrega form:panel-total-geral" listener="#{registroVendasBean.exibirTaxaEntrega}" />
 									</p:inputSwitch>
 		
 									<p:commandLink styleClass="btn-new entrega" id="localizacao"
@@ -628,9 +628,9 @@
 									columnClasses="ui-grid-col-4, ui-grid-col-3">
 									
 									<p:outputLabel value="Taxa de Entrega" for="taxa-entrega" />
-									<p:inputNumber id="taxa-entrega" decimalPlaces="2" style="margin-top: -5px;"
+									<p:inputNumber id="taxa-entrega" styleClass="taxa-entrega-venda" decimalPlaces="2" style="margin-top: -5px;"
 										placeholder="R$ 0,00" autocomplete="off" symbol="R$ " minValue="0"
-										value="#{registroVendasBean.venda.taxaDeEntrega}">
+										onkeyup="calculaTotalPagar()" value="#{registroVendasBean.venda.taxaDeEntrega}">
 									</p:inputNumber>	
 								</p:panelGrid>												
 								
@@ -934,7 +934,7 @@
 							style="margin-top: 5px;float: right; margin-right: 2px;margin-bottom: 10px;"
 							styleClass="panelgrid-noborder disabled disabled">
 							<p:outputLabel value="Total: " />
-							<p:outputLabel id="total-venda_"
+							<p:outputLabel id="total-venda_" styleClass="valor-total-itens"
 								value="#{registroVendasBean.venda.valorTotal}"
 								style="margin-bottom:5px; font-weight:bold;margin-left:8px;color:#5b5656">
 
@@ -968,7 +968,7 @@
 									<p:panel style="margin-bottom: 10px;">
 										<p:outputLabel value="Taxa de Entrega: "
 											style="font-size: 12px;color:#5b5656;margin-left: 2px;font-weight:bold;" />
-										<p:outputLabel id="taxa-de-entrega"
+										<p:outputLabel id="taxa-de-entrega" styleClass="taxa-entrega-label"
 											value="#{registroVendasBean.venda.taxaDeEntrega == null ? 'R$ 0,00' : registroVendasBean.venda.taxaDeEntrega}"
 											style="font-size: 13px;font-weight:bold;color:#75767dc9;">
 
@@ -979,7 +979,7 @@
 									<p:panel styleClass="sub_total">
 										<p:outputLabel value="Sub-Total: "
 											style="font-size: 12px;color:#5b5656;margin-left: 2px;font-weight:bold;" />
-										<p:outputLabel id="sub-total_"
+										<p:outputLabel id="sub-total_" styleClass="subtotal-venda"
 											value="#{registroVendasBean.venda.valorTotal + registroVendasBean.venda.taxaDeEntrega}"
 											style="font-size: 13px;font-weight:bold;color:#75767dc9;">
 
@@ -1006,7 +1006,7 @@
 
 									<p:outputLabel value="Total a pagar: "
 										style="font-weight:bold;" />
-									<p:outputLabel id="total-venda"
+									<p:outputLabel id="total-venda" styleClass="total-pagar-venda"
 										value="#{(registroVendasBean.venda.valorTotal + registroVendasBean.venda.taxaDeEntrega) - registroVendasBean.venda.desconto}"
 										style="margin-top: -8px;font-size: 36px;margin-bottom:5px; font-weight:bold;margin-left:8px;color:#5b5656">
 
@@ -1019,7 +1019,7 @@
 								
 									<p:outputLabel value="Desconto" style="font-size: 12px;" />
 									<p:inputNumber id="total" decimalPlaces="2" placeholder="R$ 0,00" symbol="R$ "
-										value="#{registroVendasBean.venda.desconto}">
+										onkeyup="calculaTotalPagar()" styleClass="desconto-venda-campo" value="#{registroVendasBean.venda.desconto}">
 									</p:inputNumber>
 								</p:panel>
 
@@ -1034,14 +1034,14 @@
 									onsuccess="PF('downloadLoading').hide();"
 									disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()) or registroVendasBean.venda.exclusao or registroVendasBean.itemVenda.id != null}"
 									update="msg accordion-panel panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:panel-total-geral form:lote"
-									action="#{registroVendasBean.salvar}"
+									action="#{registroVendasBean.aplicarDescontoVenda_}"
 									process="@this panel-table accordion-panel"
 									style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;"
 									rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 7111 or seguranca.usuarioLogado.usuario.empresa.id == 7112}" />
 									
 								<p:commandButton id="btn-calcular" value="Finalizar Venda"
 									onstart="PF('downloadLoading').show();" icon="fa fa-save"
-									actionListener="#{registroVendasBean.aplicarDesconto_}"
+									actionListener="#{registroVendasBean.aplicarDescontoVenda}"
 									onsuccess="PF('downloadLoading').hide();"
 									style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;"
 									disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()) or registroVendasBean.venda.exclusao}"
@@ -1989,6 +1989,39 @@
 			        timer = setTimeout(callback, ms);
 			    };
 			})();
+			
+			
+			function calculaTotalPagar(){
+				
+				var totalPagar = document.querySelector(".total-pagar-venda");
+				var taxaEntregaVenda = document.querySelector(".taxa-entrega-label");	
+				var subTotalVenda = document.querySelector(".subtotal-venda");
+				
+				var desconto;
+				var descontoTemp = $('.desconto-venda-campo input').val(); 
+				if(descontoTemp == 'R$' || descontoTemp == 'R$ ' || descontoTemp == '') {desconto = parseFloat(0);}
+				else {desconto = parseFloat(descontoTemp.replace('R$ ','').replace('.','').replace(',','.'));}
+				
+				var taxaEntrega;
+				var taxaEntregaTemp = $('.taxa-entrega-venda input').val(); 
+				if(taxaEntregaTemp == 'R$' || taxaEntregaTemp == 'R$ ' || taxaEntregaTemp == '') {taxaEntrega = parseFloat(0);}
+				else {taxaEntrega = parseFloat(taxaEntregaTemp.replace('R$ ','').replace('.','').replace(',','.'));}				
+				taxaEntregaVenda.innerHTML = numberToReal(taxaEntrega);
+				
+				var valorTotalItensTemp = document.querySelector(".valor-total-itens");
+				var valorTotalItens = parseFloat(valorTotalItensTemp.innerHTML.substring(8,valorTotalItensTemp.lenght).replace('.','').replace(',','.'));
+				
+				subTotalVenda.innerHTML = numberToReal(valorTotalItens + taxaEntrega);
+				
+				var totalAPagar = (valorTotalItens + taxaEntrega) - desconto;
+
+				totalPagar.innerHTML = numberToReal(totalAPagar);
+			}
+			
+			function numberToReal(numero) {
+				var numero = numero.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+				return numero;
+			}
 			
 			
 			function ajaxDelayQtd(){
