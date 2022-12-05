@@ -59,8 +59,8 @@ public class Contas_ implements Serializable {
 	
 	
 	public Number vendasAPagarPagas(String tipo, String operacao, Empresa empresa) {
-
-		String jpql = "SELECT sum(c.subTotal) FROM Conta c WHERE c.parcela <> 'AVISTA' AND c.empresa.id = :empresa AND c.tipo = :tipo AND c.operacao = :operacao AND c.status = 'Y' AND c.ajuste = 'N' and c.exclusao = 'N'";
+		//modificado de subtotal para valor
+		String jpql = "SELECT sum(c.valor) FROM Conta c WHERE c.parcela <> 'AVISTA' AND c.empresa.id = :empresa AND c.tipo = :tipo AND c.operacao = :operacao AND c.status = 'Y' AND c.ajuste = 'N' and c.exclusao = 'N'";
 		Query q = manager.createQuery(jpql).setParameter("tipo", tipo).setParameter("operacao", operacao)
 				.setParameter("empresa", empresa.getId());
 

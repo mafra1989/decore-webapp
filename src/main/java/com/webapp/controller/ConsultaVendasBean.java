@@ -584,15 +584,18 @@ public class ConsultaVendasBean implements Serializable {
 		pedido.setUF(usuario_.getEmpresa().getUf() != null ? usuario_.getEmpresa().getUf() : "");
 		pedido.setContato(usuario_.getEmpresa().getContato() != null ? usuario_.getEmpresa().getContato() : "");
 		
-		pedido.setTotalVenda(nf.format(vendaSelecionada.getValorTotal()));
+		pedido.setObservacoes(vendaSelecionada.getObservacao());
+		
+		pedido.setTotalVenda(nf.format(new BigDecimal(vendaSelecionada.getValorTotal().doubleValue()- vendaSelecionada.getDesconto().doubleValue())));
 		
 		pedido.setFrete(nf.format(vendaSelecionada.getTaxaDeEntrega()));
 		
 		if(vendaSelecionada.getDesconto() != null) {
-			pedido.setSubTotal(nf.format(vendaSelecionada.getValorTotal().doubleValue() - vendaSelecionada.getTaxaDeEntrega().doubleValue()));
+			//aleteração do subtotal para somar com a taxa de entrega
+			pedido.setSubTotal(nf.format(vendaSelecionada.getValorTotal().doubleValue()/* - vendaSelecionada.getTaxaDeEntrega().doubleValue()*/));
 			pedido.setDesconto(nf.format(vendaSelecionada.getDesconto()));
 		} else {
-			pedido.setSubTotal(nf.format(vendaSelecionada.getValorTotal().doubleValue() - vendaSelecionada.getTaxaDeEntrega().doubleValue()));
+			pedido.setSubTotal(nf.format(vendaSelecionada.getValorTotal().doubleValue()/* - vendaSelecionada.getTaxaDeEntrega().doubleValue()*/));
 		}
 
 		List<EspelhoVenda> pedidos = new ArrayList<>();

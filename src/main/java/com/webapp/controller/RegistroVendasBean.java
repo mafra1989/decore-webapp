@@ -293,6 +293,8 @@ public class RegistroVendasBean implements Serializable {
 	public void buscar() {
 		venda = vendas.porId(venda.getId());
 		itensVenda = itensVendas.porVenda(venda);
+		
+		venda.setValorTotal(new BigDecimal(venda.getValorTotal().doubleValue() - venda.getTaxaDeEntrega().doubleValue()));
 
 		for (ItemVenda itemVenda : itensVenda) {
 			
@@ -357,6 +359,10 @@ public class RegistroVendasBean implements Serializable {
 			venda.setFaltando(BigDecimal.ZERO);
 			venda.setTroco(BigDecimal.ZERO);
 			
+			
+			if(venda.getDesconto() == null) {
+				venda.setDesconto(BigDecimal.ZERO);
+			}
 			
 			
 			
@@ -678,14 +684,59 @@ public class RegistroVendasBean implements Serializable {
 					entregaVenda = entregas.save(entregaVenda);
 				}
 				
-				venda.setValorCompra(BigDecimal.valueOf(valorCompra));
-				venda.setValorTotal(BigDecimal.valueOf(valorTotal));
-				venda.setQuantidadeItens(totalDeItens);
-				venda.setLucro(BigDecimal.valueOf(lucro));
-				
-				//venda.setPercentualLucro(BigDecimal.valueOf(percentualLucro / itensVenda.size()));				
+				venda.setValorCompra(BigDecimal.valueOf(valorCompra));				
+				//venda.setValorTotal(BigDecimal.valueOf(valorTotal));
+				venda.setQuantidadeItens(totalDeItens);				
+				//venda.setLucro(BigDecimal.valueOf(lucro));
 				venda.setPercentualLucro(new BigDecimal(((venda.getValorTotal().doubleValue() - venda.getValorCompra().doubleValue())/venda.getValorTotal().doubleValue())*100));
+				
+				
+				
+				
+
+				
+				
+				
+				
+				
+				BigDecimal taxaDeEntrega = BigDecimal.ZERO;
+				if(venda.getTaxaDeEntrega().doubleValue() == venda.getCliente().getBairro().getTaxaDeEntrega().doubleValue()) {
+					taxaDeEntrega = (venda.getCliente().getBairro() != null && entrega) ? venda.getCliente().getBairro().getTaxaDeEntrega() : BigDecimal.ZERO;			
+				} else {
+					taxaDeEntrega = (venda.getCliente().getBairro() != null && entrega) ? venda.getTaxaDeEntrega() : BigDecimal.ZERO;	
+				}
+
+				venda.setValorTotal(new BigDecimal(valorTotal + totalDeAcrescimo.doubleValue() + taxaDeEntrega.doubleValue()));
+				
+				venda.setValorTotalComDesconto(new BigDecimal(venda.getValorTotal().doubleValue()));
+				if(venda.getDesconto() != null) {
+					venda.setValorTotalComDesconto(new BigDecimal(venda.getValorTotal().doubleValue() - venda.getDesconto().doubleValue()));
+				}
+
+				venda.setLucro(BigDecimal.valueOf(lucro));
+				if(venda.getDesconto() != null) {
+					venda.setLucro(new BigDecimal(lucro - venda.getDesconto().doubleValue()));
+				}
+				
+				if(!venda.getFormaPagamento().isClientePaga() && venda.getFormaPagamento().getAcrescimo().doubleValue() > 0) {
+					venda.setLucro(new BigDecimal(venda.getLucro().doubleValue() - ((venda.getValorTotalComDesconto().doubleValue() * venda.getFormaPagamento().getAcrescimo().doubleValue()) / 100)));
+				}
+		
+				venda.setPercentualLucro(new BigDecimal(((venda.getValorTotalComDesconto().doubleValue() - venda.getValorCompra().doubleValue())/venda.getValorTotalComDesconto().doubleValue())*100));
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
 				venda = vendas.save(venda);
+				
+				
 
 				PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda N."
 						+ venda.getNumeroVenda() + " registrada com sucesso!' });");
@@ -848,12 +899,60 @@ public class RegistroVendasBean implements Serializable {
 				
 
 				venda.setValorCompra(BigDecimal.valueOf(valorCompra));
-				venda.setValorTotal(BigDecimal.valueOf(valorTotal));
+				//venda.setValorTotal(BigDecimal.valueOf(valorTotal));
 				venda.setQuantidadeItens(totalDeItens);
+				//venda.setLucro(BigDecimal.valueOf(lucro));
+				/*venda.setPercentualLucro(BigDecimal.valueOf(percentualLucro / itensVenda.size()));*/			
+				//venda.setPercentualLucro(new BigDecimal(((venda.getValorTotal().doubleValue() - venda.getValorCompra().doubleValue())/venda.getValorTotal().doubleValue())*100));	
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				BigDecimal taxaDeEntrega = BigDecimal.ZERO;
+				if(venda.getTaxaDeEntrega().doubleValue() == venda.getCliente().getBairro().getTaxaDeEntrega().doubleValue()) {
+					taxaDeEntrega = (venda.getCliente().getBairro() != null && entrega) ? venda.getCliente().getBairro().getTaxaDeEntrega() : BigDecimal.ZERO;			
+				} else {
+					taxaDeEntrega = (venda.getCliente().getBairro() != null && entrega) ? venda.getTaxaDeEntrega() : BigDecimal.ZERO;	
+				}
+
+				venda.setValorTotal(new BigDecimal(valorTotal + totalDeAcrescimo.doubleValue() + taxaDeEntrega.doubleValue()));
+				
+				venda.setValorTotalComDesconto(new BigDecimal(venda.getValorTotal().doubleValue()));
+				if(venda.getDesconto() != null) {
+					venda.setValorTotalComDesconto(new BigDecimal(venda.getValorTotal().doubleValue() - venda.getDesconto().doubleValue()));
+				}	
+
 				venda.setLucro(BigDecimal.valueOf(lucro));
-				//venda.setPercentualLucro(BigDecimal.valueOf(percentualLucro / itensVenda.size()));				
-				venda.setPercentualLucro(new BigDecimal(((venda.getValorTotal().doubleValue() - venda.getValorCompra().doubleValue())/venda.getValorTotal().doubleValue())*100));
+				if(venda.getDesconto() != null) {
+					venda.setLucro(new BigDecimal(lucro - venda.getDesconto().doubleValue()));
+				}
+				
+				if(!venda.getFormaPagamento().isClientePaga() && venda.getFormaPagamento().getAcrescimo().doubleValue() > 0) {
+					venda.setLucro(new BigDecimal(venda.getLucro().doubleValue() - ((venda.getValorTotalComDesconto().doubleValue() * venda.getFormaPagamento().getAcrescimo().doubleValue()) / 100)));
+				}
+		
+				venda.setPercentualLucro(new BigDecimal(((venda.getValorTotalComDesconto().doubleValue() - venda.getValorCompra().doubleValue())/venda.getValorTotalComDesconto().doubleValue())*100));
+				
+				
+				
+				
+				
+				
+				
 				venda = vendas.save(venda);
+				
+				
+				buscar();
+				
+				
+				
+				
 				
 
 				
@@ -1358,6 +1457,20 @@ public class RegistroVendasBean implements Serializable {
 			PrimeFaces.current()
 				.executeScript("swal({ type: 'error', title: 'Erro!', text: 'Quantidade não pode ser menor ou igual a zero!' });");
 		}
+		
+		Long totalDeItens = 0L;
+		for (ItemVenda itemVenda : itensVenda) {
+			
+			if(!itemVenda.getProduto().getUnidadeMedida().equals("Kg") && !itemVenda.getProduto().getUnidadeMedida().equals("Lt") && !itemVenda.getProduto().getUnidadeMedida().equals("Pt")) {
+				totalDeItens += itemVenda.getQuantidade().longValue();				
+			} else {
+				totalDeItens += 1;
+			}
+		}	
+		
+		venda.setTaxaDeEntrega(venda.getTaxaDeEntrega() != null ? venda.getTaxaDeEntrega() : BigDecimal.ZERO);
+		venda.setQuantidadeItens(totalDeItens);
+		
 	}
 
 	public void removeItem() {
@@ -1552,6 +1665,19 @@ public class RegistroVendasBean implements Serializable {
 				itemSelecionado = null;
 			}
 		}
+		
+		Long totalDeItens = 0L;
+		for (ItemVenda itemVenda : itensVenda) {
+			
+			if(!itemVenda.getProduto().getUnidadeMedida().equals("Kg") && !itemVenda.getProduto().getUnidadeMedida().equals("Lt") && !itemVenda.getProduto().getUnidadeMedida().equals("Pt")) {
+				totalDeItens += itemVenda.getQuantidade().longValue();				
+			} else {
+				totalDeItens += 1;
+			}
+		}	
+		
+		venda.setTaxaDeEntrega(venda.getTaxaDeEntrega() != null ? venda.getTaxaDeEntrega() : BigDecimal.ZERO);
+		venda.setQuantidadeItens(totalDeItens);
 	}
 
 	public void editarItem() {
@@ -1768,7 +1894,19 @@ public class RegistroVendasBean implements Serializable {
 			this.itemCompra = itensCompra.get(itensCompra.indexOf(itemCompra));
 			
 		}
-
+		
+		Long totalDeItens = 0L;
+		for (ItemVenda itemVenda : itensVenda) {
+			
+			if(!itemVenda.getProduto().getUnidadeMedida().equals("Kg") && !itemVenda.getProduto().getUnidadeMedida().equals("Lt") && !itemVenda.getProduto().getUnidadeMedida().equals("Pt")) {
+				totalDeItens += itemVenda.getQuantidade().longValue();				
+			} else {
+				totalDeItens += 1;
+			}
+		}	
+		
+		venda.setTaxaDeEntrega(venda.getTaxaDeEntrega() != null ? venda.getTaxaDeEntrega() : BigDecimal.ZERO);
+		venda.setQuantidadeItens(totalDeItens);
 	}
 	
 	
@@ -3670,8 +3808,34 @@ public class RegistroVendasBean implements Serializable {
 		}
 	}
 	
+	public void changeBairro() {		
+		
+		venda.setTaxaDeEntrega(BigDecimal.ZERO);
+		if(entrega) {
+			venda.setTaxaDeEntrega(venda.getBairro().getTaxaDeEntrega());
+		}	
+	}
+	
+	public void changeTaxaEntrega() {		
+		
+		venda.setTaxaDeEntrega(BigDecimal.ZERO);
+		venda.setBairro(venda.getCliente().getBairro());
+		if(entrega) {
+			venda.setTaxaDeEntrega(venda.getBairro().getTaxaDeEntrega());
+		}	
+	}
 
 	
+	public void exibirTaxaEntrega() {	
+		venda.setTaxaDeEntrega(BigDecimal.ZERO);
+		
+		if(!entrega) {
+			PrimeFaces.current().executeScript("ocultarTaxaEntrega();");
+		} else {
+			PrimeFaces.current().executeScript("mostrarTaxaEntrega();");
+			venda.setTaxaDeEntrega(venda.getBairro().getTaxaDeEntrega());
+		}		
+	}
 	
 	
 	

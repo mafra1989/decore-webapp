@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="decore-vendas" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="0" bottomMargin="0" uuid="519bb040-d2f6-44c8-b08c-2225ab2837bc">
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="241"/>
+	<property name="ireport.y" value="389"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -53,6 +53,7 @@
 	<field name="tipoPagamento" class="java.lang.String"/>
 	<field name="itensPagamento" class="java.util.Collection"/>
 	<field name="itensParcelamentos" class="java.util.Collection"/>
+	<field name="observacoes" class="java.lang.String"/>
 	<group name="Group2">
 		<groupExpression><![CDATA[(int)($V{REPORT_COUNT}/5)]]></groupExpression>
 		<groupHeader>
@@ -97,27 +98,20 @@
 		<groupFooter>
 			<band height="200">
 				<rectangle>
-					<reportElement uuid="c5e8f44a-b13d-40d6-9d38-9cb78aca4b62" x="0" y="57" width="537" height="40" backcolor="#CCCCCC"/>
+					<reportElement uuid="c5e8f44a-b13d-40d6-9d38-9cb78aca4b62" x="0" y="41" width="537" height="40" backcolor="#CCCCCC"/>
 					<graphicElement>
 						<pen lineColor="#FFFFFF"/>
 					</graphicElement>
 				</rectangle>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement uuid="a75c8577-f4c8-4be9-b4a9-305266844c9f" style="Detail" positionType="Float" x="273" y="4" width="262" height="23" forecolor="#333333"/>
+					<reportElement uuid="a75c8577-f4c8-4be9-b4a9-305266844c9f" style="Detail" positionType="Float" x="273" y="2" width="262" height="17" forecolor="#333333"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="10" isBold="true" isPdfEmbedded="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA["R$ " + $F{subTotal}]]></textFieldExpression>
 				</textField>
-				<staticText>
-					<reportElement uuid="9fadde04-3933-4339-9f1e-ac848b6162be" mode="Transparent" x="0" y="4" width="275" height="23" backcolor="#FFFFFF"/>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font size="10" isBold="true" isItalic="true"/>
-					</textElement>
-					<text><![CDATA[Subtotal Materiais]]></text>
-				</staticText>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement uuid="60fd1d1e-bf45-4b66-8435-84afe3ef9b35" style="Detail" positionType="Float" x="273" y="30" width="262" height="23" isRemoveLineWhenBlank="true" forecolor="#333333">
+					<reportElement uuid="60fd1d1e-bf45-4b66-8435-84afe3ef9b35" style="Detail" positionType="Float" x="273" y="18" width="262" height="17" isRemoveLineWhenBlank="true" forecolor="#333333">
 						<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -126,21 +120,21 @@
 					<textFieldExpression><![CDATA["R$ " + $F{desconto}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement uuid="2c60b8dd-d8ef-464e-b2a5-6b9322238fcb" style="Detail" positionType="Float" x="267" y="65" width="268" height="25" forecolor="#333333"/>
+					<reportElement uuid="2c60b8dd-d8ef-464e-b2a5-6b9322238fcb" style="Detail" x="267" y="49" width="268" height="25" forecolor="#333333"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="18" isBold="true" isPdfEmbedded="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA["R$ " + $F{totalVenda}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement uuid="20f30369-98c2-477b-99e1-4b0bb7c8dac1" mode="Transparent" x="4" y="65" width="261" height="25" backcolor="#FFFFFF"/>
+					<reportElement uuid="20f30369-98c2-477b-99e1-4b0bb7c8dac1" mode="Transparent" x="4" y="49" width="261" height="25" backcolor="#FFFFFF"/>
 					<textElement textAlignment="Left">
 						<font size="19" isBold="true"/>
 					</textElement>
 					<text><![CDATA[VALOR TOTAL]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" mode="Transparent" x="0" y="30" width="275" height="23" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" mode="Transparent" x="0" y="18" width="275" height="17" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
 						<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -149,7 +143,7 @@
 					<text><![CDATA[Desconto]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" positionType="Float" mode="Transparent" x="402" y="122" width="73" height="13" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" mode="Transparent" x="402" y="106" width="73" height="13" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
 						<printWhenExpression><![CDATA[$F{conta} && $F{tipoPagamento}.equals( "PARCELADO" )]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -158,7 +152,7 @@
 					<text><![CDATA[VALOR]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" positionType="Float" mode="Transparent" x="351" y="122" width="111" height="13" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" mode="Transparent" x="351" y="106" width="111" height="13" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
 						<printWhenExpression><![CDATA[!$F{itensPagamentos}.isEmpty()]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -167,7 +161,7 @@
 					<text><![CDATA[FORMA DE PAGAMENTO]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" mode="Transparent" x="351" y="97" width="184" height="24" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" mode="Transparent" x="351" y="81" width="184" height="24" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
 						<printWhenExpression><![CDATA[!$F{itensPagamentos}.isEmpty() || ($F{conta} && $F{tipoPagamento}.equals( "AVISTA" )) || ($F{conta} && $F{tipoPagamento}.equals( "PARCELADO" ))]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -176,7 +170,7 @@
 					<text><![CDATA[Informações de Pagamento:]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" positionType="Float" mode="Transparent" x="351" y="159" width="111" height="13" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" mode="Transparent" x="351" y="143" width="111" height="13" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
 						<printWhenExpression><![CDATA[!$F{itensPagamentos}.isEmpty()]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -185,7 +179,7 @@
 					<text><![CDATA[TROCO]]></text>
 				</staticText>
 				<textField>
-					<reportElement uuid="e0311087-e72c-4445-a530-fe46866aa387" positionType="Float" x="462" y="159" width="73" height="13" isRemoveLineWhenBlank="true">
+					<reportElement uuid="e0311087-e72c-4445-a530-fe46866aa387" x="462" y="143" width="73" height="13" isRemoveLineWhenBlank="true">
 						<printWhenExpression><![CDATA[!$F{itensPagamentos}.isEmpty()]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -194,7 +188,7 @@
 					<textFieldExpression><![CDATA["R$ " + $F{troco}]]></textFieldExpression>
 				</textField>
 				<staticText>
-					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" mode="Transparent" x="351" y="122" width="111" height="13" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" mode="Transparent" x="351" y="106" width="111" height="13" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
 						<printWhenExpression><![CDATA[$F{conta} && $F{tipoPagamento}.equals( "AVISTA" )]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -203,21 +197,21 @@
 					<text><![CDATA[VALOR A PAGAR]]></text>
 				</staticText>
 				<subreport>
-					<reportElement uuid="b94c6c09-3e88-4114-98af-c4fbbd9785ce" x="351" y="136" width="184" height="20">
+					<reportElement uuid="b94c6c09-3e88-4114-98af-c4fbbd9785ce" x="351" y="120" width="184" height="20">
 						<printWhenExpression><![CDATA[$F{conta} && $F{tipoPagamento}.equals( "PARCELADO" )]]></printWhenExpression>
 					</reportElement>
 					<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{itensParcelamentos}, false)]]></dataSourceExpression>
 					<subreportExpression><![CDATA["/relatorios/parcelamentos.jasper"]]></subreportExpression>
 				</subreport>
 				<subreport>
-					<reportElement uuid="b94c6c09-3e88-4114-98af-c4fbbd9785ce" stretchType="RelativeToBandHeight" x="351" y="136" width="184" height="20">
+					<reportElement uuid="b94c6c09-3e88-4114-98af-c4fbbd9785ce" stretchType="RelativeToBandHeight" x="351" y="120" width="184" height="20">
 						<printWhenExpression><![CDATA[$F{conta} && $F{tipoPagamento}.equals( "AVISTA" )]]></printWhenExpression>
 					</reportElement>
 					<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{itensPagamento}, false)]]></dataSourceExpression>
 					<subreportExpression><![CDATA["/relatorios/pagamento.jasper"]]></subreportExpression>
 				</subreport>
 				<staticText>
-					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" positionType="Float" mode="Transparent" x="475" y="122" width="60" height="13" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" mode="Transparent" x="475" y="106" width="60" height="13" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
 						<printWhenExpression><![CDATA[$F{conta} && $F{tipoPagamento}.equals( "PARCELADO" )]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -226,7 +220,7 @@
 					<text><![CDATA[VENCIMENTO]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" mode="Transparent" x="351" y="122" width="51" height="13" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" mode="Transparent" x="351" y="106" width="51" height="13" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
 						<printWhenExpression><![CDATA[$F{conta} && $F{tipoPagamento}.equals( "PARCELADO" )]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -235,14 +229,14 @@
 					<text><![CDATA[PARCELA]]></text>
 				</staticText>
 				<subreport>
-					<reportElement uuid="b94c6c09-3e88-4114-98af-c4fbbd9785ce" stretchType="RelativeToBandHeight" x="351" y="136" width="184" height="20">
+					<reportElement uuid="b94c6c09-3e88-4114-98af-c4fbbd9785ce" stretchType="RelativeToBandHeight" x="351" y="120" width="184" height="20">
 						<printWhenExpression><![CDATA[$F{conta} && $F{tipoPagamento}.equals( "AVISTA" )]]></printWhenExpression>
 					</reportElement>
 					<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{itensPagamento}, false)]]></dataSourceExpression>
 					<subreportExpression><![CDATA["/relatorios/pagamento.jasper"]]></subreportExpression>
 				</subreport>
 				<staticText>
-					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" positionType="Float" mode="Transparent" x="462" y="122" width="73" height="13" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" mode="Transparent" x="462" y="106" width="73" height="13" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
 						<printWhenExpression><![CDATA[!$F{itensPagamentos}.isEmpty()]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -251,7 +245,7 @@
 					<text><![CDATA[VALOR PAGO]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" positionType="Float" mode="Transparent" x="462" y="122" width="73" height="13" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" mode="Transparent" x="462" y="106" width="73" height="13" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
 						<printWhenExpression><![CDATA[$F{conta} && $F{tipoPagamento}.equals( "AVISTA" )]]></printWhenExpression>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -260,12 +254,39 @@
 					<text><![CDATA[VENCIMENTO]]></text>
 				</staticText>
 				<subreport>
-					<reportElement uuid="b94c6c09-3e88-4114-98af-c4fbbd9785ce" stretchType="RelativeToBandHeight" x="351" y="136" width="184" height="20">
+					<reportElement uuid="b94c6c09-3e88-4114-98af-c4fbbd9785ce" stretchType="RelativeToBandHeight" x="351" y="120" width="184" height="20">
 						<printWhenExpression><![CDATA[!$F{itensPagamentos}.isEmpty()]]></printWhenExpression>
 					</reportElement>
 					<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{itensPagamentos}, false)]]></dataSourceExpression>
 					<subreportExpression><![CDATA["/relatorios/pagamentos.jasper"]]></subreportExpression>
 				</subreport>
+				<staticText>
+					<reportElement uuid="9fadde04-3933-4339-9f1e-ac848b6162be" mode="Transparent" x="2" y="81" width="275" height="23" backcolor="#FFFFFF"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="10" isBold="true" isItalic="false"/>
+					</textElement>
+					<text><![CDATA[Observações]]></text>
+				</staticText>
+				<rectangle radius="5">
+					<reportElement uuid="c5e8f44a-b13d-40d6-9d38-9cb78aca4b62" x="2" y="104" width="275" height="53" backcolor="#FFFFFF"/>
+					<graphicElement>
+						<pen lineWidth="0.25" lineColor="#666666"/>
+					</graphicElement>
+				</rectangle>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="48869abd-a011-4b90-b7d8-a73d0b135164" x="5" y="103" width="269" height="17" isRemoveLineWhenBlank="true"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{observacoes}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="6d6c747e-29bb-4a7d-b88f-0a9497eba3be" x="0" y="2" width="275" height="17" isRemoveLineWhenBlank="true" backcolor="#FF0000">
+						<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+					</reportElement>
+					<textElement verticalAlignment="Middle" markup="none">
+						<font fontName="SansSerif" size="10" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Subtotal Materiais + Taxa de entrega ( R$ " + $F{frete} + " )"]]></textFieldExpression>
+				</textField>
 			</band>
 		</groupFooter>
 	</group>
@@ -418,7 +439,7 @@
 			</rectangle>
 			<rectangle>
 				<reportElement uuid="a886d1b9-0ed4-44f0-b242-38533c9bd0a8" x="-1" y="8" width="537" height="30" isRemoveLineWhenBlank="true" backcolor="#CCCCCC">
-					<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{desconto}.equals("xxx")]]></printWhenExpression>
 				</reportElement>
 				<graphicElement>
 					<pen lineColor="#FFFFFF"/>
@@ -426,7 +447,7 @@
 			</rectangle>
 			<staticText>
 				<reportElement uuid="5b01f5ab-24b3-4a24-8fcb-c1b91e39c4d8" x="3" y="39" width="258" height="20" isRemoveLineWhenBlank="true" backcolor="#FF0000">
-					<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{desconto}.equals("xxx")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="true"/>
@@ -435,7 +456,7 @@
 			</staticText>
 			<staticText>
 				<reportElement uuid="64619cef-324c-45ca-8441-405f45ed32f2" x="343" y="39" width="70" height="20" isRemoveLineWhenBlank="true" backcolor="#FF0000">
-					<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{desconto}.equals("xxx")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="true"/>
@@ -444,7 +465,7 @@
 			</staticText>
 			<staticText>
 				<reportElement uuid="153e2832-42b4-439b-b30b-d14490240e23" mode="Transparent" x="3" y="12" width="532" height="22" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
-					<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{desconto}.equals("xxx")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
@@ -453,7 +474,7 @@
 			</staticText>
 			<staticText>
 				<reportElement uuid="fab67f54-5fd9-4dd6-a0cc-cab9febd7620" x="416" y="39" width="43" height="20" isRemoveLineWhenBlank="true" backcolor="#FF0000">
-					<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{desconto}.equals("xxx")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="9" isBold="true"/>
@@ -462,7 +483,7 @@
 			</staticText>
 			<staticText>
 				<reportElement uuid="94ebc6db-5654-4551-a7b4-3ce702bb4911" x="261" y="39" width="82" height="20" isRemoveLineWhenBlank="true" backcolor="#FF0000">
-					<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{desconto}.equals("xxx")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="true"/>
@@ -471,7 +492,7 @@
 			</staticText>
 			<staticText>
 				<reportElement uuid="07215b6a-8918-4d33-8276-c12a70a07255" x="462" y="39" width="72" height="20" isRemoveLineWhenBlank="true" backcolor="#FF0000">
-					<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{desconto}.equals("xxx")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="true"/>
@@ -480,7 +501,7 @@
 			</staticText>
 			<staticText>
 				<reportElement uuid="7da8ff0a-0891-4fbf-bd3a-52e5f8d2af04" x="3" y="59" width="258" height="20" isRemoveLineWhenBlank="true" backcolor="#FF0000">
-					<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{desconto}.equals("xxx")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="false"/>
@@ -489,7 +510,7 @@
 			</staticText>
 			<staticText>
 				<reportElement uuid="dc775de1-32fb-448a-9564-921eed323dea" x="416" y="59" width="43" height="20" isRemoveLineWhenBlank="true" backcolor="#FF0000">
-					<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{desconto}.equals("xxx")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="9" isBold="false"/>
@@ -498,7 +519,7 @@
 			</staticText>
 			<textField>
 				<reportElement uuid="6d6c747e-29bb-4a7d-b88f-0a9497eba3be" x="462" y="59" width="72" height="20" isRemoveLineWhenBlank="true" backcolor="#FF0000">
-					<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{desconto}.equals("xxx")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
 					<font fontName="SansSerif" size="10" isBold="false"/>
@@ -507,7 +528,7 @@
 			</textField>
 			<textField>
 				<reportElement uuid="00dfbd96-05a2-4f87-a50b-22802a3c4773" x="261" y="59" width="82" height="20" isRemoveLineWhenBlank="true" backcolor="#FF0000">
-					<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{desconto}.equals("xxx")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
 					<font fontName="SansSerif" size="10" isBold="false"/>
@@ -516,7 +537,7 @@
 			</textField>
 			<staticText>
 				<reportElement uuid="8419345f-b33b-4709-8293-f1b48179c108" x="343" y="59" width="70" height="20" isRemoveLineWhenBlank="true" backcolor="#FF0000">
-					<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{desconto}.equals("xxx")]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="false"/>

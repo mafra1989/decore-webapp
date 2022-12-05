@@ -436,8 +436,13 @@ public class RelatorioLucrosBean implements Serializable {
 						categoriaPorDia, categoriasPorDia, produto01, usuarioPorDia, true, usuario.getEmpresa());
 				
 				Number totalEstornosHoje = 0;//vendas.totalEstornosPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());			
+				
 				Number totalDescontosHoje = vendas.totalDescontosPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
-
+				Number totalDescontosHojeVendaParcelada = vendas.totalDescontosPorDiaVendaParcelada(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
+				
+				Number totalTaxaEntregaHoje = vendas.totalTaxasEntregaPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
+				Number totalTaxaEntregaHojeVendaParcelada = vendas.totalTaxasEntregaPorDiaVendaParcelada(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
+				
 	
 				System.out.println("Data: " + calendarStartTemp.getTime() + " - " + resultTemp.size());
 
@@ -467,10 +472,10 @@ public class RelatorioLucrosBean implements Serializable {
 					for (Object[] object : resultTemp) {
 						
 						if(categoriasPorDia == null || categoriasPorDia.length == 0 || categoriasPorDia.length == todasCategoriasProduto.size()) {
-							object[3] = (((BigDecimal)object[3]).doubleValue() + totalEstornosHoje.doubleValue()) - totalDescontosHoje.doubleValue();
-							object[5] = ((BigDecimal)object[5]).doubleValue() - totalDescontosHoje.doubleValue();
+							object[3] = (((BigDecimal)object[3]).doubleValue() + totalEstornosHoje.doubleValue()) - (totalDescontosHoje.doubleValue() + totalDescontosHojeVendaParcelada.doubleValue());
+							object[5] = (((BigDecimal)object[5]).doubleValue() + totalTaxaEntregaHoje.doubleValue() + totalTaxaEntregaHojeVendaParcelada.doubleValue()) - (totalDescontosHoje.doubleValue() + totalDescontosHojeVendaParcelada.doubleValue());
 						} else {
-							object[3] = ((BigDecimal)object[3]).doubleValue() + totalEstornosHoje.doubleValue();
+							object[3] = ((BigDecimal)object[3]).doubleValue() + (totalEstornosHoje.doubleValue() + totalDescontosHojeVendaParcelada.doubleValue());
 						}
 						
 						
@@ -683,9 +688,15 @@ public class RelatorioLucrosBean implements Serializable {
 				List<Object[]> resultTemp = vendas.totalLucrosPorSemana(ano01, semana01, semana01, categoriaPorSemana,
 						categoriasPorSemana, produto02, usuarioPorSemana, true, usuario.getEmpresa());
 				
-				Number totalDescontos = vendas.totalDescontosPorSemana(ano01, semana01, semana01, usuario.getEmpresa());
 				Number totalEstornos = 0;//vendas.totalEstornosPorSemana(ano01, semana01, semana01, usuario.getEmpresa());
+				
+				Number totalDescontos = vendas.totalDescontosPorSemana(ano01, semana01, semana01, usuario.getEmpresa());				
+				Number totalDescontosVendaParcelada = vendas.totalDescontosPorSemanaVendaParcelada(ano01, semana01, semana01, usuario.getEmpresa());
 
+				Number totalTaxasEntrega = vendas.totalTaxasEntregaPorSemana(ano01, semana01, semana01, usuario.getEmpresa());				
+				Number totalTaxasEntregaVendaParcelada = vendas.totalTaxasEntregaPorSemanaVendasParceladas(ano01, semana01, semana01, usuario.getEmpresa());
+				
+				
 				if (resultTemp.size() == 0) {
 
 					Object[] object = new Object[5];
@@ -702,10 +713,10 @@ public class RelatorioLucrosBean implements Serializable {
 					for (Object[] object : resultTemp) {
 						
 						if(categoriasPorSemana == null || categoriasPorSemana.length == 0 || categoriasPorSemana.length == todasCategoriasProduto.size()) {
-							object[2] = (((BigDecimal)object[2]).doubleValue() + totalEstornos.doubleValue()) - totalDescontos.doubleValue();
-							object[4] = ((BigDecimal)object[4]).doubleValue() - totalDescontos.doubleValue();
+							object[2] = (((BigDecimal)object[2]).doubleValue() + totalEstornos.doubleValue()) - (totalDescontos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
+							object[4] = (((BigDecimal)object[4]).doubleValue() + totalTaxasEntrega.doubleValue() + totalTaxasEntregaVendaParcelada.doubleValue()) - (totalDescontos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
 						} else {
-							object[2] = ((BigDecimal)object[2]).doubleValue() + totalEstornos.doubleValue();
+							object[2] = ((BigDecimal)object[2]).doubleValue() + (totalEstornos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
 						}
 						
 						result.add(object);
@@ -940,11 +951,16 @@ public class RelatorioLucrosBean implements Serializable {
 						mes01 = "0" + i;
 					}
 					
-					List<Object[]> resultTemp = vendas.totalLucrosPorMes(ano02, mes01, mes01, categoriaPorMes,
+					List<Object[]> resultTemp = vendas.totalLucrosPorMes__(ano02, mes01, mes01, categoriaPorMes,
 							categoriasPorMes, produto03, usuarioPorMes, true, usuario.getEmpresa());
 					
-					Number totalDescontos = vendas.totalDescontosPorMes(ano02, mes01, mes01, usuario.getEmpresa());
 					Number totalEstornos = 0;//vendas.totalEstornosPorMes(ano02, mes01, mes01, usuario.getEmpresa());
+					
+					Number totalDescontos = vendas.totalDescontosPorMes(ano02, mes01, mes01, usuario.getEmpresa());
+					Number totalDescontosVendaParcelada = vendas.totalDescontosPorMesVendasParceladas(ano02, mes01, mes01, usuario.getEmpresa());
+
+					Number totalTaxasEntrega = vendas.totalTaxasEntregasPorMes(ano02, mes01, mes01, usuario.getEmpresa());				
+					Number totalTaxasEntregaVendaParcelada = vendas.totalTaxasEntregasPorMesVendasParceladas(ano02, mes01, mes01, usuario.getEmpresa());
 
 					if (resultTemp.size() == 0) {
 
@@ -963,10 +979,10 @@ public class RelatorioLucrosBean implements Serializable {
 						for (Object[] object : resultTemp) {
 							
 							if(categoriasPorMes == null || categoriasPorMes.length == 0 || categoriasPorMes.length == todasCategoriasProduto.size()) {
-								object[2] = (((BigDecimal)object[2]).doubleValue() + totalEstornos.doubleValue()) - totalDescontos.doubleValue();
-								object[4] = ((BigDecimal)object[4]).doubleValue() - totalDescontos.doubleValue();
+								object[2] = (((BigDecimal)object[2]).doubleValue() + totalEstornos.doubleValue()) - (totalDescontos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
+								object[4] = (((BigDecimal)object[4]).doubleValue() + totalTaxasEntrega.doubleValue() + totalTaxasEntregaVendaParcelada.doubleValue()) - (totalDescontos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
 							} else {
-								object[2] = ((BigDecimal)object[2]).doubleValue() + totalEstornos.doubleValue();
+								object[2] = ((BigDecimal)object[2]).doubleValue() + (totalEstornos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
 							}
 							
 							result.add(object);
@@ -987,8 +1003,13 @@ public class RelatorioLucrosBean implements Serializable {
 					List<Object[]> resultTemp = vendas.totalLucrosPorLote(ano02, mes01, mes01, categoriaPorMes,
 							categoriasPorMes, produto03, true, usuario.getEmpresa());
 					
-					Number totalDescontos = vendas.totalDescontosPorMes(ano02, mes01, mes01, usuario.getEmpresa());
 					Number totalEstornos = 0;//vendas.totalEstornosPorMes(ano02, mes01, mes01, usuario.getEmpresa());
+					
+					Number totalDescontos = vendas.totalDescontosPorMes(ano02, mes01, mes01, usuario.getEmpresa());
+					Number totalDescontosVendaParcelada = vendas.totalDescontosPorMesVendasParceladas(ano02, mes01, mes01, usuario.getEmpresa());
+
+					Number totalTaxasEntrega = vendas.totalTaxasEntregasPorMes(ano02, mes01, mes01, usuario.getEmpresa());				
+					Number totalTaxasEntregaVendaParcelada = vendas.totalTaxasEntregasPorMesVendasParceladas(ano02, mes01, mes01, usuario.getEmpresa());				
 
 					if (resultTemp.size() == 0) {
 
@@ -1008,10 +1029,10 @@ public class RelatorioLucrosBean implements Serializable {
 						for (Object[] object : resultTemp) {
 							
 							if(categoriasPorMes == null || categoriasPorMes.length == 0 || categoriasPorMes.length == todasCategoriasProduto.size()) {
-								object[2] = (((BigDecimal)object[2]).doubleValue() + totalEstornos.doubleValue()) - totalDescontos.doubleValue();
-								object[5] = ((BigDecimal)object[5]).doubleValue() - totalDescontos.doubleValue();
+								object[2] = (((BigDecimal)object[2]).doubleValue() + totalEstornos.doubleValue()) - (totalDescontos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
+								object[5] = (((BigDecimal)object[5]).doubleValue() + totalTaxasEntrega.doubleValue() + totalTaxasEntregaVendaParcelada.doubleValue()) - (totalDescontos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
 							} else {
-								object[2] = ((BigDecimal)object[2]).doubleValue() + totalEstornos.doubleValue();
+								object[2] = ((BigDecimal)object[2]).doubleValue() + (totalEstornos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
 							}
 							
 							result.add(object);
@@ -1080,9 +1101,15 @@ public class RelatorioLucrosBean implements Serializable {
 				} else {
 					mes = object[0].toString();
 				}
-				
+/*			
 				Number totalDescontos = vendas.totalDescontosPorMes(object[1].toString(), mes,
 						mes, usuario.getEmpresa());
+				
+				Number totalDescontosVendaParcelada = vendas.totalDescontosPorMesVendasParceladas(object[1].toString(), mes, mes, usuario.getEmpresa());
+
+				Number totalTaxasEntrega = vendas.totalTaxasEntregasPorMes(object[1].toString(), mes, mes, usuario.getEmpresa());				
+				Number totalTaxasEntregaVendaParcelada = vendas.totalTaxasEntregasPorMesVendasParceladas(object[1].toString(), mes, mes, usuario.getEmpresa());				
+*/
 								
 				/* Contas de Despesas e Compras Pagas */
 				totalDeDespesas = contas
@@ -1095,7 +1122,7 @@ public class RelatorioLucrosBean implements Serializable {
 				Number totalComprasPagas = compras.totalComprasPorMes(Long.parseLong(object[0].toString()),
 						Long.parseLong(object[1].toString()), null, null, true, usuario.getEmpresa());
 
-				values.add(((totalVendasPagas.doubleValue() + totalDeReceitas + receitas.doubleValue()) - (totalDescontos.doubleValue() + totalDeDebitos.doubleValue() + totalDeDespesas.doubleValue() + totalComprasPagas.doubleValue())));
+				values.add(((/*totalTaxasEntrega.doubleValue() + totalTaxasEntregaVendaParcelada.doubleValue()*/ + totalVendasPagas.doubleValue() + totalDeReceitas + receitas.doubleValue()) - (/*totalDescontosVendaParcelada.doubleValue() + totalDescontos.doubleValue() + */totalDeDebitos.doubleValue() + totalDeDespesas.doubleValue() + totalComprasPagas.doubleValue())));
 
 				/*
 				if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) == 0 && totalDeDespesas > 0) {
@@ -1140,10 +1167,10 @@ public class RelatorioLucrosBean implements Serializable {
 					Number despesas = lancamentos.totalDespesasPorMes(Long.parseLong(object[0].toString()),
 							Long.parseLong(object[1].toString()), usuario.getEmpresa());
 					
-					Number totalDescontos = vendas.totalDescontosPorMes(object[1].toString(), object[0].toString(),
-							object[0].toString(), usuario.getEmpresa());
+					/*Number totalDescontos = vendas.totalDescontosPorMes(object[1].toString(), object[0].toString(),
+							object[0].toString(), usuario.getEmpresa());*/
 					
-					despesasTotais = totalDeDespesas.doubleValue() + despesas.doubleValue() + totalDescontos.doubleValue();
+					despesasTotais = totalDeDespesas.doubleValue() + despesas.doubleValue()/* + totalDescontos.doubleValue()*/;
 				}
 				
 				percentualMensal = true;			
@@ -1278,7 +1305,13 @@ public class RelatorioLucrosBean implements Serializable {
 						produto04, usuarioPorAno, true, usuario.getEmpresa());
 				
 				Number totalEstornos = 0;//vendas.totalEstornosPorAno(ano03, usuario.getEmpresa());
+				
 				Number totalDescontos = vendas.totalDescontosPorAno(ano03, usuario.getEmpresa());
+				Number totalDescontosVendaParcelada = vendas.totalDescontosPorAnoVendasParceladas(ano03, usuario.getEmpresa());
+
+				Number totalTaxasEntrega = vendas.totalTaxasEntregasPorAno(ano03, usuario.getEmpresa());				
+				Number totalTaxasEntregaVendaParcelada = vendas.totalTaxasEntregasPorAnoVendasParceladas(ano03, usuario.getEmpresa());
+			
 
 				if (resultTemp.size() == 0) {
 
@@ -1296,10 +1329,10 @@ public class RelatorioLucrosBean implements Serializable {
 					for (Object[] object : resultTemp) {
 						
 						if(categoriasPorAno == null || categoriasPorAno.length == 0 || categoriasPorAno.length == todasCategoriasProduto.size()) {
-							object[1] = (((BigDecimal)object[1]).doubleValue() + totalEstornos.doubleValue()) - totalDescontos.doubleValue();
-							object[3] = ((BigDecimal)object[3]).doubleValue() - totalDescontos.doubleValue();
+							object[1] = (((BigDecimal)object[1]).doubleValue() + totalEstornos.doubleValue()) - (totalDescontos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
+							object[3] = (((BigDecimal)object[3]).doubleValue() + totalTaxasEntrega.doubleValue() + totalTaxasEntregaVendaParcelada.doubleValue()) - (totalDescontos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
 						} else {
-							object[1] = ((BigDecimal)object[1]).doubleValue() + totalEstornos.doubleValue();
+							object[1] = ((BigDecimal)object[1]).doubleValue() - (totalEstornos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
 						}
 						
 						result.add(object);
@@ -1463,7 +1496,7 @@ public class RelatorioLucrosBean implements Serializable {
 
 	public void prepareDonutModelPorMes() {
 
-		List<Object[]> result = vendas.totalLucrosPorMes(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes,
+		List<Object[]> result = vendas.totalLucrosPorMes__(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes,
 				categoriasPorMes, produto03, usuarioPorMes, false, usuario.getEmpresa());
 
 		createDonutModel(result);

@@ -40,6 +40,7 @@ public class EspelhoVenda implements Serializable {
 	private String vendedor;
 	private String tipoPagamento;
 	private Boolean conta;
+	private String observacoes;
 	
 	/* Dados do Cliente */
 	private String cliente = "";
@@ -130,6 +131,14 @@ public class EspelhoVenda implements Serializable {
 
 	public void setConta(Boolean conta) {
 		this.conta = conta;
+	}
+	
+	public String getObservacoes() {
+		return observacoes;
+	}
+
+	public void setObservacoes(String observacoes) {
+		this.observacoes = observacoes;
 	}
 
 	public String getResponsavel() {

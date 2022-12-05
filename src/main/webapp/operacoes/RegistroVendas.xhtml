@@ -18,11 +18,29 @@
 
 		<style>
 @media ( min-width :220px) {
+	.itens-add .ui-panelgrid .ui-grid-responsive .ui-panelgrid-cell {
+    	padding: 2px;
+    }
+    .desconto-venda {
+    	margin-top: 5px;
+    	margin-bottom: 25px;
+    }
+	.desconto-venda .ui-grid-col-10 {
+	    margin-top: -10px;
+	    float: left;
+	    margin-bottom: 10px;
+	}
 	.sub-total > .ui-state-disabled {
     	opacity: 0.95;
     }
 	.layout-wrapper .layout-main .layout-content {
 	    padding: 55px 17px 4px 17px;
+	}
+	.layout-wrapper {
+	    padding-bottom: 65px;
+	}
+	.panel-total-geral {
+	    margin-top: 18px;
 	}
 	.ui-datepicker-touch-ui.ui-datepicker td a, .ui-datepicker-touch-ui.ui-datepicker td span, .ui-datepicker-touch-ui.ui-datepicker th {
 	    padding: 10px;   
@@ -186,18 +204,7 @@
 		opacity: .75;
 	}
 	
-	.panel-entrega.ui-widget a {
-		float: left !important;
-		margin-top: 10px !important;
-		margin-left: 80px;
-		font-size: 13px;
-	}
-	.panel-entrega .ui-state-disabled {
-		float: left !important;
-		margin-top: 6px !important;
-		margin-left: 0px;
-		font-size: 13px;
-	}
+
 	.panel-entrega {
 		margin-top: 8px;
 	}
@@ -227,6 +234,17 @@
 		transition: max-height 0.3s ease-in-out;
 	}
 	.grid-valores {
+		overflow: hidden;
+		max-height: 300px;
+		transition: max-height 1s ease-in-out;
+	}
+	
+	.taxa-entrega.hide {
+		max-height: 0;
+		pointer-events: none;
+		transition: max-height 0.3s ease-in-out;
+	}
+	.taxa-entrega {
 		overflow: hidden;
 		max-height: 300px;
 		transition: max-height 1s ease-in-out;
@@ -338,6 +356,31 @@
 }
 
 @media ( min-width :460px) {
+	.desconto-venda {
+    	margin-top: 15px;
+    }
+	.itens-add.card h3 {
+    	margin-bottom: 14px;
+    }
+	.panel-total-geral {
+	    margin-top: 25px;
+	}
+	.panel-total-geral .ui-widget-content {
+		background: #fdfdfd00 !important; 
+	}
+	.line-total {
+	    width: 400px;
+	    border-top: 1px solid #ccc;
+	    z-index: 1;
+	    display: block;
+	}
+	.itens-add .ui-panelgrid .ui-grid-responsive .ui-panelgrid-cell {
+	    padding: 2px; 
+	    z-index: 9;
+	}
+	.desconto-venda .ui-grid-col-10 {
+	    text-align: end;
+	}
 	.panel-entrega {
 		margin-top: 0px;
 	}
@@ -392,7 +435,7 @@
 	}
 	.panel-entrega .ui-state-disabled {
 		float: left !important;
-		margin-top: 2px !important;
+		margin-top: 10px !important;
 		/*margin-top: -29px !important;*/
 		margin-left: 0px;
 		font-size: 13px;
@@ -531,6 +574,8 @@
 										placeholder="selecione">
 		
 										<f:selectItem itemLabel="Selecione" />
+										
+										<p:ajax event="change" process="@this" update="bairro taxa-entrega localizacao form:panel-total-geral" listener="#{registroVendasBean.changeTaxaEntrega}" />
 		
 										<f:selectItems value="#{registroVendasBean.todosClientes}"
 											var="cliente" itemLabel="#{cliente.nome}"
@@ -543,7 +588,7 @@
 										var="bairro" itemLabel="#{bairro.nome}" itemValue="#{bairro}" 
 										completeMethod="#{registroVendasBean.completeText}">
 										
-										<p:ajax event="blur" process="@this" update="panel-entrega" />
+										<p:ajax event="itemSelect" process="@this" update="panel-entrega localizacao taxa-entrega form:panel-total-geral" listener="#{registroVendasBean.changeBairro}" />
 									</p:autoComplete>
 		
 									<p:outputLabel value="Vendedor" for="vendedor" />
@@ -567,14 +612,34 @@
 									<p:inputSwitch offLabel="Não" onLabel="Sim" id="entrega"
 										value="#{registroVendasBean.entrega}">
 		
-										<p:ajax process="@this" update="@parent localizacao" />
+										<p:ajax process="@this bairro" update="@parent localizacao taxa-entrega form:panel-total-geral" listener="#{registroVendasBean.exibirTaxaEntrega}" />
 									</p:inputSwitch>
 		
 									<p:commandLink styleClass="btn-new entrega" id="localizacao"
 										update="entrega-dialog" value="Dados da entrega"
 										onstart="PF('downloadLoading').show();"
 										oncomplete="PF('downloadLoading').hide();PF('entrega-dialog').show()"
-										process="@this" disabled="#{not registroVendasBean.entrega or registroVendasBean.venda.bairro.nome eq 'Não Informado'}" />
+										process="@this" disabled="#{not registroVendasBean.entrega or registroVendasBean.venda.bairro.nome eq 'Não Informado'}" />				
+									
+								</p:panelGrid>	
+								
+								<p:panelGrid columns="3" layout="grid" id="panel-taxa-entrega"
+									styleClass="panelgrid-noborder disabled disabled panel-taxa-entrega taxa-entrega #{registroVendasBean.entrega ? '' : 'hide'}"
+									columnClasses="ui-grid-col-4, ui-grid-col-3">
+									
+									<p:outputLabel value="Taxa de Entrega" for="taxa-entrega" />
+									<p:inputNumber id="taxa-entrega" decimalPlaces="2" style="margin-top: -5px;"
+										placeholder="R$ 0,00" autocomplete="off" symbol="R$ " minValue="0"
+										value="#{registroVendasBean.venda.taxaDeEntrega}">
+									</p:inputNumber>	
+								</p:panelGrid>												
+								
+								<p:panelGrid columns="1" layout="grid"
+									styleClass="panelgrid-noborder disabled disabled">
+									
+									<h:outputText value="Observações"/>
+									<p:inputTextarea maxlength="200" id="obervacao-venda" placeholder="Descreva suas observações aqui."
+										value="#{registroVendasBean.venda.observacao}" />
 								</p:panelGrid>
 		
 								<p:panelGrid columns="2" layout="grid" id="panel-ajuste" rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado()}"
@@ -754,9 +819,9 @@
 								onstart="PF('downloadLoading').show();"
 								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
 								onsuccess="PF('downloadLoading').hide();" icon="fa fa-plus"
-								update="itens-venda-panel form:btn-novo preco-venda panel-lote msg panel-valores codigo descricao fornecedor total-venda id valor-unitario quantidade valor-total panel-table lote "
+								update="accordion-panel:taxa-entrega itens-venda-panel form:btn-novo preco-venda panel-lote msg panel-valores codigo descricao fornecedor total-venda panel-total-geral id valor-unitario quantidade valor-total panel-table lote "
 								action="#{registroVendasBean.adicionarItem}"
-								process="@this panel-lote codigo panel-valores valor-unitario quantidade quantidade_ quantidade__ valor-total id lote"
+								process="@this accordion-panel:taxa-entrega panel-lote codigo panel-valores valor-unitario quantidade quantidade_ quantidade__ valor-total id lote"
 								style="font-weight: bold;" />
 						</p:panelGrid>
 						
@@ -768,12 +833,17 @@
 						id="panel-table" style="padding-bottom: 0px !important">
 
 						<h3 style="font-weight: bold">Itens adicionados</h3>
-
+						
+						<p:commandButton id="toggler" type="button"
+							style="float: right;margin-top: -35px;margin-right: 2px;width: 39px;"
+							icon="fa fa-th-list" />
+						<p:columnToggler datasource="itensTable" trigger="toggler">
+							<p:ajax event="toggle" listener="#{pDVBean.onColumnToggle}" />
+						</p:columnToggler>
+							
 						<p:panelGrid columns="1" layout="grid" 
 							styleClass="panelgrid-noborder disabled disabled grid-table"
-							columnClasses="ui-grid-col-12">
-
-
+							columnClasses="ui-grid-col-12">							
 
 							<p:dataTable id="itensTable" paginatorAlwaysVisible="false" 
 								scrollable="true" value="#{registroVendasBean.itensVenda}"
@@ -846,25 +916,25 @@
 
 						<p:contextMenu id="menu-item" for="itensTable">
 							<p:menuitem value="Remover Item" id="btn-remove"
-								update="panel-table  form:id form:codigo form:descricao form:fornecedor form:lote form:total-venda menu-item"
-								process="@this panel-table"
+								update="accordion-panel:taxa-entrega panel-table  form:id form:codigo form:descricao form:fornecedor form:lote form:total-venda menu-item"
+								process="@this panel-table accordion-panel:taxa-entrega"
 								action="#{registroVendasBean.removeItem}" onstart="start();"
 								oncomplete="stop();" icon="fa fa-fw fa-trash"
 								disabled="#{registroVendasBean.itensVendaSize eq 0 or registroVendasBean.itemVenda.id != null}" />
 
 							<p:menuitem value="Editar Item" id="btn-editar"
-								update="form:btn-calcular_old form:btn-novo panel-table form:id form:codigo form:total-venda form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote menu-item"
-								process="@this panel-table"
+								update="accordion-panel:taxa-entrega form:btn-calcular_old form:btn-novo panel-table form:id form:codigo form:total-venda form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote menu-item"
+								process="@this panel-table accordion-panel:taxa-entrega"
 								action="#{registroVendasBean.editarItem}" onstart="start();"
 								oncomplete="stop();" icon="fa fa-fw fa-edit"
 								disabled="#{registroVendasBean.itensVendaSize eq 0 or registroVendasBean.itemVenda.id != null}" />
-						</p:contextMenu>
+						</p:contextMenu>												
 
-						<p:panelGrid columns="2"
-							style="margin-top: 5px;float: right; margin-right: 10px;margin-bottom: 10px;"
+						<p:panelGrid columns="2" rendered="true"
+							style="margin-top: 5px;float: right; margin-right: 2px;margin-bottom: 10px;"
 							styleClass="panelgrid-noborder disabled disabled">
 							<p:outputLabel value="Total: " />
-							<p:outputLabel id="total-venda"
+							<p:outputLabel id="total-venda_"
 								value="#{registroVendasBean.venda.valorTotal}"
 								style="margin-bottom:5px; font-weight:bold;margin-left:8px;color:#5b5656">
 
@@ -875,31 +945,113 @@
 						<div
 							style="width: 80%; margin-left: 10%; margin-top: 18px; margin-bottom: 10px; border-top: 1px solid #ccc"></div>
 
-						<p:panelGrid columns="2" layout="grid"
-							styleClass="panelgrid-noborder disabled disabled"
-							columnClasses="ui-grid-col-4, ui-grid-col-3">
-
-							<p:commandButton id="btn-calcular_old" value="Salvar Venda"
-								onstart="PF('downloadLoading').show();" icon="fa fa-save"
-								onsuccess="PF('downloadLoading').hide();"
-								disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()) or registroVendasBean.venda.exclusao or registroVendasBean.itemVenda.id != null}"
-								update="msg accordion-panel panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote"
-								action="#{registroVendasBean.salvar}"
-								process="@this panel-table accordion-panel"
-								style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;"
-								rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 7111 or seguranca.usuarioLogado.usuario.empresa.id == 7112}" />
-								
-							<p:commandButton id="btn-calcular" value="Finalizar Venda"
-								onstart="PF('downloadLoading').show();" icon="fa fa-save"
-								actionListener="#{registroVendasBean.aplicarDesconto_}"
-								onsuccess="PF('downloadLoading').hide();"
-								style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;"
-								disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()) or registroVendasBean.venda.exclusao}"
-								update="msg panel-table accordion-panel form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote panel-itens confirm-dialog confirmDialog"
-								process="@this panel-table accordion-panel"
-								rendered="#{seguranca.usuarioLogado.usuario.empresa.id != 7111 and seguranca.usuarioLogado.usuario.empresa.id != 7112}" />
+						<p:panel id="panel-total-geral" class="card card-w-title ui-fluid panel-total-geral">
+						
+							<p:defaultCommand target="btn-calcular_old" scope="panel-total-geral" rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 7111 or seguranca.usuarioLogado.usuario.empresa.id == 7112}" /> 
 							
-						</p:panelGrid>
+							<p:defaultCommand target="btn-calcular" scope="panel-total-geral" rendered="#{seguranca.usuarioLogado.usuario.empresa.id != 7111 and seguranca.usuarioLogado.usuario.empresa.id != 7112}" /> 
+
+							<p:panelGrid columns="2" layout="grid" style="margin-bottom: 10px;"
+								styleClass="panelgrid-noborder disabled disabled"
+								columnClasses="ui-grid-col-6, ui-grid-col-6">
+
+								<p:panel>
+									<p:panel>
+										<p:outputLabel value="Total de itens: "
+											style="font-size: 12px;color:#5b5656;margin-left: 2px;font-weight:bold;" />
+										<p:outputLabel id="total-itens"
+											value="#{registroVendasBean.venda.quantidadeItens}"
+											style="font-size: 13px;font-weight:bold;color:#75767dc9;">
+										</p:outputLabel>
+									</p:panel>
+
+									<p:panel style="margin-bottom: 10px;">
+										<p:outputLabel value="Taxa de Entrega: "
+											style="font-size: 12px;color:#5b5656;margin-left: 2px;font-weight:bold;" />
+										<p:outputLabel id="taxa-de-entrega"
+											value="#{registroVendasBean.venda.taxaDeEntrega == null ? 'R$ 0,00' : registroVendasBean.venda.taxaDeEntrega}"
+											style="font-size: 13px;font-weight:bold;color:#75767dc9;">
+
+											<f:convertNumber type="currency" />
+										</p:outputLabel>
+									</p:panel>
+
+									<p:panel styleClass="sub_total">
+										<p:outputLabel value="Sub-Total: "
+											style="font-size: 12px;color:#5b5656;margin-left: 2px;font-weight:bold;" />
+										<p:outputLabel id="sub-total_"
+											value="#{registroVendasBean.venda.valorTotal + registroVendasBean.venda.taxaDeEntrega}"
+											style="font-size: 13px;font-weight:bold;color:#75767dc9;">
+
+											<f:convertNumber type="currency" />
+										</p:outputLabel>
+									</p:panel>
+								</p:panel>
+
+								<p:panel id="panel-taxas">
+
+								</p:panel>
+
+							</p:panelGrid>
+
+							<div class="line-total"></div>
+
+							<p:panelGrid columns="2" layout="grid" id="total-pagar"
+								styleClass="panelgrid-noborder disabled disabled"
+								columnClasses="ui-grid-col-6, ui-grid-col-2">
+
+								<p:panelGrid columns="1" layout="grid"
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-12">
+
+									<p:outputLabel value="Total a pagar: "
+										style="font-weight:bold;" />
+									<p:outputLabel id="total-venda"
+										value="#{(registroVendasBean.venda.valorTotal + registroVendasBean.venda.taxaDeEntrega) - registroVendasBean.venda.desconto}"
+										style="margin-top: -8px;font-size: 36px;margin-bottom:5px; font-weight:bold;margin-left:8px;color:#5b5656">
+
+										<f:convertNumber type="currency" />
+									</p:outputLabel>
+								</p:panelGrid>
+
+								<p:panel styleClass="desconto-venda">
+								
+								
+									<p:outputLabel value="Desconto" style="font-size: 12px;" />
+									<p:inputNumber id="total" decimalPlaces="2" placeholder="R$ 0,00" symbol="R$ "
+										value="#{registroVendasBean.venda.desconto}">
+									</p:inputNumber>
+								</p:panel>
+
+							</p:panelGrid>
+							
+							<p:panelGrid columns="2" layout="grid"
+								styleClass="panelgrid-noborder disabled disabled"
+								columnClasses="ui-grid-col-5, ui-grid-col-3">
+	
+								<p:commandButton id="btn-calcular_old" value="Salvar Venda"
+									onstart="PF('downloadLoading').show();" icon="fa fa-save"
+									onsuccess="PF('downloadLoading').hide();"
+									disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()) or registroVendasBean.venda.exclusao or registroVendasBean.itemVenda.id != null}"
+									update="msg accordion-panel panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:panel-total-geral form:lote"
+									action="#{registroVendasBean.salvar}"
+									process="@this panel-table accordion-panel"
+									style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;"
+									rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 7111 or seguranca.usuarioLogado.usuario.empresa.id == 7112}" />
+									
+								<p:commandButton id="btn-calcular" value="Finalizar Venda"
+									onstart="PF('downloadLoading').show();" icon="fa fa-save"
+									actionListener="#{registroVendasBean.aplicarDesconto_}"
+									onsuccess="PF('downloadLoading').hide();"
+									style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;"
+									disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()) or registroVendasBean.venda.exclusao}"
+									update="msg panel-table accordion-panel form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:panel-total-geral form:lote panel-itens confirm-dialog confirmDialog"
+									process="@this panel-table accordion-panel"
+									rendered="#{seguranca.usuarioLogado.usuario.empresa.id != 7111 and seguranca.usuarioLogado.usuario.empresa.id != 7112}" />
+								
+							</p:panelGrid>
+							
+						</p:panel>
 
 					</p:panel>
 
@@ -1087,7 +1239,7 @@
 
 									<p:ajax event="change" onstart="start();" oncomplete="stop();"
 										process="@this" listener="#{registroVendasBean.changeTipoPagamento}"
-										update="@parent panel-btn-salvar entrada-primeira-parcela entrada pagamento_para lbl-pagamento parcela-unica editar-parcelas gerar-parcelas primeira-parcela qtd-parcelas qtd-periodo valor-recebido troco faltando panel-contas panel-confirm form:total-venda valorPagar formas-pagamentos_ formas-pagamentos__ " />
+										update="@parent panel-btn-salvar entrada-primeira-parcela entrada pagamento_para lbl-pagamento parcela-unica editar-parcelas gerar-parcelas primeira-parcela qtd-parcelas qtd-periodo valor-recebido troco faltando panel-contas panel-confirm form:total-venda form:panel-total-geral valorPagar formas-pagamentos_ formas-pagamentos__ " />
 
 									<f:selectItems value="#{registroVendasBean.tiposPagamentos}"
 										var="tipoPagamento" itemLabel="#{tipoPagamento.descricao}"
@@ -1104,7 +1256,7 @@
 									rendered="#{registroVendasBean.tipoPagamento == 'AVISTA'}">
 
 									<p:ajax event="change"
-										update="@parent input-av panel-contas pagamento_para lbl-pagamento parcela-unica grid-valores faltando troco form:total-venda  valorPagar "
+										update="@parent input-av panel-contas pagamento_para lbl-pagamento parcela-unica grid-valores faltando troco form:total-venda form:panel-total-geral valorPagar "
 										process="@this" listener="#{registroVendasBean.calculaAcrescimo}"
 										onstart="PF('downloadLoading').show();"
 										oncomplete="PF('downloadLoading').hide();" />
@@ -1920,6 +2072,14 @@
 			
 			function ocultarParcelaUnica() {
 				$(".parcela-unica").addClass("hide");			
+			}  
+			
+			function mostrarTaxaEntrega() {
+				$(".taxa-entrega").removeClass("hide");			
+			}
+			
+			function ocultarTaxaEntrega() {
+				$(".taxa-entrega").addClass("hide");			
 			}
 			
 			

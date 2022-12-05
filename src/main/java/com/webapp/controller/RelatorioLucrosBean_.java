@@ -936,7 +936,7 @@ public class RelatorioLucrosBean_ implements Serializable {
 						mes01 = "0" + i;
 					}
 					
-					List<Object[]> resultTemp = vendas.totalLucrosPorMes(ano02, mes01, mes01, categoriaPorMes,
+					List<Object[]> resultTemp = vendas.totalLucrosPorMes__(ano02, mes01, mes01, categoriaPorMes,
 							categoriasPorMes, produto03, usuarioPorMes, true, usuario.getEmpresa());
 					
 					Number totalDescontos = vendas.totalDescontosPorMes(ano02, mes01, mes01, usuario.getEmpresa());
@@ -1415,7 +1415,7 @@ public class RelatorioLucrosBean_ implements Serializable {
 
 	public void prepareDonutModelPorMes() {
 
-		List<Object[]> result = vendas.totalLucrosPorMes(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes,
+		List<Object[]> result = vendas.totalLucrosPorMes__(ano02, numberMes(mes01), numberMes(mes02), categoriaPorMes,
 				categoriasPorMes, produto03, usuarioPorMes, false, usuario.getEmpresa());
 
 		createDonutModel(result);

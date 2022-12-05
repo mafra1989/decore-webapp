@@ -20,6 +20,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -40,9 +42,11 @@ import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.apache.pdfbox.printing.PDFPageable;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.DualListModel;
 import org.primefaces.model.StreamedContent;
+import org.primefaces.model.Visibility;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
@@ -5156,6 +5160,20 @@ public class PDVBean implements Serializable {
 		
 		vendaTemp_.setId(null);
 	}
+	
+	
+	public void onColumnToggle(ToggleEvent event) {
+	    final Visibility visibility = event.getVisibility();
+	    final FacesMessage msg = new FacesMessage();
+
+	    msg.setSummary("Column index " + event.getData().toString() + " toggled");
+	    msg.setDetail("Visibility: " + visibility);
+	    FacesContext.getCurrentInstance().addMessage(null, msg);
+	    
+	    System.out.println("Column index " + event.getData().toString() + " toggled");
+	    System.out.println("Visibility: " + visibility);
+	}
+	
 	
 	private EspelhoVenda pedido;
 	private List<EspelhoVenda> pedidos;

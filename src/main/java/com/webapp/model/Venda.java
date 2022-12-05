@@ -218,6 +218,9 @@ public class Venda implements Serializable {
 	private boolean exclusao = false;
 	
 	
+	@Column(columnDefinition="TEXT")
+	private String observacao;
+	
 
 	public Long getId() {
 		return id;
@@ -424,7 +427,7 @@ public class Venda implements Serializable {
 	}
 
 	public void setTaxaDeEntrega(BigDecimal taxaDeEntrega) {
-		this.taxaDeEntrega = taxaDeEntrega.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+		this.taxaDeEntrega = taxaDeEntrega != null ? taxaDeEntrega.setScale(2, BigDecimal.ROUND_HALF_EVEN) : BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public BigDecimal getAcrescimo() {
@@ -553,6 +556,14 @@ public class Venda implements Serializable {
 
 	public void setExclusao(boolean exclusao) {
 		this.exclusao = exclusao;
+	}
+
+	public String getObservacao() {
+		return observacao;
+	}
+
+	public void setObservacao(String observacao) {
+		this.observacao = observacao;
 	}
 
 	@Override

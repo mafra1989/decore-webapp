@@ -2402,7 +2402,9 @@ body .ui-datatable .ui-paginator {
 						<p:commandButton id="toggler" type="button"
 							style="float:right;margin-top: -34px;margin-right: 2px;"
 							icon="fa fa-th-list" />
-						<p:columnToggler datasource="itensTable" trigger="toggler" />
+						<p:columnToggler datasource="itensTable" trigger="toggler">
+							<p:ajax event="toggle" listener="#{pDVBean.onColumnToggle}" />
+						</p:columnToggler>
 
 						<p:defaultCommand target="btn-calcular" scope="panel-table" />
 
