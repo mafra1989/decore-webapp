@@ -150,7 +150,7 @@ public class Contas_ implements Serializable {
 
 	public List<Conta> porCodigoOperacao(Long codigoOperacao, String operacao, Empresa empresa) {
 		return this.manager
-				.createQuery("from Conta i where i.empresa.id = :empresa AND i.codigoOperacao = :codigoOperacao and operacao = :operacao AND i.ajuste = 'N'",
+				.createQuery("from Conta i where i.empresa.id = :empresa AND i.codigoOperacao = :codigoOperacao and operacao = :operacao AND i.ajuste = 'N' order by i.id asc",
 						Conta.class)
 				.setParameter("empresa", empresa.getId())
 				.setParameter("codigoOperacao", codigoOperacao).setParameter("operacao", operacao).getResultList();

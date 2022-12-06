@@ -247,7 +247,11 @@ public class ConsultaVendasBean implements Serializable {
 
 		Venda venda = entrega.getVenda();
 		venda.setStatus(true);
-		venda.setVendaPaga(true);
+		
+		if(venda.getTipoPagamento() == TipoPagamento.AVISTA && !venda.isConta()) {
+			venda.setVendaPaga(true);
+		}
+		
 		venda = vendas.save(venda);
 		
 		
@@ -529,9 +533,15 @@ public class ConsultaVendasBean implements Serializable {
 			
 		}
 		
+		pedido.setConta(false);
+		List<Conta> listaDeContas = contas.porCodigoOperacao(vendaSelecionada.getNumeroVenda(), "VENDA", usuario_.getEmpresa());
+		if(listaDeContas.size() > 0) {
+			pedido.setConta(true);
+		}
+		
 		if(listaPagamentos.size() == 0) {
 			
-			if(vendaSelecionada.isConta() && vendaSelecionada.getTipoPagamento() == TipoPagamento.AVISTA) {
+			if(pedido.getConta() && vendaSelecionada.getTipoPagamento() == TipoPagamento.AVISTA) {
 				List<Conta> listaContas = contas.porCodigoOperacao(vendaSelecionada.getNumeroVenda(), "VENDA", usuario_.getEmpresa());
 				
 				Optional<Conta> conta = listaContas.stream().findFirst();
@@ -542,7 +552,7 @@ public class ConsultaVendasBean implements Serializable {
 				
 				pedido.getItensPagamento().add(pagamentosPedido);
 				
-			} else if(vendaSelecionada.isConta() && vendaSelecionada.getTipoPagamento() == TipoPagamento.PARCELADO) {
+			} else if(pedido.getConta() && vendaSelecionada.getTipoPagamento() == TipoPagamento.PARCELADO) {
 				List<Conta> listaContas = contas.porCodigoOperacao(vendaSelecionada.getNumeroVenda(), "VENDA", usuario_.getEmpresa());
 				
 				listaContas.forEach(f -> {
@@ -560,8 +570,7 @@ public class ConsultaVendasBean implements Serializable {
 		}	
 		
 		pedido.setTipoPagamento(vendaSelecionada.getTipoPagamento().name());
-		pedido.setConta(vendaSelecionada.isConta());
-		
+				
 		pedido.setTroco(nf.format(troco.doubleValue()));
 		
 		if(usuario_.getEmpresa().getLogoRelatorio() != null) {
