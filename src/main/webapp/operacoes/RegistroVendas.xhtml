@@ -1018,7 +1018,7 @@
 								
 								
 									<p:outputLabel value="Desconto" style="font-size: 12px;" />
-									<p:inputNumber id="total" decimalPlaces="2" placeholder="R$ 0,00" symbol="R$ "
+									<p:inputNumber id="total" decimalPlaces="2" placeholder="R$ 0,00" symbol="R$ " minValue="0"
 										onkeyup="calculaTotalPagar()" styleClass="desconto-venda-campo" value="#{registroVendasBean.venda.desconto}">
 									</p:inputNumber>
 								</p:panel>

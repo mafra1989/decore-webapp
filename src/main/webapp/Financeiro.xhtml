@@ -8,6 +8,7 @@
 
 	<f:metadata>
 		<f:viewAction action="#{dashboardBean.inicializar}" />
+		<f:viewAction action="#{consultaContasBean.inicializar}" />
 	</f:metadata>
 
 	<ui:define name="head">
@@ -280,47 +281,71 @@
 		</script>
 
 		<style>
-body .ui-datatable .ui-datatable-data>tr.ui-state-highlight {
+body .vendas-top5.ui-datatable .ui-datatable-data>tr.ui-state-highlight {
 	background-color: #d0e2f5 !important;
 	color: #ffffff;
 	border-color: #d8d8d88f;
 }
 
-body .ui-datatable .ui-datatable-data>tr.ui-state-hover {
+body .vendas-top5.ui-datatable .ui-datatable-data>tr.ui-state-hover {
 	background-color: #d8d8d88f !important;
 }
 
-body .ui-state-active, body .ui-state-highlight {
+body .vendas-top5 .ui-state-active, body .vendas-top5 .ui-state-highlight {
 	background-color: transparent !important;
 }
 
-body .ui-datatable thead th {
+body .vendas-top5.ui-datatable thead th {
 	display: none;
 }
 
-body .ui-datatable .ui-datatable-data>tr.ui-datatable-even {
+body .vendas-top5.ui-datatable .ui-datatable-data>tr.ui-datatable-even {
 	background-color: transparent;
 	border-bottom: 1px solid #afc7ff;
 }
 
-body .ui-datatable .ui-datatable-data>tr {
+body .vendas-top5.ui-datatable .ui-datatable-data>tr {
 	background-color: #f1f1f1;
 }
 
-body .ui-widget-content {
-	background-color: transparent;
-	border: 1px solid #b6b7c2;
-}
-
-body .ui-datatable .ui-datatable-data>tr {
+body .vendas-top5.ui-datatable .ui-datatable-data>tr {
 	border-color: transparent;
 }
 
-body .ui-datatable .ui-datatable-data>tr td {
+body .vendas-top5.ui-datatable .ui-datatable-data>tr td {
 	padding: 0px 8px;
 	/*font-weight: bold;*/
 	font-size: 12px;
 	color: #525252;
+}
+
+body .vendas-top5.ui-widget-content {
+	background-color: transparent;
+	border: 1px solid #b6b7c2;
+}
+
+body #contas-dialog .ui-panel .ui-panel-content {
+    border: none;
+}
+
+body #contas-dialog .ui-panel .ui-panel-content {
+    padding: 0px;
+}
+
+#contas-dialog .card.card-w-title {
+    padding-bottom: 0px;
+}
+
+#contas-dialog .card {
+    margin-bottom: 0px;
+}
+
+#contas-dialog .ui-datatable-reflow .ui-datatable-data td[role="gridcell"] .ui-column-title {
+    float: left;
+}
+
+#contas-dialog .ui-datatable tbody td {
+    height: auto !important;
 }
 
 .dashboard .saldo-geral.overview-box.overview-box-1 .overview-box-icon i {
@@ -340,6 +365,54 @@ body .ui-datatable .ui-datatable-data>tr td {
 }
 
 @media ( min-width :220px) {
+	#contas-dialog .ui-datatable-reflow .ui-datatable-data td[role="gridcell"]:not(.ui-helper-hidden) {
+	    text-align: left;
+	    display: block;
+	    border: 0 none;
+	    width: 100%;
+	    -webkit-box-sizing: border-box;
+	    -moz-box-sizing: border-box;
+	    box-sizing: border-box;
+	    float: left;
+	    clear: left;
+	}
+	#contas-dialog .ui-datatable-reflow thead th, .ui-datatable-reflow tfoot td {
+	    display: none;
+	}
+	#contas-dialog .ui-datatable-reflow .ui-datatable-data td[role="gridcell"] .ui-column-title {
+	    padding: 0.4em;
+	    min-width: 30%;
+	    display: inline-block;
+	    margin: -0.4em 1em -0.4em -0.4em;
+	}
+	.swal2-popup {
+		width: 28em;
+		max-width: 100%;
+		padding: 0 0 0.4em 0;
+		font-size: 0.75rem;
+	}
+	.swal2-popup #swal2-content {
+		font-weight: 400;
+	}
+	body #pagamento-dialog .ui-datepicker {
+   		width: 275px;
+    }
+    body #pagamento-dialog .ui-panel .ui-panel-content {
+	    border: none;
+	    padding: 0px 0px 0px 0px;
+	}
+	.pagar.ui-state-disabled {
+	    opacity: 1;
+	}
+	#contas-dialog .ui-inputswitch .ui-inputswitch-off {
+	    background-color: #f15b5b !important;
+	}
+	#contas-dialog .ui-state-active, .pagar .ui-state-active, #contasPagas .ui-state-highlight, .pagar .ui-state-highlight {
+	    background-color: #46bb68 !important;
+	}
+	#contas-dialog {
+		width: 370px !important;
+	}
 	.despesas-receitas {
 		margin-top:5px;
 	}
@@ -353,7 +426,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 	.vendas-top5.ui-datatable tfoot td:nth-child(2n-1) {
     	padding: 0px 0px;
     }
-	.ui-datatable .ui-datatable-scrollable-body {
+	.vendas-top5.ui-datatable .ui-datatable-scrollable-body {
     	outline: none;
     	max-height: 157px;
     }
@@ -412,13 +485,13 @@ body .ui-datatable .ui-datatable-data>tr td {
     	color: #0b5a84;
     }
 
-	.ui-datatable .ui-datatable-scrollable-footer {
+	.vendas-top5.ui-datatable .ui-datatable-scrollable-footer {
     	background-color: transparent !important;
     }
-    body .ui-datatable .ui-datatable-scrollable-header {
+    body .vendas-top5.ui-datatable .ui-datatable-scrollable-header {
     	background-color: transparent !important;
     }
-    body .ui-datatable .ui-datatable-data>tr {
+    body .vendas-top5.ui-datatable .ui-datatable-data>tr {
 	    background-color: #ffffff;
 	}
 	.layout-wrapper .layout-main .layout-content {
@@ -463,7 +536,7 @@ body .ui-datatable .ui-datatable-data>tr td {
     .dashboard .user-card .user-card-content .user-detail ul {
     	padding: 0px;
     }
-	body .ui-datatable tfoot td {
+	body .vendas-top5.ui-datatable tfoot td {
 		background-color: transparent;
 		padding: 6px 10px;
 		border-color: transparent;
@@ -506,10 +579,10 @@ body .ui-datatable .ui-datatable-data>tr td {
 	.fluxo-caixa {
 		margin-top: -20px;
 	}
-	.ui-datatable table {
+	.vendas-top5 .ui-datatable table {
 		border-collapse: separate;
 	}
-	.ui-datatable tbody td {
+	.vendas-top5 .ui-datatable tbody td {
 		height: 25px;
 	}
 	.fluxo-caixa tr td:nth-child(1) {
@@ -557,13 +630,16 @@ body .ui-datatable .ui-datatable-data>tr td {
 }
 
 @media ( min-width :460px) {
+	#contas-dialog {
+		/*width: 850px !important;*/
+	}
 	.despesas-receitas {
 		margin-top:0px;
 	}
 	.pizza {
 		margin-top:0px;
 	}
-	.ui-datatable .ui-datatable-scrollable-body {
+	.vendas-top5 .ui-datatable .ui-datatable-scrollable-body {
     	max-height: 118px;
     }
     .dashboard-bottom.card {
@@ -585,11 +661,11 @@ body .ui-datatable .ui-datatable-data>tr td {
 		padding: 0em !important;
 		width: 100%;
 	}
-	body .ui-datatable .ui-datatable-data>tr td {
+	body .vendas-top5.ui-datatable .ui-datatable-data>tr td {
 		font-size: 14px !important;
 		font-family: "Source Sans Pro", "Helvetica Neue", sans-serif !important;
 	}
-	body .ui-datatable tfoot td {
+	body .vendas-top5.ui-datatable tfoot td {
 		font-size: 14px !important;
 	}
 }
@@ -609,6 +685,35 @@ body .ui-datatable .ui-datatable-data>tr td {
 
 		<h:form id="form">
 				
+				<p:remoteCommand name="buscarContasAPagarEmAtraso" 
+					update="contas-dialog form-contas" 
+					actionListener="#{consultaContasBean.buscarContasAPagarEmAtraso}"
+					onstart="PF('downloadLoading').show();"
+					oncomplete="PF('downloadLoading').hide();PF('contas-dialog').show();" />
+					
+				<p:remoteCommand name="buscarContasAReceberEmAtraso" 
+					update="contas-dialog form-contas" 
+					actionListener="#{consultaContasBean.buscarContasAReceberEmAtraso}"
+					onstart="PF('downloadLoading').show();"
+					oncomplete="PF('downloadLoading').hide();PF('contas-dialog').show();" />
+				
+				<p:remoteCommand name="buscarContasRecebidasHoje" 
+					update="contas-dialog form-contas" 
+					actionListener="#{consultaContasBean.buscarContasRecebidasHoje}"
+					onstart="PF('downloadLoading').show();"
+					oncomplete="PF('downloadLoading').hide();PF('contas-dialog').show();" />					
+					
+				<p:remoteCommand name="buscarContasPagasHoje" 
+					update="contas-dialog form-contas" 
+					actionListener="#{consultaContasBean.buscarContasPagasHoje}"
+					onstart="PF('downloadLoading').show();"
+					oncomplete="PF('downloadLoading').hide();PF('contas-dialog').show();" />
+					
+				<p:remoteCommand name="setarItemID" process="@this form-contas form-contas:contasTable"
+					update="form form-contas" action="#{consultaContasBean.estornarTelaResumoFinanceiro}"
+					onstart="PF('downloadLoading').show();"
+					oncomplete="PF('downloadLoading').hide();" />
+									
 				
 				<div class="ui-g dashboard card card_" style="margin-top: -10px;width:100%;">
 					
@@ -617,8 +722,15 @@ body .ui-datatable .ui-datatable-data>tr td {
 							<div class="aw-box__icon">
 								<i class="fa  fa-check  fa-3x"></i>
 							</div>
-							<div class="aw-box__value"><h:outputText value="#{dashboardBean.totalContasRecebidasHojeValor}"><f:convertNumber type="currency" /></h:outputText></div>
-							<div class="aw-box__title">Contas recebidas Hoje #{dashboardBean.hoje}</div>
+							<div class="aw-box__value">
+								<p:link href="javascript:void(0);"
+										onclick="contasRecebidasHoje();">
+									<h:outputText value="#{consultaContasBean.totalContasRecebidasHojeValor}">
+										<f:convertNumber type="currency" />
+									</h:outputText>
+								</p:link>
+							</div>
+							<div class="aw-box__title">Contas recebidas Hoje #{consultaContasBean.hoje}</div>
 						</div>
 					</div>
 					
@@ -627,7 +739,14 @@ body .ui-datatable .ui-datatable-data>tr td {
 							<div class="aw-box__icon">
 								<i class="fa  fa-thumbs-o-down  fa-3x"></i>
 							</div>
-							<div class="aw-box__value"><h:outputText value="#{dashboardBean.totalAReceberEmAtrasoValor}"><f:convertNumber type="currency" /></h:outputText></div>
+							<div class="aw-box__value">
+								<p:link href="javascript:void(0);"
+										onclick="contasAReceberEmAtraso();">
+									<h:outputText value="#{consultaContasBean.totalAReceberEmAtrasoValor}">
+										<f:convertNumber type="currency" />
+									</h:outputText>
+								</p:link>
+							</div>
 							<div class="aw-box__title">Contas à receber em atraso</div>
 						</div>
 					</div>
@@ -637,9 +756,15 @@ body .ui-datatable .ui-datatable-data>tr td {
 							<div class="aw-box__icon">
 								<i class="fa  fa-barcode  fa-3x"></i>
 							</div>
-							<div class="aw-box__value"><h:outputText value="#{dashboardBean.totalDespesasPagasHojeValor}"><f:convertNumber type="currency" /></h:outputText></div>
+							<div class="aw-box__value">
+								<p:link href="javascript:void(0);"
+									onclick="contasPagasHoje();">
+									<h:outputText value="#{consultaContasBean.totalContasPagasHojeValor}"><f:convertNumber type="currency" />
+									</h:outputText>
+								</p:link>
+							</div>
 							<div class="aw-box__title">Contas pagas Hoje #{dashboardBean.hoje}</div>
-						</div>
+						</div>					
 					</div>
 		
 					<div class="ui-g-12 ui-lg-3 ui-xl-3">		
@@ -647,7 +772,14 @@ body .ui-datatable .ui-datatable-data>tr td {
 							<div class="aw-box__icon">
 								<i class="fa  fa-exclamation-circle  fa-3x"></i>
 							</div>
-							<div class="aw-box__value"><h:outputText value="#{dashboardBean.totalAPagarEmAtrasoValor}"><f:convertNumber type="currency" /></h:outputText></div>
+							<div class="aw-box__value">
+								<p:link href="javascript:void(0);"
+										onclick="contasAPagarEmAtraso();">
+									<h:outputText value="#{consultaContasBean.totalAPagarEmAtrasoValor}">
+										<f:convertNumber type="currency" />
+									</h:outputText>
+								</p:link>
+							</div>
 							<div class="aw-box__title">Contas à pagar em atraso</div>
 						</div>
 					</div>
@@ -677,7 +809,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 							</div>
 							<div class="overview-box-content">
 								<div class="overview-box-title">Total contas à receber</div>
-								<div class="overview-box-stats"><h:outputText value="#{dashboardBean.totalAReceberValor}"><f:convertNumber type="currency" /></h:outputText></div>
+								<div class="overview-box-stats"><h:outputText value="#{consultaContasBean.totalAReceberValor}"><f:convertNumber type="currency" /></h:outputText></div>
 								<div class="overview-box-details"><h:outputText value="#{dashboardBean.totalAReceberHojeValor}"><f:convertNumber type="currency" /></h:outputText> à receber em #{dashboardBean.hoje}</div>
 							</div>
 						</div>
@@ -703,7 +835,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 							</div>  
 							<div class="overview-box-content">
 								<div class="overview-box-title">Total contas à pagar</div>
-								<div class="overview-box-stats"><h:outputText value="#{dashboardBean.totalAPagarValor}"><f:convertNumber type="currency" /></h:outputText></div>
+								<div class="overview-box-stats"><h:outputText value="#{consultaContasBean.totalAPagarValor}"><f:convertNumber type="currency" /></h:outputText></div>
 								<div class="overview-box-details" style="color: #ececec;"><h:outputText value="#{dashboardBean.totalAPagarHojeValor}"><f:convertNumber type="currency" /></h:outputText> à pagar em #{dashboardBean.hoje}</div>
 							</div>
 						</div>
@@ -733,7 +865,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 						<p:pieChart model="#{dashboardBean.pieModel}"
 							style="width: 100%; height: 200px;margin-top: 8px;" />
 							
-						<p:dataTable scrollable="true" 
+						<p:dataTable scrollable="true" id="tb-top5"
 							value="#{dashboardBean.top5Despesas}" var="top5Despesa"
 							styleClass="vendas-top5">
 
@@ -974,6 +1106,155 @@ body .ui-datatable .ui-datatable-data>tr td {
 				</div>
 			</h:form>
 		</p:dialog>
+		
+		
+		<p:dialog header="#{consultaContasBean.tipoContas}" widgetVar="contas-dialog" 
+			position="center" id="contas-dialog" width="850"
+			resizable="false" modal="true" closeOnEscape="true" responsive="true">
+
+			<h:form id="form-contas">
+
+				<p:panel class="card card-w-title itens-add"
+					id="panel-table">
+
+					<p:menuButton id="menu-btn" value="Opções" 
+						style="width: 80px;float: right;margin-right: 10px;margin-top:10px;margin-bottom:5px;"
+						disabled="#{(consultaContasBean.contasFiltradasSize eq 0) or consultaContasBean.contaSelecionada.id == null or (not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado())}">
+
+						<p:menuitem value="#{consultaContasBean.contaSelecionada.tipo == 'DEBITO' ? 'Pagar' : 'Receber'}" icon="fa fa-fw fa-money"
+							onstart="start();" actionListener="#{consultaContasBean.preparaDataVencimento}"
+							oncomplete="PF('pagamento-dialog').show();stop();"
+							update="pagamento-dialog" 
+							rendered="#{not consultaContasBean.contaSelecionada.status}">
+						</p:menuitem>
+						<p:separator />
+						<p:menuitem icon="fa fa-fw fa-undo" value="#{consultaContasBean.contaSelecionada.tipo == 'DEBITO' ? 'Desfazer pagamento' : 'Desfazer recebimento'}"
+							process="@this" 
+							rendered="#{consultaContasBean.contaSelecionada.status}"
+							onclick="estornarConta(#{consultaContasBean.contaSelecionada.id});" />
+					</p:menuButton>
+
+					<p:panelGrid columns="1" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-12">
+
+						<p:dataTable id="contasTable" paginatorAlwaysVisible="false"
+							scrollable="true" scrollHeight="460"
+							value="#{consultaContasBean.contasFiltradas}" var="conta"
+							emptyMessage="Nenhum resultado encontrado." reflow="true"
+							paginator="false" rowKey="#{conta.id}"
+							selection="#{consultaContasBean.contaSelecionada}"
+							selectionMode="single">
+
+							<p:ajax process="@this" event="rowSelect"
+								onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();" update="form-contas:menu-btn" />
+							<p:ajax process="@this" event="rowUnselect"
+								onstart="PF('downloadLoading').show();"
+								oncomplete="PF('downloadLoading').hide();" update="form-contas:menu-btn" />
+
+							<p:column headerText="Código" width="20%">
+								<h:outputText value="#{conta.codigoOperacao}" />
+							</p:column>
+							
+							<p:column headerText="Descrição" width="35%">
+								<h:outputText value="#{conta.descricao != null ? conta.descricao : '-'}" />
+							</p:column>
+							
+							<p:column headerText="Vendedor" width="35%" visible="false">
+								<h:outputText value="#{conta.vendedor}" />
+							</p:column>
+
+							<p:column headerText="Operação" width="20%">
+								<h:outputText
+									value="#{conta.operacao == 'LANCAMENTO' ? 'Lançamento' : (conta.operacao == 'COMPRA' ? 'Compra' : (conta.operacao == 'VENDA' ? 'Venda' : conta.operacao))}">
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Tipo" width="20%" visible="false">
+								<h:outputText
+									value="#{conta.tipo == 'CREDITO' ? 'Receita' : (conta.tipo == 'DEBITO' ? 'Despesa' : '-')}" />
+							</p:column>
+
+							<p:column headerText="Parcela" width="20%">
+								<h:outputText
+									value="#{conta.parcela == 'AVISTA' ? 'À vista' : conta.parcela}" />
+							</p:column>
+
+							<p:column headerText="Valor" width="20%">
+								<h:outputText value="#{conta.valor}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Vencimento" width="20%">
+								<h:outputText value="#{conta.vencimento}">
+									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" dateStyle="short" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Pagamento" width="20%">
+								<h:outputText
+									value="#{conta.pagamento == null ? '-' : conta.pagamento}">
+									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" dateStyle="short" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="PAGO" width="20%">
+								<p:inputSwitch offLabel="Não" onLabel="Sim" styleClass="pagar"
+									value="#{conta.status}" disabled="true">
+								</p:inputSwitch>
+							</p:column>
+
+						</p:dataTable>
+
+						<p:panel style="margin-top: 6px;"
+							styleClass="panelgrid-noborder disabled disabled panel-total">
+
+							<p:outputLabel
+								value="Total de Contas: R$ #{consultaContasBean.totalContas}"
+								style="float:left;margin-top:10px;margin-bottom:5px;font-size: 13px;font-family: inherit;" />
+
+							<p:commandButton icon="fa fa-fw fa-close"
+								style="float:right;font-weight: bold;width: 100px;background:#e15e5ef0;margin-right: -1px;"
+								value="Fechar" onstart="start();"
+								oncomplete="stop();PF('contas-dialog').hide();">
+							</p:commandButton>
+						</p:panel>
+					</p:panelGrid>
+					
+				</p:panel>
+			</h:form>
+		</p:dialog>
+		
+		
+		<p:dialog id="pagamento-dialog" showHeader="false" modal="true"
+			widgetVar="pagamento-dialog" draggable="false" width="300"
+			closable="false" resizable="false" position="top"
+			style="margin-top: 100px">
+
+			<h:form id="form-pagamento">
+				<p:calendar id="inline" mode="inline"
+					value="#{consultaContasBean.contaSelecionada.vencimento}"
+					locale="pt" pattern="dd/MM/yyyy" />
+
+				<p:panel styleClass="panelgrid-noborder disabled disabled">
+					<p:commandButton icon="fa fa-fw fa-check"
+						style="float: right;font-weight: bold;font-size: 13px;background-color: #089a29c7;position: relative;margin-top: 8px;margin-right: 0px;"
+						value="Confirmar"
+						process="@this pagamento-dialog inline form-pagamento"
+						action="#{consultaContasBean.pagarTelaResumoFinanceiro}" onstart="start();"
+						update="form form-contas" oncomplete="stop();PF('pagamento-dialog').hide();">
+					</p:commandButton>
+
+					<p:commandButton icon="fa fa-fw fa-close"
+						style="float: right;font-weight: bold;margin-top: 8px;font-size: 13px;background-color: #ab3705b5;position: relative;margin-right: 3px;"
+						value="Cancelar" onstart="start();"
+						oncomplete="PF('pagamento-dialog').hide();stop();">
+					</p:commandButton>
+				</p:panel>
+			</h:form>
+		</p:dialog>
 
 
 		<p:dialog id="downloadLoading" showHeader="false" modal="true"
@@ -990,6 +1271,18 @@ body .ui-datatable .ui-datatable-data>tr td {
 
 			function stop() {
 				PF('downloadLoading').hide();
+			}
+			function contasAPagarEmAtraso() {
+				buscarContasAPagarEmAtraso();
+			}
+			function contasAReceberEmAtraso() {
+				buscarContasAReceberEmAtraso();
+			}		
+			function contasRecebidasHoje() {
+				buscarContasRecebidasHoje();
+			}		
+			function contasPagasHoje() {
+				buscarContasPagasHoje();
 			}
 		</script>
 
