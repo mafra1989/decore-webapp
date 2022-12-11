@@ -593,6 +593,25 @@ public class ConsultaContasBean implements Serializable {
 		
 		contasFiltradas = contas.contasAPagarEmAtraso(usuario.getEmpresa(), calendarStart);
 		
+		for (Conta conta : contasFiltradas) {
+			
+			if(conta.getOperacao().equals(TipoOperacao.LANCAMENTO.toString())) {
+				Lancamento lancamento = lancamentos.porNumeroLancamento(conta.getCodigoOperacao(), usuario.getEmpresa());
+				conta.setDescricao(lancamento.getDescricao());
+			}
+			
+			if(conta.getOperacao().equals(TipoOperacao.COMPRA.toString())) {
+				//Compra compra = compras.porNumeroCompra(conta.getCodigoOperacao(), usuario.getEmpresa());
+				//conta.setDescricao("Compra realizada");
+			}
+			
+			if(conta.getOperacao().equals(TipoOperacao.VENDA.toString())) {
+				Venda venda = vendas.porNumeroVenda(conta.getCodigoOperacao(), usuario.getEmpresa());
+				conta.setDescricao("Cliente: " + venda.getCliente().getNome());
+			}
+			
+		}
+		
 		totalAPagarEmAtrasoValor = contas.totalAPagarEmAtrasoValor(usuario.getEmpresa(), calendarStart);
 		totalContas = nf.format(totalAPagarEmAtrasoValor);
 		
@@ -609,6 +628,25 @@ public class ConsultaContasBean implements Serializable {
 		calendarStart = DateUtils.truncate(calendarStart, Calendar.DAY_OF_MONTH);
 		
 		contasFiltradas = contas.contasAReceberEmAtraso(usuario.getEmpresa(), calendarStart);
+		
+		for (Conta conta : contasFiltradas) {
+			
+			if(conta.getOperacao().equals(TipoOperacao.LANCAMENTO.toString())) {
+				Lancamento lancamento = lancamentos.porNumeroLancamento(conta.getCodigoOperacao(), usuario.getEmpresa());
+				conta.setDescricao(lancamento.getDescricao());
+			}
+			
+			if(conta.getOperacao().equals(TipoOperacao.COMPRA.toString())) {
+				//Compra compra = compras.porNumeroCompra(conta.getCodigoOperacao(), usuario.getEmpresa());
+				//conta.setDescricao("Compra realizada");
+			}
+			
+			if(conta.getOperacao().equals(TipoOperacao.VENDA.toString())) {
+				Venda venda = vendas.porNumeroVenda(conta.getCodigoOperacao(), usuario.getEmpresa());
+				conta.setDescricao("Cliente: " + venda.getCliente().getNome());
+			}
+			
+		}
 		
 		totalAReceberEmAtrasoValor = contas.totalAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart);
 		totalContas = nf.format(totalAReceberEmAtrasoValor);
@@ -640,6 +678,24 @@ public class ConsultaContasBean implements Serializable {
 			
 		contasFiltradas = contas.contasRecebidasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
 		
+		for (Conta conta : contasFiltradas) {
+			
+			if(conta.getOperacao().equals(TipoOperacao.LANCAMENTO.toString())) {
+				Lancamento lancamento = lancamentos.porNumeroLancamento(conta.getCodigoOperacao(), usuario.getEmpresa());
+				conta.setDescricao(lancamento.getDescricao());
+			}
+			
+			if(conta.getOperacao().equals(TipoOperacao.COMPRA.toString())) {
+				//Compra compra = compras.porNumeroCompra(conta.getCodigoOperacao(), usuario.getEmpresa());
+				//conta.setDescricao("Compra realizada");
+			}
+			
+			if(conta.getOperacao().equals(TipoOperacao.VENDA.toString())) {
+				Venda venda = vendas.porNumeroVenda(conta.getCodigoOperacao(), usuario.getEmpresa());
+				conta.setDescricao("Cliente: " + venda.getCliente().getNome());
+			}
+			
+		}
 		
 		totalContas = nf.format(totalContasRecebidasHojeValor);
 		
@@ -671,6 +727,24 @@ public class ConsultaContasBean implements Serializable {
 			
 		contasFiltradas = contas.contasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
 		
+		for (Conta conta : contasFiltradas) {
+			
+			if(conta.getOperacao().equals(TipoOperacao.LANCAMENTO.toString())) {
+				Lancamento lancamento = lancamentos.porNumeroLancamento(conta.getCodigoOperacao(), usuario.getEmpresa());
+				conta.setDescricao(lancamento.getDescricao());
+			}
+			
+			if(conta.getOperacao().equals(TipoOperacao.COMPRA.toString())) {
+				//Compra compra = compras.porNumeroCompra(conta.getCodigoOperacao(), usuario.getEmpresa());
+				//conta.setDescricao("Compra realizada");
+			}
+			
+			if(conta.getOperacao().equals(TipoOperacao.VENDA.toString())) {
+				Venda venda = vendas.porNumeroVenda(conta.getCodigoOperacao(), usuario.getEmpresa());
+				conta.setDescricao("Cliente: " + venda.getCliente().getNome());
+			}
+			
+		}
 		
 		totalContas = nf.format(totalContasPagasHojeValor);
 		
