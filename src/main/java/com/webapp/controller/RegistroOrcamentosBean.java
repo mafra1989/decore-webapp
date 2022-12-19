@@ -655,7 +655,7 @@ public class RegistroOrcamentosBean implements Serializable {
 				itemCompraTemp.setQuantidadeDisponivel_(nf.format(new BigDecimal(
 						itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(1, BigDecimal.ROUND_HALF_EVEN)));
 			
-			} else if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Un") || itemCompraTemp.getProduto().getUnidadeMedida().equals("Cx")) {
+			} else if(itemCompraTemp.getProduto().getUnidadeMedida().equals("Un") || itemCompraTemp.getProduto().getUnidadeMedida().equals("Cx") || itemCompraTemp.getProduto().getUnidadeMedida().equals("FARDO")) {
 				nf = new DecimalFormat("###,##0", REAL);
 				itemCompraTemp.setQuantidadeDisponivel_(nf.format(new BigDecimal(
 						itemCompraTemp.getQuantidadeDisponivel().doubleValue()).setScale(0, BigDecimal.ROUND_HALF_EVEN)));

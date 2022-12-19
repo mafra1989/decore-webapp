@@ -1075,7 +1075,7 @@ public class CadastroProdutoBean implements Serializable {
 								produto.getQuantidadeAtual().doubleValue() - itemCompra.getQuantidade().doubleValue()).setScale(1, BigDecimal.ROUND_HALF_EVEN)));
 						novaQuantidadeAtualFormatada = nf.format(novaQuantidadeAtual);
 						
-					} else if(produto.getUnidadeMedida().equals("Un") || produto.getUnidadeMedida().equals("Cx")) {
+					} else if(produto.getUnidadeMedida().equals("Un") || produto.getUnidadeMedida().equals("Cx") || produto.getUnidadeMedida().equals("FARDO")) {
 						nf = new DecimalFormat("###,##0", REAL);
 						produto.setQuantidadeAtualFormatada(nf.format(new BigDecimal(
 								produto.getQuantidadeAtual().doubleValue() - itemCompra.getQuantidade().doubleValue()).setScale(0, BigDecimal.ROUND_HALF_EVEN)));
@@ -1348,7 +1348,7 @@ public class CadastroProdutoBean implements Serializable {
 					produto.getQuantidadeAtual().doubleValue() + itemVenda.getQuantidade().doubleValue()).setScale(1, BigDecimal.ROUND_HALF_EVEN)));
 			novaQuantidadeAtualFormatada = nf.format(novaQuantidadeAtual);
 			
-		} else if(produto.getUnidadeMedida().equals("Un") || produto.getUnidadeMedida().equals("Cx")) {
+		} else if(produto.getUnidadeMedida().equals("Un") || produto.getUnidadeMedida().equals("Cx") || produto.getUnidadeMedida().equals("FARDO")) {
 			nf = new DecimalFormat("###,##0", REAL);
 			produto.setQuantidadeAtualFormatada(nf.format(new BigDecimal(
 					produto.getQuantidadeAtual().doubleValue() + itemVenda.getQuantidade().doubleValue()).setScale(0, BigDecimal.ROUND_HALF_EVEN)));

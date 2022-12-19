@@ -425,7 +425,7 @@
 							<p:inputNumber id="quantidade" decimalPlaces="0" placeholder="0"
 								styleClass="quantidade" onkeyup="ajaxDelayQtd()"
 								value="#{registroOrcamentosBean.itemVenda.quantidade}"
-								rendered="#{registroOrcamentosBean.itemVenda.produto.unidadeMedida == 'Un' or registroOrcamentosBean.itemVenda.produto.unidadeMedida == 'Cx' or registroOrcamentosBean.itemVenda.produto == null}">
+								rendered="#{registroOrcamentosBean.itemVenda.produto.unidadeMedida == 'Un' or registroOrcamentosBean.itemVenda.produto.unidadeMedida == 'Cx' or registroOrcamentosBean.itemVenda.produto.unidadeMedida == 'FARDO' or registroOrcamentosBean.itemVenda.produto == null}">
 
 								<p:ajax event="keydown" update="btn-adicionar"></p:ajax>
 							</p:inputNumber>

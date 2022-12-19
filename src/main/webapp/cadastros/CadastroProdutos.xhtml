@@ -678,7 +678,8 @@
 					            <f:selectItem itemLabel="Cx - Caixa" itemValue="Cx" />
 					            <f:selectItem itemLabel="Kg - Kilograma" itemValue="Kg" />
 					            <f:selectItem itemLabel="Lt - Litro" itemValue="Lt" />
-					            <f:selectItem itemLabel="Pt - Pacote" itemValue="Pt" />									
+					            <f:selectItem itemLabel="Pt - Pacote" itemValue="Pt" />	
+					            <f:selectItem itemLabel="FARDO - Fardo" itemValue="FARDO" />									
 							</p:selectOneMenu>
 							
 							<p:commandLink value="Registrar compra" disabled="#{not cadastroProdutoBean.produto.estoque}"
@@ -703,7 +704,7 @@
 							<p:inputNumber id="qtdAtual__" decimalPlaces="1" rendered="#{cadastroProdutoBean.produto.unidadeMedida == 'Pt'}"
 								readonly="true" value="#{cadastroProdutoBean.produto.quantidadeAtual}" />
 								
-							<p:inputNumber id="qtdAtual_" decimalPlaces="0" rendered="#{cadastroProdutoBean.produto.unidadeMedida == 'Un' or cadastroProdutoBean.produto.unidadeMedida == 'Cx'}"
+							<p:inputNumber id="qtdAtual_" decimalPlaces="0" rendered="#{cadastroProdutoBean.produto.unidadeMedida == 'Un' or cadastroProdutoBean.produto.unidadeMedida == 'Cx' or cadastroProdutoBean.produto.unidadeMedida == 'FARDO'}"
 								readonly="true" value="#{cadastroProdutoBean.produto.quantidadeAtual}" />
 							
 								
@@ -715,7 +716,7 @@
 								value="#{cadastroProdutoBean.produto.estoqueMinimo}" />
 								
 							<p:panel id="estoque-minimo_" styleClass="estoque-min">
-								<p:inputNumber  decimalPlaces="0" rendered="#{cadastroProdutoBean.produto.unidadeMedida == 'Un' or cadastroProdutoBean.produto.unidadeMedida == 'Cx'}"
+								<p:inputNumber  decimalPlaces="0" rendered="#{cadastroProdutoBean.produto.unidadeMedida == 'Un' or cadastroProdutoBean.produto.unidadeMedida == 'Cx' or cadastroProdutoBean.produto.unidadeMedida == 'FARDO'}"
 									value="#{cadastroProdutoBean.produto.estoqueMinimo}" />
 							</p:panel>
 								
@@ -725,10 +726,10 @@
 								value="#{cadastroProdutoBean.produto.custoTotal}">
 							</p:inputNumber>
 							
-							<p:outputLabel rendered="#{cadastroProdutoBean.produto.unidadeMedida == 'Un' or cadastroProdutoBean.produto.unidadeMedida == 'Cx'}" />
+							<p:outputLabel rendered="#{cadastroProdutoBean.produto.unidadeMedida == 'Un' or cadastroProdutoBean.produto.unidadeMedida == 'Cx' or cadastroProdutoBean.produto.unidadeMedida == 'FARDO'}" />
 							<p:commandLink value="Ajustar Quantidade"
 								actionListener="#{cadastroProdutoBean.prepararRegistroCompra}" process="@this un grid-um" update="form-ajuste-dialog"
-								styleClass="ajuste-estoque #{(cadastroProdutoBean.produto.unidadeMedida == 'Un' or cadastroProdutoBean.produto.unidadeMedida == 'Cx') ? '' : 'fracao'}" onstart="PF('downloadLoading').show();"
+								styleClass="ajuste-estoque #{(cadastroProdutoBean.produto.unidadeMedida == 'Un' or cadastroProdutoBean.produto.unidadeMedida == 'Cx' or cadastroProdutoBean.produto.unidadeMedida == 'FARDO') ? '' : 'fracao'}" onstart="PF('downloadLoading').show();"
 								oncomplete="PF('downloadLoading').hide();PF('ajuste-dialog').show();">
 								<i style="float:left;margin-top: 2px;" class="fa fa-fw fa-sort"></i>
 							</p:commandLink>
@@ -960,7 +961,7 @@
 									<p:inputNumber id="totalComprados__" readonly="true" rendered="#{cadastroProdutoBean.produto.unidadeMedida == 'Pt'}"
 										decimalPlaces="1" value="#{cadastroProdutoBean.produto.quantidadeItensComprados}" />
 										
-									<p:inputNumber id="totalComprados_" readonly="true" rendered="#{cadastroProdutoBean.produto.unidadeMedida == 'Un' or cadastroProdutoBean.produto.unidadeMedida == 'Cx'}"
+									<p:inputNumber id="totalComprados_" readonly="true" rendered="#{cadastroProdutoBean.produto.unidadeMedida == 'Un' or cadastroProdutoBean.produto.unidadeMedida == 'Cx' or cadastroProdutoBean.produto.unidadeMedida == 'FARDO'}"
 										decimalPlaces="0" value="#{cadastroProdutoBean.produto.quantidadeItensComprados}" />
 
 									<p:outputLabel value="Valor Total de Compras"
@@ -1013,7 +1014,7 @@
 									<p:inputNumber id="totalVendidos__" readonly="true" rendered="#{cadastroProdutoBean.produto.unidadeMedida == 'Pt'}"
 										decimalPlaces="1" value="#{cadastroProdutoBean.produto.quantidadeItensVendidos}" />
 									
-									<p:inputNumber id="totalVendidos_" readonly="true"  rendered="#{cadastroProdutoBean.produto.unidadeMedida == 'Un' or cadastroProdutoBean.produto.unidadeMedida == 'Cx'}"
+									<p:inputNumber id="totalVendidos_" readonly="true"  rendered="#{cadastroProdutoBean.produto.unidadeMedida == 'Un' or cadastroProdutoBean.produto.unidadeMedida == 'Cx' or cadastroProdutoBean.produto.unidadeMedida == 'FARDO'}"
 										decimalPlaces="0" value="#{cadastroProdutoBean.produto.quantidadeItensVendidos}" />		
 
 									<p:outputLabel value="Valor Total de Vendas" for="totalVendas" />
@@ -1365,7 +1366,7 @@
 							<p:inputNumber id="quantidade" decimalPlaces="0" placeholder="0"
 								styleClass="quantidade" onkeyup="ajaxDelayQtd()" onchange="ajaxDelayQtd()" onblur="ajaxDelayQtd()"
 								value="#{cadastroProdutoBean.itemCompra.quantidade}"
-								rendered="#{cadastroProdutoBean.itemCompra.produto.unidadeMedida == 'Un' or cadastroProdutoBean.itemCompra.produto.unidadeMedida == 'Cx' or cadastroProdutoBean.itemCompra.produto == null}">
+								rendered="#{cadastroProdutoBean.itemCompra.produto.unidadeMedida == 'Un' or cadastroProdutoBean.itemCompra.produto.unidadeMedida == 'Cx' or cadastroProdutoBean.itemCompra.produto.unidadeMedida == 'FARDO' or cadastroProdutoBean.itemCompra.produto == null}">
 
 								<p:ajax event="keydown" update="salva-compra"></p:ajax>
 							</p:inputNumber>
@@ -1451,7 +1452,7 @@
 							<p:inputNumber id="nova-quantidade" decimalPlaces="0" placeholder="0" minValue="0"
 								styleClass="quantidade" onkeyup="ajaxDelayQtd()" onchange="ajaxDelayQtd()" onblur="ajaxDelayQtd()"
 								value="#{cadastroProdutoBean.novaQuantidadeAtual}"
-								rendered="#{cadastroProdutoBean.itemCompra.produto.unidadeMedida == 'Un' or cadastroProdutoBean.itemCompra.produto.unidadeMedida == 'Cx' or cadastroProdutoBean.itemCompra.produto == null}">
+								rendered="#{cadastroProdutoBean.itemCompra.produto.unidadeMedida == 'Un' or cadastroProdutoBean.itemCompra.produto.unidadeMedida == 'Cx' or cadastroProdutoBean.itemCompra.produto.unidadeMedida == 'FARDO' or cadastroProdutoBean.itemCompra.produto == null}">
 
 							</p:inputNumber>
 							

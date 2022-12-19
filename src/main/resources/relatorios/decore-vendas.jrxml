@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="decore-vendas" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="0" bottomMargin="0" uuid="519bb040-d2f6-44c8-b08c-2225ab2837bc">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="389"/>
+	<property name="ireport.y" value="0"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -274,8 +274,10 @@
 					</graphicElement>
 				</rectangle>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement uuid="48869abd-a011-4b90-b7d8-a73d0b135164" x="5" y="103" width="269" height="17" isRemoveLineWhenBlank="true"/>
-					<textElement verticalAlignment="Middle"/>
+					<reportElement uuid="48869abd-a011-4b90-b7d8-a73d0b135164" x="5" y="107" width="269" height="17" isRemoveLineWhenBlank="true"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
 					<textFieldExpression><![CDATA[$F{observacoes}]]></textFieldExpression>
 				</textField>
 				<textField>
@@ -425,6 +427,17 @@
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{bairroCliente}]]></textFieldExpression>
 			</textField>
+			<image scaleImage="FillFrame" onErrorType="Blank">
+				<reportElement uuid="425b6d9a-1b97-4950-ab37-dde6c8e3e2e3" style="Column header" x="12" y="39" width="69" height="58"/>
+				<imageExpression><![CDATA["/relatorios/QRCODE.jpeg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="7da8ff0a-0891-4fbf-bd3a-52e5f8d2af04" x="-5" y="101" width="105" height="25" backcolor="#FF0000"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Se preferir, pague via PIX com QR Code]]></text>
+			</staticText>
 		</band>
 	</pageHeader>
 	<columnHeader>

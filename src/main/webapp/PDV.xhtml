@@ -1547,11 +1547,11 @@ body .ui-datatable .ui-paginator {
 									style="display:none;" />
 
 								<p:focus id="focus-qtde_" for="quantidade_"
-									rendered="#{(pDVBean.itemVenda.produto.id != null and pDVBean.itemVenda.produto.quantidadeAtual ge 1) or (pDVBean.itemVenda.produto.id != null and not pDVBean.itemVenda.produto.estoque and (pDVBean.itemVenda.produto.unidadeMedida == 'Kg' or pDVBean.itemVenda.produto.unidadeMedida == 'Lt' or pDVBean.itemVenda.produto.unidadeMedida == 'Pt' or pDVBean.itemVenda.produto.unidadeMedida == 'Un' or pDVBean.produto.unidadeMedida == 'Cx'))}"
+									rendered="#{(pDVBean.itemVenda.produto.id != null and pDVBean.itemVenda.produto.quantidadeAtual ge 1) or (pDVBean.itemVenda.produto.id != null and not pDVBean.itemVenda.produto.estoque and (pDVBean.itemVenda.produto.unidadeMedida == 'Kg' or pDVBean.itemVenda.produto.unidadeMedida == 'Lt' or pDVBean.itemVenda.produto.unidadeMedida == 'Pt' or pDVBean.itemVenda.produto.unidadeMedida == 'Un' or pDVBean.produto.unidadeMedida == 'Cx' or pDVBean.produto.unidadeMedida == 'FARDO'))}"
 									style="display:none;" />
 
 								<p:focus id="focus-qtde___" for="quantidade__"
-									rendered="#{(pDVBean.itemVenda.produto.id != null and pDVBean.itemVenda.produto.quantidadeAtual ge 1) or (pDVBean.itemVenda.produto.id != null and not pDVBean.itemVenda.produto.estoque and (pDVBean.itemVenda.produto.unidadeMedida == 'Kg' or pDVBean.itemVenda.produto.unidadeMedida == 'Lt' or pDVBean.itemVenda.produto.unidadeMedida == 'Pt' or pDVBean.itemVenda.produto.unidadeMedida == 'Un' or pDVBean.produto.unidadeMedida == 'Cx'))}"
+									rendered="#{(pDVBean.itemVenda.produto.id != null and pDVBean.itemVenda.produto.quantidadeAtual ge 1) or (pDVBean.itemVenda.produto.id != null and not pDVBean.itemVenda.produto.estoque and (pDVBean.itemVenda.produto.unidadeMedida == 'Kg' or pDVBean.itemVenda.produto.unidadeMedida == 'Lt' or pDVBean.itemVenda.produto.unidadeMedida == 'Pt' or pDVBean.itemVenda.produto.unidadeMedida == 'Un' or pDVBean.produto.unidadeMedida == 'Cx' or pDVBean.produto.unidadeMedida == 'FARDO'))}"
 									style="display:none;" />
 
 
@@ -1675,7 +1675,7 @@ body .ui-datatable .ui-paginator {
 										<p:outputLabel
 											value="#{pDVBean.itemVenda.produto.quantidadeAtualFormatada}"
 											style="font-size: 9px;font-weight: bold;float: left;background: #29b140;color: white;padding: 1px;margin-top: -13px; margin-right: -2px;"
-											rendered="#{(pDVBean.itemVenda.produto.id != null and pDVBean.itemVenda.produto.unidadeMedida != 'Un' and pDVBean.itemVenda.produto.unidadeMedida != 'Cx' and pDVBean.itemVenda.produto.unidadeMedida != 'Pt') and pDVBean.itemVenda.estoque}">
+											rendered="#{(pDVBean.itemVenda.produto.id != null and pDVBean.itemVenda.produto.unidadeMedida != 'Un' and pDVBean.itemVenda.produto.unidadeMedida != 'Cx' and pDVBean.itemVenda.produto.unidadeMedida != 'FARDO' and pDVBean.itemVenda.produto.unidadeMedida != 'Pt') and pDVBean.itemVenda.estoque}">
 
 											<f:convertNumber minFractionDigits="3" />
 										</p:outputLabel>
@@ -1683,7 +1683,7 @@ body .ui-datatable .ui-paginator {
 										<p:outputLabel
 											value="#{pDVBean.itemVenda.produto.quantidadeAtualFormatada}"
 											style="font-size: 9px;font-weight: bold;float: left;background: #29b140;color: white;padding: 1px;margin-top: -13px; margin-right: -2px;"
-											rendered="#{pDVBean.itemVenda.produto.id != null and (pDVBean.itemVenda.produto.unidadeMedida == 'Un' or pDVBean.itemVenda.produto.unidadeMedida == 'Cx') and pDVBean.itemVenda.estoque and pDVBean.itemVenda.produto.quantidadeAtualFormatada != null}">
+											rendered="#{pDVBean.itemVenda.produto.id != null and (pDVBean.itemVenda.produto.unidadeMedida == 'Un' or pDVBean.itemVenda.produto.unidadeMedida == 'Cx' or pDVBean.itemVenda.produto.unidadeMedida == 'FARDO') and pDVBean.itemVenda.estoque and pDVBean.itemVenda.produto.quantidadeAtualFormatada != null}">
 
 											<f:convertNumber minFractionDigits="0" />
 										</p:outputLabel>
@@ -1814,7 +1814,7 @@ body .ui-datatable .ui-paginator {
 											placeholder="0"
 											styleClass="quantidade" onkeyup="ajaxDelay('', 0)"
 											value="#{pDVBean.itemVenda.quantidade}"
-											rendered="#{pDVBean.itemVenda.produto.unidadeMedida == 'Un' or pDVBean.itemVenda.produto.unidadeMedida == 'Cx'}">
+											rendered="#{pDVBean.itemVenda.produto.unidadeMedida == 'Un' or pDVBean.itemVenda.produto.unidadeMedida == 'Cx' or pDVBean.itemVenda.produto.unidadeMedida == 'FARDO'}">
 
 											<p:ajax event="keyup" process="@this" update="btn-adicionar"></p:ajax>
 										</p:inputNumber>
@@ -1823,7 +1823,7 @@ body .ui-datatable .ui-paginator {
 											placeholder="0,000"
 											styleClass="quantidade" onkeyup="ajaxDelay('', 0)"
 											value="#{pDVBean.itemVenda.quantidade}"
-											rendered="#{pDVBean.itemVenda.produto.unidadeMedida != 'Un' and pDVBean.itemVenda.produto.unidadeMedida != 'Cx' and pDVBean.itemVenda.produto.unidadeMedida != 'Pt'}">
+											rendered="#{pDVBean.itemVenda.produto.unidadeMedida != 'Un' and pDVBean.itemVenda.produto.unidadeMedida != 'Cx' and pDVBean.itemVenda.produto.unidadeMedida != 'FARDO' and pDVBean.itemVenda.produto.unidadeMedida != 'Pt'}">
 
 											<p:ajax event="keyup" process="@this" update="btn-adicionar"></p:ajax>
 										</p:inputNumber>

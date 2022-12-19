@@ -451,7 +451,7 @@ public class DevolucoesTrocaBean implements Serializable {
 	public void prepararDevolucaoSelecionada() {	
 		
 		produto = itemVendaSelecionada.getProduto();
-		if((produto.getUnidadeMedida().trim().toUpperCase().equals("UN") || produto.getUnidadeMedida().trim().toUpperCase().equals("CX")) && produto.isEstoque()) {
+		if((produto.getUnidadeMedida().trim().toUpperCase().equals("UN") || produto.getUnidadeMedida().trim().toUpperCase().equals("CX") || produto.getUnidadeMedida().trim().toUpperCase().equals("FARDO")) && produto.isEstoque()) {
 			
 			produto.setValorPago(new BigDecimal(itemVendaSelecionada.getTotal().doubleValue() / itemVendaSelecionada.getQuantidade().doubleValue()));
 			devolucao = new Devolucao();

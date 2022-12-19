@@ -578,7 +578,7 @@
 									
 									<p:outputLabel value="Quantidade" for="quantidade" />
 									<p:inputNumber id="quantidade" decimalPlaces="3" disabled="true"
-										rendered="#{devolucoesTrocaBean.produto.unidadeMedida != 'Un' and devolucoesTrocaBean.produto.unidadeMedida != 'Cx'}"
+										rendered="#{devolucoesTrocaBean.produto.unidadeMedida != 'Un' and devolucoesTrocaBean.produto.unidadeMedida != 'Cx' and devolucoesTrocaBean.produto.unidadeMedida != 'FARDO'}"
 										placeholder="0" styleClass="quantidade" onkeyup="ajaxDelay('')"
 										value="#{devolucoesTrocaBean.devolucao.quantidade}">
 
@@ -586,7 +586,7 @@
 									</p:inputNumber>
 									
 									<p:inputNumber decimalPlaces="0" disabled="true"
-										rendered="#{devolucoesTrocaBean.produto.unidadeMedida == 'Un' or devolucoesTrocaBean.produto.unidadeMedida == 'Cx'}"
+										rendered="#{devolucoesTrocaBean.produto.unidadeMedida == 'Un' or devolucoesTrocaBean.produto.unidadeMedida == 'Cx' or devolucoesTrocaBean.produto.unidadeMedida == 'FARDO'}"
 										placeholder="0" styleClass="quantidade" onkeyup="ajaxDelay('')"
 										value="#{devolucoesTrocaBean.devolucao.quantidade}">
 
@@ -700,7 +700,7 @@
 									
 									<p:outputLabel value="Quantidade" for="quantidade_" />
 									<p:inputNumber id="quantidade_" decimalPlaces="3" 
-										rendered="#{devolucoesTrocaBean.produto.unidadeMedida != 'Un' and devolucoesTrocaBean.produto.unidadeMedida != 'Cx' and devolucoesTrocaBean.produto.unidadeMedida != 'Pt'}"
+										rendered="#{devolucoesTrocaBean.produto.unidadeMedida != 'Un' and devolucoesTrocaBean.produto.unidadeMedida != 'Cx' and devolucoesTrocaBean.produto.unidadeMedida != 'FARDO' and devolucoesTrocaBean.produto.unidadeMedida != 'Pt'}"
 										placeholder="0" styleClass="quantidade" onkeyup="ajaxDelay('')"
 										value="#{devolucoesTrocaBean.devolucao.quantidade}">
 
@@ -708,7 +708,7 @@
 									</p:inputNumber>
 									
 									<p:inputNumber id="quantidade__" decimalPlaces="0" label="Quantidade"
-										rendered="#{devolucoesTrocaBean.produto.unidadeMedida == 'Un' or devolucoesTrocaBean.produto.unidadeMedida == 'Cx'}"
+										rendered="#{devolucoesTrocaBean.produto.unidadeMedida == 'Un' or devolucoesTrocaBean.produto.unidadeMedida == 'Cx' or devolucoesTrocaBean.produto.unidadeMedida == 'FARDO'}"
 										placeholder="0" styleClass="quantidade" onkeyup="ajaxDelay('')"
 										value="#{devolucoesTrocaBean.devolucao.quantidade}">
 

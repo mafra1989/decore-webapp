@@ -931,11 +931,11 @@
 							<p:column headerText="Qty"
 								style="text-align:right;width:20%">
 								
-								<h:outputText value="#{produto.quantidade}" rendered="#{produto.unidadeMedida == 'Un' or produto.unidadeMedida == 'Cx'}">
+								<h:outputText value="#{produto.quantidade}" rendered="#{produto.unidadeMedida == 'Un' or produto.unidadeMedida == 'Cx' or produto.unidadeMedida == 'FARDO'}">
 									<f:convertNumber minFractionDigits="0" />
 								</h:outputText>
 								
-								<h:outputText value="#{produto.quantidade}" rendered="#{produto.unidadeMedida != 'Un' and produto.unidadeMedida != 'Cx'  and produto.unidadeMedida != 'Pt'}">
+								<h:outputText value="#{produto.quantidade}" rendered="#{produto.unidadeMedida != 'Un' and produto.unidadeMedida != 'Cx' and produto.unidadeMedida != 'FARDO'  and produto.unidadeMedida != 'Pt'}">
 									<f:convertNumber minFractionDigits="3" />
 								</h:outputText>
 								

@@ -519,7 +519,7 @@
 							<p:inputNumber id="quantidade" decimalPlaces="0" placeholder="0"
 								styleClass="quantidade" onkeyup="ajaxDelayQtd()"
 								value="#{registroComprasBean.itemCompra.quantidade}"
-								rendered="#{registroComprasBean.itemCompra.produto.unidadeMedida == 'Un' or registroComprasBean.itemCompra.produto.unidadeMedida == 'Cx' or registroComprasBean.itemCompra.produto == null}">
+								rendered="#{registroComprasBean.itemCompra.produto.unidadeMedida == 'Un' or registroComprasBean.itemCompra.produto.unidadeMedida == 'Cx' or registroComprasBean.itemCompra.produto.unidadeMedida == 'FARDO' or registroComprasBean.itemCompra.produto == null}">
 
 								<p:ajax event="keydown" update="btn-adicionar"></p:ajax>
 							</p:inputNumber>

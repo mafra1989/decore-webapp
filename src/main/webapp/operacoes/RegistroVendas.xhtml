@@ -814,7 +814,7 @@
 							<p:inputNumber id="quantidade" decimalPlaces="0" placeholder="0"
 								styleClass="quantidade" onkeyup="ajaxDelayQtd()"
 								value="#{registroVendasBean.itemVenda.quantidade}"
-								rendered="#{registroVendasBean.itemVenda.produto.unidadeMedida == 'Un' or registroVendasBean.itemVenda.produto.unidadeMedida == 'Cx' or registroVendasBean.itemVenda.produto == null}">
+								rendered="#{registroVendasBean.itemVenda.produto.unidadeMedida == 'Un' or registroVendasBean.itemVenda.produto.unidadeMedida == 'Cx' or registroVendasBean.itemVenda.produto.unidadeMedida == 'FARDO' or registroVendasBean.itemVenda.produto == null}">
 
 								<p:ajax event="keydown" update="btn-adicionar"></p:ajax>
 							</p:inputNumber>
