@@ -1451,17 +1451,14 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 					<div class="card card-w-title ui-fluid"
 						style="padding: 0px 5px 0px 5px; padding-bottom: 0px !important">
 						
-						<p:panelGrid columns="2" layout="grid"
-							style="margin-top: 10px;"
-							styleClass="panelgrid-noborder disabled disabled"
-							columnClasses="ui-grid-col-3, ui-grid-col-9">
+						<p:panel styleClass="panelgrid-noborder disabled disabled" style="padding: 0px 10px;margin-top: 10px;margin-bottom: 10px;">
 							
 							<p:outputLabel style="font-weight: bold;font-size: 16px;margin-top: 0px;" value="Saldo " />
 							<p:outputLabel value="#{consultaContasBean.contaSelecionada.saldo}"
 								style="font-weight: bold;font-size: 22px;margin-top: -4px;float: right;right: 0;position: relative;">
 								<f:convertNumber type="currency" />
 							</p:outputLabel>
-						</p:panelGrid>
+						</p:panel>
 
 						<p:panelGrid columns="1" layout="grid" id="campos-pagamento"
 							style="margin-top: 5px; margin-bottom: 5px"
@@ -1532,16 +1529,14 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 
 			<h:form id="form-pagamentos">
 				
-				<p:panelGrid columns="2" layout="grid" style="margin-top: 10px;margin-bottom: 10px;"
-					styleClass="panelgrid-noborder disabled disabled"
-					columnClasses="ui-grid-col-3, ui-grid-col-9">
+				<p:panel styleClass="panelgrid-noborder disabled disabled" style="padding: 0px 10px;margin-top: 10px;margin-bottom: 10px;">
 					
 					<p:outputLabel style="font-weight: bold;font-size: 16px;margin-top: 0px;" value="Saldo " />
 					<p:outputLabel value="#{consultaContasBean.contaSelecionada.saldo}"
 						style="font-weight: bold;font-size: 22px;margin-top: -4px;float: right;right: 0;position: relative;">
 						<f:convertNumber type="currency" />
 					</p:outputLabel>
-				</p:panelGrid>
+				</p:panel>
 				
 				<p:panelGrid columns="1" layout="grid" style="margin-bottom:2px;"
 					styleClass="panelgrid-noborder disabled disabled">
@@ -1614,16 +1609,14 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 
 			<h:form id="form-pagamentos-hoje">
 				
-				<p:panelGrid columns="2" layout="grid" style="margin-top: 10px;margin-bottom: 10px;"
-					styleClass="panelgrid-noborder disabled disabled"
-					columnClasses="ui-grid-col-3, ui-grid-col-9">
+				<p:panel styleClass="panelgrid-noborder disabled disabled" style="padding: 0px 10px;margin-top: 10px;margin-bottom: 10px;">
 					
 					<p:outputLabel style="font-weight: bold;font-size: 16px;margin-top: 0px;" value="Saldo " />
 					<p:outputLabel value="#{consultaContasBean.contaSelecionada.saldo}"
 						style="font-weight: bold;font-size: 22px;margin-top: -4px;float: right;right: 0;position: relative;">
 						<f:convertNumber type="currency" />
 					</p:outputLabel>
-				</p:panelGrid>
+				</p:panel>
 				
 				<p:panelGrid columns="1" layout="grid" style="margin-bottom:2px;"
 					styleClass="panelgrid-noborder disabled disabled">
