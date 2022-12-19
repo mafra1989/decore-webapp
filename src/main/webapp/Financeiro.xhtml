@@ -1453,7 +1453,8 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 						
 						<p:panelGrid columns="2" layout="grid"
 							style="margin-top: 10px;"
-							styleClass="panelgrid-noborder disabled disabled">
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-3, ui-grid-col-9">
 							
 							<p:outputLabel style="font-weight: bold;font-size: 16px;margin-top: 0px;" value="Saldo " />
 							<p:outputLabel value="#{consultaContasBean.contaSelecionada.saldo}"
@@ -1532,7 +1533,8 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 			<h:form id="form-pagamentos">
 				
 				<p:panelGrid columns="2" layout="grid" style="margin-top: 10px;margin-bottom: 10px;"
-					styleClass="panelgrid-noborder disabled disabled">
+					styleClass="panelgrid-noborder disabled disabled"
+					columnClasses="ui-grid-col-3, ui-grid-col-9">
 					
 					<p:outputLabel style="font-weight: bold;font-size: 16px;margin-top: 0px;" value="Saldo " />
 					<p:outputLabel value="#{consultaContasBean.contaSelecionada.saldo}"
@@ -1613,7 +1615,8 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 			<h:form id="form-pagamentos-hoje">
 				
 				<p:panelGrid columns="2" layout="grid" style="margin-top: 10px;margin-bottom: 10px;"
-					styleClass="panelgrid-noborder disabled disabled">
+					styleClass="panelgrid-noborder disabled disabled"
+					columnClasses="ui-grid-col-3, ui-grid-col-9">
 					
 					<p:outputLabel style="font-weight: bold;font-size: 16px;margin-top: 0px;" value="Saldo " />
 					<p:outputLabel value="#{consultaContasBean.contaSelecionada.saldo}"
