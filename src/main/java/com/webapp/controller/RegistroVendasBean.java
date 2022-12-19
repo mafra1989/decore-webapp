@@ -1,8 +1,10 @@
 package com.webapp.controller;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -14,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import javax.faces.view.ViewScoped;
@@ -25,6 +28,7 @@ import org.primefaces.PrimeFaces;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
+import com.google.common.io.ByteSource;
 import com.webapp.model.Bairro;
 import com.webapp.model.Caixa;
 import com.webapp.model.Cliente;
@@ -32,10 +36,15 @@ import com.webapp.model.Configuracao;
 import com.webapp.model.Conta;
 import com.webapp.model.Devolucao;
 import com.webapp.model.Entrega;
+import com.webapp.model.EspelhoVenda;
 import com.webapp.model.FormaPagamento;
 import com.webapp.model.ItemCaixa;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemDevolucao;
+import com.webapp.model.ItemEspelhoVendaPagamento;
+import com.webapp.model.ItemEspelhoVendaPagamentos;
+import com.webapp.model.ItemEspelhoVendaParcelamentos;
+import com.webapp.model.ItemEspelhoVendaProdutos;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.ItemVendaCompra;
 import com.webapp.model.Log;
@@ -43,12 +52,14 @@ import com.webapp.model.Mesa;
 import com.webapp.model.Pagamento;
 import com.webapp.model.PeriodoPagamento;
 import com.webapp.model.Produto;
+import com.webapp.model.StatusPedido;
 import com.webapp.model.TipoAtividade;
 import com.webapp.model.TipoOperacao;
 import com.webapp.model.TipoPagamento;
 import com.webapp.model.TipoVenda;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
+import com.webapp.report.Relatorio;
 import com.webapp.repository.Bairros;
 import com.webapp.repository.Clientes;
 import com.webapp.repository.Configuracoes;
@@ -4152,5 +4163,312 @@ public class RegistroVendasBean implements Serializable {
 
 	public BigDecimal getTotalPagamentos() {
 		return totalPagamentos;
+	}
+	
+	public void entregarVenda() {
+		
+		entregaVenda = entregas.porVenda(venda);
+		entregaVenda.setStatus(StatusPedido.ENTREGUE.name());
+		entregaVenda = entregas.save(entregaVenda);
+
+		Venda venda = entregaVenda.getVenda();
+		venda.setStatus(true);
+		
+		if(venda.getTipoPagamento() == TipoPagamento.AVISTA && !venda.isConta()) {
+			venda.setVendaPaga(true);
+		}
+		
+		venda = vendas.save(venda);
+		
+		
+		Log log = new Log();
+		log.setDataLog(new Date());
+		log.setCodigoOperacao(String.valueOf(venda.getNumeroVenda()));
+		log.setOperacao(TipoAtividade.VENDA.name());
+		
+		NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
+		
+		log.setDescricao("Entregou venda, Nº " + venda.getNumeroVenda() + ", quantidade de itens " + venda.getQuantidadeItens() + ", valor total R$ " + nf.format(venda.getValorTotal()));
+		log.setUsuario(usuario);		
+		logs.save(log);
+
+		PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Venda N."
+				+ venda.getNumeroVenda() + " entregue com sucesso!' });");
+	}
+
+	public void desfazerEntrega() {
+		entregaVenda = entregas.porVenda(venda);
+		entregaVenda.setStatus(StatusPedido.PENDENTE.name());
+		entregaVenda = entregas.save(entregaVenda);
+
+		Venda venda = entregaVenda.getVenda();
+		venda.setStatus(false);
+		venda = vendas.save(venda);
+		
+		Log log = new Log();
+		log.setDataLog(new Date());
+		log.setCodigoOperacao(String.valueOf(venda.getNumeroVenda()));
+		log.setOperacao(TipoAtividade.VENDA.name());
+		
+		NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
+		
+		log.setDescricao("Desfez entrega, venda Nº " + venda.getNumeroVenda() + ", quantidade de itens " + venda.getQuantidadeItens() + ", valor total R$ " + nf.format(venda.getValorTotal()));
+		log.setUsuario(usuario);		
+		logs.save(log);
+
+		PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Entrega da venda N."
+				+ venda.getNumeroVenda() + " desfeita com sucesso!' });");
+	}
+	
+	public void desfazerEntregaPagamento() {
+		entregaVenda.setStatus(StatusPedido.PENDENTE.name());
+		entregaVenda = entregas.save(entregaVenda);
+
+		Venda venda = entregaVenda.getVenda();
+		venda.setStatus(false);
+		venda.setVendaPaga(false);
+		venda = vendas.save(venda);
+		
+		
+		Log log = new Log();
+		log.setDataLog(new Date());
+		log.setCodigoOperacao(String.valueOf(venda.getNumeroVenda()));
+		log.setOperacao(TipoAtividade.VENDA.name());
+		
+		NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
+		
+		log.setDescricao("Desfez entrega e pagamento, venda Nº " + venda.getNumeroVenda() + ", quantidade de itens " + venda.getQuantidadeItens() + ", valor total R$ " + nf.format(venda.getValorTotal()));
+		log.setUsuario(usuario);		
+		logs.save(log);
+		
+
+		PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Entrega da venda N."
+				+ venda.getNumeroVenda() + " desfeita com sucesso!' });");
+	}
+	
+	public void emitirPedido() {
+
+		Venda vendaSelecionada = venda;
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+		EspelhoVenda pedido = new EspelhoVenda();
+		pedido.setVendaNum(vendaSelecionada.getNumeroVenda() + "");
+		pedido.setTipoVenda(vendaSelecionada.getTipoVenda().getDescricao().toUpperCase());
+		pedido.setBairro(vendaSelecionada.getBairro().getNome().toUpperCase());
+		pedido.setDataVenda(sdf.format(vendaSelecionada.getDataVenda()));
+		
+		String vendedor = vendaSelecionada.getUsuario().getNome().split(" ")[0].toUpperCase();
+		pedido.setVendedor(vendedor);
+		
+		if(vendaSelecionada.getCliente().getNome().toUpperCase().equals("NAO INFORMADO") || vendaSelecionada.getCliente().getNome().toUpperCase().equals("NÃO INFORMADO")) {
+			Entrega entrega = entregas.porVenda(vendaSelecionada);
+			if (entrega != null) {
+				if(!vendaSelecionada.getBairro().getNome().toUpperCase().equals("NAO INFORMADO") && !vendaSelecionada.getBairro().getNome().toUpperCase().equals("NÃO INFORMADO")) {
+					if(entrega.getNome() == null || entrega.getNome() != null && entrega.getNome().equals("")) {
+						pedido.setCliente("Não Informado");
+					} else {
+						pedido.setCliente(entrega.getNome());
+					}
+					
+					pedido.setEnderecoCliente(entrega.getLocalizacao() != null ? entrega.getLocalizacao() : "");
+					//implementar observação/contato
+					pedido.setTelefone(entrega.getContato() != null ? entrega.getContato() : "");
+					
+				} else {
+					pedido.setCliente("Não Informado");
+					pedido.setEnderecoCliente("");
+					//implementar observação/contato
+					pedido.setTelefone("");
+				}						
+			} else {
+				pedido.setCliente("Não Informado");
+				pedido.setEnderecoCliente("");	
+				pedido.setTelefone("");
+			}
+			
+			pedido.setCpfCnpj("");			
+			pedido.setCodigoCliente("");
+			pedido.setBairroCliente(vendaSelecionada.getBairro().getNome());
+			
+		} else {
+			if(vendaSelecionada.getBairro().getNome().toUpperCase().equals("NAO INFORMADO") || vendaSelecionada.getBairro().getNome().toUpperCase().equals("NÃO INFORMADO")) {
+				pedido.setCliente(vendaSelecionada.getCliente().getNome());
+				pedido.setCpfCnpj(vendaSelecionada.getCliente().getDocumento());
+				pedido.setTelefone(vendaSelecionada.getCliente().getContato());
+				pedido.setCodigoCliente(String.valueOf(vendaSelecionada.getCliente().getId().longValue()));
+				pedido.setEnderecoCliente(vendaSelecionada.getCliente().getEndereco());
+				pedido.setBairroCliente(vendaSelecionada.getCliente().getBairro().getNome());
+			} else {
+				Entrega entrega = entregas.porVenda(vendaSelecionada);
+				if (entrega != null) {
+					if(entrega.getNome() == null || entrega.getNome() != null && entrega.getNome().equals("")) {
+						pedido.setCliente(vendaSelecionada.getCliente().getNome());
+					} else {
+						pedido.setCliente(entrega.getNome());
+					}
+					
+					pedido.setEnderecoCliente(entrega.getLocalizacao() != null ? entrega.getLocalizacao() : "");
+					
+					//implementar observação/contato
+					if(entrega.getContato() == null || entrega.getContato() != null && entrega.getContato().equals("")) {
+						pedido.setTelefone(vendaSelecionada.getCliente().getContato());
+					} else {
+						pedido.setTelefone(entrega.getContato());
+					}
+				}
+								
+				pedido.setCpfCnpj(vendaSelecionada.getCliente().getDocumento());
+				pedido.setCodigoCliente(String.valueOf(vendaSelecionada.getCliente().getId().longValue()));
+				pedido.setBairroCliente(vendaSelecionada.getBairro().getNome());
+			}
+		}
+
+		/*
+		Entrega entrega = entregas.porVenda(vendaSelecionada);
+		if (entrega != null) {
+			pedido.setResponsavel(entrega.getNome());
+			pedido.setLocalizacao(entrega.getLocalizacao());
+			pedido.setObservacao(entrega.getObservacao());
+			pedido.setTelefone(entrega.getContato());
+			
+			if(entrega.getStatus() == StatusPedido.ENTREGUE.name()) {
+				pedido.setEntrega("Y");
+			}
+		}*/
+		
+		NumberFormat nf_ = new DecimalFormat("###,##0.000", REAL);
+		NumberFormat nf__ = new DecimalFormat("###,##0", REAL);
+		
+		List<ItemVenda> itensVenda = itensVendas.porVenda(vendaSelecionada);
+		for (ItemVenda itemVenda : itensVenda) {
+			
+			ItemEspelhoVendaProdutos itemPedido = new ItemEspelhoVendaProdutos();
+			itemPedido.setCodigo(itemVenda.getProduto().getCodigo());
+			itemPedido.setDescricao(itemVenda.getProduto().getDescricao().trim());
+			itemPedido.setValorUnitario(nf.format(itemVenda.getValorUnitario().doubleValue()));
+			
+			String quantidade = "0";
+			if(itemVenda.getProduto().getUnidadeMedida().equals("Kg") || itemVenda.getProduto().getUnidadeMedida().equals("Lt"))  {
+				quantidade = nf_.format(itemVenda.getQuantidade().doubleValue());
+			} else {
+				quantidade = nf__.format(itemVenda.getQuantidade());
+			}
+			
+			itemPedido.setQuantidade(quantidade);
+			
+			itemPedido.setUN(itemVenda.getProduto().getUnidadeMedida());
+			itemPedido.setSubTotal(nf.format(itemVenda.getTotal()));
+			
+			pedido.getItensPedidos().add(itemPedido);
+		}
+		
+		Double troco = 0D;
+		List<Pagamento> listaPagamentos = pagamentos.todosPorVenda(vendaSelecionada, usuario.getEmpresa());
+		for (Pagamento pagamento : listaPagamentos) {
+			
+			troco += pagamento.getTroco().doubleValue();
+				
+			ItemEspelhoVendaPagamentos pagamentosPedido = new ItemEspelhoVendaPagamentos();
+			pagamentosPedido.setFormaPagamento(pagamento.getFormaPagamento().getNome());
+			pagamentosPedido.setValor(nf.format(pagamento.getValor().doubleValue()));
+			
+			pedido.getItensPagamentos().add(pagamentosPedido);
+			
+		}
+		
+		pedido.setConta(false);
+		List<Conta> listaDeContas = contas.porCodigoOperacao(vendaSelecionada.getNumeroVenda(), "VENDA", usuario.getEmpresa());
+		if(listaDeContas.size() > 0) {
+			pedido.setConta(true);
+		}
+		
+		if(listaPagamentos.size() == 0) {
+			
+			if(pedido.getConta() && vendaSelecionada.getTipoPagamento() == TipoPagamento.AVISTA) {
+				List<Conta> listaContas = contas.porCodigoOperacao(vendaSelecionada.getNumeroVenda(), "VENDA", usuario.getEmpresa());
+				
+				Optional<Conta> conta = listaContas.stream().findFirst();
+				
+				ItemEspelhoVendaPagamento pagamentosPedido = new ItemEspelhoVendaPagamento();
+				pagamentosPedido.setValorPagar(nf.format(conta.get().getValor().doubleValue()));
+				pagamentosPedido.setVencimento(sdf.format(conta.get().getVencimento()));
+				
+				pedido.getItensPagamento().add(pagamentosPedido);
+				
+			} else if(pedido.getConta() && vendaSelecionada.getTipoPagamento() == TipoPagamento.PARCELADO) {
+				List<Conta> listaContas = contas.porCodigoOperacao(vendaSelecionada.getNumeroVenda(), "VENDA", usuario.getEmpresa());
+				
+				listaContas.forEach(f -> {
+					ItemEspelhoVendaParcelamentos parcelamentosPedido = new ItemEspelhoVendaParcelamentos();
+					parcelamentosPedido.setParcela(f.getParcela());
+					parcelamentosPedido.setValor(nf.format(f.getValor().doubleValue()));
+					parcelamentosPedido.setVencimento(sdf.format(f.getVencimento()));
+					
+					if(f.getParcela().equals("Entrada")) { parcelamentosPedido.setStatus("✓"); }
+		            
+		            pedido.getItensParcelamentos().add(parcelamentosPedido);
+		        });
+				
+			}
+		}	
+		
+		pedido.setTipoPagamento(vendaSelecionada.getTipoPagamento().name());
+				
+		pedido.setTroco(nf.format(troco.doubleValue()));
+		
+		if(usuario.getEmpresa().getLogoRelatorio() != null) {
+			
+			InputStream targetStream;
+			try {
+				targetStream = ByteSource.wrap(usuario.getEmpresa().getLogoRelatorio()).openStream();
+				pedido.setLogo(targetStream);
+				
+			} catch (IOException e1) {
+			}	
+		}
+		
+		pedido.setxNome(usuario.getEmpresa().getNome() != null ? usuario.getEmpresa().getNome() : "");
+		pedido.setCNPJ(usuario.getEmpresa().getCnpj() != null ? usuario.getEmpresa().getCnpj() : "");
+		pedido.setxLgr(usuario.getEmpresa().getEndereco() != null ? usuario.getEmpresa().getEndereco().trim() : "");
+		pedido.setNro(usuario.getEmpresa().getNumero() != null ? usuario.getEmpresa().getNumero().trim() : "");
+		pedido.setxBairro(usuario.getEmpresa().getBairro() != null ? usuario.getEmpresa().getBairro().trim() : "");
+		pedido.setxMun(usuario.getEmpresa().getCidade() != null ? usuario.getEmpresa().getCidade() : "");
+		pedido.setUF(usuario.getEmpresa().getUf() != null ? usuario.getEmpresa().getUf() : "");
+		pedido.setContato(usuario.getEmpresa().getContato() != null ? usuario.getEmpresa().getContato() : "");
+		
+		pedido.setObservacoes(vendaSelecionada.getObservacao());
+		
+		pedido.setTotalVenda(nf.format(new BigDecimal(vendaSelecionada.getValorTotal().doubleValue()- vendaSelecionada.getDesconto().doubleValue())));
+		
+		pedido.setFrete(nf.format(vendaSelecionada.getTaxaDeEntrega()));
+		
+		if(vendaSelecionada.getDesconto() != null) {
+			//aleteração do subtotal para somar com a taxa de entrega
+			pedido.setSubTotal(nf.format(vendaSelecionada.getValorTotal().doubleValue()/* - vendaSelecionada.getTaxaDeEntrega().doubleValue()*/));
+			pedido.setDesconto(nf.format(vendaSelecionada.getDesconto()));
+		} else {
+			pedido.setSubTotal(nf.format(vendaSelecionada.getValorTotal().doubleValue()/* - vendaSelecionada.getTaxaDeEntrega().doubleValue()*/));
+		}
+
+		List<EspelhoVenda> pedidos = new ArrayList<>();
+		pedidos.add(pedido);
+
+		Relatorio<EspelhoVenda> report = new Relatorio<EspelhoVenda>();
+		try {
+			
+			String path = "";
+			if(vendaSelecionada.getEmpresa().getId().equals(7111L)) {
+				path = "/relatorios/decore-vendas_RECIBO_DECORE.jasper";
+			} else {
+				path = "/relatorios/decore-vendas_RECIBO_OURO_DA_AMAZONIA.jasper";
+			}
+			
+			report.getRelatorio_(pedidos, "Venda-N" + vendaSelecionada.getNumeroVenda().longValue(), path);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

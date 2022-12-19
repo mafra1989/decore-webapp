@@ -25,6 +25,7 @@ import com.webapp.model.ItemCaixa;
 import com.webapp.model.Lancamento;
 import com.webapp.model.Log;
 import com.webapp.model.OrigemLancamento;
+import com.webapp.model.PagamentoConta;
 import com.webapp.model.TipoAtividade;
 import com.webapp.model.TipoOperacao;
 import com.webapp.model.Usuario;
@@ -34,6 +35,7 @@ import com.webapp.repository.DestinosLancamentos;
 import com.webapp.repository.ItensCaixas;
 import com.webapp.repository.Lancamentos;
 import com.webapp.repository.Logs;
+import com.webapp.repository.PagamentosContas;
 import com.webapp.repository.Usuarios;
 import com.webapp.util.jsf.FacesUtil;
 
@@ -90,6 +92,9 @@ public class ConsultaLancamentosBean implements Serializable {
 	
 	@Inject
 	private Contas_ contas;
+	
+	@Inject
+	private PagamentosContas pagamentosContas;
 
 	private static final Locale BRAZIL = new Locale("pt", "BR");
 
@@ -276,6 +281,12 @@ public class ConsultaLancamentosBean implements Serializable {
 
 		List<Conta> contasTemp = contas.porCodigoOperacao(lancamentoSelecionado.getNumeroLancamento(), "LANCAMENTO", usuario_.getEmpresa());
 		for (Conta conta : contasTemp) {
+			
+			List<PagamentoConta> pagamentosContaTemp = pagamentosContas.todosPorConta(conta, usuario_.getEmpresa());
+			for (PagamentoConta pagamentoConta : pagamentosContaTemp) {
+				pagamentosContas.remove(pagamentoConta);
+			}
+			
 			contas.remove(conta);
 		}
 

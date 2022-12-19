@@ -304,6 +304,17 @@
 							process="@this" 
 							rendered="#{consultaContasBean.contaSelecionada.status}"
 							onclick="estornarConta(#{consultaContasBean.contaSelecionada.id});" />
+						
+						<p:menuitem value="Visualizar #{consultaContasBean.contaSelecionada.tipoDeOperacao()}" icon="fa fa-fw fa-eye" process="@this"
+							id="btn-view" action="#{consultaContasBean.visualizar}"
+							onclick="PF('downloadLoading').show();">
+						</p:menuitem>
+						
+						<p:menuitem value="Baixar Recibo" icon="fa fa-fw fa-cloud-download"
+							action="#{consultaContasBean.emitirPedido}"
+							ajax="false" target="_blank"
+							rendered="#{consultaContasBean.contaSelecionada.operacao == 'VENDA'}">
+						</p:menuitem>
 					</p:menuButton>
 
 					<p:panelGrid columns="1" layout="grid"

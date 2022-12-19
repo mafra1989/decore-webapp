@@ -598,15 +598,17 @@ public class DashboardBean implements Serializable {
 		
 		Number vendasAvistaPagas = vendasAvistaPagasTemp.doubleValue() - (/*descontoVendasAvistaPagas.doubleValue() + */totalTaxasValor.doubleValue());	
 		Number vendasAPagarPagas = contas.vendasAPagarPagas("CREDITO", "VENDA", usuario.getEmpresa());
+		Number totalVendasPagasParcialmente = contas.totalVendasPagasParcialmente(usuario.getEmpresa());
 		
-		Number totalVendas_ = vendasAvistaPagas.doubleValue() + vendasAPagarPagas.doubleValue();
+		Number totalVendas_ = vendasAvistaPagas.doubleValue() + vendasAPagarPagas.doubleValue() + totalVendasPagasParcialmente.doubleValue();
 		Number totalVendas = totalVendas_;//vendas.totalVendas(usuario.getEmpresa());
 		
 		
 		Number comprasAvistaPagas = compras.comprasAvistaPagas(usuario.getEmpresa());
 		Number comprasAPagarPagas = contas.porContasPagas("DEBITO", "COMPRA", usuario.getEmpresa());
+		Number totalComprasPagasParcialmente = contas.totalComprasPagasParcialmente(usuario.getEmpresa());
 		
-		Number totalCompras_ = comprasAvistaPagas.doubleValue() + comprasAPagarPagas.doubleValue();	
+		Number totalCompras_ = comprasAvistaPagas.doubleValue() + comprasAPagarPagas.doubleValue() + totalComprasPagasParcialmente.doubleValue();	
 		Number totalCompras = totalCompras_;//compras.totalCompras(usuario.getEmpresa());
 		
 		
@@ -617,14 +619,16 @@ public class DashboardBean implements Serializable {
 		
 		Number despesasAvistaPagas = lancamentos.totalDespesasAvistaPagas(usuario.getEmpresa()); 
 		Number despesasAPagarPagas = contas.porContasPagas("DEBITO", "LANCAMENTO", usuario.getEmpresa());
-		Number totalDespesasPagas = despesasAvistaPagas.doubleValue() + despesasAPagarPagas.doubleValue();		
+		Number totalDespesasPagasParcialmente = contas.totalDespesasPagasParcialmente(usuario.getEmpresa());
+		Number totalDespesasPagas = despesasAvistaPagas.doubleValue() + despesasAPagarPagas.doubleValue() + totalDespesasPagasParcialmente.doubleValue();		
 
 		Number totalDebitosPagos = totalDespesasPagas.doubleValue() + totalCompras.doubleValue();//contas.porContasPagas("DEBITO", usuario.getEmpresa()); 
 		
 		
 		Number receitasAvistaPagas = lancamentos.totalReceitasAvistaPagas(usuario.getEmpresa()); 
 		Number receitasAReceberPagas = contas.porContasPagas("CREDITO", "LANCAMENTO", usuario.getEmpresa());
-		Number totalReceitasPagas = receitasAReceberPagas.doubleValue() + receitasAvistaPagas.doubleValue();
+		Number totalReceitasPagasParcialmente = contas.totalReceitasPagasParcialmente(usuario.getEmpresa());
+		Number totalReceitasPagas = receitasAReceberPagas.doubleValue() + receitasAvistaPagas.doubleValue() + totalReceitasPagasParcialmente.doubleValue();
 		
 		Number totalReceitas = totalReceitasPagas;
 		

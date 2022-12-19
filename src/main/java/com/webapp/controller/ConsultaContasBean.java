@@ -1,6 +1,10 @@
 package com.webapp.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -10,7 +14,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -20,21 +27,38 @@ import org.primefaces.PrimeFaces;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
+import com.google.common.io.ByteSource;
 import com.webapp.model.Compra;
 import com.webapp.model.Conta;
+import com.webapp.model.Entrega;
+import com.webapp.model.EspelhoVenda;
+import com.webapp.model.FormaPagamento;
+import com.webapp.model.ItemEspelhoVendaPagamento;
+import com.webapp.model.ItemEspelhoVendaPagamentos;
+import com.webapp.model.ItemEspelhoVendaParcelamentos;
+import com.webapp.model.ItemEspelhoVendaProdutos;
+import com.webapp.model.ItemVenda;
 import com.webapp.model.Lancamento;
 import com.webapp.model.Log;
 import com.webapp.model.OrigemConta;
+import com.webapp.model.Pagamento;
+import com.webapp.model.PagamentoConta;
 import com.webapp.model.TipoAtividade;
 import com.webapp.model.TipoConta;
 import com.webapp.model.TipoOperacao;
 import com.webapp.model.TipoPagamento;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
+import com.webapp.report.Relatorio;
 import com.webapp.repository.Compras;
 import com.webapp.repository.Contas_;
+import com.webapp.repository.Entregas;
+import com.webapp.repository.FormasPagamentos;
+import com.webapp.repository.ItensVendas;
 import com.webapp.repository.Lancamentos;
 import com.webapp.repository.Logs;
+import com.webapp.repository.Pagamentos;
+import com.webapp.repository.PagamentosContas;
 import com.webapp.repository.Usuarios;
 import com.webapp.repository.Vendas;
 import com.webapp.util.jsf.FacesUtil;
@@ -103,6 +127,10 @@ public class ConsultaContasBean implements Serializable {
 	
 	private Number totalAPagarEmAtrasoValor;
 	
+	private Number totalPagoContasAPagarEmAtrasoValor;
+	
+	private Number totalPagoContasAReceberEmAtrasoValor;
+	
 	private Number totalAReceberEmAtrasoValor;
 	
 	
@@ -117,10 +145,46 @@ public class ConsultaContasBean implements Serializable {
 	
 	private Number totalComprasPagasHojeValor;
 	
+	//private Number totalPagamentosParcialComprasHojeValor;
+	
 	private Number totalContasPagasHojeValor;
+	
+	private Number totalPagoHojeContasAPagarEmAtrasoValor;
+	
+	private Number totalPagoHojeContasAReceberEmAtrasoValor;
 	
 	
 	private String tipoContas = "";
+	
+	@Inject
+	private Entregas entregas;
+	
+	@Inject
+	private ItensVendas itensVendas;
+	
+	@Inject
+	private Pagamentos pagamentos;
+	
+	@Inject
+	private Usuario usuarioSelecionado;
+	
+	private List<Usuario> todosUsuarios;
+	
+	@Inject
+	private PagamentoConta pagamentoConta;
+	
+	@Inject
+	private PagamentoConta pagamentoSelecionado;
+	
+	@Inject
+	private FormasPagamentos formasPagamentos;
+	
+	private List<FormaPagamento> todasFormasPagamentos = new ArrayList<FormaPagamento>();
+	
+	@Inject
+	private PagamentosContas pagamentosContas;
+	
+	private List<PagamentoConta> pagamentosAdicionados = new ArrayList<PagamentoConta>();
 	
 
 	public void inicializar() {
@@ -128,6 +192,10 @@ public class ConsultaContasBean implements Serializable {
 			// todosUsuarios = usuarios.todos();
 			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();	
 			usuario = usuarios.porLogin(user.getUsername());
+			
+			todosUsuarios = usuarios.todos(usuario.getEmpresa());
+			
+			todasFormasPagamentos = formasPagamentos.todos(usuario.getEmpresa());
 			
 			Calendar calendarStart = Calendar.getInstance();
 			calendarStart.setTime(dateStart);
@@ -137,9 +205,11 @@ public class ConsultaContasBean implements Serializable {
 			
 			totalAReceberValor = contas.totalAReceberValor(usuario.getEmpresa());
 			
-			totalAPagarEmAtrasoValor = contas.totalAPagarEmAtrasoValor(usuario.getEmpresa(), calendarStart);
+			totalPagoContasAPagarEmAtrasoValor = contas.totalPagoContasAPagarEmAtrasoValor(usuario.getEmpresa(), calendarStart);
+			totalAPagarEmAtrasoValor = (contas.totalAPagarEmAtrasoValor(usuario.getEmpresa(), calendarStart)).doubleValue() - totalPagoContasAPagarEmAtrasoValor.doubleValue();
 			
-			totalAReceberEmAtrasoValor = contas.totalAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart);
+			totalPagoContasAReceberEmAtrasoValor = contas.totalPagoContasAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart);			
+			totalAReceberEmAtrasoValor = (contas.totalAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart)).doubleValue() - totalPagoContasAReceberEmAtrasoValor.doubleValue();
 			
 			
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM");
@@ -159,11 +229,15 @@ public class ConsultaContasBean implements Serializable {
 			totalContasRecebidasHojeValor = totalReceitasPagasHojeValor.doubleValue() + totalVendasPagasHojeValor.doubleValue();
 			
 			
-			totalComprasPagasHojeValor = contas.totalComprasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
-			
+			totalComprasPagasHojeValor = contas.totalComprasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());			
 			totalDespesasPagasHojeValor = contas.totalDespesasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
 			
-			totalContasPagasHojeValor = totalDespesasPagasHojeValor.doubleValue() + totalComprasPagasHojeValor.doubleValue();
+			//totalPagamentosParcialComprasHojeValor  = contas.totalPagamentosParcialComprasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());		
+			totalPagoHojeContasAPagarEmAtrasoValor = contas.totalPagoHojeContasAPagarEmAtrasoValor(usuario.getEmpresa(), calendarStart, calendarStop);					
+			totalContasPagasHojeValor = (totalDespesasPagasHojeValor.doubleValue() + totalComprasPagasHojeValor.doubleValue()) + totalPagoHojeContasAPagarEmAtrasoValor.doubleValue();
+			
+			totalPagoHojeContasAReceberEmAtrasoValor = contas.totalPagoHojeContasAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart, calendarStop);					
+			totalContasRecebidasHojeValor = (totalVendasPagasHojeValor.doubleValue() + totalReceitasPagasHojeValor.doubleValue()) + totalPagoHojeContasAReceberEmAtrasoValor.doubleValue();
 		}
 	}
 
@@ -180,25 +254,7 @@ public class ConsultaContasBean implements Serializable {
 				contasPagas, usuario.getEmpresa());
 
 		double totalContasTemp = 0;
-		for (Conta conta : contasFiltradas) {
-			totalContasTemp += conta.getValor().doubleValue();
-			
-			if(conta.getOperacao().equals(TipoOperacao.LANCAMENTO.toString())) {
-				Lancamento lancamento = lancamentos.porNumeroLancamento(conta.getCodigoOperacao(), usuario.getEmpresa());
-				conta.setDescricao(lancamento.getDescricao());
-			}
-			
-			if(conta.getOperacao().equals(TipoOperacao.COMPRA.toString())) {
-				//Compra compra = compras.porNumeroCompra(conta.getCodigoOperacao(), usuario.getEmpresa());
-				//conta.setDescricao("Compra realizada");
-			}
-			
-			if(conta.getOperacao().equals(TipoOperacao.VENDA.toString())) {
-				Venda venda = vendas.porNumeroVenda(conta.getCodigoOperacao(), usuario.getEmpresa());
-				conta.setDescricao("Cliente: " + venda.getCliente().getNome());
-			}
-			
-		}
+		totalContasTemp = getValorTotalAndSettingDescricaoAndVendedor(totalContasTemp);
 
 		totalContas = nf.format(totalContasTemp);
 		/*
@@ -208,9 +264,77 @@ public class ConsultaContasBean implements Serializable {
 
 		contaSelecionada = null;
 	}
+
+	
+	private double getValorTotalAndSettingDescricaoAndVendedor(double totalContasTemp) {
+		for (Conta conta : contasFiltradas) {
+			totalContasTemp += conta.getValor().doubleValue();
+			
+			if(conta.getOperacao().equals(TipoOperacao.LANCAMENTO.toString())) {
+				Lancamento lancamento = lancamentos.porNumeroLancamento(conta.getCodigoOperacao(), usuario.getEmpresa());
+				conta.setDescricao(lancamento.getDescricao());
+				conta.setVendedor(lancamento.getUsuario().getNome());
+			}
+			
+			if(conta.getOperacao().equals(TipoOperacao.COMPRA.toString())) {
+				Compra compra = compras.porNumeroCompra(conta.getCodigoOperacao(), usuario.getEmpresa());
+				//conta.setDescricao("Compra realizada");
+				conta.setVendedor(compra.getUsuario().getNome());
+			}
+			
+			if(conta.getOperacao().equals(TipoOperacao.VENDA.toString())) {
+				Venda venda = vendas.porNumeroVenda(conta.getCodigoOperacao(), usuario.getEmpresa());
+				conta.setDescricao("Cliente: " + venda.getCliente().getNome());
+				conta.setVendedor(venda.getUsuario().getNome());
+			}		
+		}
+		
+		return totalContasTemp;
+	}
+	
 	
 	public void preparaDataVencimento() {
 		contaSelecionada.setVencimento(new Date());
+	}
+	
+	public void preparaPagamentoConta() {
+		
+		pagamentoConta = new PagamentoConta();
+		pagamentoConta.setValorPago(contaSelecionada.getSaldo());
+		pagamentoConta.setFormaPagamento(formasPagamentos.porNome("Dinheiro", usuario.getEmpresa()));
+		
+		if(contaSelecionada.getOperacao().equals("VENDA")) {
+			Venda venda = vendas.porNumeroVenda(contaSelecionada.getCodigoOperacao(), usuario.getEmpresa());
+			pagamentoConta.setFormaPagamento(venda.getFormaPagamento());
+		}	
+		
+		pagamentoConta.setConta(contaSelecionada);
+		
+	}
+	
+	public void visualizar() {
+		ExternalContext ec = FacesContext.getCurrentInstance()
+		        .getExternalContext();
+		try {
+			if(contaSelecionada.getOperacao().equals("VENDA")) {
+				Venda venda = vendas.porNumeroVenda(contaSelecionada.getCodigoOperacao(), usuario.getEmpresa());				
+				ec.redirect(ec.getRequestContextPath()
+			            + "/operacoes/RegistroVendas.xhtml?id=" + venda.getId());
+			}
+			if(contaSelecionada.getOperacao().equals("COMPRA")) {
+				Compra compra = compras.porNumeroCompra(contaSelecionada.getCodigoOperacao(), usuario.getEmpresa());				
+				ec.redirect(ec.getRequestContextPath()
+			            + "/operacoes/RegistroCompras.xhtml?id=" + compra.getId());
+			}
+			if(contaSelecionada.getOperacao().equals("LANCAMENTO")) {
+				Lancamento lancamento = lancamentos.porNumeroLancamento(contaSelecionada.getCodigoOperacao(), usuario.getEmpresa());				
+				ec.redirect(ec.getRequestContextPath()
+			            + "/operacoes/RegistroLancamentos.xhtml?id=" + lancamento.getId());
+			}
+		} catch (IOException e) {
+		    // TODO Auto-generated catch block
+		    e.printStackTrace();
+		}
 	}
 
 	public void pagar() {
@@ -225,27 +349,67 @@ public class ConsultaContasBean implements Serializable {
 	
 	public void realizarPagamento() {
 		
-		Conta conta = contas.porId(contaSelecionada.getId());
-
-		conta.setPagamento(contaSelecionada.getVencimento());
-		conta.setStatus(true);
-
-		Calendar calendarioTemp = Calendar.getInstance();
-		calendarioTemp.setTime(conta.getPagamento());
-
-		conta.setDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_MONTH))));
-		conta.setNomeDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_WEEK))));
-		conta.setSemana(Long.valueOf((calendarioTemp.get(Calendar.WEEK_OF_YEAR))));
-		conta.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
-		conta.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
-
-		conta = contas.save(conta);
+		if(pagamentoConta.getValorPago().doubleValue() > 0) {
+			if(pagamentoConta.getValorPago().doubleValue() == contaSelecionada.getSaldo().doubleValue()) {
+	
+				Conta conta = contas.porId(contaSelecionada.getId());
 		
+				conta.setSaldo(new BigDecimal(conta.getSaldo().doubleValue() - pagamentoConta.getValorPago().doubleValue()));
+				conta.setPagamento(pagamentoConta.getDataPagamento());
+				conta.setStatus(true);
+		
+				Calendar calendarioTemp = Calendar.getInstance();
+				calendarioTemp.setTime(conta.getPagamento());
+		
+				conta.setDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_MONTH))));
+				conta.setNomeDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_WEEK))));
+				conta.setSemana(Long.valueOf((calendarioTemp.get(Calendar.WEEK_OF_YEAR))));
+				conta.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
+				conta.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
+		
+				conta = contas.save(conta);
+							
+				pagamentosContas.save(pagamentoConta);
+							
+				RegistrarLog(conta, true);
+				
+				atualizarDadosResumoFinanceiro();
+				 
+				PrimeFaces.current().executeScript(
+						"PF('pagamento-dialog').hide();swal({ type: 'success', title: 'Concluído!', text: 'Pagamento realizado com sucesso!' });");
+				
+			} else if(pagamentoConta.getValorPago().doubleValue() < contaSelecionada.getSaldo().doubleValue()) {
+				
+				Conta conta = contas.porId(contaSelecionada.getId());				
+				conta.setSaldo(new BigDecimal(conta.getSaldo().doubleValue() - pagamentoConta.getValorPago().doubleValue()));		
+				conta = contas.save(conta);
+				
+				pagamentosContas.save(pagamentoConta);
+				
+				RegistrarLog(conta, false);
+				
+				atualizarDadosResumoFinanceiro();
+				
+				PrimeFaces.current().executeScript(
+						"PF('pagamento-dialog').hide();swal({ type: 'success', title: 'Concluído!', text: 'Pagamento realizado com sucesso!' });");
+				
+			} else {
+				PrimeFaces.current().executeScript(
+						"swal({ type: 'error', title: 'Erro!', text: 'Informe um valor menor ou igual ao saldo!', timer: 3000 });");
+			}
+		} else {
+			PrimeFaces.current().executeScript(
+					"swal({ type: 'error', title: 'Erro!', text: 'Informe um valor maior que R$ 0,00!', timer: 3000 });");
+		}
+		
+	}
+
+	private void RegistrarLog(Conta conta, boolean pagouTudo) {
 		
 		Log log = new Log();
 		log.setDataLog(new Date());
 		log.setCodigoOperacao(String.valueOf(conta.getCodigoOperacao()));
-	
+
 		
 		NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
 		
@@ -254,23 +418,27 @@ public class ConsultaContasBean implements Serializable {
 			msg = "Recebeu venda";
 			log.setOperacao(TipoAtividade.RECEBIMENTO.name());
 			
-			if(conta.getParcela().equals(TipoPagamento.AVISTA.name())) {
-				Venda venda = vendas.porNumeroVenda(conta.getCodigoOperacao(), usuario.getEmpresa());
-				venda.setVendaPaga(true);
-				venda.setConta(false);
-				vendas.save(venda);
-			}
+			if(pagouTudo) {
+				if(conta.getParcela().equals(TipoPagamento.AVISTA.name())) {
+					Venda venda = vendas.porNumeroVenda(conta.getCodigoOperacao(), usuario.getEmpresa());
+					venda.setVendaPaga(true);
+					venda.setConta(false);
+					vendas.save(venda);
+				}
+			}		
 		}
 		
 		if(conta.getOperacao().equals(TipoAtividade.COMPRA.name())) {
 			msg = "Pagou compra";
 			log.setOperacao(TipoAtividade.PAGAMENTO.name());
 			
-			if(conta.getParcela().equals(TipoPagamento.AVISTA.name())) {
-				Compra compra = compras.porNumeroCompra(conta.getCodigoOperacao(), usuario.getEmpresa());
-				compra.setCompraPaga(true);
-				compra.setConta(false);
-				compras.save(compra);
+			if(pagouTudo) {
+				if(conta.getParcela().equals(TipoPagamento.AVISTA.name())) {
+					Compra compra = compras.porNumeroCompra(conta.getCodigoOperacao(), usuario.getEmpresa());
+					compra.setCompraPaga(true);
+					compra.setConta(false);
+					compras.save(compra);
+				}
 			}
 		}
 		
@@ -284,61 +452,92 @@ public class ConsultaContasBean implements Serializable {
 			}
 		}
 		
-		log.setDescricao(msg + ", Nº " + conta.getCodigoOperacao() + ", valor total R$ " + nf.format(conta.getValor()));
+		log.setDescricao(msg + ", Nº " + conta.getCodigoOperacao() + ", valor total R$ " + nf.format(conta.getSaldo()));
 		log.setUsuario(usuario);		
 		logs.save(log);
-		
 	}
 	
 	public void pagarTelaResumoFinanceiro() {
 		
-		realizarPagamento();
+		realizarPagamento();	
+		
+	}
+
+	private void atualizarDadosResumoFinanceiro() {
 		
 		if(contaSelecionada.getTipo().equals("DEBITO")) {
-			buscarContasAPagarEmAtraso();
-			
+
 			Calendar calendarStart = Calendar.getInstance();
 			calendarStart.setTime(dateStart);
 			calendarStart = DateUtils.truncate(calendarStart, Calendar.DAY_OF_MONTH);
 			
-			//totalAPagarEmAtrasoValor = contas.totalAPagarEmAtrasoValor(usuario.getEmpresa(), calendarStart);
-			
+			//totalAPagarEmAtrasoValor = contas.totalAPagarEmAtrasoValor(usuario.getEmpresa(), calendarStart);	
 			
 			Calendar calendarStop = Calendar.getInstance();
 			calendarStop.setTime(dateStop);
 			calendarStop.add(Calendar.DAY_OF_MONTH, 1);
-			calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);				
+			calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);	
 			
-			totalComprasPagasHojeValor = contas.totalComprasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
+			if(tipoContas.equals("Contas à pagar em atraso")) {	
+				buscarContasAPagarEmAtraso();
+				
+			}else if(tipoContas.equals("Contas pagas Hoje " + hoje)) {	
+				buscarContasPagasHoje();
+				totalPagoContasAPagarEmAtrasoValor = contas.totalPagoContasAPagarEmAtrasoValor(usuario.getEmpresa(), calendarStart);
+				totalAPagarEmAtrasoValor = (contas.totalAPagarEmAtrasoValor(usuario.getEmpresa(), calendarStart)).doubleValue() - totalPagoContasAPagarEmAtrasoValor.doubleValue();				
 			
+			} else if(tipoContas.equals("Total contas à pagar")) {
+				buscarContasAPagar();
+				totalPagoContasAReceberEmAtrasoValor = contas.totalPagoContasAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart);
+				totalAReceberEmAtrasoValor = (contas.totalAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart)).doubleValue() - totalPagoContasAReceberEmAtrasoValor.doubleValue();	
+			
+				totalPagoContasAPagarEmAtrasoValor = contas.totalPagoContasAPagarEmAtrasoValor(usuario.getEmpresa(), calendarStart);
+				totalAPagarEmAtrasoValor = (contas.totalAPagarEmAtrasoValor(usuario.getEmpresa(), calendarStart)).doubleValue() - totalPagoContasAPagarEmAtrasoValor.doubleValue();			
+			}
+			
+			totalComprasPagasHojeValor = contas.totalComprasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());								
 			totalDespesasPagasHojeValor = contas.totalDespesasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
 			
-			totalContasPagasHojeValor = totalDespesasPagasHojeValor.doubleValue() + totalComprasPagasHojeValor.doubleValue();
+			//totalPagamentosParcialComprasHojeValor  = contas.totalPagamentosParcialComprasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
+			totalPagoHojeContasAPagarEmAtrasoValor = contas.totalPagoHojeContasAPagarEmAtrasoValor(usuario.getEmpresa(), calendarStart, calendarStop);					
+			totalContasPagasHojeValor = (totalDespesasPagasHojeValor.doubleValue() + totalComprasPagasHojeValor.doubleValue()) + totalPagoHojeContasAPagarEmAtrasoValor.doubleValue();
 			
 		} else if(contaSelecionada.getTipo().equals("CREDITO")) {
-			buscarContasAReceberEmAtraso();
 			
 			Calendar calendarStart = Calendar.getInstance();
 			calendarStart.setTime(dateStart);
 			calendarStart = DateUtils.truncate(calendarStart, Calendar.DAY_OF_MONTH);
 			
-			totalAReceberEmAtrasoValor = contas.totalAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart);
-			
-			
 			Calendar calendarStop = Calendar.getInstance();
 			calendarStop.setTime(dateStop);
 			calendarStop.add(Calendar.DAY_OF_MONTH, 1);
-			calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);
-					
-			totalVendasPagasHojeValor = contas.totalVendasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
+			calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);	
 			
+			if(tipoContas.equals("Contas à receber em atraso")) {	
+				buscarContasAReceberEmAtraso();
+				
+			} else if(tipoContas.equals("Contas recebidas Hoje " + hoje)) {	
+				buscarContasRecebidasHoje();				
+				totalPagoContasAReceberEmAtrasoValor = contas.totalPagoContasAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart);
+				totalAReceberEmAtrasoValor = (contas.totalAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart)).doubleValue() - totalPagoContasAReceberEmAtrasoValor.doubleValue();	
+			
+			} else if(tipoContas.equals("Total contas à receber")) {
+				buscarContasAReceber();
+				totalPagoContasAReceberEmAtrasoValor = contas.totalPagoContasAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart);
+				totalAReceberEmAtrasoValor = (contas.totalAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart)).doubleValue() - totalPagoContasAReceberEmAtrasoValor.doubleValue();	
+			
+				totalPagoContasAPagarEmAtrasoValor = contas.totalPagoContasAPagarEmAtrasoValor(usuario.getEmpresa(), calendarStart);
+				totalAPagarEmAtrasoValor = (contas.totalAPagarEmAtrasoValor(usuario.getEmpresa(), calendarStart)).doubleValue() - totalPagoContasAPagarEmAtrasoValor.doubleValue();			
+			}
+			
+					
+			totalVendasPagasHojeValor = contas.totalVendasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());			
 			totalReceitasPagasHojeValor = contas.totalReceitasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());			
 			
-			totalContasRecebidasHojeValor = totalReceitasPagasHojeValor.doubleValue() + totalVendasPagasHojeValor.doubleValue();
-		}
+			totalPagoHojeContasAReceberEmAtrasoValor = contas.totalPagoHojeContasAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart, calendarStop);					
+			totalContasRecebidasHojeValor = totalReceitasPagasHojeValor.doubleValue() + totalVendasPagasHojeValor.doubleValue() + totalPagoHojeContasAReceberEmAtrasoValor.doubleValue();
 		
-		PrimeFaces.current().executeScript(
-				"swal({ type: 'success', title: 'Concluído!', text: 'Pagamento realizado com sucesso!' });");
+		}
 	}
 
 	public void estornar() {
@@ -354,20 +553,33 @@ public class ConsultaContasBean implements Serializable {
 	
 	public void realizarEstorno() {
 		
-		contaSelecionada.setPagamento(null);
-		contaSelecionada.setStatus(false);
-
-		Calendar calendarioTemp = Calendar.getInstance();
-		calendarioTemp.setTime(contaSelecionada.getVencimento());
-
-		contaSelecionada.setDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_MONTH))));
-		contaSelecionada.setNomeDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_WEEK))));
-		contaSelecionada.setSemana(Long.valueOf((calendarioTemp.get(Calendar.WEEK_OF_YEAR))));
-		contaSelecionada.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
-		contaSelecionada.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
-
-		contas.save(contaSelecionada);
+		pagamentosAdicionados.remove(pagamentoSelecionado);
+		pagamentosContas.remove(pagamentoSelecionado);
 		
+		if(pagamentosAdicionados.size() == 0) {
+			
+			contaSelecionada.setSaldo(contaSelecionada.getValor());
+			contaSelecionada.setPagamento(null);
+			contaSelecionada.setStatus(false);
+
+			Calendar calendarioTemp = Calendar.getInstance();
+			calendarioTemp.setTime(contaSelecionada.getVencimento());
+
+			contaSelecionada.setDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_MONTH))));
+			contaSelecionada.setNomeDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_WEEK))));
+			contaSelecionada.setSemana(Long.valueOf((calendarioTemp.get(Calendar.WEEK_OF_YEAR))));
+			contaSelecionada.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
+			contaSelecionada.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
+
+			contas.save(contaSelecionada);
+		} else {
+			
+			contaSelecionada.setPagamento(null);
+			contaSelecionada.setStatus(false);
+			
+			contaSelecionada.setSaldo(new BigDecimal(contaSelecionada.getSaldo().doubleValue() + pagamentoSelecionado.getValorPago().doubleValue()));
+			contas.save(contaSelecionada);			
+		}
 		
 		Log log = new Log();
 		log.setDataLog(new Date());
@@ -381,11 +593,13 @@ public class ConsultaContasBean implements Serializable {
 			msg = "Desfez Recebimento, venda Nº ";
 			log.setOperacao(TipoAtividade.RECEBIMENTO.name());
 			
-			if(contaSelecionada.getParcela().equals(TipoPagamento.AVISTA.name())) {
-				Venda venda = vendas.porNumeroVenda(contaSelecionada.getCodigoOperacao(), usuario.getEmpresa());
-				venda.setVendaPaga(false);
-				venda.setConta(true);
-				vendas.save(venda);
+			if(pagamentosAdicionados.size() == 0) {
+				if(contaSelecionada.getParcela().equals(TipoPagamento.AVISTA.name())) {
+					Venda venda = vendas.porNumeroVenda(contaSelecionada.getCodigoOperacao(), usuario.getEmpresa());
+					venda.setVendaPaga(false);
+					venda.setConta(true);
+					vendas.save(venda);
+				}
 			}
 		}
 		
@@ -393,11 +607,13 @@ public class ConsultaContasBean implements Serializable {
 			msg = "Desfez Pagamento, compra Nº ";
 			log.setOperacao(TipoAtividade.PAGAMENTO.name());
 			
-			if(contaSelecionada.getParcela().equals(TipoPagamento.AVISTA.name())) {
-				Compra compra = compras.porNumeroCompra(contaSelecionada.getCodigoOperacao(), usuario.getEmpresa());
-				compra.setCompraPaga(false);
-				compra.setConta(true);
-				compras.save(compra);
+			if(pagamentosAdicionados.size() == 0) {
+				if(contaSelecionada.getParcela().equals(TipoPagamento.AVISTA.name())) {
+					Compra compra = compras.porNumeroCompra(contaSelecionada.getCodigoOperacao(), usuario.getEmpresa());
+					compra.setCompraPaga(false);
+					compra.setConta(true);
+					compras.save(compra);
+				}
 			}
 		}
 		
@@ -411,9 +627,12 @@ public class ConsultaContasBean implements Serializable {
 			}
 		}
 		
-		log.setDescricao(msg + contaSelecionada.getCodigoOperacao() + ", valor total R$ " + nf.format(contaSelecionada.getValor()));
+		log.setDescricao(msg + contaSelecionada.getCodigoOperacao() + ", valor total R$ " + nf.format(pagamentoSelecionado.getValorPago()));
 		log.setUsuario(usuario);		
 		logs.save(log);
+		
+		contaSelecionada.setSaldo(new BigDecimal(contaSelecionada.getSaldo().doubleValue() + pagamentoSelecionado.getValorPago().doubleValue()));
+		pagamentoSelecionado = null;
 	}
 	
 	public void estornarTelaResumoFinanceiro() {
@@ -427,7 +646,8 @@ public class ConsultaContasBean implements Serializable {
 			calendarStart.setTime(dateStart);
 			calendarStart = DateUtils.truncate(calendarStart, Calendar.DAY_OF_MONTH);
 			
-			totalAPagarEmAtrasoValor = contas.totalAPagarEmAtrasoValor(usuario.getEmpresa(), calendarStart);
+			totalPagoContasAPagarEmAtrasoValor = contas.totalPagoContasAPagarEmAtrasoValor(usuario.getEmpresa(), calendarStart);
+			totalAPagarEmAtrasoValor = (contas.totalAPagarEmAtrasoValor(usuario.getEmpresa(), calendarStart)).doubleValue() - totalPagoContasAPagarEmAtrasoValor.doubleValue();
 			
 		} else if(contaSelecionada.getTipo().equals("CREDITO")) {
 			buscarContasRecebidasHoje();
@@ -436,11 +656,12 @@ public class ConsultaContasBean implements Serializable {
 			calendarStart.setTime(dateStart);
 			calendarStart = DateUtils.truncate(calendarStart, Calendar.DAY_OF_MONTH);
 			
-			totalAReceberEmAtrasoValor = contas.totalAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart);
+			totalPagoContasAReceberEmAtrasoValor = contas.totalPagoContasAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart);
+			totalAReceberEmAtrasoValor = (contas.totalAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart)).doubleValue() - totalPagoContasAReceberEmAtrasoValor.doubleValue();
 		}
 		
 		PrimeFaces.current().executeScript(
-				"swal({ type: 'success', title: 'Concluído!', text: 'Pagamento estornado com sucesso!' });");
+				"PF('pagamentos-dialog').hide();swal({ type: 'success', title: 'Concluído!', text: 'Pagamento estornado com sucesso!' });");
 
 	}
 
@@ -591,9 +812,10 @@ public class ConsultaContasBean implements Serializable {
 		calendarStart.setTime(dateStart);
 		calendarStart = DateUtils.truncate(calendarStart, Calendar.DAY_OF_MONTH);
 		
-		contasFiltradas = contas.contasAPagarEmAtraso(usuario.getEmpresa(), calendarStart);
+		contasFiltradas = contas.contasAPagarEmAtraso(usuario.getEmpresa(), calendarStart);		
 		
-		for (Conta conta : contasFiltradas) {
+		getValorTotalAndSettingDescricaoAndVendedor(0);
+		/*for (Conta conta : contasFiltradas) {
 			
 			if(conta.getOperacao().equals(TipoOperacao.LANCAMENTO.toString())) {
 				Lancamento lancamento = lancamentos.porNumeroLancamento(conta.getCodigoOperacao(), usuario.getEmpresa());
@@ -609,15 +831,17 @@ public class ConsultaContasBean implements Serializable {
 				Venda venda = vendas.porNumeroVenda(conta.getCodigoOperacao(), usuario.getEmpresa());
 				conta.setDescricao("Cliente: " + venda.getCliente().getNome());
 			}
-			
-		}
+		}*/
 		
-		totalAPagarEmAtrasoValor = contas.totalAPagarEmAtrasoValor(usuario.getEmpresa(), calendarStart);
+		totalPagoContasAPagarEmAtrasoValor = contas.totalPagoContasAPagarEmAtrasoValor(usuario.getEmpresa(), calendarStart);
+		totalAPagarEmAtrasoValor = (contas.totalAPagarEmAtrasoValor(usuario.getEmpresa(), calendarStart)).doubleValue() - totalPagoContasAPagarEmAtrasoValor.doubleValue();
 		totalContas = nf.format(totalAPagarEmAtrasoValor);
 		
 		totalAPagarValor = contas.totalAPagarValor(usuario.getEmpresa());
 		
 		contaSelecionada = null;
+		
+		usuarioSelecionado = null;
 	}
 	
 	public void buscarContasAReceberEmAtraso() {
@@ -629,6 +853,8 @@ public class ConsultaContasBean implements Serializable {
 		
 		contasFiltradas = contas.contasAReceberEmAtraso(usuario.getEmpresa(), calendarStart);
 		
+		getValorTotalAndSettingDescricaoAndVendedor(0);
+		/*
 		for (Conta conta : contasFiltradas) {
 			
 			if(conta.getOperacao().equals(TipoOperacao.LANCAMENTO.toString())) {
@@ -644,18 +870,22 @@ public class ConsultaContasBean implements Serializable {
 			if(conta.getOperacao().equals(TipoOperacao.VENDA.toString())) {
 				Venda venda = vendas.porNumeroVenda(conta.getCodigoOperacao(), usuario.getEmpresa());
 				conta.setDescricao("Cliente: " + venda.getCliente().getNome());
-			}
-			
-		}
+			}		
+		}*/
 		
-		totalAReceberEmAtrasoValor = contas.totalAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart);
+		totalPagoContasAReceberEmAtrasoValor = contas.totalPagoContasAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart);
+		totalAReceberEmAtrasoValor = (contas.totalAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart)).doubleValue() - totalPagoContasAReceberEmAtrasoValor.doubleValue();
 		totalContas = nf.format(totalAReceberEmAtrasoValor);
 		
 		totalAReceberValor = contas.totalAReceberValor(usuario.getEmpresa());
 		
 		contaSelecionada = null;
+		
+		usuarioSelecionado = null;
+
 	}
 	
+
 	public void buscarContasRecebidasHoje() {
 		tipoContas = "Contas recebidas Hoje " + hoje;
 				
@@ -669,15 +899,26 @@ public class ConsultaContasBean implements Serializable {
 		calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);
 		
 		
-		totalVendasPagasHojeValor = contas.totalVendasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
-		
+		totalVendasPagasHojeValor = contas.totalVendasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());	
 		totalReceitasPagasHojeValor = contas.totalReceitasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());			
 		
-		totalContasRecebidasHojeValor = totalReceitasPagasHojeValor.doubleValue() + totalVendasPagasHojeValor.doubleValue();
-			
-			
+		totalPagoHojeContasAReceberEmAtrasoValor = contas.totalPagoHojeContasAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart, calendarStop);						
+		totalContasRecebidasHojeValor = totalReceitasPagasHojeValor.doubleValue() + totalVendasPagasHojeValor.doubleValue() + totalPagoHojeContasAReceberEmAtrasoValor.doubleValue();
+						
+		contasFiltradas = new ArrayList<Conta>();
 		contasFiltradas = contas.contasRecebidasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
 		
+		List<PagamentoConta> listaPagamentosHeoje = contas.pagamentosHojeContasAReceber(usuario.getEmpresa(), calendarStart, calendarStop);
+		for (PagamentoConta pagamentoConta : listaPagamentosHeoje) {
+			Conta conta = pagamentoConta.getConta();
+			
+			if(!contasFiltradas.contains(conta)) {
+				contasFiltradas.add(conta);
+			}
+		}
+		
+		getValorTotalAndSettingDescricaoAndVendedor(0);
+		/*
 		for (Conta conta : contasFiltradas) {
 			
 			if(conta.getOperacao().equals(TipoOperacao.LANCAMENTO.toString())) {
@@ -693,15 +934,51 @@ public class ConsultaContasBean implements Serializable {
 			if(conta.getOperacao().equals(TipoOperacao.VENDA.toString())) {
 				Venda venda = vendas.porNumeroVenda(conta.getCodigoOperacao(), usuario.getEmpresa());
 				conta.setDescricao("Cliente: " + venda.getCliente().getNome());
-			}
-			
+			}		
 		}
+		*/
 		
 		totalContas = nf.format(totalContasRecebidasHojeValor);
 		
 		totalAReceberValor = contas.totalAReceberValor(usuario.getEmpresa());
 					
 		contaSelecionada = null;
+		
+		usuarioSelecionado = null;
+		
+	}
+	
+	
+	public void buscarContasAReceber() {
+		tipoContas = "Total contas à receber";
+	
+		contasFiltradas = contas.contasAReceber(usuario.getEmpresa());
+		
+		getValorTotalAndSettingDescricaoAndVendedor(0);
+		
+		totalAReceberValor = contas.totalAReceberValor(usuario.getEmpresa());
+		
+		totalContas = nf.format(totalAReceberValor);
+					
+		contaSelecionada = null;
+		
+		usuarioSelecionado = null;
+	}
+	
+	public void buscarContasAPagar() {
+		tipoContas = "Total contas à pagar";
+	
+		contasFiltradas = contas.contasAPagar(usuario.getEmpresa());
+		
+		getValorTotalAndSettingDescricaoAndVendedor(0);
+		
+		totalAPagarValor = contas.totalAPagarValor(usuario.getEmpresa());
+		
+		totalContas = nf.format(totalAPagarValor);
+					
+		contaSelecionada = null;
+		
+		usuarioSelecionado = null;
 	}
 	
 	
@@ -718,15 +995,30 @@ public class ConsultaContasBean implements Serializable {
 		calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);
 		
 		
-		totalComprasPagasHojeValor = contas.totalComprasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
-		
+		totalComprasPagasHojeValor = contas.totalComprasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());		
 		totalDespesasPagasHojeValor = contas.totalDespesasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
 		
-		totalContasPagasHojeValor = totalDespesasPagasHojeValor.doubleValue() + totalComprasPagasHojeValor.doubleValue();
 		
-			
+		totalPagoHojeContasAPagarEmAtrasoValor = contas.totalPagoHojeContasAPagarEmAtrasoValor(usuario.getEmpresa(), calendarStart, calendarStop);		
+		
+		totalContasPagasHojeValor = totalDespesasPagasHojeValor.doubleValue() + totalComprasPagasHojeValor.doubleValue() + totalPagoHojeContasAPagarEmAtrasoValor.doubleValue();
+		
+		contasFiltradas = new ArrayList<Conta>();
 		contasFiltradas = contas.contasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
 		
+		List<PagamentoConta> listaPagamentosHeoje = contas.pagamentosHojeContasAPagar(usuario.getEmpresa(), calendarStart, calendarStop);
+		for (PagamentoConta pagamentoConta : listaPagamentosHeoje) {
+			Conta conta = pagamentoConta.getConta();
+			
+			if(!contasFiltradas.contains(conta)) {
+				contasFiltradas.add(conta);
+			}
+		}
+		
+		//contasFiltradas = contas.contasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
+		
+		getValorTotalAndSettingDescricaoAndVendedor(0);
+		/*
 		for (Conta conta : contasFiltradas) {
 			
 			if(conta.getOperacao().equals(TipoOperacao.LANCAMENTO.toString())) {
@@ -742,15 +1034,442 @@ public class ConsultaContasBean implements Serializable {
 			if(conta.getOperacao().equals(TipoOperacao.VENDA.toString())) {
 				Venda venda = vendas.porNumeroVenda(conta.getCodigoOperacao(), usuario.getEmpresa());
 				conta.setDescricao("Cliente: " + venda.getCliente().getNome());
-			}
-			
+			}			
 		}
+		*/
 		
 		totalContas = nf.format(totalContasPagasHojeValor);
 		
 		totalAPagarValor = contas.totalAPagarValor(usuario.getEmpresa());
 					
 		contaSelecionada = null;
+		
+		usuarioSelecionado = null;
+	}
+	
+
+	public Usuario getUsuarioSelecionado() {
+		return usuarioSelecionado;
+	}
+
+	public void setUsuarioSelecionado(Usuario usuarioSelecionado) {
+		this.usuarioSelecionado = usuarioSelecionado;
+	}
+
+	public List<Usuario> getTodosUsuarios() {
+		return todosUsuarios;
+	}
+
+	public void emitirPedido() {
+
+		Venda vendaSelecionada = vendas.porNumeroVenda(contaSelecionada.getCodigoOperacao(), usuario.getEmpresa());
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+		EspelhoVenda pedido = new EspelhoVenda();
+		pedido.setVendaNum(vendaSelecionada.getNumeroVenda() + "");
+		pedido.setTipoVenda(vendaSelecionada.getTipoVenda().getDescricao().toUpperCase());
+		pedido.setBairro(vendaSelecionada.getBairro().getNome().toUpperCase());
+		pedido.setDataVenda(sdf.format(vendaSelecionada.getDataVenda()));
+		
+		String vendedor = vendaSelecionada.getUsuario().getNome().split(" ")[0].toUpperCase();
+		pedido.setVendedor(vendedor);
+		
+		if(vendaSelecionada.getCliente().getNome().toUpperCase().equals("NAO INFORMADO") || vendaSelecionada.getCliente().getNome().toUpperCase().equals("NÃO INFORMADO")) {
+			Entrega entrega = entregas.porVenda(vendaSelecionada);
+			if (entrega != null) {
+				if(!vendaSelecionada.getBairro().getNome().toUpperCase().equals("NAO INFORMADO") && !vendaSelecionada.getBairro().getNome().toUpperCase().equals("NÃO INFORMADO")) {
+					if(entrega.getNome() == null || entrega.getNome() != null && entrega.getNome().equals("")) {
+						pedido.setCliente("Não Informado");
+					} else {
+						pedido.setCliente(entrega.getNome());
+					}
+					
+					pedido.setEnderecoCliente(entrega.getLocalizacao() != null ? entrega.getLocalizacao() : "");
+					//implementar observação/contato
+					pedido.setTelefone(entrega.getContato() != null ? entrega.getContato() : "");
+					
+				} else {
+					pedido.setCliente("Não Informado");
+					pedido.setEnderecoCliente("");
+					//implementar observação/contato
+					pedido.setTelefone("");
+				}						
+			} else {
+				pedido.setCliente("Não Informado");
+				pedido.setEnderecoCliente("");	
+				pedido.setTelefone("");
+			}
+			
+			pedido.setCpfCnpj("");			
+			pedido.setCodigoCliente("");
+			pedido.setBairroCliente(vendaSelecionada.getBairro().getNome());
+			
+		} else {
+			if(vendaSelecionada.getBairro().getNome().toUpperCase().equals("NAO INFORMADO") || vendaSelecionada.getBairro().getNome().toUpperCase().equals("NÃO INFORMADO")) {
+				pedido.setCliente(vendaSelecionada.getCliente().getNome());
+				pedido.setCpfCnpj(vendaSelecionada.getCliente().getDocumento());
+				pedido.setTelefone(vendaSelecionada.getCliente().getContato());
+				pedido.setCodigoCliente(String.valueOf(vendaSelecionada.getCliente().getId().longValue()));
+				pedido.setEnderecoCliente(vendaSelecionada.getCliente().getEndereco());
+				pedido.setBairroCliente(vendaSelecionada.getCliente().getBairro().getNome());
+			} else {
+				Entrega entrega = entregas.porVenda(vendaSelecionada);
+				if (entrega != null) {
+					if(entrega.getNome() == null || entrega.getNome() != null && entrega.getNome().equals("")) {
+						pedido.setCliente(vendaSelecionada.getCliente().getNome());
+					} else {
+						pedido.setCliente(entrega.getNome());
+					}
+					
+					pedido.setEnderecoCliente(entrega.getLocalizacao() != null ? entrega.getLocalizacao() : "");
+					
+					//implementar observação/contato
+					if(entrega.getContato() == null || entrega.getContato() != null && entrega.getContato().equals("")) {
+						pedido.setTelefone(vendaSelecionada.getCliente().getContato());
+					} else {
+						pedido.setTelefone(entrega.getContato());
+					}
+				}
+								
+				pedido.setCpfCnpj(vendaSelecionada.getCliente().getDocumento());
+				pedido.setCodigoCliente(String.valueOf(vendaSelecionada.getCliente().getId().longValue()));
+				pedido.setBairroCliente(vendaSelecionada.getBairro().getNome());
+			}
+		}
+
+		/*
+		Entrega entrega = entregas.porVenda(vendaSelecionada);
+		if (entrega != null) {
+			pedido.setResponsavel(entrega.getNome());
+			pedido.setLocalizacao(entrega.getLocalizacao());
+			pedido.setObservacao(entrega.getObservacao());
+			pedido.setTelefone(entrega.getContato());
+			
+			if(entrega.getStatus() == StatusPedido.ENTREGUE.name()) {
+				pedido.setEntrega("Y");
+			}
+		}*/
+		
+		NumberFormat nf_ = new DecimalFormat("###,##0.000", REAL);
+		NumberFormat nf__ = new DecimalFormat("###,##0", REAL);
+		
+		List<ItemVenda> itensVenda = itensVendas.porVenda(vendaSelecionada);
+		for (ItemVenda itemVenda : itensVenda) {
+			
+			ItemEspelhoVendaProdutos itemPedido = new ItemEspelhoVendaProdutos();
+			itemPedido.setCodigo(itemVenda.getProduto().getCodigo());
+			itemPedido.setDescricao(itemVenda.getProduto().getDescricao().trim());
+			itemPedido.setValorUnitario(nf.format(itemVenda.getValorUnitario().doubleValue()));
+			
+			String quantidade = "0";
+			if(itemVenda.getProduto().getUnidadeMedida().equals("Kg") || itemVenda.getProduto().getUnidadeMedida().equals("Lt"))  {
+				quantidade = nf_.format(itemVenda.getQuantidade().doubleValue());
+			} else {
+				quantidade = nf__.format(itemVenda.getQuantidade());
+			}
+			
+			itemPedido.setQuantidade(quantidade);
+			
+			itemPedido.setUN(itemVenda.getProduto().getUnidadeMedida());
+			itemPedido.setSubTotal(nf.format(itemVenda.getTotal()));
+			
+			pedido.getItensPedidos().add(itemPedido);
+		}
+		
+		Double troco = 0D;
+		List<Pagamento> listaPagamentos = pagamentos.todosPorVenda(vendaSelecionada, usuario.getEmpresa());
+		for (Pagamento pagamento : listaPagamentos) {
+			
+			troco += pagamento.getTroco().doubleValue();
+				
+			ItemEspelhoVendaPagamentos pagamentosPedido = new ItemEspelhoVendaPagamentos();
+			pagamentosPedido.setFormaPagamento(pagamento.getFormaPagamento().getNome());
+			pagamentosPedido.setValor(nf.format(pagamento.getValor().doubleValue()));
+			
+			pedido.getItensPagamentos().add(pagamentosPedido);
+			
+		}
+		
+		pedido.setConta(false);
+		List<Conta> listaDeContas = contas.porCodigoOperacao(vendaSelecionada.getNumeroVenda(), "VENDA", usuario.getEmpresa());
+		if(listaDeContas.size() > 0) {
+			pedido.setConta(true);
+		}
+		
+		if(listaPagamentos.size() == 0) {
+			
+			if(pedido.getConta() && vendaSelecionada.getTipoPagamento() == TipoPagamento.AVISTA) {
+				List<Conta> listaContas = contas.porCodigoOperacao(vendaSelecionada.getNumeroVenda(), "VENDA", usuario.getEmpresa());
+				
+				Optional<Conta> conta = listaContas.stream().findFirst();
+				
+				ItemEspelhoVendaPagamento pagamentosPedido = new ItemEspelhoVendaPagamento();
+				pagamentosPedido.setValorPagar(nf.format(conta.get().getValor().doubleValue()));
+				pagamentosPedido.setVencimento(sdf.format(conta.get().getVencimento()));
+				
+				pedido.getItensPagamento().add(pagamentosPedido);
+				
+			} else if(pedido.getConta() && vendaSelecionada.getTipoPagamento() == TipoPagamento.PARCELADO) {
+				List<Conta> listaContas = contas.porCodigoOperacao(vendaSelecionada.getNumeroVenda(), "VENDA", usuario.getEmpresa());
+				
+				listaContas.forEach(f -> {
+					ItemEspelhoVendaParcelamentos parcelamentosPedido = new ItemEspelhoVendaParcelamentos();
+					parcelamentosPedido.setParcela(f.getParcela());
+					parcelamentosPedido.setValor(nf.format(f.getValor().doubleValue()));
+					parcelamentosPedido.setVencimento(sdf.format(f.getVencimento()));
+					
+					if(f.getParcela().equals("Entrada")) { parcelamentosPedido.setStatus("✓"); }
+		            
+		            pedido.getItensParcelamentos().add(parcelamentosPedido);
+		        });
+				
+			}
+		}	
+		
+		pedido.setTipoPagamento(vendaSelecionada.getTipoPagamento().name());
+				
+		pedido.setTroco(nf.format(troco.doubleValue()));
+		
+		if(usuario.getEmpresa().getLogoRelatorio() != null) {
+			
+			InputStream targetStream;
+			try {
+				targetStream = ByteSource.wrap(usuario.getEmpresa().getLogoRelatorio()).openStream();
+				pedido.setLogo(targetStream);
+				
+			} catch (IOException e1) {
+			}	
+		}
+		
+		pedido.setxNome(usuario.getEmpresa().getNome() != null ? usuario.getEmpresa().getNome() : "");
+		pedido.setCNPJ(usuario.getEmpresa().getCnpj() != null ? usuario.getEmpresa().getCnpj() : "");
+		pedido.setxLgr(usuario.getEmpresa().getEndereco() != null ? usuario.getEmpresa().getEndereco().trim() : "");
+		pedido.setNro(usuario.getEmpresa().getNumero() != null ? usuario.getEmpresa().getNumero().trim() : "");
+		pedido.setxBairro(usuario.getEmpresa().getBairro() != null ? usuario.getEmpresa().getBairro().trim() : "");
+		pedido.setxMun(usuario.getEmpresa().getCidade() != null ? usuario.getEmpresa().getCidade() : "");
+		pedido.setUF(usuario.getEmpresa().getUf() != null ? usuario.getEmpresa().getUf() : "");
+		pedido.setContato(usuario.getEmpresa().getContato() != null ? usuario.getEmpresa().getContato() : "");
+		
+		pedido.setObservacoes(vendaSelecionada.getObservacao());
+		
+		pedido.setTotalVenda(nf.format(new BigDecimal(vendaSelecionada.getValorTotal().doubleValue()- vendaSelecionada.getDesconto().doubleValue())));
+		
+		pedido.setFrete(nf.format(vendaSelecionada.getTaxaDeEntrega()));
+		
+		if(vendaSelecionada.getDesconto() != null) {
+			//aleteração do subtotal para somar com a taxa de entrega
+			pedido.setSubTotal(nf.format(vendaSelecionada.getValorTotal().doubleValue()/* - vendaSelecionada.getTaxaDeEntrega().doubleValue()*/));
+			pedido.setDesconto(nf.format(vendaSelecionada.getDesconto()));
+		} else {
+			pedido.setSubTotal(nf.format(vendaSelecionada.getValorTotal().doubleValue()/* - vendaSelecionada.getTaxaDeEntrega().doubleValue()*/));
+		}
+
+		List<EspelhoVenda> pedidos = new ArrayList<>();
+		pedidos.add(pedido);
+
+		Relatorio<EspelhoVenda> report = new Relatorio<EspelhoVenda>();
+		try {
+			
+			String path = "";
+			if(vendaSelecionada.getEmpresa().getId().equals(7111L)) {
+				path = "/relatorios/decore-vendas_RECIBO_DECORE.jasper";
+			} else {
+				path = "/relatorios/decore-vendas_RECIBO_OURO_DA_AMAZONIA.jasper";
+			}
+			
+			report.getRelatorio_(pedidos, "Venda-N" + vendaSelecionada.getNumeroVenda().longValue(), path);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void filtrarContasPorUsuario() {
+		 
+		Calendar calendarStart = Calendar.getInstance();
+		calendarStart.setTime(dateStart);
+		calendarStart = DateUtils.truncate(calendarStart, Calendar.DAY_OF_MONTH);
+		
+		Calendar calendarStop = Calendar.getInstance();
+		calendarStop.setTime(dateStop);
+		calendarStop.add(Calendar.DAY_OF_MONTH, 1);
+		calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);
+		
+		double totalContasTemp = 0;
+		this.contasFiltradas = new ArrayList<Conta>();
+		
+		List<Conta> contasFiltradas = new ArrayList<Conta>();
+		
+		if(tipoContas.equals("Contas à pagar em atraso")) {	
+			contasFiltradas = contas.contasAPagarEmAtraso(usuario.getEmpresa(), calendarStart);	
+			
+		} else if(tipoContas.equals("Contas pagas Hoje " + hoje)) {					
+			contasFiltradas = contas.contasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
+			
+			List<PagamentoConta> listaPagamentosHeoje = contas.pagamentosHojeContasAPagar(usuario.getEmpresa(), calendarStart, calendarStop);
+			for (PagamentoConta pagamentoConta : listaPagamentosHeoje) {
+				Conta conta = pagamentoConta.getConta();
+				
+				if(!contasFiltradas.contains(conta)) {
+					contasFiltradas.add(conta);
+				}
+			}
+		}
+		
+		if(tipoContas.equals("Contas à receber em atraso")) {	
+			contasFiltradas = contas.contasAReceberEmAtraso(usuario.getEmpresa(), calendarStart);	
+			
+		} else if(tipoContas.equals("Contas recebidas Hoje " + hoje)) {					
+			contasFiltradas = contas.contasRecebidasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
+			
+			List<PagamentoConta> listaPagamentosHeoje = contas.pagamentosHojeContasAReceber(usuario.getEmpresa(), calendarStart, calendarStop);
+			for (PagamentoConta pagamentoConta : listaPagamentosHeoje) {
+				Conta conta = pagamentoConta.getConta();
+				
+				if(!contasFiltradas.contains(conta)) {
+					contasFiltradas.add(conta);
+				}
+			}
+		}
+		
+		
+		if(tipoContas.equals("Total contas à receber")) {	
+			contasFiltradas = contas.contasAReceber(usuario.getEmpresa());
+		}
+		
+		if(tipoContas.equals("Total contas à pagar")) {	
+			contasFiltradas = contas.contasAPagar(usuario.getEmpresa());
+		}
+		
+		
+		
+		for (Conta conta : contasFiltradas) {				
+			
+			if(conta.getOperacao().equals(TipoOperacao.LANCAMENTO.toString())) {
+				Lancamento lancamento = lancamentos.porNumeroLancamento(conta.getCodigoOperacao(), usuario.getEmpresa());
+				conta.setDescricao(lancamento.getDescricao());
+				conta.setVendedor(lancamento.getUsuario().getNome());
+			}
+			
+			if(conta.getOperacao().equals(TipoOperacao.COMPRA.toString())) {
+				Compra compra = compras.porNumeroCompra(conta.getCodigoOperacao(), usuario.getEmpresa());
+				//conta.setDescricao("Compra realizada");
+				conta.setVendedor(compra.getUsuario().getNome());
+			}
+			
+			if(conta.getOperacao().equals(TipoOperacao.VENDA.toString())) {
+				Venda venda = vendas.porNumeroVenda(conta.getCodigoOperacao(), usuario.getEmpresa());
+				conta.setDescricao("Cliente: " + venda.getCliente().getNome());
+				conta.setVendedor(venda.getUsuario().getNome());
+			}
+			
+			if(usuarioSelecionado == null) {
+				this.contasFiltradas.add(conta);
+				
+				if(tipoContas.equals("Contas à pagar em atraso") || tipoContas.equals("Contas à receber em atraso") || tipoContas.equals("Total contas à receber") || tipoContas.equals("Total contas à pagar")) {	
+					totalContasTemp += conta.getSaldo().doubleValue();
+					
+				}else if(tipoContas.equals("Contas pagas Hoje " + hoje) || tipoContas.equals("Contas recebidas Hoje " + hoje)) {	
+					totalContasTemp += pagamentosContas.totalPagoPorContaHoje(conta, usuario.getEmpresa(), calendarStart, calendarStop).doubleValue();
+				}
+				
+			} else {
+				if(conta.getOperacao().equals(TipoOperacao.LANCAMENTO.toString())) {
+					Lancamento lancamento = lancamentos.porNumeroLancamento(conta.getCodigoOperacao(), usuario.getEmpresa());
+					if(usuarioSelecionado.getId() == lancamento.getUsuario().getId()) {
+						this.contasFiltradas.add(conta);			
+						
+						if(tipoContas.equals("Contas à pagar em atraso") || tipoContas.equals("Contas à receber em atraso") || tipoContas.equals("Total contas à receber") || tipoContas.equals("Total contas à pagar")) {	
+							totalContasTemp += conta.getSaldo().doubleValue();
+							
+						}else if(tipoContas.equals("Contas pagas Hoje " + hoje) || tipoContas.equals("Contas recebidas Hoje " + hoje)) {	
+							totalContasTemp += pagamentosContas.totalPagoPorContaHoje(conta, usuario.getEmpresa(), calendarStart, calendarStop).doubleValue();
+						}
+					}
+				}
+				
+				if(conta.getOperacao().equals(TipoOperacao.COMPRA.toString())) {
+					Compra compra = compras.porNumeroCompra(conta.getCodigoOperacao(), usuario.getEmpresa());
+					if(usuarioSelecionado.getId() == compra.getUsuario().getId()) {
+						this.contasFiltradas.add(conta);
+
+						if(tipoContas.equals("Contas à pagar em atraso") || tipoContas.equals("Contas à receber em atraso") || tipoContas.equals("Total contas à receber") || tipoContas.equals("Total contas à pagar")) {	
+							totalContasTemp += conta.getSaldo().doubleValue();
+							
+						}else if(tipoContas.equals("Contas pagas Hoje " + hoje) || tipoContas.equals("Contas recebidas Hoje " + hoje)) {	
+							totalContasTemp += pagamentosContas.totalPagoPorContaHoje(conta, usuario.getEmpresa(), calendarStart, calendarStop).doubleValue();
+						}
+					}
+				}
+				
+				if(conta.getOperacao().equals(TipoOperacao.VENDA.toString())) {
+					Venda venda = vendas.porNumeroVenda(conta.getCodigoOperacao(), usuario.getEmpresa());
+					if(usuarioSelecionado.getId() == venda.getUsuario().getId()) {
+						this.contasFiltradas.add(conta);
+
+						if(tipoContas.equals("Contas à pagar em atraso") || tipoContas.equals("Contas à receber em atraso") || tipoContas.equals("Total contas à receber") || tipoContas.equals("Total contas à pagar")) {	
+							totalContasTemp += conta.getSaldo().doubleValue();
+							
+						}else if(tipoContas.equals("Contas pagas Hoje " + hoje) || tipoContas.equals("Contas recebidas Hoje " + hoje)) {	
+							totalContasTemp += pagamentosContas.totalPagoPorContaHoje(conta, usuario.getEmpresa(), calendarStart, calendarStop).doubleValue();
+						}
+					}
+				}
+			}
+		}
+		
+		totalContas = nf.format(totalContasTemp);
+		
+	}
+
+	public PagamentoConta getPagamentoConta() {
+		return pagamentoConta;
+	}
+
+	public void setPagamentoConta(PagamentoConta pagamentoConta) {
+		this.pagamentoConta = pagamentoConta;
+	}
+	
+	public List<FormaPagamento> getTodasFormasPagamentos() {
+		return todasFormasPagamentos;
+	}
+
+	public List<PagamentoConta> getPagamentosAdicionados() {
+		return pagamentosAdicionados;
+	}
+	
+	public void prepararPagamentosAdicionados() {
+		pagamentosAdicionados = pagamentosContas.todosPorConta(contaSelecionada, usuario.getEmpresa());
+		pagamentoSelecionado = null;
+	}
+	
+	public void prepararPagamentosAdicionadosHoje() {
+		Calendar calendarStart = Calendar.getInstance();
+		calendarStart.setTime(dateStart);
+		calendarStart = DateUtils.truncate(calendarStart, Calendar.DAY_OF_MONTH);
+		
+		Calendar calendarStop = Calendar.getInstance();
+		calendarStop.setTime(dateStop);
+		calendarStop.add(Calendar.DAY_OF_MONTH, 1);
+		calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);
+		
+		if(contaSelecionada.getTipo().equals("DEBITO")) {
+			pagamentosAdicionados = contas.pagamentosHojeContasAPagarPorConta(usuario.getEmpresa(), contaSelecionada, calendarStart, calendarStop);			
+		} else if(contaSelecionada.getTipo().equals("CREDITO")) {
+			pagamentosAdicionados = contas.pagamentosHojeContasAReceberPorConta(usuario.getEmpresa(), contaSelecionada, calendarStart, calendarStop);			
+		}
+		
+		pagamentoSelecionado = null;
+	}
+
+	public PagamentoConta getPagamentoSelecionado() {
+		return pagamentoSelecionado;
+	}
+
+	public void setPagamentoSelecionado(PagamentoConta pagamentoSelecionado) {
+		this.pagamentoSelecionado = pagamentoSelecionado;
 	}
 
 }

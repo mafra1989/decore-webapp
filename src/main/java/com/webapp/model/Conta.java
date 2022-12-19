@@ -36,6 +36,10 @@ public class Conta implements Serializable {
 	@Column(nullable = false)
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal valor;
+	
+	@Column(nullable = false)
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
+	private BigDecimal saldo;
 
 	@Column(nullable = false)
 	private Date vencimento = new Date();
@@ -132,6 +136,14 @@ public class Conta implements Serializable {
 
 	public void setValor(BigDecimal valor) {
 		this.valor = valor.setScale(4, BigDecimal.ROUND_HALF_EVEN);
+	}
+
+	public BigDecimal getSaldo() {
+		return saldo;
+	}
+
+	public void setSaldo(BigDecimal saldo) {
+		this.saldo = saldo;
 	}
 
 	public Date getVencimento() {
@@ -315,6 +327,31 @@ public class Conta implements Serializable {
 
 	public void setVendedor(String vendedor) {
 		this.vendedor = vendedor;
+	}
+	
+	public String tipoDeOperacao() {
+		String text = this.getOperacao().equals("LANCAMENTO") ? "Lançamento" : this.getOperacao();
+		
+	    if (text == null || text.isEmpty()) {
+	        return text;
+	    }
+	 
+	    StringBuilder converted = new StringBuilder();
+	 
+	    boolean convertNext = true;
+	    for (char ch : text.toCharArray()) {
+	        if (Character.isSpaceChar(ch)) {
+	            convertNext = true;
+	        } else if (convertNext) {
+	            ch = Character.toTitleCase(ch);
+	            convertNext = false;
+	        } else {
+	            ch = Character.toLowerCase(ch);
+	        }
+	        converted.append(ch);
+	    }
+	 
+	    return converted.toString();
 	}
 	
 }

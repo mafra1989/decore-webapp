@@ -539,6 +539,41 @@
 
 						<h3 style="font-weight: bold">Dados da Venda</h3>
 						
+						<p:menuButton id="menu-btn" value="Opções" 
+							style="width: 80px;float: right;margin-top:-39px;"
+							rendered="#{registroVendasBean.venda.id != null and false}">	
+							
+							<p:menuitem value="Entregar venda" icon="fa fa-fw fa-money"
+								onstart="start();" oncomplete="stop();"
+								action="#{registroVendasBean.entrega}" update="form"
+								process="@this"
+								rendered="#{registroVendasBean.entregaVenda.id != null and registroVendasBean.entregaVenda.status == 'PENDENTE' and registroVendasBean.venda.tipoPagamento != null}">
+							</p:menuitem>
+							<p:separator />
+							<p:menuitem value="Desfazer entrega" icon="fa fa-fw fa-undo"
+								onstart="start();" oncomplete="stop();"
+								action="#{registroVendasBean.desfazerEntrega}" update="form"
+								process="@this"
+								rendered="#{registroVendasBean.entregaVenda.id != null and registroVendasBean.entregaVenda.status == 'ENTREGUE'}">
+							</p:menuitem>
+							<p:menuitem value="Desfazer entrega e pagamento" icon="fa fa-fw fa-undo"
+								onstart="start();" oncomplete="stop();"
+								action="#{registroVendasBean.desfazerEntregaPagamento}" update="form"
+								process="@this"
+								rendered="#{registroVendasBean.entregaVenda.id != null and registroVendasBean.entregaVenda.status == 'ENTREGUE' and registroVendasBean.venda.tipoPagamento == 'AVISTA'}">
+							</p:menuitem>
+						
+							<p:menuitem value="Visualizar Parcelas" icon="fa fa-fw fa-list-ol"
+								action="#{registroVendasBean.emitirPedido}"
+								ajax="false" immediate="true" target="_blank">
+							</p:menuitem>
+							
+							<p:menuitem value="Baixar Recibo" icon="fa fa-fw fa-cloud-download"
+								action="#{registroVendasBean.emitirPedido}"
+								ajax="false" immediate="true" target="_blank">
+							</p:menuitem>
+						</p:menuButton>
+						
 						<p:accordionPanel id="accordion-panel" activeIndex="null" styleClass="accordion-panel" style="margin-top:12px;">
 			
 							<p:tab title="Detalhes da Venda">

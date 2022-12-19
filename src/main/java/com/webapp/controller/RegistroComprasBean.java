@@ -30,6 +30,7 @@ import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.ItemVendaCompra;
 import com.webapp.model.Log;
+import com.webapp.model.PagamentoConta;
 import com.webapp.model.PeriodoPagamento;
 import com.webapp.model.Produto;
 import com.webapp.model.TipoAtividade;
@@ -42,6 +43,7 @@ import com.webapp.repository.ItensCompras;
 import com.webapp.repository.ItensVendas;
 import com.webapp.repository.ItensVendasCompras;
 import com.webapp.repository.Logs;
+import com.webapp.repository.PagamentosContas;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.Usuarios;
 import com.webapp.repository.filter.ProdutoFilter;
@@ -89,6 +91,9 @@ public class RegistroComprasBean implements Serializable {
 
 	@Inject
 	private Contas_ contas;
+	
+	@Inject
+	private PagamentosContas pagamentosContas;
 
 	private List<Conta> todasContas = new ArrayList<>();
 
@@ -509,8 +514,15 @@ public class RegistroComprasBean implements Serializable {
 
 			// if (contasTemp.size() == 0) {
 
+
 			List<Conta> contasTemp = contas.porCodigoOperacao(compra.getNumeroCompra(), "COMPRA", usuario.getEmpresa());
 			for (Conta conta : contasTemp) {
+				
+				List<PagamentoConta> pagamentosContaTemp = pagamentosContas.todosPorConta(conta, usuario.getEmpresa());
+				for (PagamentoConta pagamentoConta : pagamentosContaTemp) {
+					pagamentosContas.remove(pagamentoConta);
+				}
+				
 				contas.remove(conta);
 			}
 
@@ -739,6 +751,8 @@ public class RegistroComprasBean implements Serializable {
 					conta.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
 
 					conta.setEmpresa(usuario.getEmpresa());
+					
+					conta.setSaldo(conta.getValor());
 					contas.save(conta);
 				}
 
@@ -752,6 +766,8 @@ public class RegistroComprasBean implements Serializable {
 					conta.setStatus(true);
 
 					conta.setEmpresa(usuario.getEmpresa());
+					
+					conta.setSaldo(conta.getValor());
 					contas.save(conta);
 				}
 				
@@ -762,6 +778,8 @@ public class RegistroComprasBean implements Serializable {
 					conta.setPagamento(null);
 					
 					conta.setEmpresa(usuario.getEmpresa());
+					
+					conta.setSaldo(conta.getValor());
 					conta = contas.save(conta);
 				}
 			}

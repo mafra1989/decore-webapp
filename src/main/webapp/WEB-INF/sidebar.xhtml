@@ -60,7 +60,7 @@
 	
 								<p:menuitem id="pm_Contas" value="Pagar / Receber"
 									icon="fa fa-expand" outcome="/Contas.xhtml" 
-									rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()}" />
+									rendered="#{(seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()) and false}" />
 								
 								
 							</p:submenu>

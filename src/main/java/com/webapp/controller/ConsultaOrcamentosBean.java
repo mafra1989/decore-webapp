@@ -40,6 +40,7 @@ import com.webapp.model.ItemVenda;
 import com.webapp.model.ItemVendaCompra;
 import com.webapp.model.Log;
 import com.webapp.model.Pagamento;
+import com.webapp.model.PagamentoConta;
 import com.webapp.model.Produto;
 import com.webapp.model.StatusPedido;
 import com.webapp.model.TipoAtividade;
@@ -60,6 +61,7 @@ import com.webapp.repository.ItensVendasCompras;
 import com.webapp.repository.Lancamentos;
 import com.webapp.repository.Logs;
 import com.webapp.repository.Pagamentos;
+import com.webapp.repository.PagamentosContas;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.Usuarios;
 import com.webapp.repository.Vendas;
@@ -103,6 +105,9 @@ public class ConsultaOrcamentosBean implements Serializable {
 	
 	@Inject
 	private Contas contas;
+	
+	@Inject
+	private PagamentosContas pagamentosContas;
 	
 	@Inject
 	private Lancamentos lancamentos;
@@ -500,6 +505,12 @@ public class ConsultaOrcamentosBean implements Serializable {
 			
 			List<Conta> contasTemp = contas.porCodigoOperacao(vendaSelecionada.getNumeroVenda(), "VENDA", usuario_.getEmpresa());
 			for (Conta conta : contasTemp) {
+				
+				List<PagamentoConta> pagamentosContaTemp = pagamentosContas.todosPorConta(conta, usuario_.getEmpresa());
+				for (PagamentoConta pagamentoConta : pagamentosContaTemp) {
+					pagamentosContas.remove(pagamentoConta);
+				}
+				
 				contas.remove(conta);
 			}
 			

@@ -348,6 +348,34 @@ body #contas-dialog .ui-panel .ui-panel-content {
     height: auto !important;
 }
 
+#pagamentos-dialog .ui-datatable-scrollable-theadclone, #pagamentos-hoje-dialog .ui-datatable-scrollable-theadclone {
+    border: 1px solid #b6b7c2;
+}
+    
+body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialog .ui-panel .ui-panel-content {
+    border: none;
+}
+
+body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialog .ui-panel .ui-panel-content {
+    padding: 0px;
+}
+
+#pagamentos-dialog .card.card-w-title, #pagamentos-hoje-dialog .card.card-w-title {
+    padding-bottom: 0px;
+}
+
+#pagamentos-dialog .card, #pagamentos-hoje-dialog .card {
+    margin-bottom: 0px;
+}
+#pagamentos-dialog .ui-datatable-reflow .ui-datatable-data td[role="gridcell"] .ui-column-title,
+ #pagamentos-hoje-dialog .ui-datatable-reflow .ui-datatable-data td[role="gridcell"] .ui-column-title {
+    float: left;
+}
+
+#pagamentos-dialog .ui-datatable tbody td, #pagamentos-hoje-dialog .ui-datatable tbody td {
+    height: auto !important;
+}
+
 .dashboard .saldo-geral.overview-box.overview-box-1 .overview-box-icon i {
 	color: #069ed2;
 }
@@ -365,6 +393,21 @@ body #contas-dialog .ui-panel .ui-panel-content {
 }
 
 @media ( min-width :220px) {
+	.ui-datepicker-touch-ui.ui-datepicker td a, .ui-datepicker-touch-ui.ui-datepicker td span, .ui-datepicker-touch-ui.ui-datepicker th {
+	    padding: 10px;   
+	}
+	.p-datepicker .ui-datepicker-touch-ui, .ui-datepicker-touch-ui {
+	    min-width: 300px;
+	    border: none;
+    }
+    body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+	    height: 29px !important;
+	}
+	body #contas-dialog .ui-selectonemenu {
+	    margin-top: 11px;
+	    margin-left: 10px;
+	    min-width: 178px !important;
+    }
 	#contas-dialog .ui-datatable-reflow .ui-datatable-data td[role="gridcell"]:not(.ui-helper-hidden) {
 	    text-align: left;
 	    display: block;
@@ -385,6 +428,31 @@ body #contas-dialog .ui-panel .ui-panel-content {
 	    display: inline-block;
 	    margin: -0.4em 1em -0.4em -0.4em;
 	}
+	
+	#pagamentos-dialog .ui-datatable-reflow .ui-datatable-data td[role="gridcell"]:not(.ui-helper-hidden),
+		#pagamentos-hoje-dialog .ui-datatable-reflow .ui-datatable-data td[role="gridcell"]:not(.ui-helper-hidden) {
+	    text-align: left;
+	    display: block;
+	    border: 0 none;
+	    width: 100%;
+	    -webkit-box-sizing: border-box;
+	    -moz-box-sizing: border-box;
+	    box-sizing: border-box;
+	    float: left;
+	    clear: left;
+	}
+	#pagamentos-dialog .ui-datatable-reflow thead th, .ui-datatable-reflow tfoot td,
+	 #pagamentos-hoje-dialog .ui-datatable-reflow thead th {
+	    display: none;
+	}
+	#pagamentos-dialog .ui-datatable-reflow .ui-datatable-data td[role="gridcell"] .ui-column-title, 
+	 #pagamentos-hoje-dialog .ui-datatable-reflow .ui-datatable-data td[role="gridcell"] .ui-column-title {
+	    padding: 0.4em;
+	    min-width: 50%;
+	    display: inline-block;
+	    margin: -0.4em 1em -0.4em -0.4em;
+	}
+	
 	.swal2-popup {
 		width: 28em;
 		max-width: 100%;
@@ -622,7 +690,7 @@ body #contas-dialog .ui-panel .ui-panel-content {
 	}
 	.dashboard .overview-box .overview-box-content {
 		margin-top: 12px;
-		margin-left: 15px;
+		margin-left: 8px;
 	}
 	.dashboard .saldo-geral.overview-box.overview-box-1 .overview-box-icon {
 		margin-top: -1px;
@@ -685,6 +753,9 @@ body #contas-dialog .ui-panel .ui-panel-content {
 
 		<h:form id="form">
 				
+				<p:growl id="msg" closable="true" life="2000" showSummary="false"
+					showDetail="true" style="text-align: center" />
+						
 				<p:remoteCommand name="buscarContasAPagarEmAtraso" 
 					update="contas-dialog form-contas" 
 					actionListener="#{consultaContasBean.buscarContasAPagarEmAtraso}"
@@ -709,7 +780,19 @@ body #contas-dialog .ui-panel .ui-panel-content {
 					onstart="PF('downloadLoading').show();"
 					oncomplete="PF('downloadLoading').hide();PF('contas-dialog').show();" />
 					
-				<p:remoteCommand name="setarItemID" process="@this form-contas form-contas:contasTable"
+				<p:remoteCommand name="buscarContasAReceber" 
+					update="contas-dialog form-contas" 
+					actionListener="#{consultaContasBean.buscarContasAReceber}"
+					onstart="PF('downloadLoading').show();"
+					oncomplete="PF('downloadLoading').hide();PF('contas-dialog').show();" />
+					
+				<p:remoteCommand name="buscarContasAPagar" 
+					update="contas-dialog form-contas" 
+					actionListener="#{consultaContasBean.buscarContasAPagar}"
+					onstart="PF('downloadLoading').show();"
+					oncomplete="PF('downloadLoading').hide();PF('contas-dialog').show();" />
+				
+				<p:remoteCommand name="setarItemID" process="@this form form-pagamentos form-contas"
 					update="form form-contas" action="#{consultaContasBean.estornarTelaResumoFinanceiro}"
 					onstart="PF('downloadLoading').show();"
 					oncomplete="PF('downloadLoading').hide();" />
@@ -809,7 +892,10 @@ body #contas-dialog .ui-panel .ui-panel-content {
 							</div>
 							<div class="overview-box-content">
 								<div class="overview-box-title">Total contas à receber</div>
-								<div class="overview-box-stats"><h:outputText value="#{consultaContasBean.totalAReceberValor}"><f:convertNumber type="currency" /></h:outputText></div>
+								<p:link href="javascript:void(0);" style="color:#ffffff;"
+									onclick="contasAReceber();">
+									<div class="overview-box-stats"><h:outputText value="#{consultaContasBean.totalAReceberValor}"><f:convertNumber type="currency" /></h:outputText></div>
+								</p:link>
 								<div class="overview-box-details"><h:outputText value="#{dashboardBean.totalAReceberHojeValor}"><f:convertNumber type="currency" /></h:outputText> à receber em #{dashboardBean.hoje}</div>
 							</div>
 						</div>
@@ -835,7 +921,10 @@ body #contas-dialog .ui-panel .ui-panel-content {
 							</div>  
 							<div class="overview-box-content">
 								<div class="overview-box-title">Total contas à pagar</div>
-								<div class="overview-box-stats"><h:outputText value="#{consultaContasBean.totalAPagarValor}"><f:convertNumber type="currency" /></h:outputText></div>
+								<p:link href="javascript:void(0);" style="color:#ffffff;"
+									onclick="contasAPagar();">
+									<div class="overview-box-stats"><h:outputText value="#{consultaContasBean.totalAPagarValor}"><f:convertNumber type="currency" /></h:outputText></div>						
+								</p:link>
 								<div class="overview-box-details" style="color: #ececec;"><h:outputText value="#{dashboardBean.totalAPagarHojeValor}"><f:convertNumber type="currency" /></h:outputText> à pagar em #{dashboardBean.hoje}</div>
 							</div>
 						</div>
@@ -1112,27 +1201,84 @@ body #contas-dialog .ui-panel .ui-panel-content {
 			position="center" id="contas-dialog" width="850"
 			resizable="false" modal="true" closeOnEscape="true" responsive="true">
 
-			<h:form id="form-contas">
-
+			<h:form id="form-contas">				
+				
 				<p:panel class="card card-w-title itens-add"
 					id="panel-table">
+					
+					<p:selectOneMenu id="vendedor"
+						value="#{consultaContasBean.usuarioSelecionado}">
 
+						<f:selectItem itemLabel="Selecione vendedor" />
+						
+						<p:ajax event="itemSelect" update="form-contas" process="@this" listener="#{consultaContasBean.filtrarContasPorUsuario}" />
+
+						<f:selectItems value="#{consultaContasBean.todosUsuarios}"
+							var="vendedor" itemLabel="#{vendedor.nome}"
+							itemValue="#{vendedor}" />
+					</p:selectOneMenu>			
+						
 					<p:menuButton id="menu-btn" value="Opções" 
 						style="width: 80px;float: right;margin-right: 10px;margin-top:10px;margin-bottom:5px;"
 						disabled="#{(consultaContasBean.contasFiltradasSize eq 0) or consultaContasBean.contaSelecionada.id == null or (not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado())}">
 
+						<p:menuitem icon="fa fa-fw fa-list-ol" 
+							value="#{'Pagamentos '.concat(consultaContasBean.hoje)}"
+							process="@this" onstart="start();" update="form-pagamentos-hoje"
+							action="#{consultaContasBean.prepararPagamentosAdicionadosHoje}"
+							rendered="#{consultaContasBean.tipoContas eq ('Contas pagas Hoje '.concat(consultaContasBean.hoje)) or consultaContasBean.tipoContas eq ('Contas recebidas Hoje '.concat(consultaContasBean.hoje)) or consultaContasBean.tipoContas eq ('Total contas à receber') or consultaContasBean.tipoContas eq 'Total contas à pagar'}"
+							oncomplete="PF('pagamentos-hoje-dialog').show();stop();" />
+						
+						<p:menuitem icon="fa fa-fw fa-undo" 
+							value="#{consultaContasBean.contaSelecionada.tipo == 'DEBITO' ? 'Desfazer pagamento' : 'Desfazer recebimento'}"
+							process="@this" onstart="start();" update="form-pagamentos"
+							action="#{consultaContasBean.prepararPagamentosAdicionados}"
+							rendered="#{consultaContasBean.contaSelecionada.status}"
+							oncomplete="PF('pagamentos-dialog').show();stop();" />
+							
+						<p:menuitem icon="fa fa-fw fa-undo" 
+							value="#{consultaContasBean.contaSelecionada.tipo == 'DEBITO' ? 'Desfazer pagamento' : 'Desfazer recebimento'}"
+							process="@this" onstart="start();" update="form-pagamentos"
+							action="#{consultaContasBean.prepararPagamentosAdicionados}"
+							rendered="#{(not consultaContasBean.contaSelecionada.status) and (consultaContasBean.tipoContas eq ('Contas pagas Hoje '.concat(consultaContasBean.hoje)) or consultaContasBean.tipoContas eq ('Contas recebidas Hoje '.concat(consultaContasBean.hoje))) or consultaContasBean.tipoContas eq ('Total contas à receber') or consultaContasBean.tipoContas eq 'Total contas à pagar'}"
+							oncomplete="PF('pagamentos-dialog').show();stop();" />
+							
 						<p:menuitem value="#{consultaContasBean.contaSelecionada.tipo == 'DEBITO' ? 'Pagar' : 'Receber'}" icon="fa fa-fw fa-money"
-							onstart="start();" actionListener="#{consultaContasBean.preparaDataVencimento}"
+							onstart="start();" actionListener="#{consultaContasBean.preparaPagamentoConta}"
 							oncomplete="PF('pagamento-dialog').show();stop();"
-							update="pagamento-dialog" 
+							update="pagamento-dialog form-pagamento" 
+							process="@this form-pagamento"
 							rendered="#{not consultaContasBean.contaSelecionada.status}">
 						</p:menuitem>
 						<p:separator />
-						<p:menuitem icon="fa fa-fw fa-undo" value="#{consultaContasBean.contaSelecionada.tipo == 'DEBITO' ? 'Desfazer pagamento' : 'Desfazer recebimento'}"
-							process="@this" 
-							rendered="#{consultaContasBean.contaSelecionada.status}"
-							onclick="estornarConta(#{consultaContasBean.contaSelecionada.id});" />
+							
+						<p:menuitem value="Visualizar #{consultaContasBean.contaSelecionada.tipoDeOperacao()}" icon="fa fa-fw fa-eye" process="@this form-contas"
+							id="btn-view" actionListener="#{consultaContasBean.visualizar}"
+							onclick="PF('downloadLoading').show();">
+						</p:menuitem>
+						
+						<p:menuitem value="Baixar Pedido" icon="fa fa-fw fa-cloud-download"
+							action="#{consultaContasBean.emitirPedido}"
+							ajax="false" target="_blank"
+							rendered="#{consultaContasBean.contaSelecionada.operacao == 'VENDA'}">
+						</p:menuitem>
+                	
+                		<p:menuitem value="Exportar" icon="fa fa-fw fa-file-excel-o" ajax="false">
+							<p:dataExporter type="xls" target="contasTable" selectionOnly="true" fileName="#{consultaContasBean.tipoContas}" />
+						</p:menuitem>
+                	
 					</p:menuButton>
+					
+					<p:tooltip id="toolTipGrow" for="btn-export" 
+               								showEffect="clip" position="top">             								
+               			<h:outputText value="Exportar tudo" />
+					</p:tooltip>
+					
+					<p:commandButton id="btn-export" ajax="false" 
+						disabled="#{(consultaContasBean.contasFiltradasSize eq 0) or (not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado())}"
+						icon="fa fa-fw fa-file-excel-o" style="float: right;margin-top: 10px;margin-right: 5px;">
+						<p:dataExporter type="xls" target="contasTable" fileName="#{consultaContasBean.tipoContas}" />
+                	</p:commandButton>
 
 					<p:panelGrid columns="1" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
@@ -1186,6 +1332,18 @@ body #contas-dialog .ui-panel .ui-panel-content {
 									<f:convertNumber type="currency" />
 								</h:outputText>
 							</p:column>
+							
+							<p:column headerText="Total Pago" width="20%">
+								<h:outputText value="#{conta.valor - conta.saldo}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Saldo" width="20%">
+								<h:outputText value="#{conta.saldo}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
 
 							<p:column headerText="Vencimento" width="20%">
 								<h:outputText value="#{conta.vencimento}">
@@ -1200,10 +1358,15 @@ body #contas-dialog .ui-panel .ui-panel-content {
 								</h:outputText>
 							</p:column>
 
-							<p:column headerText="PAGO" width="20%">
+							<p:column headerText="PAGO" width="20%" exportable="false">
 								<p:inputSwitch offLabel="Não" onLabel="Sim" styleClass="pagar"
 									value="#{conta.status}" disabled="true">
 								</p:inputSwitch>
+							</p:column>
+							
+							<p:column headerText="PAGO" width="20%" visible="false">
+								<h:outputText
+									value="#{conta.status ? 'Sim' : 'Não'}" />
 							</p:column>
 
 						</p:dataTable>
@@ -1212,10 +1375,26 @@ body #contas-dialog .ui-panel .ui-panel-content {
 							styleClass="panelgrid-noborder disabled disabled panel-total">
 
 							<p:outputLabel
-								value="Total de Contas: R$ #{consultaContasBean.totalContas}"
-								style="float:left;margin-top:10px;margin-bottom:5px;font-size: 13px;font-family: inherit;" />
-
-							<p:commandButton icon="fa fa-fw fa-close"
+								value="Total em atraso: R$ #{consultaContasBean.totalContas}"
+								style="float:left;margin-top:10px;margin-bottom:5px;font-size: 13px;font-family: inherit;"
+								rendered="#{(consultaContasBean.tipoContas eq 'Contas à pagar em atraso') or (consultaContasBean.tipoContas eq 'Contas à receber em atraso')}" />
+								
+							<p:outputLabel
+								value="Total pago hoje: R$ #{consultaContasBean.totalContas}"
+								style="float:left;margin-top:10px;margin-bottom:5px;font-size: 13px;font-family: inherit;"
+								rendered="#{consultaContasBean.tipoContas eq ('Contas pagas Hoje '.concat(consultaContasBean.hoje)) or consultaContasBean.tipoContas eq ('Contas recebidas Hoje '.concat(consultaContasBean.hoje))}" />
+							
+							<p:outputLabel
+								value="Total à receber: R$ #{consultaContasBean.totalContas}"
+								style="float:left;margin-top:10px;margin-bottom:5px;font-size: 13px;font-family: inherit;"
+								rendered="#{consultaContasBean.tipoContas eq 'Total contas à receber'}" />
+								
+							<p:outputLabel
+								value="Total à pagar: R$ #{consultaContasBean.totalContas}"
+								style="float:left;margin-top:10px;margin-bottom:5px;font-size: 13px;font-family: inherit;"
+								rendered="#{consultaContasBean.tipoContas eq 'Total contas à pagar'}" />
+							
+							<p:commandButton id="btn-close" icon="fa fa-fw fa-close"
 								style="float:right;font-weight: bold;width: 100px;background:#e15e5ef0;margin-right: -1px;"
 								value="Fechar" onstart="start();"
 								oncomplete="stop();PF('contas-dialog').hide();">
@@ -1228,12 +1407,12 @@ body #contas-dialog .ui-panel .ui-panel-content {
 		</p:dialog>
 		
 		
-		<p:dialog id="pagamento-dialog" showHeader="false" modal="true"
-			widgetVar="pagamento-dialog" draggable="false" width="300"
+		<p:dialog id="pagamento-dialog_" showHeader="false" modal="true"
+			widgetVar="pagamento-dialog_" draggable="false" width="300"
 			closable="false" resizable="false" position="top"
 			style="margin-top: 100px">
 
-			<h:form id="form-pagamento">
+			<h:form id="form-pagamento_">
 				<p:calendar id="inline" mode="inline"
 					value="#{consultaContasBean.contaSelecionada.vencimento}"
 					locale="pt" pattern="dd/MM/yyyy" />
@@ -1255,7 +1434,239 @@ body #contas-dialog .ui-panel .ui-panel-content {
 				</p:panel>
 			</h:form>
 		</p:dialog>
+		
+		
+		<p:dialog header="Pagamento conta"
+			widgetVar="pagamento-dialog" id="pagamento-dialog" resizable="false"
+			modal="true" closeOnEscape="true" responsive="true" width="250px" position="top"
+			style="margin-top: 140px">
 
+			<h:form id="form-pagamento">
+
+				<div class="ui-fluid">
+					<p:defaultCommand target="btn-salvar_pagamento" />
+					
+					<p:focus context="campos-pagamento" for="valor_pagamento" />
+
+					<div class="card card-w-title ui-fluid"
+						style="padding: 0px 5px 0px 5px; padding-bottom: 0px !important">
+						
+						<p:panelGrid columns="2" layout="grid"
+							style="margin-top: 10px;"
+							styleClass="panelgrid-noborder disabled disabled">
+							
+							<p:outputLabel style="font-weight: bold;font-size: 16px;margin-top: 0px;" value="Saldo " />
+							<p:outputLabel value="#{consultaContasBean.contaSelecionada.saldo}"
+								style="font-weight: bold;font-size: 22px;margin-top: -4px;float: right;right: 0;position: relative;">
+								<f:convertNumber type="currency" />
+							</p:outputLabel>
+						</p:panelGrid>
+
+						<p:panelGrid columns="1" layout="grid" id="campos-pagamento"
+							style="margin-top: 5px; margin-bottom: 5px"
+							styleClass="panelgrid-noborder disabled disabled">
+
+							<p:outputLabel value="Data de Pagamento" for="data-venda" />
+							<p:datePicker value="#{consultaContasBean.pagamentoConta.dataPagamento}" touchUI="true"
+								readonlyInput="true" id="data-venda" pattern="dd/MM/yyyy" showOnFocus="false"
+								locale="pt" showIcon="true" />
+										
+							<p:outputLabel value="Valor Pago" for="valor_pagamento" />
+							<p:inputNumber id="valor_pagamento" decimalPlaces="2" minValue="0"
+								placeholder="R$ 0,00" autocomplete="off" symbol="R$ "
+								value="#{consultaContasBean.pagamentoConta.valorPago}">
+
+							</p:inputNumber>
+
+							<p:outputLabel value="Forma de Pagamento" style="margin-top:5px;float:left;" for="pagamento" rendered="false" />
+							<p:selectOneMenu id="pagamento" rendered="false"
+								value="#{consultaContasBean.pagamentoConta.formaPagamento}" 
+								placeholder="selecione">
+								
+								<f:selectItem itemLabel="Selecione" />
+						            
+
+								<f:selectItems value="#{consultaContasBean.todasFormasPagamentos}"
+										var="formaPagamento" itemLabel="#{formaPagamento.nome}"
+										itemValue="#{formaPagamento}" />
+							</p:selectOneMenu>
+
+						</p:panelGrid>
+						
+						
+						<div
+							style="width: 100%; margin-left: -15px;
+    						padding-left: 32px;margin-top: 25px;margin-bottom: 5px; 
+    						border-top: 1px solid #ccc"></div>
+
+
+						<p:panel class="card card-w-title ui-fluid"
+							style="padding-bottom: 10px;margin-bottom: 0px;">
+							
+							<p:commandButton id="btn-salvar_pagamento" value="Confirmar"
+								widgetVar="btn-salvar_pagamento" icon="fa fa-fw fa-check"
+								onstart="PF('downloadLoading').show(); PF('btn-salvar_pagamento').disable();"
+								oncomplete="PF('downloadLoading').hide(); PF('btn-salvar_pagamento').enable();"
+								update="form form-contas"
+								process="@this form-pagamento"
+								action="#{consultaContasBean.pagarTelaResumoFinanceiro}"
+								style="background-color: #0d8819b5; font-weight: bold; float: right; width: 98px;margin-bottom: 4px;margin-top: 6px;" />
+
+							<p:commandButton icon="fa fa-fw fa-close" value="Cancelar"
+								oncomplete="PF('pagamento-dialog').hide();" 
+								style="margin-right:2px;background-color: #e15e5ef0;float: right; width: 98px;margin-bottom: 4px;margin-top: 6px">
+
+							</p:commandButton>
+						</p:panel>
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog id="pagamentos-dialog" header="Selecione pagamento" modal="true"
+			widgetVar="pagamentos-dialog" draggable="true" width="326"
+			closable="true" resizable="false" position="center" responsive="true">
+
+			<h:form id="form-pagamentos">
+				
+				<p:panelGrid columns="2" layout="grid" style="margin-top: 10px;margin-bottom: 10px;"
+					styleClass="panelgrid-noborder disabled disabled">
+					
+					<p:outputLabel style="font-weight: bold;font-size: 16px;margin-top: 0px;" value="Saldo " />
+					<p:outputLabel value="#{consultaContasBean.contaSelecionada.saldo}"
+						style="font-weight: bold;font-size: 22px;margin-top: -4px;float: right;right: 0;position: relative;">
+						<f:convertNumber type="currency" />
+					</p:outputLabel>
+				</p:panelGrid>
+				
+				<p:panelGrid columns="1" layout="grid" style="margin-bottom:2px;"
+					styleClass="panelgrid-noborder disabled disabled">
+							
+					<p:dataTable id="pagamentosTable" paginatorAlwaysVisible="false"
+						scrollable="true" scrollHeight="275" reflow="true"
+						value="#{consultaContasBean.pagamentosAdicionados}" var="pagamento"
+						emptyMessage="Nenhum pagamento encontrado." 
+						paginator="false" rowKey="#{pagamento.id}"
+						selection="#{consultaContasBean.pagamentoSelecionado}"
+						selectionMode="single">
+						
+						<p:ajax process="@this" event="rowSelect"
+							onstart="PF('downloadLoading').show();"
+							oncomplete="PF('downloadLoading').hide();" update="form-pagamentos:btn-confirmar-estorno" />
+						<p:ajax process="@this" event="rowUnselect"
+							onstart="PF('downloadLoading').show();"
+							oncomplete="PF('downloadLoading').hide();" update="form-pagamentos:btn-confirmar-estorno" />
+	
+						<p:column headerText="Data de Pagamento">
+							<h:outputText value="#{pagamento.dataPagamento}">
+								<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" dateStyle="short" />
+							</h:outputText>
+						</p:column>
+	
+						<p:column headerText="Valor Pago">
+							<h:outputText value="#{pagamento.valorPago}">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+						</p:column>
+						
+						<p:column headerText="Forma de Pagamento" visible="false">
+							<h:outputText value="#{pagamento.formaPagamento.nome}" />
+						</p:column>
+	
+					</p:dataTable>
+					
+					<div style="width: 100%;margin-left: -22px;
+								    padding-left: 44px;
+								    margin-top: 25px;
+								    margin-bottom: 0px;
+								    border-top: 1px solid #ccc;"></div>
+	
+					<p:panel styleClass="panelgrid-noborder disabled disabled">
+										
+						<p:commandButton id="btn-confirmar-estorno" value="Confirmar"
+							widgetVar="btn-confirmar-estorno" icon="fa fa-fw fa-check"
+							onstart="PF('downloadLoading').show(); PF('btn-confirmar-estorno').disable();"
+							oncomplete="PF('downloadLoading').hide(); PF('btn-confirmar-estorno').enable();"
+							disabled="#{consultaContasBean.pagamentoSelecionado.id == null}"
+							update="form form-contas form-pagamento"
+							process="@this form-pagamento"
+							onclick="estornarConta(#{consultaContasBean.contaSelecionada.id});"
+							style="background-color: #0d8819b5; font-weight: bold; float: right;margin-left: 3px;font-size: 13px; width: 100px;margin-bottom: 0px;margin-top: 8px;margin-right: 0px;" />
+						
+						<p:commandButton icon="fa fa-fw fa-close"
+							style="float: right;font-weight: bold;margin-top: 8px;font-size: 13px;width: 100px;background-color: #ab3705b5;position: relative;margin-right: 0px;margin-bottom: 2px;"
+							value="Fechar" onstart="start();"
+							oncomplete="PF('pagamentos-dialog').hide();stop();">
+						</p:commandButton>
+					</p:panel>
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+		
+		
+		<p:dialog id="pagamentos-hoje-dialog" header="Pagamentos #{consultaContasBean.hoje}" modal="true"
+			widgetVar="pagamentos-hoje-dialog" draggable="true" width="326"
+			closable="true" resizable="false" position="center" responsive="true">
+
+			<h:form id="form-pagamentos-hoje">
+				
+				<p:panelGrid columns="2" layout="grid" style="margin-top: 10px;margin-bottom: 10px;"
+					styleClass="panelgrid-noborder disabled disabled">
+					
+					<p:outputLabel style="font-weight: bold;font-size: 16px;margin-top: 0px;" value="Saldo " />
+					<p:outputLabel value="#{consultaContasBean.contaSelecionada.saldo}"
+						style="font-weight: bold;font-size: 22px;margin-top: -4px;float: right;right: 0;position: relative;">
+						<f:convertNumber type="currency" />
+					</p:outputLabel>
+				</p:panelGrid>
+				
+				<p:panelGrid columns="1" layout="grid" style="margin-bottom:2px;"
+					styleClass="panelgrid-noborder disabled disabled">
+							
+					<p:dataTable id="pagamentosHojeTable" paginatorAlwaysVisible="false"
+						scrollable="true" scrollHeight="275" reflow="true"
+						value="#{consultaContasBean.pagamentosAdicionados}" var="pagamento"
+						emptyMessage="Nenhum pagamento encontrado." 
+						paginator="false">
+	
+						<p:column headerText="Data de Pagamento">
+							<h:outputText value="#{pagamento.dataPagamento}">
+								<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" dateStyle="short" />
+							</h:outputText>
+						</p:column>
+	
+						<p:column headerText="Valor Pago">
+							<h:outputText value="#{pagamento.valorPago}">
+								<f:convertNumber type="currency" />
+							</h:outputText>
+						</p:column>
+						
+						<p:column headerText="Forma de Pagamento" visible="false">
+							<h:outputText value="#{pagamento.formaPagamento.nome}" />
+						</p:column>
+	
+					</p:dataTable>
+					
+					<div style="width: 100%;margin-left: -22px;
+								    padding-left: 44px;
+								    margin-top: 25px;
+								    margin-bottom: 0px;
+								    border-top: 1px solid #ccc;"></div>
+	
+					<p:panel styleClass="panelgrid-noborder disabled disabled">
+										
+						<p:commandButton icon="fa fa-fw fa-close"
+							style="float: right;font-weight: bold;margin-top: 8px;font-size: 13px;width: 100px;background-color: #ab3705b5;position: relative;margin-right: 0px;margin-bottom: 2px;"
+							value="Fechar" onstart="start();"
+							oncomplete="PF('pagamentos-hoje-dialog').hide();stop();">
+						</p:commandButton>
+					</p:panel>
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+		
 
 		<p:dialog id="downloadLoading" showHeader="false" modal="true"
 			widgetVar="downloadLoading" header="Status" draggable="false"
@@ -1283,6 +1694,12 @@ body #contas-dialog .ui-panel .ui-panel-content {
 			}		
 			function contasPagasHoje() {
 				buscarContasPagasHoje();
+			}
+			function contasAReceber() {
+				buscarContasAReceber();
+			}
+			function contasAPagar() {
+				buscarContasAPagar();
 			}
 		</script>
 
