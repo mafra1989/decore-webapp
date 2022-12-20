@@ -452,7 +452,7 @@ public class ConsultaContasBean implements Serializable {
 			}
 		}
 		
-		log.setDescricao(msg + ", Nº " + conta.getCodigoOperacao() + ", valor total R$ " + nf.format(conta.getSaldo()));
+		log.setDescricao(msg + ", Nº " + conta.getCodigoOperacao() + ", valor total R$ " + nf.format(pagamentoConta.getValorPago()));
 		log.setUsuario(usuario);		
 		logs.save(log);
 	}

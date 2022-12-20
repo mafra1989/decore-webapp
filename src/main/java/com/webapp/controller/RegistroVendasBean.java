@@ -3408,6 +3408,7 @@ public class RegistroVendasBean implements Serializable {
 				
 				conta.setValor(venda.getValorTotalComDesconto());
 				
+				conta.setSaldo(conta.getValor());
 				
 				conta.setSubTotal(venda.getValorTotalComDesconto());
 				conta.setCustoMedio(new BigDecimal(valorCompra));
@@ -3462,6 +3463,8 @@ public class RegistroVendasBean implements Serializable {
 				conta.setOperacao("VENDA");
 				conta.setTipo("CREDITO");
 				conta.setStatus(true);
+				
+				conta.setSaldo(BigDecimal.ZERO);
 
 				conta.setEmpresa(usuario.getEmpresa());
 				contas.save(conta);
@@ -3472,6 +3475,8 @@ public class RegistroVendasBean implements Serializable {
 				conta.setOperacao("VENDA");
 				conta.setTipo("CREDITO");
 				conta.setPagamento(null);
+				
+				conta.setSaldo(conta.getValor());
 				
 				conta.setEmpresa(usuario.getEmpresa());
 				conta = contas.save(conta);
