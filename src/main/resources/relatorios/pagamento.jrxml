@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="produtos" pageWidth="184" pageHeight="842" columnWidth="184" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="fec26e42-79b7-4cba-b6f5-880441f51903">
-	<property name="ireport.zoom" value="2.0"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="produtos" pageWidth="214" pageHeight="842" columnWidth="214" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="fec26e42-79b7-4cba-b6f5-880441f51903">
+	<property name="ireport.zoom" value="5.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<style name="borda">
@@ -17,31 +17,39 @@
 	</queryString>
 	<field name="valorPagar" class="java.lang.String"/>
 	<field name="vencimento" class="java.lang.String"/>
+	<field name="status" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<detail>
 		<band height="16" splitType="Stretch">
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="bf89e981-5405-43ea-a5b3-241ba8d6ea1f" stretchType="RelativeToBandHeight" x="0" y="0" width="111" height="13"/>
+				<reportElement uuid="bf89e981-5405-43ea-a5b3-241ba8d6ea1f" stretchType="RelativeToBandHeight" x="30" y="0" width="111" height="13"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA["R$ " + $F{valorPagar}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="99eb87d3-651c-4a79-9ae0-ca6a7faa4c34" stretchType="RelativeToBandHeight" x="111" y="0" width="73" height="13"/>
+				<reportElement uuid="99eb87d3-651c-4a79-9ae0-ca6a7faa4c34" stretchType="RelativeToBandHeight" x="141" y="0" width="73" height="13"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{vencimento}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement uuid="43852d43-7bbb-4340-b05b-eab44cf3423e" x="1" y="14" width="184" height="2"/>
+				<reportElement uuid="43852d43-7bbb-4340-b05b-eab44cf3423e" x="31" y="14" width="184" height="2"/>
 				<graphicElement>
 					<pen lineStyle="Dashed"/>
 				</graphicElement>
 			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="07d55135-21d2-4df5-95a2-2d2572ac5f3b" x="0" y="0" width="30" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{status}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 </jasperReport>

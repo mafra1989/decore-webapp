@@ -118,7 +118,9 @@
 					<text><![CDATA[Subtotal Materiais + Taxa de embarque]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement uuid="60fd1d1e-bf45-4b66-8435-84afe3ef9b35" style="Detail" positionType="Float" x="274" y="18" width="261" height="17" isRemoveLineWhenBlank="true" forecolor="#333333"/>
+					<reportElement uuid="60fd1d1e-bf45-4b66-8435-84afe3ef9b35" style="Detail" positionType="Float" x="274" y="18" width="261" height="17" isRemoveLineWhenBlank="true" forecolor="#333333">
+						<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="SansSerif" size="10" isBold="true" isPdfEmbedded="true"/>
 					</textElement>
@@ -139,7 +141,9 @@
 					<text><![CDATA[VALOR TOTAL]]></text>
 				</staticText>
 				<staticText>
-					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" mode="Transparent" x="0" y="18" width="274" height="17" isRemoveLineWhenBlank="true" backcolor="#FFFFFF"/>
+					<reportElement uuid="96db699a-672f-4efa-88ae-0f03f9c141ec" mode="Transparent" x="0" y="18" width="274" height="17" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+						<printWhenExpression><![CDATA[!$F{desconto}.equals("0,00")]]></printWhenExpression>
+					</reportElement>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font size="10" isBold="true" isItalic="true"/>
 					</textElement>

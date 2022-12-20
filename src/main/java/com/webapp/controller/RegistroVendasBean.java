@@ -50,6 +50,7 @@ import com.webapp.model.ItemVendaCompra;
 import com.webapp.model.Log;
 import com.webapp.model.Mesa;
 import com.webapp.model.Pagamento;
+import com.webapp.model.PagamentoConta;
 import com.webapp.model.PeriodoPagamento;
 import com.webapp.model.Produto;
 import com.webapp.model.StatusPedido;
@@ -72,6 +73,7 @@ import com.webapp.repository.ItensVendas;
 import com.webapp.repository.ItensVendasCompras;
 import com.webapp.repository.Logs;
 import com.webapp.repository.Pagamentos;
+import com.webapp.repository.PagamentosContas;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.TiposVendas;
 import com.webapp.repository.Usuarios;
@@ -193,6 +195,9 @@ public class RegistroVendasBean implements Serializable {
 
 	@Inject
 	private Pagamentos pagamentos;
+	
+	@Inject
+	private PagamentosContas pagamentosContas;
 	
 	@Inject
 	private Pagamento pagamento;
@@ -2928,9 +2933,15 @@ public class RegistroVendasBean implements Serializable {
 	public void salvar(boolean pagarConta) throws IOException {
 		
 		if (venda.getId() != null) {
-
+			
 			List<Conta> contasTemp = contas.porCodigoOperacao(venda.getNumeroVenda(), "VENDA", usuario.getEmpresa());
 			for (Conta conta : contasTemp) {
+				
+				List<PagamentoConta> pagamentosConta = pagamentosContas.todosPorConta(conta, usuario.getEmpresa());
+				for (PagamentoConta pagamentoConta : pagamentosConta) {
+					pagamentosContas.remove(pagamentoConta);
+				}
+				
 				contas.remove(conta);
 			}
 					

@@ -8,6 +8,7 @@ public class ItemEspelhoVendaPagamento implements Serializable {
 
 	private String valorPagar;
 	private String vencimento;
+	private String status;
 	
 	public String getValorPagar() {
 		return valorPagar;
@@ -20,6 +21,12 @@ public class ItemEspelhoVendaPagamento implements Serializable {
 	}
 	public void setVencimento(String vencimento) {
 		this.vencimento = vencimento;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	
 }

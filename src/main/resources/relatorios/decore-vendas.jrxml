@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="decore-vendas" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="0" bottomMargin="0" uuid="519bb040-d2f6-44c8-b08c-2225ab2837bc">
-	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="309"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -197,14 +197,14 @@
 					<text><![CDATA[VALOR A PAGAR]]></text>
 				</staticText>
 				<subreport>
-					<reportElement uuid="b94c6c09-3e88-4114-98af-c4fbbd9785ce" x="351" y="120" width="184" height="20">
+					<reportElement uuid="b94c6c09-3e88-4114-98af-c4fbbd9785ce" x="321" y="120" width="214" height="20">
 						<printWhenExpression><![CDATA[$F{conta} && $F{tipoPagamento}.equals( "PARCELADO" )]]></printWhenExpression>
 					</reportElement>
 					<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{itensParcelamentos}, false)]]></dataSourceExpression>
 					<subreportExpression><![CDATA["/relatorios/parcelamentos.jasper"]]></subreportExpression>
 				</subreport>
 				<subreport>
-					<reportElement uuid="b94c6c09-3e88-4114-98af-c4fbbd9785ce" stretchType="RelativeToBandHeight" x="351" y="120" width="184" height="20">
+					<reportElement uuid="b94c6c09-3e88-4114-98af-c4fbbd9785ce" stretchType="RelativeToBandHeight" x="321" y="120" width="214" height="20">
 						<printWhenExpression><![CDATA[$F{conta} && $F{tipoPagamento}.equals( "AVISTA" )]]></printWhenExpression>
 					</reportElement>
 					<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{itensPagamento}, false)]]></dataSourceExpression>
@@ -229,7 +229,7 @@
 					<text><![CDATA[PARCELA]]></text>
 				</staticText>
 				<subreport>
-					<reportElement uuid="b94c6c09-3e88-4114-98af-c4fbbd9785ce" stretchType="RelativeToBandHeight" x="351" y="120" width="184" height="20">
+					<reportElement uuid="b94c6c09-3e88-4114-98af-c4fbbd9785ce" stretchType="RelativeToBandHeight" x="321" y="120" width="214" height="20">
 						<printWhenExpression><![CDATA[$F{conta} && $F{tipoPagamento}.equals( "AVISTA" )]]></printWhenExpression>
 					</reportElement>
 					<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{itensPagamento}, false)]]></dataSourceExpression>
@@ -428,11 +428,11 @@
 				<textFieldExpression><![CDATA[$F{bairroCliente}]]></textFieldExpression>
 			</textField>
 			<image scaleImage="FillFrame" onErrorType="Blank">
-				<reportElement uuid="425b6d9a-1b97-4950-ab37-dde6c8e3e2e3" style="Column header" x="12" y="39" width="69" height="58"/>
+				<reportElement uuid="425b6d9a-1b97-4950-ab37-dde6c8e3e2e3" style="Column header" x="12" y="38" width="69" height="69"/>
 				<imageExpression><![CDATA["/relatorios/QRCODE.jpeg"]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement uuid="7da8ff0a-0891-4fbf-bd3a-52e5f8d2af04" x="-5" y="101" width="105" height="25" backcolor="#FF0000"/>
+				<reportElement uuid="7da8ff0a-0891-4fbf-bd3a-52e5f8d2af04" x="-5" y="106" width="105" height="25" backcolor="#FF0000"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="8" isBold="false"/>
 				</textElement>

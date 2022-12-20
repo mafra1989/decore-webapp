@@ -1208,6 +1208,12 @@ public class ConsultaContasBean implements Serializable {
 				pagamentosPedido.setValorPagar(nf.format(conta.get().getValor().doubleValue()));
 				pagamentosPedido.setVencimento(sdf.format(conta.get().getVencimento()));
 				
+				if(conta.isPresent()) {
+					if(conta.get().isStatus()) {
+						pagamentosPedido.setStatus("PAGO");
+					}
+				}
+				
 				pedido.getItensPagamento().add(pagamentosPedido);
 				
 			} else if(pedido.getConta() && vendaSelecionada.getTipoPagamento() == TipoPagamento.PARCELADO) {
@@ -1219,7 +1225,9 @@ public class ConsultaContasBean implements Serializable {
 					parcelamentosPedido.setValor(nf.format(f.getValor().doubleValue()));
 					parcelamentosPedido.setVencimento(sdf.format(f.getVencimento()));
 					
-					if(f.getParcela().equals("Entrada")) { parcelamentosPedido.setStatus("✓"); }
+					if(f.isStatus()) {
+						parcelamentosPedido.setStatus("PAGO");
+					}
 		            
 		            pedido.getItensParcelamentos().add(parcelamentosPedido);
 		        });
