@@ -989,7 +989,7 @@ public class Contas_ implements Serializable {
 	public List<Conta> contasAReceberPorDiaValor(Calendar calendarStart, Calendar calendarStop, Empresa empresa) {
 		 
 		String jpql = "SELECT i FROM Conta i "
-				+ "WHERE i.empresa.id = :empresa AND i.pagamento BETWEEN :dataInicio AND :dataFim "
+				+ "WHERE i.empresa.id = :empresa AND i.vencimento BETWEEN :dataInicio AND :dataFim "
 				+ "AND i.tipo = 'CREDITO' AND i.status = 'N' AND i.ajuste = 'N' and i.exclusao = 'N' order by i.vencimento ASC, i.id asc";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
 				calendarStop.getTime());
