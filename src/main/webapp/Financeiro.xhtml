@@ -393,6 +393,27 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 }
 
 @media ( min-width :220px) {
+	.filtro-vendas-clientes.hide {
+		max-height: 0;
+		pointer-events: none;
+		transition: max-height 0.3s ease-in-out;
+	}
+	.filtro-vendas-clientes {
+		overflow: hidden;
+		max-height: 300px;
+		transition: max-height 1s ease-in-out;
+	}
+	.ui-inputswitch .ui-inputswitch-handle {
+	    width: 28px !important;
+	}
+	
+	.ui-inputswitch {
+	    width: 60px !important;
+	}
+	
+	.ui-inputswitch .ui-inputswitch-off {
+	    width: 32px !important;
+	}
 	.ui-datepicker-touch-ui.ui-datepicker td a, .ui-datepicker-touch-ui.ui-datepicker td span, .ui-datepicker-touch-ui.ui-datepicker th {
 	    padding: 10px;   
 	}
@@ -427,6 +448,23 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 	    min-width: 30%;
 	    display: inline-block;
 	    margin: -0.4em 1em -0.4em -0.4em;
+	}
+	
+	#filtros-dialog .ui-selectonemenu {
+		display: flex !important;
+	}
+	
+	#filtros-dialog .ui-panel .ui-panel-content {
+	    border: none;
+	    padding: 0px;
+	}
+	
+	#filtros-dialog .filtro-vendas.ui-panelgrid .ui-panelgrid-cell {
+	    padding: 0px 0px;
+	}
+	
+	#filtros-dialog .filtro-vendas-clientes.ui-panelgrid .ui-panelgrid-cell {
+	    padding: 0px 0px;
 	}
 	
 	#pagamentos-dialog .ui-datatable-reflow .ui-datatable-data td[role="gridcell"]:not(.ui-helper-hidden),
@@ -475,11 +513,24 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 	#contas-dialog .ui-inputswitch .ui-inputswitch-off {
 	    background-color: #f15b5b !important;
 	}
-	#contas-dialog .ui-state-active, .pagar .ui-state-active, #contasPagas .ui-state-highlight, .pagar .ui-state-highlight {
+	.pagar .ui-state-active, #contasPagas .ui-state-highlight, .pagar .ui-state-highlight {
 	    background-color: #46bb68 !important;
 	}
 	#contas-dialog {
 		width: 370px !important;
+	}
+	#contas-dialog .btn-filtro {
+		color: #363535;
+    	background-color: #ffffff;
+    	border: 1px solid #5a5a5ab0;
+    	margin-top: 10px;
+    	margin-left: 10px;
+	}
+	#contas-dialog .btn-filtro.ui-state-hover {
+		background-color: #f7f7f7;
+	}
+	#contas-dialog .btn-filtro.ui-state-active {
+		background-color: #f7f7f7;
 	}
 	.despesas-receitas {
 		margin-top:5px;
@@ -781,7 +832,7 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 					oncomplete="PF('downloadLoading').hide();PF('contas-dialog').show();" />
 					
 				<p:remoteCommand name="buscarContasAReceber" 
-					update="contas-dialog form-contas" 
+					update="contas-dialog form-contas form-filtros" 
 					actionListener="#{consultaContasBean.buscarContasAReceber}"
 					onstart="PF('downloadLoading').show();"
 					oncomplete="PF('downloadLoading').hide();PF('contas-dialog').show();" />
@@ -1206,7 +1257,7 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 				<p:panel class="card card-w-title itens-add"
 					id="panel-table">
 					
-					<p:selectOneMenu id="vendedor"
+					<p:selectOneMenu id="vendedor" rendered="false"
 						value="#{consultaContasBean.usuarioSelecionado}">
 
 						<f:selectItem itemLabel="Selecione vendedor" />
@@ -1216,7 +1267,14 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 						<f:selectItems value="#{consultaContasBean.todosUsuarios}"
 							var="vendedor" itemLabel="#{vendedor.nome}"
 							itemValue="#{vendedor}" />
-					</p:selectOneMenu>			
+					</p:selectOneMenu>
+					
+					<p:commandButton id="btn-filtro" styleClass="btn-filtro" value="Filtrar contas"
+						onstart="start();" update="form-filtros" process="@this"
+						actionListener="#{consultaContasBean.mostrarFiltroCliente}"
+						oncomplete="PF('filtros-dialog').show();stop();"
+						icon="fa fa-fw fa-sliders">
+                	</p:commandButton>			
 						
 					<p:menuButton id="menu-btn" value="Opções" 
 						style="width: 80px;float: right;margin-right: 10px;margin-top:10px;margin-bottom:5px;"
@@ -1269,23 +1327,24 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
                 	
 					</p:menuButton>
 					
-					<p:tooltip id="toolTipGrow" for="btn-export" 
+					<p:tooltip id="toolTipGrow" for="btn-export" rendered="false"
                								showEffect="clip" position="top">             								
                			<h:outputText value="Exportar tudo" />
 					</p:tooltip>
 					
-					<p:commandButton id="btn-export" ajax="false" 
-						disabled="#{(consultaContasBean.contasFiltradasSize eq 0) or (not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado())}"
+					<p:commandButton id="btn-export" value="Exportar tudo" ajax="false" 
+						disabled="#{(consultaContasBean.contasFiltradasSize eq 0) or (not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado())}"					
 						icon="fa fa-fw fa-file-excel-o" style="float: right;margin-top: 10px;margin-right: 5px;">
 						<p:dataExporter type="xls" target="contasTable" fileName="#{consultaContasBean.tipoContas}" />
                 	</p:commandButton>
-
+                	
+                	
 					<p:panelGrid columns="1" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-12">
 
 						<p:dataTable id="contasTable" paginatorAlwaysVisible="false"
-							scrollable="true" scrollHeight="460"
+							scrollable="true" scrollHeight="460" style="margin-top: 6px;"
 							value="#{consultaContasBean.contasFiltradas}" var="conta"
 							emptyMessage="Nenhum resultado encontrado." reflow="true"
 							paginator="false" rowKey="#{conta.id}"
@@ -1438,8 +1497,7 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 		
 		<p:dialog header="Pagamento conta"
 			widgetVar="pagamento-dialog" id="pagamento-dialog" resizable="false"
-			modal="true" closeOnEscape="true" responsive="true" width="250px" position="top"
-			style="margin-top: 140px">
+			modal="true" closeOnEscape="true" responsive="true" width="250px" position="center">
 
 			<h:form id="form-pagamento">
 
@@ -1663,6 +1721,79 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 			</h:form>
 		</p:dialog>
 		
+		
+		<p:dialog id="filtros-dialog" header="Filtrar contas" modal="true"
+			widgetVar="filtros-dialog" draggable="true" width="326"
+			closable="true" resizable="false" position="center" responsive="true">
+
+			<h:form id="form-filtros" style="margin-top: 10px;">
+				
+				<p:panelGrid columns="1" layout="grid" style="margin-bottom:2px;" id="grid-filtros"
+					styleClass="panelgrid-noborder disabled disabled">
+	
+					<p:outputLabel value="Vendedor" for="vendedor" />
+					<p:selectOneMenu id="vendedor"
+						value="#{consultaContasBean.usuarioSelecionado}">
+
+						<f:selectItem itemLabel="Selecione vendedor" />
+						
+						<f:selectItems value="#{consultaContasBean.todosUsuarios}"
+							var="vendedor" itemLabel="#{vendedor.nome}"
+							itemValue="#{vendedor}" />
+					</p:selectOneMenu>
+					
+					<p:panel styleClass="panelgrid-noborder disabled disabled filtro-vendas" 
+						style="margin-top:10px;margin-bottom:42px;"
+						rendered="#{consultaContasBean.labelFiltroContas != null}">
+					
+						<p:outputLabel value="#{consultaContasBean.labelFiltroContas}" style="font-weight: bolder;margin-top: 4px;float: left;" />
+						<p:selectBooleanButton value="#{consultaContasBean.filtroTodasContas}" onLabel="#{consultaContasBean.hoje}" offLabel="Todas" style="width:6rem;float:right;width: 62px !important;"/>
+					</p:panel>		
+					
+					<p:panel styleClass="panelgrid-noborder disabled disabled filtro-vendas" 
+						style="margin-bottom:42px;#{consultaContasBean.labelFiltroContas != null ? 'margin-top:5px;' : 'margin-top:10px;'}"
+						rendered="#{consultaContasBean.receitas}">
+					
+						<p:outputLabel value="Somente Vendas" for="contas-periodo" style="font-weight: bolder;margin-top: 2px;float: left;" />
+						<p:inputSwitch id="contas-periodo" offLabel="Não" onLabel="Sim" styleClass="vendas-filtro" style="float:right;width: 60px !important;"
+							value="#{consultaContasBean.somenteVendas}">
+							<p:ajax process="@this" update="@this" onstart="start();" onsuccess="stop();" listener="#{consultaContasBean.mostrarFiltroCliente}" />
+						</p:inputSwitch>
+					</p:panel>			
+					
+					<p:panel id="panel-filtros" styleClass="panelgrid-noborder disabled disabled filtro-vendas-clientes hide"
+						rendered="#{consultaContasBean.receitas}">
+						<p:outputLabel value="Cliente" for="cliente" />
+						<p:selectOneMenu id="cliente" style="margin-top:8px;margin-bottom:15px;"
+							value="#{consultaContasBean.clienteSelecionado}">
+	
+							<f:selectItem itemLabel="Selecione cliente" />
+							
+							<f:selectItems value="#{consultaContasBean.todosClientes}"
+								var="cliente" itemLabel="#{cliente.nome}"
+								itemValue="#{cliente}" />
+						</p:selectOneMenu>
+					</p:panel>	
+					
+					<div style="width: 100%;margin-left: -22px;
+								    padding-left: 44px;
+								    margin-top: #{consultaContasBean.receitas ? '5px' : '20px'};
+								    margin-bottom: 0px;
+								    border-top: 1px solid #ccc;"></div>
+	
+					<p:panel styleClass="panelgrid-noborder disabled disabled">
+										
+						<p:commandButton icon="fa fa-fw fa-filter"
+							style="float: right;font-weight: bold;margin-top: 8px;font-size: 13px;width: 100px;background-color: #136A8A;position: relative;margin-right: 0px;margin-bottom: 2px;"
+							value="Confirmar" onstart="start();" update="form-contas" process="@this form-filtros"
+							action="#{consultaContasBean.filtrarContasPorUsuario}"
+							oncomplete="PF('filtros-dialog').hide();stop();">
+						</p:commandButton>
+					</p:panel>
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+		
 
 		<p:dialog id="downloadLoading" showHeader="false" modal="true"
 			widgetVar="downloadLoading" header="Status" draggable="false"
@@ -1696,6 +1827,15 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 			}
 			function contasAPagar() {
 				buscarContasAPagar();
+			}
+			
+			function ocultarFiltroCliente() {
+				$(".filtro-vendas-clientes").addClass("hide");
+				
+			}
+
+			function mostrarFiltroCliente() {
+				$(".filtro-vendas-clientes").removeClass("hide");
 			}
 		</script>
 

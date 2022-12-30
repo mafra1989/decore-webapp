@@ -189,7 +189,7 @@ public class Contas_ implements Serializable {
 
 		String jpql = "SELECT c FROM Conta c " + "WHERE c.empresa.id = :empresa AND c.id > 0 AND c.mes = :mes AND c.ano = :ano " + conditionCodigo
 				+ conditionTipoOperacao + conditionOrigemConta + conditionContasPagas
-				+ "order by c.vencimento ASC, c.id asc";
+				+ "order by c.vencimento ASC, c.id asc";//c.vencimento ASC
 		
 		System.out.println(jpql);
 
@@ -642,7 +642,7 @@ public class Contas_ implements Serializable {
 		 
 		String jpql = "SELECT i FROM Conta i "
 				+ "WHERE i.empresa.id = :empresa AND i.pagamento BETWEEN :dataInicio AND :dataFim "
-				+ "AND (i.operacao = 'LANCAMENTO' OR i.operacao = 'VENDA') AND i.tipo = 'CREDITO' AND i.status = 'Y' AND i.ajuste = 'N' and i.exclusao = 'N'";
+				+ "AND (i.operacao = 'LANCAMENTO' OR i.operacao = 'VENDA') AND i.tipo = 'CREDITO' AND i.status = 'Y' AND i.ajuste = 'N' and i.exclusao = 'N' order by i.vencimento ASC, i.id asc";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
 				calendarStop.getTime());
 
@@ -656,7 +656,7 @@ public class Contas_ implements Serializable {
 		 
 		String jpql = "SELECT i FROM Conta i "
 				+ "WHERE i.empresa.id = :empresa AND i.pagamento BETWEEN :dataInicio AND :dataFim "
-				+ "AND (i.operacao = 'LANCAMENTO' OR i.operacao = 'COMPRA') AND i.tipo = 'DEBITO' AND i.status = 'Y' AND i.ajuste = 'N' and i.exclusao = 'N'";
+				+ "AND (i.operacao = 'LANCAMENTO' OR i.operacao = 'COMPRA') AND i.tipo = 'DEBITO' AND i.status = 'Y' AND i.ajuste = 'N' and i.exclusao = 'N' order by i.vencimento ASC, i.id asc";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
 				calendarStop.getTime());
 
@@ -872,7 +872,7 @@ public class Contas_ implements Serializable {
 
 		String jpql = "SELECT i FROM Conta i "
 				+ "WHERE i.empresa.id = :empresa AND i.vencimento < :dataInicio "
-				+ "AND i.tipo = 'CREDITO' AND i.status = 'N' AND i.ajuste = 'N' and i.exclusao = 'N'";
+				+ "AND i.tipo = 'CREDITO' AND i.status = 'N' AND i.ajuste = 'N' and i.exclusao = 'N' order by i.vencimento ASC, i.id asc";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime());
 
 		List<Conta> contas = q.getResultList();
@@ -954,10 +954,24 @@ public class Contas_ implements Serializable {
 
 		String jpql = "FROM Conta i "
 				+ "WHERE i.empresa.id = :empresa "
-				+ "AND i.tipo = 'DEBITO' AND i.status = 'N' AND i.ajuste = 'N' and i.exclusao = 'N'";
+				+ "AND i.tipo = 'DEBITO' AND i.status = 'N' AND i.ajuste = 'N' and i.exclusao = 'N' order by i.vencimento ASC, i.id asc";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
 
 		return q.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Conta> contasAPagarPorDiaValor(Calendar calendarStart, Calendar calendarStop, Empresa empresa) {
+		 
+		String jpql = "SELECT i FROM Conta i "
+				+ "WHERE i.empresa.id = :empresa AND i.pagamento BETWEEN :dataInicio AND :dataFim "
+				+ "AND i.tipo = 'DEBITO' AND i.status = 'N' AND i.ajuste = 'N' and i.exclusao = 'N' order by i.vencimento ASC, i.id asc";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
+				calendarStop.getTime());
+
+		List<Conta> contas = q.getResultList();
+		
+		return contas;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -965,10 +979,24 @@ public class Contas_ implements Serializable {
 
 		String jpql = "FROM Conta i "
 				+ "WHERE i.empresa.id = :empresa "
-				+ "AND i.tipo = 'CREDITO' AND i.status = 'N' AND i.ajuste = 'N' and i.exclusao = 'N'";
+				+ "AND i.tipo = 'CREDITO' AND i.status = 'N' AND i.ajuste = 'N' and i.exclusao = 'N' order by i.vencimento ASC, i.id asc";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
 
 		return q.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Conta> contasAReceberPorDiaValor(Calendar calendarStart, Calendar calendarStop, Empresa empresa) {
+		 
+		String jpql = "SELECT i FROM Conta i "
+				+ "WHERE i.empresa.id = :empresa AND i.pagamento BETWEEN :dataInicio AND :dataFim "
+				+ "AND i.tipo = 'CREDITO' AND i.status = 'N' AND i.ajuste = 'N' and i.exclusao = 'N' order by i.vencimento ASC, i.id asc";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
+				calendarStop.getTime());
+
+		List<Conta> contas = q.getResultList();
+		
+		return contas;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -976,7 +1004,7 @@ public class Contas_ implements Serializable {
 
 		String jpql = "SELECT i FROM Conta i "
 				+ "WHERE i.empresa.id = :empresa AND i.vencimento < :dataInicio "
-				+ "AND i.tipo = 'DEBITO' AND i.status = 'N' AND i.ajuste = 'N' and i.exclusao = 'N'";
+				+ "AND i.tipo = 'DEBITO' AND i.status = 'N' AND i.ajuste = 'N' and i.exclusao = 'N' order by i.vencimento ASC, i.id asc";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime());
 
 		List<Conta> contas = q.getResultList();
@@ -1055,7 +1083,7 @@ public class Contas_ implements Serializable {
 		// AND c.conta.status = 'N'
 		String jpql = "FROM PagamentoConta c "
 				+ "WHERE c.conta.empresa.id = :empresa AND c.dataPagamento BETWEEN :dataInicio AND :dataFim "
-				+ "AND c.conta.tipo = 'DEBITO' AND c.conta.ajuste = 'N' and c.conta.exclusao = 'N'";
+				+ "AND c.conta.tipo = 'DEBITO' AND c.conta.ajuste = 'N' and c.conta.exclusao = 'N' order by c.id asc";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId())
 				.setParameter("dataInicio", calendarStart.getTime())
 				.setParameter("dataFim", calendarStop.getTime());
@@ -1068,7 +1096,7 @@ public class Contas_ implements Serializable {
 		// AND c.conta.status = 'N'
 		String jpql = "FROM PagamentoConta c "
 				+ "WHERE c.conta.empresa.id = :empresa AND c.conta.id = :contaId AND c.dataPagamento BETWEEN :dataInicio AND :dataFim "
-				+ "AND c.conta.tipo = 'DEBITO' AND c.conta.ajuste = 'N' and c.conta.exclusao = 'N'";
+				+ "AND c.conta.tipo = 'DEBITO' AND c.conta.ajuste = 'N' and c.conta.exclusao = 'N' order by c.id asc";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId())
 				.setParameter("contaId", conta.getId())
 				.setParameter("dataInicio", calendarStart.getTime())
@@ -1082,7 +1110,7 @@ public class Contas_ implements Serializable {
 		// AND c.conta.status = 'N'
 		String jpql = "FROM PagamentoConta c "
 				+ "WHERE c.conta.empresa.id = :empresa AND c.conta.id = :contaId AND c.dataPagamento BETWEEN :dataInicio AND :dataFim "
-				+ "AND c.conta.tipo = 'CREDITO' AND c.conta.ajuste = 'N' and c.conta.exclusao = 'N'";
+				+ "AND c.conta.tipo = 'CREDITO' AND c.conta.ajuste = 'N' and c.conta.exclusao = 'N' order by c.id asc";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId())
 				.setParameter("contaId", conta.getId())
 				.setParameter("dataInicio", calendarStart.getTime())
@@ -1096,7 +1124,7 @@ public class Contas_ implements Serializable {
 		// AND c.conta.status = 'N'
 		String jpql = "FROM PagamentoConta c "
 				+ "WHERE c.conta.empresa.id = :empresa AND c.dataPagamento BETWEEN :dataInicio AND :dataFim "
-				+ "AND c.conta.tipo = 'CREDITO' AND c.conta.ajuste = 'N' and c.conta.exclusao = 'N'";
+				+ "AND c.conta.tipo = 'CREDITO' AND c.conta.ajuste = 'N' and c.conta.exclusao = 'N' order by c.id asc";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId())
 				.setParameter("dataInicio", calendarStart.getTime())
 				.setParameter("dataFim", calendarStop.getTime());

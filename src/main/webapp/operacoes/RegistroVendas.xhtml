@@ -1072,7 +1072,7 @@
 									action="#{registroVendasBean.aplicarDescontoVenda_}"
 									process="@this panel-table accordion-panel"
 									style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;"
-									rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 7111 or seguranca.usuarioLogado.usuario.empresa.id == 7112}" />
+									rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 7111 and seguranca.usuarioLogado.usuario.empresa.id == 7112}" />
 									
 								<p:commandButton id="btn-calcular" value="Finalizar Venda"
 									onstart="PF('downloadLoading').show();" icon="fa fa-save"
@@ -1082,7 +1082,7 @@
 									disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()) or registroVendasBean.venda.exclusao}"
 									update="msg panel-table accordion-panel form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:panel-total-geral form:lote panel-itens confirm-dialog confirmDialog"
 									process="@this panel-table accordion-panel"
-									rendered="#{seguranca.usuarioLogado.usuario.empresa.id != 7111 and seguranca.usuarioLogado.usuario.empresa.id != 7112}" />
+									rendered="#{seguranca.usuarioLogado.usuario.empresa.id != 7111 and seguranca.usuarioLogado.usuario.empresa.id != 7112 or true}" />
 								
 							</p:panelGrid>
 							

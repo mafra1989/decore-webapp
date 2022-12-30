@@ -3653,7 +3653,7 @@ public class RegistroVendasBean implements Serializable {
 			
 			NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
 			
-			log.setDescricao("Registrou venda PDV, Nº " + venda.getNumeroVenda() + ", quantidade de itens " + venda.getQuantidadeItens() + ", valor total R$ " + nf.format(venda.getValorTotal()));
+			log.setDescricao("Registrou venda, Nº " + venda.getNumeroVenda() + ", quantidade de itens " + venda.getQuantidadeItens() + ", valor total R$ " + nf.format(venda.getValorTotal()));
 			log.setUsuario(usuario);		
 			logs.save(log);
 			
@@ -3849,7 +3849,7 @@ public class RegistroVendasBean implements Serializable {
 			
 			NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
 			
-			log.setDescricao("Alterou venda PDV, Nº " + venda.getNumeroVenda() + ", quantidade de itens " + venda.getQuantidadeItens() + ", valor total R$ " + nf.format(venda.getValorTotal()));
+			log.setDescricao("Alterou venda, Nº " + venda.getNumeroVenda() + ", quantidade de itens " + venda.getQuantidadeItens() + ", valor total R$ " + nf.format(venda.getValorTotal()));
 			log.setUsuario(usuario);		
 			logs.save(log);
 				
