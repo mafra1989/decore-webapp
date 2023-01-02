@@ -387,13 +387,13 @@
 								<h:outputText value="#{venda.usuario.nome}" />
 							</p:column>
 							
-							<p:column headerText="Comissão (%)" width="8%" styleClass="font-column" visible="#{venda.empresa.id == 74553}" exportable="#{venda.empresa.id == 74553}">
+							<p:column headerText="Comissão (%)" width="8%" styleClass="font-column" visible="#{seguranca.usuarioLogado.usuario.empresa.id == 74553}" exportable="#{seguranca.usuarioLogado.usuario.empresa.id == 74553}">
 								<h:outputText value="#{venda.taxaDeComissao}">
 									<f:convertNumber type="currency" currencySymbol="%" />
 								</h:outputText>
 							</p:column>
 							
-							<p:column headerText="Comissão (R$)" width="8%" styleClass="font-column" visible="#{venda.empresa.id == 74553}" exportable="#{venda.empresa.id == 74553}">
+							<p:column headerText="Comissão (R$)" width="8%" styleClass="font-column" visible="#{seguranca.usuarioLogado.usuario.empresa.id == 74553}" exportable="#{seguranca.usuarioLogado.usuario.empresa.id == 74553}">
 								<h:outputText value="#{(venda.taxaDeComissao * (venda.valorTotal - venda.desconto))/100}">
 									<f:convertNumber type="currency" currencySymbol="R$" />
 								</h:outputText>
