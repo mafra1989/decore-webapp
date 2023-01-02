@@ -639,9 +639,9 @@
 									</p:selectOneMenu>
 									
 									<p:outputLabel value="Comissão (%)" for="comissao" 
-										rendered="seguranca.usuarioLogado.usuario.empresa.id eq 74553}" />
+										rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 74553}" />
 									<p:inputNumber id="comissao" decimalPlaces="2" style="margin-top: -5px;"
-										rendered="seguranca.usuarioLogado.usuario.empresa.id eq 74553}"
+										rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 74553}"
 										placeholder="% 0,00" autocomplete="off" symbol="% " minValue="0"
 										value="#{registroVendasBean.venda.taxaDeComissao}">
 									</p:inputNumber>

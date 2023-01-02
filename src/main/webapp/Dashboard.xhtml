@@ -349,6 +349,11 @@ body .ui-datatable .ui-datatable-data>tr td {
 	#vendedor-dialog .ui-panel .ui-panel-content {
    		padding: 6px 9px;
     }
+    #vendedor-dialog .ui-selectonemenu {
+	    display: flex !important;
+	    min-width: max-content !important;
+	}
+
 	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
 	    height: 28px;
 	}
@@ -1773,7 +1778,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 		<p:dialog
 			header="Selecionar vendedor"
 			widgetVar="vendedor-dialog" id="vendedor-dialog" resizable="false"
-			modal="true" closeOnEscape="true" responsive="true" width="250px" position="center">
+			modal="true" closeOnEscape="true" responsive="true" width="258px" position="center">
 
 			<h:form id="form-vendedor">
 
@@ -1810,13 +1815,13 @@ body .ui-datatable .ui-datatable-data>tr td {
 								oncomplete="PF('btn-confirmar-vendedor').enable();PF('vendedor-dialog').hide();stop();"
 								update="form:vendedor-selecionado form:comissao-vendedor" process="@this form-vendedor"
 								action="#{dashboardBean.calcularSaldoComissao}"
-								style="font-weight: bold;background-color: #0d8819b5; width: 97px">
+								style="font-weight: bold;background-color: #0d8819b5; width: 97px;float: right;margin-bottom: 4px;">
 	
 							</p:commandButton>
 	
 							<p:commandButton icon="fa fa-fw fa-close" value="Fechar"
 								onclick="PF('vendedor-dialog').hide();start();" oncomplete="stop();" 
-								style="margin-left:1px;background-color: #e15e5ef0; font-weight: bold; float: left; width: 97px">
+								style="margin-left:1px;background-color: #e15e5ef0; font-weight: bold; float: right; width: 97px">
 	
 							</p:commandButton>
 						</p:panel>
