@@ -116,6 +116,9 @@ public class ConsultaLancamentosBean implements Serializable {
 
 	private boolean lancamentosPagos;
 	
+	@Inject
+	private Usuario vendedor;
+	
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -164,7 +167,7 @@ public class ConsultaLancamentosBean implements Serializable {
 
 		lancamentosFiltrados = new ArrayList<>();
 		lancamentosFiltrados = lancamentos.lancamentosFiltrados(numeroLancamento, dateStart, calendarioTemp.getTime(), origemLancamento,
-				categoriaLancamento, destinoLancamento, usuarioTemp, categorias, lancamentosPagos, usuario_.getEmpresa());
+				categoriaLancamento, destinoLancamento, usuarioTemp, categorias, lancamentosPagos, usuario_.getEmpresa(), vendedor);
 
 		double totalLancamentosTemp = 0;
 		for (Lancamento lancamento : lancamentosFiltrados) {
@@ -469,6 +472,14 @@ public class ConsultaLancamentosBean implements Serializable {
 
 	public void setLancamentosPagos(boolean lancamentosPagos) {
 		this.lancamentosPagos = lancamentosPagos;
+	}
+
+	public Usuario getVendedor() {
+		return vendedor;
+	}
+
+	public void setVendedor(Usuario vendedor) {
+		this.vendedor = vendedor;
 	}
 
 }

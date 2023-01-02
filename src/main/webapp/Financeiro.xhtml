@@ -328,6 +328,10 @@ body #contas-dialog .ui-panel .ui-panel-content {
     border: none;
 }
 
+#contas-dialog .ui-datatable-scrollable-theadclone {
+    border: 1px solid #b6b7c2;
+}
+
 body #contas-dialog .ui-panel .ui-panel-content {
     padding: 0px;
 }
@@ -930,9 +934,9 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 								<i class="fa fa-money" />
 							</div>
 							<div class="overview-box-content">
-								<div class="overview-box-title">Total de receitas <span style="font-size:9px;">Hoje (<h:outputText value="#{dashboardBean.hoje}" />)</span></div>
-								<div class="overview-box-stats"><h:outputText value="#{dashboardBean.totalReceitasHojeValor}"><f:convertNumber type="currency" /></h:outputText></div>
-								<div class="overview-box-details"><h:outputText value="#{dashboardBean.totalLancamentosReceitasHojeValor}"><f:convertNumber type="currency" /></h:outputText> em lançamentos</div>
+								<div class="overview-box-title">Total de receitas <span style="font-size:9px;">Hoje (<h:outputText value="#{consultaContasBean.hoje}" />)</span></div>
+								<div class="overview-box-stats"><h:outputText value="#{consultaContasBean.totalReceitasHojeValor}"><f:convertNumber type="currency" /></h:outputText></div>
+								<div class="overview-box-details"><h:outputText value="#{consultaContasBean.totalLancamentosReceitasHojeValor}"><f:convertNumber type="currency" /></h:outputText> em lançamentos</div>
 							</div>
 						</div>
 					</div>
@@ -948,7 +952,7 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 									onclick="contasAReceber();">
 									<div class="overview-box-stats"><h:outputText value="#{consultaContasBean.totalAReceberValor}"><f:convertNumber type="currency" /></h:outputText></div>
 								</p:link>
-								<div class="overview-box-details"><h:outputText value="#{dashboardBean.totalAReceberHojeValor}"><f:convertNumber type="currency" /></h:outputText> à receber em #{dashboardBean.hoje}</div>
+								<div class="overview-box-details"><h:outputText value="#{consultaContasBean.totalAReceberHojeValor}"><f:convertNumber type="currency" /></h:outputText> à receber em #{dashboardBean.hoje}</div>
 							</div>
 						</div>
 					</div>
@@ -959,9 +963,9 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 								<i class="fa fa-coffee" />
 							</div>
 							<div class="overview-box-content">
-								<div class="overview-box-title">Total de despesas <span style="font-size:9px;">Hoje (<h:outputText value="#{dashboardBean.hoje}" />)</span></div>
-								<div class="overview-box-stats"><h:outputText value="#{dashboardBean.totalDespesasHojeValor}"><f:convertNumber type="currency" /></h:outputText></div>
-								<div class="overview-box-details"><h:outputText value="#{dashboardBean.totalLancamentosDespesasHojeValor}"><f:convertNumber type="currency" /></h:outputText> em lançamentos</div>
+								<div class="overview-box-title">Total de despesas <span style="font-size:9px;">Hoje (<h:outputText value="#{consultaContasBean.hoje}" />)</span></div>
+								<div class="overview-box-stats"><h:outputText value="#{consultaContasBean.totalDespesasHojeValor}"><f:convertNumber type="currency" /></h:outputText></div>
+								<div class="overview-box-details"><h:outputText value="#{consultaContasBean.totalLancamentosDespesasHojeValor}"><f:convertNumber type="currency" /></h:outputText> em lançamentos</div>
 							</div>
 						</div>
 					</div>
@@ -977,7 +981,7 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 									onclick="contasAPagar();">
 									<div class="overview-box-stats"><h:outputText value="#{consultaContasBean.totalAPagarValor}"><f:convertNumber type="currency" /></h:outputText></div>						
 								</p:link>
-								<div class="overview-box-details" style="color: #ececec;"><h:outputText value="#{dashboardBean.totalAPagarHojeValor}"><f:convertNumber type="currency" /></h:outputText> à pagar em #{dashboardBean.hoje}</div>
+								<div class="overview-box-details" style="color: #ececec;"><h:outputText value="#{consultaContasBean.totalAPagarHojeValor}"><f:convertNumber type="currency" /></h:outputText> à pagar em #{dashboardBean.hoje}</div>
 							</div>
 						</div>
 					</div>
@@ -1345,7 +1349,7 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 						columnClasses="ui-grid-col-12">
 
 						<p:dataTable id="contasTable" paginatorAlwaysVisible="false"
-							scrollable="true" scrollHeight="460" style="margin-top: 6px;"
+							scrollable="true" scrollHeight="434" style="margin-top: 8px;"
 							value="#{consultaContasBean.contasFiltradas}" var="conta"
 							emptyMessage="Nenhum resultado encontrado." reflow="true"
 							paginator="false" rowKey="#{conta.id}"
@@ -1367,8 +1371,29 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 								<h:outputText value="#{conta.descricao != null ? conta.descricao : '-'}" />
 							</p:column>
 							
-							<p:column headerText="Vendedor" width="35%" visible="false">
-								<h:outputText value="#{conta.vendedor}" />
+							<p:column headerText="Cliente" width="35%">
+								<h:outputText value="#{conta.cliente != null ? conta.cliente : '-'}" />
+							</p:column>
+							
+							<p:column headerText="Vendedor" width="35%">
+								<h:outputText value="#{conta.vendedor != null ? conta.vendedor : '-'}" />
+							</p:column>
+							
+							<p:column headerText="Comissão (%)" width="8%" visible="#{conta.empresa.id eq 74553 or true}" exportable="#{conta.empresa.id eq 74553}">
+								<h:outputText value="#{conta.taxaDeComissao}" rendered="#{not (consultaContasBean.tipoContas eq 'Total contas à pagar') and not (consultaContasBean.tipoContas eq 'Contas à pagar em atraso') and not (consultaContasBean.tipoContas eq ('Contas pagas Hoje '.concat(consultaContasBean.hoje))) and not (conta.operacao eq 'LANCAMENTO')}">
+									<f:convertNumber type="currency" currencySymbol="%" />
+								</h:outputText>
+								<h:outputText value="-" rendered="#{consultaContasBean.tipoContas eq 'Total contas à pagar' or consultaContasBean.tipoContas eq 'Contas à pagar em atraso' or consultaContasBean.tipoContas eq ('Contas pagas Hoje '.concat(consultaContasBean.hoje)) or conta.operacao eq 'LANCAMENTO'}" />
+							</p:column>
+							
+							<p:column headerText="Comissão (R$)" width="8%" visible="#{conta.empresa.id eq 74553 or true}" exportable="#{conta.empresa.id eq 74553}">
+								<h:outputText value="#{(conta.taxaDeComissao * conta.saldo)/100}" rendered="#{not (consultaContasBean.tipoContas eq 'Total contas à pagar') and not (consultaContasBean.tipoContas eq 'Contas à pagar em atraso') and not (consultaContasBean.tipoContas eq ('Contas pagas Hoje '.concat(consultaContasBean.hoje))) and not (conta.operacao eq 'LANCAMENTO') and not (conta.status)}">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+								<h:outputText value="#{(conta.taxaDeComissao * (conta.valor - conta.saldo))/100}" rendered="#{not (consultaContasBean.tipoContas eq 'Total contas à pagar') and not (consultaContasBean.tipoContas eq 'Contas à pagar em atraso') and not (consultaContasBean.tipoContas eq ('Contas pagas Hoje '.concat(consultaContasBean.hoje))) and not (conta.operacao eq 'LANCAMENTO') and conta.status}">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+								<h:outputText value="-" rendered="#{consultaContasBean.tipoContas eq 'Total contas à pagar' or consultaContasBean.tipoContas eq 'Contas à pagar em atraso' or consultaContasBean.tipoContas eq ('Contas pagas Hoje '.concat(consultaContasBean.hoje)) or conta.operacao eq 'LANCAMENTO'}" />
 							</p:column>
 
 							<p:column headerText="Operação" width="20%">
@@ -1436,26 +1461,54 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 
 							<p:outputLabel
 								value="Total em atraso: R$ #{consultaContasBean.totalContas}"
-								style="float:left;margin-top:10px;margin-bottom:5px;font-size: 13px;font-family: inherit;"
-								rendered="#{(consultaContasBean.tipoContas eq 'Contas à pagar em atraso') or (consultaContasBean.tipoContas eq 'Contas à receber em atraso')}" />
+								style="font-weight:bold;float:left;margin-top:10px;margin-bottom:5px;font-size: 13px;font-family: inherit;"
+								rendered="#{consultaContasBean.tipoContas eq 'Contas à pagar em atraso'}" />
+							
+							<p:panel style="float:left;margin-top:2px;margin-bottom:5px;font-size: 13px;font-family: inherit;">
+								<p:outputLabel
+									value="Total em atraso: R$ #{consultaContasBean.totalContas}"
+									style="font-weight:bold;"
+									rendered="#{consultaContasBean.tipoContas eq 'Contas à receber em atraso'}" />								
+								<br/>
+								<p:outputLabel
+									value="Comissões à receber: R$ #{consultaContasBean.totalComissoes}"
+									rendered="#{consultaContasBean.tipoContas eq 'Contas à receber em atraso'}" />
+							</p:panel>
 								
 							<p:outputLabel
-								value="Total pago hoje: R$ #{consultaContasBean.totalContas}"
-								style="float:left;margin-top:10px;margin-bottom:5px;font-size: 13px;font-family: inherit;"
-								rendered="#{consultaContasBean.tipoContas eq ('Contas pagas Hoje '.concat(consultaContasBean.hoje)) or consultaContasBean.tipoContas eq ('Contas recebidas Hoje '.concat(consultaContasBean.hoje))}" />
+									value="Total pago hoje: R$ #{consultaContasBean.totalContas}"
+									style="font-weight:bold;float:left;margin-top:10px;margin-bottom:5px;font-size: 13px;font-family: inherit;"
+									rendered="#{consultaContasBean.tipoContas eq ('Contas pagas Hoje '.concat(consultaContasBean.hoje))}" />						
+						
+							<p:panel style="float:left;margin-top:2px;margin-bottom:5px;font-size: 13px;font-family: inherit;">
+								<p:outputLabel
+									value="Total pago hoje: R$ #{consultaContasBean.totalContas}"
+									style="font-weight:bold;"
+									rendered="#{consultaContasBean.tipoContas eq ('Contas recebidas Hoje '.concat(consultaContasBean.hoje))}" />						
+								<br/>
+								<p:outputLabel
+									value="Comissões recebidas: R$ #{consultaContasBean.totalComissoes}"
+									rendered="#{consultaContasBean.tipoContas eq ('Contas recebidas Hoje '.concat(consultaContasBean.hoje))}" />
+							</p:panel>
 							
-							<p:outputLabel
-								value="Total à receber: R$ #{consultaContasBean.totalContas}"
-								style="float:left;margin-top:10px;margin-bottom:5px;font-size: 13px;font-family: inherit;"
-								rendered="#{consultaContasBean.tipoContas eq 'Total contas à receber'}" />
+							<p:panel style="float:left;margin-top:2px;margin-bottom:5px;font-size: 13px;font-family: inherit;">
+								<p:outputLabel
+									value="Total à receber: R$ #{consultaContasBean.totalContas}"
+									style="font-weight:bold;"							
+									rendered="#{consultaContasBean.tipoContas eq 'Total contas à receber'}" />
+								<br/>
+								<p:outputLabel
+									value="Comissões à receber: R$ #{consultaContasBean.totalComissoes}"
+									rendered="#{consultaContasBean.tipoContas eq 'Total contas à receber'}" />
+							</p:panel>
 								
 							<p:outputLabel
 								value="Total à pagar: R$ #{consultaContasBean.totalContas}"
-								style="float:left;margin-top:10px;margin-bottom:5px;font-size: 13px;font-family: inherit;"
+								style="font-weight:bold;float:left;margin-top:10px;margin-bottom:5px;font-size: 13px;font-family: inherit;"
 								rendered="#{consultaContasBean.tipoContas eq 'Total contas à pagar'}" />
 							
 							<p:commandButton id="btn-close" icon="fa fa-fw fa-close"
-								style="float:right;font-weight: bold;width: 100px;background:#e15e5ef0;margin-right: -1px;"
+								style="margin-top: 5px;float:right;font-weight: bold;width: 100px;background:#e15e5ef0;margin-right: -1px;"
 								value="Fechar" onstart="start();"
 								oncomplete="stop();PF('contas-dialog').hide();">
 							</p:commandButton>
@@ -1646,7 +1699,6 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 							onstart="PF('downloadLoading').show(); PF('btn-confirmar-estorno').disable();"
 							oncomplete="PF('downloadLoading').hide(); PF('btn-confirmar-estorno').enable();"
 							disabled="#{consultaContasBean.pagamentoSelecionado.id == null}"
-							update="form form-contas form-pagamento"
 							process="@this form-pagamento"
 							onclick="estornarConta(#{consultaContasBean.contaSelecionada.id});"
 							style="background-color: #0d8819b5; font-weight: bold; float: right;margin-left: 3px;font-size: 13px; width: 100px;margin-bottom: 0px;margin-top: 8px;margin-right: 0px;" />

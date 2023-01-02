@@ -31,6 +31,7 @@ import com.webapp.model.ItemCaixa;
 import com.webapp.model.Lancamento;
 import com.webapp.model.Log;
 import com.webapp.model.OrigemLancamento;
+import com.webapp.model.PagamentoConta;
 import com.webapp.model.PeriodoPagamento;
 import com.webapp.model.TipoAtividade;
 import com.webapp.model.TipoConta;
@@ -46,6 +47,7 @@ import com.webapp.repository.FormasPagamentos;
 import com.webapp.repository.ItensCaixas;
 import com.webapp.repository.Lancamentos;
 import com.webapp.repository.Logs;
+import com.webapp.repository.PagamentosContas;
 import com.webapp.repository.Usuarios;
 import com.webapp.util.jsf.FacesUtil;
 
@@ -171,6 +173,8 @@ public class RegistroLancamentosBean implements Serializable {
 
 	private static final DecimalFormatSymbols REAL = new DecimalFormatSymbols(BRAZIL);
 	
+	@Inject
+	private PagamentosContas pagamentosContas;
 	
 
 	public void inicializar() {
@@ -739,6 +743,12 @@ public class RegistroLancamentosBean implements Serializable {
 
 			List<Conta> contasTemp = contas.porCodigoOperacao(lancamento.getNumeroLancamento(), "LANCAMENTO", usuario_.getEmpresa());
 			for (Conta conta : contasTemp) {
+				
+				List<PagamentoConta> pagamentosConta = pagamentosContas.todosPorConta(conta, usuario_.getEmpresa());
+				for (PagamentoConta pagamentoConta : pagamentosConta) {
+					pagamentosContas.remove(pagamentoConta);
+				}
+				
 				contas.remove(conta);
 			}
 
@@ -837,6 +847,7 @@ public class RegistroLancamentosBean implements Serializable {
 					conta.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
 
 					conta.setEmpresa(usuario_.getEmpresa());
+					conta.setSaldo(conta.getValor());
 					contas.save(conta);
 				}
 
@@ -864,6 +875,7 @@ public class RegistroLancamentosBean implements Serializable {
 					conta.setStatus(true);
 
 					conta.setEmpresa(usuario_.getEmpresa());
+					conta.setSaldo(BigDecimal.ZERO);
 					contas.save(conta);
 				}
 
@@ -876,6 +888,7 @@ public class RegistroLancamentosBean implements Serializable {
 					conta.setPagamento(null);
 
 					conta.setEmpresa(usuario_.getEmpresa());
+					conta.setSaldo(conta.getValor());
 					contas.save(conta);
 				}
 			}

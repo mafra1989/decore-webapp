@@ -370,6 +370,30 @@ public class Vendas implements Serializable {
 	}
 	
 	
+	public Number totalComissao(Empresa empresa, Usuario usuario) {
+		String jpql = "SELECT sum(((i.valorTotal - i.desconto) * i.taxaDeComissao)/100) FROM Venda i WHERE i.empresa.id = :empresa "
+				+ "AND i.conta = 'N' AND i.vendaPaga = 'Y' AND i.ajuste = 'N' and i.exclusao = 'N' "
+				+ "and i.exclusao = 'N' and i.usuario.id = :idUsuario "
+				+ "AND i.taxaDeComissao > 0";
+		Query q = manager.createQuery(jpql)
+				.setParameter("empresa", empresa.getId())
+				.setParameter("idUsuario", usuario.getId());
+
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+	
 	public Number totalLucros(Empresa empresa) {
 		String jpql = "SELECT sum(i.lucro) FROM ItemVenda i WHERE i.venda.empresa.id = :empresa AND i.venda.conta = 'N' AND i.venda.vendaPaga = 'Y' AND i.venda.ajuste = 'N' and i.venda.exclusao = 'N' and i.exclusao = 'N'";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());

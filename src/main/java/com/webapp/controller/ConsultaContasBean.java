@@ -142,6 +142,16 @@ public class ConsultaContasBean implements Serializable {
 	private Number totalContasRecebidasHojeValor;
 	
 	
+	private Number totalLancamentosReceitasHojeValor;
+	
+	private Number totalReceitasHojeValor;
+	
+	
+	private Number totalLancamentosDespesasHojeValor;
+	
+	private Number totalDespesasHojeValor;
+	
+	
 	private Number totalDespesasPagasHojeValor;
 	
 	private Number totalComprasPagasHojeValor;
@@ -200,6 +210,12 @@ public class ConsultaContasBean implements Serializable {
 	
 	private boolean filtroTodasContas = false;
 	
+	private String totalComissoes = "0,00";
+	
+	private Number totalAPagarHojeValor;
+	
+	private Number totalAReceberHojeValor;
+	
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -243,8 +259,26 @@ public class ConsultaContasBean implements Serializable {
 			totalContasRecebidasHojeValor = totalReceitasPagasHojeValor.doubleValue() + totalVendasPagasHojeValor.doubleValue();
 			
 			
+	
+			Number totalReceitasPagasParcialmenteHojeValor = contas.totalReceitasPagasParcialmente(usuario.getEmpresa());
+			
+			totalLancamentosReceitasHojeValor = lancamentos.totalLancamentosReceitasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
+			
+			totalReceitasHojeValor = totalReceitasPagasHojeValor.doubleValue() + totalLancamentosReceitasHojeValor.doubleValue() + totalReceitasPagasParcialmenteHojeValor.doubleValue();
+			
+			
+			
 			totalComprasPagasHojeValor = contas.totalComprasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());			
 			totalDespesasPagasHojeValor = contas.totalDespesasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
+			
+			
+			Number totalDespesasPagasParcialmenteHojeValor = contas.totalDespesasPagasParcialmente(usuario.getEmpresa());
+			
+			totalLancamentosDespesasHojeValor = lancamentos.totalLancamentosDespesasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
+			
+			totalDespesasHojeValor = totalDespesasPagasHojeValor.doubleValue() + totalLancamentosDespesasHojeValor.doubleValue() + totalDespesasPagasParcialmenteHojeValor.doubleValue();
+			
+			
 			
 			//totalPagamentosParcialComprasHojeValor  = contas.totalPagamentosParcialComprasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());		
 			totalPagoHojeContasAPagarEmAtrasoValor = contas.totalPagoHojeContasAPagarEmAtrasoValor(usuario.getEmpresa(), calendarStart, calendarStop);					
@@ -252,8 +286,19 @@ public class ConsultaContasBean implements Serializable {
 			
 			totalPagoHojeContasAReceberEmAtrasoValor = contas.totalPagoHojeContasAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart, calendarStop);					
 			totalContasRecebidasHojeValor = (totalVendasPagasHojeValor.doubleValue() + totalReceitasPagasHojeValor.doubleValue()) + totalPagoHojeContasAReceberEmAtrasoValor.doubleValue();
+		
+		
+			Number totalAReceberHojeValorTemp = contas.totalAReceberPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
+			Number totalAReceberHojeValorPago = contas.totalAReceberPorDiaValor_(calendarStart, calendarStop, usuario.getEmpresa());
+			totalAReceberHojeValor = totalAReceberHojeValorTemp.doubleValue() - totalAReceberHojeValorPago.doubleValue();
+			
+			
+			Number totalAPagarHojeValorTemp = contas.totalAPagarPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
+			Number totalAPagarHojeValorPago = contas.totalAPagarPorDiaValor_(calendarStart, calendarStop, usuario.getEmpresa());
+			totalAPagarHojeValor = totalAPagarHojeValorTemp.doubleValue() - totalAPagarHojeValorPago.doubleValue();
 		}
 	}
+
 
 	public void pesquisar() {
 		
@@ -282,6 +327,7 @@ public class ConsultaContasBean implements Serializable {
 	
 	private double getValorTotalAndSettingDescricaoAndVendedor(double totalContasTemp) {
 		todosClientes = new ArrayList<Cliente>();
+		BigDecimal saldoDeComissao = BigDecimal.ZERO;
 		
 		for (Conta conta : contasFiltradas) {
 			totalContasTemp += conta.getValor().doubleValue();
@@ -289,7 +335,7 @@ public class ConsultaContasBean implements Serializable {
 			if(conta.getOperacao().equals(TipoOperacao.LANCAMENTO.toString())) {
 				Lancamento lancamento = lancamentos.porNumeroLancamento(conta.getCodigoOperacao(), usuario.getEmpresa());
 				conta.setDescricao(lancamento.getDescricao());
-				conta.setVendedor(lancamento.getUsuario().getNome());
+				//conta.setVendedor(lancamento.getUsuario().getNome());
 			}
 			
 			if(conta.getOperacao().equals(TipoOperacao.COMPRA.toString())) {
@@ -300,14 +346,32 @@ public class ConsultaContasBean implements Serializable {
 			
 			if(conta.getOperacao().equals(TipoOperacao.VENDA.toString())) {
 				Venda venda = vendas.porNumeroVenda(conta.getCodigoOperacao(), usuario.getEmpresa());
-				conta.setDescricao("Cliente: " + venda.getCliente().getNome());
+				//conta.setDescricao("Cliente: " + venda.getCliente().getNome());
+				conta.setCliente(venda.getCliente().getNome());
 				conta.setVendedor(venda.getUsuario().getNome());
+				conta.setTaxaDeComissao(venda.getTaxaDeComissao());
 				
+				if(tipoContas.equals("Contas recebidas Hoje " + hoje)) {
+					if(venda.getTaxaDeComissao().doubleValue() > 0) {
+						if((conta.getValor().doubleValue() - conta.getSaldo().doubleValue()) > 0) {
+							saldoDeComissao = new BigDecimal(saldoDeComissao.doubleValue() + ((venda.getTaxaDeComissao().doubleValue() * (conta.getValor().doubleValue() - conta.getSaldo().doubleValue()))/100));
+						}
+					}
+				} else {
+					if(venda.getTaxaDeComissao().doubleValue() > 0) {
+						if(conta.getSaldo().doubleValue() > 0) {
+							saldoDeComissao = new BigDecimal(saldoDeComissao.doubleValue() + ((venda.getTaxaDeComissao().doubleValue() * conta.getSaldo().doubleValue())/100));
+						}
+					}
+				}
+								
 				if(!todosClientes.contains(venda.getCliente())) {
 					todosClientes.add(venda.getCliente());
 				}
 			}		
 		}
+		
+		totalComissoes = nf.format(saldoDeComissao);
 		
 		return totalContasTemp;
 	}
@@ -517,10 +581,19 @@ public class ConsultaContasBean implements Serializable {
 			
 			totalComprasPagasHojeValor = contas.totalComprasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());								
 			totalDespesasPagasHojeValor = contas.totalDespesasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
-			
+
 			//totalPagamentosParcialComprasHojeValor  = contas.totalPagamentosParcialComprasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
 			totalPagoHojeContasAPagarEmAtrasoValor = contas.totalPagoHojeContasAPagarEmAtrasoValor(usuario.getEmpresa(), calendarStart, calendarStop);					
 			totalContasPagasHojeValor = (totalDespesasPagasHojeValor.doubleValue() + totalComprasPagasHojeValor.doubleValue()) + totalPagoHojeContasAPagarEmAtrasoValor.doubleValue();
+			
+			Number totalDespesasPagasParcialmenteHojeValor = contas.totalDespesasPagasParcialmente(usuario.getEmpresa());
+			
+			totalLancamentosDespesasHojeValor = lancamentos.totalLancamentosDespesasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());		
+			totalDespesasHojeValor = totalDespesasPagasHojeValor.doubleValue() + totalLancamentosDespesasHojeValor.doubleValue() + totalDespesasPagasParcialmenteHojeValor.doubleValue();
+			
+			Number totalAPagarHojeValorTemp = contas.totalAPagarPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
+			Number totalAPagarHojeValorPago = contas.totalAPagarPorDiaValor_(calendarStart, calendarStop, usuario.getEmpresa());
+			totalAPagarHojeValor = totalAPagarHojeValorTemp.doubleValue() - totalAPagarHojeValorPago.doubleValue();
 			
 		} else if(contaSelecionada.getTipo().equals("CREDITO")) {
 			
@@ -557,6 +630,14 @@ public class ConsultaContasBean implements Serializable {
 			totalPagoHojeContasAReceberEmAtrasoValor = contas.totalPagoHojeContasAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart, calendarStop);					
 			totalContasRecebidasHojeValor = totalReceitasPagasHojeValor.doubleValue() + totalVendasPagasHojeValor.doubleValue() + totalPagoHojeContasAReceberEmAtrasoValor.doubleValue();
 		
+			Number totalReceitasPagasParcialmenteHojeValor = contas.totalReceitasPagasParcialmente(usuario.getEmpresa());
+			
+			totalLancamentosReceitasHojeValor = lancamentos.totalLancamentosReceitasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());		
+			totalReceitasHojeValor = totalReceitasPagasHojeValor.doubleValue() + totalLancamentosReceitasHojeValor.doubleValue() + totalReceitasPagasParcialmenteHojeValor.doubleValue();					
+			
+			Number totalAReceberHojeValorTemp = contas.totalAReceberPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
+			Number totalAReceberHojeValorPago = contas.totalAReceberPorDiaValor_(calendarStart, calendarStop, usuario.getEmpresa());
+			totalAReceberHojeValor = totalAReceberHojeValorTemp.doubleValue() - totalAReceberHojeValorPago.doubleValue();
 		}
 	}
 
@@ -678,6 +759,7 @@ public class ConsultaContasBean implements Serializable {
 			
 			totalPagoContasAReceberEmAtrasoValor = contas.totalPagoContasAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart);
 			totalAReceberEmAtrasoValor = (contas.totalAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart)).doubleValue() - totalPagoContasAReceberEmAtrasoValor.doubleValue();
+		
 		}
 		
 		PrimeFaces.current().executeScript(
@@ -938,11 +1020,22 @@ public class ConsultaContasBean implements Serializable {
 		
 		
 		totalVendasPagasHojeValor = contas.totalVendasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());	
-		totalReceitasPagasHojeValor = contas.totalReceitasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());			
+		totalReceitasPagasHojeValor = contas.totalReceitasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
 		
 		totalPagoHojeContasAReceberEmAtrasoValor = contas.totalPagoHojeContasAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart, calendarStop);						
 		totalContasRecebidasHojeValor = totalReceitasPagasHojeValor.doubleValue() + totalVendasPagasHojeValor.doubleValue() + totalPagoHojeContasAReceberEmAtrasoValor.doubleValue();
-						
+			
+		Number totalReceitasPagasParcialmenteHojeValor = contas.totalReceitasPagasParcialmente(usuario.getEmpresa());
+		
+		totalLancamentosReceitasHojeValor = lancamentos.totalLancamentosReceitasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());		
+		totalReceitasHojeValor = totalReceitasPagasHojeValor.doubleValue() + totalLancamentosReceitasHojeValor.doubleValue() + totalReceitasPagasParcialmenteHojeValor.doubleValue();
+		
+		
+		Number totalAReceberHojeValorTemp = contas.totalAReceberPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
+		Number totalAReceberHojeValorPago = contas.totalAReceberPorDiaValor_(calendarStart, calendarStop, usuario.getEmpresa());
+		totalAReceberHojeValor = totalAReceberHojeValorTemp.doubleValue() - totalAReceberHojeValorPago.doubleValue();
+		
+		
 		contasFiltradas = new ArrayList<Conta>();
 		contasFiltradas = contas.contasRecebidasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
 		
@@ -1051,10 +1144,20 @@ public class ConsultaContasBean implements Serializable {
 		totalComprasPagasHojeValor = contas.totalComprasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());		
 		totalDespesasPagasHojeValor = contas.totalDespesasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
 		
+		Number totalDespesasPagasParcialmenteHojeValor = contas.totalDespesasPagasParcialmente(usuario.getEmpresa());
+		
+		totalLancamentosDespesasHojeValor = lancamentos.totalLancamentosDespesasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());		
+		totalDespesasHojeValor = totalDespesasPagasHojeValor.doubleValue() + totalLancamentosDespesasHojeValor.doubleValue() + totalDespesasPagasParcialmenteHojeValor.doubleValue();
 		
 		totalPagoHojeContasAPagarEmAtrasoValor = contas.totalPagoHojeContasAPagarEmAtrasoValor(usuario.getEmpresa(), calendarStart, calendarStop);		
 		
 		totalContasPagasHojeValor = totalDespesasPagasHojeValor.doubleValue() + totalComprasPagasHojeValor.doubleValue() + totalPagoHojeContasAPagarEmAtrasoValor.doubleValue();
+		
+		
+		Number totalAPagarHojeValorTemp = contas.totalAPagarPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
+		Number totalAPagarHojeValorPago = contas.totalAPagarPorDiaValor_(calendarStart, calendarStop, usuario.getEmpresa());
+		totalAPagarHojeValor = totalAPagarHojeValorTemp.doubleValue() - totalAPagarHojeValorPago.doubleValue();
+		
 		
 		contasFiltradas = new ArrayList<Conta>();
 		contasFiltradas = contas.contasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
@@ -1427,7 +1530,7 @@ public class ConsultaContasBean implements Serializable {
 			if(conta.getOperacao().equals(TipoOperacao.LANCAMENTO.toString())) {
 				Lancamento lancamento = lancamentos.porNumeroLancamento(conta.getCodigoOperacao(), usuario.getEmpresa());
 				conta.setDescricao(lancamento.getDescricao());
-				conta.setVendedor(lancamento.getUsuario().getNome());
+				//conta.setVendedor(lancamento.getUsuario().getNome());
 			}
 			
 			if(conta.getOperacao().equals(TipoOperacao.COMPRA.toString())) {
@@ -1438,8 +1541,10 @@ public class ConsultaContasBean implements Serializable {
 			
 			if(conta.getOperacao().equals(TipoOperacao.VENDA.toString())) {
 				Venda venda = vendas.porNumeroVenda(conta.getCodigoOperacao(), usuario.getEmpresa());
-				conta.setDescricao("Cliente: " + venda.getCliente().getNome());
+				//conta.setDescricao("Cliente: " + venda.getCliente().getNome());
+				conta.setCliente(venda.getCliente().getNome());
 				conta.setVendedor(venda.getUsuario().getNome());
+				conta.setTaxaDeComissao(venda.getTaxaDeComissao());
 			}
 			
 			if(usuarioSelecionado == null) {
@@ -1451,6 +1556,12 @@ public class ConsultaContasBean implements Serializable {
 						
 					}else if(tipoContas.equals("Contas pagas Hoje " + hoje) || tipoContas.equals("Contas recebidas Hoje " + hoje)) {	
 						totalContasTemp += pagamentosContas.totalPagoPorContaHoje(conta, usuario.getEmpresa(), calendarStart, calendarStop).doubleValue();
+					
+						if(tipoContas.equals("Contas recebidas Hoje " + hoje)) {
+							if(conta.getParcela().equals("Entrada")) {
+								totalContasTemp = totalContasTemp + conta.getValor().doubleValue();
+							}
+						}
 					}
 				} else {
 					if(conta.getOperacao().equals(TipoOperacao.VENDA.toString())) {
@@ -1462,7 +1573,13 @@ public class ConsultaContasBean implements Serializable {
 								totalContasTemp += conta.getSaldo().doubleValue();
 								
 							}else if(tipoContas.equals("Contas pagas Hoje " + hoje) || tipoContas.equals("Contas recebidas Hoje " + hoje)) {	
-								totalContasTemp += pagamentosContas.totalPagoPorContaHoje(conta, usuario.getEmpresa(), calendarStart, calendarStop).doubleValue();
+								totalContasTemp += pagamentosContas.totalPagoPorContaHoje(conta, usuario.getEmpresa(), calendarStart, calendarStop).doubleValue();							
+								
+								if(tipoContas.equals("Contas recebidas Hoje " + hoje)) {
+									if(conta.getParcela().equals("Entrada")) {
+										totalContasTemp = totalContasTemp + conta.getValor().doubleValue();
+									}
+								}
 							}
 						} else if(venda.getCliente().getId() == clienteSelecionado.getId()) {
 							this.contasFiltradas.add(conta);
@@ -1472,6 +1589,12 @@ public class ConsultaContasBean implements Serializable {
 								
 							}else if(tipoContas.equals("Contas pagas Hoje " + hoje) || tipoContas.equals("Contas recebidas Hoje " + hoje)) {	
 								totalContasTemp += pagamentosContas.totalPagoPorContaHoje(conta, usuario.getEmpresa(), calendarStart, calendarStop).doubleValue();
+							
+								if(tipoContas.equals("Contas recebidas Hoje " + hoje)) {
+									if(conta.getParcela().equals("Entrada")) {
+										totalContasTemp = totalContasTemp + conta.getValor().doubleValue();
+									}
+								}
 							}
 						}						
 					}
@@ -1481,17 +1604,20 @@ public class ConsultaContasBean implements Serializable {
 				if(!somenteVendas) {
 					if(conta.getOperacao().equals(TipoOperacao.LANCAMENTO.toString())) {
 						Lancamento lancamento = lancamentos.porNumeroLancamento(conta.getCodigoOperacao(), usuario.getEmpresa());
-						if(usuarioSelecionado.getId() == lancamento.getUsuario().getId()) {							
-							
-							this.contasFiltradas.add(conta);			
-							
-							if(tipoContas.equals("Contas à pagar em atraso") || tipoContas.equals("Contas à receber em atraso") || tipoContas.equals("Total contas à receber") || tipoContas.equals("Total contas à pagar")) {	
-								totalContasTemp += conta.getSaldo().doubleValue();
+						
+						if(lancamento.getUsuario() != null) {
+							if(usuarioSelecionado.getId() == lancamento.getUsuario().getId()) {							
 								
-							}else if(tipoContas.equals("Contas pagas Hoje " + hoje) || tipoContas.equals("Contas recebidas Hoje " + hoje)) {	
-								totalContasTemp += pagamentosContas.totalPagoPorContaHoje(conta, usuario.getEmpresa(), calendarStart, calendarStop).doubleValue();
-							}																
-						}
+								this.contasFiltradas.add(conta);			
+								
+								if(tipoContas.equals("Contas à pagar em atraso") || tipoContas.equals("Contas à receber em atraso") || tipoContas.equals("Total contas à receber") || tipoContas.equals("Total contas à pagar")) {	
+									totalContasTemp += conta.getSaldo().doubleValue();
+									
+								}else if(tipoContas.equals("Contas pagas Hoje " + hoje) || tipoContas.equals("Contas recebidas Hoje " + hoje)) {	
+									totalContasTemp += pagamentosContas.totalPagoPorContaHoje(conta, usuario.getEmpresa(), calendarStart, calendarStop).doubleValue();
+								}																
+							}
+						}					
 					}
 					
 					if(conta.getOperacao().equals(TipoOperacao.COMPRA.toString())) {
@@ -1520,6 +1646,12 @@ public class ConsultaContasBean implements Serializable {
 								
 							}else if(tipoContas.equals("Contas pagas Hoje " + hoje) || tipoContas.equals("Contas recebidas Hoje " + hoje)) {	
 								totalContasTemp += pagamentosContas.totalPagoPorContaHoje(conta, usuario.getEmpresa(), calendarStart, calendarStop).doubleValue();
+							
+								if(tipoContas.equals("Contas recebidas Hoje " + hoje)) {
+									if(conta.getParcela().equals("Entrada")) {
+										totalContasTemp = totalContasTemp + conta.getValor().doubleValue();
+									}
+								}
 							}							
 						}
 					}
@@ -1538,6 +1670,12 @@ public class ConsultaContasBean implements Serializable {
 									
 								}else if(tipoContas.equals("Contas pagas Hoje " + hoje) || tipoContas.equals("Contas recebidas Hoje " + hoje)) {	
 									totalContasTemp += pagamentosContas.totalPagoPorContaHoje(conta, usuario.getEmpresa(), calendarStart, calendarStop).doubleValue();
+								
+									if(tipoContas.equals("Contas recebidas Hoje " + hoje)) {
+										if(conta.getParcela().equals("Entrada")) {
+											totalContasTemp = totalContasTemp + conta.getValor().doubleValue();
+										}
+									}
 								}
 							} else if(venda.getCliente().getId() == clienteSelecionado.getId()) {
 								this.contasFiltradas.add(conta);
@@ -1547,6 +1685,12 @@ public class ConsultaContasBean implements Serializable {
 									
 								}else if(tipoContas.equals("Contas pagas Hoje " + hoje) || tipoContas.equals("Contas recebidas Hoje " + hoje)) {	
 									totalContasTemp += pagamentosContas.totalPagoPorContaHoje(conta, usuario.getEmpresa(), calendarStart, calendarStop).doubleValue();
+								
+									if(tipoContas.equals("Contas recebidas Hoje " + hoje)) {
+										if(conta.getParcela().equals("Entrada")) {
+											totalContasTemp = totalContasTemp + conta.getValor().doubleValue();
+										}
+									}
 								}
 							}
 						}
@@ -1554,6 +1698,28 @@ public class ConsultaContasBean implements Serializable {
 				}
 			}
 		}
+		
+		BigDecimal saldoDeComissao = BigDecimal.ZERO;
+		for (Conta conta : this.contasFiltradas) {
+			
+			if(conta.getOperacao().equals(TipoOperacao.VENDA.toString())) {
+				if(tipoContas.equals("Contas recebidas Hoje " + hoje)) {
+					if(conta.getTaxaDeComissao().doubleValue() > 0) {
+						if((conta.getValor().doubleValue() - conta.getSaldo().doubleValue()) > 0) {
+							saldoDeComissao = new BigDecimal(saldoDeComissao.doubleValue() + ((conta.getTaxaDeComissao().doubleValue() * (conta.getValor().doubleValue() - conta.getSaldo().doubleValue()))/100));
+						}
+					}
+				} else {
+					if(conta.getTaxaDeComissao().doubleValue() > 0) {
+						if(conta.getSaldo().doubleValue() > 0) {
+							saldoDeComissao = new BigDecimal(saldoDeComissao.doubleValue() + ((conta.getTaxaDeComissao().doubleValue() * conta.getSaldo().doubleValue())/100));
+						}
+					}
+				}
+			}		
+		}
+		
+		totalComissoes = nf.format(saldoDeComissao);
 		
 		totalContas = nf.format(totalContasTemp);
 		
@@ -1639,6 +1805,45 @@ public class ConsultaContasBean implements Serializable {
 
 	public void setFiltroTodasContas(boolean filtroTodasContas) {
 		this.filtroTodasContas = filtroTodasContas;
+	}
+
+	public String getTotalComissoes() {
+		return totalComissoes;
+	}
+
+	public Number getTotalReceitasHojeValor() {
+		return totalReceitasHojeValor;
+	}
+
+	public Number getTotalLancamentosReceitasHojeValor() {
+		return totalLancamentosReceitasHojeValor;
+	}
+
+	public Number getTotalLancamentosDespesasHojeValor() {
+		return totalLancamentosDespesasHojeValor;
+	}
+
+	public Number getTotalDespesasHojeValor() {
+		return totalDespesasHojeValor;
+	}
+	
+	public Number getTotalPagoHojeContasAReceberEmAtrasoValor() {
+		return totalPagoHojeContasAReceberEmAtrasoValor;
+	}
+
+
+	public Number getTotalPagoHojeContasAPagarEmAtrasoValor() {
+		return totalPagoHojeContasAPagarEmAtrasoValor;
+	}
+
+
+	public Number getTotalAPagarHojeValor() {
+		return totalAPagarHojeValor;
+	}
+
+
+	public Number getTotalAReceberHojeValor() {
+		return totalAReceberHojeValor;
 	}
 
 }

@@ -43,6 +43,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.CategoriaLancamento;
+import com.webapp.model.Conta;
 import com.webapp.model.FluxoDeCaixa;
 import com.webapp.model.Lancamento;
 import com.webapp.model.ListaProduto;
@@ -50,6 +51,7 @@ import com.webapp.model.OrdenaTop5;
 import com.webapp.model.Produto;
 import com.webapp.model.Top5Despesa;
 import com.webapp.model.Usuario;
+import com.webapp.model.Venda;
 import com.webapp.model.VendaPorCategoria;
 import com.webapp.report.Relatorio;
 import com.webapp.repository.CategoriasLancamentos;
@@ -59,6 +61,7 @@ import com.webapp.repository.Lancamentos;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.Usuarios;
 import com.webapp.repository.Vendas;
+import com.webapp.security.UsuarioSistema;
 import com.webapp.util.jsf.FacesUtil;
 
 @Named
@@ -158,6 +161,8 @@ public class DashboardBean implements Serializable {
 	
 	private Number saldoLucroEmVendas;
 	
+	private Number saldoDeComissao;
+	
 	private Date dateStart = new Date();
 
 	private Date dateStop = new Date();
@@ -231,7 +236,17 @@ public class DashboardBean implements Serializable {
 	
 	private Double valorRetirada;
 	
+	@Inject
+	private Usuario usuarioSelecionado;
 	
+	private List<Usuario> todosUsuarios;
+	
+	
+
+	public List<Usuario> getTodosUsuarios() {
+		return todosUsuarios;
+	}
+
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -240,6 +255,10 @@ public class DashboardBean implements Serializable {
 			//usuario = usuarios.porNome(user.getUsername());
 			usuario = usuarios.porLogin(user.getUsername());
 
+			todosUsuarios = usuarios.todos(usuario.getEmpresa());
+			
+			usuarioSelecionado = usuario;
+			
 			createPieModel();
 			createPolarAreaModel();
 			createBarModel();
@@ -272,6 +291,10 @@ public class DashboardBean implements Serializable {
 			
 		
 			saldoLucroEmVendas = (((saldoLucroEmVendasAVistaPagas.doubleValue() + saldoLucroEmVendasAPagarPagas.doubleValue()) + saldoEstorno.doubleValue()) - totalDeRetiradas.doubleValue()) - (descontoEmVendasAVistaPagas.doubleValue() + taxasEmVendasAVistaPagas.doubleValue());
+			
+			
+			calcularSaldoComissao();
+			
 			
 			if(usuario.getEmpresa().getId() == 7111) {
 				saldoLucroEmVendas = 0D;
@@ -402,7 +425,9 @@ public class DashboardBean implements Serializable {
 			totalDespesasHojeValor = totalDespesasPagasHojeValor.doubleValue() + totalLancamentosDespesasHojeValor.doubleValue();
 			
 			
-			totalAPagarHojeValor = contas.totalAPagarPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
+			Number totalAPagarHojeValorTemp = contas.totalAPagarPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
+			Number totalAPagarHojeValorPago = contas.totalAPagarPorDiaValor_(calendarStart, calendarStop, usuario.getEmpresa());
+			totalAPagarHojeValor = totalAPagarHojeValorTemp.doubleValue() - totalAPagarHojeValorPago.doubleValue();
 			
 			totalAPagarValor = contas.totalAPagarValor(usuario.getEmpresa());
 			
@@ -1860,6 +1885,84 @@ public class DashboardBean implements Serializable {
 	public void setValorRetirada(Double valorRetirada) {
 		this.valorRetirada = valorRetirada;
 	}
+	
+	public void retirarComissao() {
+		
+		if(valorRetirada != null && valorRetirada > 0) {
+			if(valorRetirada.doubleValue() <= saldoDeComissao.doubleValue()) {
+				
+				Lancamento lancamento = new Lancamento();
+				Lancamento lancamentoTemp = lancamentos.ultimoNLancamento(usuario.getEmpresa());
+
+				if (lancamentoTemp == null) {
+					lancamento.setNumeroLancamento(1L);
+				} else {
+					if (lancamento.getId() == null) {
+						lancamento.setNumeroLancamento(lancamentoTemp.getNumeroLancamento() + 1);
+					}
+				}
+
+				Calendar calendario = Calendar.getInstance();
+				Calendar calendarioTemp = Calendar.getInstance();
+				calendarioTemp.setTime(lancamento.getDataLancamento());
+				calendarioTemp.set(Calendar.HOUR, calendario.get(Calendar.HOUR));
+				calendarioTemp.set(Calendar.MINUTE, calendario.get(Calendar.MINUTE));
+				calendarioTemp.set(Calendar.SECOND, calendario.get(Calendar.SECOND));
+				lancamento.setDataLancamento(calendarioTemp.getTime());
+
+				lancamento.setDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_MONTH))));
+				lancamento.setNomeDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_WEEK))));
+				lancamento.setSemana(Long.valueOf((calendarioTemp.get(Calendar.WEEK_OF_YEAR))));
+				lancamento.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
+				lancamento.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));			
+				
+				lancamento.setConta(false);
+				
+				lancamento.setUsuario(usuarioSelecionado);
+				
+				CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome("Comissões Pagas", usuario.getEmpresa());
+				lancamento.setCategoriaLancamento(categoriaLancamento);
+				
+				lancamento.setDescricao(categoriaLancamento.getNome());
+				lancamento.setValor(new BigDecimal(valorRetirada));
+				
+				lancamento.setDestinoLancamento(null);
+
+				lancamento.setEmpresa(usuario.getEmpresa());
+				lancamentos.save(lancamento);
+				
+				
+				
+				calcularSaldoComissao();
+				
+				
+				
+				saldo = saldo - valorRetirada;
+				saldoGeral = nf.format(saldo);
+				
+				valorRetirada = 0D;
+				
+				createBarModel();
+				
+				
+				
+				PrimeFaces.current().executeScript(
+						"PF('downloadLoading').hide();PF('btn-save').enable();PF('retira-dialog').hide();swal({ type: 'success', title: 'Parabéns!', text: 'Retirada realizada com sucesso!' });");
+				valorRetirada = null;
+			} else {
+				
+				PrimeFaces.current().executeScript(
+						"PF('downloadLoading').hide();PF('btn-save').enable();swal({ type: 'error', title: 'Algo deu errado!', text: 'Saldo insuficiente para retirada!' });");
+				valorRetirada = null;
+			}
+		} else {
+			
+			PrimeFaces.current().executeScript(
+					"PF('downloadLoading').hide();PF('btn-save').enable();swal({ type: 'error', title: 'Algo deu errado!', text: 'Por favor, informe um valor maior que 0!' });");
+			valorRetirada = null;
+		}
+
+	}
 
 	public void retirarLucro() {
 		
@@ -1951,4 +2054,53 @@ public class DashboardBean implements Serializable {
 		return usuario;
 	}
 
+
+	public Number getSaldoDeComissao() {
+		return saldoDeComissao;
+	}
+
+
+	public Usuario getUsuarioSelecionado() {
+		return usuarioSelecionado;
+	}
+
+
+	public void setUsuarioSelecionado(Usuario usuarioSelecionado) {
+		this.usuarioSelecionado = usuarioSelecionado;
+	}
+	
+	public void calcularSaldoComissao() {
+		List<Conta> contasDeVendasAPagarPagas = contas.comissaoEmVendasAPagarPagas("CREDITO", "VENDA", usuarioSelecionado.getEmpresa());
+		Number contasDeVendasAVistaPagas = vendas.totalComissao(usuario.getEmpresa(), usuarioSelecionado).doubleValue();
+		
+		CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome("Comissões Pagas", usuario.getEmpresa());
+		Number totalDeRetiradas = lancamentos.totalDeRetiradaComissoes(usuario.getEmpresa(), categoriaLancamento, usuarioSelecionado);
+		
+		saldoDeComissao = contasDeVendasAVistaPagas.doubleValue() - totalDeRetiradas.doubleValue();
+		for (Conta conta : contasDeVendasAPagarPagas) {
+			Venda venda = vendas.porNumeroVenda(conta.getCodigoOperacao(), usuarioSelecionado.getEmpresa());
+			if(venda.getUsuario().getId() == usuarioSelecionado.getId()) {
+				if(venda.getTaxaDeComissao().doubleValue() > 0) {
+					BigDecimal totalPago = new BigDecimal(conta.getValor().doubleValue() - conta.getSaldo().doubleValue());
+				
+					if(totalPago.doubleValue() > 0) {
+						saldoDeComissao = saldoDeComissao.doubleValue() + ((totalPago.doubleValue() * venda.getTaxaDeComissao().doubleValue())/100);
+					}
+				}
+			}
+		}
+	}
+
+	public String getPrimeiroNome() {
+		String nome = null;
+
+		if (usuarioSelecionado != null) {
+			String nomeTemp = usuarioSelecionado.getNome();
+			String[] dados = nomeTemp.split(" ");
+			
+			nome = dados[0];
+		}
+
+		return nome;
+	}
 }

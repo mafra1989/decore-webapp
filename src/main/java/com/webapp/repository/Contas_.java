@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 import com.webapp.model.Conta;
 import com.webapp.model.Empresa;
 import com.webapp.model.OrigemConta;
@@ -120,6 +121,16 @@ public class Contas_ implements Serializable {
 		}
 
 		return count;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Conta> comissaoEmVendasAPagarPagas(String tipo, String operacao, Empresa empresa) {
+
+		String jpql = "FROM Conta c WHERE (c.parcela = 'AVISTA' and c.status = 'N') OR c.empresa.id = :empresa AND c.tipo = :tipo AND c.operacao = :operacao AND c.ajuste = 'N' and c.exclusao = 'N'";
+		Query q = manager.createQuery(jpql).setParameter("tipo", tipo).setParameter("operacao", operacao)
+				.setParameter("empresa", empresa.getId());
+
+		return q.getResultList();
 	}
 
 	public Number porContasPagas(String tipo, Empresa empresa) {
@@ -882,9 +893,12 @@ public class Contas_ implements Serializable {
 	
 	public Number totalDespesasPagasPorDiaValor(Calendar calendarStart, Calendar calendarStop, Empresa empresa) {
 
+		//String jpql = "SELECT sum(c.valorPago) FROM PagamentoConta c "
+		//		+ "WHERE c.conta.empresa.id = :empresa AND c.dataPagamento BETWEEN :dataInicio AND :dataFim "
+		//		+ "AND c.conta.operacao = 'LANCAMENTO' AND c.conta.tipo = 'DEBITO' AND c.conta.status = 'N' AND c.conta.ajuste = 'N' and c.conta.exclusao = 'N'";		
 		String jpql = "SELECT sum(i.valor) FROM Conta i "
 				+ "WHERE i.empresa.id = :empresa AND i.pagamento BETWEEN :dataInicio AND :dataFim "
-				+ "AND operacao = 'LANCAMENTO' AND i.tipo = 'DEBITO' AND i.status = 'Y' AND i.ajuste = 'N' and i.exclusao = 'N'";
+				+ "AND i.operacao = 'LANCAMENTO' AND i.tipo = 'DEBITO' AND i.status = 'Y' AND i.ajuste = 'N' and i.exclusao = 'N'";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
 				calendarStop.getTime());
 
@@ -909,6 +923,52 @@ public class Contas_ implements Serializable {
 		String jpql = "SELECT sum(i.valor) FROM Conta i "
 				+ "WHERE i.empresa.id = :empresa AND i.vencimento BETWEEN :dataInicio AND :dataFim "
 				+ "AND i.tipo = 'DEBITO' AND i.status = 'N' AND i.ajuste = 'N' and i.exclusao = 'N'";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
+				calendarStop.getTime());
+
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+	
+	public Number totalAPagarPorDiaValor_(Calendar calendarStart, Calendar calendarStop, Empresa empresa) {
+
+		String jpql = "SELECT sum(i.valorPago) FROM PagamentoConta i "
+				+ "WHERE i.conta.empresa.id = :empresa AND i.conta.vencimento BETWEEN :dataInicio AND :dataFim "
+				+ "AND i.conta.tipo = 'DEBITO' AND i.conta.status = 'N' AND i.conta.ajuste = 'N' and i.conta.exclusao = 'N'";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
+				calendarStop.getTime());
+
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+	
+	public Number totalAReceberPorDiaValor_(Calendar calendarStart, Calendar calendarStop, Empresa empresa) {
+
+		String jpql = "SELECT sum(i.valorPago) FROM PagamentoConta i "
+				+ "WHERE i.conta.empresa.id = :empresa AND i.conta.vencimento BETWEEN :dataInicio AND :dataFim "
+				+ "AND i.conta.tipo = 'CREDITO' AND i.conta.status = 'N' AND i.conta.ajuste = 'N' and i.conta.exclusao = 'N'";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
 				calendarStop.getTime());
 

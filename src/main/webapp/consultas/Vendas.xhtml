@@ -15,6 +15,9 @@
 
 		<style>
 @media ( min-width :220px) {
+	.font-column {
+		font-size: 14px !important;
+	}
 	.inventario.ui-button {
 	    width: auto !important;
 	    color: #000000 !important;
@@ -82,6 +85,9 @@
 }
 
 @media ( min-width :460px) {
+	.font-column {
+		font-size: 14px !important;
+	}
 	.ui-slider .ui-slider-handle {
 		width: 1.7em;
 		height: 1.7em;
@@ -322,6 +328,12 @@
 						</p:menuitem>
 
 					</p:menuButton>
+					
+					<p:commandButton icon="fa fa-fw fa-download"
+						disabled="#{consultaVendasBean.vendasFiltradasSize eq 0}"
+						style="width: 38px;float: right;margin-right: 93px;margin-top: -40px;" process="@this" ajax="false">
+	                    <p:dataExporter type="xls" target="vendasTable" fileName="Vendas"/>
+	                </p:commandButton>
 
 
 					<p:panelGrid columns="1" layout="grid"
@@ -344,56 +356,64 @@
 								onstart="PF('downloadLoading').show();"
 								oncomplete="PF('downloadLoading').hide();" />
 
-							<p:column headerText="N. Venda" width="8%">
+							<p:column headerText="N. Venda" width="8%" styleClass="font-column">
 								<h:outputText value="#{venda.numeroVenda}" />
 								<p:commandButton icon="fa fa-fw fa-edit" styleClass="inventario" rendered="#{venda.ajuste}" />
 							</p:column>
 
-							<p:column headerText="Data da venda" width="10%">
+							<p:column headerText="Data da venda" width="10%" styleClass="font-column">
 								<h:outputText value="#{venda.dataVenda}">
 									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" dateStyle="short" />
 								</h:outputText>
 							</p:column>
 
-							<p:column headerText="Tipo de venda" width="10%">
+							<p:column headerText="Tipo de venda" width="10%" styleClass="font-column">
 								<h:outputText value="#{venda.tipoVenda.descricao}" />
 							</p:column>
 							
-							<p:column headerText="Mesa" width="7%" rendered="#{seguranca.configuracao.controleMesas}">
+							<p:column headerText="Mesa" width="7%" rendered="#{seguranca.configuracao.controleMesas}" styleClass="font-column">
 								<h:outputText value="#{venda.mesa != null ? venda.mesa : '-'}" />
 							</p:column>
 							
-							<p:column headerText="Cliente" width="10%">
+							<p:column headerText="Cliente" width="10%" styleClass="font-column">
 								<h:outputText value="#{venda.cliente.nome}" />
 							</p:column>
 							
-							<p:column headerText="Vendedor" width="10%">
-								<h:outputText value="#{venda.usuario.nome}" />
-							</p:column>
-
-							<p:column headerText="Bairro" width="10%">
+							<p:column headerText="Bairro" width="10%" styleClass="font-column">
 								<h:outputText value="#{venda.pdv ? venda.cliente.bairro.nome : venda.bairro.nome}" />
 							</p:column>
-
-							<p:column headerText="Vendedor" width="10%" visible="false">
+							
+							<p:column headerText="Vendedor" width="10%" styleClass="font-column">
 								<h:outputText value="#{venda.usuario.nome}" />
 							</p:column>
 							
-							<p:column headerText="Pagamento" width="10%">
+							<p:column headerText="Comissão (%)" width="8%" styleClass="font-column" visible="#{venda.empresa.id eq 74553}" exportable="#{venda.empresa.id eq 74553}">
+								<h:outputText value="#{venda.taxaDeComissao}">
+									<f:convertNumber type="currency" currencySymbol="%" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Comissão (R$)" width="8%" styleClass="font-column" visible="#{venda.empresa.id eq 74553}" exportable="#{venda.empresa.id eq 74553}">
+								<h:outputText value="#{(venda.taxaDeComissao * (venda.valorTotal - venda.desconto))/100}">
+									<f:convertNumber type="currency" currencySymbol="R$" />
+								</h:outputText>
+							</p:column>					
+							
+							<p:column headerText="Pagamento" width="10%" styleClass="font-column">
 								<h:outputText value="#{venda.tipoPagamento != null ? venda.tipoPagamento.descricao.concat(', ').concat(venda.formaPagamento.nome).concat(venda.pagamento) : '-'}" />
 							</p:column>
 
-							<p:column headerText="Qtd. Itens" width="8%">
+							<p:column headerText="Qtd. Itens" width="8%" styleClass="font-column">
 								<h:outputText value="#{venda.quantidadeItens}" />
 							</p:column>
 
-							<p:column headerText="Valor Total" width="10%">
+							<p:column headerText="Valor Total" width="10%" styleClass="font-column">
 								<h:outputText value="#{venda.valorTotal - venda.desconto}">
 									<f:convertNumber type="currency" />
 								</h:outputText>
 							</p:column>
 							
-							<p:column headerText="Pago?" width="8%">
+							<p:column headerText="Pago?" width="8%" styleClass="font-column">
 								<h:outputText value="#{venda.tipoPagamento == 'PARCELADO' ? 'Venda Parc.' : ((venda.conta and not venda.vendaPaga) ? 'À receber' : (venda.ajuste ? '-' : (venda.vendaPaga ? 'Sim' : 'Não')))}" />
 							</p:column>
 

@@ -346,6 +346,9 @@ body .ui-datatable .ui-datatable-data>tr td {
 
 @media ( min-width :220px) {
 
+	#vendedor-dialog .ui-panel .ui-panel-content {
+   		padding: 6px 9px;
+    }
 	body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
 	    height: 28px;
 	}
@@ -1157,9 +1160,13 @@ body .ui-datatable .ui-datatable-data>tr td {
 							
 							<div class="overview-box-content">
 								
-								<div class="overview-box-title">Lucro em Vendas</div>
-								<div class="overview-box-stats lucro-em-vendas"><h:outputText value="#{dashboardBean.saldoLucroEmVendas}"><f:convertNumber type="currency" maxFractionDigits="4" /></h:outputText></div>
-								<div class="overview-box-details"><p:commandLink value="Retirar valor" disabled="#{seguranca.usuarioLogado.usuario.empresa.id == 7111}" update="retira-dialog form-retira" oncomplete="PF('retira-dialog').show();" /></div>
+								<div class="overview-box-title">Comissão de Vendas</div>
+								<p:link id="vendedor-selecionado" href="javascript:void(0);" style="color: #ffffff;font-size: 9px;font-weight: bold;float: left;margin-top: -11px;"
+									onclick="PF('vendedor-dialog').show();">
+									<h:outputText value="#{dashboardBean.primeiroNome}"/>						
+								</p:link>
+								<div class="overview-box-stats lucro-em-vendas"><h:outputText id="comissao-vendedor" value="#{dashboardBean.saldoDeComissao}"><f:convertNumber type="currency" maxFractionDigits="4" /></h:outputText></div>
+								<div class="overview-box-details"><p:commandLink value="Retirar valor" update="retira-dialog form-retira" oncomplete="PF('retira-dialog').show();" /></div>
 							</div>
 						</div>
 					</div>
@@ -1711,10 +1718,9 @@ body .ui-datatable .ui-datatable-data>tr td {
 		
 		
 		<p:dialog
-			header="Retirada de Lucro"
+			header="Retirar comissão"
 			widgetVar="retira-dialog" id="retira-dialog" resizable="false"
-			modal="true" closeOnEscape="true" responsive="true" width="250px"
-			style="margin-top: 10px">
+			modal="true" closeOnEscape="true" responsive="true" width="250px" position="center">
 
 			<h:form id="form-retira">
 
@@ -1746,13 +1752,70 @@ body .ui-datatable .ui-datatable-data>tr td {
 								widgetVar="btn-save" icon="fa fa-fw fa-save"
 								onstart="PF('downloadLoading').show(); PF('btn-save').disable();"
 								update="form form-retira" process="@this form-retira valor-retirada"
-								action="#{dashboardBean.retirarLucro}"
+								action="#{dashboardBean.retirarComissao}"
 								style="font-weight: bold;background-color: #0d8819b5; width: 97px">
 	
 							</p:commandButton>
 	
 							<p:commandButton icon="fa fa-fw fa-close" value="Fechar"
 								onclick="PF('retira-dialog').hide();" 
+								style="margin-left:1px;background-color: #e15e5ef0; font-weight: bold; float: left; width: 97px">
+	
+							</p:commandButton>
+						</p:panel>
+
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+		
+		
+		<p:dialog
+			header="Selecionar vendedor"
+			widgetVar="vendedor-dialog" id="vendedor-dialog" resizable="false"
+			modal="true" closeOnEscape="true" responsive="true" width="250px" position="center">
+
+			<h:form id="form-vendedor">
+
+				<div class="ui-fluid">
+					<p:defaultCommand target="btn-confirmar-vendedor" />
+
+					<div class="card card-w-title ui-fluid"
+						style="padding: 0px 5px 0px 5px; padding-bottom: 0px !important;margin-bottom: 0px;">
+
+						<p:panelGrid columns="1" layout="grid"
+							style="margin-top: 8px; margin-bottom: 5px"
+							styleClass="panelgrid-noborder disabled disabled">
+
+							<p:outputLabel value="Vendedor" for="vendedor" />
+							<p:selectOneMenu id="vendedor"
+								value="#{dashboardBean.usuarioSelecionado}">
+								
+								<f:selectItems value="#{dashboardBean.todosUsuarios}"
+									var="vendedor" itemLabel="#{vendedor.nome}"
+									itemValue="#{vendedor}" />
+							</p:selectOneMenu>		
+						</p:panelGrid>
+
+						<p:spacer />
+						
+						<div style="width: 114%;margin-left: -15px; border-top: 1px solid #ccc"></div>
+						
+						<p:panel class="card card-w-title ui-fluid panel-btn"
+								style="margin-top:5px;padding-bottom: 0px;margin-bottom: 0px;">
+		
+							<p:commandButton id="btn-confirmar-vendedor" value="Confirmar"
+								widgetVar="btn-confirmar-vendedor" icon="fa fa-fw fa-save"
+								onstart="PF('downloadLoading').show(); PF('btn-confirmar-vendedor').disable();"
+								oncomplete="PF('btn-confirmar-vendedor').enable();PF('vendedor-dialog').hide();stop();"
+								update="form:vendedor-selecionado form:comissao-vendedor" process="@this form-vendedor"
+								action="#{dashboardBean.calcularSaldoComissao}"
+								style="font-weight: bold;background-color: #0d8819b5; width: 97px">
+	
+							</p:commandButton>
+	
+							<p:commandButton icon="fa fa-fw fa-close" value="Fechar"
+								onclick="PF('vendedor-dialog').hide();start();" oncomplete="stop();" 
 								style="margin-left:1px;background-color: #e15e5ef0; font-weight: bold; float: left; width: 97px">
 	
 							</p:commandButton>

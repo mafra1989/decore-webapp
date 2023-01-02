@@ -311,7 +311,13 @@ public class Conta implements Serializable {
 	private String descricao;
 	
 	@Transient
+	private String cliente;
+	
+	@Transient
 	private String vendedor;
+	
+	@Transient
+	private BigDecimal taxaDeComissao = BigDecimal.ZERO;
 
 	public String getDescricao() {
 		return descricao;
@@ -319,6 +325,14 @@ public class Conta implements Serializable {
 
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
+	}
+
+	public String getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(String cliente) {
+		this.cliente = cliente;
 	}
 
 	public String getVendedor() {
@@ -329,6 +343,14 @@ public class Conta implements Serializable {
 		this.vendedor = vendedor;
 	}
 	
+	public BigDecimal getTaxaDeComissao() {
+		return taxaDeComissao;
+	}
+
+	public void setTaxaDeComissao(BigDecimal taxaDeComissao) {
+		this.taxaDeComissao = taxaDeComissao;
+	}
+
 	public String tipoDeOperacao() {
 		String text = this.getOperacao().equals("LANCAMENTO") ? "Lançamento" : this.getOperacao();
 		

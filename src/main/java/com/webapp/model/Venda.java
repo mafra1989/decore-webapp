@@ -221,6 +221,11 @@ public class Venda implements Serializable {
 	@Column(columnDefinition="TEXT")
 	private String observacao;
 	
+	@NotNull
+	@Column(nullable = false)
+	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	private BigDecimal taxaDeComissao = BigDecimal.ZERO;
+	
 
 	public Long getId() {
 		return id;
@@ -564,6 +569,14 @@ public class Venda implements Serializable {
 
 	public void setObservacao(String observacao) {
 		this.observacao = observacao;
+	}
+
+	public BigDecimal getTaxaDeComissao() {
+		return taxaDeComissao;
+	}
+
+	public void setTaxaDeComissao(BigDecimal taxaDeComissao) {
+		this.taxaDeComissao = taxaDeComissao;
 	}
 
 	@Override

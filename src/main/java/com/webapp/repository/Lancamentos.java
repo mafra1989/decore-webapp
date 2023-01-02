@@ -87,13 +87,15 @@ public class Lancamentos implements Serializable {
 	@SuppressWarnings("unchecked")
 	public List<Lancamento> lancamentosFiltrados(Long numeroLancamento, Date dateStart, Date dateStop,
 			OrigemLancamento[] origemLancamento, CategoriaLancamento categoriaLancamento,
-			DestinoLancamento destinoLancamento, Usuario usuario, String[] categorias, boolean lancamentosPagos, Empresa empresa) {
+			DestinoLancamento destinoLancamento, Usuario usuario, String[] categorias, 
+			boolean lancamentosPagos, Empresa empresa, Usuario vendedor) {
 
 		String conditionOrigem = "";
 		String conditionCategoria = "";
 		String conditionDestino = "";
 		String conditionNumeroLancamento = "";
 		String conditionUsuario = "";
+		String conditionVendedor = "";
 		
 		String conditionLancamentosPagos = "";
 		if (lancamentosPagos) {
@@ -129,9 +131,13 @@ public class Lancamentos implements Serializable {
 				}			
 			}
 		}
+		
+		if (vendedor != null && vendedor.getId() != null) { 
+			 conditionVendedor += "AND i.usuario.id = :idVendedor ";
+		}
 
 		String jpql = "SELECT i FROM Lancamento i WHERE i.empresa.id = :empresa AND i.dataLancamento between :dateStart and :dateStop "
-				+ conditionOrigem + conditionCategoria + conditionUsuario 
+				+ conditionOrigem + conditionCategoria + conditionUsuario + conditionVendedor
 				+ conditionDestino + conditionNumeroLancamento + conditionLancamentosPagos
 				+ "order by i.numeroLancamento desc";
 
@@ -149,6 +155,10 @@ public class Lancamentos implements Serializable {
 		
 		if (usuario != null && usuario.getId() != null) { 
 			 q.setParameter("idUsuario", usuario.getId());
+		}
+		
+		if (vendedor != null && vendedor.getId() != null) { 
+			 q.setParameter("idVendedor", vendedor.getId());
 		}
 
 		if (destinoLancamento != null && destinoLancamento.getId() != null) {
@@ -206,6 +216,30 @@ public class Lancamentos implements Serializable {
 				+ "c.categoriaLancamento.id = :categoriaLancamento";
 		Query q = manager.createQuery(jpql).setParameter("categoriaLancamento", categoriaLancamento.getId())
 				.setParameter("empresa", empresa.getId());
+
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+	
+	
+	public Number totalDeRetiradaComissoes(Empresa empresa, CategoriaLancamento categoriaLancamento, Usuario usuario) {
+		
+		String jpql = "SELECT sum(c.valor) FROM Lancamento c WHERE c.empresa.id = :empresa AND "
+				+ "c.categoriaLancamento.id = :categoriaLancamento and c.usuario.id = :idUsuario";
+		Query q = manager.createQuery(jpql).setParameter("categoriaLancamento", categoriaLancamento.getId())
+				.setParameter("empresa", empresa.getId())
+				.setParameter("idUsuario", usuario.getId());
 
 		Number count = 0;
 		try {

@@ -231,15 +231,16 @@
 							showIcon="true">
 						</p:datePicker>
 
+						<p:outputLabel value="Vendedor" for="vendedor" />
+						<p:selectOneMenu id="vendedor"
+							value="#{consultaLancamentosBean.vendedor}" placeholder="selecione">
 
-						<p:outputLabel value="Tipo de Lançamento" />
-						<p:selectManyCheckbox unselectable="true"
-							value="#{consultaLancamentosBean.origemLancamento}">
-							<f:selectItems
-								value="#{consultaLancamentosBean.origensLancamentos}"
-								var="origemLancamento" itemLabel="#{origemLancamento == 'DEBITO' ? 'Despesa' : 'Receita'}"
-								itemValue="#{origemLancamento}" />
-						</p:selectManyCheckbox>
+							<f:selectItem itemLabel="Selecione" />
+
+							<f:selectItems value="#{consultaLancamentosBean.todosUsuarios}"
+								var="vendedor" itemLabel="#{vendedor.nome}"
+								itemValue="#{vendedor}" />
+						</p:selectOneMenu>											
 					</p:panelGrid>
 
 					<p:panelGrid columns="3" layout="grid" style="margin-bottom: -4px;"
@@ -265,7 +266,7 @@
 							update="favorecido" />
 					</p:panelGrid>
 
-					<p:panelGrid columns="2" layout="grid" id="panel-favorecido"
+					<p:panelGrid columns="2" layout="grid" id="panel-favorecido" rendered="false"
 						styleClass="panelgrid-noborder disabled disabled panel-favorecido #{consultaLancamentosBean.renderFavorecido ? '' : 'hide'}"
 						columnClasses="ui-grid-col-2, ui-grid-col-3">
 
@@ -278,7 +279,6 @@
 							<f:selectItems value="#{consultaLancamentosBean.todosUsuarios}"
 								var="usuario" itemLabel="#{usuario.nome}" itemValue="#{usuario}" />
 						</p:selectOneMenu>
-
 					</p:panelGrid>
 
 					<p:panelGrid columns="2" layout="grid" rendered="false"
@@ -303,7 +303,16 @@
 					<p:panelGrid columns="2" layout="grid" style="margin-top:5px;"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-2, ui-grid-col-3">
-
+		
+						<p:outputLabel value="Tipo de Lançamento" />
+						<p:selectManyCheckbox unselectable="true"
+							value="#{consultaLancamentosBean.origemLancamento}">
+							<f:selectItems
+								value="#{consultaLancamentosBean.origensLancamentos}"
+								var="origemLancamento" itemLabel="#{origemLancamento == 'DEBITO' ? 'Despesa' : 'Receita'}"
+								itemValue="#{origemLancamento}" />
+						</p:selectManyCheckbox>
+						
 						<p:outputLabel value="Somente lançamentos pagos" for="lancamentosPagas" />
 						<p:inputSwitch offLabel="Não" onLabel="Sim" id="lancamentosPagas"
 							value="#{consultaLancamentosBean.lancamentosPagos}">
@@ -325,7 +334,7 @@
 
 						<p:menuitem value="Visualizar" icon="fa fa-fw fa-eye"
 							id="btn-view" outcome="/operacoes/RegistroLancamentos.xhtml"
-							rendered="#{not (consultaLancamentosBean.lancamentoSelecionado.categoriaLancamento.nome eq 'Retirada de lucro')}"
+							rendered="#{not (consultaLancamentosBean.lancamentoSelecionado.categoriaLancamento.nome eq 'Retirada de lucro') and not (consultaLancamentosBean.lancamentoSelecionado.categoriaLancamento.nome eq 'Comissões Pagas')}"
 							onclick="PF('downloadLoading').show();">
 							<f:param name="id"
 								value="#{consultaLancamentosBean.lancamentoSelecionado.id}" />
@@ -375,6 +384,10 @@
 
 							<p:column headerText="Descrição" width="30%">
 								<h:outputText value="#{lancamento.descricao}" />
+							</p:column>
+							
+							<p:column headerText="Vendedor" width="30%">
+								<h:outputText value="#{lancamento.usuario != null ? lancamento.usuario.nome : '-'}" />
 							</p:column>
 
 							<p:column headerText="Valor Total" width="20%">
