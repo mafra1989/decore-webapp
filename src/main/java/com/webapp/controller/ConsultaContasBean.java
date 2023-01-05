@@ -346,7 +346,7 @@ public class ConsultaContasBean implements Serializable {
 			
 			if(conta.getOperacao().equals(TipoOperacao.VENDA.toString())) {
 				Venda venda = vendas.porNumeroVenda(conta.getCodigoOperacao(), usuario.getEmpresa());
-				//conta.setDescricao("Cliente: " + venda.getCliente().getNome());
+				conta.setDescricao(venda.getObservacao());
 				conta.setCliente(venda.getCliente().getNome());
 				conta.setVendedor(venda.getUsuario().getNome());
 				conta.setTaxaDeComissao(venda.getTaxaDeComissao());

@@ -18,6 +18,10 @@
 
 		<style>
 @media ( min-width :220px) {
+	.cliente.ui-selectonemenu {
+	    display: flex !important;
+	    min-width: max-content !important;
+	}
 	.itens-add .ui-panelgrid .ui-grid-responsive .ui-panelgrid-cell {
     	padding: 2px;
     }
@@ -604,7 +608,7 @@
 									</p:selectOneMenu>
 									
 									<p:outputLabel value="Cliente" for="cliente" />
-									<p:selectOneMenu id="cliente"
+									<p:selectOneMenu id="cliente" styleClass="cliente"
 										value="#{registroVendasBean.venda.cliente}"
 										placeholder="selecione">
 		

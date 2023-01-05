@@ -1379,14 +1379,18 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 								<h:outputText value="#{conta.vendedor != null ? conta.vendedor : '-'}" />
 							</p:column>
 							
-							<p:column headerText="Comissão (%)" width="8%" visible="#{conta.empresa.id eq 74553 or true}" exportable="#{conta.empresa.id eq 74553}">
+							<p:column headerText="Comissão (%)" width="8%" visible="#{conta.empresa.id eq 74553 or true}" 
+								exportable="#{conta.empresa.id eq 74553}"
+								rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 74553}">
 								<h:outputText value="#{conta.taxaDeComissao}" rendered="#{not (consultaContasBean.tipoContas eq 'Total contas à pagar') and not (consultaContasBean.tipoContas eq 'Contas à pagar em atraso') and not (consultaContasBean.tipoContas eq ('Contas pagas Hoje '.concat(consultaContasBean.hoje))) and not (conta.operacao eq 'LANCAMENTO')}">
 									<f:convertNumber type="currency" currencySymbol="%" />
 								</h:outputText>
 								<h:outputText value="-" rendered="#{consultaContasBean.tipoContas eq 'Total contas à pagar' or consultaContasBean.tipoContas eq 'Contas à pagar em atraso' or consultaContasBean.tipoContas eq ('Contas pagas Hoje '.concat(consultaContasBean.hoje)) or conta.operacao eq 'LANCAMENTO'}" />
 							</p:column>
 							
-							<p:column headerText="Comissão (R$)" width="8%" visible="#{conta.empresa.id eq 74553 or true}" exportable="#{conta.empresa.id eq 74553}">
+							<p:column headerText="Comissão (R$)" width="8%" visible="#{conta.empresa.id eq 74553 or true}" 
+								exportable="#{conta.empresa.id eq 74553}"
+								rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 74553}">
 								<h:outputText value="#{(conta.taxaDeComissao * conta.saldo)/100}" rendered="#{not (consultaContasBean.tipoContas eq 'Total contas à pagar') and not (consultaContasBean.tipoContas eq 'Contas à pagar em atraso') and not (consultaContasBean.tipoContas eq ('Contas pagas Hoje '.concat(consultaContasBean.hoje))) and not (conta.operacao eq 'LANCAMENTO') and not (conta.status)}">
 									<f:convertNumber type="currency" currencySymbol="R$" />
 								</h:outputText>
@@ -1464,43 +1468,58 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 								style="font-weight:bold;float:left;margin-top:10px;margin-bottom:5px;font-size: 13px;font-family: inherit;"
 								rendered="#{consultaContasBean.tipoContas eq 'Contas à pagar em atraso'}" />
 							
-							<p:panel style="float:left;margin-top:2px;margin-bottom:5px;font-size: 13px;font-family: inherit;">
+							<p:panel style="float:left;margin-top:3px;margin-bottom:5px;font-size: 13px;font-family: inherit;"
+								rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 74553}">
 								<p:outputLabel
 									value="Total em atraso: R$ #{consultaContasBean.totalContas}"
 									style="font-weight:bold;"
 									rendered="#{consultaContasBean.tipoContas eq 'Contas à receber em atraso'}" />								
 								<br/>
-								<p:outputLabel
+								<p:outputLabel style="font-size: 12px;"
 									value="Comissões à receber: R$ #{consultaContasBean.totalComissoes}"
 									rendered="#{consultaContasBean.tipoContas eq 'Contas à receber em atraso'}" />
 							</p:panel>
+							<p:outputLabel
+									value="Total em atraso: R$ #{consultaContasBean.totalContas}"
+									style="font-weight:bold;float:left;margin-top:10px;margin-bottom:5px;font-size: 13px;font-family: inherit;"
+									rendered="#{consultaContasBean.tipoContas eq 'Contas à receber em atraso' and seguranca.usuarioLogado.usuario.empresa.id != 74553}" />		
 								
 							<p:outputLabel
 									value="Total pago hoje: R$ #{consultaContasBean.totalContas}"
 									style="font-weight:bold;float:left;margin-top:10px;margin-bottom:5px;font-size: 13px;font-family: inherit;"
 									rendered="#{consultaContasBean.tipoContas eq ('Contas pagas Hoje '.concat(consultaContasBean.hoje))}" />						
 						
-							<p:panel style="float:left;margin-top:2px;margin-bottom:5px;font-size: 13px;font-family: inherit;">
+							<p:panel style="float:left;margin-top:3px;margin-bottom:5px;font-size: 13px;font-family: inherit;"
+								rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 74553}">
 								<p:outputLabel
 									value="Total pago hoje: R$ #{consultaContasBean.totalContas}"
 									style="font-weight:bold;"
 									rendered="#{consultaContasBean.tipoContas eq ('Contas recebidas Hoje '.concat(consultaContasBean.hoje))}" />						
 								<br/>
-								<p:outputLabel
+								<p:outputLabel style="font-size: 12px;"
 									value="Comissões recebidas: R$ #{consultaContasBean.totalComissoes}"
 									rendered="#{consultaContasBean.tipoContas eq ('Contas recebidas Hoje '.concat(consultaContasBean.hoje))}" />
 							</p:panel>
+							<p:outputLabel
+									value="Total pago hoje: R$ #{consultaContasBean.totalContas}"
+									style="font-weight:bold;float:left;margin-top:10px;margin-bottom:5px;font-size: 13px;font-family: inherit;"
+									rendered="#{consultaContasBean.tipoContas eq ('Contas recebidas Hoje '.concat(consultaContasBean.hoje)) and seguranca.usuarioLogado.usuario.empresa.id != 74553}" />						
 							
-							<p:panel style="float:left;margin-top:2px;margin-bottom:5px;font-size: 13px;font-family: inherit;">
+							<p:panel style="float:left;margin-top:3px;margin-bottom:5px;font-size: 13px;font-family: inherit;"
+								rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 74553}">
 								<p:outputLabel
 									value="Total à receber: R$ #{consultaContasBean.totalContas}"
 									style="font-weight:bold;"							
 									rendered="#{consultaContasBean.tipoContas eq 'Total contas à receber'}" />
 								<br/>
-								<p:outputLabel
+								<p:outputLabel style="font-size: 12px;"
 									value="Comissões à receber: R$ #{consultaContasBean.totalComissoes}"
 									rendered="#{consultaContasBean.tipoContas eq 'Total contas à receber'}" />
 							</p:panel>
+							<p:outputLabel
+									value="Total à receber: R$ #{consultaContasBean.totalContas}"
+									style="font-weight:bold;float:left;margin-top:10px;margin-bottom:5px;font-size: 13px;font-family: inherit;"						
+									rendered="#{consultaContasBean.tipoContas eq 'Total contas à receber' and seguranca.usuarioLogado.usuario.empresa.id != 74553}" />
 								
 							<p:outputLabel
 								value="Total à pagar: R$ #{consultaContasBean.totalContas}"

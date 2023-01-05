@@ -285,7 +285,7 @@ public class RegistroVendasBean implements Serializable {
 				venda.setTipoVenda(tiposVendas.porDescricao("Nao Informado", usuario.getEmpresa()));
 				FormaPagamento formaPagamento = formasPagamentos.porNome("Dinheiro", usuario.getEmpresa());
 				venda.setFormaPagamento(formaPagamento);
-				venda.setBairro(bairros.porNome("Nao Informado", usuario.getEmpresa()));
+				venda.setBairro(bairros.porNome("Não Informado", usuario.getEmpresa()));
 			}
 		}
 	}

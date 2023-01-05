@@ -1166,7 +1166,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 							<div class="overview-box-content">
 								
 								<div class="overview-box-title">Comissão de Vendas</div>
-								<p:link id="vendedor-selecionado" href="javascript:void(0);" style="color: #ffffff;font-size: 9px;font-weight: bold;float: left;margin-top: -11px;"
+								<p:link id="vendedor-selecionado" href="javascript:void(0);" style="color: #ffffff;font-size: 8px;font-weight: bold;float: left;margin-top: -11px;"
 									onclick="PF('vendedor-dialog').show();">
 									<h:outputText value="#{dashboardBean.primeiroNome}"/>						
 								</p:link>
@@ -1725,7 +1725,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 		<p:dialog
 			header="Retirar comissão"
 			widgetVar="retira-dialog" id="retira-dialog" resizable="false"
-			modal="true" closeOnEscape="true" responsive="true" width="250px" position="center">
+			modal="true" closeOnEscape="true" responsive="true" width="326px" position="center">
 
 			<h:form id="form-retira">
 
@@ -1748,7 +1748,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 
 						<p:spacer />
 						
-						<div style="width: 114%;margin-left: -15px; border-top: 1px solid #ccc"></div>
+						<div style="width: 110%;margin-left: -15px; border-top: 1px solid #ccc"></div>
 						
 						<p:panel class="card card-w-title ui-fluid panel-btn"
 								style="margin-top:5px;padding-bottom: 0px;margin-bottom: 0px;">
@@ -1758,13 +1758,13 @@ body .ui-datatable .ui-datatable-data>tr td {
 								onstart="PF('downloadLoading').show(); PF('btn-save').disable();"
 								update="form form-retira" process="@this form-retira valor-retirada"
 								action="#{dashboardBean.retirarComissao}"
-								style="font-weight: bold;background-color: #0d8819b5; width: 97px">
+								style="float:right;font-weight: bold;background-color: #0d8819b5; width: 97px;margin-bottom: 4px;">
 	
 							</p:commandButton>
 	
 							<p:commandButton icon="fa fa-fw fa-close" value="Fechar"
 								onclick="PF('retira-dialog').hide();" 
-								style="margin-left:1px;background-color: #e15e5ef0; font-weight: bold; float: left; width: 97px">
+								style="margin-left:1px;background-color: #e15e5ef0; font-weight: bold; float: right; width: 97px">
 	
 							</p:commandButton>
 						</p:panel>
@@ -1778,7 +1778,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 		<p:dialog
 			header="Selecionar vendedor"
 			widgetVar="vendedor-dialog" id="vendedor-dialog" resizable="false"
-			modal="true" closeOnEscape="true" responsive="true" width="258px" position="center">
+			modal="true" closeOnEscape="true" responsive="true" width="326px" position="center">
 
 			<h:form id="form-vendedor">
 
@@ -1804,7 +1804,7 @@ body .ui-datatable .ui-datatable-data>tr td {
 
 						<p:spacer />
 						
-						<div style="width: 114%;margin-left: -15px; border-top: 1px solid #ccc"></div>
+						<div style="width: 110%;margin-left: -15px; border-top: 1px solid #ccc"></div>
 						
 						<p:panel class="card card-w-title ui-fluid panel-btn"
 								style="margin-top:5px;padding-bottom: 0px;margin-bottom: 0px;">
