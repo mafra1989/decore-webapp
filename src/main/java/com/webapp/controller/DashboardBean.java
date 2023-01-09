@@ -43,6 +43,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.CategoriaLancamento;
+import com.webapp.model.Compra;
 import com.webapp.model.Conta;
 import com.webapp.model.FluxoDeCaixa;
 import com.webapp.model.Lancamento;
@@ -272,11 +273,26 @@ public class DashboardBean implements Serializable {
 			createMixedModelPorSemana();
 			
 			
+			Calendar calendarStart = Calendar.getInstance();
+			calendarStart.setTime(dateStart);
+			calendarStart = DateUtils.truncate(calendarStart, Calendar.DAY_OF_MONTH);
+			
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM");
+			hoje = sdf.format(calendarStart.getTime());
+
+
+			Calendar calendarStop = Calendar.getInstance();
+			calendarStop.setTime(dateStop);
+			calendarStop.add(Calendar.DAY_OF_MONTH, 1);
+			calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);
+			
+			
 			CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome("Retirada de lucro", usuario.getEmpresa());
 			
 			Number totalDeRetiradas = 0;
 			if(categoriaLancamento != null) {
-				totalDeRetiradas = lancamentos.totalDeRetiradas(usuario.getEmpresa(), categoriaLancamento);
+				totalDeRetiradas = lancamentos.totalDeRetiradas(usuario.getEmpresa(), categoriaLancamento, calendarStart, calendarStop);
 			}
 			
 			
@@ -299,19 +315,6 @@ public class DashboardBean implements Serializable {
 			if(usuario.getEmpresa().getId() == 7111) {
 				saldoLucroEmVendas = 0D;
 			}
-			
-			Calendar calendarStart = Calendar.getInstance();
-			calendarStart.setTime(dateStart);
-			calendarStart = DateUtils.truncate(calendarStart, Calendar.DAY_OF_MONTH);
-			
-			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM");
-			hoje = sdf.format(calendarStart.getTime());
-
-
-			Calendar calendarStop = Calendar.getInstance();
-			calendarStop.setTime(dateStop);
-			calendarStop.add(Calendar.DAY_OF_MONTH, 1);
-			calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);
 			
 			
 			Number totalDescontosPorDiaValor = vendas.totalDescontosPorDiaValor(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
@@ -385,54 +388,6 @@ public class DashboardBean implements Serializable {
 			
 			totalEntregas = totalEntregas.equals("(  )") ? "" : totalEntregas;
 			
-						
-			
-			
-			calendarStop.add(Calendar.DAY_OF_MONTH, -1);
-			calendarStop.set(Calendar.HOUR, 23);
-			calendarStop.set(Calendar.MINUTE, 59);
-			calendarStop.set(Calendar.SECOND, 59);
-			
-			
-			totalVendasPagasHojeValor = contas.totalVendasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
-			
-			totalReceitasPagasHojeValor = contas.totalReceitasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
-			
-			
-			totalContasRecebidasHojeValor = totalReceitasPagasHojeValor.doubleValue() + totalVendasPagasHojeValor.doubleValue();
-			
-			
-			totalLancamentosReceitasHojeValor = lancamentos.totalLancamentosReceitasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
-			
-			totalReceitasHojeValor = totalReceitasPagasHojeValor.doubleValue() + totalLancamentosReceitasHojeValor.doubleValue();
-			
-			
-			totalAReceberHojeValor = contas.totalAReceberPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
-			
-			totalAReceberValor = contas.totalAReceberValor(usuario.getEmpresa());
-			
-			
-			totalAReceberEmAtrasoValor = contas.totalAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart);
-			
-			
-			
-			
-			
-			totalDespesasPagasHojeValor = contas.totalDespesasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
-			
-			totalLancamentosDespesasHojeValor = lancamentos.totalLancamentosDespesasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
-			
-			totalDespesasHojeValor = totalDespesasPagasHojeValor.doubleValue() + totalLancamentosDespesasHojeValor.doubleValue();
-			
-			
-			Number totalAPagarHojeValorTemp = contas.totalAPagarPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
-			Number totalAPagarHojeValorPago = contas.totalAPagarPorDiaValor_(calendarStart, calendarStop, usuario.getEmpresa());
-			totalAPagarHojeValor = totalAPagarHojeValorTemp.doubleValue() - totalAPagarHojeValorPago.doubleValue();
-			
-			totalAPagarValor = contas.totalAPagarValor(usuario.getEmpresa());
-			
-			
-			totalAPagarEmAtrasoValor = contas.totalAPagarEmAtrasoValor(usuario.getEmpresa(), calendarStart);
 		}
 	}
 	
@@ -612,85 +567,96 @@ public class DashboardBean implements Serializable {
 		ChartData data = new ChartData();
 
 		BarChartDataSet barDataSet = new BarChartDataSet();
-		barDataSet.setLabel("Valor Total");
-
-
-		Number totalTaxasValor = vendas.totalTaxasValor(usuario.getEmpresa());
+		barDataSet.setLabel("Movimentações");
 		
 		
-		Number vendasAvistaPagasTemp = vendas.vendasAvistaPagas(usuario.getEmpresa()).doubleValue();
-		//Number descontoVendasAvistaPagas = vendas.descontoVendasAvistaPagas(usuario.getEmpresa());
+		Calendar calendarStart = Calendar.getInstance();
+		calendarStart.setTime(dateStart);
+		calendarStart = DateUtils.truncate(calendarStart, Calendar.DAY_OF_MONTH);
 		
-		Number vendasAvistaPagas = vendasAvistaPagasTemp.doubleValue() - (/*descontoVendasAvistaPagas.doubleValue() + */totalTaxasValor.doubleValue());	
-		Number vendasAPagarPagas = contas.vendasAPagarPagas("CREDITO", "VENDA", usuario.getEmpresa());
-		Number totalVendasPagasParcialmente = contas.totalVendasPagasParcialmente(usuario.getEmpresa());
-		
-		Number totalVendas_ = vendasAvistaPagas.doubleValue() + vendasAPagarPagas.doubleValue() + totalVendasPagasParcialmente.doubleValue();
-		Number totalVendas = totalVendas_;//vendas.totalVendas(usuario.getEmpresa());
-		
-		
-		Number comprasAvistaPagas = compras.comprasAvistaPagas(usuario.getEmpresa());
-		Number comprasAPagarPagas = contas.porContasPagas("DEBITO", "COMPRA", usuario.getEmpresa());
-		Number totalComprasPagasParcialmente = contas.totalComprasPagasParcialmente(usuario.getEmpresa());
-		
-		Number totalCompras_ = comprasAvistaPagas.doubleValue() + comprasAPagarPagas.doubleValue() + totalComprasPagasParcialmente.doubleValue();	
-		Number totalCompras = totalCompras_;//compras.totalCompras(usuario.getEmpresa());
-		
-		
-		Number totalComprasVendidas = vendas.totalComprasVendidas(usuario.getEmpresa());
-		Number totalLucros = vendas.totalLucros(usuario.getEmpresa());
-
-		
-		
-		Number despesasAvistaPagas = lancamentos.totalDespesasAvistaPagas(usuario.getEmpresa()); 
-		Number despesasAPagarPagas = contas.porContasPagas("DEBITO", "LANCAMENTO", usuario.getEmpresa());
-		Number totalDespesasPagasParcialmente = contas.totalDespesasPagasParcialmente(usuario.getEmpresa());
-		Number totalDespesasPagas = despesasAvistaPagas.doubleValue() + despesasAPagarPagas.doubleValue() + totalDespesasPagasParcialmente.doubleValue();		
-
-		Number totalDebitosPagos = totalDespesasPagas.doubleValue() + totalCompras.doubleValue();//contas.porContasPagas("DEBITO", usuario.getEmpresa()); 
-		
-		
-		Number receitasAvistaPagas = lancamentos.totalReceitasAvistaPagas(usuario.getEmpresa()); 
-		Number receitasAReceberPagas = contas.porContasPagas("CREDITO", "LANCAMENTO", usuario.getEmpresa());
-		Number totalReceitasPagasParcialmente = contas.totalReceitasPagasParcialmente(usuario.getEmpresa());
-		Number totalReceitasPagas = receitasAReceberPagas.doubleValue() + receitasAvistaPagas.doubleValue() + totalReceitasPagasParcialmente.doubleValue();
-		
-		Number totalReceitas = totalReceitasPagas;
-		
-		
-
+		Calendar calendarStop = Calendar.getInstance();
+		calendarStop.setTime(dateStop);
+		calendarStop.add(Calendar.DAY_OF_MONTH, 1);
+		calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);
 		
 		
 		List<Number> values = new ArrayList<>();
 		
+		Number saldoEmCaixa = getSaldoEmCaixa();
+		//values.add(saldoEmCaixa);// Em Caixa
 		
-		if(usuario.getEmpresa().equals("Lucro")) {			
-			values.add((totalVendas.doubleValue() + totalReceitas.doubleValue()) - totalComprasVendidas.doubleValue()
-					- (totalDespesasPagas.doubleValue()/*totalDebitosPagos.doubleValue()*//* + totalCompras.doubleValue()*/));
-		} else {
-			values.add((totalVendas.doubleValue() + totalReceitas.doubleValue()) 
-					- (totalDebitosPagos.doubleValue()/* + totalCompras.doubleValue()*/));		
+		Number vendasAVistaAPagarPagas = 0;
+		List<Conta> listaDeContasAVistaAPagarPagas = contas.vendasAVistaAPagarPagas("CREDITO", "VENDA", usuario.getEmpresa(), calendarStart, calendarStop);	
+		for (Conta conta : listaDeContasAVistaAPagarPagas) {
+			Venda venda = vendas.porNumeroVenda(conta.getCodigoOperacao(), usuario.getEmpresa());
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			if(!sdf.format(conta.getPagamento()).equals(sdf.format(venda.getDataVenda()))) {
+				vendasAVistaAPagarPagas = vendasAVistaAPagarPagas.doubleValue() + conta.getValor().doubleValue();
+			}
+		}	
+		
+		Number totalVendasPeriodo = getValorTotalVendas(calendarStart, calendarStop);		
+		values.add(totalVendasPeriodo.doubleValue() + vendasAVistaAPagarPagas.doubleValue());// Vendas
+		
+		
+		Number receitasAVistaAPagarPagas = 0;
+		listaDeContasAVistaAPagarPagas = contas.receitasAVistaAPagarPagas("CREDITO", "LANCAMENTO", usuario.getEmpresa(), calendarStart, calendarStop);	
+		for (Conta conta : listaDeContasAVistaAPagarPagas) {
+			Lancamento lancamento = lancamentos.porNumeroLancamento(conta.getCodigoOperacao(), usuario.getEmpresa());
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			if(!sdf.format(conta.getPagamento()).equals(sdf.format(lancamento.getDataLancamento()))) {
+				receitasAVistaAPagarPagas = receitasAVistaAPagarPagas.doubleValue() + conta.getValor().doubleValue();
+			}
 		}
 		
-		// Em Caixa
-		values.add(totalVendas);// Vendas
-		values.add(totalReceitas);// Receitas
+		Number totalReceitasPeriodo = getValorTotalReceitas(calendarStart, calendarStop);
+		values.add(totalReceitasPeriodo.doubleValue() + receitasAVistaAPagarPagas.doubleValue());// Receitas
 		// values.add(0);//Contas à Receber
 
-		values.add(totalCompras);// Compras
+		
+		Number comprasAVistaAPagarPagas = 0;
+		listaDeContasAVistaAPagarPagas = contas.comprasAVistaAPagarPagas("DEBITO", "COMPRA", usuario.getEmpresa(), calendarStart, calendarStop);	
+		for (Conta conta : listaDeContasAVistaAPagarPagas) {
+			Compra compra = compras.porNumeroCompra(conta.getCodigoOperacao(), usuario.getEmpresa());
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			if(!sdf.format(conta.getPagamento()).equals(sdf.format(compra.getDataCompra()))) {
+				comprasAVistaAPagarPagas = comprasAVistaAPagarPagas.doubleValue() + conta.getValor().doubleValue();
+			}
+		}
+		
+		Number totalComprasPeriodo = getValorTotalCompras(calendarStart, calendarStop);
+		values.add(totalComprasPeriodo.doubleValue() + comprasAVistaAPagarPagas.doubleValue());// Compras
+		
 		
 		CategoriaLancamento categoriaLancamento = categoriasLancamentos.porId(36L);
 		Number totalDeRetiradas = 0;
 		
 		if(categoriaLancamento != null) {
-			totalDeRetiradas = lancamentos.totalDeRetiradas(usuario.getEmpresa(), categoriaLancamento);
+			totalDeRetiradas = lancamentos.totalDeRetiradas(usuario.getEmpresa(), categoriaLancamento, calendarStart, calendarStop);
 		}
 		
-		values.add(totalDespesasPagas.doubleValue()/* - totalDeRetiradas.doubleValue()*/);// Despesas
+		
+		Number despesasAVistaAPagarPagas = 0;
+		listaDeContasAVistaAPagarPagas = contas.despesasAVistaAPagarPagas("DEBITO", "LANCAMENTO", usuario.getEmpresa(), calendarStart, calendarStop);	
+		for (Conta conta : listaDeContasAVistaAPagarPagas) {
+			Lancamento lancamento = lancamentos.porNumeroLancamento(conta.getCodigoOperacao(), usuario.getEmpresa());
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			if(!sdf.format(conta.getPagamento()).equals(sdf.format(lancamento.getDataLancamento()))) {
+				despesasAVistaAPagarPagas = despesasAVistaAPagarPagas.doubleValue() + conta.getValor().doubleValue();
+			}
+		}
+		
+		Number totalDespesasPagasPeriodo = getValorTotalDespesas(calendarStart, calendarStop);	
+		values.add(totalDespesasPagasPeriodo.doubleValue() + despesasAVistaAPagarPagas.doubleValue()/* - totalDeRetiradas.doubleValue()*/);// Despesas
+		
 		
 		// values.add(0);//Contas à Pagar
 		Number avender = produtos.totalAVender(usuario.getEmpresa());
-		values.add(avender);// À Vender
+		//values.add(avender);// À Vender
 		
 		
 		alucrar = avender.doubleValue() - produtos.totalCustoMedio(usuario.getEmpresa()).doubleValue();
@@ -700,40 +666,24 @@ public class DashboardBean implements Serializable {
 
 		tabela = new ArrayList<FluxoDeCaixa>();
 		caixa = new FluxoDeCaixa();
-		caixa.setItem("Caixa");
 		
-		if(usuario.getEmpresa().equals("Lucro")) {			
-			caixa.setValue((totalVendas.doubleValue() + totalReceitas.doubleValue()) - totalComprasVendidas.doubleValue()
-					- (totalDespesasPagas.doubleValue()/*totalDebitosPagos.doubleValue()*//* + totalCompras.doubleValue()*/));			
-		} else {
-			caixa.setValue((totalVendas.doubleValue() + totalReceitas.doubleValue())
-					- (totalDebitosPagos.doubleValue()/* + totalCompras.doubleValue()*/));		
-		}
-		
+		/*
+		caixa.setItem("Caixa");		
+		caixa.setValue(saldoEmCaixa.doubleValue());	
 		tabela.add(caixa);
-
-		saldo = 0;
-		
-		
-		
-		if(usuario.getEmpresa().equals("Lucro")) {			
-			saldo = (totalVendas.doubleValue() + totalReceitas.doubleValue()) - totalComprasVendidas.doubleValue()
-					- (totalDespesasPagas.doubleValue()/*totalDebitosPagos.doubleValue()*//* + totalCompras.doubleValue()*/);			
-		} else {
-			saldo = (totalVendas.doubleValue() + totalReceitas.doubleValue())
-					- (totalDebitosPagos.doubleValue()/* + totalCompras.doubleValue()*/);			
-		}
-		
+		*/
+		saldo = saldoEmCaixa.doubleValue();	
 		saldoGeral = nf.format(saldo);
-
+		
+		
 		vendas_ = new FluxoDeCaixa();
 		vendas_.setItem("Vendas");
-		vendas_.setValue(totalVendas.doubleValue());
+		vendas_.setValue(totalVendasPeriodo.doubleValue() + vendasAVistaAPagarPagas.doubleValue());
 		tabela.add(vendas_);
 
 		receitas = new FluxoDeCaixa();
 		receitas.setItem("Receitas");
-		receitas.setValue(totalReceitas.doubleValue());
+		receitas.setValue(totalReceitasPeriodo.doubleValue() + receitasAVistaAPagarPagas.doubleValue());
 		tabela.add(receitas);
 		/*
 		 * fluxoDeCaixa = new FluxoDeCaixa(); fluxoDeCaixa.setItem("Contas à Receber");
@@ -742,12 +692,12 @@ public class DashboardBean implements Serializable {
 
 		compras_ = new FluxoDeCaixa();
 		compras_.setItem("Compras");
-		compras_.setValue(totalCompras.doubleValue());
+		compras_.setValue(totalComprasPeriodo.doubleValue() + comprasAVistaAPagarPagas.doubleValue());
 		tabela.add(compras_);
 
 		despesas = new FluxoDeCaixa();
 		despesas.setItem("Despesas");
-		despesas.setValue(totalDespesasPagas.doubleValue());
+		despesas.setValue(totalDespesasPagasPeriodo.doubleValue() + despesasAVistaAPagarPagas.doubleValue());
 		tabela.add(despesas);
 		/*
 		 * fluxoDeCaixa = new FluxoDeCaixa(); fluxoDeCaixa.setItem("Contas à Pagar");
@@ -757,50 +707,54 @@ public class DashboardBean implements Serializable {
 		avender_ = new FluxoDeCaixa();
 		avender_.setItem("À Vender");
 		avender_.setValue(avender.doubleValue());
-		tabela.add(avender_);
+		//tabela.add(avender_);
 
 		List<String> bgColor = new ArrayList<>();
 		
+		/*
 		if(saldo < 0) {
 			bgColor.add("rgba(255, 99, 132, 0.2)");
 		} else {
 			bgColor.add("rgba(75, 192, 192, 0.2)");
 		}
+		*/
 		
-		bgColor.add("rgba(255, 159, 64, 0.2)");
+		bgColor.add("rgba(75, 192, 192, 0.2)");//bgColor.add("rgba(255, 159, 64, 0.2)");
 		bgColor.add("rgba(255, 205, 86, 0.2)");	
 		bgColor.add("rgba(54, 162, 235, 0.2)");
 		bgColor.add("rgba(255, 99, 132, 0.2)");
-		bgColor.add("rgba(201, 203, 207, 0.2)");
+		//bgColor.add("rgba(201, 203, 207, 0.2)");
 		barDataSet.setBackgroundColor(bgColor);
 
 		List<String> borderColor = new ArrayList<>();
 		
+		/*
 		if(saldo < 0) { 
 			borderColor.add("rgb(255, 99, 132)");
 		} else {
 			borderColor.add("rgb(75, 192, 192)");
 		}
+		*/
 		
-		borderColor.add("rgb(255, 159, 64)");
+		borderColor.add("rgb(75, 192, 192)");//borderColor.add("rgb(255, 159, 64)");
 		borderColor.add("rgb(255, 205, 86)");	
 		borderColor.add("rgb(54, 162, 235)");
 		borderColor.add("rgb(255, 99, 132)");
-		borderColor.add("rgb(201, 203, 207)");
+		//borderColor.add("rgb(201, 203, 207)");
 		barDataSet.setBorderColor(borderColor);
 		barDataSet.setBorderWidth(1);	
 
 		data.addChartDataSet(barDataSet);
 
 		List<String> labels = new ArrayList<>();
-		labels.add("Caixa");
+		//labels.add("Caixa");
 		labels.add("Vendas");
 		labels.add("Receitas");
 		// labels.add("À Receber");
 		labels.add("Compras");
 		labels.add("Despesas");
 		// labels.add("À Pagar");
-		labels.add("À Vender");
+		//labels.add("À Vender");
 		data.setLabels(labels);
 		barModel.setData(data);
 
@@ -829,6 +783,79 @@ public class DashboardBean implements Serializable {
 		barModel.setOptions(options);
 
 		barModel.setExtender("percentExtender5");
+	}
+
+    private Number getSaldoEmCaixa() {
+    	Number totalVendas = getValorTotalVendas(null, null);
+		
+		Number totalCompras = getValorTotalCompras(null, null);
+		
+		
+		Number totalComprasVendidas = vendas.totalComprasVendidas(usuario.getEmpresa());
+		//Number totalLucros = vendas.totalLucros(usuario.getEmpresa());
+	
+		
+		Number totalDespesasPagas = getValorTotalDespesas(null, null);	
+		
+
+		Number totalDebitosPagos = totalDespesasPagas.doubleValue() + totalCompras.doubleValue();//contas.porContasPagas("DEBITO", usuario.getEmpresa()); 
+		
+		
+		Number totalReceitas = getValorTotalReceitas(null, null);
+		
+		Number saldoEmCaixa = 0;
+		if(usuario.getEmpresa().equals("Lucro")) {			
+			saldoEmCaixa = (totalVendas.doubleValue() + totalReceitas.doubleValue()) - totalComprasVendidas.doubleValue()
+					- (totalDespesasPagas.doubleValue()/*totalDebitosPagos.doubleValue()*//* + totalCompras.doubleValue()*/);
+		} else {
+			saldoEmCaixa = (totalVendas.doubleValue() + totalReceitas.doubleValue()) 
+					- (totalDebitosPagos.doubleValue()/* + totalCompras.doubleValue()*/);		
+		}
+		
+		return saldoEmCaixa;
+    }
+    
+	private Number getValorTotalReceitas(Calendar calendarStart, Calendar calendarStop) {
+		Number receitasAvistaPagas = lancamentos.totalReceitasAvistaPagas(usuario.getEmpresa(), calendarStart, calendarStop); 
+		Number receitasAReceberPagas = contas.porContasPagas("CREDITO", "LANCAMENTO", usuario.getEmpresa(), calendarStart, calendarStop);
+		Number totalReceitasPagasParcialmente = contas.totalReceitasPagasParcialmente(usuario.getEmpresa(), calendarStart, calendarStop);
+		Number totalReceitasPagas = receitasAReceberPagas.doubleValue() + receitasAvistaPagas.doubleValue() + totalReceitasPagasParcialmente.doubleValue();	
+		return totalReceitasPagas;
+	}
+
+
+	private Number getValorTotalDespesas(Calendar calendarStart, Calendar calendarStop) {
+		Number despesasAvistaPagas = lancamentos.totalDespesasAvistaPagas(usuario.getEmpresa(), calendarStart, calendarStop); 
+		Number despesasAPagarPagas = contas.porContasPagas("DEBITO", "LANCAMENTO", usuario.getEmpresa(), calendarStart, calendarStop);
+		Number totalDespesasPagasParcialmente = contas.totalDespesasPagasParcialmente(usuario.getEmpresa(), calendarStart, calendarStop);
+		Number totalDespesasPagas = despesasAvistaPagas.doubleValue() + despesasAPagarPagas.doubleValue() + totalDespesasPagasParcialmente.doubleValue();
+		return totalDespesasPagas;
+	}
+
+
+	private Number getValorTotalCompras(Calendar calendarStart, Calendar calendarStop) {
+		Number comprasAvistaPagas = compras.comprasAvistaPagas(usuario.getEmpresa(), calendarStart, calendarStop);
+		Number comprasAPagarPagas = contas.porContasPagas("DEBITO", "COMPRA", usuario.getEmpresa(), calendarStart, calendarStop);
+		Number totalComprasPagasParcialmente = contas.totalComprasPagasParcialmente(usuario.getEmpresa(), calendarStart, calendarStop);
+		
+		Number totalCompras = comprasAvistaPagas.doubleValue() + comprasAPagarPagas.doubleValue() + totalComprasPagasParcialmente.doubleValue();	
+		//Number totalCompras = compras.totalCompras(usuario.getEmpresa());
+		return totalCompras;
+	}
+
+
+	private Number getValorTotalVendas(Calendar calendarStart, Calendar calendarStop) {
+		Number totalTaxasValor = vendas.totalTaxasValor(usuario.getEmpresa(), calendarStart, calendarStop);			
+		Number vendasAvistaPagasTemp = vendas.vendasAvistaPagas(usuario.getEmpresa(), calendarStart, calendarStop).doubleValue();
+		//Number descontoVendasAvistaPagas = vendas.descontoVendasAvistaPagas(usuario.getEmpresa());	
+		Number vendasAvistaPagas = vendasAvistaPagasTemp.doubleValue() - (/*descontoVendasAvistaPagas.doubleValue() + */totalTaxasValor.doubleValue());	
+			
+		Number vendasAPagarPagas = contas.vendasAPagarPagas("CREDITO", "VENDA", usuario.getEmpresa(), calendarStart, calendarStop);		
+		Number totalVendasPagasParcialmente = contas.totalVendasPagasParcialmente(usuario.getEmpresa(), calendarStart, calendarStop);
+		Number totalVendas = vendasAvistaPagas.doubleValue() + vendasAPagarPagas.doubleValue() + totalVendasPagasParcialmente.doubleValue();
+		
+		//Number totalVendas = vendas.totalVendas(usuario.getEmpresa());
+		return totalVendas;
 	}
 
 	public void createMixedModel() {
@@ -2010,8 +2037,18 @@ public class DashboardBean implements Serializable {
 				lancamentos.save(lancamento);
 				
 				
+				Calendar calendarStart = Calendar.getInstance();
+				calendarStart.setTime(dateStart);
+				calendarStart = DateUtils.truncate(calendarStart, Calendar.DAY_OF_MONTH);
+
+				Calendar calendarStop = Calendar.getInstance();
+				calendarStop.setTime(dateStop);
+				calendarStop.add(Calendar.DAY_OF_MONTH, 1);
+				calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);
 				
-				Number totalDeRetiradas = lancamentos.totalDeRetiradas(usuario.getEmpresa(), categoriaLancamento);
+				
+				
+				Number totalDeRetiradas = lancamentos.totalDeRetiradas(usuario.getEmpresa(), categoriaLancamento, calendarStart, calendarStop);
 				
 				Number saldoLucroEmVendasAPagarPagas = contas.lucroEmVendasAPagarPagas("CREDITO", "VENDA", usuario.getEmpresa());
 				Number saldoLucroEmVendasAVistaPagas = vendas.totalLucros(usuario.getEmpresa()).doubleValue();

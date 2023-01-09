@@ -1,6 +1,7 @@
 package com.webapp.repository;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -95,11 +96,22 @@ public class Compras implements Serializable {
 	}
 	
 	
-	public Number comprasAvistaPagas(Empresa empresa) {
-		String jpql = "SELECT sum(i.valorTotal) FROM Compra i Where i.empresa.id = :empresa AND i.ajuste = 'N' AND i.conta = 'N'";
+	public Number comprasAvistaPagas(Empresa empresa, Calendar calendarStart, Calendar calendarStop) {
+		
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo += "AND i.dataCompra BETWEEN :dataInicio AND :dataFim";
+		}
+		
+		String jpql = "SELECT sum(i.valorTotal) FROM Compra i Where i.empresa.id = :empresa AND i.ajuste = 'N' AND i.conta = 'N' " + periodo;
 		
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
 
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+		
 		Number count = 0;
 		try {
 			count = (Number) q.getSingleResult();

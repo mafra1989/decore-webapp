@@ -260,7 +260,7 @@ public class ConsultaContasBean implements Serializable {
 			
 			
 	
-			Number totalReceitasPagasParcialmenteHojeValor = contas.totalReceitasPagasParcialmente(usuario.getEmpresa());
+			Number totalReceitasPagasParcialmenteHojeValor = contas.totalReceitasPagasParcialmente(usuario.getEmpresa(), null, null);
 			
 			totalLancamentosReceitasHojeValor = lancamentos.totalLancamentosReceitasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
 			
@@ -272,7 +272,7 @@ public class ConsultaContasBean implements Serializable {
 			totalDespesasPagasHojeValor = contas.totalDespesasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
 			
 			
-			Number totalDespesasPagasParcialmenteHojeValor = contas.totalDespesasPagasParcialmente(usuario.getEmpresa());
+			Number totalDespesasPagasParcialmenteHojeValor = contas.totalDespesasPagasParcialmente(usuario.getEmpresa(), null, null);
 			
 			totalLancamentosDespesasHojeValor = lancamentos.totalLancamentosDespesasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
 			
@@ -586,7 +586,7 @@ public class ConsultaContasBean implements Serializable {
 			totalPagoHojeContasAPagarEmAtrasoValor = contas.totalPagoHojeContasAPagarEmAtrasoValor(usuario.getEmpresa(), calendarStart, calendarStop);					
 			totalContasPagasHojeValor = (totalDespesasPagasHojeValor.doubleValue() + totalComprasPagasHojeValor.doubleValue()) + totalPagoHojeContasAPagarEmAtrasoValor.doubleValue();
 			
-			Number totalDespesasPagasParcialmenteHojeValor = contas.totalDespesasPagasParcialmente(usuario.getEmpresa());
+			Number totalDespesasPagasParcialmenteHojeValor = contas.totalDespesasPagasParcialmente(usuario.getEmpresa(), null, null);
 			
 			totalLancamentosDespesasHojeValor = lancamentos.totalLancamentosDespesasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());		
 			totalDespesasHojeValor = totalDespesasPagasHojeValor.doubleValue() + totalLancamentosDespesasHojeValor.doubleValue() + totalDespesasPagasParcialmenteHojeValor.doubleValue();
@@ -630,7 +630,7 @@ public class ConsultaContasBean implements Serializable {
 			totalPagoHojeContasAReceberEmAtrasoValor = contas.totalPagoHojeContasAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart, calendarStop);					
 			totalContasRecebidasHojeValor = totalReceitasPagasHojeValor.doubleValue() + totalVendasPagasHojeValor.doubleValue() + totalPagoHojeContasAReceberEmAtrasoValor.doubleValue();
 		
-			Number totalReceitasPagasParcialmenteHojeValor = contas.totalReceitasPagasParcialmente(usuario.getEmpresa());
+			Number totalReceitasPagasParcialmenteHojeValor = contas.totalReceitasPagasParcialmente(usuario.getEmpresa(), null, null);
 			
 			totalLancamentosReceitasHojeValor = lancamentos.totalLancamentosReceitasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());		
 			totalReceitasHojeValor = totalReceitasPagasHojeValor.doubleValue() + totalLancamentosReceitasHojeValor.doubleValue() + totalReceitasPagasParcialmenteHojeValor.doubleValue();					
@@ -1025,7 +1025,7 @@ public class ConsultaContasBean implements Serializable {
 		totalPagoHojeContasAReceberEmAtrasoValor = contas.totalPagoHojeContasAReceberEmAtrasoValor(usuario.getEmpresa(), calendarStart, calendarStop);						
 		totalContasRecebidasHojeValor = totalReceitasPagasHojeValor.doubleValue() + totalVendasPagasHojeValor.doubleValue() + totalPagoHojeContasAReceberEmAtrasoValor.doubleValue();
 			
-		Number totalReceitasPagasParcialmenteHojeValor = contas.totalReceitasPagasParcialmente(usuario.getEmpresa());
+		Number totalReceitasPagasParcialmenteHojeValor = contas.totalReceitasPagasParcialmente(usuario.getEmpresa(), null, null);
 		
 		totalLancamentosReceitasHojeValor = lancamentos.totalLancamentosReceitasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());		
 		totalReceitasHojeValor = totalReceitasPagasHojeValor.doubleValue() + totalLancamentosReceitasHojeValor.doubleValue() + totalReceitasPagasParcialmenteHojeValor.doubleValue();
@@ -1144,7 +1144,7 @@ public class ConsultaContasBean implements Serializable {
 		totalComprasPagasHojeValor = contas.totalComprasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());		
 		totalDespesasPagasHojeValor = contas.totalDespesasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
 		
-		Number totalDespesasPagasParcialmenteHojeValor = contas.totalDespesasPagasParcialmente(usuario.getEmpresa());
+		Number totalDespesasPagasParcialmenteHojeValor = contas.totalDespesasPagasParcialmente(usuario.getEmpresa(), null, null);
 		
 		totalLancamentosDespesasHojeValor = lancamentos.totalLancamentosDespesasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());		
 		totalDespesasHojeValor = totalDespesasPagasHojeValor.doubleValue() + totalLancamentosDespesasHojeValor.doubleValue() + totalDespesasPagasParcialmenteHojeValor.doubleValue();

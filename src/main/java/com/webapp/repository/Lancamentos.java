@@ -210,13 +210,23 @@ public class Lancamentos implements Serializable {
 		return result;
 	}
 	
-	public Number totalDeRetiradas(Empresa empresa, CategoriaLancamento categoriaLancamento) {
+	public Number totalDeRetiradas(Empresa empresa, CategoriaLancamento categoriaLancamento, Calendar calendarStart, Calendar calendarStop) {
+		
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo += "AND c.dataLancamento BETWEEN :dataInicio AND :dataFim";
+		}
 		
 		String jpql = "SELECT sum(c.valor) FROM Lancamento c WHERE c.empresa.id = :empresa AND "
-				+ "c.categoriaLancamento.id = :categoriaLancamento";
+				+ "c.categoriaLancamento.id = :categoriaLancamento " + periodo;
 		Query q = manager.createQuery(jpql).setParameter("categoriaLancamento", categoriaLancamento.getId())
 				.setParameter("empresa", empresa.getId());
 
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+		
 		Number count = 0;
 		try {
 			count = (Number) q.getSingleResult();
@@ -281,14 +291,24 @@ public class Lancamentos implements Serializable {
 	}
 	
 	
-	public Number totalDespesasAvistaPagas(Empresa empresa) {
+	public Number totalDespesasAvistaPagas(Empresa empresa, Calendar calendarStart, Calendar calendarStop) {
 
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo += "AND c.dataLancamento BETWEEN :dataInicio AND :dataFim";
+		}
+		
 		String jpql = "SELECT sum(c.valor) FROM Lancamento c WHERE c.categoriaLancamento.nome != 'Retirada de lucro' AND c.empresa.id = :empresa AND "
 				+ "c.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND c.conta = 'N' AND c.ajuste = 'N' "
-				+ "";
+				+ periodo;
 		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.DEBITO)
 				.setParameter("empresa", empresa.getId());
 
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+		
 		Number count = 0;
 		try {
 			count = (Number) q.getSingleResult();
@@ -305,13 +325,23 @@ public class Lancamentos implements Serializable {
 	}
 	
 	
-	public Number totalReceitasAvistaPagas(Empresa empresa) {
+	public Number totalReceitasAvistaPagas(Empresa empresa, Calendar calendarStart, Calendar calendarStop) {
 
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo += "AND c.dataLancamento BETWEEN :dataInicio AND :dataFim";
+		}
+		
 		String jpql = "SELECT sum(c.valor) FROM Lancamento c WHERE c.empresa.id = :empresa AND "
-				+ "c.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND c.conta = 'N' AND c.ajuste = 'N'";
+				+ "c.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND c.conta = 'N' AND c.ajuste = 'N' " + periodo;
 		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.CREDITO)
 				.setParameter("empresa", empresa.getId());
 
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+		
 		Number count = 0;
 		try {
 			count = (Number) q.getSingleResult();

@@ -473,10 +473,21 @@ public class Vendas implements Serializable {
 	}
 	
 	
-	public Number vendasAvistaPagas(Empresa empresa) {
-		String jpql = "SELECT sum(i.total) FROM ItemVenda i Where i.venda.empresa.id = :empresa AND i.venda.ajuste = 'N' AND i.venda.vendaPaga = 'Y' AND i.venda.conta = 'N' and i.venda.exclusao = 'N' and i.exclusao = 'N'";
+	public Number vendasAvistaPagas(Empresa empresa, Calendar calendarStart, Calendar calendarStop) {
+		
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo += "AND i.venda.dataVenda BETWEEN :dataInicio AND :dataFim";
+		}
+		
+		String jpql = "SELECT sum(i.total) FROM ItemVenda i Where i.venda.empresa.id = :empresa AND i.venda.ajuste = 'N' AND i.venda.vendaPaga = 'Y' AND i.venda.conta = 'N' and i.venda.exclusao = 'N' and i.exclusao = 'N' " + periodo;
 		
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
+		
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
 
 		Number count = 0;
 		try {
@@ -1365,11 +1376,21 @@ public class Vendas implements Serializable {
 	}
 	
 	
-	public Number totalTaxasValor(Empresa empresa) {
+	public Number totalTaxasValor(Empresa empresa, Calendar calendarStart, Calendar calendarStop) {
 		
-		String jpql = "SELECT sum((i.valorTotal - i.desconto) * i.taxaDeAcrescimo/100) FROM Venda i WHERE i.quantidadeItens > 0 AND i.empresa.id = :empresa AND i.vendaPaga = 'Y' AND i.conta = 'N' AND i.ajuste = 'N' AND i.clientePagouTaxa = 'N' AND i.taxaDeAcrescimo > 0 and i.exclusao = 'N'";
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo += "AND i.dataVenda BETWEEN :dataInicio AND :dataFim";
+		}
+		
+		String jpql = "SELECT sum((i.valorTotal - i.desconto) * i.taxaDeAcrescimo/100) FROM Venda i WHERE i.quantidadeItens > 0 AND i.empresa.id = :empresa AND i.vendaPaga = 'Y' AND i.conta = 'N' AND i.ajuste = 'N' AND i.clientePagouTaxa = 'N' AND i.taxaDeAcrescimo > 0 and i.exclusao = 'N' " + periodo;
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
 	
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+		
 		Number count = 0;
 		try {
 			count = (Number) q.getSingleResult();

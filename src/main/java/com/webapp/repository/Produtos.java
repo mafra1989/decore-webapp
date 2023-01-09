@@ -337,8 +337,8 @@ public class Produtos implements Serializable {
 		Number count = 0;
 
 		try {
-			count = (Number) this.manager.createQuery(
-					"SELECT sum(e.quantidadeDisponivel * e.produto.custoMedioUnitario) from ItemCompra e where e.produto.estoque = 'Y' AND e.compra.empresa.id = :empresa AND e.quantidadeDisponivel > 0")
+			count = (Number) this.manager.createQuery(//e.produto.custoMedioUnitario
+					"SELECT sum(e.quantidadeDisponivel * e.valorUnitario) from ItemCompra e where e.produto.estoque = 'Y' AND e.compra.empresa.id = :empresa AND e.quantidadeDisponivel > 0")
 					.setParameter("empresa", empresa.getId()).getSingleResult();
 
 		} catch (NoResultException e) {
