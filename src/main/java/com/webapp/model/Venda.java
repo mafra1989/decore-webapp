@@ -35,6 +35,9 @@ public class Venda implements Serializable {
 	private Date dataVenda = new Date();
 	
 	@Column
+	private Date dataPagamento;
+	
+	@Column
 	private Long numeroVenda;
 
 	@NotNull
@@ -241,6 +244,14 @@ public class Venda implements Serializable {
 
 	public void setDataVenda(Date dataVenda) {
 		this.dataVenda = dataVenda;
+	}
+
+	public Date getDataPagamento() {
+		return dataPagamento;
+	}
+
+	public void setDataPagamento(Date dataPagamento) {
+		this.dataPagamento = dataPagamento;
 	}
 
 	public Long getNumeroVenda() {
@@ -612,6 +623,14 @@ public class Venda implements Serializable {
 	
 	@Transient
 	private String pagamento = "";
+	
+	@Transient
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
+	private BigDecimal valorPago;
+	
+	@Transient
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
+	private BigDecimal totalPago;
 
 	public List<ItemVenda> getItensVenda() {
 		return itensVenda;
@@ -637,4 +656,19 @@ public class Venda implements Serializable {
 		this.pagamento = pagamento;
 	}
 
+	public BigDecimal getValorPago() {
+		return valorPago;
+	}
+
+	public void setValorPago(BigDecimal valorPago) {
+		this.valorPago = valorPago;
+	}
+
+	public BigDecimal getTotalPago() {
+		return totalPago;
+	}
+
+	public void setTotalPago(BigDecimal totalPago) {
+		this.totalPago = totalPago;
+	}
 }

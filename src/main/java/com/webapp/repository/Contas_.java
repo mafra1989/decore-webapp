@@ -48,8 +48,9 @@ public class Contas_ implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalDespesasPorCategoriaMesAtual() {
+	public List<Object[]> totalDespesasPorCategoriaMesAtual(Date date) {
 		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
 		String jpql = "SELECT i.codigoOperacao, sum(i.valor) FROM Conta i WHERE i.operacao = 'LANCAMENTO' and i.tipo = 'DEBITO' and i.status = 'Y' and i.mes = :mesAtual and i.ano = :anoAtual AND i.ajuste = 'N' and i.exclusao = 'N' GROUP BY i.codigoOperacao order by sum(i.valor) desc";
 		Query q = manager.createQuery(jpql)
 				.setParameter("mesAtual", Long.parseLong(String.valueOf(calendar.get(Calendar.MONTH) + 1)))
@@ -119,8 +120,8 @@ public class Contas_ implements Serializable {
 		if(calendarStart != null && calendarStop != null) {
 			periodo += "AND c.pagamento BETWEEN :dataInicio AND :dataFim";
 		}
-		
-		String jpql = "SELECT sum(c.valor) FROM Conta c WHERE c.parcela <> 'AVISTA' AND c.empresa.id = :empresa AND c.tipo = :tipo AND c.operacao = :operacao AND c.status = 'Y' AND c.ajuste = 'N' and c.exclusao = 'N' " + periodo;
+		//c.parcela <> 'AVISTA' AND 
+		String jpql = "SELECT sum(c.valor) FROM Conta c WHERE c.empresa.id = :empresa AND c.tipo = :tipo AND c.operacao = :operacao AND c.status = 'Y' AND c.ajuste = 'N' and c.exclusao = 'N' " + periodo;
 		Query q = manager.createQuery(jpql).setParameter("tipo", tipo).setParameter("operacao", operacao)
 				.setParameter("empresa", empresa.getId());
 
@@ -228,7 +229,7 @@ public class Contas_ implements Serializable {
 	@SuppressWarnings("unchecked")
 	public List<Conta> comissaoEmVendasAPagarPagas(String tipo, String operacao, Empresa empresa) {
 
-		String jpql = "FROM Conta c WHERE (c.parcela = 'AVISTA' and c.status = 'N') OR c.empresa.id = :empresa AND c.tipo = :tipo AND c.operacao = :operacao AND c.ajuste = 'N' and c.exclusao = 'N'";
+		String jpql = "FROM Conta c WHERE (c.parcela = 'AVISTA' and c.status = 'N') AND c.empresa.id = :empresa AND c.tipo = :tipo AND c.operacao = :operacao AND c.ajuste = 'N' and c.exclusao = 'N'";
 		Query q = manager.createQuery(jpql).setParameter("tipo", tipo).setParameter("operacao", operacao)
 				.setParameter("empresa", empresa.getId());
 
@@ -781,9 +782,14 @@ public class Contas_ implements Serializable {
 	
 	public Number totalVendasPagasPorDiaValor(Calendar calendarStart, Calendar calendarStop, Empresa empresa) {
 		//AND i.operacao = 'LANCAMENTO' 
-		String jpql = "SELECT sum(i.valor) FROM Conta i "
+		/*String jpql = "SELECT sum(i.valor) FROM Conta i "
 				+ "WHERE i.empresa.id = :empresa AND i.pagamento BETWEEN :dataInicio AND :dataFim "
 				+ "AND i.operacao = 'VENDA' AND i.tipo = 'CREDITO' AND i.status = 'Y' AND i.ajuste = 'N' and i.exclusao = 'N'";
+		*/
+		String jpql = "SELECT sum(i.valor) FROM Conta i "
+				+ "WHERE i.empresa.id = :empresa AND i.pagamento BETWEEN :dataInicio AND :dataFim "
+				+ "AND i.operacao = 'VENDA' AND i.tipo = 'CREDITO' AND i.parcela = 'Entrada' AND i.status = 'Y' AND i.ajuste = 'N' and i.exclusao = 'N'";
+
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
 				calendarStop.getTime());
 
@@ -802,16 +808,21 @@ public class Contas_ implements Serializable {
 		return count;
 	}
 	
-	public Number totalVendasPagasParcialmente(Empresa empresa, Calendar calendarStart, Calendar calendarStop) {
+	public Number totalVendasPagasParcialmente(Empresa empresa, Calendar calendarStart, Calendar calendarStop, Conta conta) {
 		
 		String periodo = "";
 		if(calendarStart != null && calendarStop != null) {
 			periodo += "AND c.dataPagamento BETWEEN :dataInicio AND :dataFim";
 		}
 		
+		String filtroConta = "";
+		if(conta != null) {
+			filtroConta = " AND c.conta.id = :contaId";
+		}
+		
 		String jpql = "SELECT sum(c.valorPago) FROM PagamentoConta c "
 				+ "WHERE c.conta.empresa.id = :empresa "
-				+ "AND c.conta.tipo = 'CREDITO' AND c.conta.operacao = 'VENDA' AND c.conta.status = 'N' AND c.conta.ajuste = 'N' and c.conta.exclusao = 'N' " + periodo;
+				+ "AND c.conta.tipo = 'CREDITO' AND c.conta.operacao = 'VENDA' AND c.conta.status = 'N' AND c.conta.ajuste = 'N' and c.conta.exclusao = 'N' " + periodo + filtroConta;
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
 
 		if(calendarStart != null && calendarStop != null) {
@@ -898,17 +909,204 @@ public class Contas_ implements Serializable {
 		return count;
 	}
 	
-	public Number totalReceitasPagasParcialmente(Empresa empresa, Calendar calendarStart, Calendar calendarStop) {
+	public Number totalReceitasPagasParcialmente(Empresa empresa, Calendar calendarStart, Calendar calendarStop, Conta conta) {
 		
 		String periodo = "";
 		if(calendarStart != null && calendarStop != null) {
 			periodo += "AND c.dataPagamento BETWEEN :dataInicio AND :dataFim";
 		}
 		
+		String filtroConta = "";
+		if(conta != null) {
+			filtroConta = " AND c.conta.id = :contaId";
+		}
+		
 		String jpql = "SELECT sum(c.valorPago) FROM PagamentoConta c "
 				+ "WHERE c.conta.empresa.id = :empresa "
-				+ "AND c.conta.tipo = 'CREDITO' AND c.conta.operacao = 'LANCAMENTO' AND c.conta.status = 'N' AND c.conta.ajuste = 'N' and c.conta.exclusao = 'N' " + periodo;
+				+ "AND c.conta.tipo = 'CREDITO' AND c.conta.operacao = 'LANCAMENTO' AND c.conta.status = 'N' AND c.conta.ajuste = 'N' and c.conta.exclusao = 'N' " + periodo + filtroConta;
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
+
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+		
+		if(conta != null) {
+			q.setParameter("contaId", conta.getId());
+		}
+		
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+
+	public Number totalContasReceitasPagas(Empresa empresa, Calendar calendarStart, Calendar calendarStop, Conta conta) {
+		
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo += "AND c.dataPagamento BETWEEN :dataInicio AND :dataFim";
+		}
+		
+		String filtroConta = "";
+		if(conta != null) {
+			filtroConta = " AND c.conta.id = :contaId";
+		}
+		
+		String jpql = "SELECT sum(c.valorPago) FROM PagamentoConta c "
+				+ "WHERE c.conta.empresa.id = :empresa "
+				+ "AND c.conta.tipo = 'CREDITO' AND c.conta.operacao = 'LANCAMENTO' AND c.conta.ajuste = 'N' and c.conta.exclusao = 'N' " + periodo + filtroConta;
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
+	
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+		
+		if(conta != null) {
+			q.setParameter("contaId", conta.getId());
+		}
+		
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+	
+		} catch (NoResultException e) {
+	
+		}
+	
+		if (count == null) {
+			count = 0;
+		}
+	
+		return count;
+	}
+	
+	public Number totalContasVendasPagas(Empresa empresa, Calendar calendarStart, Calendar calendarStop, Conta conta) {
+		
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo += "AND c.dataPagamento BETWEEN :dataInicio AND :dataFim";
+		}
+		
+		String filtroConta = "";
+		if(conta != null) {
+			filtroConta = " AND c.conta.id = :contaId";
+		}
+		
+		String jpql = "SELECT sum(c.valorPago) FROM PagamentoConta c "
+				+ "WHERE c.conta.empresa.id = :empresa "
+				+ "AND c.conta.tipo = 'CREDITO' AND c.conta.operacao = 'VENDA' AND c.conta.ajuste = 'N' and c.conta.exclusao = 'N' " + periodo + filtroConta;
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
+	
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+		
+		if(conta != null) {
+			q.setParameter("contaId", conta.getId());
+		}
+		
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+	
+		} catch (NoResultException e) {
+	
+		}
+	
+		if (count == null) {
+			count = 0;
+		}
+	
+		return count;
+	}
+	
+	public Number totalContasDespesasPagas(Empresa empresa, Calendar calendarStart, Calendar calendarStop, Conta conta) {
+		
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo += "AND c.dataPagamento BETWEEN :dataInicio AND :dataFim";
+		}
+		
+		String filtroConta = "";
+		if(conta != null) {
+			filtroConta = " AND c.conta.id = :contaId";
+		}
+		
+		String jpql = "SELECT sum(c.valorPago) FROM PagamentoConta c "
+				+ "WHERE c.conta.empresa.id = :empresa "
+				+ "AND c.conta.tipo = 'DEBITO' AND c.conta.operacao = 'LANCAMENTO' AND c.conta.ajuste = 'N' and c.conta.exclusao = 'N' " + periodo + filtroConta;
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
+	
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+		
+		if(conta != null) {
+			q.setParameter("contaId", conta.getId());
+		}
+		
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+	
+		} catch (NoResultException e) {
+	
+		}
+	
+		if (count == null) {
+			count = 0;
+		}
+	
+		return count;
+	}
+	
+	public Number totalReceitasPagasPorDiaValor(Calendar calendarStart, Calendar calendarStop, Empresa empresa) {
+		
+		String jpql = "SELECT sum(i.valor) FROM Conta i "
+				+ "WHERE i.empresa.id = :empresa AND i.pagamento BETWEEN :dataInicio AND :dataFim "
+				+ "AND i.operacao = 'LANCAMENTO' AND i.tipo = 'CREDITO' AND i.parcela = 'Entrada' AND i.status = 'Y' AND i.ajuste = 'N' and i.exclusao = 'N'";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
+				calendarStop.getTime());
+
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+	
+	public Number totalEntradaVendasPagasPorDiaValor(Calendar calendarStart, Calendar calendarStop, Empresa empresa, Conta conta) {
+		 
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo = "AND i.pagamento BETWEEN :dataInicio AND :dataFim ";
+		}
+		
+		String jpql = "SELECT sum(i.valor) FROM Conta i "
+				+ "WHERE i.empresa.id = :empresa " + periodo
+				+ "AND i.operacao = 'VENDA' AND i.tipo = 'CREDITO' AND i.parcela = 'Entrada' AND i.status = 'Y' AND i.ajuste = 'N' and i.exclusao = 'N' AND i.id = :contaId";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("contaId", conta.getId());
 
 		if(calendarStart != null && calendarStop != null) {
 			q.setParameter("dataInicio", calendarStart.getTime());
@@ -930,14 +1128,55 @@ public class Contas_ implements Serializable {
 		return count;
 	}
 	
-	public Number totalReceitasPagasPorDiaValor(Calendar calendarStart, Calendar calendarStop, Empresa empresa) {
+	public Number totalEntradaReceitasPagasPorDiaValor(Calendar calendarStart, Calendar calendarStop, Empresa empresa, Conta conta) {
 		 
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo = "AND i.pagamento BETWEEN :dataInicio AND :dataFim ";
+		}
+		
 		String jpql = "SELECT sum(i.valor) FROM Conta i "
-				+ "WHERE i.empresa.id = :empresa AND i.pagamento BETWEEN :dataInicio AND :dataFim "
-				+ "AND i.operacao = 'LANCAMENTO' AND i.tipo = 'CREDITO' AND i.status = 'Y' AND i.ajuste = 'N' and i.exclusao = 'N'";
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
-				calendarStop.getTime());
+				+ "WHERE i.empresa.id = :empresa " + periodo
+				+ "AND i.operacao = 'LANCAMENTO' AND i.tipo = 'CREDITO' AND i.parcela = 'Entrada' AND i.status = 'Y' AND i.ajuste = 'N' and i.exclusao = 'N' AND i.id = :contaId";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("contaId", conta.getId());
 
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+		
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+	
+	public Number totalEntradaDespesasPagasPorDiaValor(Calendar calendarStart, Calendar calendarStop, Empresa empresa, Conta conta) {
+		 
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo = "AND i.pagamento BETWEEN :dataInicio AND :dataFim ";
+		}
+		
+		String jpql = "SELECT sum(i.valor) FROM Conta i "
+				+ "WHERE i.empresa.id = :empresa " + periodo
+				+ "AND i.operacao = 'LANCAMENTO' AND i.tipo = 'DEBITO' AND i.parcela = 'Entrada' AND i.status = 'Y' AND i.ajuste = 'N' and i.exclusao = 'N' AND i.id = :contaId";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("contaId", conta.getId());
+
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+		
 		Number count = 0;
 		try {
 			count = (Number) q.getSingleResult();

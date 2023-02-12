@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.primefaces.PrimeFaces;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -2171,8 +2172,25 @@ public class RegistroVendasBean implements Serializable {
 	
 
 	public void finalizar() throws IOException { 
+		/*
+		Calendar dataPagamentoAtual = Calendar.getInstance();
+		dataPagamentoAtual.setTime(new Date());
+		dataPagamentoAtual = DateUtils.truncate(dataPagamentoAtual, Calendar.DAY_OF_MONTH);		
 		
-		if (itensVenda.size() > 0) {			
+		if(venda.getDataPagamento() != null) {
+			Calendar ultimoPagamento = Calendar.getInstance();
+			ultimoPagamento.setTime(venda.getDataPagamento());
+			ultimoPagamento = DateUtils.truncate(ultimoPagamento, Calendar.DAY_OF_MONTH);
+			
+			if(ultimoPagamento.before(dataPagamentoAtual)) {
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+				PrimeFaces.current().executeScript(
+						"swal({ type: 'error', title: 'Ops!', text: 'Não é possível alterar esta venda, pagamento realizado em " + sdf.format(ultimoPagamento.getTime()) + " !' });");
+				return;
+			}
+		}*/
+		
+		if (itensVenda.size() > 0) {						
 									
 			if(venda.isAjuste()) {
 				
@@ -3200,85 +3218,34 @@ public class RegistroVendasBean implements Serializable {
 			}
 		}
 		
+		if(!venda.isConta()) {
+			venda.setDataPagamento(new Date());
+		} else {
+			venda.setDataPagamento(null);
+		}
+		
+		
+		if(entradas.size() > 0) {
+			venda.setDataPagamento(new Date());
+		}
+		
 
+		if(venda.isVendaPaga()) {
+			venda.setDataPagamento(new Date());
+		}
+		
 		venda.setPdv(false);
 		venda.setEmpresa(usuario.getEmpresa());
 		venda = vendas.save(venda);
 		
-		List<ItemVenda> itensVendaTemp = new ArrayList<ItemVenda>();
-		itensVendaTemp.addAll(itensVenda);
+		//List<ItemVenda> itensVendaTemp = new ArrayList<ItemVenda>();
+		//itensVendaTemp.addAll(itensVenda);
 
 		for (ItemVenda itemVenda : itensVenda) {
 			
 			itemVenda.setId(null); //correção
 			
 			if(itemVenda.getId() == null) {
-				
-				//Comentado para correção - corrigido -> itemVenda.setId(null);
-				/*
-				if(itemVenda.getItensVendaCompra() == null) {
-					
-					for (ItemVenda itemVendaTemp : itensVenda_) {
-						if(itemVenda.getId() != null) {
-						
-							if(itemVenda.getId().longValue() == itemVendaTemp.getId().longValue()) {
-								itemVenda.setItensVendaCompra(itemVendaTemp.getItensVendaCompra());
-							}
-						}
-					}			
-				}
-	
-				List<ItemVendaCompra> itensVendaCompra = new ArrayList<ItemVendaCompra>();
-				itensVendaCompra = itemVenda.getItensVendaCompra();
-				
-				if(itemVenda.getId() == null) {
-					itensVendaCompra = itemVenda.getItensVendaCompra();
-				} else {
-					itensVendaCompra = itensVendasCompras.porItemVenda(itemVenda);
-				}
-				*/
-				
-				if(venda.getId() != null) {
-					//comentado para correção
-					/*
-					Produto produto = produtos.porId(itemVenda.getProduto().getId());
-					Double valorDeCustoUnitario = produto.getCustoMedioUnitario().doubleValue();
-					itemVenda.setValorCompra(new BigDecimal(valorDeCustoUnitario.doubleValue() * itemVenda.getQuantidade().doubleValue()));					
-				
-					if(itemVenda.getProduto().isEstoque()) {
-						if(produto.getQuantidadeAtual().doubleValue() <= 0 && valorDeCustoUnitario.doubleValue() <= 0) {
-							valorDeCustoUnitario = (itemVenda.getProduto().getQuantidadeAtual().doubleValue() * itemVenda.getProduto().getPrecoDeVenda().doubleValue()) / itemVenda.getProduto().getQuantidadeAtual().doubleValue();
-						}
-					}
-
-					double desconto = 0;				
-					if(itemVenda.getDesconto() != null) {
-						desconto = itemVenda.getDesconto().doubleValue() / 100;
-					} else {
-						itemVenda.setDesconto(BigDecimal.ZERO);
-					}
-					
-					//itemVenda.setEstoque(produto.isEstoque());
-										
-					BigDecimal subtotal = BigDecimal.valueOf(
-						itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().doubleValue());					
-					itemVenda.setTotal(new BigDecimal(subtotal.doubleValue() - (subtotal.doubleValue() * desconto)));
-
-					//Calculo do Lucro em valor e percentual									
-					Double valorDeCustoTotal = new BigDecimal(valorDeCustoUnitario
-							* itemVenda.getQuantidade().doubleValue())
-					.setScale(4, BigDecimal.ROUND_HALF_EVEN).doubleValue();
-					
-				
-					itemVenda.setLucro(new BigDecimal(((itemVenda.getValorUnitario().doubleValue() - valorDeCustoUnitario.doubleValue()) / itemVenda.getValorUnitario().doubleValue())
-							* (itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().doubleValue())
-							- (itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().doubleValue()) * desconto));
-
-					itemVenda.setPercentualLucro(new BigDecimal(((itemVenda.getTotal().doubleValue() - (valorDeCustoUnitario.doubleValue() * itemVenda.getQuantidade().doubleValue())) / itemVenda.getTotal().doubleValue() * 100)));
-					itemVenda.setValorCompra(new BigDecimal(valorDeCustoUnitario.doubleValue() * itemVenda.getQuantidade().doubleValue()));
-					*/
-				}
-				
 				
 				List<ItemVendaCompra> itensVendaCompra = itemVenda.getItensVendaCompra();
 				
@@ -3389,7 +3356,6 @@ public class RegistroVendasBean implements Serializable {
 		}*/
 		
 		
-		
 		if (tipoPagamento == TipoPagamento.AVISTA) {
 
 			if(venda.isConta()) {
@@ -3445,6 +3411,7 @@ public class RegistroVendasBean implements Serializable {
 				conta.setVencimento(vencimento.getTime());
 
 				conta.setPagamento(null);
+				//conta.setPagamento(vendaPaga != true ? null : vencimento.getTime());
 				
 				calendarioTemp = Calendar.getInstance();
 				calendarioTemp.setTime(venda.getDataVenda());
@@ -3474,6 +3441,7 @@ public class RegistroVendasBean implements Serializable {
 				conta.setOperacao("VENDA");
 				conta.setTipo("CREDITO");
 				conta.setStatus(true);
+				conta.setPagamento(new Date());
 				
 				conta.setSaldo(BigDecimal.ZERO);
 
@@ -3509,6 +3477,9 @@ public class RegistroVendasBean implements Serializable {
 				entregaVenda.setStatus("PENDENTE");
 				entregaVenda.setVenda(venda);
 				entregaVenda = entregas.save(entregaVenda);
+				if(!venda.isVendaPaga()) {
+					venda.setDataPagamento(null);
+				}			
 			}
 			
 			venda.setValorCompra(BigDecimal.valueOf(valorCompra));
@@ -3674,6 +3645,7 @@ public class RegistroVendasBean implements Serializable {
 			venda = vendaTemp_;
 			FormaPagamento formaPagamento = formasPagamentos.porNome("Dinheiro", usuario.getEmpresa());
 			venda.setFormaPagamento(formaPagamento);
+			venda.setId(null);
 			
 			filter = new ProdutoFilter();
 			produto = new Produto();
@@ -3696,17 +3668,24 @@ public class RegistroVendasBean implements Serializable {
 					entregaVenda.setStatus("PENDENTE");
 					entregaVenda.setVenda(venda);
 					entregaVenda = entregas.save(entregaVenda);
+
 				} else {
 					venda.setStatus(!entrega); 
 					entregaVenda.setStatus("PENDENTE");
 					entregaVenda = entregas.save(entregaVenda);
 				}
+				
+				venda.setDataPagamento(null);
+				
 			} else {
 				if(entregaVenda.getId() != null) {
 					entregas.remove(entregaVenda);
 					entregaVenda = new Entrega();
 					
+					venda.setDataPagamento(new Date());
+					
 					venda.setStatus(!entrega);
+									
 				}
 			}
 			

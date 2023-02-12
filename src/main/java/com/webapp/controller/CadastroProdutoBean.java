@@ -266,7 +266,7 @@ public class CadastroProdutoBean implements Serializable {
 		
 		produto.setTotalCompras(BigDecimal.valueOf(quantidadeItensComprados));
 		
-		produto.setUnidadeMedida(convertToTitleCaseIteratingChars(produto.getUnidadeMedida()));
+		//produto.setUnidadeMedida(convertToTitleCaseIteratingChars(produto.getUnidadeMedida()));
 
 		Double totalAjusteItensComprados = 0D;
 		itensCompra = itensCompras.porProduto(produto, true);
@@ -819,7 +819,7 @@ public class CadastroProdutoBean implements Serializable {
 		//produto.setCustoMedioUnitario(BigDecimal.ZERO);
 		
 		if(produto.isEstoque()) {
-			produto.setUnidadeMedida(convertToTitleCaseIteratingChars(produto.getUnidadeMedida()));
+			//produto.setUnidadeMedida(convertToTitleCaseIteratingChars(produto.getUnidadeMedida()));
 			PrimeFaces.current().executeScript("mostrarGridEstoque();");
 		} else {
 			

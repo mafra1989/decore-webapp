@@ -22,6 +22,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.primefaces.PrimeFaces;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -43,11 +44,13 @@ import com.webapp.model.ItemEspelhoVendaProdutos;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.ItemVendaCompra;
 import com.webapp.model.Log;
+import com.webapp.model.OrigemConta;
 import com.webapp.model.Pagamento;
 import com.webapp.model.PagamentoConta;
 import com.webapp.model.Produto;
 import com.webapp.model.StatusPedido;
 import com.webapp.model.TipoAtividade;
+import com.webapp.model.TipoDataLancamento;
 import com.webapp.model.TipoOperacao;
 import com.webapp.model.TipoPagamento;
 import com.webapp.model.Usuario;
@@ -176,6 +179,8 @@ public class ConsultaVendasBean implements Serializable {
 	
 	private boolean vendasPagas;
 	
+	private TipoDataLancamento tipoData = TipoDataLancamento.PAGAMENTO;
+	
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -202,40 +207,85 @@ public class ConsultaVendasBean implements Serializable {
 		calendarioTemp.set(Calendar.SECOND, 59);
 
 		vendasFiltradas = vendas.vendasFiltradas(numeroVenda, dateStart, calendarioTemp.getTime(), vendasNormais,
-				statusPedido, usuario, cliente, entregador, vendasPagas, usuario_.getEmpresa());
+				statusPedido, usuario, cliente, entregador, vendasPagas, usuario_.getEmpresa(), tipoData);
 
-		double totalVendasTemp = 0;
-		double totalDesconto = 0;
+		double somaValorPago = 0;
+		//double totalVendasTemp = 0;
+		//double totalDesconto = 0;
 		totalItens = 0;
 		for (Venda venda : vendasFiltradas) {		
-			if(!venda.isAjuste()) {
-				totalVendasTemp += venda.getValorTotal().doubleValue();				
-				totalItens += venda.getQuantidadeItens().intValue();
-				
-				if(venda.getDesconto() != null) {
-					totalDesconto += venda.getDesconto().doubleValue();
-				}
-			}
-			/*
-			Pagamento pagamento = pagamentos.porVenda(venda, venda.getEmpresa());
-			if(pagamento != null) {
-				venda.setPagamento(", " + pagamento.getFormaPagamento().getNome());
-			}
-			*/
 			
-			if(venda.isConta()) {
-				venda.setVendaPaga(true);
-				List<Conta> listaDeContas = contas.porCodigoOperacao(venda.getNumeroVenda(), "VENDA", usuario_.getEmpresa());
-				for (Conta conta : listaDeContas) {
-					if(!conta.isStatus()) {
-						venda.setVendaPaga(false);
+			if(venda.getDataPagamento() != null) {
+				
+				double totalVendasTemp = 0;
+				double totalDesconto = 0;
+				
+				if(!venda.isAjuste()) {
+					totalVendasTemp += venda.getValorTotal().doubleValue();				
+					totalItens += venda.getQuantidadeItens().intValue();
+					
+					if(venda.getDesconto() != null) {
+						totalDesconto += venda.getDesconto().doubleValue();
 					}
+				}
+				/*
+				Pagamento pagamento = pagamentos.porVenda(venda, venda.getEmpresa());
+				if(pagamento != null) {
+					venda.setPagamento(", " + pagamento.getFormaPagamento().getNome());
+				}
+				*/
+				
+				if(venda.isConta()) {
+					
+					Calendar calendarStart = Calendar.getInstance();
+					calendarStart.setTime(venda.getDataPagamento());
+					calendarStart = DateUtils.truncate(calendarStart, Calendar.DAY_OF_MONTH);
+					
+					Calendar calendarStop = Calendar.getInstance();
+					calendarStop.setTime(venda.getDataPagamento());
+					calendarStop.add(Calendar.DAY_OF_MONTH, 1);
+					calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);
+					
+					Number totalContasReceitasPagasParcialmenteDataValor = 0;
+					Number totalContasReceitasPagasParcialmenteValor = 0;
+					
+					Number totalEntradasReceitasPagasParcialmenteDataValor = 0;
+					Number totalEntradasReceitasPagasParcialmenteValor = 0;
+					
+					
+					venda.setVendaPaga(true);
+					List<Conta> listaDeContas = contas.porCodigoOperacao(venda.getNumeroVenda(), "VENDA", usuario_.getEmpresa());
+					for (Conta conta : listaDeContas) {
+						if(!conta.isStatus()) {
+							venda.setVendaPaga(false);
+						}
+						
+						if(conta.getTipo().equals(OrigemConta.CREDITO.name())) {
+							totalContasReceitasPagasParcialmenteDataValor = totalContasReceitasPagasParcialmenteDataValor.doubleValue() + contas.totalContasVendasPagas(usuario_.getEmpresa(), calendarStart, calendarStop, conta).doubleValue();					
+							totalContasReceitasPagasParcialmenteValor = totalContasReceitasPagasParcialmenteValor.doubleValue() + contas.totalContasVendasPagas(usuario_.getEmpresa(), null, null, conta).doubleValue();
+						
+							totalEntradasReceitasPagasParcialmenteDataValor = totalEntradasReceitasPagasParcialmenteDataValor.doubleValue() + contas.totalEntradaVendasPagasPorDiaValor(calendarStart, calendarStop, usuario_.getEmpresa(), conta).doubleValue();					
+							totalEntradasReceitasPagasParcialmenteValor = totalEntradasReceitasPagasParcialmenteValor.doubleValue() + contas.totalEntradaVendasPagasPorDiaValor(null, null, usuario_.getEmpresa(), conta).doubleValue();	
+						
+						}	
+					}
+					
+					venda.setValorPago(new BigDecimal(totalEntradasReceitasPagasParcialmenteDataValor.doubleValue() + totalContasReceitasPagasParcialmenteDataValor.doubleValue()));
+					venda.setTotalPago(new BigDecimal(totalEntradasReceitasPagasParcialmenteValor.doubleValue() + totalContasReceitasPagasParcialmenteValor.doubleValue()));
+					
+				} else {
+					venda.setValorPago(new BigDecimal(totalVendasTemp - totalDesconto));
+					venda.setTotalPago(new BigDecimal(totalVendasTemp - totalDesconto));				
+				}
+				
+				if(!venda.isAjuste()) {
+					somaValorPago += venda.getValorPago().doubleValue();
 				}
 			}
 			
 		}
 
-		totalVendas = nf.format(totalVendasTemp - totalDesconto);
+		totalVendas = nf.format(somaValorPago);
 
 		vendaSelecionada = null;
 	}
@@ -256,6 +306,8 @@ public class ConsultaVendasBean implements Serializable {
 		if(venda.getTipoPagamento() == TipoPagamento.AVISTA && !venda.isConta()) {
 			venda.setVendaPaga(true);
 		}
+		
+		venda.setDataPagamento(new Date());
 		
 		venda = vendas.save(venda);
 		
@@ -335,6 +387,7 @@ public class ConsultaVendasBean implements Serializable {
 		entrega = entregas.save(entrega);
 
 		Venda venda = entrega.getVenda();
+		//venda.setDataPagamento(null);
 		venda.setStatus(false);
 		venda = vendas.save(venda);
 		
@@ -362,6 +415,7 @@ public class ConsultaVendasBean implements Serializable {
 		Venda venda = entrega.getVenda();
 		venda.setStatus(false);
 		venda.setVendaPaga(false);
+		venda.setDataPagamento(null);
 		venda = vendas.save(venda);
 		
 		
@@ -1130,4 +1184,15 @@ public class ConsultaVendasBean implements Serializable {
 		this.vendasPagas = vendasPagas;
 	}
 
+	public TipoDataLancamento[] getTiposDatas() {
+		return TipoDataLancamento.values();
+	}
+
+	public TipoDataLancamento getTipoData() {
+		return tipoData;
+	}
+
+	public void setTipoData(TipoDataLancamento tipoData) {
+		this.tipoData = tipoData;
+	}
 }

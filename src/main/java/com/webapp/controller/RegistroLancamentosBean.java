@@ -714,15 +714,23 @@ public class RegistroLancamentosBean implements Serializable {
 		
 		if(!lancamento.isConta()) {
 			if(lancamento.getCategoriaLancamento().getTipoLancamento().getOrigem() == OrigemLancamento.CREDITO) {
-				PrimeFaces.current().executeScript("PF('receita-dialog').hide();atualizaSaldo(" + lancamento.getNumeroLancamento() + ");");
+				//PrimeFaces.current().executeScript("PF('receita-dialog').hide();atualizaSaldo(" + lancamento.getNumeroLancamento() + ");");				
+				preparaNovoLancamentoReceita();
+				PrimeFaces.current().executeScript("atualizaReceita();");
 			} else {
-				PrimeFaces.current().executeScript("PF('despesa-dialog').hide();atualizaSaldo(" + lancamento.getNumeroLancamento() + ");");
+				//PrimeFaces.current().executeScript("PF('despesa-dialog').hide();atualizaSaldo(" + lancamento.getNumeroLancamento() + ");");
+				preparaNovoLancamentoDespesa();
+				PrimeFaces.current().executeScript("atualizaDespesa();");
 			}		
 		} else {
 			if(lancamento.getCategoriaLancamento().getTipoLancamento().getOrigem() == OrigemLancamento.CREDITO) {
-				PrimeFaces.current().executeScript("PF('receita-dialog').hide();");
+				//PrimeFaces.current().executeScript("PF('receita-dialog').hide();");
+				preparaNovoLancamentoReceita();
+				PrimeFaces.current().executeScript("atualizaReceita();");
 			} else {
-				PrimeFaces.current().executeScript("PF('despesa-dialog').hide();");
+				//PrimeFaces.current().executeScript("PF('despesa-dialog').hide();");
+				preparaNovoLancamentoDespesa();
+				PrimeFaces.current().executeScript("atualizaDespesa();");
 			}			
 		}
 		
@@ -801,12 +809,23 @@ public class RegistroLancamentosBean implements Serializable {
 			}
 
 			lancamento.setTipoPagamento(tipoPagamento);
-			lancamento.setLancamentoPago(lancamentoPago);
-			
+	
 			if (tipoPagamento == TipoPagamento.PARCELADO) {
 				lancamento.setConta(true);
 			} else {
 				lancamento.setConta(lancamentoPago != true ? true : false);
+			}
+			
+			if(!lancamento.isConta()) {
+				lancamento.setDataPagamento(new Date());
+				lancamento.setLancamentoPago(true);
+			} else {
+				lancamento.setDataPagamento(null);
+				lancamento.setLancamentoPago(false);
+			}
+			
+			if(entradas.size() > 0) {
+				lancamento.setDataPagamento(new Date());
 			}
 			
 			lancamento.setEmpresa(usuario_.getEmpresa());
@@ -872,6 +891,7 @@ public class RegistroLancamentosBean implements Serializable {
 					conta.setCodigoOperacao(lancamento.getNumeroLancamento());
 					conta.setOperacao("LANCAMENTO");
 					conta.setTipo(lancamento.getCategoriaLancamento().getTipoLancamento().getOrigem().name());
+					conta.setPagamento(new Date());
 					conta.setStatus(true);
 
 					conta.setEmpresa(usuario_.getEmpresa());

@@ -19,6 +19,7 @@ import com.webapp.model.DestinoLancamento;
 import com.webapp.model.Empresa;
 import com.webapp.model.Lancamento;
 import com.webapp.model.OrigemLancamento;
+import com.webapp.model.TipoDataLancamento;
 import com.webapp.model.Usuario;
 import com.webapp.util.jpa.Transacional;
 
@@ -88,7 +89,7 @@ public class Lancamentos implements Serializable {
 	public List<Lancamento> lancamentosFiltrados(Long numeroLancamento, Date dateStart, Date dateStop,
 			OrigemLancamento[] origemLancamento, CategoriaLancamento categoriaLancamento,
 			DestinoLancamento destinoLancamento, Usuario usuario, String[] categorias, 
-			boolean lancamentosPagos, Empresa empresa, Usuario vendedor) {
+			String lancamentosPagos, Empresa empresa, Usuario vendedor, TipoDataLancamento tipoData, String gerouContas) {
 
 		String conditionOrigem = "";
 		String conditionCategoria = "";
@@ -96,12 +97,13 @@ public class Lancamentos implements Serializable {
 		String conditionNumeroLancamento = "";
 		String conditionUsuario = "";
 		String conditionVendedor = "";
+		String conditionContas = "";
 		
 		String conditionLancamentosPagos = "";
-		if (lancamentosPagos) {
+		if(lancamentosPagos.equals("1")) {
 			conditionLancamentosPagos = "AND i.lancamentoPago = 'Y' ";
-		} else {
-			conditionLancamentosPagos = "AND (i.lancamentoPago = 'N' OR i.lancamentoPago = 'Y') ";
+		} else if(lancamentosPagos.equals("2")) {
+			conditionLancamentosPagos = "AND i.lancamentoPago = 'N' ";
 		}
 
 
@@ -135,10 +137,23 @@ public class Lancamentos implements Serializable {
 		if (vendedor != null && vendedor.getId() != null) { 
 			 conditionVendedor += "AND i.usuario.id = :idVendedor ";
 		}
+		
+		String data = "";
+		if(tipoData == TipoDataLancamento.PAGAMENTO) {
+			data = "AND i.dataPagamento";
+		} else if(tipoData == TipoDataLancamento.LANCAMENTO) {
+			data = "AND i.dataLancamento";
+		}
 
-		String jpql = "SELECT i FROM Lancamento i WHERE i.empresa.id = :empresa AND i.dataLancamento between :dateStart and :dateStop "
+		if(gerouContas.equals("1")) {
+			conditionContas = "AND i.conta = 'Y' ";
+		} else if(gerouContas.equals("2")) {
+			conditionContas = "AND i.conta = 'N' ";
+		}
+		
+		String jpql = "SELECT i FROM Lancamento i WHERE i.empresa.id = :empresa " + data + " between :dateStart and :dateStop "
 				+ conditionOrigem + conditionCategoria + conditionUsuario + conditionVendedor
-				+ conditionDestino + conditionNumeroLancamento + conditionLancamentosPagos
+				+ conditionDestino + conditionNumeroLancamento + conditionLancamentosPagos + conditionContas
 				+ "order by i.numeroLancamento desc";
 
 		System.out.println(jpql);
@@ -199,8 +214,9 @@ public class Lancamentos implements Serializable {
 	
 	
 	@SuppressWarnings("unchecked")
-	public List<Object[]> totalDespesasPorCategoriaMesAtual() {
+	public List<Object[]> totalDespesasPorCategoriaMesAtual(Date date) {
 		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
 		String jpql = "SELECT i.numeroLancamento, sum(i.valor) FROM Lancamento i WHERE i.categoriaLancamento.tipoLancamento.origem = :origemLancamento and i.conta = 'N' and i.mes = :mesAtual and i.ano = :anoAtual AND i.ajuste = 'N' GROUP BY i.numeroLancamento order by sum(i.valor) desc";
 		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.DEBITO)
 				.setParameter("mesAtual", Long.parseLong(String.valueOf(calendar.get(Calendar.MONTH) + 1)))
@@ -295,7 +311,7 @@ public class Lancamentos implements Serializable {
 
 		String periodo = "";
 		if(calendarStart != null && calendarStop != null) {
-			periodo += "AND c.dataLancamento BETWEEN :dataInicio AND :dataFim";
+			periodo += "AND c.dataPagamento BETWEEN :dataInicio AND :dataFim";
 		}
 		
 		String jpql = "SELECT sum(c.valor) FROM Lancamento c WHERE c.categoriaLancamento.nome != 'Retirada de lucro' AND c.empresa.id = :empresa AND "
@@ -329,7 +345,7 @@ public class Lancamentos implements Serializable {
 
 		String periodo = "";
 		if(calendarStart != null && calendarStop != null) {
-			periodo += "AND c.dataLancamento BETWEEN :dataInicio AND :dataFim";
+			periodo += "AND c.dataPagamento BETWEEN :dataInicio AND :dataFim";
 		}
 		
 		String jpql = "SELECT sum(c.valor) FROM Lancamento c WHERE c.empresa.id = :empresa AND "
@@ -887,7 +903,7 @@ public class Lancamentos implements Serializable {
 	public Number totalLancamentosReceitasPorDiaValor(Calendar calendarStart, Calendar calendarStop, Empresa empresa) {
 
 		String jpql = "SELECT sum(i.valor) FROM Lancamento i "
-				+ "WHERE i.empresa.id = :empresa AND i.dataLancamento BETWEEN :dataInicio AND :dataFim "
+				+ "WHERE i.empresa.id = :empresa AND i.dataPagamento BETWEEN :dataInicio AND :dataFim "
 				+ "AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.conta = 'N' AND i.ajuste = 'N'";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
 				calendarStop.getTime()).setParameter("origemLancamento", OrigemLancamento.CREDITO);
@@ -911,7 +927,7 @@ public class Lancamentos implements Serializable {
 	public Number totalLancamentosDespesasPorDiaValor(Calendar calendarStart, Calendar calendarStop, Empresa empresa) {
 
 		String jpql = "SELECT sum(i.valor) FROM Lancamento i "
-				+ "WHERE i.empresa.id = :empresa AND i.dataLancamento BETWEEN :dataInicio AND :dataFim "
+				+ "WHERE i.empresa.id = :empresa AND i.dataPagamento BETWEEN :dataInicio AND :dataFim "
 				+ "AND i.categoriaLancamento.nome != 'Retirada de lucro' AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.conta = 'N' AND i.ajuste = 'N'";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
 				calendarStop.getTime()).setParameter("origemLancamento", OrigemLancamento.DEBITO);

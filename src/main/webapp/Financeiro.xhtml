@@ -397,6 +397,59 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 }
 
 @media ( min-width :220px) {
+	#filtro-movimentacoes-dialog .ui-panel .ui-panel-content {
+		border: none;
+		padding: 0px;
+		padding-bottom: 40px;	
+		margin-right: 12px;
+    	margin-top: 10px;	
+	}
+	
+	#filtro-movimentacoes-dialog .ui-datepicker a {
+		font-weight: normal !important;
+	}
+	
+	body #filtro-movimentacoes-dialog .ui-datepicker {
+		width:auto !important;
+		margin-top: 3px !important;
+	}
+	
+	body #filtro-movimentacoes-dialog .ui-datepicker table td a.ui-state-active, body .ui-datepicker table td span.ui-state-active {
+	    color: #333333 !important;
+	    background-color: #FEB10F !important;
+	}
+
+	
+	.btn-filtro {
+		color: #363535 !important;
+    	background-color: #ffffff !important;
+    	border: 1px solid #5a5a5ab0 !important;
+    	margin-top: -5px;
+    	margin-left: 10px;
+    	font-size: 12px !important;
+	}
+	.btn-filtro.ui-state-hover {
+		background-color: #f7f7f7;
+	}
+	.btn-filtro.ui-state-active {
+		background-color: #f7f7f7;
+	}
+	
+	#filtro-top-despesas-dialog .ui-panel .ui-panel-content {
+		border: none;
+		padding: 0px;
+		padding-bottom: 40px;		
+	}
+	
+	#filtro-top-despesas-dialog .ui-datepicker a {
+		font-weight: normal !important;
+	}
+	
+	body #filtro-top-despesas-dialog .ui-datepicker {
+		width:auto !important;
+		margin-top: 3px !important;
+	}
+	
 	.filtro-vendas-clientes.hide {
 		max-height: 0;
 		pointer-events: none;
@@ -507,6 +560,9 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 	}
 	body #pagamento-dialog .ui-datepicker {
    		width: 275px;
+    }
+    body #pagamento-dialog .ui-state-disabled {
+    	opacity: 0.8;
     }
     body #pagamento-dialog .ui-panel .ui-panel-content {
 	    border: none;
@@ -754,6 +810,9 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 }
 
 @media ( min-width :460px) {
+	.btn-filtro {
+    	margin-top: 0px;
+	}
 	#contas-dialog {
 		/*width: 850px !important;*/
 	}
@@ -936,7 +995,7 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 							<div class="overview-box-content">
 								<div class="overview-box-title">Total de receitas <span style="font-size:9px;">Hoje (<h:outputText value="#{consultaContasBean.hoje}" />)</span></div>
 								<div class="overview-box-stats"><h:outputText value="#{consultaContasBean.totalReceitasHojeValor}"><f:convertNumber type="currency" /></h:outputText></div>
-								<div class="overview-box-details"><h:outputText value="#{consultaContasBean.totalLancamentosReceitasHojeValor}"><f:convertNumber type="currency" /></h:outputText> em lançamentos</div>
+								<div class="overview-box-details"><h:outputText value="#{consultaContasBean.totalLancamentosReceitasHojeValor}"><f:convertNumber type="currency" /></h:outputText> em pagtos à vista</div>
 							</div>
 						</div>
 					</div>
@@ -965,7 +1024,7 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 							<div class="overview-box-content">
 								<div class="overview-box-title">Total de despesas <span style="font-size:9px;">Hoje (<h:outputText value="#{consultaContasBean.hoje}" />)</span></div>
 								<div class="overview-box-stats"><h:outputText value="#{consultaContasBean.totalDespesasHojeValor}"><f:convertNumber type="currency" /></h:outputText></div>
-								<div class="overview-box-details"><h:outputText value="#{consultaContasBean.totalLancamentosDespesasHojeValor}"><f:convertNumber type="currency" /></h:outputText> em lançamentos</div>
+								<div class="overview-box-details"><h:outputText value="#{consultaContasBean.totalLancamentosDespesasHojeValor}"><f:convertNumber type="currency" /></h:outputText> em pagtos à vista</div>
 							</div>
 						</div>
 					</div>
@@ -988,14 +1047,19 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 					
 				</div>
 				
-				
-				
+
 				
 				<div class="ui-g-12 dashboard-bottom card" style="margin-top: -2px;margin-bottom:30px;">
 					<div class="ui-g-12 ui-lg-8 ui-xl-8 despesas-receitas">
 						
-						<label style="font-weight: bold; font-size: 14px">Despesas x Receitas</label>
-							
+						<label style="font-weight: bold; font-size: 14px;float:left;">Despesas x Receitas</label>
+						
+						<p:commandButton id="btn-filtro" styleClass="btn-filtro" value="Filtrar por Data"
+								onstart="start();" process="@this" style="float:right"							
+								oncomplete="PF('filtro-movimentacoes-dialog').show();stop();"
+								icon="fa fa-fw fa-sliders">
+	                	</p:commandButton>
+	                
 						<p:barChart id="barChart-despesasPorDia" 
 							model="#{dashboardBean.mixedModelPorDia}"
 							styleClass="barChart-01" style="height:300px;width: 100%;margin-top: 5px;" />
@@ -1004,10 +1068,15 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 					<div class="ui-g-12 ui-lg-4 ui-xl-4 pizza">
 						
 						<div style="text-align:center;">
-							<label style="font-weight: bold; font-size: 14px;color:#585757;">Rank de Despesas - Mês atual</label>
+							<label style="font-weight: bold; font-size: 14px;color:#585757;">Rank de Despesas - 
+								<p:link id="mes-formatado" href="javascript:void(0);" style="font-weight: bold;"
+									onclick="PF('filtro-top-despesas-dialog').show();">
+									<h:outputText value="#{dashboardBean.mesSelecionadoFormatado}"/>						
+								</p:link>
+							</label>							
 						</div>
 						
-						<p:pieChart model="#{dashboardBean.pieModel}"
+						<p:pieChart id="top-despesas-chart" model="#{dashboardBean.pieModel}"
 							style="width: 100%; height: 200px;margin-top: 8px;" />
 							
 						<p:dataTable scrollable="true" id="tb-top5"
@@ -1596,9 +1665,9 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 							styleClass="panelgrid-noborder disabled disabled">
 
 							<p:outputLabel value="Data de Pagamento" for="data-venda" />
-							<p:datePicker value="#{consultaContasBean.pagamentoConta.dataPagamento}" touchUI="true"
+							<p:datePicker value="#{consultaContasBean.pagamentoConta.dataPagamento}" touchUI="false"
 								readonlyInput="true" id="data-venda" pattern="dd/MM/yyyy" showOnFocus="false"
-								locale="pt" showIcon="true" />
+								locale="pt" showIcon="true" disabled="true" />
 										
 							<p:outputLabel value="Valor Pago" for="valor_pagamento" />
 							<p:inputNumber id="valor_pagamento" decimalPlaces="2" minValue="0"
@@ -1865,6 +1934,80 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 				</p:panelGrid>
 			</h:form>
 		</p:dialog>
+		
+		
+		
+		<p:dialog id="filtro-top-despesas-dialog" showHeader="false" modal="true"
+			widgetVar="filtro-top-despesas-dialog" draggable="false" width="300"
+			closable="false" resizable="false" position="center">
+
+			<h:form id="form-filtro-top-despesas">
+				<p:datePicker view="month" inline="true"
+						value="#{dashboardBean.mesSelecionado}" locale="pt"
+						pattern="MM/yyyy" yearNavigator="true" yearRange="2020:2025" />
+
+				<p:panel styleClass="panelgrid-noborder disabled disabled">
+					<p:commandButton icon="fa fa-fw fa-check"
+						style="float: right;font-weight: bold;font-size: 13px;background-color: #089a29c7;position: relative;margin-top: 8px;margin-right: 0px;"
+						value="Confirmar"
+						process="@this form-filtro-top-despesas"
+						action="#{dashboardBean.filtrarTopDesesasPorMes}" onstart="start();"
+						update="form:top-despesas-chart form:tb-top5 form:mes-formatado" oncomplete="stop();PF('filtro-top-despesas-dialog').hide();">
+					</p:commandButton>
+
+					<p:commandButton icon="fa fa-fw fa-close"
+						style="float: right;font-weight: bold;margin-top: 8px;font-size: 13px;background-color: #ab3705b5;position: relative;margin-right: 3px;"
+						value="Cancelar" 
+						oncomplete="PF('filtro-top-despesas-dialog').hide();">
+					</p:commandButton>
+				</p:panel>
+			</h:form>
+		</p:dialog>
+		
+		
+		<p:dialog id="filtro-movimentacoes-dialog" showHeader="false" modal="true"
+			widgetVar="filtro-movimentacoes-dialog" draggable="false" width="238"
+			closable="false" resizable="false" position="center">
+
+			<p:focus for="hidden" />
+
+			<h:inputHidden id="hidden" />
+
+			<h:form id="form-filtro-movimentacoes">
+				<p:panelGrid columns="1" id="painel" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-12">
+						
+					<p:outputLabel value="Data de início" for="data01" />
+					<p:datePicker id="data01" value="#{dashboardBean.dateStartMovimentacoes}"
+						readonlyInput="true" pattern="dd/MM/yyyy" locale="pt"
+						showIcon="true" >
+					</p:datePicker>
+	
+					<p:outputLabel value="até" id="data02" />
+					<p:datePicker id="data-02" value="#{dashboardBean.dateStopMovimentacoes}"
+						readonlyInput="true" styleClass="dateStop" pattern="dd/MM/yyyy"
+						locale="pt" showIcon="true">
+					</p:datePicker>
+				</p:panelGrid>
+
+				<p:panel styleClass="panelgrid-noborder disabled disabled">
+					<p:commandButton icon="fa fa-fw fa-check"
+						style="float: right;font-weight: bold;font-size: 13px;background-color: #089a29c7;position: relative;margin-top: 8px;margin-right: 0px;"
+						value="Confirmar"
+						process="@this form-filtro-movimentacoes"
+						action="#{dashboardBean.filtrarMovimentacoesPorIntervaloData}" onstart="start();"
+						update="form:barChart-despesasPorDia" oncomplete="stop();PF('filtro-movimentacoes-dialog').hide();">
+					</p:commandButton>
+
+					<p:commandButton icon="fa fa-fw fa-close" id="btn-calcelar"
+						style="float: right;font-weight: bold;margin-top: 8px;font-size: 13px;background-color: #ab3705b5;position: relative;margin-right: 3px;"
+						value="Cancelar" 
+						oncomplete="PF('filtro-movimentacoes-dialog').hide();">
+					</p:commandButton>
+				</p:panel>
+			</h:form>
+		</p:dialog>	
 		
 
 		<p:dialog id="downloadLoading" showHeader="false" modal="true"

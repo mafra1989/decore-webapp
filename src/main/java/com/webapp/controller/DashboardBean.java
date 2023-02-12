@@ -186,6 +186,8 @@ public class DashboardBean implements Serializable {
 	
 	private String hoje;
 	
+	private Date diaSelecionado = new Date();
+	
 	private String linkEntregas;
 	
 	private String totalEntregas;
@@ -242,6 +244,13 @@ public class DashboardBean implements Serializable {
 	
 	private List<Usuario> todosUsuarios;
 	
+	private Date mesSelecionado = new Date();
+	
+	private String mesSelecionadoFormatado;
+	
+	private Date dateStartMovimentacoes;
+	
+	private Date dateStopMovimentacoes = new Date();
 	
 
 	public List<Usuario> getTodosUsuarios() {
@@ -260,6 +269,43 @@ public class DashboardBean implements Serializable {
 			
 			usuarioSelecionado = usuario;
 			
+			
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(mesSelecionado);
+			
+			int mes = calendar.get(Calendar.MONTH) + 1;
+			int ano = calendar.get(Calendar.YEAR);
+			
+			if(mes < 10) {
+				mesSelecionadoFormatado = "0" + mes;
+			} else {
+				mesSelecionadoFormatado = "" + mes;
+			}
+			
+			mesSelecionadoFormatado += "/" +  ano;
+			
+			
+			calendar.add(Calendar.DAY_OF_MONTH, -3);
+			dateStartMovimentacoes = calendar.getTime();
+			
+			
+			Number saldoEmCaixa = getSaldoEmCaixa();
+			saldoGeral = nf.format(saldoEmCaixa);
+			
+			
+			Calendar calendarStart = Calendar.getInstance();
+			calendarStart.setTime(dateStart);
+			calendarStart = DateUtils.truncate(calendarStart, Calendar.DAY_OF_MONTH);
+					
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM");
+			hoje = sdf.format(calendarStart.getTime());
+
+			Calendar calendarStop = Calendar.getInstance();
+			calendarStop.setTime(dateStop);
+			calendarStop.add(Calendar.DAY_OF_MONTH, 1);
+			calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);
+			
+			
 			createPieModel();
 			createPolarAreaModel();
 			createBarModel();
@@ -273,21 +319,7 @@ public class DashboardBean implements Serializable {
 			createMixedModelPorSemana();
 			
 			
-			Calendar calendarStart = Calendar.getInstance();
-			calendarStart.setTime(dateStart);
-			calendarStart = DateUtils.truncate(calendarStart, Calendar.DAY_OF_MONTH);
-			
-			
-			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM");
-			hoje = sdf.format(calendarStart.getTime());
-
-
-			Calendar calendarStop = Calendar.getInstance();
-			calendarStop.setTime(dateStop);
-			calendarStop.add(Calendar.DAY_OF_MONTH, 1);
-			calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);
-			
-			
+	
 			CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome("Retirada de lucro", usuario.getEmpresa());
 			
 			Number totalDeRetiradas = 0;
@@ -317,13 +349,15 @@ public class DashboardBean implements Serializable {
 			}
 			
 			
+			Number descontoVendasAvistaAPagar = vendas.descontoVendasAvistaAPagar(usuario.getEmpresa(), calendarStart, calendarStop);	
+						
 			Number totalDescontosPorDiaValor = vendas.totalDescontosPorDiaValor(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
 			Number totalDescontosVendasParceladasPorDiaValor = vendas.totalDescontosVendasParceladasPorDiaValor(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());		
 			
 			Number totalVendasPorDiaValorTemp = vendas.totalVendasPorDiaValor(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
 			Number totalVendasParceladasPorDiaValorTemp = vendas.totalVendasParceladasPorDiaValor(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
 			
-			totalVendasHojeValor = (totalVendasPorDiaValorTemp.doubleValue() + totalVendasParceladasPorDiaValorTemp.doubleValue()) - (totalDescontosPorDiaValor.doubleValue() + totalDescontosVendasParceladasPorDiaValor.doubleValue());
+			totalVendasHojeValor = (totalVendasPorDiaValorTemp.doubleValue() + totalVendasParceladasPorDiaValorTemp.doubleValue()) - (totalDescontosPorDiaValor.doubleValue() + totalDescontosVendasParceladasPorDiaValor.doubleValue() + descontoVendasAvistaAPagar.doubleValue());
 			
 			Number totalTaxasPorDiaValor = vendas.totalTaxasPorDiaValor(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
 			
@@ -337,7 +371,7 @@ public class DashboardBean implements Serializable {
 			Number totalLucrosHojeTemp = vendas.totalLucrosPorDia(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
 			Number totalLucrosHojeVendasParceladasTemp = vendas.totalLucrosVendasParceladasPorDia(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
 			
-			totalLucrosHoje = (totalLucrosHojeTemp.doubleValue() + totalLucrosHojeVendasParceladasTemp.doubleValue() + totalEstornosHoje.doubleValue()) - (totalDescontosPorDiaValor.doubleValue() + totalTaxasPorDiaValor.doubleValue() + totalDescontosVendasParceladasPorDiaValor.doubleValue());
+			totalLucrosHoje = (totalLucrosHojeTemp.doubleValue() + totalLucrosHojeVendasParceladasTemp.doubleValue() + totalEstornosHoje.doubleValue()) - (totalDescontosPorDiaValor.doubleValue() + totalTaxasPorDiaValor.doubleValue() + totalDescontosVendasParceladasPorDiaValor.doubleValue() + + descontoVendasAvistaAPagar.doubleValue());
 			
 			
 			Number totalDescontosPendentesValor = vendas.totalDescontosPendentesValor(usuario.getEmpresa());
@@ -391,6 +425,30 @@ public class DashboardBean implements Serializable {
 		}
 	}
 	
+	public void atualizaSaldo() {
+		Number saldoEmCaixa = getSaldoEmCaixa();
+		saldoGeral = nf.format(saldoEmCaixa);
+		createBarModel();
+	}
+	
+	public void filtrarTopDesesasPorMes() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(mesSelecionado);
+		
+		int mes = calendar.get(Calendar.MONTH) + 1;
+		int ano = calendar.get(Calendar.YEAR);
+		
+		if(mes < 10) {
+			mesSelecionadoFormatado = "0" + mes;
+		} else {
+			mesSelecionadoFormatado = "" + mes;
+		}
+		
+		mesSelecionadoFormatado += "/" +  ano;
+		
+		createPieModel();
+	}
+	
 
 	private void createPieModel() {
 		pieModel = new PieChartModel();
@@ -399,7 +457,7 @@ public class DashboardBean implements Serializable {
 		PieChartDataSet dataSet = new PieChartDataSet();
 		List<Number> values = new ArrayList<>();
 
-		List<Object[]> despesasTemp = contas.totalDespesasPorCategoriaMesAtual();
+		List<Object[]> despesasTemp = contas.totalDespesasPorCategoriaMesAtual(mesSelecionado);
 
 		double totalDespesasTop5 = 0;
 
@@ -430,7 +488,7 @@ public class DashboardBean implements Serializable {
 		}
 		
 		
-		despesasTemp = lancamentos.totalDespesasPorCategoriaMesAtual();
+		despesasTemp = lancamentos.totalDespesasPorCategoriaMesAtual(mesSelecionado);
 
 		for (Object[] object : despesasTemp) {
 
@@ -561,13 +619,32 @@ public class DashboardBean implements Serializable {
 
 		polarAreaModel.setExtender("percentExtender4");
 	}
+	
+	
+	public void filtrarMovimentacoesPorData() {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM");
+		hoje = sdf.format(diaSelecionado);
+		
+		dateStart = diaSelecionado;
+		dateStop = diaSelecionado;
+		
+		createBarModel();
+		
+	}
+	
+	public void filtrarMovimentacoesPorIntervaloData() {
+				
+		createMixedModelPorDia();
+		
+	}
 
 	public void createBarModel() {
 		barModel = new BarChartModel();
 		ChartData data = new ChartData();
 
 		BarChartDataSet barDataSet = new BarChartDataSet();
-		barDataSet.setLabel("Movimentações");
+		barDataSet.setLabel("Movimentações " + hoje);
 		
 		
 		Calendar calendarStart = Calendar.getInstance();
@@ -582,11 +659,11 @@ public class DashboardBean implements Serializable {
 		
 		List<Number> values = new ArrayList<>();
 		
-		Number saldoEmCaixa = getSaldoEmCaixa();
+		//Number saldoEmCaixa = getSaldoEmCaixa();
 		//values.add(saldoEmCaixa);// Em Caixa
 		
 		Number vendasAVistaAPagarPagas = 0;
-		List<Conta> listaDeContasAVistaAPagarPagas = contas.vendasAVistaAPagarPagas("CREDITO", "VENDA", usuario.getEmpresa(), calendarStart, calendarStop);	
+		/*List<Conta> listaDeContasAVistaAPagarPagas = contas.vendasAVistaAPagarPagas("CREDITO", "VENDA", usuario.getEmpresa(), calendarStart, calendarStop);	
 		for (Conta conta : listaDeContasAVistaAPagarPagas) {
 			Venda venda = vendas.porNumeroVenda(conta.getCodigoOperacao(), usuario.getEmpresa());
 			
@@ -594,30 +671,30 @@ public class DashboardBean implements Serializable {
 			if(!sdf.format(conta.getPagamento()).equals(sdf.format(venda.getDataVenda()))) {
 				vendasAVistaAPagarPagas = vendasAVistaAPagarPagas.doubleValue() + conta.getValor().doubleValue();
 			}
-		}	
+		}*/	
 		
 		Number totalVendasPeriodo = getValorTotalVendas(calendarStart, calendarStop);		
 		values.add(totalVendasPeriodo.doubleValue() + vendasAVistaAPagarPagas.doubleValue());// Vendas
 		
 		
 		Number receitasAVistaAPagarPagas = 0;
-		listaDeContasAVistaAPagarPagas = contas.receitasAVistaAPagarPagas("CREDITO", "LANCAMENTO", usuario.getEmpresa(), calendarStart, calendarStop);	
+		/*listaDeContasAVistaAPagarPagas = contas.receitasAVistaAPagarPagas("CREDITO", "LANCAMENTO", usuario.getEmpresa(), calendarStart, calendarStop);	
 		for (Conta conta : listaDeContasAVistaAPagarPagas) {
 			Lancamento lancamento = lancamentos.porNumeroLancamento(conta.getCodigoOperacao(), usuario.getEmpresa());
 			
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-			if(!sdf.format(conta.getPagamento()).equals(sdf.format(lancamento.getDataLancamento()))) {
+			//if(!sdf.format(conta.getPagamento()).equals(sdf.format(lancamento.getDataLancamento()))) {
 				receitasAVistaAPagarPagas = receitasAVistaAPagarPagas.doubleValue() + conta.getValor().doubleValue();
-			}
+			//}
 		}
-		
+		*/
 		Number totalReceitasPeriodo = getValorTotalReceitas(calendarStart, calendarStop);
 		values.add(totalReceitasPeriodo.doubleValue() + receitasAVistaAPagarPagas.doubleValue());// Receitas
 		// values.add(0);//Contas à Receber
 
 		
 		Number comprasAVistaAPagarPagas = 0;
-		listaDeContasAVistaAPagarPagas = contas.comprasAVistaAPagarPagas("DEBITO", "COMPRA", usuario.getEmpresa(), calendarStart, calendarStop);	
+		/*List<Conta> listaDeContasAVistaAPagarPagas = contas.comprasAVistaAPagarPagas("DEBITO", "COMPRA", usuario.getEmpresa(), calendarStart, calendarStop);	
 		for (Conta conta : listaDeContasAVistaAPagarPagas) {
 			Compra compra = compras.porNumeroCompra(conta.getCodigoOperacao(), usuario.getEmpresa());
 			
@@ -625,7 +702,7 @@ public class DashboardBean implements Serializable {
 			if(!sdf.format(conta.getPagamento()).equals(sdf.format(compra.getDataCompra()))) {
 				comprasAVistaAPagarPagas = comprasAVistaAPagarPagas.doubleValue() + conta.getValor().doubleValue();
 			}
-		}
+		}*/
 		
 		Number totalComprasPeriodo = getValorTotalCompras(calendarStart, calendarStop);
 		values.add(totalComprasPeriodo.doubleValue() + comprasAVistaAPagarPagas.doubleValue());// Compras
@@ -640,7 +717,7 @@ public class DashboardBean implements Serializable {
 		
 		
 		Number despesasAVistaAPagarPagas = 0;
-		listaDeContasAVistaAPagarPagas = contas.despesasAVistaAPagarPagas("DEBITO", "LANCAMENTO", usuario.getEmpresa(), calendarStart, calendarStop);	
+		/*listaDeContasAVistaAPagarPagas = contas.despesasAVistaAPagarPagas("DEBITO", "LANCAMENTO", usuario.getEmpresa(), calendarStart, calendarStop);	
 		for (Conta conta : listaDeContasAVistaAPagarPagas) {
 			Lancamento lancamento = lancamentos.porNumeroLancamento(conta.getCodigoOperacao(), usuario.getEmpresa());
 			
@@ -648,7 +725,7 @@ public class DashboardBean implements Serializable {
 			if(!sdf.format(conta.getPagamento()).equals(sdf.format(lancamento.getDataLancamento()))) {
 				despesasAVistaAPagarPagas = despesasAVistaAPagarPagas.doubleValue() + conta.getValor().doubleValue();
 			}
-		}
+		}*/
 		
 		Number totalDespesasPagasPeriodo = getValorTotalDespesas(calendarStart, calendarStop);	
 		values.add(totalDespesasPagasPeriodo.doubleValue() + despesasAVistaAPagarPagas.doubleValue()/* - totalDeRetiradas.doubleValue()*/);// Despesas
@@ -671,10 +748,7 @@ public class DashboardBean implements Serializable {
 		caixa.setItem("Caixa");		
 		caixa.setValue(saldoEmCaixa.doubleValue());	
 		tabela.add(caixa);
-		*/
-		saldo = saldoEmCaixa.doubleValue();	
-		saldoGeral = nf.format(saldo);
-		
+		*/		
 		
 		vendas_ = new FluxoDeCaixa();
 		vendas_.setItem("Vendas");
@@ -815,10 +889,34 @@ public class DashboardBean implements Serializable {
 		return saldoEmCaixa;
     }
     
+    private Number getSaldoEmCaixaPorDia(Calendar calendarStop) {
+    	
+    	Calendar calendarStart = Calendar.getInstance();
+    	calendarStart.set(Calendar.YEAR, 2018);
+    	
+    	Number totalVendas = getValorTotalVendas(calendarStart, calendarStop);
+		
+		Number totalCompras = getValorTotalCompras(calendarStart, calendarStop);
+		
+		Number totalDespesasPagas = getValorTotalDespesas(calendarStart, calendarStop);	
+		
+
+		Number totalDebitosPagos = totalDespesasPagas.doubleValue() + totalCompras.doubleValue();//contas.porContasPagas("DEBITO", usuario.getEmpresa()); 
+		
+		
+		Number totalReceitas = getValorTotalReceitas(calendarStart, calendarStop);
+		
+		Number saldoEmCaixa = 0;
+		saldoEmCaixa = (totalVendas.doubleValue() + totalReceitas.doubleValue()) 
+					- (totalDebitosPagos.doubleValue()/* + totalCompras.doubleValue()*/);		
+		
+		return saldoEmCaixa;
+    }
+    
 	private Number getValorTotalReceitas(Calendar calendarStart, Calendar calendarStop) {
 		Number receitasAvistaPagas = lancamentos.totalReceitasAvistaPagas(usuario.getEmpresa(), calendarStart, calendarStop); 
 		Number receitasAReceberPagas = contas.porContasPagas("CREDITO", "LANCAMENTO", usuario.getEmpresa(), calendarStart, calendarStop);
-		Number totalReceitasPagasParcialmente = contas.totalReceitasPagasParcialmente(usuario.getEmpresa(), calendarStart, calendarStop);
+		Number totalReceitasPagasParcialmente = contas.totalReceitasPagasParcialmente(usuario.getEmpresa(), calendarStart, calendarStop, null);
 		Number totalReceitasPagas = receitasAReceberPagas.doubleValue() + receitasAvistaPagas.doubleValue() + totalReceitasPagasParcialmente.doubleValue();	
 		return totalReceitasPagas;
 	}
@@ -835,27 +933,33 @@ public class DashboardBean implements Serializable {
 
 	private Number getValorTotalCompras(Calendar calendarStart, Calendar calendarStop) {
 		Number comprasAvistaPagas = compras.comprasAvistaPagas(usuario.getEmpresa(), calendarStart, calendarStop);
-		Number comprasAPagarPagas = contas.porContasPagas("DEBITO", "COMPRA", usuario.getEmpresa(), calendarStart, calendarStop);
+		//Compras Decore
+		Number comprasAPagarPagas = 0;
+		if(usuario.getEmpresa().getId() == 7111) {
+			comprasAPagarPagas = contas.porContasPagas("DEBITO", "COMPRA", usuario.getEmpresa(), calendarStart, calendarStop);					
+		}
 		Number totalComprasPagasParcialmente = contas.totalComprasPagasParcialmente(usuario.getEmpresa(), calendarStart, calendarStop);
 		
 		Number totalCompras = comprasAvistaPagas.doubleValue() + comprasAPagarPagas.doubleValue() + totalComprasPagasParcialmente.doubleValue();	
 		//Number totalCompras = compras.totalCompras(usuario.getEmpresa());
 		return totalCompras;
 	}
-
-
+	
 	private Number getValorTotalVendas(Calendar calendarStart, Calendar calendarStop) {
-		Number totalTaxasValor = vendas.totalTaxasValor(usuario.getEmpresa(), calendarStart, calendarStop);			
+		Number totalTaxasValor = vendas.totalTaxasValor(usuario.getEmpresa(), calendarStart, calendarStop);				
 		Number vendasAvistaPagasTemp = vendas.vendasAvistaPagas(usuario.getEmpresa(), calendarStart, calendarStop).doubleValue();
-		//Number descontoVendasAvistaPagas = vendas.descontoVendasAvistaPagas(usuario.getEmpresa());	
-		Number vendasAvistaPagas = vendasAvistaPagasTemp.doubleValue() - (/*descontoVendasAvistaPagas.doubleValue() + */totalTaxasValor.doubleValue());	
+		
+		Number descontoVendasAvistaPagas = vendas.descontoVendasAvistaPagas(usuario.getEmpresa(), calendarStart, calendarStop);	
+		
+		Number vendasAvistaPagas = vendasAvistaPagasTemp.doubleValue() - (descontoVendasAvistaPagas.doubleValue() + totalTaxasValor.doubleValue());	
 			
-		Number vendasAPagarPagas = contas.vendasAPagarPagas("CREDITO", "VENDA", usuario.getEmpresa(), calendarStart, calendarStop);		
-		Number totalVendasPagasParcialmente = contas.totalVendasPagasParcialmente(usuario.getEmpresa(), calendarStart, calendarStop);
-		Number totalVendas = vendasAvistaPagas.doubleValue() + vendasAPagarPagas.doubleValue() + totalVendasPagasParcialmente.doubleValue();
+		Number vendasAReceberPagas = contas.vendasAPagarPagas("CREDITO", "VENDA", usuario.getEmpresa(), calendarStart, calendarStop);		
+		//Number vendasAReceberPagas = contas.porContasPagas("CREDITO", "VENDA", usuario.getEmpresa(), calendarStart, calendarStop);			
+		Number totalVendasPagasParcialmente = contas.totalVendasPagasParcialmente(usuario.getEmpresa(), calendarStart, calendarStop, null);
+		Number totalVendasPagas = vendasAvistaPagas.doubleValue() + vendasAReceberPagas.doubleValue() + totalVendasPagasParcialmente.doubleValue();
 		
 		//Number totalVendas = vendas.totalVendas(usuario.getEmpresa());
-		return totalVendas;
+		return totalVendasPagas;
 	}
 
 	public void createMixedModel() {
@@ -1334,13 +1438,23 @@ public class DashboardBean implements Serializable {
 
 		LineChartDataSet dataSet2 = new LineChartDataSet();
 		List<Object> values2 = new ArrayList<>();
+		
+		BarChartDataSet dataSet3 = new BarChartDataSet();
+		List<Number> values3 = new ArrayList<>(); 
+		
+		BarChartDataSet dataSet4 = new BarChartDataSet();
+		List<Number> values4 = new ArrayList<>(); 
+		
+		LineChartDataSet dataSet5 = new LineChartDataSet();
+		List<Object> values5 = new ArrayList<>();
+		
 
 		Calendar calendarStart = Calendar.getInstance();
-		calendarStart.add(Calendar.DAY_OF_MONTH, -3);
+		calendarStart.setTime(dateStartMovimentacoes);
 		calendarStart = DateUtils.truncate(calendarStart, Calendar.DAY_OF_MONTH);
 
 		Calendar calendarStop = Calendar.getInstance();
-		calendarStop.setTime(dateStop);
+		calendarStop.setTime(dateStopMovimentacoes);
 		calendarStop.add(Calendar.DAY_OF_MONTH, 1);
 		calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);
 
@@ -1360,7 +1474,20 @@ public class DashboardBean implements Serializable {
 				calendarStopTemp.set(Calendar.MINUTE, 59);
 				calendarStopTemp.set(Calendar.SECOND, 59);
 
-				List<Object[]> resultTemp = new ArrayList<>();
+				//List<Object[]> resultTemp = new ArrayList<>(); 
+				
+				Number totalReceitasPagasPeriodo = getValorTotalReceitas(calendarStartTemp, calendarStopTemp);
+				
+				Number totalDespesasPagasPeriodo = getValorTotalDespesas(calendarStartTemp, calendarStopTemp);	
+				
+				Number totalVendasPagasPeriodo = getValorTotalVendas(calendarStartTemp, calendarStopTemp);	
+				
+				Number totalComprasPagasPeriodo = getValorTotalCompras(calendarStartTemp, calendarStopTemp);	
+				
+				
+				Number totalSaldoEmCaixaPorPeriodo = getSaldoEmCaixaPorDia(calendarStopTemp);	
+				
+				/*
 				List<Object[]> resultDespesasPagas = contas.totalDespesasPagasPorData(calendarStartTemp, calendarStopTemp, usuario.getEmpresa());
 				List<Object[]> resultReceitasPagas = contas.totalReceitasPagasPorData(calendarStartTemp, calendarStopTemp, usuario.getEmpresa());
 				
@@ -1371,6 +1498,7 @@ public class DashboardBean implements Serializable {
 				resultTemp.addAll(resultLancamentoDespesas);
 				resultTemp.addAll(resultReceitasPagas);
 				resultTemp.addAll(resultLancamentoReceitas);
+				
 				
 				if (resultTemp.size() == 0) {
 
@@ -1421,10 +1549,11 @@ public class DashboardBean implements Serializable {
 						if (lancamento != null) {						
 							valor += new BigDecimal(object[5].toString()).doubleValue();
 						}
-					}				
+					}	
+					*/
 
-					if (!tipos.contains("DEBITO")) {
-						Object[] object = new Object[6];
+					//if (!tipos.contains("DEBITO")) {
+						Object[] object = new Object[9];
 						object[0] = calendarStartTemp.get(Calendar.DAY_OF_MONTH);
 						if (calendarStartTemp.get(Calendar.DAY_OF_MONTH) < 10) {
 							object[0] = "0" + calendarStartTemp.get(Calendar.DAY_OF_MONTH);
@@ -1436,10 +1565,21 @@ public class DashboardBean implements Serializable {
 						}
 
 						object[2] = calendarStartTemp.get(Calendar.YEAR);
-
+						
+						object[4] = totalDespesasPagasPeriodo;
+						object[5] = totalReceitasPagasPeriodo;
+						
+						object[6] = totalVendasPagasPeriodo;
+						object[7] = totalComprasPagasPeriodo;
+						object[8] = totalSaldoEmCaixaPorPeriodo;
+						
+						
+						result.add(object);
+						
+						/*
 						object[3] = "";
 						object[4] = "DEBITO";
-						object[5] = 0;
+						object[5] = "";
 
 						result.add(object);
 					}
@@ -1460,14 +1600,16 @@ public class DashboardBean implements Serializable {
 
 						object[3] = "";
 						object[4] = "CREDITO";
-						object[5] = 0;
+						object[5] = totalReceitasPagasPeriodo;
 
 						result.add(object);
 					}
+			
 
 					objectTemp[5] = valor;
 					result.add(objectTemp);
 				}
+				*/
 
 				calendarStartTemp.add(Calendar.DAY_OF_MONTH, 1);
 
@@ -1483,16 +1625,22 @@ public class DashboardBean implements Serializable {
 				labels.add(object[0] + "/" + object[1]/* + "/" + object[2] */);
 			}
 
-			if (object[4].toString().equals("DEBITO")) {
-				values.add(object[5]);
+			//if (object[4].toString().equals("DEBITO")) {
+				values.add(object[4]);
 
-			} else if (object[4].toString().equals("CREDITO")) {
+			//} else if (object[4].toString().equals("CREDITO")) {
 				values2.add(object[5]);
-
+			/*
 			} else if (object[4].toString().equals("")) {
 				values.add(object[5]);
 				values2.add(object[5]);
 			}
+			*/
+				values3.add((Number) object[6]);
+				
+				values4.add((Number) object[7]);
+				
+				values5.add(object[8]);
 				
 		}
 		
@@ -1500,15 +1648,37 @@ public class DashboardBean implements Serializable {
 
 		dataSet.setData(values);
 		dataSet.setLabel("Despesas");
-		dataSet.setBorderColor("rgb(201, 203, 207)");
+		dataSet.setBorderColor("rgb(255, 99, 132)");
 		dataSet.setBackgroundColor("rgba(255, 99, 132, 0.2)");
+		//dataSet2.setBorderWidth(1);	
 		data.addChartDataSet(dataSet);
 
 		dataSet2.setData(values2);
 		dataSet2.setLabel("Receitas");
-		dataSet2.setBorderColor("rgb(75, 192, 192)");
-		dataSet2.setBackgroundColor("rgba(75, 192, 192, 0.2)");
+		dataSet2.setBorderColor("rgb(255, 159, 64");
+		dataSet2.setBackgroundColor("rgba(255, 159, 64, 0.2)");	
+		//dataSet2.setBorderWidth(1);
 		data.addChartDataSet(dataSet2);
+		
+		dataSet4.setData(values4);
+		dataSet4.setLabel("Compras");
+		dataSet4.setBorderColor("rgba(54, 162, 235)");
+		dataSet4.setBackgroundColor("rgba(54, 162, 235)");
+		dataSet4.setBorderWidth(1);
+		data.addChartDataSet(dataSet4);
+		
+		dataSet3.setData(values3);
+		dataSet3.setLabel("Vendas");
+		dataSet3.setBorderColor("rgb(54, 162, 235)");
+		dataSet3.setBackgroundColor("rgba(54, 162, 235, 0.2)");
+		dataSet3.setBorderWidth(1);	
+		data.addChartDataSet(dataSet3);
+		
+		dataSet5.setData(values5);
+		dataSet5.setLabel("Saldo");
+		dataSet5.setBorderColor("rgb(153, 102, 255)");
+		dataSet5.setBackgroundColor("rgba(153, 102, 255, 0.2)");
+		data.addChartDataSet(dataSet5);
 
 		data.setLabels(labels);
 
@@ -1517,13 +1687,38 @@ public class DashboardBean implements Serializable {
 		// Options
 		BarChartOptions options = new BarChartOptions();
 		CartesianScales cScales = new CartesianScales();
+
+		CartesianLinearAxes linearAxes = new CartesianLinearAxes();
+		linearAxes.setId("left-y-axis");
+		linearAxes.setPosition("left");
+
+		CartesianLinearAxes linearAxes2 = new CartesianLinearAxes();
+		linearAxes2.setId("right-y-axis");
+		linearAxes2.setPosition("right");
+
+		CartesianLinearTicks ticks = new CartesianLinearTicks();
+		ticks.setBeginAtZero(true);
+		linearAxes.setTicks(ticks);
+
+		CartesianLinearTicks ticks2 = new CartesianLinearTicks();
+		ticks2.setBeginAtZero(true);
+		linearAxes2.setTicks(ticks2);
+
+		cScales.addYAxesData(linearAxes);
+		cScales.addYAxesData(linearAxes2);
+		options.setScales(cScales);
+				
+		// Options
+		/*BarChartOptions options = new BarChartOptions();
+		CartesianScales cScales = new CartesianScales();
 		CartesianLinearAxes linearAxes = new CartesianLinearAxes();
 		CartesianLinearTicks ticks = new CartesianLinearTicks();
 		ticks.setBeginAtZero(true);
 		linearAxes.setTicks(ticks);
 
 		cScales.addYAxesData(linearAxes);
-		options.setScales(cScales);
+		options.setScales(cScales);*/
+		
 		mixedModelPorDia.setOptions(options);
 
 		mixedModelPorDia.setExtender("percentExtender2_");
@@ -1718,7 +1913,7 @@ public class DashboardBean implements Serializable {
 		ano01 = String.valueOf(calendar.get(Calendar.YEAR));
 		
 		int semana01 = calendarTemp.get(Calendar.WEEK_OF_YEAR) - 3;
-		if (semana01 >= 4) {
+		if (semana01 >= 2) {//4
 
 			String semanaTemp = String.valueOf(semana01);
 			if (semana01 < 10) {
@@ -2139,5 +2334,55 @@ public class DashboardBean implements Serializable {
 		}
 
 		return nome;
+	}
+
+
+	public Date getDiaSelecionado() {
+		return diaSelecionado;
+	}
+
+
+	public void setDiaSelecionado(Date diaSelecionado) {
+		this.diaSelecionado = diaSelecionado;
+	}
+
+
+	public Date getMesSelecionado() {
+		return mesSelecionado;
+	}
+
+
+	public void setMesSelecionado(Date mesSelecionado) {
+		this.mesSelecionado = mesSelecionado;
+	}
+
+
+	public String getMesSelecionadoFormatado() {
+		return mesSelecionadoFormatado;
+	}
+
+
+	public void setMesSelecionadoFormatado(String mesSelecionadoFormatado) {
+		this.mesSelecionadoFormatado = mesSelecionadoFormatado;
+	}
+
+
+	public Date getDateStartMovimentacoes() {
+		return dateStartMovimentacoes;
+	}
+
+
+	public void setDateStartMovimentacoes(Date dateStartMovimentacoes) {
+		this.dateStartMovimentacoes = dateStartMovimentacoes;
+	}
+
+
+	public Date getDateStopMovimentacoes() {
+		return dateStopMovimentacoes;
+	}
+
+
+	public void setDateStopMovimentacoes(Date dateStopMovimentacoes) {
+		this.dateStopMovimentacoes = dateStopMovimentacoes;
 	}
 }

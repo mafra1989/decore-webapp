@@ -229,7 +229,7 @@ public class RelatorioVendasBean implements Serializable {
 		Calendar calendarTemp = Calendar.getInstance();
 
 		int semana01 = calendarTemp.get(Calendar.WEEK_OF_YEAR) - 3;
-		if (semana01 >= 4) {
+		if (semana01 >= 2) {//4
 
 			String semanaTemp = String.valueOf(semana01);
 			if (semana01 < 10) {

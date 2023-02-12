@@ -180,6 +180,20 @@
 							value="#{consultaVendasBean.numeroVenda}">
 						</p:inputNumber>
 					</p:panelGrid>
+					
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-5">
+						
+						<p:outputLabel value="Tipo de Data" for="datas" />
+						<p:selectOneRadio id="datas" unselectable="true" value="#{consultaVendasBean.tipoData}">
+							<f:selectItems
+								value="#{consultaVendasBean.tiposDatas}"
+								var="tipoData"
+								itemLabel="#{tipoData.descricao}"
+								itemValue="#{tipoData}" />
+						</p:selectOneRadio>
+					</p:panelGrid>
 
 					<p:panelGrid columns="4" id="painel" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
@@ -366,6 +380,13 @@
 									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" dateStyle="short" />
 								</h:outputText>
 							</p:column>
+							
+							<p:column headerText="Data de Pagamento" width="10%">
+								<h:outputText value="#{venda.dataPagamento != null ? venda.dataPagamento : '-'}">
+									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy"
+										dateStyle="short" />
+								</h:outputText>
+							</p:column>
 
 							<p:column headerText="Tipo de venda" width="10%" styleClass="font-column">
 								<h:outputText value="#{venda.tipoVenda.descricao}" />
@@ -383,7 +404,7 @@
 								<h:outputText value="#{venda.pdv ? venda.cliente.bairro.nome : venda.bairro.nome}" />
 							</p:column>
 							
-							<p:column headerText="Vendedor" width="10%" styleClass="font-column">
+							<p:column headerText="Vendedor" width="15%" styleClass="font-column">
 								<h:outputText value="#{venda.usuario.nome}" />
 							</p:column>
 							
@@ -407,8 +428,20 @@
 								<h:outputText value="#{venda.quantidadeItens}" />
 							</p:column>
 
-							<p:column headerText="Valor Total" width="10%" styleClass="font-column">
+							<p:column headerText="Valor Total" width="15%" styleClass="font-column">
 								<h:outputText value="#{venda.valorTotal - venda.desconto}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Pago Nesta Data" width="15%">
+								<h:outputText value="#{venda.valorPago != null ? venda.valorPago : '-'}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Total Pago" width="15%">
+								<h:outputText value="#{venda.totalPago != null ? venda.totalPago : '-'}">
 									<f:convertNumber type="currency" />
 								</h:outputText>
 							</p:column>
@@ -423,10 +456,10 @@
 							styleClass="panelgrid-noborder disabled disabled panel-total">
 
 							<p:outputLabel
-								value="Total de Vendas: R$ #{consultaVendasBean.totalVendas}"
+								value="Valor Pago Nesta Data: R$ #{consultaVendasBean.totalVendas}"
 								style="float:left;margin-top:10px;margin-bottom:5px;margin-left:-10px;font-size: 13px;font-family: inherit;" />
 
-							<p:outputLabel
+							<p:outputLabel rendered="false"
 								value="Total de Itens: #{consultaVendasBean.totalItens}"
 								style="float:right;margin-top:10px;margin-bottom:5px;margin-right:0px;font-size: 13px;font-family: inherit;" />
 

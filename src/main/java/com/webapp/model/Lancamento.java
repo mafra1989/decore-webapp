@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
@@ -32,6 +33,9 @@ public class Lancamento implements Serializable {
 	@NotNull
 	@Column
 	private Date dataLancamento = new Date();
+	
+	@Column
+	private Date dataPagamento;
 
 	@Column//(unique = true)
 	private Long numeroLancamento;
@@ -114,6 +118,14 @@ public class Lancamento implements Serializable {
 
 	public void setDataLancamento(Date dataLancamento) {
 		this.dataLancamento = dataLancamento;
+	}
+
+	public Date getDataPagamento() {
+		return dataPagamento;
+	}
+
+	public void setDataPagamento(Date dataPagamento) {
+		this.dataPagamento = dataPagamento;
 	}
 
 	public Long getNumeroLancamento() {
@@ -268,6 +280,32 @@ public class Lancamento implements Serializable {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+	
+	
+	@Transient
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
+	private BigDecimal valorPago;
+	
+	@Transient
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
+	private BigDecimal totalPago;
+
+
+	public BigDecimal getValorPago() {
+		return valorPago;
+	}
+
+	public void setValorPago(BigDecimal valorPago) {
+		this.valorPago = valorPago;
+	}
+
+	public BigDecimal getTotalPago() {
+		return totalPago;
+	}
+
+	public void setTotalPago(BigDecimal totalPago) {
+		this.totalPago = totalPago;
 	}
 	
 }

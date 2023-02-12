@@ -1,6 +1,7 @@
 package com.webapp.controller;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -14,6 +15,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.primefaces.PrimeFaces;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -24,9 +26,12 @@ import com.webapp.model.DestinoLancamento;
 import com.webapp.model.ItemCaixa;
 import com.webapp.model.Lancamento;
 import com.webapp.model.Log;
+import com.webapp.model.OrigemConta;
 import com.webapp.model.OrigemLancamento;
 import com.webapp.model.PagamentoConta;
 import com.webapp.model.TipoAtividade;
+import com.webapp.model.TipoConta;
+import com.webapp.model.TipoDataLancamento;
 import com.webapp.model.TipoOperacao;
 import com.webapp.model.Usuario;
 import com.webapp.repository.CategoriasLancamentos;
@@ -114,10 +119,14 @@ public class ConsultaLancamentosBean implements Serializable {
 	@Inject
 	private Logs logs;
 
-	private boolean lancamentosPagos;
+	private String lancamentosPagos;
 	
 	@Inject
 	private Usuario vendedor;
+	
+	private TipoDataLancamento tipoData = TipoDataLancamento.PAGAMENTO;
+	
+	private String gerouContas;
 	
 
 	public void inicializar() {
@@ -167,24 +176,82 @@ public class ConsultaLancamentosBean implements Serializable {
 
 		lancamentosFiltrados = new ArrayList<>();
 		lancamentosFiltrados = lancamentos.lancamentosFiltrados(numeroLancamento, dateStart, calendarioTemp.getTime(), origemLancamento,
-				categoriaLancamento, destinoLancamento, usuarioTemp, categorias, lancamentosPagos, usuario_.getEmpresa(), vendedor);
-
+				categoriaLancamento, destinoLancamento, usuarioTemp, categorias, lancamentosPagos, usuario_.getEmpresa(), vendedor, tipoData, gerouContas);
+		
 		double totalLancamentosTemp = 0;
+		double somaValorPago = 0;
 		for (Lancamento lancamento : lancamentosFiltrados) {
-				
-			if(!lancamento.isAjuste()) {
-				totalLancamentosTemp += lancamento.getValor().doubleValue();
-			}
 			
-			if(lancamento.isConta()) {
-				lancamento.setLancamentoPago(true);
-				List<Conta> listaDeContas = contas.porCodigoOperacao(lancamento.getNumeroLancamento(), "LANCAMENTO", usuario_.getEmpresa());
-				for (Conta conta : listaDeContas) {
-					if(!conta.isStatus()) {
-						lancamento.setLancamentoPago(false);
-					}
+			if(lancamento.getDataPagamento() != null) {
+				
+				if(!lancamento.isAjuste()) {
+					totalLancamentosTemp += lancamento.getValor().doubleValue();
 				}
-			}
+				
+				if(lancamento.isConta()) {
+					Calendar calendarStart = Calendar.getInstance();
+					calendarStart.setTime(lancamento.getDataPagamento());
+					calendarStart = DateUtils.truncate(calendarStart, Calendar.DAY_OF_MONTH);
+					
+					Calendar calendarStop = Calendar.getInstance();
+					calendarStop.setTime(lancamento.getDataPagamento());
+					calendarStop.add(Calendar.DAY_OF_MONTH, 1);
+					calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);
+					
+					Number totalContasReceitasPagasParcialmenteDataValor = 0;
+					Number totalContasReceitasPagasParcialmenteValor = 0;
+					
+					Number totalEntradasReceitasPagasParcialmenteDataValor = 0;
+					Number totalEntradasReceitasPagasParcialmenteValor = 0;
+					
+					Number totalContasDespesasPagasParcialmenteDataValor = 0;
+					Number totalContasDespesasPagasParcialmenteValor = 0;
+					
+					Number totalEntradasDespesasPagasParcialmenteDataValor = 0;
+					Number totalEntradasDespesasPagasParcialmenteValor = 0;
+					
+					lancamento.setLancamentoPago(true);
+					List<Conta> listaDeContas = contas.porCodigoOperacao(lancamento.getNumeroLancamento(), "LANCAMENTO", usuario_.getEmpresa());
+					for (Conta conta : listaDeContas) {
+						if(!conta.isStatus()) {
+							lancamento.setLancamentoPago(false);
+						}
+						
+						if(conta.getTipo().equals(OrigemConta.CREDITO.name())) {
+							totalContasReceitasPagasParcialmenteDataValor = totalContasReceitasPagasParcialmenteDataValor.doubleValue() + contas.totalContasReceitasPagas(usuario_.getEmpresa(), calendarStart, calendarStop, conta).doubleValue();					
+							totalContasReceitasPagasParcialmenteValor = totalContasReceitasPagasParcialmenteValor.doubleValue() + contas.totalContasReceitasPagas(usuario_.getEmpresa(), null, null, conta).doubleValue();
+						
+							totalEntradasReceitasPagasParcialmenteDataValor = totalEntradasReceitasPagasParcialmenteDataValor.doubleValue() + contas.totalEntradaReceitasPagasPorDiaValor(calendarStart, calendarStop, usuario_.getEmpresa(), conta).doubleValue();					
+							totalEntradasReceitasPagasParcialmenteValor = totalEntradasReceitasPagasParcialmenteValor.doubleValue() + contas.totalEntradaReceitasPagasPorDiaValor(null, null, usuario_.getEmpresa(), conta).doubleValue();	
+						
+						} else if(conta.getTipo().equals(OrigemConta.DEBITO.name())) {
+							totalContasDespesasPagasParcialmenteDataValor = totalContasDespesasPagasParcialmenteDataValor.doubleValue() + contas.totalContasDespesasPagas(usuario_.getEmpresa(), calendarStart, calendarStop, conta).doubleValue();					
+							totalContasDespesasPagasParcialmenteValor = totalContasDespesasPagasParcialmenteValor.doubleValue() + contas.totalContasDespesasPagas(usuario_.getEmpresa(), null, null, conta).doubleValue();
+						
+							totalEntradasDespesasPagasParcialmenteDataValor = totalEntradasDespesasPagasParcialmenteDataValor.doubleValue() + contas.totalEntradaDespesasPagasPorDiaValor(calendarStart, calendarStop, usuario_.getEmpresa(), conta).doubleValue();					
+							totalEntradasDespesasPagasParcialmenteValor = totalEntradasDespesasPagasParcialmenteValor.doubleValue() + contas.totalEntradaDespesasPagasPorDiaValor(null, null, usuario_.getEmpresa(), conta).doubleValue();	
+						}
+						
+					}
+					
+					if(lancamento.getCategoriaLancamento().getTipoLancamento().getOrigem().name().equals(OrigemConta.CREDITO.name())) {
+						lancamento.setValorPago(new BigDecimal(totalEntradasReceitasPagasParcialmenteDataValor.doubleValue() + totalContasReceitasPagasParcialmenteDataValor.doubleValue()));
+						lancamento.setTotalPago(new BigDecimal(totalEntradasReceitasPagasParcialmenteValor.doubleValue() + totalContasReceitasPagasParcialmenteValor.doubleValue()));
+						
+					} else if(lancamento.getCategoriaLancamento().getTipoLancamento().getOrigem().name().equals(OrigemConta.DEBITO.name())) {
+						lancamento.setValorPago(new BigDecimal(totalEntradasDespesasPagasParcialmenteDataValor.doubleValue() + totalContasDespesasPagasParcialmenteDataValor.doubleValue()));
+						lancamento.setTotalPago(new BigDecimal(totalEntradasDespesasPagasParcialmenteValor.doubleValue() + totalContasDespesasPagasParcialmenteValor.doubleValue()));
+					}	
+					
+				} else {
+					lancamento.setValorPago(lancamento.getValor());
+					lancamento.setTotalPago(lancamento.getValor());				
+				}
+				
+				if(!lancamento.isAjuste()) {
+					somaValorPago += lancamento.getValorPago().doubleValue();
+				}
+			}		
 			
 			/*if(!lancamento.getCategoriaLancamento().getNome().contains("Salário")) {
 				
@@ -219,7 +286,8 @@ public class ConsultaLancamentosBean implements Serializable {
 			}*/
 		}
 
-		totalLancamentos = nf.format(totalLancamentosTemp);
+		//totalLancamentos = nf.format(totalLancamentosTemp);
+		totalLancamentos = nf.format(somaValorPago);
 /*	
 		if(origemLancamento.length > 0) {
 			
@@ -466,11 +534,11 @@ public class ConsultaLancamentosBean implements Serializable {
 		this.categorias = categorias;
 	}
 
-	public boolean isLancamentosPagos() {
+	public String getLancamentosPagos() {
 		return lancamentosPagos;
 	}
 
-	public void setLancamentosPagos(boolean lancamentosPagos) {
+	public void setLancamentosPagos(String lancamentosPagos) {
 		this.lancamentosPagos = lancamentosPagos;
 	}
 
@@ -480,6 +548,26 @@ public class ConsultaLancamentosBean implements Serializable {
 
 	public void setVendedor(Usuario vendedor) {
 		this.vendedor = vendedor;
+	}
+	
+	public TipoDataLancamento[] getTiposDatas() {
+		return TipoDataLancamento.values();
+	}
+
+	public TipoDataLancamento getTipoData() {
+		return tipoData;
+	}
+
+	public void setTipoData(TipoDataLancamento tipoData) {
+		this.tipoData = tipoData;
+	}
+
+	public String getGerouContas() {
+		return gerouContas;
+	}
+
+	public void setGerouContas(String gerouContas) {
+		this.gerouContas = gerouContas;
 	}
 
 }

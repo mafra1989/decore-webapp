@@ -212,12 +212,26 @@
 							value="#{consultaLancamentosBean.numeroLancamento}">
 						</p:inputNumber>
 					</p:panelGrid>
-
+					
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-5">
+						
+						<p:outputLabel value="Tipo de Data" for="datas" />
+						<p:selectOneRadio id="datas" unselectable="true" value="#{consultaLancamentosBean.tipoData}">
+							<f:selectItems
+								value="#{consultaLancamentosBean.tiposDatas}"
+								var="tipoData"
+								itemLabel="#{tipoData.descricao}"
+								itemValue="#{tipoData}" />
+						</p:selectOneRadio>
+					</p:panelGrid>
+			
 					<p:panelGrid columns="4" id="painel" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-1, ui-grid-col-2">
 
-						<p:outputLabel value="Data do lançamento" for="data01" />
+						<p:outputLabel value="Buscar De" for="data01" />
 						<p:datePicker id="data01"
 							value="#{consultaLancamentosBean.dateStart}" readonlyInput="true"
 							pattern="dd/MM/yyyy" locale="pt" showIcon="true">
@@ -305,7 +319,7 @@
 						columnClasses="ui-grid-col-2, ui-grid-col-3">
 		
 						<p:outputLabel value="Tipo de Lançamento" />
-						<p:selectManyCheckbox unselectable="true"
+						<p:selectManyCheckbox unselectable="true" style="float:left;margin-left: -3px;"
 							value="#{consultaLancamentosBean.origemLancamento}">
 							<f:selectItems
 								value="#{consultaLancamentosBean.origensLancamentos}"
@@ -313,10 +327,11 @@
 								itemValue="#{origemLancamento}" />
 						</p:selectManyCheckbox>
 						
-						<p:outputLabel value="Somente lançamentos pagos" for="lancamentosPagas" />
-						<p:inputSwitch offLabel="Não" onLabel="Sim" id="lancamentosPagas"
-							value="#{consultaLancamentosBean.lancamentosPagos}">
-						</p:inputSwitch>
+						<p:outputLabel value="Gerou Contas ?" rendered="false" /> 
+						<p:triStateCheckbox value="#{consultaLancamentosBean.gerouContas}" rendered="false" /> 
+						
+						<p:outputLabel value="Lançamentos Pagos" for="lancamentosPagas" />
+						<p:triStateCheckbox id="lancamentosPagas" value="#{consultaLancamentosBean.lancamentosPagos}"/> 
 					</p:panelGrid>
 
 				</p:panel>
@@ -376,6 +391,13 @@
 										dateStyle="short" />
 								</h:outputText>
 							</p:column>
+							
+							<p:column headerText="Data de Pagamento" width="20%">
+								<h:outputText value="#{lancamento.dataPagamento != null ? lancamento.dataPagamento : '-'}">
+									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy"
+										dateStyle="short" />
+								</h:outputText>
+							</p:column>
 
 							<p:column headerText="Origem" width="20%">
 								<h:outputText
@@ -390,14 +412,30 @@
 								<h:outputText value="#{lancamento.usuario != null ? lancamento.usuario.nome : '-'}" />
 							</p:column>
 
-							<p:column headerText="Valor Total" width="20%">
+							<p:column headerText="Valor Total" width="15%">
 								<h:outputText value="#{lancamento.valor}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Pago Nesta Data" width="20%">
+								<h:outputText value="#{lancamento.valorPago != null ? lancamento.valorPago : '-'}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Total Pago" width="15%">
+								<h:outputText value="#{lancamento.totalPago != null ? lancamento.totalPago : '-'}">
 									<f:convertNumber type="currency" />
 								</h:outputText>
 							</p:column>
 
 							<p:column headerText="Categoria" width="20%">
 								<h:outputText value="#{lancamento.categoriaLancamento.nome}" />
+							</p:column>
+							
+							<p:column headerText="Conta" width="20%">
+								<h:outputText value="#{lancamento.conta == 'true' ? 'Sim' : 'Não'}" />
 							</p:column>
 
 							<p:column headerText="Destino" width="20%">
@@ -414,7 +452,7 @@
 							styleClass="panelgrid-noborder disabled disabled panel-total">
 
 							<p:outputLabel
-								value="Total de Lançamentos: R$ #{consultaLancamentosBean.totalLancamentos}"
+								value="Valor Pago Nesta Data: R$ #{consultaLancamentosBean.totalLancamentos}"
 								style="float:left;margin-top:10px;margin-bottom:5px;margin-left:-10px;font-size: 13px;font-family: inherit;" />
 
 						</p:panel>
