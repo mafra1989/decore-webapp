@@ -49,7 +49,11 @@ import com.webapp.model.FluxoDeCaixa;
 import com.webapp.model.Lancamento;
 import com.webapp.model.ListaProduto;
 import com.webapp.model.OrdenaTop5;
+import com.webapp.model.OrigemConta;
+import com.webapp.model.PagamentoConta;
 import com.webapp.model.Produto;
+import com.webapp.model.StatusPedido;
+import com.webapp.model.TipoDataLancamento;
 import com.webapp.model.Top5Despesa;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
@@ -653,8 +657,12 @@ public class DashboardBean implements Serializable {
 		
 		Calendar calendarStop = Calendar.getInstance();
 		calendarStop.setTime(dateStop);
-		calendarStop.add(Calendar.DAY_OF_MONTH, 1);
-		calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);
+		//calendarStop.add(Calendar.DAY_OF_MONTH, 1);
+		//calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);
+		
+		calendarStop.set(Calendar.HOUR, 23);
+		calendarStop.set(Calendar.MINUTE, 59);
+		calendarStop.set(Calendar.SECOND, 59);
 		
 		
 		List<Number> values = new ArrayList<>();
@@ -673,7 +681,7 @@ public class DashboardBean implements Serializable {
 			}
 		}*/	
 		
-		Number totalVendasPeriodo = getValorTotalVendas(calendarStart, calendarStop);		
+		Number totalVendasPeriodo = getValorTotalVendas_(calendarStart, calendarStop);		
 		values.add(totalVendasPeriodo.doubleValue() + vendasAVistaAPagarPagas.doubleValue());// Vendas
 		
 		
@@ -953,13 +961,83 @@ public class DashboardBean implements Serializable {
 		
 		Number vendasAvistaPagas = vendasAvistaPagasTemp.doubleValue() - (descontoVendasAvistaPagas.doubleValue() + totalTaxasValor.doubleValue());	
 			
-		Number vendasAReceberPagas = contas.vendasAPagarPagas("CREDITO", "VENDA", usuario.getEmpresa(), calendarStart, calendarStop);		
+		Number vendasAReceberPagas = contas.vendasAPagarPagas("CREDITO", "VENDA", usuario.getEmpresa(), calendarStart, calendarStop);				
 		//Number vendasAReceberPagas = contas.porContasPagas("CREDITO", "VENDA", usuario.getEmpresa(), calendarStart, calendarStop);			
 		Number totalVendasPagasParcialmente = contas.totalVendasPagasParcialmente(usuario.getEmpresa(), calendarStart, calendarStop, null);
 		Number totalVendasPagas = vendasAvistaPagas.doubleValue() + vendasAReceberPagas.doubleValue() + totalVendasPagasParcialmente.doubleValue();
 		
 		//Number totalVendas = vendas.totalVendas(usuario.getEmpresa());
 		return totalVendasPagas;
+	}
+	
+	private Number getValorTotalVendas_(Calendar calendarStart, Calendar calendarStop) {
+		
+		StatusPedido[] statusPedido = new StatusPedido[] {};
+		//statusPedido[0] = StatusPedido.PENDENTE;
+		
+		List<Venda> vendasFiltradas = vendas.vendasFiltradas(null, calendarStart.getTime(), calendarStop.getTime(), false,
+				statusPedido, null, null, null, false, usuario.getEmpresa(), TipoDataLancamento.PAGAMENTO);
+		
+		double somaValorPago = 0;
+		for (Venda venda : vendasFiltradas) {	
+
+			if(venda.getDataPagamento() != null) {
+				
+				double totalVendasTemp = 0;
+				double totalDesconto = 0;
+				
+				if(!venda.isAjuste()) {
+					totalVendasTemp += venda.getValorTotal().doubleValue();	
+					
+					if(venda.getDesconto() != null) {
+						totalDesconto += venda.getDesconto().doubleValue();
+					}
+				}
+				/*
+				Pagamento pagamento = pagamentos.porVenda(venda, venda.getEmpresa());
+				if(pagamento != null) {
+					venda.setPagamento(", " + pagamento.getFormaPagamento().getNome());
+				}
+				*/
+				
+				if(venda.isConta()) {
+					
+					Number totalContasReceitasPagasParcialmenteDataValor = 0;
+					Number totalContasReceitasPagasParcialmenteValor = 0;
+					
+					Number totalEntradasReceitasPagasParcialmenteDataValor = 0;
+					Number totalEntradasReceitasPagasParcialmenteValor = 0;
+					
+					
+					venda.setVendaPaga(true);
+					List<Conta> listaDeContas = contas.porCodigoOperacao(venda.getNumeroVenda(), "VENDA", usuario.getEmpresa());
+					for (Conta conta : listaDeContas) {
+						if(conta.getTipo().equals(OrigemConta.CREDITO.name())) {
+							totalContasReceitasPagasParcialmenteDataValor = totalContasReceitasPagasParcialmenteDataValor.doubleValue() + contas.totalContasVendasPagas(usuario.getEmpresa(), calendarStart, calendarStop, conta).doubleValue();					
+							totalContasReceitasPagasParcialmenteValor = totalContasReceitasPagasParcialmenteValor.doubleValue() + contas.totalContasVendasPagas(usuario.getEmpresa(), null, null, conta).doubleValue();
+						
+							totalEntradasReceitasPagasParcialmenteDataValor = totalEntradasReceitasPagasParcialmenteDataValor.doubleValue() + contas.totalEntradaVendasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa(), conta).doubleValue();					
+							totalEntradasReceitasPagasParcialmenteValor = totalEntradasReceitasPagasParcialmenteValor.doubleValue() + contas.totalEntradaVendasPagasPorDiaValor(null, null, usuario.getEmpresa(), conta).doubleValue();	
+						
+						}	
+					}
+					
+					venda.setValorPago(new BigDecimal(totalEntradasReceitasPagasParcialmenteDataValor.doubleValue() + totalContasReceitasPagasParcialmenteDataValor.doubleValue()));
+					venda.setTotalPago(new BigDecimal(totalEntradasReceitasPagasParcialmenteValor.doubleValue() + totalContasReceitasPagasParcialmenteValor.doubleValue()));
+					
+				} else {
+					venda.setValorPago(new BigDecimal(totalVendasTemp - totalDesconto));
+					venda.setTotalPago(new BigDecimal(totalVendasTemp - totalDesconto));				
+				}
+				
+				if(!venda.isAjuste()) {
+					somaValorPago += venda.getValorPago().doubleValue();
+				}
+			}
+			
+		}
+
+		return somaValorPago;
 	}
 
 	public void createMixedModel() {
@@ -1480,7 +1558,7 @@ public class DashboardBean implements Serializable {
 				
 				Number totalDespesasPagasPeriodo = getValorTotalDespesas(calendarStartTemp, calendarStopTemp);	
 				
-				Number totalVendasPagasPeriodo = getValorTotalVendas(calendarStartTemp, calendarStopTemp);	
+				Number totalVendasPagasPeriodo = getValorTotalVendas_(calendarStartTemp, calendarStopTemp);	
 				
 				Number totalComprasPagasPeriodo = getValorTotalCompras(calendarStartTemp, calendarStopTemp);	
 				

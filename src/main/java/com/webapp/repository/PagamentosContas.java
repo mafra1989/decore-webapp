@@ -39,7 +39,7 @@ public class PagamentosContas implements Serializable {
 	public List<PagamentoConta> todosPorConta(Conta conta, Empresa empresa) {
 		
 		return this.manager
-					.createQuery("select e from PagamentoConta e where e.conta.id = :idConta and e.conta.empresa.id = :empresa", PagamentoConta.class)
+					.createQuery("select e from PagamentoConta e where e.conta.id = :idConta and e.conta.empresa.id = :empresa order by e.id asc", PagamentoConta.class)
 					.setParameter("idConta", conta.getId())
 					.setParameter("empresa", empresa.getId()).getResultList();
 	}

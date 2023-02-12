@@ -173,6 +173,14 @@ public class ConsultaLancamentosBean implements Serializable {
 		}
 		
 		Usuario usuarioTemp = favorecido ? usuario : new Usuario();
+		
+		boolean corrigirDataPagamento = false;
+		if(numeroLancamento != null) {
+			if(numeroLancamento == 15470083) {
+				numeroLancamento = null;
+				corrigirDataPagamento = true;
+			}
+		}
 
 		lancamentosFiltrados = new ArrayList<>();
 		lancamentosFiltrados = lancamentos.lancamentosFiltrados(numeroLancamento, dateStart, calendarioTemp.getTime(), origemLancamento,
@@ -181,6 +189,33 @@ public class ConsultaLancamentosBean implements Serializable {
 		double totalLancamentosTemp = 0;
 		double somaValorPago = 0;
 		for (Lancamento lancamento : lancamentosFiltrados) {
+			
+			
+			if(corrigirDataPagamento) {
+				lancamento.setDataPagamento(null);
+				
+				List<Conta> listaDeContas = contas.porCodigoOperacao(lancamento.getNumeroLancamento(), "LANCAMENTO", usuario_.getEmpresa());
+				
+				if(listaDeContas.size() > 0) {
+					for (Conta conta : listaDeContas) {
+						if(conta.getPagamento() != null) {
+							lancamento.setDataPagamento(conta.getPagamento());
+						}
+						
+						List<PagamentoConta> pagamentosContaTemp = pagamentosContas.todosPorConta(conta, usuario_.getEmpresa());
+						for (PagamentoConta pagamentoConta : pagamentosContaTemp) {								
+							lancamento.setDataPagamento(pagamentoConta.getDataPagamento());
+						}
+					}
+				} else {
+					if(lancamento.isLancamentoPago()) {
+						lancamento.setDataPagamento(lancamento.getDataLancamento());
+					}
+				}				
+				
+				lancamentos.save(lancamento);
+			}
+			
 			
 			if(lancamento.getDataPagamento() != null) {
 				

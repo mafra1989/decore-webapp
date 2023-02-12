@@ -759,6 +759,43 @@ public class ConsultaContasBean implements Serializable {
 					Venda venda = vendas.porNumeroVenda(contaSelecionada.getCodigoOperacao(), usuario.getEmpresa());
 					venda.setVendaPaga(false);
 					venda.setConta(true);
+					
+					List<Conta> listaDeContas = contas.porCodigoOperacao(venda.getNumeroVenda(), "VENDA", usuario.getEmpresa());
+					
+					if(listaDeContas.size() > 0) {
+						for (Conta conta : listaDeContas) {
+							if(conta.getPagamento() != null) {
+								venda.setDataPagamento(conta.getPagamento());
+							}
+							
+							List<PagamentoConta> pagamentosContaTemp = pagamentosContas.todosPorConta(conta, usuario.getEmpresa());
+							for (PagamentoConta pagamentoConta : pagamentosContaTemp) {								
+								venda.setDataPagamento(pagamentoConta.getDataPagamento());
+							}
+						}
+					}
+					
+					vendas.save(venda);
+				} else {
+					Venda venda = vendas.porNumeroVenda(contaSelecionada.getCodigoOperacao(), usuario.getEmpresa());
+					venda.setDataPagamento(null);
+					venda.setVendaPaga(false);
+					
+					List<Conta> listaDeContas = contas.porCodigoOperacao(venda.getNumeroVenda(), "VENDA", usuario.getEmpresa());
+					
+					if(listaDeContas.size() > 0) {
+						for (Conta conta : listaDeContas) {
+							if(conta.getPagamento() != null) {
+								venda.setDataPagamento(conta.getPagamento());
+							}
+							
+							List<PagamentoConta> pagamentosContaTemp = pagamentosContas.todosPorConta(conta, usuario.getEmpresa());
+							for (PagamentoConta pagamentoConta : pagamentosContaTemp) {								
+								venda.setDataPagamento(pagamentoConta.getDataPagamento());
+							}
+						}
+					}
+					
 					vendas.save(venda);
 				}
 			//}
@@ -791,7 +828,44 @@ public class ConsultaContasBean implements Serializable {
 				Lancamento lancamento = lancamentos.porNumeroLancamento(contaSelecionada.getCodigoOperacao(), usuario.getEmpresa());
 				lancamento.setDataPagamento(null);
 				lancamento.setLancamentoPago(false);
-				//lancamento.setConta(true);		
+				//lancamento.setConta(true);	
+				
+				List<Conta> listaDeContas = contas.porCodigoOperacao(lancamento.getNumeroLancamento(), "LANCAMENTO", usuario.getEmpresa());
+				
+				if(listaDeContas.size() > 0) {
+					for (Conta conta : listaDeContas) {
+						if(conta.getPagamento() != null) {
+							lancamento.setDataPagamento(conta.getPagamento());
+						}
+						
+						List<PagamentoConta> pagamentosContaTemp = pagamentosContas.todosPorConta(conta, usuario.getEmpresa());
+						for (PagamentoConta pagamentoConta : pagamentosContaTemp) {								
+							lancamento.setDataPagamento(pagamentoConta.getDataPagamento());
+						}
+					}
+				}
+				
+				lancamentos.save(lancamento);
+			} else {
+				Lancamento lancamento = lancamentos.porNumeroLancamento(contaSelecionada.getCodigoOperacao(), usuario.getEmpresa());
+				lancamento.setDataPagamento(null);
+				lancamento.setLancamentoPago(false);
+				
+				List<Conta> listaDeContas = contas.porCodigoOperacao(lancamento.getNumeroLancamento(), "LANCAMENTO", usuario.getEmpresa());
+				
+				if(listaDeContas.size() > 0) {
+					for (Conta conta : listaDeContas) {
+						if(conta.getPagamento() != null) {
+							lancamento.setDataPagamento(conta.getPagamento());
+						}
+						
+						List<PagamentoConta> pagamentosContaTemp = pagamentosContas.todosPorConta(conta, usuario.getEmpresa());
+						for (PagamentoConta pagamentoConta : pagamentosContaTemp) {								
+							lancamento.setDataPagamento(pagamentoConta.getDataPagamento());
+						}
+					}
+				}
+				
 				lancamentos.save(lancamento);
 			}
 		}
