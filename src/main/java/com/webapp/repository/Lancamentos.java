@@ -145,10 +145,12 @@ public class Lancamentos implements Serializable {
 			data = "AND i.dataLancamento";
 		}
 
-		if(gerouContas.equals("1")) {
-			conditionContas = "AND i.conta = 'Y' ";
-		} else if(gerouContas.equals("2")) {
-			conditionContas = "AND i.conta = 'N' ";
+		if(gerouContas != null) {
+			if(gerouContas.equals("1")) {
+				conditionContas = "AND i.conta = 'Y' ";
+			} else if(gerouContas.equals("2")) {
+				conditionContas = "AND i.conta = 'N' ";
+			}
 		}
 		
 		String jpql = "SELECT i FROM Lancamento i WHERE i.empresa.id = :empresa " + data + " between :dateStart and :dateStop "
