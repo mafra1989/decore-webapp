@@ -38,7 +38,7 @@ public class Conta implements Serializable {
 	private BigDecimal valor;
 	
 	@Column(nullable = false)
-	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
+	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
 	private BigDecimal saldo;
 
 	@Column(nullable = false)
@@ -143,7 +143,7 @@ public class Conta implements Serializable {
 	}
 
 	public void setSaldo(BigDecimal saldo) {
-		this.saldo = saldo;
+		this.saldo = saldo.setScale(2, BigDecimal.ROUND_HALF_EVEN);;
 	}
 
 	public Date getVencimento() {
