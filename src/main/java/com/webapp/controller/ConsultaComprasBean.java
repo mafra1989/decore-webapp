@@ -15,6 +15,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.primefaces.PrimeFaces;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -33,9 +34,11 @@ import com.webapp.model.ItemVenda;
 import com.webapp.model.ItemVendaCompra;
 import com.webapp.model.Lancamento;
 import com.webapp.model.Log;
+import com.webapp.model.OrigemConta;
 import com.webapp.model.PagamentoConta;
 import com.webapp.model.Produto;
 import com.webapp.model.TipoAtividade;
+import com.webapp.model.TipoDataLancamento;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
 import com.webapp.repository.Caixas;
@@ -162,6 +165,7 @@ public class ConsultaComprasBean implements Serializable {
 	@Inject
 	private PagamentosContas pagamentosContas;
 	
+	private TipoDataLancamento tipoData = TipoDataLancamento.PAGAMENTO;
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -197,20 +201,87 @@ public class ConsultaComprasBean implements Serializable {
 		calendarioTemp.set(Calendar.MINUTE, 59);
 		calendarioTemp.set(Calendar.SECOND, 59);
 
-		comprasFiltradas = compras.comprasFiltradas(numeroCompra, dateStart, calendarioTemp.getTime(), usuario, comprasPagas, usuario_.getEmpresa());
+		
+		comprasFiltradas = compras.comprasFiltradas(numeroCompra, dateStart, calendarioTemp.getTime(), usuario, comprasPagas, 
+				usuario_.getEmpresa(), tipoData);
 		
 		compraSelecionada = null;
 		
-		List<Compra> comprasFiltradasPorCategoria = new ArrayList<Compra>();
-		List<Compra> comprasFiltradasPorProduto = new ArrayList<Compra>();
+		//List<Compra> comprasFiltradasPorCategoria = new ArrayList<Compra>();
+		//List<Compra> comprasFiltradasPorProduto = new ArrayList<Compra>();
 
-		double totalComprasTemp = 0; //double valorTotal = 0; double valorTotalTemp = 0;
+		//double totalComprasTemp = 0; //double valorTotal = 0; double valorTotalTemp = 0;
+		
 		totalItens = 0;
+		double somaValorPago = 0;
 		
-		List<Compra> listaParaRemover = new ArrayList<>();
+		//List<Compra> listaParaRemover = new ArrayList<>();
 		
-		for (Compra compra : comprasFiltradas) {
+		for (Compra compra : comprasFiltradas) {		
 			
+			if(compra.getDataPagamento() != null) {
+				
+				double totalComprasTemp = 0;
+				
+				if(!compra.isAjuste()) {
+					totalComprasTemp += compra.getValorTotal().doubleValue();				
+					totalItens += compra.getQuantidadeItens().intValue();
+				}
+				
+				//if(compra.isConta()) {
+					
+					Calendar calendarStart = Calendar.getInstance();
+					calendarStart.setTime(compra.getDataPagamento());
+					calendarStart = DateUtils.truncate(calendarStart, Calendar.DAY_OF_MONTH);
+					
+					Calendar calendarStop = Calendar.getInstance();
+					calendarStop.setTime(compra.getDataPagamento());
+					calendarStop.add(Calendar.DAY_OF_MONTH, 1);
+					calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);
+					
+					Number totalContasComprasPagasParcialmenteDataValor = 0;
+					Number totalContasComprasPagasParcialmenteValor = 0;
+					
+					Number totalEntradasComprasPagasParcialmenteDataValor = 0;
+					Number totalEntradasComprasPagasParcialmenteValor = 0;
+					
+					
+					compra.setCompraPaga(true);
+					List<Conta> listaDeContas = contas.porCodigoOperacao(compra.getNumeroCompra(), "COMPRA", usuario_.getEmpresa());
+					for (Conta conta : listaDeContas) {
+						if(!conta.isStatus()) {
+							compra.setCompraPaga(false);
+						}
+						
+						if(conta.getTipo().equals(OrigemConta.DEBITO.name())) {
+							totalContasComprasPagasParcialmenteDataValor = totalContasComprasPagasParcialmenteDataValor.doubleValue() + contas.totalContasComprasPagas(usuario_.getEmpresa(), calendarStart, calendarStop, conta).doubleValue();					
+							totalContasComprasPagasParcialmenteValor = totalContasComprasPagasParcialmenteValor.doubleValue() + contas.totalContasComprasPagas(usuario_.getEmpresa(), null, null, conta).doubleValue();
+						
+							totalEntradasComprasPagasParcialmenteDataValor = totalEntradasComprasPagasParcialmenteDataValor.doubleValue() + contas.totalEntradaComprasPagasPorDiaValor(calendarStart, calendarStop, usuario_.getEmpresa(), conta).doubleValue();					
+							totalEntradasComprasPagasParcialmenteValor = totalEntradasComprasPagasParcialmenteValor.doubleValue() + contas.totalEntradaComprasPagasPorDiaValor(null, null, usuario_.getEmpresa(), conta).doubleValue();	
+						
+						}	
+					}
+					
+					if(!compra.isConta() && listaDeContas.size() == 0) {
+						compra.setValorPago(new BigDecimal(totalComprasTemp));
+						compra.setTotalPago(new BigDecimal(totalComprasTemp));	
+					} else {
+						compra.setValorPago(new BigDecimal(totalEntradasComprasPagasParcialmenteDataValor.doubleValue() + totalContasComprasPagasParcialmenteDataValor.doubleValue()));
+						compra.setTotalPago(new BigDecimal(totalEntradasComprasPagasParcialmenteValor.doubleValue() + totalContasComprasPagasParcialmenteValor.doubleValue()));					
+					}
+				/*} else {
+					compra.setValorPago(new BigDecimal(totalComprasTemp));
+					compra.setTotalPago(new BigDecimal(totalComprasTemp));				
+				}*/
+				
+				if(!compra.isAjuste()) {
+					somaValorPago += compra.getValorPago().doubleValue();
+				}
+			}
+			
+			
+			/*
 			if(!compra.isAjuste()) {
 				
 				if(compra.isConta()) {
@@ -258,7 +329,8 @@ public class ConsultaComprasBean implements Serializable {
 					}
 				}
 				
-			}			
+			}	
+			*/		
 
 		/*	
 			if(compra.getNumeroCompra().intValue() == 12 && compra.getId() == 28592) {
@@ -308,19 +380,19 @@ public class ConsultaComprasBean implements Serializable {
 					
 		}
 		
-		if(produto != null) {					
+		/*if(produto != null) {					
 			comprasFiltradas = new ArrayList<Compra>();
 			comprasFiltradas.addAll(comprasFiltradasPorProduto);			
 		} else if (categorias != null && categorias.length > 0) {
 			comprasFiltradas = new ArrayList<Compra>();
 			comprasFiltradas.addAll(comprasFiltradasPorCategoria);
-		}
+		}*/
 
-		totalCompras = nf.format(totalComprasTemp);
+		totalCompras = nf.format(somaValorPago);
 		
-		for (Compra compra : listaParaRemover) {
+		/*for (Compra compra : listaParaRemover) {
 			comprasFiltradas.remove(compra);
-		}
+		}*/
 	}
 
 	public void excluir() {
@@ -627,6 +699,18 @@ public class ConsultaComprasBean implements Serializable {
 
 	public void setComprasPagas(boolean comprasPagas) {
 		this.comprasPagas = comprasPagas;
+	}
+	
+	public TipoDataLancamento[] getTiposDatas() {
+		return TipoDataLancamento.values();
+	}
+
+	public TipoDataLancamento getTipoData() {
+		return tipoData;
+	}
+
+	public void setTipoData(TipoDataLancamento tipoData) {
+		this.tipoData = tipoData;
 	}
 
 }

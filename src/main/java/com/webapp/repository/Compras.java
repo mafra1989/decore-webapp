@@ -1,6 +1,7 @@
 package com.webapp.repository;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +17,7 @@ import com.webapp.model.CategoriaProduto;
 import com.webapp.model.Compra;
 import com.webapp.model.Empresa;
 import com.webapp.model.Produto;
+import com.webapp.model.TipoDataLancamento;
 import com.webapp.model.Usuario;
 import com.webapp.util.jpa.Transacional;
 
@@ -126,9 +128,71 @@ public class Compras implements Serializable {
 
 		return count;
 	}
+	
+	public Number comprasAvistaPagas(Empresa empresa, Calendar calendarStart, Calendar calendarStop, List<BigInteger> contas) {
+		
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo += "AND i.dataPagamento BETWEEN :dataInicio AND :dataFim";
+		}
+		
+		String listaDeContas = "";
+		if(contas.size() > 0) {
+			listaDeContas = "AND i.numeroCompra not in ( :contas )";
+		}
+		
+		String jpql = "SELECT sum(i.valorTotal) FROM Compra i Where i.empresa.id = :empresa " + listaDeContas + " AND i.ajuste = 'N' AND i.compraPaga = 'Y' AND i.conta = 'N' " + periodo;
+		
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
+
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+		
+		if(contas.size() > 0) {
+			q.setParameter("contas", contas);
+		}
+		
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Compra> comprasAvistaPagas_(Empresa empresa, Calendar calendarStart, Calendar calendarStop) {
+		
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo += "AND i.dataPagamento BETWEEN :dataInicio AND :dataFim";
+		}
+		
+		String jpql = "SELECT i FROM Compra i Where i.empresa.id = :empresa AND i.ajuste = 'N' AND i.compraPaga = 'Y' AND i.conta = 'N' " + periodo;
+		
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
+
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+		
+		return q.getResultList();
+	}
+	
 
 	@SuppressWarnings("unchecked")
-	public List<Compra> comprasFiltradas(Long numeroCompra, Date dateStart, Date dateStop, Usuario usuario, boolean comprasPagas, Empresa empresa) {
+	public List<Compra> comprasFiltradas(Long numeroCompra, Date dateStart, Date dateStop, Usuario usuario, boolean comprasPagas, 
+			Empresa empresa, TipoDataLancamento tipoData) {
 
 		String condition = "";
 		if (usuario != null && usuario.getId() != null) {
@@ -151,8 +215,15 @@ public class Compras implements Serializable {
 				}			
 			}
 		}
+		
+		String data = "";
+		if(tipoData == TipoDataLancamento.PAGAMENTO) {
+			data = "AND i.dataPagamento";
+		} else if(tipoData == TipoDataLancamento.LANCAMENTO) {
+			data = "AND i.dataCompra";
+		}
 
-		String jpql = "SELECT i FROM Compra i " + "WHERE i.empresa.id = :empresa AND i.ajuste = 'N' AND i.dataCompra between :dateStart and :dateStop " + condition
+		String jpql = "SELECT i FROM Compra i " + "WHERE i.empresa.id = :empresa AND i.ajuste = 'N' " + data + " between :dateStart and :dateStop " + condition
 				+ conditionNumeroCompra + conditionComprasPagas+ " order by i.numeroCompra desc";
 		Query q = manager.createQuery(jpql).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
 

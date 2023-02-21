@@ -2,6 +2,7 @@ package com.webapp.repository;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -343,6 +344,49 @@ public class Lancamentos implements Serializable {
 	}
 	
 	
+	public Number totalDespesasAvistaPagas(Empresa empresa, Calendar calendarStart, Calendar calendarStop, List<BigInteger> contas) {
+
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo += "AND c.dataPagamento BETWEEN :dataInicio AND :dataFim";
+		}
+		
+		String listaDeContas = "";
+		if(contas.size() > 0) {
+			listaDeContas = "AND c.numeroLancamento not in ( :contas )";
+		}
+		
+		String jpql = "SELECT sum(c.valor) FROM Lancamento c WHERE c.categoriaLancamento.nome != 'Retirada de lucro' AND c.empresa.id = :empresa AND "
+				+ "c.categoriaLancamento.tipoLancamento.origem = :origemLancamento " + listaDeContas + " AND c.lancamentoPago = 'Y' and c.conta = 'N' AND c.ajuste = 'N' "
+				+ periodo;
+		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.DEBITO)
+				.setParameter("empresa", empresa.getId());
+
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+		
+		if(contas.size() > 0) {
+			q.setParameter("contas", contas);
+		}
+		
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+	
+	
 	public Number totalReceitasAvistaPagas(Empresa empresa, Calendar calendarStart, Calendar calendarStop) {
 
 		String periodo = "";
@@ -373,6 +417,68 @@ public class Lancamentos implements Serializable {
 		}
 
 		return count;
+	}
+	
+	public Number totalReceitasAvistaPagas(Empresa empresa, Calendar calendarStart, Calendar calendarStop, List<BigInteger> contas) {
+
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo += "AND c.dataPagamento BETWEEN :dataInicio AND :dataFim";
+		}
+		
+		String listaDeContas = "";
+		if(contas.size() > 0) {
+			listaDeContas = "AND c.numeroLancamento not in ( :contas )";
+		}
+		
+		String jpql = "SELECT sum(c.valor) FROM Lancamento c WHERE c.empresa.id = :empresa AND "
+				+ "c.categoriaLancamento.tipoLancamento.origem = :origemLancamento " + listaDeContas + " AND c.lancamentoPago = 'Y' AND c.conta = 'N' AND c.ajuste = 'N' " + periodo;
+		Query q = manager.createQuery(jpql).setParameter("origemLancamento", OrigemLancamento.CREDITO)
+				.setParameter("empresa", empresa.getId());
+
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+		
+		if(contas.size() > 0) {
+			q.setParameter("contas", contas);
+		}
+		
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Lancamento> lancamentosAvistaPagos(Empresa empresa, Calendar calendarStart, Calendar calendarStop, OrigemLancamento origemLancamento) {
+
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo += "AND c.dataPagamento BETWEEN :dataInicio AND :dataFim";
+		}
+		
+		String jpql = "SELECT c FROM Lancamento c WHERE c.empresa.id = :empresa AND "
+				+ "c.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND c.lancamentoPago = 'Y' AND c.conta = 'N' AND c.ajuste = 'N' " + periodo;
+		Query q = manager.createQuery(jpql).setParameter("origemLancamento", origemLancamento)
+				.setParameter("empresa", empresa.getId());
+
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+
+		return q.getResultList();
 	}
 	
 

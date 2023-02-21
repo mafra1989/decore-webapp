@@ -1,6 +1,7 @@
 package com.webapp.repository;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -18,6 +19,7 @@ import com.webapp.model.CategoriaProduto;
 import com.webapp.model.Cliente;
 import com.webapp.model.Empresa;
 import com.webapp.model.Entrega;
+import com.webapp.model.ItemVenda;
 import com.webapp.model.Produto;
 import com.webapp.model.StatusPedido;
 import com.webapp.model.TipoDataLancamento;
@@ -101,7 +103,8 @@ public class Vendas implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public List<Venda> vendasFiltradas(Long numeroVenda, Date dateStart, Date dateStop, boolean vendasNormais,
-			StatusPedido[] statusPedido, Usuario usuario, Cliente cliente, Usuario entregador, boolean vendasPagas, Empresa empresa, TipoDataLancamento tipoData) {
+			StatusPedido[] statusPedido, Usuario usuario, Cliente cliente, Usuario entregador, boolean vendasPagas, 
+			Empresa empresa, TipoDataLancamento tipoData) {
 
 		List<Venda> vendas = new ArrayList<>();
 
@@ -512,6 +515,66 @@ public class Vendas implements Serializable {
 		return count;
 	}
 	
+	public Number vendasAvistaPagas(Empresa empresa, Calendar calendarStart, Calendar calendarStop, List<BigInteger> contas) {
+		
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo += "AND i.venda.dataPagamento BETWEEN :dataInicio AND :dataFim";
+		}
+		
+		String listaDeContas = "";
+		if(contas.size() > 0) {
+			listaDeContas = "AND i.venda.numeroVenda not in (:contas)";
+		}
+		
+		String jpql = "SELECT sum(i.total) FROM ItemVenda i Where i.venda.empresa.id = :empresa " + listaDeContas + " AND i.venda.ajuste = 'N' AND i.venda.vendaPaga = 'Y' AND i.venda.conta = 'N' and i.venda.exclusao = 'N' and i.exclusao = 'N' " + periodo;
+		
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
+		
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+		
+		if(contas.size() > 0) {
+			q.setParameter("contas", contas);
+		}
+
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<ItemVenda> vendasAvistaPagas_(Empresa empresa, Calendar calendarStart, Calendar calendarStop) {
+		
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo += "AND i.venda.dataPagamento BETWEEN :dataInicio AND :dataFim";
+		}
+		
+		String jpql = "SELECT i FROM ItemVenda i Where i.venda.empresa.id = :empresa AND i.venda.ajuste = 'N' AND i.venda.vendaPaga = 'Y' AND i.venda.conta = 'N' and i.venda.exclusao = 'N' and i.exclusao = 'N' " + periodo;
+		
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
+		
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+
+		return q.getResultList();
+	}
+	
 	public Number descontoVendasAvistaPagas(Empresa empresa, Calendar calendarStart, Calendar calendarStop) {
 		String periodo = "";
 		if(calendarStart != null && calendarStop != null) {
@@ -540,6 +603,64 @@ public class Vendas implements Serializable {
 		}
 
 		return count;
+	}
+	
+	public Number descontoVendasAvistaPagas(Empresa empresa, Calendar calendarStart, Calendar calendarStop, List<BigInteger> contas) {
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo += "AND i.dataPagamento BETWEEN :dataInicio AND :dataFim";
+		}
+		
+		String listaDeContas = "";
+		if(contas.size() > 0) {
+			listaDeContas = "AND i.numeroVenda not in (:contas)";
+		}
+		
+		String jpql = "SELECT sum(i.desconto) FROM Venda i Where i.empresa.id = :empresa " + listaDeContas + " AND i.ajuste = 'N' AND i.vendaPaga = 'Y' AND i.conta = 'N' and i.exclusao = 'N' " + periodo;
+		
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
+		
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+		
+		if(contas.size() > 0) {
+			q.setParameter("contas", contas);
+		}
+
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Venda> descontoVendasAvistaPagas_(Empresa empresa, Calendar calendarStart, Calendar calendarStop) {
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo += "AND i.dataPagamento BETWEEN :dataInicio AND :dataFim";
+		}
+		
+		String jpql = "SELECT i FROM Venda i Where i.empresa.id = :empresa AND i.ajuste = 'N' AND i.vendaPaga = 'Y' AND i.conta = 'N' and i.exclusao = 'N' " + periodo;
+		
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
+		
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+
+		return q.getResultList();
 	}
 	
 	public Number descontoVendasAvistaAPagar(Empresa empresa, Calendar calendarStart, Calendar calendarStop) {
@@ -1452,6 +1573,64 @@ public class Vendas implements Serializable {
 		}
 	
 		return count;
+	}
+	
+	public Number totalTaxasValor(Empresa empresa, Calendar calendarStart, Calendar calendarStop, List<BigInteger> contas) {
+		
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo += "AND i.dataPagamento BETWEEN :dataInicio AND :dataFim";
+		}
+		
+		String listaDeContas = "";
+		if(contas.size() > 0) {
+			listaDeContas = "AND i.numeroVenda not in (:contas)";
+		}
+		
+		String jpql = "SELECT sum((i.valorTotal - i.desconto) * i.taxaDeAcrescimo/100) FROM Venda i WHERE i.quantidadeItens > 0 AND i.empresa.id = :empresa " + listaDeContas + " AND i.vendaPaga = 'Y' AND i.conta = 'N' AND i.ajuste = 'N' AND i.clientePagouTaxa = 'N' AND i.taxaDeAcrescimo > 0 and i.exclusao = 'N' " + periodo;
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
+	
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+		
+		if(contas.size() > 0) {
+			q.setParameter("contas", contas);
+		}
+		
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+	
+		} catch (NoResultException e) {
+	
+		}
+	
+		if (count == null) {
+			count = 0;
+		}
+	
+		return count;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Venda> totalTaxasValor_(Empresa empresa, Calendar calendarStart, Calendar calendarStop) {
+		
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo += "AND i.dataPagamento BETWEEN :dataInicio AND :dataFim";
+		}
+		
+		String jpql = "SELECT i FROM Venda i WHERE i.quantidadeItens > 0 AND i.empresa.id = :empresa AND i.vendaPaga = 'Y' AND i.conta = 'N' AND i.ajuste = 'N' AND i.clientePagouTaxa = 'N' AND i.taxaDeAcrescimo > 0 and i.exclusao = 'N' " + periodo;
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
+	
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+	
+		return q.getResultList();
 	}
 	
 	

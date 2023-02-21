@@ -3219,19 +3219,23 @@ public class RegistroVendasBean implements Serializable {
 		}
 		
 		if(!venda.isConta()) {
-			venda.setDataPagamento(new Date());
+			if(venda.getId() == null) {
+				venda.setDataPagamento(new Date());
+			}			
 		} else {
 			venda.setDataPagamento(null);
 		}
 		
-		
-		if(entradas.size() > 0) {
-			venda.setDataPagamento(new Date());
+		if (tipoPagamento == TipoPagamento.PARCELADO) {
+			if(entradas.size() > 0) {
+				venda.setDataPagamento(new Date());
+			}
 		}
-		
 
-		if(venda.isVendaPaga()) {
-			venda.setDataPagamento(new Date());
+		if(venda.getId() == null) {
+			if(venda.isVendaPaga()) {
+				venda.setDataPagamento(new Date());
+			}
 		}
 		
 		venda.setPdv(false);

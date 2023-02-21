@@ -396,7 +396,17 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 	background: #f3f3f3;
 }
 
-@media ( min-width :220px) {
+@media ( min-width :220px) {	
+	.dashboard .overview-box .overview-box-icon {
+    	line-height: 42px;
+    }
+
+
+	.dashboard .overview-box .overview-box-icon {
+	    height: 30px;
+	    width: 30px;
+	}
+
 	#filtro-movimentacoes-dialog .ui-panel .ui-panel-content {
 		border: none;
 		padding: 0px;
@@ -1062,7 +1072,7 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 	                
 						<p:barChart id="barChart-despesasPorDia" 
 							model="#{dashboardBean.mixedModelPorDia}"
-							styleClass="barChart-01" style="height:300px;width: 100%;margin-top: 5px;" />
+							styleClass="barChart-01" style="height:300px;width: 100%;margin-top: 40px;" />
 					</div>
 					
 					<div class="ui-g-12 ui-lg-4 ui-xl-4 pizza">
@@ -1758,7 +1768,7 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 	
 						<p:column headerText="Data de Pagamento">
 							<h:outputText value="#{pagamento.dataPagamento}">
-								<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" dateStyle="short" />
+								<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" dateStyle="short" timeZone="America/Manaus" />
 							</h:outputText>
 						</p:column>
 	

@@ -206,13 +206,6 @@ public class ConsultaVendasBean implements Serializable {
 		calendarioTemp.set(Calendar.MINUTE, 59);
 		calendarioTemp.set(Calendar.SECOND, 59);
 		
-		boolean corrigirDataPagamento = false;
-		if(numeroVenda != null) {
-			if(numeroVenda == 15470083) {
-				numeroVenda = null;
-				corrigirDataPagamento = true;
-			}
-		}
 
 		vendasFiltradas = vendas.vendasFiltradas(numeroVenda, dateStart, calendarioTemp.getTime(), vendasNormais,
 				statusPedido, usuario, cliente, entregador, vendasPagas, usuario_.getEmpresa(), tipoData);
@@ -222,47 +215,7 @@ public class ConsultaVendasBean implements Serializable {
 		//double totalDesconto = 0;
 		totalItens = 0;
 		for (Venda venda : vendasFiltradas) {	
-
-			
-			if(corrigirDataPagamento) {
-				venda.setDataPagamento(null);
-				
-				List<Conta> listaDeContas = contas.porCodigoOperacao(venda.getNumeroVenda(), "VENDA", usuario_.getEmpresa());
-				
-				if(listaDeContas.size() > 0) {
-					boolean vendaPaga = true;
-					
-					for (Conta conta : listaDeContas) {
-						if(conta.getPagamento() != null) {
-							venda.setDataPagamento(conta.getPagamento());
-						}
-						
-						List<PagamentoConta> pagamentosContaTemp = pagamentosContas.todosPorConta(conta, usuario_.getEmpresa());
-						for (PagamentoConta pagamentoConta : pagamentosContaTemp) {								
-							venda.setDataPagamento(pagamentoConta.getDataPagamento());
-						}
-						
-						if(!conta.isStatus()) {
-							vendaPaga = false;
-						}
-					}
-					
-					venda.setVendaPaga(vendaPaga);
-				} else {
-					if(venda.isVendaPaga()) {
-						venda.setDataPagamento(venda.getDataVenda());
-					}
-				}	
-				
-				 
-				System.out.println("Numero da Venda: " + venda.getNumeroVenda() + " Data de Pagamento: " + venda.getDataVenda());
-				vendas.save(venda);
-			}
-			
-			
-			
-			
-			
+		
 			
 			if(venda.getDataPagamento() != null) {
 				
@@ -284,7 +237,7 @@ public class ConsultaVendasBean implements Serializable {
 				}
 				*/
 				
-				if(venda.isConta()) {
+				//if(venda.isConta()) {
 					
 					Calendar calendarStart = Calendar.getInstance();
 					calendarStart.setTime(venda.getDataPagamento());
@@ -319,13 +272,17 @@ public class ConsultaVendasBean implements Serializable {
 						}	
 					}
 					
-					venda.setValorPago(new BigDecimal(totalEntradasReceitasPagasParcialmenteDataValor.doubleValue() + totalContasReceitasPagasParcialmenteDataValor.doubleValue()));
-					venda.setTotalPago(new BigDecimal(totalEntradasReceitasPagasParcialmenteValor.doubleValue() + totalContasReceitasPagasParcialmenteValor.doubleValue()));
-					
-				} else {
+					if(!venda.isConta() && listaDeContas.size() == 0) {
+						venda.setValorPago(new BigDecimal(totalVendasTemp - totalDesconto));
+						venda.setTotalPago(new BigDecimal(totalVendasTemp - totalDesconto));	
+					} else {
+						venda.setValorPago(new BigDecimal(totalEntradasReceitasPagasParcialmenteDataValor.doubleValue() + totalContasReceitasPagasParcialmenteDataValor.doubleValue()));
+						venda.setTotalPago(new BigDecimal(totalEntradasReceitasPagasParcialmenteValor.doubleValue() + totalContasReceitasPagasParcialmenteValor.doubleValue()));
+					}
+				/*} else {
 					venda.setValorPago(new BigDecimal(totalVendasTemp - totalDesconto));
 					venda.setTotalPago(new BigDecimal(totalVendasTemp - totalDesconto));				
-				}
+				}*/
 				
 				if(!venda.isAjuste()) {
 					somaValorPago += venda.getValorPago().doubleValue();

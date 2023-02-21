@@ -199,7 +199,7 @@
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-1, ui-grid-col-2">
 
-						<p:outputLabel value="Data da venda" for="data01" />
+						<p:outputLabel value="Buscar De" for="data01" />
 						<p:datePicker id="data01" value="#{consultaVendasBean.dateStart}"
 							readonlyInput="true" pattern="dd/MM/yyyy" locale="pt" 
 							showIcon="true">
@@ -377,14 +377,14 @@
 
 							<p:column headerText="Data da venda" width="10%" styleClass="font-column">
 								<h:outputText value="#{venda.dataVenda}">
-									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" dateStyle="short" />
+									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" timeZone="America/Manaus" dateStyle="short" />
 								</h:outputText>
 							</p:column>
 							
 							<p:column headerText="Data de Pagamento" width="10%">
 								<h:outputText value="#{venda.dataPagamento != null ? venda.dataPagamento : '-'}">
 									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy"
-										dateStyle="short" />
+										dateStyle="short" timeZone="America/Manaus" />
 								</h:outputText>
 							</p:column>
 

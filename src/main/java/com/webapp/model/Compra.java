@@ -35,7 +35,13 @@ public class Compra implements Serializable {
 	private Date dataCompra = new Date();
 	
 	@Column
+	private Date dataPagamento;
+	
+	@Column
 	private Long numeroCompra;
+	
+	@Column
+	private String lote;
 
 	@NotNull
 	@Column
@@ -236,6 +242,22 @@ public class Compra implements Serializable {
 	public void setConta(boolean conta) {
 		this.conta = conta;
 	}
+	
+	public Date getDataPagamento() {
+		return dataPagamento;
+	}
+
+	public void setDataPagamento(Date dataPagamento) {
+		this.dataPagamento = dataPagamento;
+	}
+
+	public String getLote() {
+		return lote;
+	}
+
+	public void setLote(String lote) {
+		this.lote = lote;
+	}
 
 	@Override
 	public int hashCode() {
@@ -270,6 +292,14 @@ public class Compra implements Serializable {
 	
 	@Transient
 	private String tipoCompra;
+	
+	@Transient
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
+	private BigDecimal valorPago;
+	
+	@Transient
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
+	private BigDecimal totalPago;
 
 	public String getDataCompraFormatada() {
 		return dataCompraFormatada;
@@ -289,6 +319,22 @@ public class Compra implements Serializable {
 
 	public String getTipoCompra() {
 		return this.ajuste ? "Ajuste: " : "Compra: ";
+	}
+
+	public BigDecimal getValorPago() {
+		return valorPago;
+	}
+
+	public void setValorPago(BigDecimal valorPago) {
+		this.valorPago = valorPago;
+	}
+
+	public BigDecimal getTotalPago() {
+		return totalPago;
+	}
+
+	public void setTotalPago(BigDecimal totalPago) {
+		this.totalPago = totalPago;
 	}
 
 }

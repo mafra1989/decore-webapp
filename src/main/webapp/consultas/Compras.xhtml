@@ -205,12 +205,26 @@
 							value="#{consultaComprasBean.numeroCompra}">
 						</p:inputNumber>
 					</p:panelGrid>
+					
+					<p:panelGrid columns="2" layout="grid"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-5">
+						
+						<p:outputLabel value="Tipo de Data" for="datas" />
+						<p:selectOneRadio id="datas" unselectable="true" value="#{consultaComprasBean.tipoData}">
+							<f:selectItems
+								value="#{consultaComprasBean.tiposDatas}"
+								var="tipoData"
+								itemLabel="#{tipoData.descricao}"
+								itemValue="#{tipoData}" />
+						</p:selectOneRadio>
+					</p:panelGrid>
 
 					<p:panelGrid columns="4" id="painel" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-1, ui-grid-col-2">
 
-						<p:outputLabel value="Data da compra" for="data01" />
+						<p:outputLabel value="Buscar De" for="data01" />
 						<p:datePicker id="data01" value="#{consultaComprasBean.dateStart}"
 							readonlyInput="true" pattern="dd/MM/yyyy" locale="pt"
 							showIcon="true">
@@ -238,7 +252,8 @@
 					
 					<p:panelGrid columns="3" layout="grid" style="margin-bottom: -4px;"
 						styleClass="panelgrid-noborder disabled disabled"
-						columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-1">
+						columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-1"
+						rendered="false">
 						
 						<p:outputLabel value="Categoria" />
 						<p:selectCheckboxMenu style="width: 100%"
@@ -261,7 +276,8 @@
 					
 					<p:panelGrid columns="3" layout="grid" style="margin-bottom: -4px;"
 						styleClass="panelgrid-noborder disabled disabled"
-						columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-1">
+						columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-1"
+						rendered="false">
 							 
 						<p:outputLabel value="Produto" for="produto" />
 						<p:selectOneMenu id="produto"
@@ -336,9 +352,17 @@
 								<p:commandButton icon="fa fa-fw fa-edit" styleClass="inventario" rendered="#{compra.ajuste}" />
 							</p:column>
 
-							<p:column headerText="Data da compra" width="15%">
+							<p:column headerText="Data da compra" width="10%">
 								<h:outputText value="#{compra.dataCompra}">
-									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" dateStyle="short" />
+									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" dateStyle="short" 
+										timeZone="America/Manaus" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Data de Pagamento" width="10%">
+								<h:outputText value="#{compra.dataPagamento != null ? compra.dataPagamento : '-'}">
+									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy"
+										dateStyle="short" timeZone="America/Manaus" />
 								</h:outputText>
 							</p:column>
 
@@ -356,6 +380,18 @@
 
 							<p:column headerText="Valor Total" width="15%">
 								<h:outputText value="#{compra.valorTotal}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Pago Nesta Data" width="15%">
+								<h:outputText value="#{compra.valorPago != null ? compra.valorPago : '-'}">
+									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Total Pago" width="15%">
+								<h:outputText value="#{compra.totalPago != null ? compra.totalPago : '-'}">
 									<f:convertNumber type="currency" />
 								</h:outputText>
 							</p:column>

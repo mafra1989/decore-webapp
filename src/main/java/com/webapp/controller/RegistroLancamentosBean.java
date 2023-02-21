@@ -817,16 +817,20 @@ public class RegistroLancamentosBean implements Serializable {
 			}
 			
 			if(!lancamento.isConta()) {
-				lancamento.setDataPagamento(new Date());
+				if(lancamento.getId() == null) {
+					lancamento.setDataPagamento(new Date());
+				}				
 				lancamento.setLancamentoPago(true);
 			} else {
 				lancamento.setDataPagamento(null);
 				lancamento.setLancamentoPago(false);
 			}
 			
-			if(entradas.size() > 0) {
-				lancamento.setDataPagamento(new Date());
-			}
+			if (tipoPagamento == TipoPagamento.PARCELADO) {
+				if(entradas.size() > 0) {
+					lancamento.setDataPagamento(new Date());
+				}
+			}			
 			
 			lancamento.setEmpresa(usuario_.getEmpresa());
 			lancamentos.save(lancamento);

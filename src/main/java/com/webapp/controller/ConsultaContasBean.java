@@ -543,13 +543,38 @@ public class ConsultaContasBean implements Serializable {
 			msg = "Pagou compra";
 			log.setOperacao(TipoAtividade.PAGAMENTO.name());
 			
-			if(pagouTudo) {
+			/*if(pagouTudo) {
 				if(conta.getParcela().equals(TipoPagamento.AVISTA.name())) {
 					Compra compra = compras.porNumeroCompra(conta.getCodigoOperacao(), usuario.getEmpresa());
 					compra.setCompraPaga(true);
 					compra.setConta(false);
 					compras.save(compra);
 				}
+			}*/
+			
+			Compra compra = compras.porNumeroCompra(conta.getCodigoOperacao(), usuario.getEmpresa());
+			if(pagouTudo) {
+				compra.setDataPagamento(new Date());
+				
+				if(conta.getParcela().equals(TipoPagamento.AVISTA.name())) {
+					compra.setConta(false);
+					compra.setCompraPaga(true);				
+					
+				} else {				
+					compra.setCompraPaga(true);
+					List<Conta> listaDeContas = contas.porCodigoOperacao(conta.getCodigoOperacao(), "COMPRA", usuario.getEmpresa());
+					for (Conta contaTemp : listaDeContas) {
+						if(!contaTemp.isStatus()) {
+							compra.setCompraPaga(false);
+						}
+					}			
+				}
+				
+				compras.save(compra);
+				
+			} else {
+				compra.setDataPagamento(new Date());
+				compras.save(compra);
 			}
 		}
 		
@@ -567,7 +592,7 @@ public class ConsultaContasBean implements Serializable {
 				lancamento.setDataPagamento(new Date());
 				
 				if(conta.getParcela().equals(TipoPagamento.AVISTA.name())) {
-					//lancamento.setConta(false);
+					lancamento.setConta(false);
 					lancamento.setLancamentoPago(true);				
 					
 				} else {				
@@ -805,14 +830,51 @@ public class ConsultaContasBean implements Serializable {
 			msg = "Desfez Pagamento, compra Nº ";
 			log.setOperacao(TipoAtividade.PAGAMENTO.name());
 			
-			if(pagamentosAdicionados.size() == 0) {
+			//if(pagamentosAdicionados.size() == 0) {
 				if(contaSelecionada.getParcela().equals(TipoPagamento.AVISTA.name())) {
 					Compra compra = compras.porNumeroCompra(contaSelecionada.getCodigoOperacao(), usuario.getEmpresa());
 					compra.setCompraPaga(false);
 					compra.setConta(true);
+					
+					List<Conta> listaDeContas = contas.porCodigoOperacao(compra.getNumeroCompra(), "COMPRA", usuario.getEmpresa());
+					
+					if(listaDeContas.size() > 0) {
+						for (Conta conta : listaDeContas) {
+							if(conta.getPagamento() != null) {
+								compra.setDataPagamento(conta.getPagamento());
+							}
+							
+							List<PagamentoConta> pagamentosContaTemp = pagamentosContas.todosPorConta(conta, usuario.getEmpresa());
+							for (PagamentoConta pagamentoConta : pagamentosContaTemp) {								
+								compra.setDataPagamento(pagamentoConta.getDataPagamento());
+							}
+						}
+					}
+					
+					compras.save(compra);
+				} else {
+					Compra compra = compras.porNumeroCompra(contaSelecionada.getCodigoOperacao(), usuario.getEmpresa());
+					compra.setDataPagamento(null);
+					compra.setCompraPaga(false);
+					
+					List<Conta> listaDeContas = contas.porCodigoOperacao(compra.getNumeroCompra(), "COMPRA", usuario.getEmpresa());
+					
+					if(listaDeContas.size() > 0) {
+						for (Conta conta : listaDeContas) {
+							if(conta.getPagamento() != null) {
+								compra.setDataPagamento(conta.getPagamento());
+							}
+							
+							List<PagamentoConta> pagamentosContaTemp = pagamentosContas.todosPorConta(conta, usuario.getEmpresa());
+							for (PagamentoConta pagamentoConta : pagamentosContaTemp) {								
+								compra.setDataPagamento(pagamentoConta.getDataPagamento());
+							}
+						}
+					}
+					
 					compras.save(compra);
 				}
-			}
+			//}
 		}
 		
 		if(contaSelecionada.getOperacao().equals(TipoAtividade.LANCAMENTO.name())) {

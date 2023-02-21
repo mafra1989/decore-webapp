@@ -634,6 +634,31 @@ public class RegistroComprasBean implements Serializable {
 			} else {
 				compra.setConta(compraPaga != true ? true : false);
 			}
+			
+			
+			
+			if(!compra.isConta()) {
+				if(compra.getId() == null) {
+					compra.setDataPagamento(new Date());
+				}			
+			} else {
+				compra.setDataPagamento(null);
+			}
+			
+			if (tipoPagamento == TipoPagamento.PARCELADO) {
+				if(entradas.size() > 0) {
+					compra.setDataPagamento(new Date());
+				}
+			}
+
+			if(compra.getId() == null) {
+				if(compra.isCompraPaga()) {
+					compra.setDataPagamento(new Date());
+				}
+			}
+			
+			
+			
 
 			compra.setEmpresa(usuario.getEmpresa());
 			compra = compras.save(compra);
