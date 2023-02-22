@@ -271,6 +271,9 @@ public class ItemVenda implements Serializable {
 	@Transient
 	private boolean novo = false;
 	
+	@Transient
+	private ItemCompra itemCompra;
+	
 	
 	public String getCode() {
 		return code;
@@ -318,6 +321,14 @@ public class ItemVenda implements Serializable {
 
 	public void setNovo(boolean novo) {
 		this.novo = novo;
+	}
+
+	public ItemCompra getItemCompra() {
+		return itemCompra;
+	}
+
+	public void setItemCompra(ItemCompra itemCompra) {
+		this.itemCompra = itemCompra;
 	}
 
 }

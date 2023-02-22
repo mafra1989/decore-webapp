@@ -255,6 +255,8 @@ public class RegistroVendasBean implements Serializable {
 	
 	private boolean edit;
 	
+	private BigDecimal margemDeLucro = new BigDecimal(0.00);
+	
 	
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -333,6 +335,32 @@ public class RegistroVendasBean implements Serializable {
 		entrega = entregaVenda.getId() != null;
 		
 		edit = true;
+		
+		
+		
+		
+		this.margemDeLucro = BigDecimal.ZERO;
+		
+		if(itensVenda.size() > 0) {
+			
+			Double valorTotalDeCompra = 0D;
+			Double valorTotalDeVenda = 0D;
+			for (ItemVenda itemVenda : itensVenda) {
+				valorTotalDeCompra += itemVenda.getValorCompra().doubleValue();
+				valorTotalDeVenda += itemVenda.getQuantidade().doubleValue() * itemVenda.getValorUnitario().doubleValue();
+			}
+			
+			if(venda.getDesconto() != null) {
+				valorTotalDeVenda = valorTotalDeVenda - venda.getDesconto().doubleValue();
+			}
+			
+			Double margemDeLucro = (valorTotalDeVenda.doubleValue() - valorTotalDeCompra.doubleValue()) / valorTotalDeVenda.doubleValue();
+			BigDecimal lucroReal = new BigDecimal(margemDeLucro.doubleValue() * valorTotalDeVenda.doubleValue()).setScale(4, BigDecimal.ROUND_HALF_EVEN);
+			this.margemDeLucro = new BigDecimal(margemDeLucro.doubleValue() * 100).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+			System.out.println("Margem de Lucro: " + margemDeLucro);
+			System.out.println("Lucro Real: " + lucroReal);
+			
+		}
 	}
 	
 	public void calculaSubtotal() {
@@ -1157,6 +1185,8 @@ public class RegistroVendasBean implements Serializable {
 									itemVenda.getValorUnitario().doubleValue() * itemVenda.getQuantidade().longValue()));
 							itemVenda.setVenda(venda);
 							itemVenda.setCompra(itemCompra.getCompra());
+							
+							itemVenda.setItemCompra(itemCompra);
 		
 							/* Calculo do Lucro em valor e percentual */
 							Double valorDeCustoUnitario = itemCompra.getValorUnitario().doubleValue(); //itemVenda.getProduto().getCustoMedioUnitario().doubleValue();	
@@ -1281,6 +1311,47 @@ public class RegistroVendasBean implements Serializable {
 								for (int i = 0; i < itensCompra.size(); i++) {
 									this.itemCompra = itensCompra.get(i);
 								}
+							}
+
+							
+							
+							this.margemDeLucro = BigDecimal.ZERO;
+							venda.setTaxaDeComissao(BigDecimal.ZERO);
+							
+							if(itensVenda.size() > 0) {
+								
+								Double valorTotalDeCompra = 0D;
+								Double valorTotalDeVenda = 0D;
+								for (ItemVenda itemVenda : itensVenda) {
+									valorTotalDeCompra += itemVenda.getValorCompra().doubleValue();
+									valorTotalDeVenda += itemVenda.getQuantidade().doubleValue() * itemVenda.getValorUnitario().doubleValue();
+								}
+								
+								if(venda.getDesconto() != null) {
+									valorTotalDeVenda = valorTotalDeVenda - venda.getDesconto().doubleValue();
+								}
+								
+								Double margemDeLucro = (valorTotalDeVenda.doubleValue() - valorTotalDeCompra.doubleValue()) / valorTotalDeVenda.doubleValue();
+								BigDecimal lucroReal = new BigDecimal(margemDeLucro.doubleValue() * valorTotalDeVenda.doubleValue()).setScale(4, BigDecimal.ROUND_HALF_EVEN);
+								this.margemDeLucro = new BigDecimal(margemDeLucro.doubleValue() * 100).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+								System.out.println("Margem de Lucro: " + margemDeLucro);
+								System.out.println("Lucro Real: " + lucroReal);
+								
+								if(this.margemDeLucro.doubleValue() > 9 && this.margemDeLucro.doubleValue() < 20) {
+									venda.setTaxaDeComissao(new BigDecimal(1));
+								}	
+								
+								if(this.margemDeLucro.doubleValue() > 19 && this.margemDeLucro.doubleValue() < 30) {
+									venda.setTaxaDeComissao(new BigDecimal(1.5));
+								}
+								
+								if(this.margemDeLucro.doubleValue() > 29) {
+									venda.setTaxaDeComissao(new BigDecimal(2));
+								}
+								
+							} else {
+								this.margemDeLucro = BigDecimal.ZERO;
+								venda.setTaxaDeComissao(BigDecimal.ZERO);
 							}
 							
 					} else {
@@ -1456,7 +1527,47 @@ public class RegistroVendasBean implements Serializable {
 								for (int i = 0; i < itensCompra.size(); i++) {
 									this.itemCompra = itensCompra.get(i);
 								}
-							}	
+							}
+							
+							
+							this.margemDeLucro = BigDecimal.ZERO;
+							venda.setTaxaDeComissao(BigDecimal.ZERO);
+							
+							if(itensVenda.size() > 0) {
+								
+								Double valorTotalDeCompra = 0D;
+								Double valorTotalDeVenda = 0D;
+								for (ItemVenda itemVenda : itensVenda) {
+									valorTotalDeCompra += itemVenda.getValorCompra().doubleValue();
+									valorTotalDeVenda += itemVenda.getQuantidade().doubleValue() * itemVenda.getValorUnitario().doubleValue();
+								}
+								
+								if(venda.getDesconto() != null) {
+									valorTotalDeVenda = valorTotalDeVenda - venda.getDesconto().doubleValue();
+								}
+								
+								Double margemDeLucro = (valorTotalDeVenda.doubleValue() - valorTotalDeCompra.doubleValue()) / valorTotalDeVenda.doubleValue();
+								BigDecimal lucroReal = new BigDecimal(margemDeLucro.doubleValue() * valorTotalDeVenda.doubleValue()).setScale(4, BigDecimal.ROUND_HALF_EVEN);
+								this.margemDeLucro = new BigDecimal(margemDeLucro.doubleValue() * 100).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+								System.out.println("Margem de Lucro: " + margemDeLucro);
+								System.out.println("Lucro Real: " + lucroReal);
+								
+								if(this.margemDeLucro.doubleValue() > 9 && this.margemDeLucro.doubleValue() < 20) {
+									venda.setTaxaDeComissao(new BigDecimal(1));
+								}	
+								
+								if(this.margemDeLucro.doubleValue() > 19 && this.margemDeLucro.doubleValue() < 30) {
+									venda.setTaxaDeComissao(new BigDecimal(1.5));
+								}
+								
+								if(this.margemDeLucro.doubleValue() > 29) {
+									venda.setTaxaDeComissao(new BigDecimal(2));
+								}
+								
+							} else {
+								this.margemDeLucro = BigDecimal.ZERO;
+								venda.setTaxaDeComissao(BigDecimal.ZERO);
+							}
 							
 					} else {
 						PrimeFaces.current().executeScript(
@@ -1569,6 +1680,45 @@ public class RegistroVendasBean implements Serializable {
 
 			// itemVenda = new ItemVenda();
 			// itemCompra = new ItemCompra();
+			
+			this.margemDeLucro = BigDecimal.ZERO;
+			venda.setTaxaDeComissao(BigDecimal.ZERO);
+			
+			if(itensVenda.size() > 0) {
+				
+				Double valorTotalDeCompra = 0D;
+				Double valorTotalDeVenda = 0D;
+				for (ItemVenda itemVenda : itensVenda) {
+					valorTotalDeCompra += itemVenda.getValorCompra().doubleValue();
+					valorTotalDeVenda += itemVenda.getQuantidade().doubleValue() * itemVenda.getValorUnitario().doubleValue();
+				}
+				
+				if(venda.getDesconto() != null) {
+					valorTotalDeVenda = valorTotalDeVenda - venda.getDesconto().doubleValue();
+				}
+				
+				Double margemDeLucro = (valorTotalDeVenda.doubleValue() - valorTotalDeCompra.doubleValue()) / valorTotalDeVenda.doubleValue();
+				BigDecimal lucroReal = new BigDecimal(margemDeLucro.doubleValue() * valorTotalDeVenda.doubleValue()).setScale(4, BigDecimal.ROUND_HALF_EVEN);
+				this.margemDeLucro = new BigDecimal(margemDeLucro.doubleValue() * 100).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+				System.out.println("Margem de Lucro: " + margemDeLucro);
+				System.out.println("Lucro Real: " + lucroReal);
+				
+				if(this.margemDeLucro.doubleValue() > 9 && this.margemDeLucro.doubleValue() < 20) {
+					venda.setTaxaDeComissao(new BigDecimal(1));
+				}	
+				
+				if(this.margemDeLucro.doubleValue() > 19 && this.margemDeLucro.doubleValue() < 30) {
+					venda.setTaxaDeComissao(new BigDecimal(1.5));
+				}
+				
+				if(this.margemDeLucro.doubleValue() > 29) {
+					venda.setTaxaDeComissao(new BigDecimal(2));
+				}
+				
+			} else {
+				this.margemDeLucro = BigDecimal.ZERO;
+				venda.setTaxaDeComissao(BigDecimal.ZERO);
+			}
 
 		} else {
 			//PrimeFaces.current().executeScript(
@@ -1681,6 +1831,48 @@ public class RegistroVendasBean implements Serializable {
 	
 				itemSelecionado = null;
 			}
+			
+			
+			
+			
+			this.margemDeLucro = BigDecimal.ZERO;
+			venda.setTaxaDeComissao(BigDecimal.ZERO);
+			
+			if(itensVenda.size() > 0) {
+				
+				Double valorTotalDeCompra = 0D;
+				Double valorTotalDeVenda = 0D;
+				for (ItemVenda itemVenda : itensVenda) {
+					valorTotalDeCompra += itemVenda.getValorCompra().doubleValue();
+					valorTotalDeVenda += itemVenda.getQuantidade().doubleValue() * itemVenda.getValorUnitario().doubleValue();
+				}
+				
+				if(venda.getDesconto() != null) {
+					valorTotalDeVenda = valorTotalDeVenda - venda.getDesconto().doubleValue();
+				}
+				
+				Double margemDeLucro = (valorTotalDeVenda.doubleValue() - valorTotalDeCompra.doubleValue()) / valorTotalDeVenda.doubleValue();
+				BigDecimal lucroReal = new BigDecimal(margemDeLucro.doubleValue() * valorTotalDeVenda.doubleValue()).setScale(4, BigDecimal.ROUND_HALF_EVEN);
+				this.margemDeLucro = new BigDecimal(margemDeLucro.doubleValue() * 100).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+				System.out.println("Margem de Lucro: " + margemDeLucro);
+				System.out.println("Lucro Real: " + lucroReal);
+				
+				if(this.margemDeLucro.doubleValue() > 9 && this.margemDeLucro.doubleValue() < 20) {
+					venda.setTaxaDeComissao(new BigDecimal(1));
+				}	
+				
+				if(this.margemDeLucro.doubleValue() > 19 && this.margemDeLucro.doubleValue() < 30) {
+					venda.setTaxaDeComissao(new BigDecimal(1.5));
+				}
+				
+				if(this.margemDeLucro.doubleValue() > 29) {
+					venda.setTaxaDeComissao(new BigDecimal(2));
+				}
+				
+			} else {
+				this.margemDeLucro = BigDecimal.ZERO;
+				venda.setTaxaDeComissao(BigDecimal.ZERO);
+			}
 		}
 		
 		Long totalDeItens = 0L;
@@ -1780,6 +1972,46 @@ public class RegistroVendasBean implements Serializable {
 
 			// itemVenda = new ItemVenda();
 			// itemCompra = new ItemCompra();
+			
+			
+			this.margemDeLucro = BigDecimal.ZERO;
+			venda.setTaxaDeComissao(BigDecimal.ZERO);
+			
+			if(itensVenda.size() > 0) {
+				
+				Double valorTotalDeCompra = 0D;
+				Double valorTotalDeVenda = 0D;
+				for (ItemVenda itemVenda : itensVenda) {
+					valorTotalDeCompra += itemVenda.getValorCompra().doubleValue();
+					valorTotalDeVenda += itemVenda.getQuantidade().doubleValue() * itemVenda.getValorUnitario().doubleValue();
+				}
+				
+				if(venda.getDesconto() != null) {
+					valorTotalDeVenda = valorTotalDeVenda - venda.getDesconto().doubleValue();
+				}
+				
+				Double margemDeLucro = (valorTotalDeVenda.doubleValue() - valorTotalDeCompra.doubleValue()) / valorTotalDeVenda.doubleValue();
+				BigDecimal lucroReal = new BigDecimal(margemDeLucro.doubleValue() * valorTotalDeVenda.doubleValue()).setScale(4, BigDecimal.ROUND_HALF_EVEN);
+				this.margemDeLucro = new BigDecimal(margemDeLucro.doubleValue() * 100).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+				System.out.println("Margem de Lucro: " + margemDeLucro);
+				System.out.println("Lucro Real: " + lucroReal);
+				
+				if(this.margemDeLucro.doubleValue() > 9 && this.margemDeLucro.doubleValue() < 20) {
+					venda.setTaxaDeComissao(new BigDecimal(1));
+				}	
+				
+				if(this.margemDeLucro.doubleValue() > 19 && this.margemDeLucro.doubleValue() < 30) {
+					venda.setTaxaDeComissao(new BigDecimal(1.5));
+				}
+				
+				if(this.margemDeLucro.doubleValue() > 29) {
+					venda.setTaxaDeComissao(new BigDecimal(2));
+				}
+				
+			} else {
+				this.margemDeLucro = BigDecimal.ZERO;
+				venda.setTaxaDeComissao(BigDecimal.ZERO);
+			}
 
 		} else {
 			//PrimeFaces.current().executeScript(
@@ -1910,6 +2142,48 @@ public class RegistroVendasBean implements Serializable {
 			
 			this.itemCompra = itensCompra.get(itensCompra.indexOf(itemCompra));
 			
+			
+			
+			
+			this.margemDeLucro = BigDecimal.ZERO;
+			venda.setTaxaDeComissao(BigDecimal.ZERO);
+			
+			if(itensVenda.size() > 0) {
+				
+				Double valorTotalDeCompra = 0D;
+				Double valorTotalDeVenda = 0D;
+				for (ItemVenda itemVenda : itensVenda) {
+					valorTotalDeCompra += itemVenda.getValorCompra().doubleValue();
+					valorTotalDeVenda += itemVenda.getQuantidade().doubleValue() * itemVenda.getValorUnitario().doubleValue();
+				}
+				
+				if(venda.getDesconto() != null) {
+					valorTotalDeVenda = valorTotalDeVenda - venda.getDesconto().doubleValue();
+				}
+				
+				Double margemDeLucro = (valorTotalDeVenda.doubleValue() - valorTotalDeCompra.doubleValue()) / valorTotalDeVenda.doubleValue();
+				BigDecimal lucroReal = new BigDecimal(margemDeLucro.doubleValue() * valorTotalDeVenda.doubleValue()).setScale(4, BigDecimal.ROUND_HALF_EVEN);
+				this.margemDeLucro = new BigDecimal(margemDeLucro.doubleValue() * 100).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+				System.out.println("Margem de Lucro: " + margemDeLucro);
+				System.out.println("Lucro Real: " + lucroReal);
+				
+				if(this.margemDeLucro.doubleValue() > 9 && this.margemDeLucro.doubleValue() < 20) {
+					venda.setTaxaDeComissao(new BigDecimal(1));
+				}	
+				
+				if(this.margemDeLucro.doubleValue() > 19 && this.margemDeLucro.doubleValue() < 30) {
+					venda.setTaxaDeComissao(new BigDecimal(1.5));
+				}
+				
+				if(this.margemDeLucro.doubleValue() > 29) {
+					venda.setTaxaDeComissao(new BigDecimal(2));
+				}
+				
+			} else {
+				this.margemDeLucro = BigDecimal.ZERO;
+				venda.setTaxaDeComissao(BigDecimal.ZERO);
+			}
+			
 		}
 		
 		Long totalDeItens = 0L;
@@ -1932,6 +2206,48 @@ public class RegistroVendasBean implements Serializable {
 	public void aplicarDescontoVenda() throws IOException {
 		
 		if(venda.getDesconto() != null) {
+			
+			this.margemDeLucro = BigDecimal.ZERO;
+			venda.setTaxaDeComissao(BigDecimal.ZERO);
+			
+			if(itensVenda.size() > 0) {
+				
+				Double valorTotalDeCompra = 0D;
+				Double valorTotalDeVenda = 0D;
+				for (ItemVenda itemVenda : itensVenda) {
+					valorTotalDeCompra += itemVenda.getValorCompra().doubleValue();
+					valorTotalDeVenda += itemVenda.getQuantidade().doubleValue() * itemVenda.getValorUnitario().doubleValue();
+				}
+				
+				if(venda.getDesconto() != null) {
+					valorTotalDeVenda = valorTotalDeVenda - venda.getDesconto().doubleValue();
+				}
+				
+				Double margemDeLucro = (valorTotalDeVenda.doubleValue() - valorTotalDeCompra.doubleValue()) / valorTotalDeVenda.doubleValue();
+				BigDecimal lucroReal = new BigDecimal(margemDeLucro.doubleValue() * valorTotalDeVenda.doubleValue()).setScale(4, BigDecimal.ROUND_HALF_EVEN);
+				this.margemDeLucro = new BigDecimal(margemDeLucro.doubleValue() * 100).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+				System.out.println("Margem de Lucro: " + margemDeLucro);
+				System.out.println("Lucro Real: " + lucroReal);
+				
+				if(this.margemDeLucro.doubleValue() > 9 && this.margemDeLucro.doubleValue() < 20) {
+					venda.setTaxaDeComissao(new BigDecimal(1));
+				}	
+				
+				if(this.margemDeLucro.doubleValue() > 19 && this.margemDeLucro.doubleValue() < 30) {
+					venda.setTaxaDeComissao(new BigDecimal(1.5));
+				}
+				
+				if(this.margemDeLucro.doubleValue() > 29) {
+					venda.setTaxaDeComissao(new BigDecimal(2));
+				}
+				
+			} else {
+				this.margemDeLucro = BigDecimal.ZERO;
+				venda.setTaxaDeComissao(BigDecimal.ZERO);
+			}
+			
+			
+			
 			if(venda.getDesconto().doubleValue() >= 0) {
 				if(venda.getDesconto().doubleValue() <= venda.getValorTotal().doubleValue()) {
 					
@@ -1951,6 +2267,50 @@ public class RegistroVendasBean implements Serializable {
 						"swal({ type: 'error', title: 'Erro!', text: 'Informe um valor maior ou igual a R$ 0,00!', timer: 3000 });");
 			}					
 		} else {
+			
+			
+			
+			this.margemDeLucro = BigDecimal.ZERO;
+			venda.setTaxaDeComissao(BigDecimal.ZERO);
+			
+			if(itensVenda.size() > 0) {
+				
+				Double valorTotalDeCompra = 0D;
+				Double valorTotalDeVenda = 0D;
+				for (ItemVenda itemVenda : itensVenda) {
+					valorTotalDeCompra += itemVenda.getValorCompra().doubleValue();
+					valorTotalDeVenda += itemVenda.getQuantidade().doubleValue() * itemVenda.getValorUnitario().doubleValue();
+				}
+				
+				if(venda.getDesconto() != null) {
+					valorTotalDeVenda = valorTotalDeVenda - venda.getDesconto().doubleValue();
+				}
+				
+				Double margemDeLucro = (valorTotalDeVenda.doubleValue() - valorTotalDeCompra.doubleValue()) / valorTotalDeVenda.doubleValue();
+				BigDecimal lucroReal = new BigDecimal(margemDeLucro.doubleValue() * valorTotalDeVenda.doubleValue()).setScale(4, BigDecimal.ROUND_HALF_EVEN);
+				this.margemDeLucro = new BigDecimal(margemDeLucro.doubleValue() * 100).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+				System.out.println("Margem de Lucro: " + margemDeLucro);
+				System.out.println("Lucro Real: " + lucroReal);
+				
+				if(this.margemDeLucro.doubleValue() > 9 && this.margemDeLucro.doubleValue() < 20) {
+					venda.setTaxaDeComissao(new BigDecimal(1));
+				}	
+				
+				if(this.margemDeLucro.doubleValue() > 19 && this.margemDeLucro.doubleValue() < 30) {
+					venda.setTaxaDeComissao(new BigDecimal(1.5));
+				}
+				
+				if(this.margemDeLucro.doubleValue() > 29) {
+					venda.setTaxaDeComissao(new BigDecimal(2));
+				}
+				
+			} else {
+				this.margemDeLucro = BigDecimal.ZERO;
+				venda.setTaxaDeComissao(BigDecimal.ZERO);
+			}
+			
+			
+			
 	
 			finalizar();	
 			
@@ -4469,5 +4829,13 @@ public class RegistroVendasBean implements Serializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public BigDecimal getMargemDeLucro() {
+		return margemDeLucro;
+	}
+
+	public void setMargemDeLucro(BigDecimal margemDeLucro) {
+		this.margemDeLucro = margemDeLucro.setScale(2, BigDecimal.ROUND_HALF_EVEN);
 	}
 }

@@ -647,9 +647,24 @@
 									<p:inputNumber id="comissao" decimalPlaces="2" style="margin-top: -5px;"
 										rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 74553}"
 										placeholder="% 0,00" autocomplete="off" symbol="% " minValue="0"
-										value="#{registroVendasBean.venda.taxaDeComissao}">
+										value="#{registroVendasBean.venda.taxaDeComissao}"
+										readonly="true">
 									</p:inputNumber>
 								</p:panelGrid>
+								
+								<p:panel id="tooltip">
+									<p:tooltip for="comissao" style="font-size:12px;" value="Margem de Lucro % #{registroVendasBean.margemDeLucro}"
+	               						showEffect="clip" hideEffect="explode" position="right"
+	               						rendered="#{registroVendasBean.margemDeLucro > 0}"/>
+	               						
+	               					<p:tooltip for="comissao" style="font-size:12px;" value="Margem de Lucro % 0.00"
+	               						showEffect="clip" hideEffect="explode" position="right"
+	               						rendered="#{registroVendasBean.margemDeLucro eq 0}"/>
+	               						
+	               					<p:tooltip for="comissao" style="font-size:12px;" value="Margem de Lucro % #{registroVendasBean.margemDeLucro}"
+	               						showEffect="clip" hideEffect="explode" position="right"
+	               						rendered="#{registroVendasBean.margemDeLucro le -0.01}"/>
+               					</p:panel>
 		
 								<p:panelGrid columns="3" layout="grid" id="panel-entrega"
 									styleClass="panelgrid-noborder disabled disabled panel-entrega"
@@ -866,7 +881,7 @@
 								onstart="PF('downloadLoading').show();"
 								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
 								onsuccess="PF('downloadLoading').hide();" icon="fa fa-plus"
-								update="accordion-panel:taxa-entrega itens-venda-panel form:btn-novo preco-venda panel-lote msg panel-valores codigo descricao fornecedor total-venda panel-total-geral id valor-unitario quantidade valor-total panel-table lote "
+								update="accordion-panel:comissao accordion-panel:tooltip accordion-panel:taxa-entrega itens-venda-panel form:btn-novo preco-venda panel-lote msg panel-valores codigo descricao fornecedor total-venda panel-total-geral id valor-unitario quantidade valor-total panel-table lote "
 								action="#{registroVendasBean.adicionarItem}"
 								process="@this accordion-panel:taxa-entrega panel-lote codigo panel-valores valor-unitario quantidade quantidade_ quantidade__ valor-total id lote"
 								style="font-weight: bold;" />
@@ -963,14 +978,14 @@
 
 						<p:contextMenu id="menu-item" for="itensTable">
 							<p:menuitem value="Remover Item" id="btn-remove"
-								update="accordion-panel:taxa-entrega panel-table  form:id form:codigo form:descricao form:fornecedor form:lote form:total-venda menu-item"
+								update="accordion-panel:comissao accordion-panel:tooltip accordion-panel:taxa-entrega panel-table  form:id form:codigo form:descricao form:fornecedor form:lote form:total-venda menu-item"
 								process="@this panel-table accordion-panel:taxa-entrega"
 								action="#{registroVendasBean.removeItem}" onstart="start();"
 								oncomplete="stop();" icon="fa fa-fw fa-trash"
 								disabled="#{registroVendasBean.itensVendaSize eq 0 or registroVendasBean.itemVenda.id != null}" />
 
 							<p:menuitem value="Editar Item" id="btn-editar"
-								update="accordion-panel:taxa-entrega form:btn-calcular_old form:btn-novo panel-table form:id form:codigo form:total-venda form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote menu-item"
+								update="accordion-panel:comissao accordion-panel:tooltip accordion-panel:taxa-entrega form:btn-calcular_old form:btn-novo panel-table form:id form:codigo form:total-venda form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote menu-item"
 								process="@this panel-table accordion-panel:taxa-entrega"
 								action="#{registroVendasBean.editarItem}" onstart="start();"
 								oncomplete="stop();" icon="fa fa-fw fa-edit"
@@ -1092,7 +1107,7 @@
 									onsuccess="PF('downloadLoading').hide();"
 									style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;"
 									disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()) or registroVendasBean.venda.exclusao}"
-									update="msg panel-table accordion-panel form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:panel-total-geral form:lote panel-itens confirm-dialog confirmDialog"
+									update="accordion-panel:comissao accordion-panel:tooltip msg panel-table accordion-panel form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:panel-total-geral form:lote panel-itens confirm-dialog confirmDialog"
 									process="@this panel-table accordion-panel"
 									rendered="#{seguranca.usuarioLogado.usuario.empresa.id != 7111 and seguranca.usuarioLogado.usuario.empresa.id != 7112 or true}" />
 								

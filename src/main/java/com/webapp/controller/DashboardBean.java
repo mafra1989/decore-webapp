@@ -2363,6 +2363,8 @@ public class DashboardBean implements Serializable {
 				lancamento.setValor(new BigDecimal(valorRetirada));
 				
 				lancamento.setDestinoLancamento(null);
+				
+				lancamento.setDataPagamento(new Date());
 
 				lancamento.setEmpresa(usuario.getEmpresa());
 				lancamentos.save(lancamento);
@@ -2373,8 +2375,13 @@ public class DashboardBean implements Serializable {
 				
 				
 				
-				saldo = saldo - valorRetirada;
-				saldoGeral = nf.format(saldo);
+				//saldo = saldo - valorRetirada;
+				//saldoGeral = nf.format(saldo);
+				Number saldoEmCaixa = getSaldoEmCaixa();
+				saldoGeral = nf.format(saldoEmCaixa);
+				
+				
+				
 				
 				valorRetirada = 0D;
 				
