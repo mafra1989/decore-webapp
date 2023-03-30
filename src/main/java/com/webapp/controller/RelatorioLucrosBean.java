@@ -1484,7 +1484,7 @@ public class RelatorioLucrosBean implements Serializable {
 		calendarStop.setTime(dateStop);
 
 		List<Object[]> result = vendas.totalLucrosPorData(calendarStart, calendarStop, categoriaPorDia,
-				categoriasPorDia, produto01, usuarioPorDia, false, usuario.getEmpresa());
+				categoriasPorDia, produto01, usuarioPorDia, false, usuario.getEmpresa(), tipoData);
 
 		createDonutModel(result);
 	}

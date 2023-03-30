@@ -32,6 +32,7 @@ import com.webapp.model.CategoriaProduto;
 import com.webapp.model.Empresa;
 import com.webapp.model.Produto;
 import com.webapp.model.Target;
+import com.webapp.model.TipoDataLancamento;
 import com.webapp.model.Usuario;
 import com.webapp.repository.CategoriasProdutos;
 import com.webapp.repository.Compras;
@@ -181,6 +182,7 @@ public class RelatorioLucrosBean_ implements Serializable {
 	@Inject
 	private Usuario usuario;
 
+	private TipoDataLancamento tipoData = TipoDataLancamento.LANCAMENTO;
 
 	@PostConstruct
 	public void init() {
@@ -429,10 +431,10 @@ public class RelatorioLucrosBean_ implements Serializable {
 				calendarStopTemp.set(Calendar.SECOND, 59);
 
 				List<Object[]> resultTemp = vendas.totalLucrosPorData(calendarStartTemp, calendarStopTemp,
-						categoriaPorDia, categoriasPorDia, produto01, usuarioPorDia, true, usuario.getEmpresa());
+						categoriaPorDia, categoriasPorDia, produto01, usuarioPorDia, true, usuario.getEmpresa(), tipoData);
 				
 				Number totalEstornosHoje = 0;//vendas.totalEstornosPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());			
-				Number totalDescontosHoje = vendas.totalDescontosPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
+				Number totalDescontosHoje = vendas.totalDescontosPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa(), tipoData);
 
 	
 				System.out.println("Data: " + calendarStartTemp.getTime() + " - " + resultTemp.size());
@@ -1400,7 +1402,7 @@ public class RelatorioLucrosBean_ implements Serializable {
 		calendarStop.setTime(dateStop);
 
 		List<Object[]> result = vendas.totalLucrosPorData(calendarStart, calendarStop, categoriaPorDia,
-				categoriasPorDia, produto01, usuarioPorDia, false, usuario.getEmpresa());
+				categoriasPorDia, produto01, usuarioPorDia, false, usuario.getEmpresa(), tipoData);
 
 		createDonutModel(result);
 	}
