@@ -759,6 +759,7 @@ public class Vendas implements Serializable {
 		String condition = "";
 		String select_Condition = "";
 		String sum_Condition = "";
+		String date_Condition = "";
 		String groupBy_Condition = "";
 		String orderBy_Condition = "";
 		
@@ -779,10 +780,10 @@ public class Vendas implements Serializable {
 		}
 
 		if (chartCondition != false) {
-			select_Condition = "p.dia, p.mes, p.ano, ";
-			sum_Condition = "sum(i.total)";
-			groupBy_Condition = "p.dia, p.mes, p.ano ";
-			orderBy_Condition = "p.ano asc,p.mes asc,p.dia asc ";
+			//select_Condition = "p.dia, p.mes, p.ano, ";
+			sum_Condition = "sum(i.total) ";
+			//groupBy_Condition = "p.dia, p.mes, p.ano ";
+			//orderBy_Condition = "p.ano asc,p.mes asc,p.dia asc ";
 		} else {
 			select_Condition = "i.produto.descricao, ";
 			sum_Condition = "sum(i.total), sum(i.quantidade), i.produto.codigo, i.produto.unidadeMedida";
@@ -793,10 +794,23 @@ public class Vendas implements Serializable {
 		String data = "AND p.dataVenda BETWEEN :dataInicio AND :dataFim";
 		if(tipoDataLancamento == TipoDataLancamento.PAGAMENTO) {
 			data = "AND p.dataPagamento BETWEEN :dataInicio AND :dataFim AND p.vendaPaga = 'Y'";
+			if (chartCondition != false) {
+				select_Condition = "FUNCTION('to_char', p.dataPagamento, 'DD'), FUNCTION('to_char', p.dataPagamento, 'MM'), FUNCTION('to_char', p.dataPagamento, 'YYYY'), ";				
+				date_Condition += ", FUNCTION('to_char', p.dataPagamento, 'YYYY-MM-DD') ";
+				groupBy_Condition += "FUNCTION('to_char', p.dataPagamento, 'YYYY-MM-DD'), FUNCTION('to_char', p.dataPagamento, 'DD'), FUNCTION('to_char', p.dataPagamento, 'MM'), FUNCTION('to_char', p.dataPagamento, 'YYYY') ";
+				orderBy_Condition = "FUNCTION('to_char', p.dataPagamento, 'YYYY') asc, FUNCTION('to_char', p.dataPagamento, 'MM') asc, FUNCTION('to_char', p.dataPagamento, 'DD') asc";
+			}
+		} else {
+			if (chartCondition != false) {
+				select_Condition = "FUNCTION('to_char', p.dataVenda, 'DD'), FUNCTION('to_char', p.dataVenda, 'MM'), FUNCTION('to_char', p.dataVenda, 'YYYY'), ";				
+				date_Condition += ", FUNCTION('to_char', p.dataVenda, 'YYYY-MM-DD') ";
+				groupBy_Condition += "FUNCTION('to_char', p.dataVenda, 'YYYY-MM-DD'), FUNCTION('to_char', p.dataVenda, 'DD'), FUNCTION('to_char', p.dataVenda, 'MM'), FUNCTION('to_char', p.dataVenda, 'YYYY') ";
+				orderBy_Condition = "FUNCTION('to_char', p.dataVenda, 'YYYY') asc, FUNCTION('to_char', p.dataVenda, 'MM') asc, FUNCTION('to_char', p.dataVenda, 'DD') asc";
+			}			
 		}
 		
 		//  AND p.status = 'Y'
-		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM ItemVenda i join i.venda p "
+		String jpql = "SELECT " + select_Condition + sum_Condition + date_Condition + " FROM ItemVenda i join i.venda p "
 				+ "WHERE p.empresa.id = :empresa " + data + " AND p.ajuste = 'N' and p.exclusao = 'N' and i.exclusao = 'N' " + condition + "group by " + groupBy_Condition
 				+ " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
@@ -1105,7 +1119,8 @@ public class Vendas implements Serializable {
 		String sum_Condition = "";
 		String groupBy_Condition = "";
 		String orderBy_Condition = "";
-		
+		String date_Condition = "";
+				
 		if (categoriaProduto != null && categoriaProduto.getId() != null) {
 			condition = "AND i.produto.categoriaProduto.nome = :categoriaProduto ";
 		}
@@ -1123,11 +1138,11 @@ public class Vendas implements Serializable {
 		}
 
 		if (chartCondition != false) {
-			select_Condition = "p.dia, p.mes, p.ano, ";
+			//select_Condition = "p.dia, p.mes, p.ano, ";
 			sum_Condition = "sum(i.lucro), sum(i.valorCompra), sum(i.total)";
-			groupBy_Condition = "p.dia, p.mes, p.ano ";
-			orderBy_Condition = "p.dataVenda asc";
-			orderBy_Condition = "p.ano asc, p.mes asc, p.dia asc";
+			//groupBy_Condition = "p.dia, p.mes, p.ano ";
+			//orderBy_Condition = "p.dataVenda asc";
+			//orderBy_Condition = "p.ano asc, p.mes asc, p.dia asc";
 		} else {
 			select_Condition = "i.produto.nome, ";
 			sum_Condition = "sum(i.lucro), sum(i.valorCompra), sum(i.quantidade)";
@@ -1137,7 +1152,20 @@ public class Vendas implements Serializable {
 		
 		String data = "AND p.dataVenda BETWEEN :dataInicio AND :dataFim";
 		if(tipoDataLancamento == TipoDataLancamento.PAGAMENTO) {
-			data = "AND p.dataVenda BETWEEN :dataInicio AND :dataFim AND p.vendaPaga = 'Y'";
+			data = "AND p.dataPagamento BETWEEN :dataInicio AND :dataFim AND p.vendaPaga = 'Y'";
+			if (chartCondition != false) {
+				select_Condition = "FUNCTION('to_char', p.dataPagamento, 'DD'), FUNCTION('to_char', p.dataPagamento, 'MM'), FUNCTION('to_char', p.dataPagamento, 'YYYY'), ";				
+				date_Condition += ", FUNCTION('to_char', p.dataPagamento, 'YYYY-MM-DD') ";
+				groupBy_Condition += "FUNCTION('to_char', p.dataPagamento, 'YYYY-MM-DD'), FUNCTION('to_char', p.dataPagamento, 'DD'), FUNCTION('to_char', p.dataPagamento, 'MM'), FUNCTION('to_char', p.dataPagamento, 'YYYY') ";
+				orderBy_Condition = "FUNCTION('to_char', p.dataPagamento, 'YYYY') asc, FUNCTION('to_char', p.dataPagamento, 'MM') asc, FUNCTION('to_char', p.dataPagamento, 'DD') asc";
+			}
+		} else {
+			if (chartCondition != false) {
+				select_Condition = "FUNCTION('to_char', p.dataVenda, 'DD'), FUNCTION('to_char', p.dataVenda, 'MM'), FUNCTION('to_char', p.dataVenda, 'YYYY'), ";				
+				date_Condition += ", FUNCTION('to_char', p.dataVenda, 'YYYY-MM-DD') ";
+				groupBy_Condition += "FUNCTION('to_char', p.dataVenda, 'YYYY-MM-DD'), FUNCTION('to_char', p.dataVenda, 'DD'), FUNCTION('to_char', p.dataVenda, 'MM'), FUNCTION('to_char', p.dataVenda, 'YYYY') ";
+				orderBy_Condition = "FUNCTION('to_char', p.dataVenda, 'YYYY') asc, FUNCTION('to_char', p.dataVenda, 'MM') asc, FUNCTION('to_char', p.dataVenda, 'DD') asc";
+			}			
 		}
 		
 		// AND p.status = 'Y'
@@ -1185,17 +1213,19 @@ public class Vendas implements Serializable {
 
 		List<Object[]> result = q.getResultList();
 
+		/*
 		if (chartCondition != false) {
 			for (Object[] object : result) {
-				if ((long) object[0] < 10) {
+				if (Long.parseLong(object[0].toString()) < 10) {
 					object[0] = "0" + object[0];
 				}
 
-				if ((long) object[1] < 10) {
+				if (Long.parseLong(object[1].toString()) < 10) {
 					object[1] = "0" + object[1];
 				}
 			}
 		}
+		*/
 
 		return result;
 	}

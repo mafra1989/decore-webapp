@@ -469,14 +469,15 @@ public class RelatorioVendasBean implements Serializable {
 					for (Object[] object : resultTemp) {
 						
 						System.out.println(Arrays.asList(object));
-						/* Transferido de Repository */
-						if ((long) object[0] < 10) {
+						/* Transferido de Repository *//*
+						if (Long.parseLong(object[0].toString()) < 10) {
 							object[0] = "0" + object[0];
 						}
 
-						if ((long) object[1] < 10) {
+						if (Long.parseLong(object[1].toString()) < 10) {
 							object[1] = "0" + object[1];
 						}
+						*/
 
 						if(categoriasPorDia == null || categoriasPorDia.length == 0 || categoriasPorDia.length == todasCategoriasProduto.size()) {
 							object[3] = (((BigDecimal)object[3]).doubleValue() + totalTaxaEntregaHojeVendaParcelada.doubleValue() + totalTaxaEntregaHoje.doubleValue()) - (totalDescontosHoje.doubleValue() + totalDescontosHojeVendasParceladas.doubleValue());
