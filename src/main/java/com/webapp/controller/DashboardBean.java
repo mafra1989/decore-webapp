@@ -263,6 +263,8 @@ public class DashboardBean implements Serializable {
 	
 	private Date dateStopMovimentacoes = new Date();
 	
+	private TipoDataLancamento tipoData = TipoDataLancamento.PAGAMENTO;
+	
 
 	public List<Usuario> getTodosUsuarios() {
 		return todosUsuarios;
@@ -1970,15 +1972,15 @@ public class DashboardBean implements Serializable {
 				calendarStopTemp.set(Calendar.SECOND, 59);
 
 				List<Object[]> resultTemp = vendas.totalLucrosPorData(calendarStartTemp, calendarStopTemp,
-						null, null, null, null, true, usuario.getEmpresa());
+						null, null, null, null, true, usuario.getEmpresa(), tipoData);
 				
 				Number totalEstornosHoje = 0;//vendas.totalEstornosPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
 				
-				Number totalDescontosHoje = vendas.totalDescontosPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
-				Number totalDescontosHojeVendaParcelada = vendas.totalDescontosPorDiaVendaParcelada(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
+				Number totalDescontosHoje = vendas.totalDescontosPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa(), tipoData);
+				Number totalDescontosHojeVendaParcelada = vendas.totalDescontosPorDiaVendaParcelada(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa(), tipoData);
 				
-				Number totalTaxaEntregaHoje = vendas.totalTaxasEntregaPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
-				Number totalTaxaEntregaHojeVendaParcelada = vendas.totalTaxasEntregaPorDiaVendaParcelada(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
+				Number totalTaxaEntregaHoje = vendas.totalTaxasEntregaPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa(), tipoData);
+				Number totalTaxaEntregaHojeVendaParcelada = vendas.totalTaxasEntregaPorDiaVendaParcelada(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa(), tipoData);
 				
 				
 				Number totalTaxasHoje = vendas.totalTaxasPorDiaValor(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
@@ -2523,21 +2525,24 @@ public class DashboardBean implements Serializable {
 	}
 	
 	public void calcularSaldoComissao() {
-		List<Conta> contasDeVendasAPagarPagas = contas.comissaoEmVendasAPagarPagas("CREDITO", "VENDA", usuarioSelecionado.getEmpresa());
-		Number contasDeVendasAVistaPagas = vendas.totalComissao(usuario.getEmpresa(), usuarioSelecionado).doubleValue();
-		
-		CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome("Comissões Pagas", usuario.getEmpresa());
-		Number totalDeRetiradas = lancamentos.totalDeRetiradaComissoes(usuario.getEmpresa(), categoriaLancamento, usuarioSelecionado);
-		
-		saldoDeComissao = contasDeVendasAVistaPagas.doubleValue() - totalDeRetiradas.doubleValue();
-		for (Conta conta : contasDeVendasAPagarPagas) {
-			Venda venda = vendas.porNumeroVenda(conta.getCodigoOperacao(), usuarioSelecionado.getEmpresa());
-			if(venda.getUsuario().getId() == usuarioSelecionado.getId()) {
-				if(venda.getTaxaDeComissao().doubleValue() > 0) {
-					BigDecimal totalPago = new BigDecimal(conta.getValor().doubleValue() - conta.getSaldo().doubleValue());
-				
-					if(totalPago.doubleValue() > 0) {
-						saldoDeComissao = saldoDeComissao.doubleValue() + ((totalPago.doubleValue() * venda.getTaxaDeComissao().doubleValue())/100);
+		saldoDeComissao = 0;
+		if(usuario.getEmpresa().getId() != 7111) {
+			List<Conta> contasDeVendasAPagarPagas = contas.comissaoEmVendasAPagarPagas("CREDITO", "VENDA", usuarioSelecionado.getEmpresa());
+			Number contasDeVendasAVistaPagas = vendas.totalComissao(usuario.getEmpresa(), usuarioSelecionado).doubleValue();
+			
+			CategoriaLancamento categoriaLancamento = categoriasLancamentos.porNome("Comissões Pagas", usuario.getEmpresa());
+			Number totalDeRetiradas = lancamentos.totalDeRetiradaComissoes(usuario.getEmpresa(), categoriaLancamento, usuarioSelecionado);
+			
+			saldoDeComissao = contasDeVendasAVistaPagas.doubleValue() - totalDeRetiradas.doubleValue();
+			for (Conta conta : contasDeVendasAPagarPagas) {
+				Venda venda = vendas.porNumeroVenda(conta.getCodigoOperacao(), usuarioSelecionado.getEmpresa());
+				if(venda.getUsuario().getId() == usuarioSelecionado.getId()) {
+					if(venda.getTaxaDeComissao().doubleValue() > 0) {
+						BigDecimal totalPago = new BigDecimal(conta.getValor().doubleValue() - conta.getSaldo().doubleValue());
+					
+						if(totalPago.doubleValue() > 0) {
+							saldoDeComissao = saldoDeComissao.doubleValue() + ((totalPago.doubleValue() * venda.getTaxaDeComissao().doubleValue())/100);
+						}
 					}
 				}
 			}

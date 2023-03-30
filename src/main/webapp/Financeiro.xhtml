@@ -407,6 +407,14 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 	    width: 30px;
 	}
 
+	#filtro-movimentacoes-dialog .ui-inputfield {
+    	width: 82%; 
+	}
+	
+	#filtro-movimentacoes-dialog .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+		float: right;
+	}
+
 	#filtro-movimentacoes-dialog .ui-panel .ui-panel-content {
 		border: none;
 		padding: 0px;
@@ -1976,7 +1984,7 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 		
 		
 		<p:dialog id="filtro-movimentacoes-dialog" showHeader="false" modal="true"
-			widgetVar="filtro-movimentacoes-dialog" draggable="false" width="238"
+			widgetVar="filtro-movimentacoes-dialog" draggable="false" width="300"
 			closable="false" resizable="false" position="center">
 
 			<p:focus for="hidden" />
@@ -1991,13 +1999,13 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 					<p:outputLabel value="Data de início" for="data01" />
 					<p:datePicker id="data01" value="#{dashboardBean.dateStartMovimentacoes}"
 						readonlyInput="true" pattern="dd/MM/yyyy" locale="pt"
-						showIcon="true" >
+						showIcon="true" style="width: 100%;">
 					</p:datePicker>
 	
 					<p:outputLabel value="até" id="data02" />
 					<p:datePicker id="data-02" value="#{dashboardBean.dateStopMovimentacoes}"
 						readonlyInput="true" styleClass="dateStop" pattern="dd/MM/yyyy"
-						locale="pt" showIcon="true">
+						locale="pt" showIcon="true" style="width: 100%;">
 					</p:datePicker>
 				</p:panelGrid>
 

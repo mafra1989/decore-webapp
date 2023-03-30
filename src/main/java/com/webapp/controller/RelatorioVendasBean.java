@@ -35,6 +35,7 @@ import org.springframework.security.core.userdetails.User;
 import com.webapp.model.CategoriaProduto;
 import com.webapp.model.Produto;
 import com.webapp.model.Target;
+import com.webapp.model.TipoDataLancamento;
 import com.webapp.model.Usuario;
 import com.webapp.model.VendaPorCategoria;
 import com.webapp.repository.CategoriasProdutos;
@@ -186,6 +187,8 @@ public class RelatorioVendasBean implements Serializable {
 	
 	@Inject
 	private Usuario usuario;
+	
+	private TipoDataLancamento tipoData = TipoDataLancamento.LANCAMENTO;
 
 	@PostConstruct
 	public void init() {
@@ -433,13 +436,13 @@ public class RelatorioVendasBean implements Serializable {
 				calendarStopTemp.set(Calendar.SECOND, 59);
 
 				List<Object[]> resultTemp = vendas.totalVendasPorData(calendarStartTemp, calendarStopTemp,
-						categoriaPorDia, categoriasPorDia, produto01, usuarioPorDia, true, usuario.getEmpresa());
+						categoriaPorDia, categoriasPorDia, produto01, usuarioPorDia, true, usuario.getEmpresa(), tipoData);
 				
-				Number totalDescontosHoje = vendas.totalDescontosPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
-				Number totalDescontosHojeVendasParceladas = vendas.totalDescontosPorDiaVendaParcelada(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
+				Number totalDescontosHoje = vendas.totalDescontosPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa(), tipoData);
+				Number totalDescontosHojeVendasParceladas = vendas.totalDescontosPorDiaVendaParcelada(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa(), tipoData);
 
-				Number totalTaxaEntregaHoje = vendas.totalTaxasEntregaPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
-				Number totalTaxaEntregaHojeVendaParcelada = vendas.totalTaxasEntregaPorDiaVendaParcelada(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
+				Number totalTaxaEntregaHoje = vendas.totalTaxasEntregaPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa(), tipoData);
+				Number totalTaxaEntregaHojeVendaParcelada = vendas.totalTaxasEntregaPorDiaVendaParcelada(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa(), tipoData);
 		
 				System.out.println("Data: " + calendarStartTemp.getTime() + " - " + resultTemp.size());
 				System.out.println("Data Stop: " + calendarStopTemp.getTime());
@@ -999,7 +1002,7 @@ public class RelatorioVendasBean implements Serializable {
 		calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);
 
 		List<Object[]> result = vendas.totalVendasPorData(calendarStart, calendarStop, categoriaPorDia,
-				categoriasPorDia, produto01, usuarioPorDia, false, usuario.getEmpresa());
+				categoriasPorDia, produto01, usuarioPorDia, false, usuario.getEmpresa(), tipoData);
 
 		createDonutModel(result);
 	}
@@ -1532,5 +1535,17 @@ public class RelatorioVendasBean implements Serializable {
 
 	public Long getProdutoId() {
 		return produtoId;
+	}
+
+	public TipoDataLancamento[] getTiposDatas() {
+		return TipoDataLancamento.values();
+	}
+	
+	public TipoDataLancamento getTipoData() {
+		return tipoData;
+	}
+
+	public void setTipoData(TipoDataLancamento tipoData) {
+		this.tipoData = tipoData;
 	}
 }

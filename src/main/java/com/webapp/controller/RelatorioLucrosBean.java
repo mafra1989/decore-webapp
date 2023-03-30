@@ -32,6 +32,7 @@ import com.webapp.model.CategoriaProduto;
 import com.webapp.model.Empresa;
 import com.webapp.model.Produto;
 import com.webapp.model.Target;
+import com.webapp.model.TipoDataLancamento;
 import com.webapp.model.Usuario;
 import com.webapp.repository.CategoriasProdutos;
 import com.webapp.repository.Compras;
@@ -184,6 +185,8 @@ public class RelatorioLucrosBean implements Serializable {
 	private boolean incluirDespesas = false;
 	
 	private boolean mostrarDespesas = false;
+	
+	private TipoDataLancamento tipoData = TipoDataLancamento.LANCAMENTO;
 
 
 	@PostConstruct
@@ -433,15 +436,15 @@ public class RelatorioLucrosBean implements Serializable {
 				calendarStopTemp.set(Calendar.SECOND, 59);
 
 				List<Object[]> resultTemp = vendas.totalLucrosPorData(calendarStartTemp, calendarStopTemp,
-						categoriaPorDia, categoriasPorDia, produto01, usuarioPorDia, true, usuario.getEmpresa());
+						categoriaPorDia, categoriasPorDia, produto01, usuarioPorDia, true, usuario.getEmpresa(), tipoData);
 				
 				Number totalEstornosHoje = 0;//vendas.totalEstornosPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());			
 				
-				Number totalDescontosHoje = vendas.totalDescontosPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
-				Number totalDescontosHojeVendaParcelada = vendas.totalDescontosPorDiaVendaParcelada(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
+				Number totalDescontosHoje = vendas.totalDescontosPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa(), tipoData);
+				Number totalDescontosHojeVendaParcelada = vendas.totalDescontosPorDiaVendaParcelada(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa(), tipoData);
 				
-				Number totalTaxaEntregaHoje = vendas.totalTaxasEntregaPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
-				Number totalTaxaEntregaHojeVendaParcelada = vendas.totalTaxasEntregaPorDiaVendaParcelada(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
+				Number totalTaxaEntregaHoje = vendas.totalTaxasEntregaPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa(), tipoData);
+				Number totalTaxaEntregaHojeVendaParcelada = vendas.totalTaxasEntregaPorDiaVendaParcelada(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa(), tipoData);
 				
 	
 				System.out.println("Data: " + calendarStartTemp.getTime() + " - " + resultTemp.size());
@@ -1989,5 +1992,17 @@ public class RelatorioLucrosBean implements Serializable {
 
 	public void setMostrarDespesas(boolean mostrarDespesas) {
 		this.mostrarDespesas = mostrarDespesas;
+	}
+	
+	public TipoDataLancamento[] getTiposDatas() {
+		return TipoDataLancamento.values();
+	}
+	
+	public TipoDataLancamento getTipoData() {
+		return tipoData;
+	}
+
+	public void setTipoData(TipoDataLancamento tipoData) {
+		this.tipoData = tipoData;
 	}
 }

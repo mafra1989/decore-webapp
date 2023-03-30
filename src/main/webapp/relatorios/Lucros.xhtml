@@ -295,6 +295,25 @@
 
 					<h3 style="font-weight: bold; margin-top: -8px;">Lucro em vendas por Dia</h3>
 
+					<p:panelGrid columns="2" layout="grid" style="margin-bottom: 4px;"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-3, ui-grid-col-9">
+						
+						<p:outputLabel value="Tipo de Data" for="datas" />
+						<p:selectOneRadio id="datas" value="#{relatorioLucrosBean.tipoData}">
+							
+							<p:ajax event="change"
+								listener="#{relatorioLucrosBean.createMixedModelPorDia}"
+								process="@this painel painel-categoria" update="barChart-lucrosPorDia" />
+								
+							<f:selectItems
+								value="#{relatorioLucrosBean.tiposDatas}"
+								var="tipoData"
+								itemLabel="#{tipoData.descricao}"
+								itemValue="#{tipoData}" />
+						</p:selectOneRadio>
+					</p:panelGrid>
+					
 					<p:panelGrid columns="4" id="painel" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-1">
