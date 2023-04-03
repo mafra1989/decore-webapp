@@ -33,12 +33,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.CategoriaProduto;
+import com.webapp.model.Conta;
 import com.webapp.model.Produto;
 import com.webapp.model.Target;
 import com.webapp.model.TipoDataLancamento;
+import com.webapp.model.TipoFiltroVenda;
 import com.webapp.model.Usuario;
+import com.webapp.model.Venda;
 import com.webapp.model.VendaPorCategoria;
 import com.webapp.repository.CategoriasProdutos;
+import com.webapp.repository.Contas_;
 import com.webapp.repository.Produtos;
 import com.webapp.repository.Targets;
 import com.webapp.repository.Usuarios;
@@ -188,7 +192,17 @@ public class RelatorioVendasBean implements Serializable {
 	@Inject
 	private Usuario usuario;
 	
-	private TipoDataLancamento tipoData = TipoDataLancamento.LANCAMENTO;
+	private TipoFiltroVenda tipoData = TipoFiltroVenda.LANCAMENTO;
+	
+	private TipoFiltroVenda tipoDataSemana = TipoFiltroVenda.LANCAMENTO;
+	
+	private TipoFiltroVenda tipoDataMensal = TipoFiltroVenda.LANCAMENTO;
+	
+	private TipoFiltroVenda tipoDataAnual = TipoFiltroVenda.LANCAMENTO;
+	
+	@Inject
+	private Contas_ contas;
+	
 
 	@PostConstruct
 	public void init() {
@@ -435,20 +449,48 @@ public class RelatorioVendasBean implements Serializable {
 				calendarStopTemp.set(Calendar.MINUTE, 59);
 				calendarStopTemp.set(Calendar.SECOND, 59);
 
-				List<Object[]> resultTemp = vendas.totalVendasPorData(calendarStartTemp, calendarStopTemp,
-						categoriaPorDia, categoriasPorDia, produto01, usuarioPorDia, true, usuario.getEmpresa(), tipoData);
 				
-				Number totalDescontosHoje = vendas.totalDescontosPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa(), tipoData);
-				Number totalDescontosHojeVendasParceladas = vendas.totalDescontosPorDiaVendaParcelada(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa(), tipoData);
-
-				Number totalTaxaEntregaHoje = vendas.totalTaxasEntregaPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa(), tipoData);
-				Number totalTaxaEntregaHojeVendaParcelada = vendas.totalTaxasEntregaPorDiaVendaParcelada(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa(), tipoData);
-		
-				System.out.println("Data: " + calendarStartTemp.getTime() + " - " + resultTemp.size());
-				System.out.println("Data Stop: " + calendarStopTemp.getTime());
-
-				if (resultTemp.size() == 0) {
-
+				Number totalReceitasVendasPagasParcialmenteDataValor = 0;
+				Number totalEntradasReceitasVendasPagasParcialmenteDataValor = 0;
+				Number totalContasReceitasVendasPagasParcialmenteDataValor = 0;	
+				
+				Number totalVendasPagasDataValor = 0;	
+				
+				if(tipoData == TipoFiltroVenda.PAGAMENTO) {
+					
+					List<Object[]> resultTemp = vendas.totalVendasPorData_(calendarStartTemp, calendarStopTemp,
+							categoriaPorDia, categoriasPorDia, produto01, usuarioPorDia, true, usuario.getEmpresa(), tipoData);
+					for (Object[] object : resultTemp) {
+						
+						List<Conta> listaDeContas = contas.porCodigoOperacao((long) object[5], "VENDA", usuario.getEmpresa());
+						if(listaDeContas.size() == 0) {
+							totalVendasPagasDataValor = (totalVendasPagasDataValor.doubleValue() + 
+									((BigDecimal)object[3]).doubleValue() + ((BigDecimal)object[6]).doubleValue())
+									- ((BigDecimal)object[7]).doubleValue();
+						}
+					}
+					
+					
+					List<Object[]> resultTemp_ = contas.totalEntradaVendasPagasPorDiaValor(calendarStartTemp, calendarStopTemp, usuario.getEmpresa());
+					for (Object[] object : resultTemp_) {
+						
+						totalEntradasReceitasVendasPagasParcialmenteDataValor = 
+								totalEntradasReceitasVendasPagasParcialmenteDataValor.doubleValue()
+								+ ((BigDecimal)object[1]).doubleValue();						
+					}
+					
+					
+					List<Object[]> resultTemp__ = contas.totalContasVendasPagas(usuario.getEmpresa(), calendarStartTemp, calendarStopTemp);
+					for (Object[] object : resultTemp__) {
+												
+						totalContasReceitasVendasPagasParcialmenteDataValor = 
+								totalContasReceitasVendasPagasParcialmenteDataValor.doubleValue()
+								+ ((BigDecimal)object[1]).doubleValue();
+					}
+					
+					totalReceitasVendasPagasParcialmenteDataValor = totalEntradasReceitasVendasPagasParcialmenteDataValor.doubleValue() 
+							+ totalContasReceitasVendasPagasParcialmenteDataValor.doubleValue();
+					
 					Object[] object = new Object[4];
 					object[0] = calendarStartTemp.get(Calendar.DAY_OF_MONTH);
 					if (calendarStartTemp.get(Calendar.DAY_OF_MONTH) < 10) {
@@ -462,31 +504,68 @@ public class RelatorioVendasBean implements Serializable {
 
 					object[2] = calendarStartTemp.get(Calendar.YEAR);
 
-					object[3] = 0;
+					object[3] = totalVendasPagasDataValor.doubleValue() + totalReceitasVendasPagasParcialmenteDataValor.doubleValue();
 
 					result.add(object);
-				} else {
-					for (Object[] object : resultTemp) {
-						
-						System.out.println(Arrays.asList(object));
-						/* Transferido de Repository *//*
-						if (Long.parseLong(object[0].toString()) < 10) {
-							object[0] = "0" + object[0];
+				}
+				
+				
+				if(tipoData == TipoFiltroVenda.LANCAMENTO) {
+					
+					List<Object[]> resultTemp = vendas.totalVendasPorData(calendarStartTemp, calendarStopTemp,
+							categoriaPorDia, categoriasPorDia, produto01, usuarioPorDia, true, usuario.getEmpresa(), tipoData);
+					
+					Number totalDescontosHoje = vendas.totalDescontosPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa(), tipoData);
+					Number totalDescontosHojeVendasParceladas = vendas.totalDescontosPorDiaVendaParcelada(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa(), tipoData);
+
+					Number totalTaxaEntregaHoje = vendas.totalTaxasEntregaPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa(), tipoData);
+					Number totalTaxaEntregaHojeVendaParcelada = vendas.totalTaxasEntregaPorDiaVendaParcelada(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa(), tipoData);
+					
+					System.out.println("Data: " + calendarStartTemp.getTime() + " - " + resultTemp.size());
+					System.out.println("Data Stop: " + calendarStopTemp.getTime());
+					
+					if (resultTemp.size() == 0) {
+
+						Object[] object = new Object[4];
+						object[0] = calendarStartTemp.get(Calendar.DAY_OF_MONTH);
+						if (calendarStartTemp.get(Calendar.DAY_OF_MONTH) < 10) {
+							object[0] = "0" + calendarStartTemp.get(Calendar.DAY_OF_MONTH);
 						}
 
-						if (Long.parseLong(object[1].toString()) < 10) {
-							object[1] = "0" + object[1];
+						object[1] = calendarStartTemp.get(Calendar.MONTH) + 1;
+						if (calendarStartTemp.get(Calendar.MONTH) + 1 < 10) {
+							object[1] = "0" + (calendarStartTemp.get(Calendar.MONTH) + 1);
 						}
-						*/
 
-						if(categoriasPorDia == null || categoriasPorDia.length == 0 || categoriasPorDia.length == todasCategoriasProduto.size()) {
-							object[3] = (((BigDecimal)object[3]).doubleValue() + totalTaxaEntregaHojeVendaParcelada.doubleValue() + totalTaxaEntregaHoje.doubleValue()) - (totalDescontosHoje.doubleValue() + totalDescontosHojeVendasParceladas.doubleValue());
-						}
-						
-						
+						object[2] = calendarStartTemp.get(Calendar.YEAR);
+
+						object[3] = 0;
+
 						result.add(object);
+					} else {
+						for (Object[] object : resultTemp) {
+							
+							System.out.println(Arrays.asList(object));
+							/* Transferido de Repository *//*
+							if (Long.parseLong(object[0].toString()) < 10) {
+								object[0] = "0" + object[0];
+							}
+
+							if (Long.parseLong(object[1].toString()) < 10) {
+								object[1] = "0" + object[1];
+							}
+							*/
+
+							if(categoriasPorDia == null || categoriasPorDia.length == 0 || categoriasPorDia.length == todasCategoriasProduto.size()) {
+								object[3] = (((BigDecimal)object[3]).doubleValue() + totalTaxaEntregaHojeVendaParcelada.doubleValue() + totalTaxaEntregaHoje.doubleValue()) - (totalDescontosHoje.doubleValue() + totalDescontosHojeVendasParceladas.doubleValue());
+							}
+							
+							
+							result.add(object);
+						}
 					}
 				}
+				
 
 				calendarStartTemp.add(Calendar.DAY_OF_MONTH, 1);
 
@@ -592,33 +671,96 @@ public class RelatorioVendasBean implements Serializable {
 
 				System.out.println(semana01);
 
-				List<Object[]> resultTemp = vendas.totalVendasPorSemana(ano01, semana01, semana01, categoriaPorSemana,
-						categoriasPorSemana, produto02, usuarioPorSemana, true, usuario.getEmpresa());
 				
-				Number totalDescontos = vendas.totalDescontosPorSemana(ano01, semana01, semana01, usuario.getEmpresa());			
-				Number totalDescontosVendaParcelada = vendas.totalDescontosPorSemanaVendaParcelada(ano01, semana01, semana01, usuario.getEmpresa());
-
-				Number totalTaxasEntrega = vendas.totalTaxasEntregaPorSemana(ano01, semana01, semana01, usuario.getEmpresa());				
-				Number totalTaxasEntregaVendaParcelada = vendas.totalTaxasEntregaPorSemanaVendasParceladas(ano01, semana01, semana01, usuario.getEmpresa());
 				
-				if (resultTemp.size() == 0) {
+				
+				Number totalReceitasVendasPagasParcialmenteDataValor = 0;
+				Number totalEntradasReceitasVendasPagasParcialmenteDataValor = 0;
+				Number totalContasReceitasVendasPagasParcialmenteDataValor = 0;	
+				
+				Number totalVendasPagasDataValor = 0;	
+				
+				if(tipoDataSemana == TipoFiltroVenda.PAGAMENTO) {
+					
+					List<Object[]> resultTemp = vendas.totalVendasPorSemana_(ano01, semana01, semana01, categoriaPorSemana,
+							categoriasPorSemana, produto02, usuarioPorSemana, true, usuario.getEmpresa());
 
+					for (Object[] object : resultTemp) {
+						
+						List<Conta> listaDeContas = contas.porCodigoOperacao((long) object[3], "VENDA", usuario.getEmpresa());
+						if(listaDeContas.size() == 0) {
+							totalVendasPagasDataValor = (totalVendasPagasDataValor.doubleValue() + 
+									((BigDecimal)object[2]).doubleValue() + ((BigDecimal)object[4]).doubleValue())
+									- ((BigDecimal)object[5]).doubleValue();
+						}
+					}
+					
+					
+					List<Object[]> resultTemp_ = contas.totalEntradaVendasPagasPorSemanaValor(ano01, semana01, semana01, usuario.getEmpresa());
+					for (Object[] object : resultTemp_) {
+						
+						totalEntradasReceitasVendasPagasParcialmenteDataValor = 
+								totalEntradasReceitasVendasPagasParcialmenteDataValor.doubleValue()
+								+ ((BigDecimal)object[1]).doubleValue();						
+					}
+					
+					
+					List<Object[]> resultTemp__ = contas.totalContasVendasPagas_Semanal(ano01, semana01, semana01, usuario.getEmpresa());
+					for (Object[] object : resultTemp__) {
+												
+						totalContasReceitasVendasPagasParcialmenteDataValor = 
+								totalContasReceitasVendasPagasParcialmenteDataValor.doubleValue()
+								+ ((BigDecimal)object[1]).doubleValue();
+					}
+					
+					totalReceitasVendasPagasParcialmenteDataValor = totalEntradasReceitasVendasPagasParcialmenteDataValor.doubleValue() 
+							+ totalContasReceitasVendasPagasParcialmenteDataValor.doubleValue();
+					
+					
 					Object[] object = new Object[3];
-
 					object[0] = i;
 					object[1] = ano01;
-
-					object[2] = 0;
+					
+					object[2] = totalVendasPagasDataValor.doubleValue() + totalReceitasVendasPagasParcialmenteDataValor.doubleValue();
 
 					result.add(object);
-				} else {
-					for (Object[] object : resultTemp) {
-						if(categoriasPorSemana == null || categoriasPorSemana.length == 0 || categoriasPorSemana.length == todasCategoriasProduto.size()) {
-							object[2] = (((BigDecimal)object[2]).doubleValue() + totalTaxasEntrega.doubleValue() + totalTaxasEntregaVendaParcelada.doubleValue()) - (totalDescontos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
-						}
+				}
+				
+				
+				
+				
+				if(tipoDataSemana == TipoFiltroVenda.LANCAMENTO) {
+					
+					List<Object[]> resultTemp = vendas.totalVendasPorSemana(ano01, semana01, semana01, categoriaPorSemana,
+							categoriasPorSemana, produto02, usuarioPorSemana, true, usuario.getEmpresa());
+					
+					Number totalDescontos = vendas.totalDescontosPorSemana(ano01, semana01, semana01, usuario.getEmpresa());			
+					Number totalDescontosVendaParcelada = vendas.totalDescontosPorSemanaVendaParcelada(ano01, semana01, semana01, usuario.getEmpresa());
+
+					Number totalTaxasEntrega = vendas.totalTaxasEntregaPorSemana(ano01, semana01, semana01, usuario.getEmpresa());				
+					Number totalTaxasEntregaVendaParcelada = vendas.totalTaxasEntregaPorSemanaVendasParceladas(ano01, semana01, semana01, usuario.getEmpresa());
+					
+					if (resultTemp.size() == 0) {
+
+						Object[] object = new Object[3];
+
+						object[0] = i;
+						object[1] = ano01;
+
+						object[2] = 0;
+
 						result.add(object);
+					} else {
+						for (Object[] object : resultTemp) {
+							if(categoriasPorSemana == null || categoriasPorSemana.length == 0 || categoriasPorSemana.length == todasCategoriasProduto.size()) {
+								object[2] = (((BigDecimal)object[2]).doubleValue() + totalTaxasEntrega.doubleValue() + totalTaxasEntregaVendaParcelada.doubleValue()) - (totalDescontos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
+							}
+							result.add(object);
+						}
 					}
 				}
+				
+
 			}
 
 			System.out.println("result.size(): " + result.size());
@@ -775,41 +917,103 @@ public class RelatorioVendasBean implements Serializable {
 		if (Integer.parseInt(numberMes(mes01)) <= Integer.parseInt(numberMes(mes02))) {
 
 			for (int i = Integer.parseInt(numberMes(mes01)); i <= Integer.parseInt(numberMes(mes02)); i++) {
+				
 				String mes01 = String.valueOf(i);
 				if (i < 10) {
 					mes01 = "0" + i;
 				}
-				List<Object[]> resultTemp = vendas.totalVendasPorMesRelatorio(ano02, mes01, mes01, categoriaPorMes,
-						categoriasPorMes, produto03, usuarioPorMes, true, usuario.getEmpresa());
 				
-				Number totalDescontos = vendas.totalDescontosPorMes(ano02, mes01, mes01, usuario.getEmpresa());
-				Number totalDescontosVendaParcelada = vendas.totalDescontosPorMesVendasParceladas(ano02, mes01, mes01, usuario.getEmpresa());
-
-				Number totalTaxasEntrega = vendas.totalTaxasEntregasPorMes(ano02, mes01, mes01, usuario.getEmpresa());				
-				Number totalTaxasEntregaVendaParcelada = vendas.totalTaxasEntregasPorMesVendasParceladas(ano02, mes01, mes01, usuario.getEmpresa());
 				
+				
+				Number totalReceitasVendasPagasParcialmenteDataValor = 0;
+				Number totalEntradasReceitasVendasPagasParcialmenteDataValor = 0;
+				Number totalContasReceitasVendasPagasParcialmenteDataValor = 0;	
+				
+				Number totalVendasPagasDataValor = 0;
+				
+				if(tipoDataMensal == TipoFiltroVenda.PAGAMENTO) {
+					
+					List<Object[]> resultTemp = vendas.totalVendasPorMesRelatorio_(ano02, mes01, mes01, categoriaPorMes,
+							categoriasPorMes, produto03, usuarioPorMes, true, usuario.getEmpresa());
 
-				if (resultTemp.size() == 0) {
-
-					Object[] object = new Object[4];
-
-					object[0] = i;
-					object[1] = ano02;
-
-					object[2] = 0;
-
-					result.add(object);
-
-				} else {
 					for (Object[] object : resultTemp) {
 						
-						if(categoriasPorMes == null || categoriasPorMes.length == 0 || categoriasPorMes.length == todasCategoriasProduto.size()) {
-							object[2] = (((BigDecimal)object[2]).doubleValue() + totalTaxasEntrega.doubleValue() + totalTaxasEntregaVendaParcelada.doubleValue()) - (totalDescontos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
+						List<Conta> listaDeContas = contas.porCodigoOperacao((long) object[3], "VENDA", usuario.getEmpresa());
+						if(listaDeContas.size() == 0) {
+							totalVendasPagasDataValor = (totalVendasPagasDataValor.doubleValue() + 
+									((BigDecimal)object[2]).doubleValue() + ((BigDecimal)object[4]).doubleValue())
+									- ((BigDecimal)object[5]).doubleValue();
 						}
+					}
+					
+					
+					List<Object[]> resultTemp_ = contas.totalEntradaVendasPagasPorMesValor(ano02, mes01, mes01, usuario.getEmpresa());
+					for (Object[] object : resultTemp_) {
 						
+						totalEntradasReceitasVendasPagasParcialmenteDataValor = 
+								totalEntradasReceitasVendasPagasParcialmenteDataValor.doubleValue()
+								+ ((BigDecimal)object[1]).doubleValue();						
+					}
+					
+					
+					List<Object[]> resultTemp__ = contas.totalContasVendasPagas_Mensal(ano02, mes01, mes01, usuario.getEmpresa());
+					for (Object[] object : resultTemp__) {
+												
+						totalContasReceitasVendasPagasParcialmenteDataValor = 
+								totalContasReceitasVendasPagasParcialmenteDataValor.doubleValue()
+								+ ((BigDecimal)object[1]).doubleValue();
+					}
+					
+					totalReceitasVendasPagasParcialmenteDataValor = totalEntradasReceitasVendasPagasParcialmenteDataValor.doubleValue() 
+							+ totalContasReceitasVendasPagasParcialmenteDataValor.doubleValue();
+					
+					
+					Object[] object = new Object[3];
+					object[0] = i;
+					object[1] = ano01;
+					
+					object[2] = totalVendasPagasDataValor.doubleValue() + totalReceitasVendasPagasParcialmenteDataValor.doubleValue();
+
+					result.add(object);
+				}
+				
+				
+				
+				if(tipoDataMensal == TipoFiltroVenda.LANCAMENTO) {
+					
+					List<Object[]> resultTemp = vendas.totalVendasPorMesRelatorio(ano02, mes01, mes01, categoriaPorMes,
+							categoriasPorMes, produto03, usuarioPorMes, true, usuario.getEmpresa());
+					
+					Number totalDescontos = vendas.totalDescontosPorMes(ano02, mes01, mes01, usuario.getEmpresa());
+					Number totalDescontosVendaParcelada = vendas.totalDescontosPorMesVendasParceladas(ano02, mes01, mes01, usuario.getEmpresa());
+
+					Number totalTaxasEntrega = vendas.totalTaxasEntregasPorMes(ano02, mes01, mes01, usuario.getEmpresa());				
+					Number totalTaxasEntregaVendaParcelada = vendas.totalTaxasEntregasPorMesVendasParceladas(ano02, mes01, mes01, usuario.getEmpresa());
+					
+
+					if (resultTemp.size() == 0) {
+
+						Object[] object = new Object[4];
+
+						object[0] = i;
+						object[1] = ano02;
+
+						object[2] = 0;
+
 						result.add(object);
+
+					} else {
+						for (Object[] object : resultTemp) {
+							
+							if(categoriasPorMes == null || categoriasPorMes.length == 0 || categoriasPorMes.length == todasCategoriasProduto.size()) {
+								object[2] = (((BigDecimal)object[2]).doubleValue() + totalTaxasEntrega.doubleValue() + totalTaxasEntregaVendaParcelada.doubleValue()) - (totalDescontos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
+							}
+							
+							result.add(object);
+						}
 					}
 				}
+					
 			}
 
 		}
@@ -897,35 +1101,92 @@ public class RelatorioVendasBean implements Serializable {
 
 				String ano03 = String.valueOf(i);
 
-				List<Object[]> resultTemp = vendas.totalVendasPorAno(ano03, ano03, categoriaPorAno, categoriasPorAno,
-						produto04, usuarioPorAno, true, usuario.getEmpresa());
 				
-				Number totalDescontos = vendas.totalDescontosPorAno(ano03, usuario.getEmpresa());
-				Number totalDescontosVendaParcelada = vendas.totalDescontosPorAnoVendasParceladas(ano03, usuario.getEmpresa());
-
-				Number totalTaxasEntrega = vendas.totalTaxasEntregasPorAno(ano03, usuario.getEmpresa());				
-				Number totalTaxasEntregaVendaParcelada = vendas.totalTaxasEntregasPorAnoVendasParceladas(ano03, usuario.getEmpresa());
 				
+				Number totalReceitasVendasPagasParcialmenteDataValor = 0;
+				Number totalEntradasReceitasVendasPagasParcialmenteDataValor = 0;
+				Number totalContasReceitasVendasPagasParcialmenteDataValor = 0;	
+				
+				Number totalVendasPagasDataValor = 0;
+				
+				if(tipoDataAnual == TipoFiltroVenda.PAGAMENTO) {
+					
+					List<Object[]> resultTemp = vendas.totalVendasPorAno_(ano03, ano03, categoriaPorAno, categoriasPorAno,
+							produto04, usuarioPorAno, true, usuario.getEmpresa());
 
-				if (resultTemp.size() == 0) {
-
-					Object[] object = new Object[2];
-
-					object[0] = i;
-					object[1] = 0;
-
-					result.add(object);
-
-				} else {
 					for (Object[] object : resultTemp) {
 						
-						if(categoriasPorAno == null || categoriasPorAno.length == 0  || categoriasPorAno.length == todasCategoriasProduto.size()) {
-							object[1] = (((BigDecimal)object[1]).doubleValue() + totalTaxasEntrega.doubleValue() + totalTaxasEntregaVendaParcelada.doubleValue()) - (totalDescontos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
+						List<Conta> listaDeContas = contas.porCodigoOperacao((long) object[2], "VENDA", usuario.getEmpresa());
+						if(listaDeContas.size() == 0) {
+							totalVendasPagasDataValor = (totalVendasPagasDataValor.doubleValue() + 
+									((BigDecimal)object[1]).doubleValue() + ((BigDecimal)object[3]).doubleValue())
+									- ((BigDecimal)object[4]).doubleValue();
 						}
+					}
+					
+					
+					List<Object[]> resultTemp_ = contas.totalEntradaVendasPagasPorAnoValor(ano03, ano03, usuario.getEmpresa());
+					for (Object[] object : resultTemp_) {
 						
+						totalEntradasReceitasVendasPagasParcialmenteDataValor = 
+								totalEntradasReceitasVendasPagasParcialmenteDataValor.doubleValue()
+								+ ((BigDecimal)object[1]).doubleValue();						
+					}
+					
+					
+					List<Object[]> resultTemp__ = contas.totalContasVendasPagas_Anual(ano03, ano03, usuario.getEmpresa());
+					for (Object[] object : resultTemp__) {
+												
+						totalContasReceitasVendasPagasParcialmenteDataValor = 
+								totalContasReceitasVendasPagasParcialmenteDataValor.doubleValue()
+								+ ((BigDecimal)object[1]).doubleValue();
+					}
+					
+					totalReceitasVendasPagasParcialmenteDataValor = totalEntradasReceitasVendasPagasParcialmenteDataValor.doubleValue() 
+							+ totalContasReceitasVendasPagasParcialmenteDataValor.doubleValue();
+					
+					
+					Object[] object = new Object[2];
+					object[0] = i;
+					object[1] = totalVendasPagasDataValor.doubleValue() + totalReceitasVendasPagasParcialmenteDataValor.doubleValue();
+
+					result.add(object);
+				}
+				
+				
+				if(tipoDataAnual == TipoFiltroVenda.LANCAMENTO) {
+					
+					List<Object[]> resultTemp = vendas.totalVendasPorAno(ano03, ano03, categoriaPorAno, categoriasPorAno,
+							produto04, usuarioPorAno, true, usuario.getEmpresa());
+					
+					Number totalDescontos = vendas.totalDescontosPorAno(ano03, usuario.getEmpresa());
+					Number totalDescontosVendaParcelada = vendas.totalDescontosPorAnoVendasParceladas(ano03, usuario.getEmpresa());
+
+					Number totalTaxasEntrega = vendas.totalTaxasEntregasPorAno(ano03, usuario.getEmpresa());				
+					Number totalTaxasEntregaVendaParcelada = vendas.totalTaxasEntregasPorAnoVendasParceladas(ano03, usuario.getEmpresa());
+					
+
+					if (resultTemp.size() == 0) {
+
+						Object[] object = new Object[2];
+
+						object[0] = i;
+						object[1] = 0;
+
 						result.add(object);
+
+					} else {
+						for (Object[] object : resultTemp) {
+							
+							if(categoriasPorAno == null || categoriasPorAno.length == 0  || categoriasPorAno.length == todasCategoriasProduto.size()) {
+								object[1] = (((BigDecimal)object[1]).doubleValue() + totalTaxasEntrega.doubleValue() + totalTaxasEntregaVendaParcelada.doubleValue()) - (totalDescontos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
+							}
+							
+							result.add(object);
+						}
 					}
 				}
+				
 			}
 		}
 
@@ -1538,15 +1799,39 @@ public class RelatorioVendasBean implements Serializable {
 		return produtoId;
 	}
 
-	public TipoDataLancamento[] getTiposDatas() {
-		return TipoDataLancamento.values();
+	public TipoFiltroVenda[] getTiposDatas() {
+		return TipoFiltroVenda.values();
 	}
 	
-	public TipoDataLancamento getTipoData() {
+	public TipoFiltroVenda getTipoData() {
 		return tipoData;
 	}
 
-	public void setTipoData(TipoDataLancamento tipoData) {
+	public void setTipoData(TipoFiltroVenda tipoData) {
 		this.tipoData = tipoData;
+	}
+	
+	public TipoFiltroVenda getTipoDataSemana() {
+		return tipoDataSemana;
+	}
+
+	public void setTipoDataSemana(TipoFiltroVenda tipoDataSemana) {
+		this.tipoDataSemana = tipoDataSemana;
+	}
+	
+	public TipoFiltroVenda getTipoDataMensal() {
+		return tipoDataMensal;
+	}
+
+	public void setTipoDataMensal(TipoFiltroVenda tipoDataMensal) {
+		this.tipoDataMensal = tipoDataMensal;
+	}
+	
+	public TipoFiltroVenda getTipoDataAnual() {
+		return tipoDataAnual;
+	}
+
+	public void setTipoDataAnual(TipoFiltroVenda tipoDataAnual) {
+		this.tipoDataAnual = tipoDataAnual;
 	}
 }

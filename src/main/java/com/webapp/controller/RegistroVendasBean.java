@@ -377,22 +377,8 @@ public class RegistroVendasBean implements Serializable {
 			//double percentualLucro = 0;
 			double valorCompra = 0;
 
-			Calendar calendario = Calendar.getInstance();
-			Calendar calendarioTemp = Calendar.getInstance();
-			calendarioTemp.setTime(venda.getDataVenda());
-			calendarioTemp.set(Calendar.HOUR, calendario.get(Calendar.HOUR));
-			calendarioTemp.set(Calendar.MINUTE, calendario.get(Calendar.MINUTE));
-			calendarioTemp.set(Calendar.SECOND, calendario.get(Calendar.SECOND));
-			venda.setDataVenda(calendarioTemp.getTime());
-			
-			venda.setDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_MONTH))));
-			venda.setNomeDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_WEEK))));
-			venda.setSemana(Long.valueOf((calendarioTemp.get(Calendar.WEEK_OF_YEAR))));
-			venda.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
-			venda.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
-			
-			
-			
+			setInformacoesDataLancamento();
+
 			venda.setTipoPagamento(TipoPagamento.AVISTA);
 
 			FormaPagamento formaPagamento = formasPagamentos.porNome("Dinheiro", usuario.getEmpresa());
@@ -3488,22 +3474,7 @@ public class RegistroVendasBean implements Serializable {
 		//double percentualLucro = 0;
 		double valorCompra = 0;
 		
-		Calendar calendario = Calendar.getInstance();
-		Calendar calendarioTemp = Calendar.getInstance();
-
-		//if (venda.getId() == null) {			
-		calendarioTemp.setTime(venda.getDataVenda());
-		calendarioTemp.set(Calendar.HOUR, calendario.get(Calendar.HOUR));
-		calendarioTemp.set(Calendar.MINUTE, calendario.get(Calendar.MINUTE));
-		calendarioTemp.set(Calendar.SECOND, calendario.get(Calendar.SECOND));
-		venda.setDataVenda(calendarioTemp.getTime());
-		
-		venda.setDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_MONTH))));
-		venda.setNomeDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_WEEK))));
-		venda.setSemana(Long.valueOf((calendarioTemp.get(Calendar.WEEK_OF_YEAR))));
-		venda.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
-		venda.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
-		//}
+		setInformacoesDataLancamento();
 		
 		venda.setVendaPaga(vendaPaga);
 		if(!pagarConta) {
@@ -3581,20 +3552,29 @@ public class RegistroVendasBean implements Serializable {
 		if(!venda.isConta()) {
 			if(venda.getId() == null) {
 				venda.setDataPagamento(new Date());
+				setInformacoesDataPagamento();
 			}			
 		} else {
 			venda.setDataPagamento(null);
+			
+			venda.setDiaPagamento(null);
+			venda.setNomeDiaPagamento(null);
+			venda.setSemanaPagamento(null);
+			venda.setMesPagamento(null);
+			venda.setAnoPagamento(null);
 		}
 		
 		if (tipoPagamento == TipoPagamento.PARCELADO) {
 			if(entradas.size() > 0) {
 				venda.setDataPagamento(new Date());
+				setInformacoesDataPagamento();
 			}
 		}
 
 		if(venda.getId() == null) {
 			if(venda.isVendaPaga()) {
 				venda.setDataPagamento(new Date());
+				setInformacoesDataPagamento();
 			}
 		}
 		
@@ -3765,7 +3745,7 @@ public class RegistroVendasBean implements Serializable {
 				//conta.setLucro(new BigDecimal(lucro));
 				conta.setTaxaEntrega(venda.getTaxaDeEntrega());
 				
-				calendario = Calendar.getInstance();
+				Calendar calendario = Calendar.getInstance();
 				Calendar vencimento = Calendar.getInstance();
 				vencimento.setTime(pagamentoPara);
 				vencimento.set(Calendar.HOUR, calendario.get(Calendar.HOUR));
@@ -3777,7 +3757,7 @@ public class RegistroVendasBean implements Serializable {
 				conta.setPagamento(null);
 				//conta.setPagamento(vendaPaga != true ? null : vencimento.getTime());
 				
-				calendarioTemp = Calendar.getInstance();
+				Calendar calendarioTemp = Calendar.getInstance();
 				calendarioTemp.setTime(venda.getDataVenda());
 				
 				conta.setDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_MONTH))));
@@ -3843,6 +3823,12 @@ public class RegistroVendasBean implements Serializable {
 				entregaVenda = entregas.save(entregaVenda);
 				if(!venda.isVendaPaga()) {
 					venda.setDataPagamento(null);
+					
+					venda.setDiaPagamento(null);
+					venda.setNomeDiaPagamento(null);
+					venda.setSemanaPagamento(null);
+					venda.setMesPagamento(null);
+					venda.setAnoPagamento(null);
 				}			
 			}
 			
@@ -4041,12 +4027,19 @@ public class RegistroVendasBean implements Serializable {
 				
 				venda.setDataPagamento(null);
 				
+				venda.setDiaPagamento(null);
+				venda.setNomeDiaPagamento(null);
+				venda.setSemanaPagamento(null);
+				venda.setMesPagamento(null);
+				venda.setAnoPagamento(null);
+				
 			} else {
 				if(entregaVenda.getId() != null) {
 					entregas.remove(entregaVenda);
 					entregaVenda = new Entrega();
 					
 					venda.setDataPagamento(new Date());
+					setInformacoesDataPagamento();
 					
 					venda.setStatus(!entrega);
 									
@@ -4203,6 +4196,40 @@ public class RegistroVendasBean implements Serializable {
 
 		}
 	}
+	
+
+	private void setInformacoesDataLancamento() {
+		
+		Calendar calendario = Calendar.getInstance();
+		Calendar calendarioTemp = Calendar.getInstance();
+
+		calendarioTemp.setTime(venda.getDataVenda());
+		calendarioTemp.set(Calendar.HOUR, calendario.get(Calendar.HOUR));
+		calendarioTemp.set(Calendar.MINUTE, calendario.get(Calendar.MINUTE));
+		calendarioTemp.set(Calendar.SECOND, calendario.get(Calendar.SECOND));
+		venda.setDataVenda(calendarioTemp.getTime());
+		
+		venda.setDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_MONTH))));
+		venda.setNomeDia(Long.valueOf((calendarioTemp.get(Calendar.DAY_OF_WEEK))));
+		venda.setSemana(Long.valueOf((calendarioTemp.get(Calendar.WEEK_OF_YEAR))));
+		venda.setMes(Long.valueOf((calendarioTemp.get(Calendar.MONTH))) + 1);
+		venda.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
+	}
+	
+	
+	private void setInformacoesDataPagamento() {
+		
+		Calendar calendario = Calendar.getInstance();
+
+		calendario.setTime(venda.getDataPagamento());
+		
+		venda.setDiaPagamento(Long.valueOf((calendario.get(Calendar.DAY_OF_MONTH))));
+		venda.setNomeDiaPagamento(Long.valueOf((calendario.get(Calendar.DAY_OF_WEEK))));
+		venda.setSemanaPagamento(Long.valueOf((calendario.get(Calendar.WEEK_OF_YEAR))));
+		venda.setMesPagamento(Long.valueOf((calendario.get(Calendar.MONTH))) + 1);
+		venda.setAnoPagamento(Long.valueOf((calendario.get(Calendar.YEAR))));
+	}
+	
 	
 	public void changeBairro() {		
 		

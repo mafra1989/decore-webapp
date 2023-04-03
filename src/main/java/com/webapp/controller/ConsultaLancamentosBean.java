@@ -124,7 +124,7 @@ public class ConsultaLancamentosBean implements Serializable {
 	@Inject
 	private Usuario vendedor;
 	
-	private TipoDataLancamento tipoData = TipoDataLancamento.PAGAMENTO;
+	private TipoDataLancamento tipoData = TipoDataLancamento.LANCAMENTO;
 	
 	private String gerouContas;
 	

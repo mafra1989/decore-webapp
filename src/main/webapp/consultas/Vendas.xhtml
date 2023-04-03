@@ -185,7 +185,7 @@
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-2, ui-grid-col-5">
 						
-						<p:outputLabel value="Tipo de Data" for="datas" />
+						<p:outputLabel value="Filtrar Vendas" for="datas" />
 						<p:selectOneRadio id="datas" value="#{consultaVendasBean.tipoData}">
 							<f:selectItems
 								value="#{consultaVendasBean.tiposDatas}"
@@ -456,7 +456,7 @@
 							styleClass="panelgrid-noborder disabled disabled panel-total">
 
 							<p:outputLabel
-								value="Valor Pago Nesta Data: R$ #{consultaVendasBean.totalVendas}"
+								value="Total Pago: R$ #{consultaVendasBean.totalVendas}"
 								style="float:left;margin-top:10px;margin-bottom:5px;margin-left:-10px;font-size: 13px;font-family: inherit;" />
 
 							<p:outputLabel rendered="false"

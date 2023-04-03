@@ -51,6 +51,7 @@ import com.webapp.model.Produto;
 import com.webapp.model.StatusPedido;
 import com.webapp.model.TipoAtividade;
 import com.webapp.model.TipoDataLancamento;
+import com.webapp.model.TipoFiltroVenda;
 import com.webapp.model.TipoOperacao;
 import com.webapp.model.TipoPagamento;
 import com.webapp.model.Usuario;
@@ -179,7 +180,7 @@ public class ConsultaVendasBean implements Serializable {
 	
 	private boolean vendasPagas;
 	
-	private TipoDataLancamento tipoData = TipoDataLancamento.PAGAMENTO;
+	private TipoFiltroVenda tipoData = TipoFiltroVenda.LANCAMENTO;
 	
 
 	public void inicializar() {
@@ -262,6 +263,23 @@ public class ConsultaVendasBean implements Serializable {
 							venda.setVendaPaga(false);
 						}
 						
+						List<PagamentoConta> listaDePagamentosContas = pagamentosContas.todosPorConta(conta, usuario_.getEmpresa());
+						for (PagamentoConta pagamentoConta : listaDePagamentosContas) {
+							
+							/* Ajuste informações de pagamento - remover depois */
+							Calendar calendario = Calendar.getInstance();
+							calendario.setTime(pagamentoConta.getDataPagamento());
+							
+							pagamentoConta.setDiaPagamento(Long.valueOf((calendario.get(Calendar.DAY_OF_MONTH))));
+							pagamentoConta.setNomeDiaPagamento(Long.valueOf((calendario.get(Calendar.DAY_OF_WEEK))));
+							pagamentoConta.setSemanaPagamento(Long.valueOf((calendario.get(Calendar.WEEK_OF_YEAR))));
+							pagamentoConta.setMesPagamento(Long.valueOf((calendario.get(Calendar.MONTH))) + 1);
+							pagamentoConta.setAnoPagamento(Long.valueOf((calendario.get(Calendar.YEAR))));
+							
+							pagamentosContas.save(pagamentoConta);
+							/* fim ajuste */
+						}
+						
 						if(conta.getTipo().equals(OrigemConta.CREDITO.name())) {
 							totalContasReceitasPagasParcialmenteDataValor = totalContasReceitasPagasParcialmenteDataValor.doubleValue() + contas.totalContasVendasPagas(usuario_.getEmpresa(), calendarStart, calendarStop, conta).doubleValue();					
 							totalContasReceitasPagasParcialmenteValor = totalContasReceitasPagasParcialmenteValor.doubleValue() + contas.totalContasVendasPagas(usuario_.getEmpresa(), null, null, conta).doubleValue();
@@ -287,6 +305,22 @@ public class ConsultaVendasBean implements Serializable {
 				if(!venda.isAjuste()) {
 					somaValorPago += venda.getValorPago().doubleValue();
 				}
+				
+				
+				
+				/* Ajuste informações de pagamento - remover depois */
+				Calendar calendario = Calendar.getInstance();
+				calendario.setTime(venda.getDataPagamento());
+				
+				Venda vendaTemp = vendas.porId(venda.getId());
+				vendaTemp.setDiaPagamento(Long.valueOf((calendario.get(Calendar.DAY_OF_MONTH))));
+				vendaTemp.setNomeDiaPagamento(Long.valueOf((calendario.get(Calendar.DAY_OF_WEEK))));
+				vendaTemp.setSemanaPagamento(Long.valueOf((calendario.get(Calendar.WEEK_OF_YEAR))));
+				vendaTemp.setMesPagamento(Long.valueOf((calendario.get(Calendar.MONTH))) + 1);
+				vendaTemp.setAnoPagamento(Long.valueOf((calendario.get(Calendar.YEAR))));
+				
+				vendas.save(vendaTemp);
+				/* fim ajuste */
 			}
 			
 		}
@@ -314,6 +348,8 @@ public class ConsultaVendasBean implements Serializable {
 		}
 		
 		venda.setDataPagamento(new Date());
+		
+		setInformacoesDataPagamento(venda);
 		
 		venda = vendas.save(venda);
 		
@@ -386,6 +422,19 @@ public class ConsultaVendasBean implements Serializable {
 
 		pesquisar();
 	}
+	
+	private void setInformacoesDataPagamento(Venda venda) {
+		
+		Calendar calendario = Calendar.getInstance();
+
+		calendario.setTime(venda.getDataPagamento());
+		
+		venda.setDiaPagamento(Long.valueOf((calendario.get(Calendar.DAY_OF_MONTH))));
+		venda.setNomeDiaPagamento(Long.valueOf((calendario.get(Calendar.DAY_OF_WEEK))));
+		venda.setSemanaPagamento(Long.valueOf((calendario.get(Calendar.WEEK_OF_YEAR))));
+		venda.setMesPagamento(Long.valueOf((calendario.get(Calendar.MONTH))) + 1);
+		venda.setAnoPagamento(Long.valueOf((calendario.get(Calendar.YEAR))));
+	}
 
 	public void desfazerEntrega() {
 		entrega = entregas.porVenda(vendaSelecionada);
@@ -422,6 +471,13 @@ public class ConsultaVendasBean implements Serializable {
 		venda.setStatus(false);
 		venda.setVendaPaga(false);
 		venda.setDataPagamento(null);
+		
+		venda.setDiaPagamento(null);
+		venda.setNomeDiaPagamento(null);
+		venda.setSemanaPagamento(null);
+		venda.setMesPagamento(null);
+		venda.setAnoPagamento(null);
+		
 		venda = vendas.save(venda);
 		
 		
@@ -1190,15 +1246,15 @@ public class ConsultaVendasBean implements Serializable {
 		this.vendasPagas = vendasPagas;
 	}
 
-	public TipoDataLancamento[] getTiposDatas() {
-		return TipoDataLancamento.values();
+	public TipoFiltroVenda[] getTiposDatas() {
+		return TipoFiltroVenda.values();
 	}
 
-	public TipoDataLancamento getTipoData() {
+	public TipoFiltroVenda getTipoData() {
 		return tipoData;
 	}
 
-	public void setTipoData(TipoDataLancamento tipoData) {
+	public void setTipoData(TipoFiltroVenda tipoData) {
 		this.tipoData = tipoData;
 	}
 }

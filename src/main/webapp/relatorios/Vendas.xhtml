@@ -32,7 +32,7 @@
 
 								if (tooltipItem.datasetIndex == 1
 										|| tooltipItem.datasetIndex == 0) {
-									var valor = "R$ " + numberToReal(amount);
+									var valor = numberToReal(amount);//"R$ " + 
 									if (valor.includes("-.")) {
 										valor = valor.replace("-.", "-");
 									}
@@ -353,7 +353,7 @@
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-9">
 						
-						<p:outputLabel value="Tipo de Data" for="datas" />
+						<p:outputLabel value="Filtrar Vendas" for="datas" />
 						<p:selectOneRadio id="datas" value="#{relatorioVendasBean.tipoData}">
 							
 							<p:ajax event="change"
@@ -486,6 +486,25 @@
 					<h3 style="font-weight: bold; margin-top: -8px;">Vendas por
 						Semana</h3>
 
+					<p:panelGrid columns="2" layout="grid" style="margin-bottom: 4px;"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-3, ui-grid-col-9">
+						
+						<p:outputLabel value="Filtrar Vendas" for="datasSemana" />
+						<p:selectOneRadio id="datasSemana" value="#{relatorioVendasBean.tipoDataSemana}">
+							
+							<p:ajax event="change"
+								listener="#{relatorioVendasBean.createMixedModelPorSemana}"
+								process="@this panel-semanal panel-semanal-categoria" update="barChart-vendasPorSemana" />
+								
+							<f:selectItems
+								value="#{relatorioVendasBean.tiposDatas}"
+								var="tipoData"
+								itemLabel="#{tipoData.descricao}"
+								itemValue="#{tipoData}" />
+						</p:selectOneRadio>
+					</p:panelGrid>
+					
 					<p:panelGrid columns="2" layout="grid" id="panel-ano01"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-5">
@@ -633,6 +652,25 @@
 					<h3 style="font-weight: bold; margin-top: -8px;">Vendas por
 						Mês</h3>
 
+					<p:panelGrid columns="2" layout="grid" style="margin-bottom: 4px;"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-3, ui-grid-col-9">
+						
+						<p:outputLabel value="Filtrar Vendas" for="datasMes" />
+						<p:selectOneRadio id="datasMes" value="#{relatorioVendasBean.tipoDataMensal}">
+							
+							<p:ajax event="change"
+								listener="#{relatorioVendasBean.createMixedModelPorMes}"
+								process="@this panel-mensal panel-mensal-categoria" update="barChart-vendasPorMes" />
+								
+							<f:selectItems
+								value="#{relatorioVendasBean.tiposDatas}"
+								var="tipoData"
+								itemLabel="#{tipoData.descricao}"
+								itemValue="#{tipoData}" />
+						</p:selectOneRadio>
+					</p:panelGrid>
+					
 					<p:panelGrid columns="2" layout="grid" id="panel-ano02"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-5">
@@ -770,6 +808,25 @@
 					<h3 style="font-weight: bold; margin-top: -8px;">Vendas por
 						Ano</h3>
 
+					<p:panelGrid columns="2" layout="grid" style="margin-bottom: 4px;"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-3, ui-grid-col-9">
+						
+						<p:outputLabel value="Filtrar Vendas" for="datasAnual" />
+						<p:selectOneRadio id="datasAnual" value="#{relatorioVendasBean.tipoDataAnual}">
+							
+							<p:ajax event="change"
+								listener="#{relatorioVendasBean.createMixedModelPorAno}"
+								process="@this panel-anual panel-anual-categoria" update="barChart-vendasPorAno" />
+								
+							<f:selectItems
+								value="#{relatorioVendasBean.tiposDatas}"
+								var="tipoData"
+								itemLabel="#{tipoData.descricao}"
+								itemValue="#{tipoData}" />
+						</p:selectOneRadio>
+					</p:panelGrid>
+					
 					<p:panelGrid columns="4" id="panel-anual" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-1, ui-grid-col-4">

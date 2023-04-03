@@ -454,7 +454,19 @@ public class ConsultaContasBean implements Serializable {
 				conta.setAno(Long.valueOf((calendarioTemp.get(Calendar.YEAR))));
 		
 				conta = contas.save(conta);
-							
+						
+				
+				/* Ajuste informações de pagamento */
+				Calendar calendario = Calendar.getInstance();
+				calendario.setTime(pagamentoConta.getDataPagamento());
+				
+				pagamentoConta.setDiaPagamento(Long.valueOf((calendario.get(Calendar.DAY_OF_MONTH))));
+				pagamentoConta.setNomeDiaPagamento(Long.valueOf((calendario.get(Calendar.DAY_OF_WEEK))));
+				pagamentoConta.setSemanaPagamento(Long.valueOf((calendario.get(Calendar.WEEK_OF_YEAR))));
+				pagamentoConta.setMesPagamento(Long.valueOf((calendario.get(Calendar.MONTH))) + 1);
+				pagamentoConta.setAnoPagamento(Long.valueOf((calendario.get(Calendar.YEAR))));
+				/* fim ajuste */
+
 				pagamentosContas.save(pagamentoConta);
 							
 				RegistrarLog(conta, true);
@@ -469,6 +481,17 @@ public class ConsultaContasBean implements Serializable {
 				Conta conta = contas.porId(contaSelecionada.getId());				
 				conta.setSaldo(new BigDecimal(conta.getSaldo().doubleValue() - pagamentoConta.getValorPago().doubleValue()));		
 				conta = contas.save(conta);
+				
+				/* Ajuste informações de pagamento */
+				Calendar calendario = Calendar.getInstance();
+				calendario.setTime(pagamentoConta.getDataPagamento());
+				
+				pagamentoConta.setDiaPagamento(Long.valueOf((calendario.get(Calendar.DAY_OF_MONTH))));
+				pagamentoConta.setNomeDiaPagamento(Long.valueOf((calendario.get(Calendar.DAY_OF_WEEK))));
+				pagamentoConta.setSemanaPagamento(Long.valueOf((calendario.get(Calendar.WEEK_OF_YEAR))));
+				pagamentoConta.setMesPagamento(Long.valueOf((calendario.get(Calendar.MONTH))) + 1);
+				pagamentoConta.setAnoPagamento(Long.valueOf((calendario.get(Calendar.YEAR))));
+				/* fim ajuste */
 				
 				pagamentosContas.save(pagamentoConta);
 				
@@ -530,11 +553,12 @@ public class ConsultaContasBean implements Serializable {
 						}
 					}			
 				}
-				
+				setInformacoesDataPagamento(venda);
 				vendas.save(venda);
 				
 			} else {
 				venda.setDataPagamento(new Date());
+				setInformacoesDataPagamento(venda);
 				vendas.save(venda);
 			}
 		}
@@ -617,6 +641,19 @@ public class ConsultaContasBean implements Serializable {
 		log.setDescricao(msg + ", Nº " + conta.getCodigoOperacao() + ", valor total R$ " + nf.format(pagamentoConta.getValorPago()));
 		log.setUsuario(usuario);		
 		logs.save(log);
+	}
+	
+	private void setInformacoesDataPagamento(Venda venda) {
+		
+		Calendar calendario = Calendar.getInstance();
+
+		calendario.setTime(venda.getDataPagamento());
+		
+		venda.setDiaPagamento(Long.valueOf((calendario.get(Calendar.DAY_OF_MONTH))));
+		venda.setNomeDiaPagamento(Long.valueOf((calendario.get(Calendar.DAY_OF_WEEK))));
+		venda.setSemanaPagamento(Long.valueOf((calendario.get(Calendar.WEEK_OF_YEAR))));
+		venda.setMesPagamento(Long.valueOf((calendario.get(Calendar.MONTH))) + 1);
+		venda.setAnoPagamento(Long.valueOf((calendario.get(Calendar.YEAR))));
 	}
 	
 	public void pagarTelaResumoFinanceiro() {
@@ -791,11 +828,13 @@ public class ConsultaContasBean implements Serializable {
 						for (Conta conta : listaDeContas) {
 							if(conta.getPagamento() != null) {
 								venda.setDataPagamento(conta.getPagamento());
+								setInformacoesDataPagamento(venda);
 							}
 							
 							List<PagamentoConta> pagamentosContaTemp = pagamentosContas.todosPorConta(conta, usuario.getEmpresa());
 							for (PagamentoConta pagamentoConta : pagamentosContaTemp) {								
 								venda.setDataPagamento(pagamentoConta.getDataPagamento());
+								setInformacoesDataPagamento(venda);
 							}
 						}
 					}
@@ -804,6 +843,13 @@ public class ConsultaContasBean implements Serializable {
 				} else {
 					Venda venda = vendas.porNumeroVenda(contaSelecionada.getCodigoOperacao(), usuario.getEmpresa());
 					venda.setDataPagamento(null);
+					
+					venda.setDiaPagamento(null);
+					venda.setNomeDiaPagamento(null);
+					venda.setSemanaPagamento(null);
+					venda.setMesPagamento(null);
+					venda.setAnoPagamento(null);
+					
 					venda.setVendaPaga(false);
 					
 					List<Conta> listaDeContas = contas.porCodigoOperacao(venda.getNumeroVenda(), "VENDA", usuario.getEmpresa());
@@ -812,11 +858,13 @@ public class ConsultaContasBean implements Serializable {
 						for (Conta conta : listaDeContas) {
 							if(conta.getPagamento() != null) {
 								venda.setDataPagamento(conta.getPagamento());
+								setInformacoesDataPagamento(venda);
 							}
 							
 							List<PagamentoConta> pagamentosContaTemp = pagamentosContas.todosPorConta(conta, usuario.getEmpresa());
 							for (PagamentoConta pagamentoConta : pagamentosContaTemp) {								
 								venda.setDataPagamento(pagamentoConta.getDataPagamento());
+								setInformacoesDataPagamento(venda);
 							}
 						}
 					}

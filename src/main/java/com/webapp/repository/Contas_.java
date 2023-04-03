@@ -1203,6 +1203,194 @@ public class Contas_ implements Serializable {
 		return count;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalContasVendasPagas(Empresa empresa, Calendar calendarStart, Calendar calendarStop) {
+		
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo += "AND c.dataPagamento BETWEEN :dataInicio AND :dataFim ";
+		}
+		
+		String jpql = "SELECT c.conta.id, sum(c.valorPago) FROM PagamentoConta c "
+				+ "WHERE c.conta.empresa.id = :empresa "
+				+ "AND c.conta.tipo = 'CREDITO' AND c.conta.operacao = 'VENDA' AND c.conta.ajuste = 'N' and c.conta.exclusao = 'N' " + periodo
+				+ "GROUP BY c.conta.id";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
+	
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+
+		return q.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalLucroContasVendasPagas(Empresa empresa, Calendar calendarStart, Calendar calendarStop) {
+		
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo += "AND c.dataPagamento BETWEEN :dataInicio AND :dataFim ";
+		}
+		
+		String jpql = "SELECT c.conta.id, ((sum(c.valorPago)*100/c.conta.valor)/100)*c.conta.lucro, c.conta.custoMedio, c.conta.valor, c.conta.taxaEntrega FROM PagamentoConta c "
+				+ "WHERE c.conta.empresa.id = :empresa "
+				+ "AND c.conta.tipo = 'CREDITO' AND c.conta.operacao = 'VENDA' AND c.conta.ajuste = 'N' and c.conta.exclusao = 'N' " + periodo
+				+ "GROUP BY c.conta.id, c.conta.custoMedio, c.conta.valor, c.conta.taxaEntrega, c.conta.lucro";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
+	
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+
+		return q.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalContasVendasPagas_Semanal(String ano, String semana01, String semana02, Empresa empresa) {	
+		
+		String jpql = "SELECT c.conta.id, sum(c.valorPago) FROM PagamentoConta c "
+				+ "WHERE c.conta.empresa.id = :empresa "
+				+ "AND c.conta.tipo = 'CREDITO' AND c.conta.operacao = 'VENDA' AND c.conta.ajuste = 'N' and c.conta.exclusao = 'N' "
+				+ "AND c.semanaPagamento BETWEEN :semanaInicio AND :semanaFim AND c.anoPagamento = :ano "
+				+ "GROUP BY c.conta.id";
+		
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId())
+				.setParameter("semanaInicio", Long.parseLong(semana01.replace("W", "")))
+				.setParameter("semanaFim", Long.parseLong(semana02.replace("W", "")))
+				.setParameter("ano", Long.parseLong(ano));
+	
+		return q.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalContasVendasPagas_Mensal(String ano, String mes01, String mes02, Empresa empresa) {	
+		
+		String jpql = "SELECT c.conta.id, sum(c.valorPago) FROM PagamentoConta c "
+				+ "WHERE c.conta.empresa.id = :empresa "
+				+ "AND c.conta.tipo = 'CREDITO' AND c.conta.operacao = 'VENDA' AND c.conta.ajuste = 'N' and c.conta.exclusao = 'N' "
+				+ "AND c.mesPagamento BETWEEN :mesInicio AND :mesFim AND c.anoPagamento = :ano "
+				+ "GROUP BY c.conta.id";
+		
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId())
+				.setParameter("mesInicio", Long.parseLong(mes01))
+				.setParameter("mesFim", Long.parseLong(mes02))
+				.setParameter("ano", Long.parseLong(ano));
+	
+		return q.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalContasVendasPagas_Anual(String ano01, String ano02, Empresa empresa) {	
+		
+		String jpql = "SELECT c.conta.id, sum(c.valorPago) FROM PagamentoConta c "
+				+ "WHERE c.conta.empresa.id = :empresa "
+				+ "AND c.conta.tipo = 'CREDITO' AND c.conta.operacao = 'VENDA' AND c.conta.ajuste = 'N' and c.conta.exclusao = 'N' "
+				+ "AND c.anoPagamento BETWEEN :anoInicio AND :anoFim "
+				+ "GROUP BY c.conta.id";
+		
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId())
+				.setParameter("anoInicio", Long.parseLong(ano01))
+				.setParameter("anoFim", Long.parseLong(ano02));
+	
+		return q.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalEntradaVendasPagasPorDiaValor(Calendar calendarStart, Calendar calendarStop, Empresa empresa) {
+		 
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo = "AND i.pagamento BETWEEN :dataInicio AND :dataFim ";
+		}
+		
+		String jpql = "SELECT i.id, sum(i.valor) FROM Conta i "
+				+ "WHERE i.empresa.id = :empresa " + periodo
+				+ "AND i.operacao = 'VENDA' AND i.tipo = 'CREDITO' AND i.parcela = 'Entrada' AND i.status = 'Y' AND i.ajuste = 'N' and i.exclusao = 'N' "
+				+ "GROUP BY i.id";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
+
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+		
+		return q.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalLucroEntradaVendasPagasPorDiaValor(Calendar calendarStart, Calendar calendarStop, Empresa empresa) {
+		 
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo = "AND i.pagamento BETWEEN :dataInicio AND :dataFim ";
+		}
+		
+		String jpql = "SELECT i.id, sum(i.lucro), i.custoMedio, i.valor, i.taxaEntrega FROM Conta i "
+				+ "WHERE i.empresa.id = :empresa " + periodo
+				+ "AND i.operacao = 'VENDA' AND i.tipo = 'CREDITO' AND i.parcela = 'Entrada' AND i.status = 'Y' AND i.ajuste = 'N' and i.exclusao = 'N' "
+				+ "GROUP BY i.id, i.custoMedio, i.valor, i.taxaEntrega";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
+
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+		
+		return q.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalEntradaVendasPagasPorSemanaValor(String ano, String semana01, String semana02, Empresa empresa) {		 
+		
+		String jpql = "SELECT i.id, sum(i.valor) FROM Conta i "
+				+ "WHERE i.empresa.id = :empresa AND i.semana BETWEEN :semanaInicio AND :semanaFim AND i.ano = :ano "
+				+ "AND i.operacao = 'VENDA' AND i.tipo = 'CREDITO' AND i.parcela = 'Entrada' "
+				+ "AND i.status = 'Y' AND i.ajuste = 'N' and i.exclusao = 'N' "
+				+ "GROUP BY i.id";
+		
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId())
+				.setParameter("semanaInicio", Long.parseLong(semana01.replace("W", "")))
+				.setParameter("semanaFim", Long.parseLong(semana02.replace("W", "")))
+				.setParameter("ano", Long.parseLong(ano));
+		
+		return q.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalEntradaVendasPagasPorMesValor(String ano, String mes01, String mes02, Empresa empresa) {		 
+		
+		String jpql = "SELECT i.id, sum(i.valor) FROM Conta i "
+				+ "WHERE i.empresa.id = :empresa AND i.mes BETWEEN :mesInicio AND :mesFim AND i.ano = :ano "
+				+ "AND i.operacao = 'VENDA' AND i.tipo = 'CREDITO' AND i.parcela = 'Entrada' "
+				+ "AND i.status = 'Y' AND i.ajuste = 'N' and i.exclusao = 'N' "
+				+ "GROUP BY i.id";
+		
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId())
+				.setParameter("mesInicio", Long.parseLong(mes01))
+				.setParameter("mesFim", Long.parseLong(mes02))
+				.setParameter("ano", Long.parseLong(ano));
+		
+		return q.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalEntradaVendasPagasPorAnoValor(String ano01, String ano02, Empresa empresa) {		 
+		
+		String jpql = "SELECT i.id, sum(i.valor) FROM Conta i "
+				+ "WHERE i.empresa.id = :empresa AND i.ano BETWEEN :anoInicio AND :anoFim "
+				+ "AND i.operacao = 'VENDA' AND i.tipo = 'CREDITO' AND i.parcela = 'Entrada' "
+				+ "AND i.status = 'Y' AND i.ajuste = 'N' and i.exclusao = 'N' "
+				+ "GROUP BY i.id";
+		
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId())
+				.setParameter("anoInicio", Long.parseLong(ano01))
+				.setParameter("anoFim", Long.parseLong(ano02));
+		
+		return q.getResultList();
+	}
+	
 	public Number totalContasDespesasPagas(Empresa empresa, Calendar calendarStart, Calendar calendarStop, Conta conta) {
 		
 		String periodo = "";

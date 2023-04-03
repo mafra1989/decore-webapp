@@ -47,6 +47,24 @@ public class PagamentoConta implements Serializable {
 	@ManyToOne
 	@JoinColumn
 	private Conta conta;
+	
+	
+	/* Campos para relat�rio */
+	@Column
+	private Long diaPagamento;
+
+	@Column
+	private Long nomeDiaPagamento;
+
+	@Column
+	private Long semanaPagamento;
+
+	@Column
+	private Long mesPagamento;
+
+	@Column
+	private Long anoPagamento;
+	
 
 	public Long getId() {
 		return id;
@@ -86,6 +104,46 @@ public class PagamentoConta implements Serializable {
 
 	public void setConta(Conta conta) {
 		this.conta = conta;
+	}
+
+	public Long getDiaPagamento() {
+		return diaPagamento;
+	}
+
+	public void setDiaPagamento(Long diaPagamento) {
+		this.diaPagamento = diaPagamento;
+	}
+
+	public Long getNomeDiaPagamento() {
+		return nomeDiaPagamento;
+	}
+
+	public void setNomeDiaPagamento(Long nomeDiaPagamento) {
+		this.nomeDiaPagamento = nomeDiaPagamento;
+	}
+
+	public Long getSemanaPagamento() {
+		return semanaPagamento;
+	}
+
+	public void setSemanaPagamento(Long semanaPagamento) {
+		this.semanaPagamento = semanaPagamento;
+	}
+
+	public Long getMesPagamento() {
+		return mesPagamento;
+	}
+
+	public void setMesPagamento(Long mesPagamento) {
+		this.mesPagamento = mesPagamento;
+	}
+
+	public Long getAnoPagamento() {
+		return anoPagamento;
+	}
+
+	public void setAnoPagamento(Long anoPagamento) {
+		this.anoPagamento = anoPagamento;
 	}
 
 	@Override

@@ -60,6 +60,7 @@ import com.webapp.model.PagamentoConta;
 import com.webapp.model.Produto;
 import com.webapp.model.StatusPedido;
 import com.webapp.model.TipoDataLancamento;
+import com.webapp.model.TipoFiltroVenda;
 import com.webapp.model.TipoOperacao;
 import com.webapp.model.Top5Despesa;
 import com.webapp.model.Usuario;
@@ -263,7 +264,7 @@ public class DashboardBean implements Serializable {
 	
 	private Date dateStopMovimentacoes = new Date();
 	
-	private TipoDataLancamento tipoData = TipoDataLancamento.PAGAMENTO;
+	private TipoFiltroVenda tipoData = TipoFiltroVenda.PAGAMENTO;
 	
 
 	public List<Usuario> getTodosUsuarios() {
@@ -362,29 +363,29 @@ public class DashboardBean implements Serializable {
 			}
 			
 			
-			Number descontoVendasAvistaAPagar = vendas.descontoVendasAvistaAPagar(usuario.getEmpresa(), calendarStart, calendarStop);	
+			Number descontoVendasAvistaAPagar = vendas.descontoVendasAvistaAPagar_(usuario.getEmpresa(), calendarStart, calendarStop);	
 						
-			Number totalDescontosPorDiaValor = vendas.totalDescontosPorDiaValor(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
-			Number totalDescontosVendasParceladasPorDiaValor = vendas.totalDescontosVendasParceladasPorDiaValor(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());		
+			//Number totalDescontosPorDiaValor = vendas.totalDescontosPorDiaValor_(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
+			//Number totalDescontosVendasParceladasPorDiaValor = vendas.totalDescontosVendasParceladasPorDiaValor_(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());		
 			
-			Number totalVendasPorDiaValorTemp = vendas.totalVendasPorDiaValor(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
-			Number totalVendasParceladasPorDiaValorTemp = vendas.totalVendasParceladasPorDiaValor(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
+			Number totalVendasPorDiaValorTemp = vendas.totalVendasPorDiaValor_(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
+			//Number totalVendasParceladasPorDiaValorTemp = vendas.totalVendasParceladasPorDiaValor_(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
 			
-			totalVendasHojeValor = (totalVendasPorDiaValorTemp.doubleValue() + totalVendasParceladasPorDiaValorTemp.doubleValue()) - (totalDescontosPorDiaValor.doubleValue() + totalDescontosVendasParceladasPorDiaValor.doubleValue() + descontoVendasAvistaAPagar.doubleValue());
+			totalVendasHojeValor = (totalVendasPorDiaValorTemp.doubleValue()/* + totalVendasParceladasPorDiaValorTemp.doubleValue()*/) - (/*totalDescontosPorDiaValor.doubleValue() + totalDescontosVendasParceladasPorDiaValor.doubleValue() + */descontoVendasAvistaAPagar.doubleValue());
 			
-			Number totalTaxasPorDiaValor = vendas.totalTaxasPorDiaValor(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
+			Number totalTaxasPorDiaValor = vendas.totalTaxasPorDiaValor_(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
 			
-			Number totalVendasPorDiaQuantidade = vendas.totalVendasPorDiaQuantidade(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
-			Number totalVendasParceladasPorDiaQuantidade = vendas.totalVendasParceladasPorDiaQuantidade(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
+			Number totalVendasPorDiaQuantidade = vendas.totalVendasPorDiaQuantidade_(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
+			//Number totalVendasParceladasPorDiaQuantidade = vendas.totalVendasParceladasPorDiaQuantidade(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
 			
-			totalVendasHojeQuantidade = totalVendasPorDiaQuantidade.intValue() + totalVendasParceladasPorDiaQuantidade.intValue();
+			totalVendasHojeQuantidade = totalVendasPorDiaQuantidade.intValue()/* + totalVendasParceladasPorDiaQuantidade.intValue()*/;
 			
 			Number totalEstornosHoje = 0;//vendas.totalEstornosPorDia(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
 			
-			Number totalLucrosHojeTemp = vendas.totalLucrosPorDia(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
-			Number totalLucrosHojeVendasParceladasTemp = vendas.totalLucrosVendasParceladasPorDia(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
+			Number totalLucrosHojeTemp = vendas.totalLucrosPorDia_(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
+			//Number totalLucrosHojeVendasParceladasTemp = vendas.totalLucrosVendasParceladasPorDia(calendarStart.getTime(), calendarStop.getTime(), usuario.getEmpresa());
 			
-			totalLucrosHoje = (totalLucrosHojeTemp.doubleValue() + totalLucrosHojeVendasParceladasTemp.doubleValue() + totalEstornosHoje.doubleValue()) - (totalDescontosPorDiaValor.doubleValue() + totalTaxasPorDiaValor.doubleValue() + totalDescontosVendasParceladasPorDiaValor.doubleValue() + + descontoVendasAvistaAPagar.doubleValue());
+			totalLucrosHoje = (totalLucrosHojeTemp.doubleValue()/* + totalLucrosHojeVendasParceladasTemp.doubleValue() + totalEstornosHoje.doubleValue()*/) - (/*totalDescontosPorDiaValor.doubleValue() +*/ totalTaxasPorDiaValor.doubleValue()/* + totalDescontosVendasParceladasPorDiaValor.doubleValue()*/ + descontoVendasAvistaAPagar.doubleValue());
 			
 			
 			Number totalDescontosPendentesValor = vendas.totalDescontosPendentesValor(usuario.getEmpresa());
@@ -1983,7 +1984,7 @@ public class DashboardBean implements Serializable {
 				Number totalTaxaEntregaHojeVendaParcelada = vendas.totalTaxasEntregaPorDiaVendaParcelada(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa(), tipoData);
 				
 				
-				Number totalTaxasHoje = vendas.totalTaxasPorDiaValor(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
+				Number totalTaxasHoje = vendas.totalTaxasPorDiaValor_(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
 
 				System.out.println("Data: " + calendarStartTemp.getTime() + " - " + resultTemp.size());
 
