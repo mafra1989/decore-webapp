@@ -263,10 +263,11 @@ public class ConsultaVendasBean implements Serializable {
 							venda.setVendaPaga(false);
 						}
 						
+						/*
 						List<PagamentoConta> listaDePagamentosContas = pagamentosContas.todosPorConta(conta, usuario_.getEmpresa());
 						for (PagamentoConta pagamentoConta : listaDePagamentosContas) {
 							
-							/* Ajuste informações de pagamento - remover depois */
+							// Ajuste informações de pagamento - remover depois 
 							Calendar calendario = Calendar.getInstance();
 							calendario.setTime(pagamentoConta.getDataPagamento());
 							
@@ -277,8 +278,9 @@ public class ConsultaVendasBean implements Serializable {
 							pagamentoConta.setAnoPagamento(Long.valueOf((calendario.get(Calendar.YEAR))));
 							
 							pagamentosContas.save(pagamentoConta);
-							/* fim ajuste */
+							// fim ajuste
 						}
+						*/
 						
 						if(conta.getTipo().equals(OrigemConta.CREDITO.name())) {
 							totalContasReceitasPagasParcialmenteDataValor = totalContasReceitasPagasParcialmenteDataValor.doubleValue() + contas.totalContasVendasPagas(usuario_.getEmpresa(), calendarStart, calendarStop, conta).doubleValue();					
@@ -308,7 +310,8 @@ public class ConsultaVendasBean implements Serializable {
 				
 				
 				
-				/* Ajuste informações de pagamento - remover depois */
+				/* 
+				// Ajuste informações de pagamento - remover depois
 				Calendar calendario = Calendar.getInstance();
 				calendario.setTime(venda.getDataPagamento());
 				
@@ -320,7 +323,8 @@ public class ConsultaVendasBean implements Serializable {
 				vendaTemp.setAnoPagamento(Long.valueOf((calendario.get(Calendar.YEAR))));
 				
 				vendas.save(vendaTemp);
-				/* fim ajuste */
+				// fim ajuste 
+				*/
 			}
 			
 		}
