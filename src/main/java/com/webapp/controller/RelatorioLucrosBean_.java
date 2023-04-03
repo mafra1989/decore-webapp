@@ -33,6 +33,7 @@ import com.webapp.model.Empresa;
 import com.webapp.model.Produto;
 import com.webapp.model.Target;
 import com.webapp.model.TipoDataLancamento;
+import com.webapp.model.TipoFiltroVenda;
 import com.webapp.model.Usuario;
 import com.webapp.repository.CategoriasProdutos;
 import com.webapp.repository.Compras;
@@ -182,7 +183,7 @@ public class RelatorioLucrosBean_ implements Serializable {
 	@Inject
 	private Usuario usuario;
 
-	private TipoDataLancamento tipoData = TipoDataLancamento.LANCAMENTO;
+	private TipoFiltroVenda tipoData = TipoFiltroVenda.LANCAMENTO;
 
 	@PostConstruct
 	public void init() {
