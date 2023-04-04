@@ -1248,6 +1248,38 @@ public class Contas_ implements Serializable {
 	}
 	
 	@SuppressWarnings("unchecked")
+	public List<Object[]> totalLucroContasVendasPagas_Semanal(String ano, String semana01, String semana02, Empresa empresa) {
+		
+		String jpql = "SELECT c.conta.id, ((sum(c.valorPago)*100/c.conta.valor)/100)*c.conta.lucro, c.conta.custoMedio, c.conta.valor, c.conta.taxaEntrega FROM PagamentoConta c "
+				+ "WHERE c.conta.empresa.id = :empresa "
+				+ "AND c.conta.tipo = 'CREDITO' AND c.conta.operacao = 'VENDA' AND c.conta.ajuste = 'N' and c.conta.exclusao = 'N' " 
+				+ "AND c.semanaPagamento BETWEEN :semanaInicio AND :semanaFim AND c.anoPagamento = :ano "
+				+ "GROUP BY c.conta.id, c.conta.custoMedio, c.conta.valor, c.conta.taxaEntrega, c.conta.lucro";
+		
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId())
+				.setParameter("semanaInicio", Long.parseLong(semana01.replace("W", "")))
+				.setParameter("semanaFim", Long.parseLong(semana02.replace("W", "")))
+				.setParameter("ano", Long.parseLong(ano));
+
+		return q.getResultList();
+	} 
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalLucroContasVendasPagas_Anual(String ano, Empresa empresa) {
+		
+		String jpql = "SELECT c.conta.id, ((sum(c.valorPago)*100/c.conta.valor)/100)*c.conta.lucro, c.conta.custoMedio, c.conta.valor, c.conta.taxaEntrega FROM PagamentoConta c "
+				+ "WHERE c.conta.empresa.id = :empresa "
+				+ "AND c.conta.tipo = 'CREDITO' AND c.conta.operacao = 'VENDA' AND c.conta.ajuste = 'N' and c.conta.exclusao = 'N' " 
+				+ "AND c.anoPagamento = :ano "
+				+ "GROUP BY c.conta.id, c.conta.custoMedio, c.conta.valor, c.conta.taxaEntrega, c.conta.lucro";
+		
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId())
+				.setParameter("ano", Long.parseLong(ano));
+
+		return q.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
 	public List<Object[]> totalContasVendasPagas_Semanal(String ano, String semana01, String semana02, Empresa empresa) {	
 		
 		String jpql = "SELECT c.conta.id, sum(c.valorPago) FROM PagamentoConta c "
@@ -1337,6 +1369,34 @@ public class Contas_ implements Serializable {
 			q.setParameter("dataInicio", calendarStart.getTime());
 			q.setParameter("dataFim", calendarStop.getTime());
 		}
+		
+		return q.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalLucroEntradaVendasPagasPorSemanaValor(String ano, String semana01, String semana02, Empresa empresa) {
+		
+		String jpql = "SELECT i.id, sum(i.lucro), i.custoMedio, i.valor, i.taxaEntrega FROM Conta i "
+				+ "WHERE i.empresa.id = :empresa AND i.semana BETWEEN :semanaInicio AND :semanaFim AND i.ano = :ano "
+				+ "AND i.operacao = 'VENDA' AND i.tipo = 'CREDITO' AND i.parcela = 'Entrada' AND i.status = 'Y' AND i.ajuste = 'N' and i.exclusao = 'N' "
+				+ "GROUP BY i.id, i.custoMedio, i.valor, i.taxaEntrega";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId())
+				.setParameter("semanaInicio", Long.parseLong(semana01.replace("W", "")))
+				.setParameter("semanaFim", Long.parseLong(semana02.replace("W", "")))
+				.setParameter("ano", Long.parseLong(ano));
+		
+		return q.getResultList();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalLucroEntradaVendasPagasPorAnoValor(String ano, Empresa empresa) {
+		
+		String jpql = "SELECT i.id, sum(i.lucro), i.custoMedio, i.valor, i.taxaEntrega FROM Conta i "
+				+ "WHERE i.empresa.id = :empresa AND i.ano = :ano "
+				+ "AND i.operacao = 'VENDA' AND i.tipo = 'CREDITO' AND i.parcela = 'Entrada' AND i.status = 'Y' AND i.ajuste = 'N' and i.exclusao = 'N' "
+				+ "GROUP BY i.id, i.custoMedio, i.valor, i.taxaEntrega";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId())
+				.setParameter("ano", Long.parseLong(ano));
 		
 		return q.getResultList();
 	}

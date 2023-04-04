@@ -370,18 +370,18 @@
 								onstart="PF('downloadLoading').show();"
 								oncomplete="PF('downloadLoading').hide();" />
 
-							<p:column headerText="N. Venda" width="8%" styleClass="font-column">
+							<p:column headerText="N. Venda" width="10%" styleClass="font-column">
 								<h:outputText value="#{venda.numeroVenda}" />
 								<p:commandButton icon="fa fa-fw fa-edit" styleClass="inventario" rendered="#{venda.ajuste}" />
 							</p:column>
 
-							<p:column headerText="Data da venda" width="10%" styleClass="font-column">
+							<p:column headerText="Data da venda" width="15%" styleClass="font-column">
 								<h:outputText value="#{venda.dataVenda}">
 									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" timeZone="America/Manaus" dateStyle="short" />
 								</h:outputText>
 							</p:column>
 							
-							<p:column headerText="Data de Pagamento" width="10%">
+							<p:column headerText="Data de Pagamento" width="15%">
 								<h:outputText value="#{venda.dataPagamento != null ? venda.dataPagamento : '-'}">
 									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy"
 										dateStyle="short" timeZone="America/Manaus" />
@@ -434,7 +434,7 @@
 								</h:outputText>
 							</p:column>
 							
-							<p:column headerText="Pago Nesta Data" width="15%">
+							<p:column headerText="Pago Nesta Data" width="15%" rendered="false">
 								<h:outputText value="#{venda.valorPago != null ? venda.valorPago : '-'}">
 									<f:convertNumber type="currency" />
 								</h:outputText>
@@ -446,7 +446,7 @@
 								</h:outputText>
 							</p:column>
 							
-							<p:column headerText="Pago?" width="8%" styleClass="font-column">
+							<p:column headerText="Pago?" width="10%" styleClass="font-column">
 								<h:outputText value="#{venda.tipoPagamento == 'PARCELADO' ? 'Venda Parc.' : ((venda.conta and not venda.vendaPaga) ? 'À receber' : (venda.ajuste ? '-' : (venda.vendaPaga ? 'Sim' : 'Não')))}" />
 							</p:column>
 
@@ -456,8 +456,12 @@
 							styleClass="panelgrid-noborder disabled disabled panel-total">
 
 							<p:outputLabel
-								value="Total Pago: R$ #{consultaVendasBean.totalVendas}"
+								value="Valor Total: R$ #{consultaVendasBean.totalVendas}"
 								style="float:left;margin-top:10px;margin-bottom:5px;margin-left:-10px;font-size: 13px;font-family: inherit;" />
+
+							<p:outputLabel 
+								value="Total Pago: R$ #{consultaVendasBean.totalPago}"
+								style="float:right;margin-top:10px;margin-bottom:5px;margin-right:0px;font-size: 13px;font-family: inherit;" />
 
 							<p:outputLabel rendered="false"
 								value="Total de Itens: #{consultaVendasBean.totalItens}"

@@ -266,6 +266,11 @@ public class DashboardBean implements Serializable {
 	
 	private TipoFiltroVenda tipoData = TipoFiltroVenda.PAGAMENTO;
 	
+	private TipoFiltroVenda tipoDataSemana = TipoFiltroVenda.PAGAMENTO;
+	
+	@Inject
+	private Contas_ contas_;
+	
 
 	public List<Usuario> getTodosUsuarios() {
 		return todosUsuarios;
@@ -1950,6 +1955,7 @@ public class DashboardBean implements Serializable {
 		List<Number> values = new ArrayList<>();
 
 		Calendar calendarStart = Calendar.getInstance();
+		calendarStart.setTime(dateStart);
 		calendarStart.add(Calendar.DAY_OF_MONTH, -3);
 		calendarStart = DateUtils.truncate(calendarStart, Calendar.DAY_OF_MONTH);
 
@@ -1972,24 +1978,118 @@ public class DashboardBean implements Serializable {
 				calendarStopTemp.set(Calendar.MINUTE, 59);
 				calendarStopTemp.set(Calendar.SECOND, 59);
 
-				List<Object[]> resultTemp = vendas.totalLucrosPorData(calendarStartTemp, calendarStopTemp,
-						null, null, null, null, true, usuario.getEmpresa(), tipoData);
-				
-				Number totalEstornosHoje = 0;//vendas.totalEstornosPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
-				
-				Number totalDescontosHoje = vendas.totalDescontosPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa(), tipoData);
-				Number totalDescontosHojeVendaParcelada = vendas.totalDescontosPorDiaVendaParcelada(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa(), tipoData);
-				
-				Number totalTaxaEntregaHoje = vendas.totalTaxasEntregaPorDia(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa(), tipoData);
-				Number totalTaxaEntregaHojeVendaParcelada = vendas.totalTaxasEntregaPorDiaVendaParcelada(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa(), tipoData);
 				
 				
-				Number totalTaxasHoje = vendas.totalTaxasPorDiaValor_(calendarStartTemp.getTime(), calendarStopTemp.getTime(), usuario.getEmpresa());
+				Number totalLucroReceitasVendasPagasParcialmenteDataValor = 0;
+				Number totalLucroEntradasReceitasVendasPagasParcialmenteDataValor = 0;
+				Number totalLucroContasReceitasVendasPagasParcialmenteDataValor = 0;	
+				
+				Number totalLucroVendasPagasDataValor = 0;
+				
+				Number totalComprasDataValor = 0;
+				
+				if(tipoData == TipoFiltroVenda.PAGAMENTO) {
+					
+					List<Object[]> resultTemp = vendas.totalLucrosPorData_(calendarStartTemp, calendarStopTemp,
+							null, null, null, null, true, usuario.getEmpresa(), tipoData);
+					
+					for (Object[] object : resultTemp) {
+						
+						List<Conta> listaDeContas = contas.porCodigoOperacao((long) object[6], "VENDA", usuario.getEmpresa());
+						if(listaDeContas.size() == 0) {
+							totalLucroVendasPagasDataValor = (totalLucroVendasPagasDataValor.doubleValue() + 
+									((BigDecimal)object[3]).doubleValue() + ((BigDecimal)object[8]).doubleValue())
+									- ((BigDecimal)object[7]).doubleValue();
+							
+							totalComprasDataValor = totalComprasDataValor.doubleValue() + ((BigDecimal)object[4]).doubleValue();
+						}
+					}
+					
+					List<Object[]> resultTemp_ = contas_.totalLucroEntradaVendasPagasPorDiaValor(calendarStartTemp, calendarStopTemp, usuario.getEmpresa());
+					for (Object[] object : resultTemp_) {
+						
+						totalLucroEntradasReceitasVendasPagasParcialmenteDataValor = 
+								totalLucroEntradasReceitasVendasPagasParcialmenteDataValor.doubleValue()
+								+ ((BigDecimal)object[1]).doubleValue();
+						
+						totalComprasDataValor = totalComprasDataValor.doubleValue() + ((BigDecimal)object[2]).doubleValue();
+					}
+					
+					
+					List<Object[]> resultTemp__ = contas_.totalLucroContasVendasPagas(usuario.getEmpresa(), calendarStartTemp, calendarStopTemp);
+					for (Object[] object : resultTemp__) {
+												
+						totalLucroContasReceitasVendasPagasParcialmenteDataValor = 
+								totalLucroContasReceitasVendasPagasParcialmenteDataValor.doubleValue()
+								+ ((BigDecimal)object[1]).doubleValue();
+						
+						totalComprasDataValor = totalComprasDataValor.doubleValue() + ((BigDecimal)object[2]).doubleValue();
+					}
+					
+					totalLucroReceitasVendasPagasParcialmenteDataValor = totalLucroEntradasReceitasVendasPagasParcialmenteDataValor.doubleValue() 
+							+ totalLucroContasReceitasVendasPagasParcialmenteDataValor.doubleValue();
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					Number totalReceitasVendasPagasParcialmenteDataValor = 0;
+					Number totalEntradasReceitasVendasPagasParcialmenteDataValor = 0;
+					Number totalContasReceitasVendasPagasParcialmenteDataValor = 0;	
+					
+					Number totalVendasPagasDataValor = 0;
+					
+					resultTemp = vendas.totalVendasPorData_(calendarStartTemp, calendarStopTemp,
+							null, null, null, null, true, usuario.getEmpresa(), tipoData);
+					for (Object[] object : resultTemp) {
+						
+						List<Conta> listaDeContas = contas.porCodigoOperacao((long) object[5], "VENDA", usuario.getEmpresa());
+						if(listaDeContas.size() == 0) {
+							totalVendasPagasDataValor = (totalVendasPagasDataValor.doubleValue() + 
+									((BigDecimal)object[3]).doubleValue() + ((BigDecimal)object[6]).doubleValue())
+									- ((BigDecimal)object[7]).doubleValue();
+						}
+					}
+					
+					
+					resultTemp_ = contas.totalEntradaVendasPagasPorDiaValor(calendarStartTemp, calendarStopTemp, usuario.getEmpresa());
+					for (Object[] object : resultTemp_) {
+						
+						totalEntradasReceitasVendasPagasParcialmenteDataValor = 
+								totalEntradasReceitasVendasPagasParcialmenteDataValor.doubleValue()
+								+ ((BigDecimal)object[1]).doubleValue();						
+					}
+					
+					
+					resultTemp__ = contas.totalContasVendasPagas(usuario.getEmpresa(), calendarStartTemp, calendarStopTemp);
+					for (Object[] object : resultTemp__) {
+												
+						totalContasReceitasVendasPagasParcialmenteDataValor = 
+								totalContasReceitasVendasPagasParcialmenteDataValor.doubleValue()
+								+ ((BigDecimal)object[1]).doubleValue();
+					}
+					
+					totalReceitasVendasPagasParcialmenteDataValor = totalEntradasReceitasVendasPagasParcialmenteDataValor.doubleValue() 
+							+ totalContasReceitasVendasPagasParcialmenteDataValor.doubleValue();
+					
 
-				System.out.println("Data: " + calendarStartTemp.getTime() + " - " + resultTemp.size());
 
-				if (resultTemp.size() == 0) {
+					totalVendasPagasDataValor = totalVendasPagasDataValor.doubleValue() + totalReceitasVendasPagasParcialmenteDataValor.doubleValue();
 
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
 					Object[] object = new Object[6];
 					object[0] = calendarStartTemp.get(Calendar.DAY_OF_MONTH);
 					if (calendarStartTemp.get(Calendar.DAY_OF_MONTH) < 10) {
@@ -2002,20 +2102,12 @@ public class DashboardBean implements Serializable {
 					}
 
 					object[2] = calendarStartTemp.get(Calendar.YEAR);
-
-					object[3] = 0;
-					object[4] = 0;
-					object[5] = 0;
-
-					System.out.println("totalComprasPorData: " + object[4]);
-
+					
+					object[3] = totalLucroVendasPagasDataValor.doubleValue() + totalLucroReceitasVendasPagasParcialmenteDataValor.doubleValue();
+					object[4] = totalComprasDataValor.doubleValue();
+					object[5] = totalVendasPagasDataValor.doubleValue();
+					
 					result.add(object);
-				} else {
-					for (Object[] object : resultTemp) {
-						object[3] = (((BigDecimal)object[3]).doubleValue() + totalEstornosHoje.doubleValue()) - (totalDescontosHoje.doubleValue() + totalDescontosHojeVendaParcelada.doubleValue() + totalTaxasHoje.doubleValue());
-						object[5] = (((BigDecimal)object[5]).doubleValue() + totalTaxasHoje.doubleValue() + totalTaxaEntregaHojeVendaParcelada.doubleValue() + totalTaxaEntregaHoje.doubleValue()) - (totalDescontosHoje.doubleValue() + totalDescontosHojeVendaParcelada.doubleValue());
-						result.add(object);
-					}
 				}
 
 				calendarStartTemp.add(Calendar.DAY_OF_MONTH, 1);
@@ -2183,6 +2275,11 @@ public class DashboardBean implements Serializable {
 
 				System.out.println(semana01);
 
+				
+				
+				
+				/*
+				
 				List<Object[]> resultTemp = vendas.totalLucrosPorSemana(ano01, semana01_, semana01_, null,
 						null, null, null, true, usuario.getEmpresa());
 				
@@ -2193,6 +2290,8 @@ public class DashboardBean implements Serializable {
 
 				Number totalTaxasEntrega = vendas.totalTaxasEntregaPorSemana(ano01, semana01_, semana01_, usuario.getEmpresa());				
 				Number totalTaxasEntregaVendaParcelada = vendas.totalTaxasEntregaPorSemanaVendasParceladas(ano01, semana01_, semana01_, usuario.getEmpresa());
+				
+				
 				
 				if (resultTemp.size() == 0) {
 
@@ -2208,11 +2307,128 @@ public class DashboardBean implements Serializable {
 					result.add(object);
 				} else {
 					for (Object[] object : resultTemp) {
-						object[2] = (((BigDecimal)object[2]).doubleValue() + totalEstornos.doubleValue()) - (totalDescontos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
+						//object[2] = (((BigDecimal)object[2]).doubleValue() + totalEstornos.doubleValue()) - (totalDescontos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
 						object[4] = (((BigDecimal)object[4]).doubleValue() + totalTaxasEntregaVendaParcelada.doubleValue() + totalTaxasEntrega.doubleValue()) - (totalDescontos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
 						result.add(object);
 					}
 				}
+				*/
+				
+				
+				
+				
+				
+				
+				Number totalLucroReceitasVendasPagasParcialmenteDataValor = 0;
+				Number totalLucroEntradasReceitasVendasPagasParcialmenteDataValor = 0;
+				Number totalLucroContasReceitasVendasPagasParcialmenteDataValor = 0;	
+				
+				Number totalLucroVendasPagasDataValor = 0;
+				
+				if(tipoDataSemana == TipoFiltroVenda.PAGAMENTO) {
+					
+					List<Object[]> resultTemp = vendas.totalLucrosPorSemana_(ano01, semana01_, semana01_, null,
+							null, null, null, true, usuario.getEmpresa());
+
+					for (Object[] object : resultTemp) {
+						
+						List<Conta> listaDeContas = contas.porCodigoOperacao((long) object[5], "VENDA", usuario.getEmpresa());
+						if(listaDeContas.size() == 0) {
+							totalLucroVendasPagasDataValor = (totalLucroVendasPagasDataValor.doubleValue() + 
+									((BigDecimal)object[2]).doubleValue())
+									- ((BigDecimal)object[6]).doubleValue();
+						}
+					}
+					
+					
+					List<Object[]> resultTemp_ = contas_.totalLucroEntradaVendasPagasPorSemanaValor(ano01, semana01_, semana01_, usuario.getEmpresa());
+					for (Object[] object : resultTemp_) {
+						
+						totalLucroEntradasReceitasVendasPagasParcialmenteDataValor = 
+								totalLucroEntradasReceitasVendasPagasParcialmenteDataValor.doubleValue()
+								+ ((BigDecimal)object[1]).doubleValue();
+					}
+					
+					
+					List<Object[]> resultTemp__ = contas_.totalLucroContasVendasPagas_Semanal(ano01, semana01_, semana01_, usuario.getEmpresa());
+					for (Object[] object : resultTemp__) {
+												
+						totalLucroContasReceitasVendasPagasParcialmenteDataValor = 
+								totalLucroContasReceitasVendasPagasParcialmenteDataValor.doubleValue()
+								+ ((BigDecimal)object[1]).doubleValue();
+					}
+					
+				
+					totalLucroReceitasVendasPagasParcialmenteDataValor = totalLucroEntradasReceitasVendasPagasParcialmenteDataValor.doubleValue() 
+							+ totalLucroContasReceitasVendasPagasParcialmenteDataValor.doubleValue();
+
+				}	
+				
+				
+				
+				
+				
+				Number totalReceitasVendasPagasParcialmenteDataValor = 0;
+				Number totalEntradasReceitasVendasPagasParcialmenteDataValor = 0;
+				Number totalContasReceitasVendasPagasParcialmenteDataValor = 0;	
+				
+				Number totalVendasPagasDataValor = 0;	
+				
+				if(tipoDataSemana == TipoFiltroVenda.PAGAMENTO) {
+					
+					List<Object[]> resultTemp = vendas.totalVendasPorSemana_(ano01, semana01_, semana01_, null,
+							null, null, null, true, usuario.getEmpresa());
+
+					for (Object[] object : resultTemp) {
+						
+						List<Conta> listaDeContas = contas.porCodigoOperacao((long) object[3], "VENDA", usuario.getEmpresa());
+						if(listaDeContas.size() == 0) {
+							totalVendasPagasDataValor = (totalVendasPagasDataValor.doubleValue() + 
+									((BigDecimal)object[2]).doubleValue() + ((BigDecimal)object[4]).doubleValue())
+									- ((BigDecimal)object[5]).doubleValue();
+						}
+					}
+					
+					
+					List<Object[]> resultTemp_ = contas.totalEntradaVendasPagasPorSemanaValor(ano01, semana01_, semana01_, usuario.getEmpresa());
+					for (Object[] object : resultTemp_) {
+						
+						totalEntradasReceitasVendasPagasParcialmenteDataValor = 
+								totalEntradasReceitasVendasPagasParcialmenteDataValor.doubleValue()
+								+ ((BigDecimal)object[1]).doubleValue();						
+					}
+					
+					
+					List<Object[]> resultTemp__ = contas.totalContasVendasPagas_Semanal(ano01, semana01_, semana01_, usuario.getEmpresa());
+					for (Object[] object : resultTemp__) {
+												
+						totalContasReceitasVendasPagasParcialmenteDataValor = 
+								totalContasReceitasVendasPagasParcialmenteDataValor.doubleValue()
+								+ ((BigDecimal)object[1]).doubleValue();
+					}
+					
+					totalReceitasVendasPagasParcialmenteDataValor = totalEntradasReceitasVendasPagasParcialmenteDataValor.doubleValue() 
+							+ totalContasReceitasVendasPagasParcialmenteDataValor.doubleValue();	
+				}
+				
+				
+				
+				
+				
+				Object[] object = new Object[5];
+				object[0] = i;
+				object[1] = ano01;
+				
+				object[2] = totalLucroVendasPagasDataValor.doubleValue() + totalLucroReceitasVendasPagasParcialmenteDataValor.doubleValue();
+				
+				object[4] = totalVendasPagasDataValor.doubleValue() + totalReceitasVendasPagasParcialmenteDataValor.doubleValue();
+
+				result.add(object);
+				
+				
+				
+				
+				
 			}
 
 			System.out.println("result.size(): " + result.size());
@@ -2224,7 +2440,7 @@ public class DashboardBean implements Serializable {
 		for (Object[] object : result) {
 
 			Double totalDeLucroEmVendas = ((Number) object[2]).doubleValue();
-			Double totalCompras = ((Number) object[3]).doubleValue();
+			Double totalCompras = 0D;//((Number) object[3]).doubleValue();
 			
 			Double totalVendasComPrecoVenda = ((Number) object[4]).doubleValue();
 

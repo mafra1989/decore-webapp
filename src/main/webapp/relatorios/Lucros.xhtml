@@ -299,7 +299,7 @@
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-9">
 						
-						<p:outputLabel value="Tipo de Data" for="datas" />
+						<p:outputLabel value="Filtrar Vendas" for="datas" />
 						<p:selectOneRadio id="datas" value="#{relatorioLucrosBean.tipoData}">
 							
 							<p:ajax event="change"
@@ -432,6 +432,26 @@
 					<h3 style="font-weight: bold; margin-top: -8px;">Lucro em vendas por
 						Semana</h3>
 
+					<p:panelGrid columns="2" layout="grid" style="margin-bottom: 4px;"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-3, ui-grid-col-9">
+						
+						<p:outputLabel value="Filtrar Vendas" for="datasSemana" />
+						<p:selectOneRadio id="datasSemana" value="#{relatorioLucrosBean.tipoDataSemana}">
+							
+							<p:ajax event="change"
+								listener="#{relatorioLucrosBean.createMixedModelPorSemana}"
+								process="@this painel-ano panel-semanal panel-semanal-categoria"
+								update="barChart-lucrosPorSemana" />
+								
+							<f:selectItems
+								value="#{relatorioLucrosBean.tiposDatas}"
+								var="tipoData"
+								itemLabel="#{tipoData.descricao}"
+								itemValue="#{tipoData}" />
+						</p:selectOneRadio>
+					</p:panelGrid>
+					
 					<p:panelGrid columns="2" layout="grid" id="painel-ano"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-5">
@@ -579,7 +599,7 @@
 					style="padding-bottom: 0px !important; margin-top:10px;width:100%">
 
 					<h3 style="font-weight: bold; margin-top: -8px;">Lucro geral por Mês</h3>
-
+					
 					<p:panelGrid columns="2" layout="grid" id="painel-ano2"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-5">
@@ -755,6 +775,26 @@
 
 					<h3 style="font-weight: bold; margin-top: -8px;">Lucro em vendas por Ano</h3>
 
+					<p:panelGrid columns="2" layout="grid" style="margin-bottom: 4px;"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-3, ui-grid-col-9">
+						
+						<p:outputLabel value="Filtrar Vendas" for="datasAnual" />
+						<p:selectOneRadio id="datasAnual" value="#{relatorioLucrosBean.tipoDataAnual}">
+							
+							<p:ajax event="change"
+								listener="#{relatorioLucrosBean.createMixedModelPorAno}"
+								process="@this painel-anual painel-anual-categoria"
+								update="barChart-lucrosPorAno" />
+								
+							<f:selectItems
+								value="#{relatorioLucrosBean.tiposDatas}"
+								var="tipoData"
+								itemLabel="#{tipoData.descricao}"
+								itemValue="#{tipoData}" />
+						</p:selectOneRadio>
+					</p:panelGrid>
+					
 					<p:panelGrid columns="4" id="painel-anual" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-3, ui-grid-col-4, ui-grid-col-1, ui-grid-col-4">

@@ -145,6 +145,8 @@ public class ConsultaVendasBean implements Serializable {
 	private NumberFormat nf = new DecimalFormat("###,##0.00", REAL);
 
 	private String totalVendas = "0,00";
+	
+	private String totalPago = "0,00";
 
 	private Integer totalItens = 0;
 
@@ -212,11 +214,23 @@ public class ConsultaVendasBean implements Serializable {
 				statusPedido, usuario, cliente, entregador, vendasPagas, usuario_.getEmpresa(), tipoData);
 
 		double somaValorPago = 0;
+		double somaTotalPago = 0;
+		double somaValorTotal = 0;
 		//double totalVendasTemp = 0;
 		//double totalDesconto = 0;
 		totalItens = 0;
+		double totalVendasTemp_ = 0;
+		double totalDesconto_ = 0;
 		for (Venda venda : vendasFiltradas) {	
 		
+			if(!venda.isAjuste()) {
+				totalVendasTemp_ += venda.getValorTotal().doubleValue();				
+				
+				if(venda.getDesconto() != null) {
+					totalDesconto_ += venda.getDesconto().doubleValue();
+				}
+			}
+					
 			
 			if(venda.getDataPagamento() != null) {
 				
@@ -299,6 +313,8 @@ public class ConsultaVendasBean implements Serializable {
 						venda.setValorPago(new BigDecimal(totalEntradasReceitasPagasParcialmenteDataValor.doubleValue() + totalContasReceitasPagasParcialmenteDataValor.doubleValue()));
 						venda.setTotalPago(new BigDecimal(totalEntradasReceitasPagasParcialmenteValor.doubleValue() + totalContasReceitasPagasParcialmenteValor.doubleValue()));
 					}
+					
+					
 				/*} else {
 					venda.setValorPago(new BigDecimal(totalVendasTemp - totalDesconto));
 					venda.setTotalPago(new BigDecimal(totalVendasTemp - totalDesconto));				
@@ -306,6 +322,7 @@ public class ConsultaVendasBean implements Serializable {
 				
 				if(!venda.isAjuste()) {
 					somaValorPago += venda.getValorPago().doubleValue();
+					somaTotalPago += venda.getTotalPago().doubleValue();
 				}
 				
 				
@@ -329,7 +346,10 @@ public class ConsultaVendasBean implements Serializable {
 			
 		}
 
-		totalVendas = nf.format(somaValorPago);
+		somaValorTotal = totalVendasTemp_ - totalDesconto_;
+		totalVendas = nf.format(somaValorTotal);
+		
+		totalPago = nf.format(somaTotalPago);
 
 		vendaSelecionada = null;
 	}
@@ -1260,5 +1280,13 @@ public class ConsultaVendasBean implements Serializable {
 
 	public void setTipoData(TipoFiltroVenda tipoData) {
 		this.tipoData = tipoData;
+	}
+
+	public String getTotalPago() {
+		return totalPago;
+	}
+
+	public void setTotalPago(String totalPago) {
+		this.totalPago = totalPago;
 	}
 }

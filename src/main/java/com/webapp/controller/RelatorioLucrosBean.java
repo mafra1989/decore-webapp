@@ -191,6 +191,10 @@ public class RelatorioLucrosBean implements Serializable {
 	
 	private TipoFiltroVenda tipoData = TipoFiltroVenda.LANCAMENTO;
 	
+	private TipoFiltroVenda tipoDataSemana = TipoFiltroVenda.LANCAMENTO;
+	
+	private TipoFiltroVenda tipoDataAnual = TipoFiltroVenda.LANCAMENTO;
+	
 	@Inject
 	private Contas_ contas_;
 
@@ -461,7 +465,7 @@ public class RelatorioLucrosBean implements Serializable {
 						List<Conta> listaDeContas = contas.porCodigoOperacao((long) object[6], "VENDA", usuario.getEmpresa());
 						if(listaDeContas.size() == 0) {
 							totalLucroVendasPagasDataValor = (totalLucroVendasPagasDataValor.doubleValue() + 
-									((BigDecimal)object[3]).doubleValue() + ((BigDecimal)object[8]).doubleValue())
+									((BigDecimal)object[3]).doubleValue() /*+ ((BigDecimal)object[8]).doubleValue()*/)
 									- ((BigDecimal)object[7]).doubleValue();
 							
 							totalVendasPagasDataValor = totalVendasPagasDataValor.doubleValue() + ((BigDecimal)object[5]).doubleValue()
@@ -778,43 +782,135 @@ public class RelatorioLucrosBean implements Serializable {
 
 				System.out.println(semana01);
 
-				List<Object[]> resultTemp = vendas.totalLucrosPorSemana(ano01, semana01, semana01, categoriaPorSemana,
-						categoriasPorSemana, produto02, usuarioPorSemana, true, usuario.getEmpresa());
-				
-				Number totalEstornos = 0;//vendas.totalEstornosPorSemana(ano01, semana01, semana01, usuario.getEmpresa());
-				
-				Number totalDescontos = vendas.totalDescontosPorSemana(ano01, semana01, semana01, usuario.getEmpresa());				
-				Number totalDescontosVendaParcelada = vendas.totalDescontosPorSemanaVendaParcelada(ano01, semana01, semana01, usuario.getEmpresa());
-
-				Number totalTaxasEntrega = vendas.totalTaxasEntregaPorSemana(ano01, semana01, semana01, usuario.getEmpresa());				
-				Number totalTaxasEntregaVendaParcelada = vendas.totalTaxasEntregaPorSemanaVendasParceladas(ano01, semana01, semana01, usuario.getEmpresa());
 				
 				
-				if (resultTemp.size() == 0) {
+				
+				
+				Number totalLucroReceitasVendasPagasParcialmenteDataValor = 0;
+				Number totalLucroEntradasReceitasVendasPagasParcialmenteDataValor = 0;
+				Number totalLucroContasReceitasVendasPagasParcialmenteDataValor = 0;	
+				
+				Number totalLucroVendasPagasDataValor = 0;
+				
+				Number totalVendasPagasDataValor = 0;
+				Number totalComprasDataValor = 0;	
+				
+				if(tipoDataSemana == TipoFiltroVenda.PAGAMENTO) {
+					
+					List<Object[]> resultTemp = vendas.totalLucrosPorSemana_(ano01, semana01, semana01, categoriaPorSemana,
+							categoriasPorSemana, produto02, usuarioPorSemana, true, usuario.getEmpresa());
 
-					Object[] object = new Object[5];
-
-					object[0] = i;
-					object[1] = ano01;
-
-					object[2] = 0;
-					object[3] = 0;
-					object[4] = 0;
-
-					result.add(object);
-				} else {
 					for (Object[] object : resultTemp) {
 						
-						if(categoriasPorSemana == null || categoriasPorSemana.length == 0 || categoriasPorSemana.length == todasCategoriasProduto.size()) {
-							object[2] = (((BigDecimal)object[2]).doubleValue() + totalEstornos.doubleValue()) - (totalDescontos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
-							object[4] = (((BigDecimal)object[4]).doubleValue() + totalTaxasEntrega.doubleValue() + totalTaxasEntregaVendaParcelada.doubleValue()) - (totalDescontos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
-						} else {
-							object[2] = ((BigDecimal)object[2]).doubleValue() + (totalEstornos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
+						List<Conta> listaDeContas = contas.porCodigoOperacao((long) object[5], "VENDA", usuario.getEmpresa());
+						if(listaDeContas.size() == 0) {
+							totalLucroVendasPagasDataValor = (totalLucroVendasPagasDataValor.doubleValue() + 
+									((BigDecimal)object[2]).doubleValue())
+									- ((BigDecimal)object[6]).doubleValue();
+							
+							totalVendasPagasDataValor = totalVendasPagasDataValor.doubleValue() + ((BigDecimal)object[4]).doubleValue() + ((BigDecimal)object[7]).doubleValue() - ((BigDecimal)object[6]).doubleValue();;
+														
+							totalComprasDataValor = totalComprasDataValor.doubleValue() + ((BigDecimal)object[3]).doubleValue();
 						}
+					}
+					
+					
+					List<Object[]> resultTemp_ = contas_.totalLucroEntradaVendasPagasPorSemanaValor(ano01, semana01, semana01, usuario.getEmpresa());
+					for (Object[] object : resultTemp_) {
 						
+						totalLucroEntradasReceitasVendasPagasParcialmenteDataValor = 
+								totalLucroEntradasReceitasVendasPagasParcialmenteDataValor.doubleValue()
+								+ ((BigDecimal)object[1]).doubleValue();
+						
+						totalVendasPagasDataValor = totalVendasPagasDataValor.doubleValue() + ((BigDecimal)object[3]).doubleValue() + ((BigDecimal)object[4]).doubleValue();
+					
+						totalComprasDataValor = totalComprasDataValor.doubleValue() + ((BigDecimal)object[2]).doubleValue();
+					}
+					
+					
+					List<Object[]> resultTemp__ = contas_.totalLucroContasVendasPagas_Semanal(ano01, semana01, semana01, usuario.getEmpresa());
+					for (Object[] object : resultTemp__) {
+												
+						totalLucroContasReceitasVendasPagasParcialmenteDataValor = 
+								totalLucroContasReceitasVendasPagasParcialmenteDataValor.doubleValue()
+								+ ((BigDecimal)object[1]).doubleValue();
+						
+						totalVendasPagasDataValor = totalVendasPagasDataValor.doubleValue() + ((BigDecimal)object[3]).doubleValue() + ((BigDecimal)object[4]).doubleValue();
+					
+						totalComprasDataValor = totalComprasDataValor.doubleValue() + ((BigDecimal)object[2]).doubleValue();
+					}
+					
+					totalLucroReceitasVendasPagasParcialmenteDataValor = totalLucroEntradasReceitasVendasPagasParcialmenteDataValor.doubleValue() 
+							+ totalLucroContasReceitasVendasPagasParcialmenteDataValor.doubleValue();
+					
+					
+					Object[] object = new Object[5];
+					object[0] = i;
+					object[1] = ano01;
+					
+
+					
+					object[2] = totalLucroVendasPagasDataValor.doubleValue() + totalLucroReceitasVendasPagasParcialmenteDataValor.doubleValue();
+					
+					object[3] = totalComprasDataValor.doubleValue();
+					object[4] = totalVendasPagasDataValor.doubleValue();
+					
+
+					result.add(object);
+				}
+				
+				
+				
+				
+				
+				
+				if(tipoDataSemana == TipoFiltroVenda.LANCAMENTO) {
+					
+					List<Object[]> resultTemp = vendas.totalLucrosPorSemana(ano01, semana01, semana01, categoriaPorSemana,
+							categoriasPorSemana, produto02, usuarioPorSemana, true, usuario.getEmpresa());
+					
+					Number totalEstornos = 0;//vendas.totalEstornosPorSemana(ano01, semana01, semana01, usuario.getEmpresa());
+					
+					Number totalDescontos = vendas.totalDescontosPorSemana(ano01, semana01, semana01, usuario.getEmpresa());				
+					//Number totalDescontosVendaParcelada = vendas.totalDescontosPorSemanaVendaParcelada(ano01, semana01, semana01, usuario.getEmpresa());
+
+					Number totalTaxasEntrega = vendas.totalTaxasEntregaPorSemana(ano01, semana01, semana01, usuario.getEmpresa());				
+					//Number totalTaxasEntregaVendaParcelada = vendas.totalTaxasEntregaPorSemanaVendasParceladas(ano01, semana01, semana01, usuario.getEmpresa());
+					
+					
+					if (resultTemp.size() == 0) {
+
+						Object[] object = new Object[5];
+
+						object[0] = i;
+						object[1] = ano01;
+
+						object[2] = 0;
+						object[3] = 0;
+						object[4] = 0;
+
 						result.add(object);
+					} else {
+						for (Object[] object : resultTemp) {
+							
+							if(categoriasPorSemana == null || categoriasPorSemana.length == 0 || categoriasPorSemana.length == todasCategoriasProduto.size()) {
+								object[2] = (((BigDecimal)object[2]).doubleValue() + totalEstornos.doubleValue()) - (totalDescontos.doubleValue()/* + totalDescontosVendaParcelada.doubleValue()*/);
+								object[4] = (((BigDecimal)object[4]).doubleValue() + totalTaxasEntrega.doubleValue()/* + totalTaxasEntregaVendaParcelada.doubleValue()*/) - (totalDescontos.doubleValue()/* + totalDescontosVendaParcelada.doubleValue()*/);
+							} else {
+								object[2] = ((BigDecimal)object[2]).doubleValue() + (totalEstornos.doubleValue()/* + totalDescontosVendaParcelada.doubleValue()*/);
+							}
+							
+							result.add(object);
+						}
 					}
 				}
+				
+				
+				
+				
+				
+				
+				
 			}
 
 			System.out.println("result.size(): " + result.size());
@@ -1394,43 +1490,132 @@ public class RelatorioLucrosBean implements Serializable {
 
 				String ano03 = String.valueOf(i);
 
-				List<Object[]> resultTemp = vendas.totalLucrosPorAno(ano03, ano03, categoriaPorAno, categoriasPorAno,
-						produto04, usuarioPorAno, true, usuario.getEmpresa());
 				
-				Number totalEstornos = 0;//vendas.totalEstornosPorAno(ano03, usuario.getEmpresa());
 				
-				Number totalDescontos = vendas.totalDescontosPorAno(ano03, usuario.getEmpresa());
-				Number totalDescontosVendaParcelada = vendas.totalDescontosPorAnoVendasParceladas(ano03, usuario.getEmpresa());
+				
+				
+				
+				
+				
+				
+				Number totalLucroReceitasVendasPagasParcialmenteDataValor = 0;
+				Number totalLucroEntradasReceitasVendasPagasParcialmenteDataValor = 0;
+				Number totalLucroContasReceitasVendasPagasParcialmenteDataValor = 0;	
+				
+				Number totalLucroVendasPagasDataValor = 0;
+				
+				Number totalVendasPagasDataValor = 0;
+				Number totalComprasDataValor = 0;	
+				
+				if(tipoDataAnual == TipoFiltroVenda.PAGAMENTO) {
+					
+					List<Object[]> resultTemp = vendas.totalLucrosPorAno_(ano03, ano03, categoriaPorAno, categoriasPorAno,
+							produto04, usuarioPorAno, true, usuario.getEmpresa());
+					
 
-				Number totalTaxasEntrega = vendas.totalTaxasEntregasPorAno(ano03, usuario.getEmpresa());				
-				Number totalTaxasEntregaVendaParcelada = vendas.totalTaxasEntregasPorAnoVendasParceladas(ano03, usuario.getEmpresa());
-			
-
-				if (resultTemp.size() == 0) {
-
-					Object[] object = new Object[4];
-
-					object[0] = i;
-
-					object[1] = 0;
-					object[2] = 0;
-					object[3] = 0;
-
-					result.add(object);
-
-				} else {
 					for (Object[] object : resultTemp) {
 						
-						if(categoriasPorAno == null || categoriasPorAno.length == 0 || categoriasPorAno.length == todasCategoriasProduto.size()) {
-							object[1] = (((BigDecimal)object[1]).doubleValue() + totalEstornos.doubleValue()) - (totalDescontos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
-							object[3] = (((BigDecimal)object[3]).doubleValue() + totalTaxasEntrega.doubleValue() + totalTaxasEntregaVendaParcelada.doubleValue()) - (totalDescontos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
-						} else {
-							object[1] = ((BigDecimal)object[1]).doubleValue() - (totalEstornos.doubleValue() + totalDescontosVendaParcelada.doubleValue());
+						List<Conta> listaDeContas = contas.porCodigoOperacao((long) object[4], "VENDA", usuario.getEmpresa());
+						if(listaDeContas.size() == 0) {
+							totalLucroVendasPagasDataValor = (totalLucroVendasPagasDataValor.doubleValue() + 
+									((BigDecimal)object[1]).doubleValue())
+									- ((BigDecimal)object[5]).doubleValue();
+							
+							totalVendasPagasDataValor = totalVendasPagasDataValor.doubleValue() + ((BigDecimal)object[3]).doubleValue() + ((BigDecimal)object[6]).doubleValue() - ((BigDecimal)object[5]).doubleValue();;
+														
+							totalComprasDataValor = totalComprasDataValor.doubleValue() + ((BigDecimal)object[2]).doubleValue();
 						}
+					}
+					
+					
+					List<Object[]> resultTemp_ = contas_.totalLucroEntradaVendasPagasPorAnoValor(ano03, usuario.getEmpresa());
+					for (Object[] object : resultTemp_) {
 						
+						totalLucroEntradasReceitasVendasPagasParcialmenteDataValor = 
+								totalLucroEntradasReceitasVendasPagasParcialmenteDataValor.doubleValue()
+								+ ((BigDecimal)object[1]).doubleValue();
+						
+						totalVendasPagasDataValor = totalVendasPagasDataValor.doubleValue() + ((BigDecimal)object[3]).doubleValue() + ((BigDecimal)object[4]).doubleValue();
+					
+						totalComprasDataValor = totalComprasDataValor.doubleValue() + ((BigDecimal)object[2]).doubleValue();
+					}
+					
+					
+					List<Object[]> resultTemp__ = contas_.totalLucroContasVendasPagas_Anual(ano03, usuario.getEmpresa());
+					for (Object[] object : resultTemp__) {
+												
+						totalLucroContasReceitasVendasPagasParcialmenteDataValor = 
+								totalLucroContasReceitasVendasPagasParcialmenteDataValor.doubleValue()
+								+ ((BigDecimal)object[1]).doubleValue();
+						
+						totalVendasPagasDataValor = totalVendasPagasDataValor.doubleValue() + ((BigDecimal)object[3]).doubleValue() + ((BigDecimal)object[4]).doubleValue();
+					
+						totalComprasDataValor = totalComprasDataValor.doubleValue() + ((BigDecimal)object[2]).doubleValue();
+					}
+					
+					totalLucroReceitasVendasPagasParcialmenteDataValor = totalLucroEntradasReceitasVendasPagasParcialmenteDataValor.doubleValue() 
+							+ totalLucroContasReceitasVendasPagasParcialmenteDataValor.doubleValue();
+					
+					
+					Object[] object = new Object[4];
+					object[0] = i;
+					
+					object[1] = totalLucroVendasPagasDataValor.doubleValue() + totalLucroReceitasVendasPagasParcialmenteDataValor.doubleValue();
+					
+					object[2] = totalComprasDataValor.doubleValue();
+					object[3] = totalVendasPagasDataValor.doubleValue();
+					
+
+					result.add(object);
+				}
+				
+				
+				
+				
+				
+				
+				
+				if(tipoDataAnual == TipoFiltroVenda.LANCAMENTO) {
+					
+					List<Object[]> resultTemp = vendas.totalLucrosPorAno(ano03, ano03, categoriaPorAno, categoriasPorAno,
+							produto04, usuarioPorAno, true, usuario.getEmpresa());
+					
+					Number totalEstornos = 0;//vendas.totalEstornosPorAno(ano03, usuario.getEmpresa());
+					
+					Number totalDescontos = vendas.totalDescontosPorAno(ano03, usuario.getEmpresa());
+					//Number totalDescontosVendaParcelada = vendas.totalDescontosPorAnoVendasParceladas(ano03, usuario.getEmpresa());
+
+					Number totalTaxasEntrega = vendas.totalTaxasEntregasPorAno(ano03, usuario.getEmpresa());				
+					//Number totalTaxasEntregaVendaParcelada = vendas.totalTaxasEntregasPorAnoVendasParceladas(ano03, usuario.getEmpresa());
+				
+
+					if (resultTemp.size() == 0) {
+
+						Object[] object = new Object[4];
+
+						object[0] = i;
+
+						object[1] = 0;
+						object[2] = 0;
+						object[3] = 0;
+
 						result.add(object);
+
+					} else {
+						for (Object[] object : resultTemp) {
+							
+							if(categoriasPorAno == null || categoriasPorAno.length == 0 || categoriasPorAno.length == todasCategoriasProduto.size()) {
+								object[1] = (((BigDecimal)object[1]).doubleValue() + totalEstornos.doubleValue()) - (totalDescontos.doubleValue() /*+ totalDescontosVendaParcelada.doubleValue()*/);
+								object[3] = (((BigDecimal)object[3]).doubleValue() + totalTaxasEntrega.doubleValue() /*+ totalTaxasEntregaVendaParcelada.doubleValue()*/) - (totalDescontos.doubleValue() /*+ totalDescontosVendaParcelada.doubleValue()*/);
+							} else {
+								object[1] = ((BigDecimal)object[1]).doubleValue() - (totalEstornos.doubleValue() /*+ totalDescontosVendaParcelada.doubleValue()*/);
+							}
+							
+							result.add(object);
+						}
 					}
 				}
+				
 			}
 		}
 
@@ -2094,5 +2279,21 @@ public class RelatorioLucrosBean implements Serializable {
 
 	public void setTipoData(TipoFiltroVenda tipoData) {
 		this.tipoData = tipoData;
+	}
+	
+	public TipoFiltroVenda getTipoDataSemana() {
+		return tipoDataSemana;
+	}
+
+	public void setTipoDataSemana(TipoFiltroVenda tipoDataSemana) {
+		this.tipoDataSemana = tipoDataSemana;
+	}
+	
+	public TipoFiltroVenda getTipoDataAnual() {
+		return tipoDataAnual;
+	}
+
+	public void setTipoDataAnual(TipoFiltroVenda tipoDataAnual) {
+		this.tipoDataAnual = tipoDataAnual;
 	}
 }
