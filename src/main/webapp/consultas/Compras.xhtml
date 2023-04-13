@@ -238,7 +238,7 @@
 						</p:datePicker>
 
 
-						<p:outputLabel value="Comprador" for="comprador" />
+						<p:outputLabel value="Funcionário" for="comprador" />
 						<p:selectOneMenu id="comprador"
 							value="#{consultaComprasBean.usuario}" placeholder="selecione">
 
@@ -366,7 +366,7 @@
 								</h:outputText>
 							</p:column>
 
-							<p:column headerText="Comprador" width="25%">
+							<p:column headerText="Funcionário" width="25%">
 								<h:outputText value="#{compra.usuario.nome}" />
 							</p:column>
 							
@@ -384,7 +384,7 @@
 								</h:outputText>
 							</p:column>
 							
-							<p:column headerText="Pago Nesta Data" width="15%">
+							<p:column headerText="Pago Nesta Data" width="15%" rendered="false">
 								<h:outputText value="#{compra.valorPago != null ? compra.valorPago : '-'}">
 									<f:convertNumber type="currency" />
 								</h:outputText>

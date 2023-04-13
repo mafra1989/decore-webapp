@@ -217,7 +217,7 @@
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-2, ui-grid-col-3">
 						
-						<p:outputLabel value="Vendedor" for="vendedor" />
+						<p:outputLabel value="Funcionário" for="vendedor" />
 						<p:selectOneMenu id="vendedor"
 							value="#{consultaVendasBean.usuario}" placeholder="selecione">
 
@@ -404,7 +404,7 @@
 								<h:outputText value="#{venda.pdv ? venda.cliente.bairro.nome : venda.bairro.nome}" />
 							</p:column>
 							
-							<p:column headerText="Vendedor" width="15%" styleClass="font-column">
+							<p:column headerText="Funcionário" width="15%" styleClass="font-column">
 								<h:outputText value="#{venda.usuario.nome}" />
 							</p:column>
 							

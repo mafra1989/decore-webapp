@@ -1372,22 +1372,15 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 						style="width: 80px;float: right;margin-right: 10px;margin-top:10px;margin-bottom:5px;"
 						disabled="#{(consultaContasBean.contasFiltradasSize eq 0) or consultaContasBean.contaSelecionada.id == null or (not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado())}">
 
-						<p:menuitem icon="fa fa-fw fa-list-ol" 
-							value="#{'Pagamentos '.concat(consultaContasBean.hoje)}"
-							process="@this" onstart="start();" update="form-pagamentos-hoje"
-							action="#{consultaContasBean.prepararPagamentosAdicionadosHoje}"
-							rendered="#{consultaContasBean.tipoContas eq ('Contas pagas Hoje '.concat(consultaContasBean.hoje)) or consultaContasBean.tipoContas eq ('Contas recebidas Hoje '.concat(consultaContasBean.hoje)) or consultaContasBean.tipoContas eq ('Total contas à receber') or consultaContasBean.tipoContas eq 'Total contas à pagar'}"
-							oncomplete="PF('pagamentos-hoje-dialog').show();stop();" />
-						
 						<p:menuitem icon="fa fa-fw fa-undo" 
-							value="#{consultaContasBean.contaSelecionada.tipo == 'DEBITO' ? 'Desfazer pagamento' : 'Desfazer recebimento'}"
+							value="Ver/Desfazer pagtos"
 							process="@this" onstart="start();" update="form-pagamentos"
 							action="#{consultaContasBean.prepararPagamentosAdicionados}"
 							rendered="#{consultaContasBean.contaSelecionada.status}"
 							oncomplete="PF('pagamentos-dialog').show();stop();" />
 							
 						<p:menuitem icon="fa fa-fw fa-undo" 
-							value="#{consultaContasBean.contaSelecionada.tipo == 'DEBITO' ? 'Desfazer pagamento' : 'Desfazer recebimento'}"
+							value="Ver/Desfazer pagtos"
 							process="@this" onstart="start();" update="form-pagamentos"
 							action="#{consultaContasBean.prepararPagamentosAdicionados}"
 							rendered="#{(not consultaContasBean.contaSelecionada.status) and (consultaContasBean.tipoContas eq ('Contas pagas Hoje '.concat(consultaContasBean.hoje)) or consultaContasBean.tipoContas eq ('Contas recebidas Hoje '.concat(consultaContasBean.hoje))) or consultaContasBean.tipoContas eq ('Total contas à receber') or consultaContasBean.tipoContas eq 'Total contas à pagar'}"
@@ -1402,7 +1395,7 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 						</p:menuitem>
 						<p:separator />
 							
-						<p:menuitem value="Visualizar #{consultaContasBean.contaSelecionada.tipoDeOperacao()}" icon="fa fa-fw fa-eye" process="@this form-contas"
+						<p:menuitem value="Abrir #{consultaContasBean.contaSelecionada.tipoDeOperacao()}" icon="fa fa-fw fa-eye" process="@this form-contas"
 							id="btn-view" actionListener="#{consultaContasBean.visualizar}"
 							onclick="PF('downloadLoading').show();">
 						</p:menuitem>
@@ -1462,12 +1455,12 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 								<h:outputText value="#{conta.cliente != null ? conta.cliente : '-'}" />
 							</p:column>
 							
-							<p:column headerText="Vendedor" width="35%">
+							<p:column headerText="Funcionário" width="35%">
 								<h:outputText value="#{conta.vendedor != null ? conta.vendedor : '-'}" />
 							</p:column>
 							
 							<p:column headerText="Comissão (%)" width="8%" visible="#{conta.empresa.id eq 74553 or true}" 
-								exportable="#{conta.empresa.id eq 74553}"
+								exportable="#{seguranca.usuarioLogado.usuario.empresa.id == 74553}"
 								rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 74553}">
 								<h:outputText value="#{conta.taxaDeComissao}" rendered="#{not (consultaContasBean.tipoContas eq 'Total contas à pagar') and not (consultaContasBean.tipoContas eq 'Contas à pagar em atraso') and not (consultaContasBean.tipoContas eq ('Contas pagas Hoje '.concat(consultaContasBean.hoje))) and not (conta.operacao eq 'LANCAMENTO')}">
 									<f:convertNumber type="currency" currencySymbol="%" />
@@ -1476,7 +1469,7 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 							</p:column>
 							
 							<p:column headerText="Comissão (R$)" width="8%" visible="#{conta.empresa.id eq 74553 or true}" 
-								exportable="#{conta.empresa.id eq 74553}"
+								exportable="#{seguranca.usuarioLogado.usuario.empresa.id == 74553}"
 								rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 74553}">
 								<h:outputText value="#{(conta.taxaDeComissao * conta.saldo)/100}" rendered="#{not (consultaContasBean.tipoContas eq 'Total contas à pagar') and not (consultaContasBean.tipoContas eq 'Contas à pagar em atraso') and not (consultaContasBean.tipoContas eq ('Contas pagas Hoje '.concat(consultaContasBean.hoje))) and not (conta.operacao eq 'LANCAMENTO') and not (conta.status)}">
 									<f:convertNumber type="currency" currencySymbol="R$" />
@@ -1800,14 +1793,14 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 	
 					<p:panel styleClass="panelgrid-noborder disabled disabled">
 										
-						<p:commandButton id="btn-confirmar-estorno" value="Confirmar"
+						<p:commandButton id="btn-confirmar-estorno" value="Desfazer"
 							widgetVar="btn-confirmar-estorno" icon="fa fa-fw fa-check"
 							onstart="PF('downloadLoading').show(); PF('btn-confirmar-estorno').disable();"
 							oncomplete="PF('downloadLoading').hide(); PF('btn-confirmar-estorno').enable();"
 							disabled="#{consultaContasBean.pagamentoSelecionado.id == null}"
 							process="@this form-pagamento"
 							onclick="estornarConta(#{consultaContasBean.contaSelecionada.id});"
-							style="background-color: #0d8819b5; font-weight: bold; float: right;margin-left: 3px;font-size: 13px; width: 100px;margin-bottom: 0px;margin-top: 8px;margin-right: 0px;" />
+							style="font-weight: bold; float: right;margin-left: 3px;font-size: 13px; width: 100px;margin-bottom: 0px;margin-top: 8px;margin-right: 0px;" />
 						
 						<p:commandButton icon="fa fa-fw fa-close"
 							style="float: right;font-weight: bold;margin-top: 8px;font-size: 13px;width: 100px;background-color: #ab3705b5;position: relative;margin-right: 0px;margin-bottom: 2px;"

@@ -1,7 +1,11 @@
 package com.webapp.repository;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,12 +16,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
+import com.webapp.model.Cliente;
 import com.webapp.model.Conta;
 import com.webapp.model.Empresa;
 import com.webapp.model.OrigemConta;
 import com.webapp.model.PagamentoConta;
 import com.webapp.model.TipoOperacao;
+import com.webapp.model.Usuario;
 import com.webapp.util.jpa.Transacional;
 
 public class Contas_ implements Serializable {
@@ -274,58 +279,239 @@ public class Contas_ implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Conta> contasFiltradas(Long codigo, TipoOperacao tipoOperacao, Date mes, Calendar vencimento,
-			OrigemConta[] origemConta, Date vencimento2, boolean contasPagas, Empresa empresa) {
+	public List<Conta> contasFiltradas(Long codigo, TipoOperacao tipoOperacao, Date dateStart, Date dateStop,
+			OrigemConta[] origemConta, String contasPagas, Cliente cliente, Usuario funcionario, Empresa empresa) {
 
 		String conditionCodigo = "";
-		String conditionTipoOperacao = "";
 		String conditionOrigemConta = "";
 		String conditionContasPagas = "";
+		
+		String conditionFuncionarioVenda = "";
+		String conditionFuncionarioCompra = "";
+		String conditionFuncionarioLancamento = "";
+		
+		String conditionCliente = "";
 
 		if (codigo != null) {
-			conditionCodigo = "AND c.codigoOperacao = :codigo ";
+			conditionCodigo = "AND c.codigoOperacao = :codigo ";		
 		}
-
-		if (tipoOperacao != null) {
-			conditionTipoOperacao = "AND c.operacao = :tipoOperacao ";
-		}
-
+		
 		if (origemConta != null && origemConta.length > 0) {
-			conditionOrigemConta = "AND c.tipo in (:origemConta) ";
+			conditionOrigemConta = "AND c.tipo in (:origemConta) ";		
 		}
 
-		if (contasPagas) {
-			conditionContasPagas = "AND (c.status = 'Y' OR c.status = 'N') ";
-		} else {
+		if(contasPagas.equals("1")) {
+			conditionContasPagas = "AND c.status = 'Y' ";
+		} else if(contasPagas.equals("2")) {
 			conditionContasPagas = "AND c.status = 'N' ";
 		}
-
-		Calendar calendario = Calendar.getInstance();
-		calendario.setTime(mes);
-
-		String jpql = "SELECT c FROM Conta c " + "WHERE c.empresa.id = :empresa AND c.id > 0 AND c.mes = :mes AND c.ano = :ano " + conditionCodigo
-				+ conditionTipoOperacao + conditionOrigemConta + conditionContasPagas
-				+ "order by c.vencimento ASC, c.id asc";//c.vencimento ASC
 		
-		System.out.println(jpql);
+		if (funcionario != null) {
+			if(cliente != null) {
+				conditionFuncionarioVenda = "AND v.usuario.id = :funcionario ";
+				conditionFuncionarioCompra = "AND cp.usuario.id = :funcionario ";
+				conditionFuncionarioLancamento = "AND l.usuario.id = :funcionario ";
+				
+			} else {
+				if (tipoOperacao != null) {	
+					conditionFuncionarioVenda = "AND v.usuario.id = :funcionario ";
+					conditionFuncionarioCompra = "AND cp.usuario.id = :funcionario ";
+					conditionFuncionarioLancamento = "AND l.usuario.id = :funcionario ";
+					
+				} else {
+					conditionFuncionarioVenda = "AND v.usuario_id = :funcionario ";
+					conditionFuncionarioCompra = "AND cp.usuario_id = :funcionario ";
+					conditionFuncionarioLancamento = "AND l.usuario_id = :funcionario ";
+				}	
+			}			
+		}
+		
+		if(cliente != null) {
+			conditionCliente = "AND v.cliente.id = :cliente ";
+		}
 
-		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("mes", (long) calendario.get(Calendar.MONTH) + 1).setParameter("ano",
-				(long) calendario.get(Calendar.YEAR));/* setParameter("vencimento", vencimento.getTime()); */
+
+		String jpql = ""
+				+ "select * from ("
+					
+					+ "select c.id, v.numerovenda, c.operacao, c.parcela, "
+					+ "c.valor, c.saldo, c.vencimento, c.pagamento, c.status, c.tipo, c.empresa_id from contas c "
+					+ "join vendas v ON c.codigooperacao = v.numerovenda "
+					+ "WHERE c.operacao = 'VENDA' AND c.vencimento BETWEEN :dateStart AND :dateStop "
+					+ "and v.empresa_id = c.empresa_id and c.empresa_id = :empresa "
+					+ conditionCodigo
+					+ conditionOrigemConta
+					+ conditionContasPagas
+					+ conditionFuncionarioVenda
+					
+					+ "UNION "
+				
+					+ "select c.id, cp.numerocompra, c.operacao, c.parcela, "
+					+ "c.valor, c.saldo, c.vencimento, c.pagamento, c.status, c.tipo, c.empresa_id from contas c "
+					+ "join compras cp ON c.codigooperacao = cp.numerocompra "
+					+ "WHERE c.operacao = 'COMPRA' AND c.vencimento BETWEEN :dateStart AND :dateStop "
+					+ "and cp.empresa_id = c.empresa_id and c.empresa_id = :empresa "
+					+ conditionCodigo
+					+ conditionOrigemConta
+					+ conditionContasPagas
+					+ conditionFuncionarioCompra
+					
+					+ "UNION "
+
+					+ "select c.id, l.numerolancamento, c.operacao, c.parcela, "
+					+ "c.valor, c.saldo, c.vencimento, c.pagamento, c.status, c.tipo, c.empresa_id from contas c "
+					+ "join lancamentos l ON c.codigooperacao = l.numerolancamento "
+					+ "WHERE c.operacao = 'LANCAMENTO' AND c.vencimento BETWEEN :dateStart AND :dateStop "
+					+ "and l.empresa_id = c.empresa_id and c.empresa_id = :empresa "
+					+ conditionCodigo
+					+ conditionOrigemConta
+					+ conditionContasPagas
+					+ conditionFuncionarioLancamento
+					
+				+ ") table_temp order by vencimento asc, id asc";
+				
+		
+		if(cliente != null) {
+			if (tipoOperacao != null) {			
+				if(tipoOperacao == TipoOperacao.VENDA) {
+					jpql = "SELECT c FROM Conta c join Venda v ON v.numeroVenda = c.codigoOperacao " 
+							+ "WHERE c.empresa.id = v.empresa.id AND c.empresa.id = :empresa AND c.id > 0 "
+							+ "AND c.operacao = 'VENDA' "
+							+ "AND c.vencimento BETWEEN :dateStart AND :dateStop " 
+							+ conditionCodigo
+							+ conditionOrigemConta 
+							+ conditionContasPagas
+							+ conditionFuncionarioVenda
+							+ conditionCliente
+							+ "order by c.vencimento ASC, c.id asc";
+				} else {
+					List<Conta> contas = new ArrayList<>();
+					return contas;
+				}
+			} else {
+				jpql = "SELECT c FROM Conta c join Venda v ON v.numeroVenda = c.codigoOperacao " 
+						+ "WHERE c.empresa.id = v.empresa.id AND c.empresa.id = :empresa AND c.id > 0 "
+						+ "AND c.operacao = 'VENDA' "
+						+ "AND c.vencimento BETWEEN :dateStart AND :dateStop " 
+						+ conditionCodigo
+						+ conditionOrigemConta 
+						+ conditionContasPagas
+						+ conditionFuncionarioVenda
+						+ conditionCliente
+						+ "order by c.vencimento ASC, c.id asc";
+			}			
+		} else {
+			
+			if (tipoOperacao != null) {			
+				if(tipoOperacao == TipoOperacao.VENDA) {
+					jpql = "SELECT c FROM Conta c join Venda v ON v.numeroVenda = c.codigoOperacao " 
+							+ "WHERE c.empresa.id = v.empresa.id AND c.empresa.id = :empresa AND c.id > 0 "
+							+ "AND c.operacao = 'VENDA' "
+							+ "AND c.vencimento BETWEEN :dateStart AND :dateStop " 
+							+ conditionCodigo
+							+ conditionOrigemConta 
+							+ conditionContasPagas
+							+ conditionFuncionarioVenda	
+							+ "order by c.vencimento ASC, c.id asc";
+				}
+				
+				if(tipoOperacao == TipoOperacao.COMPRA) {
+					jpql = "SELECT c FROM Conta c join Compra cp ON cp.numeroCompra = c.codigoOperacao " 
+							+ "WHERE c.empresa.id = cp.empresa.id AND c.empresa.id = :empresa AND c.id > 0 "
+							+ "AND c.operacao = 'COMPRA' "
+							+ "AND c.vencimento BETWEEN :dateStart AND :dateStop " 
+							+ conditionCodigo
+							+ conditionOrigemConta 
+							+ conditionContasPagas
+							+ conditionFuncionarioCompra
+							+ "order by c.vencimento ASC, c.id asc";
+				}
+				
+				if(tipoOperacao == TipoOperacao.LANCAMENTO) {
+					jpql = "SELECT c FROM Conta c join Lancamento l ON l.numeroLancamento = c.codigoOperacao " 
+							+ "WHERE c.empresa.id = l.empresa.id AND c.empresa.id = :empresa AND c.id > 0 "
+							+ "AND c.operacao = 'LANCAMENTO' "
+							+ "AND c.vencimento BETWEEN :dateStart AND :dateStop " 
+							+ conditionCodigo
+							+ conditionOrigemConta 
+							+ conditionContasPagas
+							+ conditionFuncionarioLancamento
+							+ "order by c.vencimento ASC, c.id asc";
+				}
+				
+			} 
+		}
+
+		System.out.println(jpql);
+		
+		Query q = null;		
+		if(cliente != null) {
+			q = manager.createQuery(jpql).setParameter("empresa", empresa.getId())
+					.setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
+		} else {
+		
+			if (tipoOperacao != null) {	
+				q = manager.createQuery(jpql).setParameter("empresa", empresa.getId())
+						.setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
+			} else {
+				 q = manager.createNativeQuery(jpql).setParameter("empresa", empresa.getId())
+						.setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
+			}
+		}
+		
+		
 
 		if (codigo != null) {
 			q.setParameter("codigo", codigo);
-		}
-
-		if (tipoOperacao != null) {
-			q.setParameter("tipoOperacao", tipoOperacao.name());
 		}
 
 		if (origemConta != null && origemConta.length > 0) {
 			q.setParameter("origemConta",
 					Arrays.asList(Arrays.toString(origemConta).replace("[", "").replace("]", "").replace(" ", "").trim().split(",")));		
 		}
+		
+		if(funcionario != null) {
+			q.setParameter("funcionario", funcionario.getId());
+		}
+		
+		if(cliente != null) {
+			q.setParameter("cliente", cliente.getId());
+		}
+		
+		if(cliente != null) {
+			return q.getResultList();			
+		}
+		
+		if (tipoOperacao != null) {	
+			return q.getResultList();
+			
+		} else {
+				
+			List<Conta> contas = new ArrayList<>();
+			
+			List<Object[]> rows = new ArrayList<>();
+			rows = q.getResultList();
+			
+			for (Object[] objects : rows) {
+				Conta conta = new Conta();
 
-		return q.getResultList();
+				conta.setId(Long.parseLong(objects[0].toString()));
+				conta.setCodigoOperacao(Long.parseLong(objects[1].toString()));			
+				conta.setOperacao(objects[2].toString());
+				conta.setParcela(objects[3].toString());
+				conta.setValor(new BigDecimal(objects[4].toString()));	
+				conta.setSaldo(new BigDecimal(objects[5].toString()));
+				conta.setVencimento((Date) objects[6]);		
+				conta.setPagamento((Date) objects[7]);		
+				conta.setStatus(objects[8].toString().equals("Y") ? true : false);	
+				conta.setTipo(objects[9].toString());
+				conta.setEmpresa(empresa);
+				
+				contas.add(conta);
+			}
+			
+			return contas;
+		}
 	}
 
 	public Number totalDeReceitasPorDia(Long dia, Long mes, Long ano, Empresa empresa) {

@@ -5,7 +5,7 @@
 	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
 	template="/WEB-INF/template.xhtml">
 
-	<ui:define name="title">Cadastro Equipe</ui:define>
+	<ui:define name="title">Cadastro Funcionário</ui:define>
 
 	<f:metadata>
 		<f:viewAction action="#{cadastroEquipeBean.inicializar}" />
@@ -120,7 +120,7 @@
 </style>
 
 		<div class="page-header">
-			<h1>Cadastro de Equipe</h1>
+			<h1>Cadastro de Funcionário</h1>
 		</div>
 
 		<p:growl id="msg" closable="true" life="3000" showSummary="false"
@@ -270,7 +270,7 @@
 		
 
 		<p:dialog
-			header="#{cadastroEquipeBean.usuario.id == null ? 'Novo Membro da equipe' : 'Editar Membro da equipe'}"
+			header="#{cadastroEquipeBean.usuario.id == null ? 'Novo Funcionário' : 'Editar Funcionário'}"
 			widgetVar="usuario-dialog" id="usuario-dialog" resizable="true" 
 			position="center" modal="true" closeOnEscape="true" responsive="true"
 			onHide="PF('wizard').loadStep(PF('wizard').cfg.steps[0], true);"

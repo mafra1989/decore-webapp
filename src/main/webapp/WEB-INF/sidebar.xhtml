@@ -58,9 +58,9 @@
 									rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()}" />
 	
 	
-								<p:menuitem id="pm_Contas" value="Pagar / Receber"
+								<p:menuitem id="pm_Contas" value="Consulta de Pagamentos"
 									icon="fa fa-expand" outcome="/Contas.xhtml" 
-									rendered="#{(seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum()) and false}" />
+									rendered="#{(seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado() or seguranca.acessoUsuarioComum())}" />
 								
 								
 							</p:submenu>
@@ -132,7 +132,7 @@
 									icon="fa fa-map-marker"
 									outcome="/cadastros/CadastroBairros.xhtml" />
 
-								<p:menuitem id="pm_investidor" value="Equipe" icon="fa fa-users"
+								<p:menuitem id="pm_investidor" value="Funcionário" icon="fa fa-users"
 									outcome="/cadastros/CadastroEquipe.xhtml" rendered="true" />
 
 								<p:menuitem id="pm_cat_lancamento" value="Tipo de Venda"
