@@ -1376,14 +1376,14 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 							value="Ver/Desfazer pagtos"
 							process="@this" onstart="start();" update="form-pagamentos"
 							action="#{consultaContasBean.prepararPagamentosAdicionados}"
-							rendered="#{consultaContasBean.contaSelecionada.status}"
+							rendered="#{consultaContasBean.contaSelecionada.status and consultaContasBean.contaSelecionada.parcela != 'Entrada'}"
 							oncomplete="PF('pagamentos-dialog').show();stop();" />
 							
 						<p:menuitem icon="fa fa-fw fa-undo" 
 							value="Ver/Desfazer pagtos"
 							process="@this" onstart="start();" update="form-pagamentos"
 							action="#{consultaContasBean.prepararPagamentosAdicionados}"
-							rendered="#{(not consultaContasBean.contaSelecionada.status) and (consultaContasBean.tipoContas eq ('Contas pagas Hoje '.concat(consultaContasBean.hoje)) or consultaContasBean.tipoContas eq ('Contas recebidas Hoje '.concat(consultaContasBean.hoje))) or consultaContasBean.tipoContas eq ('Total contas à receber') or consultaContasBean.tipoContas eq 'Total contas à pagar'}"
+							rendered="#{(not consultaContasBean.contaSelecionada.status and consultaContasBean.contaSelecionada.parcela != 'Entrada') and (consultaContasBean.tipoContas eq ('Contas pagas Hoje '.concat(consultaContasBean.hoje)) or consultaContasBean.tipoContas eq ('Contas recebidas Hoje '.concat(consultaContasBean.hoje))) or consultaContasBean.tipoContas eq ('Total contas à receber') or consultaContasBean.tipoContas eq 'Total contas à pagar'}"
 							oncomplete="PF('pagamentos-dialog').show();stop();" />
 							
 						<p:menuitem value="#{consultaContasBean.contaSelecionada.tipo == 'DEBITO' ? 'Pagar' : 'Receber'}" icon="fa fa-fw fa-money"

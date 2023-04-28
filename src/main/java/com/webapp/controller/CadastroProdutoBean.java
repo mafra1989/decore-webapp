@@ -339,6 +339,8 @@ public class CadastroProdutoBean implements Serializable {
 		}
 		
 		novaQuantidadeAtual = produto.getQuantidadeAtual();
+		
+		itemCompra.setProduto(produto);
 	}
 	
 	
@@ -873,6 +875,7 @@ public class CadastroProdutoBean implements Serializable {
 	
 	public void prepararRegistroCompra() {
 		novaQuantidadeAtual = produto.getQuantidadeAtual();
+		itemCompra.setProduto(produto);
 	}
 	
 	
@@ -1217,6 +1220,7 @@ public class CadastroProdutoBean implements Serializable {
 				if(saldo.longValue() <= itensCompra.get(i).getQuantidadeDisponivel().doubleValue()) {
 					ItemVendaCompra itemVendaCompra = new ItemVendaCompra();
 					itemVendaCompra.setItemVenda(itemVenda);
+					itemVendaCompra.setItemCompra(itensCompra.get(i));
 					itemVendaCompra.setCompra(itensCompra.get(i).getCompra());
 					itemVendaCompra.setQuantidade(new BigDecimal(saldo));
 					
@@ -1227,6 +1231,7 @@ public class CadastroProdutoBean implements Serializable {
 					
 					ItemVendaCompra itemVendaCompra = new ItemVendaCompra();
 					itemVendaCompra.setItemVenda(itemVenda);
+					itemVendaCompra.setItemCompra(itensCompra.get(i));
 					itemVendaCompra.setCompra(itensCompra.get(i).getCompra());
 					itemVendaCompra.setQuantidade(itensCompra.get(i).getQuantidadeDisponivel());
 					
@@ -1306,6 +1311,13 @@ public class CadastroProdutoBean implements Serializable {
 		venda.setDesconto(BigDecimal.ZERO);
 		venda.setPdv(false);
 		venda.setEmpresa(usuario.getEmpresa());
+		
+		String tipoDeVenda = "Não Informado";
+		if(usuario.getEmpresa().getId() == 74553) {
+			tipoDeVenda = "Nao Informado";
+		}
+		
+		venda.setTipoVenda(tiposVendas.porDescricao(tipoDeVenda, usuario.getEmpresa()));
 		venda = vendas.save(venda);
 		
 		

@@ -572,7 +572,7 @@
 								
 											<p:outputLabel value="Qtd. atual" for="quantidade_" />
 											<p:inputNumber id="quantidade_" decimalPlaces="3" 
-												rendered="#{estoqueBean.produtoSelecionado.unidadeMedida != 'Un' and estoqueBean.produtoSelecionado.unidadeMedida != 'Cx' and estoqueBean.produtoSelecionado.unidadeMedida != 'FARDO' and estoqueBean.produtoSelecionado.unidadeMedida != 'Pt'}"
+												rendered="#{estoqueBean.produtoSelecionado.unidadeMedida != 'Un' and estoqueBean.produtoSelecionado.unidadeMedida != 'Cx' and estoqueBean.produtoSelecionado.unidadeMedida != 'Fardo' and estoqueBean.produtoSelecionado.unidadeMedida != 'Pt'}"
 												placeholder="0,000" styleClass="quantidade" onkeyup="ajaxDelay('')"
 												disabled="true"
 												value="#{estoqueBean.produtoSelecionado.quantidadeAtual}">
@@ -581,7 +581,7 @@
 											</p:inputNumber>
 											
 											<p:inputNumber id="quantidade__" decimalPlaces="0" label="Quantidade"
-												rendered="#{estoqueBean.produtoSelecionado.unidadeMedida == 'Un' or estoqueBean.produtoSelecionado.unidadeMedida == 'Cx' or estoqueBean.produtoSelecionado.unidadeMedida == 'FARDO'}"
+												rendered="#{estoqueBean.produtoSelecionado.unidadeMedida == 'Un' or estoqueBean.produtoSelecionado.unidadeMedida == 'Cx' or estoqueBean.produtoSelecionado.unidadeMedida == 'Fardo'}"
 												placeholder="0" styleClass="quantidade" onkeyup="ajaxDelay('')"
 												disabled="true"
 												value="#{estoqueBean.produtoSelecionado.quantidadeAtual}">
@@ -598,7 +598,7 @@
 												<p:ajax event="keyup" process="@this"></p:ajax>
 											</p:inputNumber>
 											
-											<p:commandButton id="edit-qtde"
+											<p:commandButton id="edit-qtde" rendered="false"
 												style="width: 22px;
 											    height: 22px;
 											    float: right;
@@ -631,7 +631,7 @@
 												<p:ajax event="keyup" process="@this"></p:ajax>
 											</p:inputNumber>
 											
-											<p:commandButton id="edit-custo"
+											<p:commandButton id="edit-custo" rendered="false"
 												style="width: 22px;
 											    height: 22px;
 											    float: right;
@@ -712,7 +712,7 @@
 							<p:inputNumber id="nova-quantidade" decimalPlaces="0" placeholder="0" minValue="0"
 								styleClass="quantidade" onkeyup="ajaxDelayQtd()" onchange="ajaxDelayQtd()" onblur="ajaxDelayQtd()"
 								value="#{estoqueBean.novaQuantidadeAtual}"
-								rendered="#{estoqueBean.produtoSelecionado.unidadeMedida == 'Un' or estoqueBean.produtoSelecionado.unidadeMedida == 'Cx' or estoqueBean.produtoSelecionado.unidadeMedida == 'FARDO'}">
+								rendered="#{estoqueBean.produtoSelecionado.unidadeMedida == 'Un' or estoqueBean.produtoSelecionado.unidadeMedida == 'Cx' or estoqueBean.produtoSelecionado.unidadeMedida == 'Fardo'}">
 
 							</p:inputNumber>
 							

@@ -759,7 +759,7 @@ public class EstoqueBean implements Serializable {
 				logs.save(log);
 				
 				
-				produtoSelecionado.setCustoMedioUnitario(novoCustoMedio);		
+				produtoSelecionado.setCustoMedioUnitario(novoCustoMedio);  
 				produtoSelecionado = produtos.save(produtoSelecionado);
 				
 				
@@ -1065,6 +1065,7 @@ public class EstoqueBean implements Serializable {
 				if(saldo.longValue() <= itensCompra.get(i).getQuantidadeDisponivel().doubleValue()) {
 					ItemVendaCompra itemVendaCompra = new ItemVendaCompra();
 					itemVendaCompra.setItemVenda(itemVenda);
+					itemVendaCompra.setItemCompra(itensCompra.get(i));
 					itemVendaCompra.setCompra(itensCompra.get(i).getCompra());
 					itemVendaCompra.setQuantidade(new BigDecimal(saldo));
 					
@@ -1075,6 +1076,7 @@ public class EstoqueBean implements Serializable {
 					
 					ItemVendaCompra itemVendaCompra = new ItemVendaCompra();
 					itemVendaCompra.setItemVenda(itemVenda);
+					itemVendaCompra.setItemCompra(itensCompra.get(i));
 					itemVendaCompra.setCompra(itensCompra.get(i).getCompra());
 					itemVendaCompra.setQuantidade(itensCompra.get(i).getQuantidadeDisponivel());
 					
@@ -1154,6 +1156,13 @@ public class EstoqueBean implements Serializable {
 		venda.setDesconto(BigDecimal.ZERO);
 		venda.setPdv(false);
 		venda.setEmpresa(usuario.getEmpresa());
+		
+		String tipoDeVenda = "Não Informado";
+		if(usuario.getEmpresa().getId() == 74553) {
+			tipoDeVenda = "Nao Informado";
+		}
+		
+		venda.setTipoVenda(tiposVendas.porDescricao(tipoDeVenda, usuario.getEmpresa()));
 		venda = vendas.save(venda);
 		
 		

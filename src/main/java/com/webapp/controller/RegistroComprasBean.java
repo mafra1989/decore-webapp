@@ -788,11 +788,12 @@ public class RegistroComprasBean implements Serializable {
 					conta.setCodigoOperacao(compra.getNumeroCompra());
 					conta.setOperacao("COMPRA");
 					conta.setTipo("DEBITO");
+					conta.setPagamento(new Date());
 					conta.setStatus(true);
 
 					conta.setEmpresa(usuario.getEmpresa());
 					
-					conta.setSaldo(conta.getValor());
+					conta.setSaldo(BigDecimal.ZERO);
 					contas.save(conta);
 				}
 				
@@ -807,6 +808,7 @@ public class RegistroComprasBean implements Serializable {
 					conta.setSaldo(conta.getValor());
 					conta = contas.save(conta);
 				}
+			
 			}
 
 			if (!edit) {
