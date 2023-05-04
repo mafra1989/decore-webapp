@@ -335,7 +335,7 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-2, ui-grid-col-3, ui-grid-col-1, ui-grid-col-2">
 					
-						<p:outputLabel value="Buscar De" for="data01" />
+						<p:outputLabel value="Data de Vencimento" for="data01" />
 						<p:datePicker id="data01" value="#{consultaContasBean_.dateStart}"
 							readonlyInput="true" pattern="dd/MM/yyyy" locale="pt" 
 							showIcon="true">
@@ -553,9 +553,13 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 							styleClass="panelgrid-noborder disabled disabled panel-total">
 
 							<p:outputLabel
-								value="Total de Contas: R$ #{consultaContasBean_.totalContas}"
+								value="Valor Total: R$ #{consultaContasBean_.totalContas} | Total Pago: R$ #{consultaContasBean_.totalPago}"
 								style="float:left;margin-top:10px;margin-bottom:5px;margin-left:-10px;font-size: 13px;font-family: inherit;" />
 
+							<p:outputLabel 
+								value="Saldo Total: R$ #{consultaContasBean_.saldoTotalContas}"
+								style="float:right;margin-top:10px;margin-bottom:5px;margin-right:0px;font-size: 13px;font-family: inherit;" />
+							
 						</p:panel>
 					</p:panelGrid>
 

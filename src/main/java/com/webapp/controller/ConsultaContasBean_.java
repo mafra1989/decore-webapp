@@ -232,6 +232,12 @@ public class ConsultaContasBean_ implements Serializable {
 	@Inject
 	private Clientes clientes;
 	
+	private Double saldoTotal = 0D;
+	
+	private String saldoTotalContas = "0,00";
+	
+	private String totalPago = "0,00";
+	
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -340,6 +346,10 @@ public class ConsultaContasBean_ implements Serializable {
 		totalContasTemp = getValorTotalAndSettingDescricaoAndVendedor(totalContasTemp);
 
 		totalContas = nf.format(totalContasTemp);
+		
+		saldoTotalContas = nf.format(saldoTotal);
+		
+		totalPago = nf.format(totalContasTemp - saldoTotal);
 		/*
 		 * if(origemConta.length > 0 ) { for (Conta conta : contasFiltradas) {
 		 * contas.remove(conta); } }
@@ -353,8 +363,10 @@ public class ConsultaContasBean_ implements Serializable {
 		todosClientes = new ArrayList<Cliente>();
 		BigDecimal saldoDeComissao = BigDecimal.ZERO;
 		
+		saldoTotal = 0D;
 		for (Conta conta : contasFiltradas) {
 			totalContasTemp += conta.getValor().doubleValue();
+			saldoTotal += conta.getSaldo().doubleValue();
 			
 			if(conta.getOperacao().equals(TipoOperacao.LANCAMENTO.toString())) {
 				Lancamento lancamento = lancamentos.porNumeroLancamento(conta.getCodigoOperacao(), usuario.getEmpresa());
@@ -2195,6 +2207,16 @@ public class ConsultaContasBean_ implements Serializable {
 
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
+	}
+
+
+	public String getSaldoTotalContas() {
+		return saldoTotalContas;
+	}
+
+
+	public String getTotalPago() {
+		return totalPago;
 	}
 
 }
