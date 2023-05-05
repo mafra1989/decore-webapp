@@ -366,7 +366,10 @@ public class ConsultaContasBean_ implements Serializable {
 		
 		saldoTotal = 0;
 		for (Conta conta : contasFiltradas) {
-			totalContasTemp += conta.getValor().setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue();
+			
+			conta.setValor(conta.getValor().setScale(2, BigDecimal.ROUND_HALF_EVEN));
+			
+			totalContasTemp += conta.getValor().doubleValue();
 			saldoTotal += conta.getSaldo().doubleValue();
 			
 			if(conta.getOperacao().equals(TipoOperacao.LANCAMENTO.toString())) {
