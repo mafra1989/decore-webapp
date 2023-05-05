@@ -232,7 +232,7 @@ public class ConsultaContasBean_ implements Serializable {
 	@Inject
 	private Clientes clientes;
 	
-	private Double saldoTotal = 0D;
+	private double saldoTotal = 0;
 	
 	private String saldoTotalContas = "0,00";
 	
@@ -359,13 +359,14 @@ public class ConsultaContasBean_ implements Serializable {
 	}
 
 	
+	@SuppressWarnings("deprecation")
 	private double getValorTotalAndSettingDescricaoAndVendedor(double totalContasTemp) {
 		todosClientes = new ArrayList<Cliente>();
 		BigDecimal saldoDeComissao = BigDecimal.ZERO;
 		
-		saldoTotal = 0D;
+		saldoTotal = 0;
 		for (Conta conta : contasFiltradas) {
-			totalContasTemp += conta.getValor().doubleValue();
+			totalContasTemp += conta.getValor().setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue();
 			saldoTotal += conta.getSaldo().doubleValue();
 			
 			if(conta.getOperacao().equals(TipoOperacao.LANCAMENTO.toString())) {
