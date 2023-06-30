@@ -667,7 +667,8 @@ public class Vendas implements Serializable {
 	public Number descontoVendasAvistaAPagar_(Empresa empresa, Calendar calendarStart, Calendar calendarStop) {
 		String periodo = "";
 		if(calendarStart != null && calendarStop != null) {
-			periodo += "AND i.dataPagamento BETWEEN :dataInicio AND :dataFim";
+			//periodo += "AND i.dataPagamento BETWEEN :dataInicio AND :dataFim";
+			periodo += "AND i.dataVenda BETWEEN :dataInicio AND :dataFim";			
 		}
 		
 		//AND i.vendaPaga = 'N' AND i.conta = 'Y'
