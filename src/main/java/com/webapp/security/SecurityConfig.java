@@ -84,7 +84,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.hasAnyRole("VENDEDOR", "ADMINISTRADOR", "USUARIO_AVANCADO", "USUARIO_COMUM")
 			
 			.antMatchers(
-					"/PDV.xhtml")
+					"/operacoes/RegistroVendas.xhtml")
 			.hasAnyRole("VENDEDOR", "ADMINISTRADOR")
 			
 			.antMatchers("/Empresas.xhtml", 

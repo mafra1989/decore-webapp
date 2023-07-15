@@ -730,7 +730,8 @@
 							<p:commandLink value="Ajustar Quantidade"
 								actionListener="#{cadastroProdutoBean.prepararRegistroCompra}" process="@this un grid-um" update="form-ajuste-dialog"
 								styleClass="ajuste-estoque #{(cadastroProdutoBean.produto.unidadeMedida == 'Un' or cadastroProdutoBean.produto.unidadeMedida == 'Cx' or cadastroProdutoBean.produto.unidadeMedida == 'FARDO') ? '' : 'fracao'}" onstart="PF('downloadLoading').show();"
-								oncomplete="PF('downloadLoading').hide();PF('ajuste-dialog').show();">
+								oncomplete="PF('downloadLoading').hide();PF('ajuste-dialog').show();"
+								disabled="#{not seguranca.acessoAdministrador()}">
 								<i style="float:left;margin-top: 2px;" class="fa fa-fw fa-sort"></i>
 							</p:commandLink>
 							
@@ -768,8 +769,8 @@
 							</p:inputNumber>
 								
 								
-							<p:outputLabel value="Desconto Máx. (%)" />
-							<p:panel style="text-align: center" styleClass="panel-desconto">
+							<p:outputLabel value="Desconto Máx. (%)" rendered="#{not seguranca.acessoVendedor()}" />
+							<p:panel style="text-align: center" styleClass="panel-desconto" rendered="#{not seguranca.acessoVendedor()}">
 							
 								<h:outputText id="descontoEmDinheiro" styleClass="desconto-em-dinheiro"
 									value="#{cadastroProdutoBean.produto.precoDeVenda * cadastroProdutoBean.produto.desconto/100}" 
@@ -796,7 +797,8 @@
 						<p:panelGrid columns="4" layout="grid" style="margin-top: 15px;margin-bottom: 5px"
 							styleClass="panelgrid-noborder disabled disabled perc-desconto margem-lucro"
 							id="margem-lucro" 
-							columnClasses="ui-grid-col-3, ui-grid-col-3, ui-grid-col-3, ui-grid-col-3">		
+							columnClasses="ui-grid-col-3, ui-grid-col-3, ui-grid-col-3, ui-grid-col-3"
+							rendered="#{seguranca.acessoAdministrador()}">		
 
 							<p:outputLabel value="Margem Markup (%)" />
 							<p:panel style="text-align: center" id="panel-contribuicao">
@@ -913,7 +915,7 @@
 					
 					<p:spacer />
 
-					<p:panel id="info-lucro" rendered="#{cadastroProdutoBean.produto.id != null}" styleClass="info-important"
+					<p:panel id="info-lucro" rendered="#{cadastroProdutoBean.produto.id != null and seguranca.acessoAdministrador()}" styleClass="info-important"
 						style="margin-bottom: 20px">
 
 						<h3 style="font-weight: bold">Informações importantes</h3>
@@ -1055,7 +1057,7 @@
 					
 					
 						
-					<p:panel>
+					<p:panel rendered="#{seguranca.acessoAdministrador()}">
 
 						<p:spacer />
 

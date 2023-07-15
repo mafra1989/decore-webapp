@@ -25,7 +25,7 @@ public class AcessoAutorizadoListener implements AuthenticationSuccessHandler {
 		} else 
 		*/
 		if(roles.contains("ROLE_VENDEDOR")) {
-			httpServletResponse.sendRedirect("PDV.xhtml");
+			httpServletResponse.sendRedirect("operacoes/RegistroVendas.xhtml");
 			
 		} else {
 			httpServletResponse.sendRedirect("Dashboard.xhtml");

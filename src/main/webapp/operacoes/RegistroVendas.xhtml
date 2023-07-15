@@ -8,7 +8,8 @@
 
 	<f:metadata>
 		<f:viewAction action="#{registroVendasBean.inicializar}" />
-
+		<f:viewAction action="#{guestPreferences.inicializar}" />
+		
 		<f:viewParam name="id" value="#{registroVendasBean.venda.id}" />
 		<f:viewAction action="#{registroVendasBean.buscar}"
 			if="#{param.id ne null}" />
@@ -760,7 +761,7 @@
 							title="Buscar produto" onstart="PF('downloadLoading').show();"
 							oncomplete="PF('downloadLoading').hide();PF('item-dialog').show()"
 							process="@this" id="btn-novo"
-							disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado() or registroVendasBean.itemVenda.id != null}"
+							disabled="#{not seguranca.acessoVendedor() and not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado() or registroVendasBean.itemVenda.id != null}"
 							style="position: relative; float: right; margin-top: -38px; margin-right: 8px; width: 40px" />
 
 						<p:inputText id="id" type="hidden"
@@ -879,7 +880,7 @@
 							<p:outputLabel />
 							<p:commandButton id="btn-adicionar" value="Adicionar"
 								onstart="PF('downloadLoading').show();"
-								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
+								disabled="#{not seguranca.acessoVendedor() and not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
 								onsuccess="PF('downloadLoading').hide();" icon="fa fa-plus"
 								update="accordion-panel:comissao accordion-panel:tooltip accordion-panel:taxa-entrega itens-venda-panel form:btn-novo preco-venda panel-lote msg panel-valores codigo descricao fornecedor total-venda panel-total-geral id valor-unitario quantidade valor-total panel-table lote "
 								action="#{registroVendasBean.adicionarItem}"
@@ -918,7 +919,7 @@
 									<h:outputText value="#{item.produto.codigo}" />
 								</p:column>
 
-								<p:column headerText="Desc." width="20%">
+								<p:column headerText="Desc." width="40%">
 									<h:outputText value="#{item.produto.descricao}" />
 								</p:column>
 
@@ -961,13 +962,13 @@
 								</p:column>
 								
 
-								<p:column headerText="Lucro" width="20%">
+								<p:column headerText="Lucro" width="20%" rendered="#{not seguranca.acessoVendedor()}">
 									<h:outputText value="#{item.lucro}">
 										<f:convertNumber type="currency" />
 									</h:outputText>
 								</p:column>
 
-								<p:column headerText="Perc." width="20%">
+								<p:column headerText="Perc." width="20%" rendered="#{not seguranca.acessoVendedor()}">
 									<h:outputText value="#{item.percentualLucro}%">
 										<f:convertNumber pattern="#0.00" />
 									</h:outputText>
@@ -1094,7 +1095,7 @@
 								<p:commandButton id="btn-calcular_old" value="Salvar Venda"
 									onstart="PF('downloadLoading').show();" icon="fa fa-save"
 									onsuccess="PF('downloadLoading').hide();"
-									disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()) or registroVendasBean.venda.exclusao or registroVendasBean.itemVenda.id != null}"
+									disabled="#{(not seguranca.acessoVendedor() and not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()) or registroVendasBean.venda.exclusao or registroVendasBean.itemVenda.id != null}"
 									update="msg accordion-panel panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:panel-total-geral form:lote"
 									action="#{registroVendasBean.aplicarDescontoVenda_}"
 									process="@this panel-table accordion-panel"
@@ -1106,7 +1107,7 @@
 									actionListener="#{registroVendasBean.aplicarDescontoVenda}"
 									onsuccess="PF('downloadLoading').hide();"
 									style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;"
-									disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()) or registroVendasBean.venda.exclusao}"
+									disabled="#{(not seguranca.acessoVendedor() and not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()) or registroVendasBean.venda.exclusao}"
 									update="accordion-panel:comissao accordion-panel:tooltip msg panel-table accordion-panel form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:panel-total-geral form:lote panel-itens confirm-dialog confirmDialog"
 									process="@this panel-table accordion-panel"
 									rendered="#{seguranca.usuarioLogado.usuario.empresa.id != 7111 and seguranca.usuarioLogado.usuario.empresa.id != 7112 or true}" />

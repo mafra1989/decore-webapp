@@ -23,9 +23,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.webapp.manhattan.view.GuestPreferences.LayoutMode;
+import com.webapp.model.Configuracao;
 import com.webapp.model.Empresa;
 import com.webapp.model.Grupo;
+import com.webapp.model.TipoImpressao;
 import com.webapp.model.Usuario;
+import com.webapp.repository.Configuracoes;
 import com.webapp.repository.Empresas;
 import com.webapp.repository.Grupos;
 import com.webapp.repository.Usuarios;
@@ -42,6 +46,9 @@ public class CadastroEquipeBean implements Serializable {
 
 	@Inject
 	private Usuarios usuarios;
+	
+	@Inject
+	private Configuracoes configuracoes;
 
 	@Inject
 	private Usuario usuario;
@@ -133,7 +140,9 @@ public class CadastroEquipeBean implements Serializable {
 						if(usuarioTemp_ == null) {
 							
 							usuario.setEntregador(entregador);
-							usuarios.save(usuario);
+							usuario = usuarios.save(usuario);
+							
+							salvaConfiguracao();				
 							
 							membroSelecionado = null;
 
@@ -145,6 +154,7 @@ public class CadastroEquipeBean implements Serializable {
 							PrimeFaces.current().ajax().update("msg", "form-dialog", "form");
 							
 						} else {
+							usuario.setSenha("");
 							PrimeFaces.current().executeScript(
 									"PF('downloadLoading').hide(); swal({ type: 'error', title: 'Erro!', text: 'O login informado já existe!' });");
 						}
@@ -156,7 +166,9 @@ public class CadastroEquipeBean implements Serializable {
 						if(usuarioTemp_ == null) {
 							
 							usuario.setEntregador(entregador);
-							usuarios.save(usuario);
+							usuario = usuarios.save(usuario);
+							
+							salvaConfiguracao();
 							
 							membroSelecionado = null;
 
@@ -168,6 +180,7 @@ public class CadastroEquipeBean implements Serializable {
 							PrimeFaces.current().ajax().update("msg", "form-dialog", "form");
 							
 						} else {
+							usuario.setSenha("");
 							PrimeFaces.current().executeScript(
 									"PF('downloadLoading').hide(); swal({ type: 'error', title: 'Erro!', text: 'O login informado já existe!' });");
 						}
@@ -196,7 +209,9 @@ public class CadastroEquipeBean implements Serializable {
 						usuario.setGrupos(usuarioTemp.getGrupos());
 						
 						usuario.setEntregador(entregador);
-						usuarios.save(usuario);
+						usuario = usuarios.save(usuario);
+						
+						salvaConfiguracao();
 						
 						membroSelecionado = null;
 
@@ -218,7 +233,9 @@ public class CadastroEquipeBean implements Serializable {
 					if(usuario.getEmpresa() != null && usuario.getFuncao() != null) {
 						
 						usuario.setEntregador(entregador);
-						usuarios.save(usuario);
+						usuario = usuarios.save(usuario);
+						
+						salvaConfiguracao();
 						
 						membroSelecionado = null;
 
@@ -249,7 +266,9 @@ public class CadastroEquipeBean implements Serializable {
 					if(usuarioTemp_ == null) {
 						
 						usuario.setEntregador(entregador);
-						usuarios.save(usuario);
+						usuario = usuarios.save(usuario);
+						
+						salvaConfiguracao();
 						
 						membroSelecionado = null;
 
@@ -261,6 +280,7 @@ public class CadastroEquipeBean implements Serializable {
 						PrimeFaces.current().ajax().update("msg", "form-dialog", "form");
 						
 					} else {
+						usuario.setSenha("");
 						PrimeFaces.current().executeScript(
 								"PF('downloadLoading').hide(); swal({ type: 'error', title: 'Erro!', text: 'O login informado já existe!' });");
 					}
@@ -274,6 +294,31 @@ public class CadastroEquipeBean implements Serializable {
 			FacesUtil.addErrorMessage("Erro ao cadastrar membro da equipe!");
 		}
 
+	}
+	
+	private void salvaConfiguracao() {
+		
+		Configuracao configuracao = configuracoes.porUsuario(usuario);
+		if(configuracao == null) {
+			
+			configuracao = new Configuracao();
+			configuracao.setLeitorPDV(false);
+			configuracao.setLeitorCompra(false);
+			configuracao.setCupomAtivado(true);
+			configuracao.setTipoImpressao(TipoImpressao.IMPRESSORA01);
+			configuracao.setAbaPDV(1);
+			configuracao.setLayoutMode(LayoutMode.STATIC);
+			configuracao.setLightMenu(false);
+			configuracao.setVias(1);
+			configuracao.setPdvRapido(false);
+			configuracao.setPopupCliente(false);
+			configuracao.setControleMesas(true);
+			configuracao.setProdutosUrlNuvem(true);
+			configuracao.setUsuario(usuario);
+			configuracao.setQuantidadeMesas(10);
+			
+			configuracoes.save(configuracao);
+		}
 	}
 
 	public void excluir() {

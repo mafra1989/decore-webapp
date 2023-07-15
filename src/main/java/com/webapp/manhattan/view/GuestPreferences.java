@@ -6,8 +6,13 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+
 import com.webapp.model.Configuracao;
+import com.webapp.model.Usuario;
 import com.webapp.repository.Configuracoes;
+import com.webapp.repository.Usuarios;
 import com.webapp.util.jsf.FacesUtil;
 
 @Named
@@ -20,14 +25,20 @@ public class GuestPreferences implements Serializable {
 	private Configuracoes configuracoes;
 	
 	@Inject
+	private Usuarios usuarios;
+	
+	@Inject
 	private Configuracao configuracao;
 	
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
 			
-			configuracao = configuracoes.porId(1L);
+			User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();		
+			Usuario usuario = usuarios.porLogin(user.getUsername());
+			
+			configuracao = configuracoes.porUsuario(usuario);
 			layoutMode = configuracao.getLayoutMode();
-			lightMenu = configuracao.isLightMenu();		
+			lightMenu = configuracao.isLightMenu();	
 		}
 	}
 		

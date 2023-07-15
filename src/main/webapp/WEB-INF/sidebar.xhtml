@@ -66,7 +66,7 @@
 							</p:submenu>
 							
 							<p:submenu id="pm_PDV" styleClass="pm_PDV"
-								rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado() or seguranca.acessoVendedor()}"
+								rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado()}"
 								label="PDV" icon="fa fa-trello">
 								
 								<p:menuitem id="pm_caixa" styleClass="pm_caixa"
@@ -100,7 +100,7 @@
 									icon="fa fa-list-ol" outcome="/consultas/Lancamentos.xhtml" />
 									
 								<p:menuitem id="pm_orcamento" styleClass="pm_orcamento"
-									value="Orçamentos" icon="fa fa-edit"
+									value="Orçamentos" icon="fa fa-edit" rendered="#{not seguranca.acessoVendedor()}"
 									outcome="/consultas/Orcamentos.xhtml" />
 
 							</p:submenu>
@@ -162,12 +162,13 @@
 							</p:submenu>
 
 							<p:submenu id="pm_operacoes" styleClass="pm_operacoes"
-								rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado()}"
+								rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado() or seguranca.acessoVendedor()}"
 								label="Operações" icon="fa fa-cogs">
 
 								<p:menuitem id="pm_compras" styleClass="pm_compra"
 									value="Registrar Compras" icon="fa fa-shopping-cart"
-									outcome="/operacoes/RegistroCompras.xhtml" />
+									outcome="/operacoes/RegistroCompras.xhtml"
+									rendered="#{not seguranca.acessoVendedor()}" />
 
 								<p:menuitem id="pm_vendas" styleClass="pm_venda" rendered="true"
 									value="Registrar Venda" icon="fa fa-dollar"
@@ -175,10 +176,11 @@
 
 								<p:menuitem id="pm_lancamentos" styleClass="pm_lancamento"
 									value="Registrar Lançamentos" icon="fa fa-list-ol"
-									outcome="/operacoes/RegistroLancamentos.xhtml" />
+									outcome="/operacoes/RegistroLancamentos.xhtml"
+									rendered="#{not seguranca.acessoVendedor()}" />
 								
 								<p:menuitem id="pm_orcamentos" styleClass="pm_orcamentos"
-									value="Orçamentos" icon="fa fa-edit"
+									value="Orçamentos" icon="fa fa-edit" rendered="#{not seguranca.acessoVendedor()}"
 									outcome="/operacoes/RegistroOrcamentos.xhtml" />
 							</p:submenu>
 
@@ -200,7 +202,7 @@
 							</p:submenu>
 		
 								
-							<p:submenu id="pm_menu_colors" label="Menu Colors" icon="fa fa-paint-brush" rendered="#{seguranca.acessoAdministrador()}">
+							<p:submenu id="pm_menu_colors" label="Menu Colors" icon="fa fa-paint-brush" rendered="#{seguranca.acessoAdministrador() or seguranca.acessoVendedor()}">
                                 <p:menuitem id="pm_menu_dark" value="Dark Menu" icon="fa fa-square" actionListener="#{guestPreferences.setLightMenu(false)}" ajax="false"></p:menuitem>
                                 <p:menuitem id="pm_menu_light" value="Light Menu" icon="fa fa-square-o" actionListener="#{guestPreferences.setLightMenu(true)}" ajax="false"></p:menuitem>
                             </p:submenu>
