@@ -632,7 +632,7 @@
 						
 						<p:panelGrid columns="2" layout="grid" style="margin-top:20px;" id="grid-cm"
 							styleClass="panelgrid-noborder disabled disabled pdv qtd-atual medida"
-							columnClasses="ui-grid-col-3, ui-grid-col-3">
+							columnClasses="ui-grid-col-3, ui-grid-col-3" rendered="#{not seguranca.acessoVendedor()}">
 							
 							<p:outputLabel value="Custo Médio" for="custo-medio_" />
 							<p:inputNumber id="custo-medio_" decimalPlaces="4" styleClass="preco-venda"
