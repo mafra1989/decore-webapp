@@ -738,7 +738,7 @@
 							<p:outputLabel rendered="false" />
 							<p:outputLabel rendered="false" />
 							
-							<p:panelGrid id="tooltips">
+							<p:panelGrid id="tooltips" rendered="#{not seguranca.acessoVendedor()}">
 								<p:tooltip for="qtdAtual" style="font-size:12px;" value="Clique em ajustar quantidade!"
 	               								showEffect="clip" hideEffect="explode" position="right"/>
 	               								
@@ -768,7 +768,9 @@
 									listener="#{cadastroProdutoBean.calculaMargens}"></p:ajax>
 							</p:inputNumber>
 								
-								
+							<p:outputLabel rendered="#{seguranca.acessoVendedor()}"/>
+							<p:outputLabel rendered="#{seguranca.acessoVendedor()}"/>	
+							
 							<p:outputLabel value="Desconto Máx. (%)" rendered="#{not seguranca.acessoVendedor()}" />
 							<p:panel style="text-align: center" styleClass="panel-desconto" rendered="#{not seguranca.acessoVendedor()}">
 							

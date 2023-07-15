@@ -401,7 +401,7 @@
 								<h:outputText value="#{(produto.numeracao != null and produto.numeracao != '') ? produto.numeracao : '-'}" />
 							</p:column>	
 							
-							<p:column headerText="Custo Médio" width="15%" styleClass="font-column_">
+							<p:column headerText="Custo Médio" width="15%" styleClass="font-column_" rendered="#{not seguranca.acessoVendedor()}">
 								<h:outputText value="#{produto.custoMedioUnitario}">
 									<f:convertNumber type="currency" maxFractionDigits="4" />
 								</h:outputText>
@@ -620,7 +620,7 @@
 									<p:panel style="float:right;width:48%;">
 										<p:panelGrid columns="1" layout="grid" style="text-align:left;"
 											styleClass="panelgrid-noborder disabled disabled"
-											columnClasses="ui-grid-col-12">
+											columnClasses="ui-grid-col-12" rendered="#{not seguranca.acessoVendedor()}">
 											
 											<p:outputLabel value="Custo médio" for="custo-medio" />
 											<p:inputNumber id="custo-medio" decimalPlaces="4"
