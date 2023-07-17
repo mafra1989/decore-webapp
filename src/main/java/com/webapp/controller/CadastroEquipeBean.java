@@ -24,15 +24,23 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.webapp.manhattan.view.GuestPreferences.LayoutMode;
+import com.webapp.model.Compra;
 import com.webapp.model.Configuracao;
 import com.webapp.model.Empresa;
 import com.webapp.model.Grupo;
+import com.webapp.model.Lancamento;
+import com.webapp.model.Log;
 import com.webapp.model.TipoImpressao;
 import com.webapp.model.Usuario;
+import com.webapp.model.Venda;
+import com.webapp.repository.Compras;
 import com.webapp.repository.Configuracoes;
 import com.webapp.repository.Empresas;
 import com.webapp.repository.Grupos;
+import com.webapp.repository.Lancamentos;
+import com.webapp.repository.Logs;
 import com.webapp.repository.Usuarios;
+import com.webapp.repository.Vendas;
 import com.webapp.repository.filter.UsuarioFilter;
 import com.webapp.uploader.Uploader;
 import com.webapp.uploader.WebException;
@@ -80,6 +88,18 @@ public class CadastroEquipeBean implements Serializable {
 	private byte[] fileContent;
 	
 	private boolean entregador = false;
+	
+	@Inject
+	private Vendas vendas;
+	
+	@Inject
+	private Compras compras;
+	
+	@Inject
+	private Lancamentos lancamentos;
+	
+	@Inject
+	private Logs logs;
 	
 
 	public void inicializar() {
@@ -149,7 +169,7 @@ public class CadastroEquipeBean implements Serializable {
 							listarTodos();
 							
 							PrimeFaces.current().executeScript(
-									"PF('downloadLoading').hide(); PF('usuario-dialog').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Membro de equipe atualizado com sucesso!' });");
+									"PF('downloadLoading').hide(); PF('usuario-dialog').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Funcionário atualizado com sucesso!' });");
 						
 							PrimeFaces.current().ajax().update("msg", "form-dialog", "form");
 							
@@ -175,7 +195,7 @@ public class CadastroEquipeBean implements Serializable {
 							listarTodos();
 							
 							PrimeFaces.current().executeScript(
-									"PF('downloadLoading').hide(); PF('usuario-dialog').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Membro de equipe salvo com sucesso!' });");
+									"PF('downloadLoading').hide(); PF('usuario-dialog').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Funcionário salvo com sucesso!' });");
 						
 							PrimeFaces.current().ajax().update("msg", "form-dialog", "form");
 							
@@ -198,7 +218,7 @@ public class CadastroEquipeBean implements Serializable {
 						listarTodos();
 						
 						PrimeFaces.current().executeScript(
-								"PF('downloadLoading').hide(); PF('usuario-dialog').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Membro de equipe salvo com sucesso!' });");
+								"PF('downloadLoading').hide(); PF('usuario-dialog').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Funcionário salvo com sucesso!' });");
 						
 						PrimeFaces.current().ajax().update("msg", "form-dialog", "form");
 						
@@ -218,7 +238,7 @@ public class CadastroEquipeBean implements Serializable {
 						listarTodos();
 						
 						PrimeFaces.current().executeScript(
-								"PF('downloadLoading').hide(); PF('usuario-dialog').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Membro de equipe atualizado com sucesso!' });");
+								"PF('downloadLoading').hide(); PF('usuario-dialog').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Funcionário atualizado com sucesso!' });");
 					
 						PrimeFaces.current().ajax().update("msg", "form-dialog", "form");
 					}
@@ -242,13 +262,13 @@ public class CadastroEquipeBean implements Serializable {
 						listarTodos();
 						
 						PrimeFaces.current().executeScript(
-								"PF('downloadLoading').hide(); PF('usuario-dialog').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Membro de equipe salvo com sucesso!' });");
+								"PF('downloadLoading').hide(); PF('usuario-dialog').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Funcionário salvo com sucesso!' });");
 						
 						PrimeFaces.current().ajax().update("msg", "form-dialog", "form");
 						
 					} else {
 						PrimeFaces.current().executeScript(
-								"PF('downloadLoading').hide(); swal({ type: 'error', title: 'Erro!', text: 'Informe a função e a empresa do membro da equipe!' });");
+								"PF('downloadLoading').hide(); swal({ type: 'error', title: 'Erro!', text: 'Informe a função e a empresa do funcionário!' });");
 					}			
 					
 				} else {
@@ -275,7 +295,7 @@ public class CadastroEquipeBean implements Serializable {
 						listarTodos();
 						
 						PrimeFaces.current().executeScript(
-								"PF('downloadLoading').hide(); PF('usuario-dialog').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Membro de equipe salvo com sucesso!' });");
+								"PF('downloadLoading').hide(); PF('usuario-dialog').hide(); swal({ type: 'success', title: 'Concluído!', text: 'Funcionário salvo com sucesso!' });");
 					
 						PrimeFaces.current().ajax().update("msg", "form-dialog", "form");
 						
@@ -291,7 +311,7 @@ public class CadastroEquipeBean implements Serializable {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			FacesUtil.addErrorMessage("Erro ao cadastrar membro da equipe!");
+			FacesUtil.addErrorMessage("Erro ao cadastrar funcionário!");
 		}
 
 	}
@@ -322,6 +342,29 @@ public class CadastroEquipeBean implements Serializable {
 	}
 
 	public void excluir() {
+		
+		List<Venda> todasVendas = vendas.porVendedor(membroSelecionado);		
+		if(todasVendas.size() == 0) {
+			
+			List<Compra> todasCompras = compras.porUsuario(membroSelecionado);
+			if(todasCompras.size() == 0) {
+				
+				List<Lancamento> todosLancamentos = lancamentos.porUsuario(membroSelecionado);
+				if(todosLancamentos.size() == 0) {
+					
+					List<Log> todasLogs = logs.porUsuario(membroSelecionado);
+					
+					if(todasLogs.size() > 0) {
+						for (Log log : todasLogs) {
+							logs.remove(log);
+						}			
+					}
+					
+					Configuracao configuracao = configuracoes.porUsuario(membroSelecionado);
+					configuracoes.remove(configuracao);
+				}			
+			}
+		}
 
 		usuarios.remove(membroSelecionado);
 
@@ -330,7 +373,7 @@ public class CadastroEquipeBean implements Serializable {
 		pesquisar();
 
 		PrimeFaces.current().executeScript(
-				"swal({ type: 'success', title: 'Concluído!', text: 'Membro de equipe excluído com sucesso!' });");
+				"swal({ type: 'success', title: 'Concluído!', text: 'Funcionário excluído com sucesso!' });");
 
 	}
 

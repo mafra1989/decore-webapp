@@ -42,6 +42,11 @@ public class Compras implements Serializable {
 
 		return null;
 	}
+	
+	public List<Compra> porUsuario(Usuario usuario) {
+		return this.manager.createQuery("from Compra e where e.usuario.nome = :nome order by id", Compra.class)
+				.setParameter("nome", usuario.getNome()).getResultList();
+	}
 
 	@Transacional
 	public Compra save(Compra compra) {

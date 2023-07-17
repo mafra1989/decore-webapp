@@ -34,6 +34,11 @@ public class Lancamentos implements Serializable {
 	public Lancamento porId(Long id) {
 		return this.manager.find(Lancamento.class, id);
 	}
+	
+	public List<Lancamento> porUsuario(Usuario usuario) {
+		return this.manager.createQuery("from Lancamento e where e.usuario.nome = :nome order by id", Lancamento.class)
+				.setParameter("nome", usuario.getNome()).getResultList();
+	}
 
 	@Transacional
 	public Lancamento save(Lancamento despesa) {

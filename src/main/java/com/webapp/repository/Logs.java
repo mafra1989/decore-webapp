@@ -24,6 +24,11 @@ public class Logs implements Serializable {
 	public Log porId(Long id) {
 		return this.manager.find(Log.class, id);
 	}
+	
+	public List<Log> porUsuario(Usuario usuario) {
+		return this.manager.createQuery("from Log e where e.usuario.nome = :nome order by id", Log.class)
+				.setParameter("nome", usuario.getNome()).getResultList();
+	}
 
 	@Transacional
 	public Log save(Log log) {
