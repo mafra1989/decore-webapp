@@ -344,6 +344,8 @@ public class ConsultaVendasBean implements Serializable {
 				*/
 			}
 			
+			venda.setValorTotalExport(BigDecimal.valueOf(venda.getValorTotal().doubleValue() - venda.getDesconto().doubleValue()));
+			
 		}
 
 		somaValorTotal = totalVendasTemp_ - totalDesconto_;

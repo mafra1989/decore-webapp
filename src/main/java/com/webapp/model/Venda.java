@@ -649,6 +649,10 @@ public class Venda implements Serializable {
 	@Transient
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal totalPago;
+	
+	@Transient
+	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
+	private BigDecimal valorTotalExport;
 
 	public List<ItemVenda> getItensVenda() {
 		return itensVenda;
@@ -728,5 +732,13 @@ public class Venda implements Serializable {
 
 	public void setAnoPagamento(Long anoPagamento) {
 		this.anoPagamento = anoPagamento;
+	}
+
+	public BigDecimal getValorTotalExport() {
+		return valorTotalExport;
+	}
+
+	public void setValorTotalExport(BigDecimal valorTotalExport) {
+		this.valorTotalExport = valorTotalExport;
 	}
 }

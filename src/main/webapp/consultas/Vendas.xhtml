@@ -428,9 +428,15 @@
 								<h:outputText value="#{venda.quantidadeItens}" />
 							</p:column>
 
-							<p:column headerText="Valor Total" width="15%" styleClass="font-column">
+							<p:column headerText="Valor Total" width="15%" exportable="false" styleClass="font-column">
 								<h:outputText value="#{venda.valorTotal - venda.desconto}">
 									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Valor Total" width="15%" styleClass="font-column" visible="false">
+								<h:outputText value="#{venda.valorTotalExport}">
+									<f:convertNumber maxFractionDigits="2" />
 								</h:outputText>
 							</p:column>
 							
@@ -440,9 +446,16 @@
 								</h:outputText>
 							</p:column>
 							
-							<p:column headerText="Total Pago" width="15%">
-								<h:outputText value="#{venda.totalPago != null ? venda.totalPago : '-'}">
+							<p:column headerText="Total Pago" width="15%" exportable="false">
+								<h:outputText value="#{venda.totalPago != null ? venda.totalPago : 'R$ 0,00'}">
 									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Total Pago" width="15%" visible="false">
+								<h:outputText value="0" rendered="#{venda.totalPago == null}" />
+								<h:outputText value="#{venda.totalPago}" rendered="#{venda.totalPago != null}">
+									<f:convertNumber maxFractionDigits="2" />
 								</h:outputText>
 							</p:column>
 							
