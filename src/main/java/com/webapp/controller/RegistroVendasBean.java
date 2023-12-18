@@ -799,6 +799,9 @@ public class RegistroVendasBean implements Serializable {
 				Cliente cliente = clientes.porNome("Nao Informado", usuario.getEmpresa());
 				vendaTemp_.setCliente(cliente);
 				
+				formaPagamento = formasPagamentos.porNome("Dinheiro", usuario.getEmpresa());
+				vendaTemp_.setFormaPagamento(formaPagamento);
+				
 				venda = new Venda();
 				itensVenda = new ArrayList<ItemVenda>();
 				itemVenda = new ItemVenda();
