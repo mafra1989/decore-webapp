@@ -163,12 +163,6 @@
 			<scope>compile</scope>
 		</dependency>
 		
-		<dependency>
-			<groupId>org.olap4j</groupId>
-			<artifactId>olap4j</artifactId>
-			<version>1.2.0</version>
-		</dependency>
-		
 		
 		<dependency>
 			<groupId>org.webjars</groupId>
@@ -285,7 +279,16 @@
             <name>PrimeFaces Maven Repository</name>
             <url>http://repository.primefaces.org</url>
         </repository>
+        <repository>
+          <id>jasperreports</id>
+          <url>http://jasperreports.sourceforge.net/maven2</url>
+        </repository>
+        <repository>
+          <id>jaspersoft-third-party</id>
+          <url>https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/</url>
+        </repository>
     </repositories>
+    
 
     <build>
 		<plugins>
