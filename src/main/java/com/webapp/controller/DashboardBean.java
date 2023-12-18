@@ -1128,9 +1128,12 @@ public class DashboardBean implements Serializable {
 		
 		Number totalTaxasVendasAvistaPagas = vendas.totalTaxasValor(usuario.getEmpresa(), calendarStart, calendarStop, codigoOperacoes);						
 		Number totalDescontosVendasAvistaPagas = vendas.descontoVendasAvistaPagas(usuario.getEmpresa(), calendarStart, calendarStop, codigoOperacoes);			
+		
+		Number totalTaxasEntregaVendasAvistaPagas = vendas.taxasEntregaVendasAvistaPagas(usuario.getEmpresa(), calendarStart, calendarStop, codigoOperacoes);
+		
 		Number totalVendasAvistaPagasTemp = vendas.vendasAvistaPagas(usuario.getEmpresa(), calendarStart, calendarStop, codigoOperacoes);
 		
-		Number totalVendasAvistaPagas = totalVendasAvistaPagasTemp.doubleValue() - (totalDescontosVendasAvistaPagas.doubleValue() + totalTaxasVendasAvistaPagas.doubleValue());	
+		Number totalVendasAvistaPagas = (totalVendasAvistaPagasTemp.doubleValue() + totalTaxasEntregaVendasAvistaPagas.doubleValue()) - (totalDescontosVendasAvistaPagas.doubleValue() + totalTaxasVendasAvistaPagas.doubleValue());	
 				
 		Number totalEntradasVendasPagasAteEstaData = contas.totalEntradaVendasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa(), null);
 		
@@ -1998,7 +2001,7 @@ public class DashboardBean implements Serializable {
 						List<Conta> listaDeContas = contas.porCodigoOperacao((long) object[6], "VENDA", usuario.getEmpresa());
 						if(listaDeContas.size() == 0) {
 							totalLucroVendasPagasDataValor = (totalLucroVendasPagasDataValor.doubleValue() + 
-									((BigDecimal)object[3]).doubleValue() + ((BigDecimal)object[8]).doubleValue())
+									((BigDecimal)object[3]).doubleValue()) //+ ((BigDecimal)object[8]).doubleValue()) taxa de entrega
 									- ((BigDecimal)object[7]).doubleValue();
 							
 							totalComprasDataValor = totalComprasDataValor.doubleValue() + ((BigDecimal)object[4]).doubleValue();
@@ -2051,7 +2054,7 @@ public class DashboardBean implements Serializable {
 						if(listaDeContas.size() == 0) {
 							totalVendasPagasDataValor = (totalVendasPagasDataValor.doubleValue() + 
 									((BigDecimal)object[3]).doubleValue() + ((BigDecimal)object[6]).doubleValue())
-									- ((BigDecimal)object[7]).doubleValue();
+									+ ((BigDecimal)object[7]).doubleValue();//taaxa de entrega
 						}
 					}
 					
@@ -2385,7 +2388,7 @@ public class DashboardBean implements Serializable {
 						if(listaDeContas.size() == 0) {
 							totalVendasPagasDataValor = (totalVendasPagasDataValor.doubleValue() + 
 									((BigDecimal)object[2]).doubleValue() + ((BigDecimal)object[4]).doubleValue())
-									- ((BigDecimal)object[5]).doubleValue();
+									+ ((BigDecimal)object[5]).doubleValue();//taxa de entrega
 						}
 					}
 					

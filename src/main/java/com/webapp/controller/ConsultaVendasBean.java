@@ -344,7 +344,12 @@ public class ConsultaVendasBean implements Serializable {
 				*/
 			}
 			
-			venda.setValorTotalExport(BigDecimal.valueOf(venda.getValorTotal().doubleValue() - venda.getDesconto().doubleValue()));
+			BigDecimal desconto = BigDecimal.ZERO;
+			if(venda.getDesconto() != null) {
+				desconto = venda.getDesconto();
+			}		
+			
+			venda.setValorTotalExport(BigDecimal.valueOf(venda.getValorTotal().doubleValue() - desconto.doubleValue()));
 			
 		}
 
@@ -369,13 +374,15 @@ public class ConsultaVendasBean implements Serializable {
 		Venda venda = entrega.getVenda();
 		venda.setStatus(true);
 		
-		if(venda.getTipoPagamento() == TipoPagamento.AVISTA && !venda.isConta()) {
-			venda.setVendaPaga(true);
+		if(!venda.isVendaPaga()) {
+			if(venda.getTipoPagamento() == TipoPagamento.AVISTA && !venda.isConta()) {
+				venda.setVendaPaga(true);
+			}
+			
+			venda.setDataPagamento(new Date());
+			
+			setInformacoesDataPagamento(venda);
 		}
-		
-		venda.setDataPagamento(new Date());
-		
-		setInformacoesDataPagamento(venda);
 		
 		venda = vendas.save(venda);
 		

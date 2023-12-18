@@ -1090,20 +1090,19 @@
 							
 							<p:panelGrid columns="2" layout="grid"
 								styleClass="panelgrid-noborder disabled disabled"
-								columnClasses="ui-grid-col-5, ui-grid-col-3">
+								columnClasses="ui-grid-col-4, ui-grid-col-4">
 	
-								<p:commandButton id="btn-calcular_old" value="Salvar Venda"
-									onstart="PF('downloadLoading').show();" icon="fa fa-save"
+								<p:commandButton id="btn-calcular_old" value="Salvar Pré-Venda"
+									onstart="PF('downloadLoading').show();" icon="fa fa-shopping-cart"
 									onsuccess="PF('downloadLoading').hide();"
-									disabled="#{(not seguranca.acessoVendedor() and not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()) or registroVendasBean.venda.exclusao or registroVendasBean.itemVenda.id != null}"
+									disabled="#{(not seguranca.acessoVendedor() and not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()) or registroVendasBean.venda.exclusao or registroVendasBean.itemVenda.id != null or not registroVendasBean.venda.prevenda}"
 									update="msg accordion-panel panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:panel-total-geral form:lote"
 									action="#{registroVendasBean.aplicarDescontoVenda_}"
 									process="@this panel-table accordion-panel"
-									style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;"
-									rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 7111 and seguranca.usuarioLogado.usuario.empresa.id == 7112}" />
+									style="font-weight: bold; margin-bottom: 10px;background-color: #136A8A;" />
 									
 								<p:commandButton id="btn-calcular" value="Finalizar Venda"
-									onstart="PF('downloadLoading').show();" icon="fa fa-save"
+									onstart="PF('downloadLoading').show();" icon="fa fa-money"
 									actionListener="#{registroVendasBean.aplicarDescontoVenda}"
 									onsuccess="PF('downloadLoading').hide();"
 									style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;"

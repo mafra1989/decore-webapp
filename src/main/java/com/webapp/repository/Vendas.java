@@ -203,11 +203,19 @@ public class Vendas implements Serializable {
 								|| ((Entrega) objectTemp[1]).getStatus().equalsIgnoreCase(StatusPedido.ENTREGUE.name())) {
 							vendas.add((Venda) objectTemp[0]);
 						}
+						
+						/*if(((Venda)objectTemp[0]).isStatus() == true) {
+							vendas.add((Venda) objectTemp[0]);
+						}*/			
 	
 					} else if (vendasNormais && statusPedido[0] == StatusPedido.PENDENTE) {
 	
-						if (objectTemp[1] == null
+						/*if (objectTemp[1] == null
 								|| ((Entrega) objectTemp[1]).getStatus().equalsIgnoreCase(StatusPedido.PENDENTE.name())) {
+							vendas.add((Venda) objectTemp[0]);
+						}*/
+						
+						if(((Venda)objectTemp[0]).isStatus() != true) {
 							vendas.add((Venda) objectTemp[0]);
 						}
 					}
@@ -225,11 +233,19 @@ public class Vendas implements Serializable {
 								&& ((Entrega) objectTemp[1]).getStatus().equalsIgnoreCase(StatusPedido.ENTREGUE.name())) {
 							vendas.add((Venda) objectTemp[0]);
 						}
+						
+						/*if(((Venda)objectTemp[0]).isStatus() == true) {
+							vendas.add((Venda) objectTemp[0]);
+						}*/
 	
 					} else if (!vendasNormais && statusPedido[0] == StatusPedido.PENDENTE) {
 	
-						if (objectTemp[1] != null
+						/*if (objectTemp[1] != null
 								&& ((Entrega) objectTemp[1]).getStatus().equalsIgnoreCase(StatusPedido.PENDENTE.name())) {
+							vendas.add((Venda) objectTemp[0]);
+						}*/
+						
+						if(((Venda)objectTemp[0]).isStatus() != true) {
 							vendas.add((Venda) objectTemp[0]);
 						}
 					}
@@ -618,6 +634,45 @@ public class Vendas implements Serializable {
 		}
 		
 		String jpql = "SELECT sum(i.desconto) FROM Venda i Where i.empresa.id = :empresa " + listaDeContas + " AND i.ajuste = 'N' AND i.vendaPaga = 'Y' AND i.conta = 'N' and i.exclusao = 'N' " + periodo;
+		
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
+		
+		if(calendarStart != null && calendarStop != null) {
+			q.setParameter("dataInicio", calendarStart.getTime());
+			q.setParameter("dataFim", calendarStop.getTime());
+		}
+		
+		if(contas.size() > 0) {
+			q.setParameter("contas", contas);
+		}
+
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+	
+	public Number taxasEntregaVendasAvistaPagas(Empresa empresa, Calendar calendarStart, Calendar calendarStop, List<BigInteger> contas) {
+		String periodo = "";
+		if(calendarStart != null && calendarStop != null) {
+			periodo += "AND i.dataPagamento BETWEEN :dataInicio AND :dataFim";
+		}
+		
+		String listaDeContas = "";
+		if(contas.size() > 0) {
+			listaDeContas = "AND i.numeroVenda not in (:contas)";
+		}
+		
+		String jpql = "SELECT sum(i.taxaDeEntrega) FROM Venda i Where i.empresa.id = :empresa " + listaDeContas + " AND i.ajuste = 'N' AND i.vendaPaga = 'Y' AND i.conta = 'N' and i.exclusao = 'N' " + periodo;
 		
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId());
 		
@@ -2020,7 +2075,7 @@ public class Vendas implements Serializable {
 	
 	public Number totalVendasPorDiaValor_(Date dateStart, Date dateStop, Empresa empresa) {
 		// AND i.vendaPaga = 'Y' AND i.conta = 'N' 
-		String jpql = "SELECT sum(i.valorTotal) FROM Venda i WHERE i.quantidadeItens > 0 AND i.empresa.id = :empresa AND i.dataVenda between :dateStart and :dateStop AND i.ajuste = 'N' and i.exclusao = 'N'";
+		String jpql = "SELECT sum(i.valorTotal) FROM Venda i WHERE i.quantidadeItens > 0 AND i.empresa.id = :empresa AND i.vendaPaga = 'Y' AND i.dataVenda between :dateStart and :dateStop AND i.ajuste = 'N' and i.exclusao = 'N'";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
 
 		Number count = 0;
@@ -2210,7 +2265,7 @@ public class Vendas implements Serializable {
 	
 	public Number totalVendasPorDiaQuantidade_(Date dateStart, Date dateStop, Empresa empresa) {
 		// AND i.vendaPaga = 'Y' AND i.conta = 'N' 
-		String jpql = "SELECT count(i.id) FROM Venda i WHERE i.quantidadeItens > 0 AND i.empresa.id = :empresa AND i.dataVenda between :dateStart and :dateStop AND i.ajuste = 'N' and i.exclusao = 'N'";
+		String jpql = "SELECT count(i.id) FROM Venda i WHERE i.quantidadeItens > 0 AND i.empresa.id = :empresa AND i.vendaPaga = 'Y' AND i.dataVenda between :dateStart and :dateStop AND i.ajuste = 'N' and i.exclusao = 'N'";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
 
 		Number count = 0;
@@ -2250,7 +2305,7 @@ public class Vendas implements Serializable {
 
 	public Number totalLucrosPorDia_(Date dateStart, Date dateStop, Empresa empresa) {
 		// AND i.venda.vendaPaga = 'Y' AND i.venda.conta = 'N' 
-		String jpql = "SELECT sum(i.lucro) FROM ItemVenda i WHERE i.venda.quantidadeItens > 0 AND i.venda.empresa.id = :empresa AND i.venda.dataVenda between :dateStart and :dateStop AND i.venda.ajuste = 'N' and i.venda.exclusao = 'N' and i.exclusao = 'N'";
+		String jpql = "SELECT sum(i.lucro) FROM ItemVenda i WHERE i.venda.quantidadeItens > 0 AND i.venda.empresa.id = :empresa AND i.venda.vendaPaga = 'Y' AND i.venda.dataVenda between :dateStart and :dateStop AND i.venda.ajuste = 'N' and i.venda.exclusao = 'N' and i.exclusao = 'N'";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dateStart", dateStart).setParameter("dateStop", dateStop);
 	
 		Number count = 0;

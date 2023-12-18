@@ -247,6 +247,10 @@ public class Venda implements Serializable {
 	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
 	private BigDecimal taxaDeComissao = BigDecimal.ZERO;
 	
+	@Type(type = "yes_no")
+	@Column(nullable = true)
+	private boolean prevenda = true;
+	
 
 	public Long getId() {
 		return id;
@@ -606,6 +610,14 @@ public class Venda implements Serializable {
 
 	public void setTaxaDeComissao(BigDecimal taxaDeComissao) {
 		this.taxaDeComissao = taxaDeComissao;
+	}
+
+	public boolean isPrevenda() {
+		return prevenda;
+	}
+
+	public void setPrevenda(boolean prevenda) {
+		this.prevenda = prevenda;
 	}
 
 	@Override

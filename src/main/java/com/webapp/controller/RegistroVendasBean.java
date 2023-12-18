@@ -707,7 +707,7 @@ public class RegistroVendasBean implements Serializable {
 				
 				venda.setStatus(!entrega);
 				
-				venda.setVendaPaga(!entrega);
+				venda.setVendaPaga(false); //venda.setVendaPaga(!entrega);
 
 				if (entrega) {
 					entregaVenda.setStatus("PENDENTE");
@@ -817,7 +817,7 @@ public class RegistroVendasBean implements Serializable {
 				if (entrega) {
 					if(entregaVenda.getId() == null) {
 						venda.setStatus(!entrega);
-						venda.setVendaPaga(!entrega);
+						venda.setVendaPaga(false); //venda.setVendaPaga(!entrega);
 						
 						entregaVenda.setStatus("PENDENTE");
 						entregaVenda.setVenda(venda);
@@ -831,7 +831,7 @@ public class RegistroVendasBean implements Serializable {
 						entregaVenda = new Entrega();
 						
 						venda.setStatus(!entrega);
-						venda.setVendaPaga(!entrega);
+						venda.setVendaPaga(false); //venda.setVendaPaga(!entrega);
 					}
 				}
 				
@@ -2518,23 +2518,12 @@ public class RegistroVendasBean implements Serializable {
 	
 
 	public void finalizar() throws IOException { 
-		/*
-		Calendar dataPagamentoAtual = Calendar.getInstance();
-		dataPagamentoAtual.setTime(new Date());
-		dataPagamentoAtual = DateUtils.truncate(dataPagamentoAtual, Calendar.DAY_OF_MONTH);		
 		
-		if(venda.getDataPagamento() != null) {
-			Calendar ultimoPagamento = Calendar.getInstance();
-			ultimoPagamento.setTime(venda.getDataPagamento());
-			ultimoPagamento = DateUtils.truncate(ultimoPagamento, Calendar.DAY_OF_MONTH);
-			
-			if(ultimoPagamento.before(dataPagamentoAtual)) {
-				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-				PrimeFaces.current().executeScript(
-						"swal({ type: 'error', title: 'Ops!', text: 'Não é possível alterar esta venda, pagamento realizado em " + sdf.format(ultimoPagamento.getTime()) + " !' });");
-				return;
-			}
-		}*/
+		if(!venda.isPrevenda()) {
+			PrimeFaces.current().executeScript(
+						"swal({ type: 'error', title: 'Ops!', text: 'Não é possível alterar esta venda, venda finalizada !' });");
+			return;
+		}
 		
 		if (itensVenda.size() > 0) {						
 									
@@ -3550,10 +3539,10 @@ public class RegistroVendasBean implements Serializable {
 		}
 		
 		if(!venda.isConta()) {
-			if(venda.getId() == null) {
+			//if(venda.getId() == null) {
 				venda.setDataPagamento(new Date());
 				setInformacoesDataPagamento();
-			}			
+			//}			
 		} else {
 			venda.setDataPagamento(null);
 			
@@ -3578,6 +3567,7 @@ public class RegistroVendasBean implements Serializable {
 			}
 		}
 		
+		venda.setPrevenda(false);
 		venda.setPdv(false);
 		venda.setEmpresa(usuario.getEmpresa());
 		venda = vendas.save(venda);
@@ -4025,13 +4015,16 @@ public class RegistroVendasBean implements Serializable {
 					entregaVenda = entregas.save(entregaVenda);
 				}
 				
-				venda.setDataPagamento(null);
+				if(!venda.isVendaPaga()) {
+					venda.setDataPagamento(null);
+					
+					venda.setDiaPagamento(null);
+					venda.setNomeDiaPagamento(null);
+					venda.setSemanaPagamento(null);
+					venda.setMesPagamento(null);
+					venda.setAnoPagamento(null);
+				}
 				
-				venda.setDiaPagamento(null);
-				venda.setNomeDiaPagamento(null);
-				venda.setSemanaPagamento(null);
-				venda.setMesPagamento(null);
-				venda.setAnoPagamento(null);
 				
 			} else {
 				if(entregaVenda.getId() != null) {

@@ -3080,6 +3080,10 @@ public class PDVBean implements Serializable {
 			
 			PrimeFaces.current().executeScript("ajaxDelay('', 0);");
 			
+			/*if(itensCompra.size() > 0) {
+				itemCompra = itensCompra.stream().sorted((o1, o2)-> o1.getCompra().getDataCompra().compareTo(o2.getCompra().getDataCompra())).findFirst().get();
+			}*/
+			
 			if(pdvRapido) {
 				
 				if (itensCompra.size() > 0 && produto.isEstoque() || !produto.isEstoque()) {
@@ -3278,6 +3282,7 @@ public class PDVBean implements Serializable {
 										if(saldo.longValue() <= itensCompra.get(i).getQuantidadeDisponivel().doubleValue()) {
 											ItemVendaCompra itemVendaCompra = new ItemVendaCompra();
 											itemVendaCompra.setItemVenda(itemVenda);
+											itemVendaCompra.setItemCompra(itensCompra.get(i));//adicionado, causando nullpointer
 											itemVendaCompra.setCompra(itensCompra.get(i).getCompra());
 											itemVendaCompra.setQuantidade(new BigDecimal(saldo));
 											//itemVendaCompra.setTotal(new BigDecimal(valorDeCustoUnitario.doubleValue() * itemVendaCompra.getQuantidade().intValue()));
@@ -3289,6 +3294,7 @@ public class PDVBean implements Serializable {
 											
 											ItemVendaCompra itemVendaCompra = new ItemVendaCompra();
 											itemVendaCompra.setItemVenda(itemVenda);
+											itemVendaCompra.setItemCompra(itensCompra.get(i));//adicionado, causando nullpointer
 											itemVendaCompra.setCompra(itensCompra.get(i).getCompra());
 											itemVendaCompra.setQuantidade(itensCompra.get(i).getQuantidadeDisponivel());
 											//itemVendaCompra.setTotal(new BigDecimal(valorDeCustoUnitario.doubleValue() * itemVendaCompra.getQuantidade().intValue()));

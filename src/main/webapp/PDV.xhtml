@@ -2654,7 +2654,7 @@ body .ui-datatable .ui-paginator {
 								onclick="selectTab2();"
 								onsuccess="PF('downloadLoading').hide();"
 								styleClass="btn-finalizar"
-								disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado() and not seguranca.acessoVendedor()) or pDVBean.venda.exclusao}"
+								disabled="#{(not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado() and not seguranca.acessoVendedor()) or pDVBean.venda.exclusao or true}"
 								update="msg mesa-dialog mesa-dialog_ confirm-dialog confirmDialog tabView:data-venda tabView:tipo-venda tabView:panel-entrega tabView:panel-ajuste tabView:vendedor tabView:bairro tabView:cliente panel-table tabView:id tabView:codigo tabView:descricao tabView:fornecedor tabView:valor-unitario tabView:quantidade tabView:valor-total tabView:lote"
 								process="@this panel-table tabView:data-venda tabView:vendedor tabView:bairro tabView:entregador_ tabView:cliente tabView:tipo-venda tabView:panel-ajuste" />
 								

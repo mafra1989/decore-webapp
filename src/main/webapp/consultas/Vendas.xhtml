@@ -315,6 +315,7 @@
 							onstart="start();" oncomplete="stop();"
 							action="#{consultaVendasBean.entregarVenda}" update="form"
 							process="@this"
+							disabled="#{consultaVendasBean.vendaSelecionada.prevenda}"
 							rendered="#{consultaVendasBean.entrega.id != null and consultaVendasBean.entrega.status == 'PENDENTE' and consultaVendasBean.vendaSelecionada.tipoPagamento != null}">
 						</p:menuitem>
 						<p:separator />
@@ -328,7 +329,7 @@
 							onstart="start();" oncomplete="stop();"
 							action="#{consultaVendasBean.desfazerEntregaPagamento}" update="form"
 							process="@this"
-							rendered="#{consultaVendasBean.entrega.id != null and consultaVendasBean.entrega.status == 'ENTREGUE' and consultaVendasBean.vendaSelecionada.tipoPagamento == 'AVISTA'}">
+							rendered="#{consultaVendasBean.entrega.id != null and consultaVendasBean.entrega.status == 'ENTREGUE' and consultaVendasBean.vendaSelecionada.tipoPagamento == 'AVISTA' and false}">
 						</p:menuitem>
 						<p:menuitem value="Ver localização" icon="fa fa-fw fa-map-marker"
 							onstart="start();" oncomplete="stop();"
@@ -370,9 +371,10 @@
 								onstart="PF('downloadLoading').show();"
 								oncomplete="PF('downloadLoading').hide();" />
 
-							<p:column headerText="N. Venda" width="10%" styleClass="font-column">
+							<p:column headerText="N. Venda" width="12%" styleClass="font-column">
 								<h:outputText value="#{venda.numeroVenda}" />
 								<p:commandButton icon="fa fa-fw fa-edit" styleClass="inventario" rendered="#{venda.ajuste}" />
+								<p:commandButton icon="fa fa-fw fa-shopping-cart" styleClass="inventario" rendered="#{venda.prevenda}" />
 							</p:column>
 
 							<p:column headerText="Data da venda" width="15%" styleClass="font-column">
@@ -421,7 +423,7 @@
 							</p:column>					
 							
 							<p:column headerText="Pagamento" width="10%" styleClass="font-column">
-								<h:outputText value="#{venda.tipoPagamento != null ? venda.tipoPagamento.descricao.concat(', ').concat(venda.formaPagamento.nome).concat(venda.pagamento) : '-'}" />
+								<h:outputText value="#{(venda.tipoPagamento != null and venda.dataPagamento != null) ? venda.tipoPagamento.descricao.concat(', ').concat(venda.formaPagamento.nome).concat(venda.pagamento) : '-'}" />
 							</p:column>
 
 							<p:column headerText="Qtd. Itens" width="8%" styleClass="font-column">
