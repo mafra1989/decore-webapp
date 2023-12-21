@@ -115,7 +115,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial" size="10" isBold="false" isPdfEmbedded="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA["Saldo Disponível:"]]></textFieldExpression>
+					<textFieldExpression><![CDATA["Saldo Final:"]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement uuid="a4a9ae75-3f5a-42bb-817d-056ad1d2a3ce" x="399" y="3" width="77" height="20" backcolor="#FF0000"/>
@@ -232,7 +232,7 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="18" isBold="false" isPdfEmbedded="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Saldo Anterior: " + $F{saldoAnterior}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Saldo Inicial: " + $F{saldoAnterior}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="d0f7dfe3-1542-4756-9379-a347854181e6" x="0" y="99" width="180" height="15"/>
