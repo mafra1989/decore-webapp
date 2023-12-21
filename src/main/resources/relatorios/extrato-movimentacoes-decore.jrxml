@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="59c0d381-e5cd-4eb3-83db-5d21c2c3aa31">
+	<property name="ireport.zoom" value="1.3310000000000015"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Title" fontName="Arial" fontSize="26" isBold="true" pdfFontName="Helvetica-Bold"/>
+	<style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12"/>
+	<field name="movimentacoes" class="java.util.List"/>
+	<field name="saldoAnterior" class="java.lang.String"/>
+	<field name="dataEmissao" class="java.lang.String"/>
+	<field name="compras" class="java.lang.String"/>
+	<field name="vendas" class="java.lang.String"/>
+	<field name="despesas" class="java.lang.String"/>
+	<field name="receitas" class="java.lang.String"/>
+	<field name="saldoDisponivel" class="java.lang.String"/>
+	<field name="dataInicial" class="java.lang.String"/>
+	<group name="Group1">
+		<groupExpression><![CDATA[(int)($V{REPORT_COUNT}/15)]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<staticText>
+					<reportElement uuid="a4a9ae75-3f5a-42bb-817d-056ad1d2a3ce" x="216" y="0" width="70" height="20" backcolor="#FF0000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Valor Total]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="90fd9f5c-5954-4ff2-9b93-9e04fa76680c" x="0" y="0" width="69" height="20" backcolor="#FF0000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Cód. Lançamento]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="a4a9ae75-3f5a-42bb-817d-056ad1d2a3ce" x="395" y="0" width="87" height="20" backcolor="#FF0000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Valor Pago Nesta Data]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="90fd9f5c-5954-4ff2-9b93-9e04fa76680c" x="147" y="0" width="69" height="20" backcolor="#FF0000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Data Operação]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="a4a9ae75-3f5a-42bb-817d-056ad1d2a3ce" x="286" y="0" width="32" height="20" backcolor="#FF0000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Tipo]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="a4a9ae75-3f5a-42bb-817d-056ad1d2a3ce" x="482" y="0" width="71" height="20" backcolor="#FF0000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Saldo]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="a4a9ae75-3f5a-42bb-817d-056ad1d2a3ce" x="69" y="0" width="78" height="20" backcolor="#FF0000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Operação]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="90fd9f5c-5954-4ff2-9b93-9e04fa76680c" x="318" y="0" width="77" height="20" backcolor="#FF0000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Data/Hora Pagto]]></text>
+				</staticText>
+				<line>
+					<reportElement uuid="b73baedb-9588-47a0-b879-36958e6dabda" positionType="FixRelativeToBottom" x="0" y="19" width="555" height="1"/>
+					<graphicElement>
+						<pen lineWidth="0.5" lineColor="#999999"/>
+					</graphicElement>
+				</line>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="82">
+				<rectangle radius="5">
+					<reportElement uuid="788e6177-6a10-4a28-9dda-828946e2cc92" x="477" y="3" width="75" height="20"/>
+					<graphicElement>
+						<pen lineWidth="0.15" lineColor="#999999"/>
+					</graphicElement>
+				</rectangle>
+				<rectangle radius="5">
+					<reportElement uuid="788e6177-6a10-4a28-9dda-828946e2cc92" x="400" y="3" width="75" height="20"/>
+					<graphicElement>
+						<pen lineWidth="0.15" lineColor="#999999"/>
+					</graphicElement>
+				</rectangle>
+				<rectangle radius="5">
+					<reportElement uuid="788e6177-6a10-4a28-9dda-828946e2cc92" x="323" y="3" width="75" height="20"/>
+					<graphicElement>
+						<pen lineWidth="0.15" lineColor="#999999"/>
+					</graphicElement>
+				</rectangle>
+				<rectangle radius="5">
+					<reportElement uuid="788e6177-6a10-4a28-9dda-828946e2cc92" x="246" y="3" width="75" height="20"/>
+					<graphicElement>
+						<pen lineWidth="0.15" lineColor="#999999"/>
+					</graphicElement>
+				</rectangle>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="94945e3e-02c6-411e-a37a-8fe904b62a06" style="SubTitle" x="129" y="45" width="116" height="20" forecolor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial" size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Saldo Disponível:"]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="a4a9ae75-3f5a-42bb-817d-056ad1d2a3ce" x="399" y="3" width="77" height="20" backcolor="#FF0000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Despesas]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="a4a9ae75-3f5a-42bb-817d-056ad1d2a3ce" x="245" y="3" width="77" height="20" backcolor="#FF0000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Compras]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="a4a9ae75-3f5a-42bb-817d-056ad1d2a3ce" x="476" y="3" width="77" height="20" backcolor="#FF0000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Receitas]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="90fd9f5c-5954-4ff2-9b93-9e04fa76680c" x="322" y="3" width="77" height="20" backcolor="#FF0000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="SansSerif" size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Vendas]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="94945e3e-02c6-411e-a37a-8fe904b62a06" style="SubTitle" x="129" y="23" width="116" height="20" forecolor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Arial" size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Total:"]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="564994ef-bb45-4a04-8a13-b916917c1af5" x="245" y="23" width="75" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{compras}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="3ba63d21-3b0a-487b-b3ba-e942f6e20be9" x="322" y="23" width="75" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{vendas}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="9a69e2e5-60f0-4a0a-8da7-38403b880efc" x="399" y="23" width="75" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{despesas}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="950852cf-04b1-4230-8a04-5ac3fcd83ed6" x="476" y="23" width="75" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{receitas}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="23c95229-6a7f-46c0-8307-a1a32731a729" x="245" y="45" width="75" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{saldoDisponivel}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="Group2">
+		<groupExpression><![CDATA[(int)($V{REPORT_COUNT}/5)]]></groupExpression>
+		<groupHeader>
+			<band height="30">
+				<subreport>
+					<reportElement uuid="b94c6c09-3e88-4114-98af-c4fbbd9785ce" stretchType="RelativeToBandHeight" mode="Transparent" x="0" y="0" width="553" height="27"/>
+					<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{movimentacoes}, false)]]></dataSourceExpression>
+					<subreportExpression><![CDATA["/relatorios/movimentacoes.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="120" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="ac0e12ba-bfc2-4258-89c3-1bb50824ebb7" style="Title" x="0" y="13" width="263" height="33"/>
+				<textElement verticalAlignment="Middle">
+					<font size="20"/>
+				</textElement>
+				<text><![CDATA[Extrato de Movimentações]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="875c03f0-35f7-45e8-bba3-4136b4a53135" style="SubTitle" x="100" y="46" width="174" height="22"/>
+				<textElement/>
+				<text><![CDATA[Decore]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="b73baedb-9588-47a0-b879-36958e6dabda" positionType="FixRelativeToBottom" x="0" y="119" width="555" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement uuid="677ac194-5aa9-428d-b7ce-44646dbe0de0" x="275" y="92" width="278" height="24"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="18" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Saldo Anterior: " + $F{saldoAnterior}]]></textFieldExpression>
+			</textField>
+			<image scaleImage="FillFrame">
+				<reportElement uuid="828019fb-6285-477e-a20c-42e889012ba0" mode="Opaque" x="306" y="12" width="249" height="55"/>
+				<imageExpression><![CDATA["/relatorios/decore-logo.jpg"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement uuid="d0f7dfe3-1542-4756-9379-a347854181e6" x="0" y="99" width="180" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Data de Emissão: " + $F{dataEmissao}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d0f7dfe3-1542-4756-9379-a347854181e6" x="0" y="86" width="263" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Período: " + $F{dataInicial} + " a " + $F{dataInicial}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<lastPageFooter>
+		<band height="18"/>
+	</lastPageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

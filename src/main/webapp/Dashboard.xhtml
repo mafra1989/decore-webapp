@@ -1287,11 +1287,17 @@ body .ui-datatable .ui-datatable-data>tr td {
 
 					</div>
 					
-					<div style="text-align: center">
+					<div style="text-align: center">				
 						<p:commandButton id="btn-filtro" styleClass="btn-filtro" value="Filtrar por Data"
 								onstart="start();" process="@this"								
 								oncomplete="PF('filtro-movimentacoes-dialog').show();stop();"
 								icon="fa fa-fw fa-sliders">
+	                	</p:commandButton>
+	                	<p:commandButton id="btn-download-extrato" styleClass="btn-filtro" value="Extrato"
+								onstart="start();" process="@this" ajax="false" 						
+								action="#{dashboardBean.baixarExtrato}" oncomplete="start();"
+								icon="fa fa-fw fa-download"
+								rendered="#{(seguranca.acessoAdministrador() or seguranca.usuarioLogado.usuario.id == 1) and true}">
 	                	</p:commandButton>
 	                </div>
 					
