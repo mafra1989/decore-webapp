@@ -397,6 +397,13 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 }
 
 @media ( min-width :220px) {	
+	.panel-filtro-export.ui-panel .ui-panel-content {
+		margin-top: 10px;
+		padding: 0px !important;
+		border: none !important;
+		float: inline-end;
+	}
+	
 	.dashboard .overview-box .overview-box-icon {
     	line-height: 42px;
     }
@@ -828,6 +835,9 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 }
 
 @media ( min-width :460px) {
+	.panel-filtro-export.ui-panel .ui-panel-content {
+		margin-top: 0px;
+	}
 	.btn-filtro {
     	margin-top: 0px;
 	}
@@ -888,6 +898,11 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 				
 				<p:growl id="msg" closable="true" life="2000" showSummary="false"
 					showDetail="true" style="text-align: center" />
+					
+				<p:remoteCommand name="createExtrato" 
+					action="#{dashboardBean.createExtratoPorPeriodo}"
+					onstart="PF('downloadLoading').show();" process="@this"
+					oncomplete="PF('downloadLoading').hide();" />
 						
 				<p:remoteCommand name="buscarContasAPagarEmAtraso" 
 					update="contas-dialog form-contas" 
@@ -1070,13 +1085,21 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 				<div class="ui-g-12 dashboard-bottom card" style="margin-top: -2px;margin-bottom:30px;">
 					<div class="ui-g-12 ui-lg-8 ui-xl-8 despesas-receitas">
 						
-						<label style="font-weight: bold; font-size: 14px;float:left;">Despesas x Receitas</label>
-						
-						<p:commandButton id="btn-filtro" styleClass="btn-filtro" value="Filtrar por Data"
-								onstart="start();" process="@this" style="float:right"							
-								oncomplete="PF('filtro-movimentacoes-dialog').show();stop();"
-								icon="fa fa-fw fa-sliders">
-	                	</p:commandButton>
+						<label style="font-weight: bold; font-size: 14px;float:left;">Histórico de Movimentações</label>
+								
+						<p:panel styleClass="panel-filtro-export">
+							<p:commandButton id="btn-filtro" styleClass="btn-filtro" value="Filtrar por Data"
+									onstart="start();" process="@this" style="float: inline-end;"								
+									oncomplete="PF('filtro-movimentacoes-dialog').show();stop();"
+									icon="fa fa-fw fa-sliders">
+		                	</p:commandButton>
+							<p:commandButton id="btn-download-extrato" styleClass="btn-filtro" value="Extrato"
+									action="#{dashboardBean.confirmaCreateExtratoJS}"
+									style="float: inline-end;" process="@this"					
+									icon="fa fa-fw fa-download"
+									rendered="#{(seguranca.acessoAdministrador() or seguranca.usuarioLogado.usuario.id == 1) and true}">
+		                	</p:commandButton>	
+	                	</p:panel>			
 	                
 						<p:barChart id="barChart-despesasPorDia" 
 							model="#{dashboardBean.mixedModelPorDia}"

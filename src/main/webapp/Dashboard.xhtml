@@ -1113,6 +1113,11 @@ body .ui-datatable .ui-datatable-data>tr td {
 
 		<h:form id="form">
 		
+			<p:remoteCommand name="createExtrato" 
+					action="#{dashboardBean.createExtrato}"
+					onstart="PF('downloadLoading').show();" process="@this"
+					oncomplete="PF('downloadLoading').hide();" />
+				
 			<p:remoteCommand name="atualizaDespesa" process="@this"
 				update="form-despesa form" actionListener="#{dashboardBean.atualizaSaldo}" />
 				
@@ -1294,8 +1299,8 @@ body .ui-datatable .ui-datatable-data>tr td {
 								icon="fa fa-fw fa-sliders">
 	                	</p:commandButton>
 	                	<p:commandButton id="btn-download-extrato" styleClass="btn-filtro" value="Extrato"
-								onstart="start();" process="@this" ajax="false" 						
-								action="#{dashboardBean.baixarExtrato}" oncomplete="start();"
+								process="@this" 					
+								action="#{dashboardBean.confirmaCreateExtratoJS_}"
 								icon="fa fa-fw fa-download"
 								rendered="#{(seguranca.acessoAdministrador() or seguranca.usuarioLogado.usuario.id == 1) and true}">
 	                	</p:commandButton>

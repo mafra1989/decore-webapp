@@ -448,6 +448,104 @@ function fecharCaixa(valor) {
 		})	
 }
 
+function confirmaCreateExtrato(inicio, fim) {
+	
+	const swalWithBootstrapButtons = swal.mixin({
+		  confirmButtonClass: 'btn btn-success',
+		  cancelButtonClass: 'btn btn-danger',
+		  buttonsStyling: false,
+		})
+
+		swalWithBootstrapButtons({
+		  title: 'Baixar Extrato',
+		  text: "Período de " + inicio + " a "  + fim + ". Confirmar?",
+		  type: 'info',
+		  showCancelButton: true,
+		  confirmButtonText: 'Sim, confirmar!',
+		  cancelButtonText: 'Não, cancelar!',
+		  reverseButtons: true
+		}).then((result) => {
+		  if (result.value) {
+			  
+			  createExtrato();
+			  		 
+		  }
+		})
+}
+
+function base64toBlob(base64Data, contentType) {
+    contentType = contentType || '';
+    var sliceSize = 1024;
+    var byteCharacters = atob(base64Data);
+    var bytesLength = byteCharacters.length;
+    var slicesCount = Math.ceil(bytesLength / sliceSize);
+    var byteArrays = new Array(slicesCount);
+
+    for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+        var begin = sliceIndex * sliceSize;
+        var end = Math.min(begin + sliceSize, bytesLength);
+
+        var bytes = new Array(end - begin);
+        for (var offset = begin, i = 0; offset < end; ++i, ++offset) {
+            bytes[i] = byteCharacters[offset].charCodeAt(0);
+        }
+        byteArrays[sliceIndex] = new Uint8Array(bytes);
+    }
+    return new Blob(byteArrays, { type: contentType });
+}
+
+function downloadExtrato(filename, base64Data) {
+	
+	var downloadLink = document.createElement('a');
+	downloadLink.target   = '_blank';
+	downloadLink.download = filename;
+	
+	const b64toBlob = (b64Data, contentType='', sliceSize=1024) => {
+	  const byteCharacters = atob(b64Data);
+	  const byteArrays = [];
+	
+	  for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+	    const slice = byteCharacters.slice(offset, offset + sliceSize);
+	
+	    const byteNumbers = new Array(slice.length);
+	    for (let i = 0; i < slice.length; i++) {
+	      byteNumbers[i] = slice.charCodeAt(i);
+	    }
+	
+	    const byteArray = new Uint8Array(byteNumbers);
+	    byteArrays.push(byteArray);
+	  }
+	    
+	  const blob = new Blob(byteArrays, {type: contentType});
+	  return blob;
+	}
+	
+	// set contentType
+	var contentType = 'application/pdf';
+	
+	// convert downloaded data to a Blob
+	//var blob = base64toBlob(base64Data, contentType);
+	const blob = b64toBlob(base64Data, contentType);
+	
+	
+	// create an object URL from the Blob
+	var URL = window.URL || window.webkitURL;
+	var downloadUrl = URL.createObjectURL(blob);
+	
+	// set object URL as the anchor's href
+	downloadLink.href = downloadUrl;
+	
+	// append the anchor to document body
+	document.body.append(downloadLink);
+	
+	// fire a click event on the anchor
+	downloadLink.click();
+	
+	// cleanup: remove element and revoke object URL
+	document.body.removeChild(downloadLink);
+	URL.revokeObjectURL(downloadUrl);
+}
+
 function abrirDialogLancamentoReceita() {
 	setarItemID();
 }

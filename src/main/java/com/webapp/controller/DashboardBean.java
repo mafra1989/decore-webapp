@@ -1440,8 +1440,20 @@ public class DashboardBean implements Serializable {
 			e.printStackTrace();
 		}
 	}
+	
+	public void confirmaCreateExtratoJS_() {
+		String dataInicio = new SimpleDateFormat("dd/MM/yyyy").format(diaSelecionado.getTime());
+		String dataTermino = new SimpleDateFormat("dd/MM/yyyy").format(diaSelecionado.getTime());
+		PrimeFaces.current().executeScript("confirmaCreateExtrato('" + dataInicio + "', '" + dataTermino + "')");
+	}
+	
+	public void confirmaCreateExtratoJS() {
+		String dataInicio = new SimpleDateFormat("dd/MM/yyyy").format(dateStartMovimentacoes.getTime());
+		String dataTermino = new SimpleDateFormat("dd/MM/yyyy").format(dateStopMovimentacoes.getTime());
+		PrimeFaces.current().executeScript("confirmaCreateExtrato('" + dataInicio + "', '" + dataTermino + "')");
+	}
 
-	public void baixarExtrato() {
+	public void createExtrato() {
 
 		Calendar calendarStop = Calendar.getInstance();
 		calendarStop.setTime(diaSelecionado);
@@ -1456,7 +1468,7 @@ public class DashboardBean implements Serializable {
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
 		ExtratoMovimentacoes extrato = new ExtratoMovimentacoes();
-		extrato.setSaldoAnterior(nf.format(saldoAterior));
+		extrato.setSaldoInicial(nf.format(saldoAterior));
 		extrato.setDataEmissao(formatter.format(new Date()));
 
 		Calendar calendarInicio = Calendar.getInstance();
@@ -1465,6 +1477,8 @@ public class DashboardBean implements Serializable {
 		
 		String dataInicial = new SimpleDateFormat("dd/MM/yyyy").format(calendarInicio.getTime());
 		extrato.setDataInicial(dataInicial);
+		String dataFinal = new SimpleDateFormat("dd/MM/yyyy").format(calendarInicio.getTime());
+		extrato.setDataFinal(dataFinal);
 
 		Calendar calendarTermino = Calendar.getInstance();
 		calendarTermino.setTime(diaSelecionado);
@@ -1514,7 +1528,121 @@ public class DashboardBean implements Serializable {
 
 		calendarStop.add(Calendar.DAY_OF_MONTH, 1);
 		Number saldoDisponivel = getSaldoEmCaixaPorDia_(calendarStop);
-		extrato.setSaldoDisponivel(nf.format(saldoDisponivel));
+		extrato.setSaldoFinal(nf.format(saldoDisponivel));
+
+		List<ExtratoMovimentacoes> datasource = new ArrayList<ExtratoMovimentacoes>();
+		datasource.add(extrato);
+
+		String dataEmissao = new SimpleDateFormat("dd_MM_yyyy").format(calendarInicio.getTime());
+		
+		String jasperFile = "";
+		if(usuario.getEmpresa().getId() == 74553L) {
+			jasperFile = "/relatorios/extrato-movimentacoes-ouro.jasper";
+		}
+		
+		if(usuario.getEmpresa().getId() == 7111L) {
+			jasperFile = "/relatorios/extrato-movimentacoes-decore.jasper";
+		}
+				
+		Relatorio<ExtratoMovimentacoes> report = new Relatorio<ExtratoMovimentacoes>();
+		try {	
+			String filename = "Extrato-Movimentação-" + dataEmissao;
+			byte[] extratoInBytes = report.getExtratoMovimentacoes(datasource,
+					filename,
+					jasperFile);
+			
+			System.out.println("extratoInBytes: " + extratoInBytes);
+			
+			String base64 = Base64.getEncoder().encodeToString(extratoInBytes);
+			PrimeFaces.current().executeScript("downloadExtrato('" + filename + "', '" + base64 + "')");
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void createExtratoPorPeriodo() {
+
+		Calendar calendarStop = Calendar.getInstance();
+		calendarStop.setTime(dateStartMovimentacoes);
+		calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);
+		calendarStop.add(Calendar.DAY_OF_MONTH, -1);
+		calendarStop.set(Calendar.HOUR, 23);
+		calendarStop.set(Calendar.MINUTE, 59);
+		calendarStop.set(Calendar.SECOND, 59);
+
+		Number saldoAterior = getSaldoEmCaixaPorDia_(calendarStop);
+
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+
+		ExtratoMovimentacoes extrato = new ExtratoMovimentacoes();
+		extrato.setSaldoInicial(nf.format(saldoAterior));
+		extrato.setDataEmissao(formatter.format(new Date()));
+
+		Calendar calendarInicio = Calendar.getInstance();
+		calendarInicio.setTime(dateStartMovimentacoes);
+		calendarInicio = DateUtils.truncate(calendarInicio, Calendar.DAY_OF_MONTH);
+		
+		String dataInicial = new SimpleDateFormat("dd/MM/yyyy").format(calendarInicio.getTime());
+		extrato.setDataInicial(dataInicial);
+
+		Calendar calendarTermino = Calendar.getInstance();
+		calendarTermino.setTime(dateStopMovimentacoes);
+		
+		String dataFinal = new SimpleDateFormat("dd/MM/yyyy").format(calendarTermino.getTime());
+		extrato.setDataFinal(dataFinal);
+		
+		calendarTermino.add(Calendar.DAY_OF_MONTH, 1);
+		calendarTermino = DateUtils.truncate(calendarTermino, Calendar.DAY_OF_MONTH);
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+		String dateStart = sdf.format(calendarInicio.getTime());
+		String dateStop = sdf.format(calendarTermino.getTime());
+
+		List<Object[]> movimentacoes = contas.extratoMovimentacoes(dateStart, dateStop, usuario.getEmpresa());
+		if (movimentacoes.size() > 0) {
+			for (Object[] object : movimentacoes) {
+				Movimentacao movimentacao = new Movimentacao();
+				movimentacao.setCodigoLancamento(object[0].toString());
+				movimentacao.setOperacao(object[1].toString());
+				movimentacao.setDataOperacao(object[2].toString());
+				movimentacao.setValorTotal(nf.format(new BigDecimal(object[3].toString())));
+				movimentacao.setTipo(object[4].toString());
+				movimentacao.setDataPagamento(object[5].toString());
+				movimentacao.setValorPagoNestaData(nf.format(new BigDecimal(object[6].toString())));
+
+				if (movimentacao.getTipo().equals("C")) {
+					saldoAterior = saldoAterior.doubleValue() + new BigDecimal(object[6].toString()).doubleValue();
+				} else if (movimentacao.getTipo().equals("D")) {
+					saldoAterior = saldoAterior.doubleValue() - new BigDecimal(object[6].toString()).doubleValue();
+				}
+
+				movimentacao.setSaldo(nf.format(saldoAterior));
+
+				extrato.getMovimentacoes().add(movimentacao);
+			}
+		}
+
+		Number totalCompras = getValorTotalCompras_(calendarInicio, calendarTermino);
+		extrato.setCompras(nf.format(totalCompras));
+
+		Number totalVendas = getValorTotalVendas_(calendarInicio, calendarTermino);
+		extrato.setVendas(nf.format(totalVendas));
+
+		Number totalDespesas = getValorTotalDespesas_(calendarInicio, calendarTermino);
+		extrato.setDespesas(nf.format(totalDespesas));
+
+		Number totalReceitas = getValorTotalReceitas_(calendarInicio, calendarTermino);
+		extrato.setReceitas(nf.format(totalReceitas));
+
+		
+		calendarStop.setTime(dateStopMovimentacoes);
+		calendarStop = DateUtils.truncate(calendarStop, Calendar.DAY_OF_MONTH);
+		
+		calendarStop.add(Calendar.DAY_OF_MONTH, 1);
+		Number saldoDisponivel = getSaldoEmCaixaPorDia_(calendarStop);
+		extrato.setSaldoFinal(nf.format(saldoDisponivel));
 
 		List<ExtratoMovimentacoes> datasource = new ArrayList<ExtratoMovimentacoes>();
 		datasource.add(extrato);
@@ -1532,9 +1660,15 @@ public class DashboardBean implements Serializable {
 				
 		Relatorio<ExtratoMovimentacoes> report = new Relatorio<ExtratoMovimentacoes>();
 		try {
-			report.getExtratoMovimentacoes(datasource,
-					"Extrato-Movimentação-" + dataEmissao,
+			String filename = "Extrato-Movimentação-" + dataEmissao;
+			byte[] extratoInBytes = report.getExtratoMovimentacoes(datasource,
+					filename,
 					jasperFile);
+			
+			System.out.println("extratoInBytes: " + extratoInBytes);
+			
+			String base64 = Base64.getEncoder().encodeToString(extratoInBytes);
+			PrimeFaces.current().executeScript("downloadExtrato('" + filename + "', '" + base64 + "')");
 
 		} catch (SQLException e) {
 			e.printStackTrace();

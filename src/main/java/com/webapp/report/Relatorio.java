@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.jasperreports.engine.JRDataSource;
@@ -243,7 +244,7 @@ public class Relatorio<T> {
 
 	}
 	
-	public void getExtratoMovimentacoes(List<T> lista, String filename, String jasperFile) throws SQLException {
+	public byte[] getExtratoMovimentacoes(List<T> lista, String filename, String jasperFile) throws SQLException {
 		try {
 
 			InputStream relatorioStream = this.getClass().getResourceAsStream(jasperFile);
@@ -256,24 +257,26 @@ public class Relatorio<T> {
 
 			JasperPrint print = JasperFillManager.fillReport(relatorioStream, null, jrds);
 
-			JasperExportManager.exportReportToPdfStream(print, baos);
+			JasperExportManager.exportReportToPdfStream(print, baos);			
 
-			response.reset();
+			//response.reset();
 
-			response.setContentType("application/pdf");
+			//response.setContentType("application/pdf");
 
-			response.setContentLength(baos.size());
+			//response.setContentLength(baos.size());
 
 			//response.setHeader("Content-disposition", "inline; filename=" + filename + ".pdf");
-			response.setHeader("Content-disposition", "attachment; filename=" + filename + ".pdf");
+			//response.setHeader("Content-disposition", "attachment; filename=" + filename + ".pdf");
 
-			response.getOutputStream().write(baos.toByteArray());
+			//response.getOutputStream().write(baos.toByteArray());
 
-			response.getOutputStream().flush();
+			//response.getOutputStream().flush();
 
-			response.getOutputStream().close();
+			//response.getOutputStream().close();
 
-			context.responseComplete();
+			//context.responseComplete();	
+			
+			return baos.toByteArray();
 
 		} catch (Exception e) {
 			throw new SQLException("Erro ao executar relatório", e);

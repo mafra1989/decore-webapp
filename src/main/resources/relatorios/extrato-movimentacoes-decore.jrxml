@@ -8,14 +8,15 @@
 	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
 	<style name="Detail" fontName="Arial" fontSize="12"/>
 	<field name="movimentacoes" class="java.util.List"/>
-	<field name="saldoAnterior" class="java.lang.String"/>
+	<field name="saldoInicial" class="java.lang.String"/>
 	<field name="dataEmissao" class="java.lang.String"/>
 	<field name="compras" class="java.lang.String"/>
 	<field name="vendas" class="java.lang.String"/>
 	<field name="despesas" class="java.lang.String"/>
 	<field name="receitas" class="java.lang.String"/>
-	<field name="saldoDisponivel" class="java.lang.String"/>
+	<field name="saldoFinal" class="java.lang.String"/>
 	<field name="dataInicial" class="java.lang.String"/>
+	<field name="dataFinal" class="java.lang.String"/>
 	<group name="Group1">
 		<groupExpression><![CDATA[(int)($V{REPORT_COUNT}/15)]]></groupExpression>
 		<groupHeader>
@@ -185,7 +186,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="8" isPdfEmbedded="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{saldoDisponivel}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{saldoFinal}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -232,7 +233,7 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="18" isBold="false" isPdfEmbedded="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Saldo Inicial: " + $F{saldoAnterior}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Saldo Inicial: " + $F{saldoInicial}]]></textFieldExpression>
 			</textField>
 			<image scaleImage="FillFrame">
 				<reportElement uuid="828019fb-6285-477e-a20c-42e889012ba0" mode="Opaque" x="306" y="12" width="249" height="55"/>
@@ -250,7 +251,7 @@
 				<textElement verticalAlignment="Middle">
 					<font fontName="Arial" size="8" isBold="false" isPdfEmbedded="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Período: " + $F{dataInicial} + " a " + $F{dataInicial}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Período: " + $F{dataInicial} + " a " + $F{dataFinal}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>

@@ -9,25 +9,26 @@ public class ExtratoMovimentacoes implements Serializable {
 	private static final long serialVersionUID = 203356217547759664L;
 
 	/* Dados da Lista */
-	private String saldoAnterior;
+	private String saldoInicial;
 	private String dataEmissao;
 	private String dataInicial;
+	private String dataFinal;
 	private String compras;
 	private String vendas;
 	private String despesas;
 	private String receitas;
-	private String saldoDisponivel;
+	private String saldoFinal;
 
 	/* Produtos */
 	private List<Object> movimentacoes = new ArrayList<Object>();
 
 
-	public String getSaldoAnterior() {
-		return saldoAnterior;
+	public String getSaldoInicial() {
+		return saldoInicial;
 	}
 
-	public void setSaldoAnterior(String saldoAnterior) {
-		this.saldoAnterior = saldoAnterior;
+	public void setSaldoInicial(String saldoInicial) {
+		this.saldoInicial = saldoInicial;
 	}
 
 	public String getDataEmissao() {
@@ -44,6 +45,14 @@ public class ExtratoMovimentacoes implements Serializable {
 
 	public void setDataInicial(String dataInicial) {
 		this.dataInicial = dataInicial;
+	}
+
+	public String getDataFinal() {
+		return dataFinal;
+	}
+
+	public void setDataFinal(String dataFinal) {
+		this.dataFinal = dataFinal;
 	}
 
 	public String getCompras() {
@@ -78,12 +87,12 @@ public class ExtratoMovimentacoes implements Serializable {
 		this.receitas = receitas;
 	}
 
-	public String getSaldoDisponivel() {
-		return saldoDisponivel;
+	public String getSaldoFinal() {
+		return saldoFinal;
 	}
 
-	public void setSaldoDisponivel(String saldoDisponivel) {
-		this.saldoDisponivel = saldoDisponivel;
+	public void setSaldoFinal(String saldoFinal) {
+		this.saldoFinal = saldoFinal;
 	}
 
 	public List<Object> getMovimentacoes() {
