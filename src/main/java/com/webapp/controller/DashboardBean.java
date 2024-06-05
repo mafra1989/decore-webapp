@@ -2631,8 +2631,12 @@ public class DashboardBean implements Serializable {
 								usuario.getEmpresa());
 						if (listaDeContas.size() == 0) {
 							totalVendasPagasDataValor = (totalVendasPagasDataValor.doubleValue()
-									+ ((BigDecimal) object[2]).doubleValue() + ((BigDecimal) object[4]).doubleValue());
+									+ ((BigDecimal) object[2]).doubleValue());
 								
+							if(object[4] != null) {
+								totalVendasPagasDataValor = totalVendasPagasDataValor.doubleValue() + ((BigDecimal) object[4]).doubleValue();// total desconto
+							}
+							
 							if(object[5] != null) {
 								totalVendasPagasDataValor = totalVendasPagasDataValor.doubleValue() + ((BigDecimal) object[5]).doubleValue();// taxa de entrega
 							}
