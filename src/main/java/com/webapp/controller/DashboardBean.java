@@ -2585,7 +2585,11 @@ public class DashboardBean implements Serializable {
 								usuario.getEmpresa());
 						if (listaDeContas.size() == 0) {
 							totalLucroVendasPagasDataValor = (totalLucroVendasPagasDataValor.doubleValue()
-									+ ((BigDecimal) object[2]).doubleValue()) - ((BigDecimal) object[6]).doubleValue();
+									+ ((BigDecimal) object[2]).doubleValue());
+						}
+						
+						if(object[6] != null) {
+							totalLucroVendasPagasDataValor = totalLucroVendasPagasDataValor.doubleValue() - ((BigDecimal) object[6]).doubleValue();
 						}
 					}
 
@@ -2627,8 +2631,11 @@ public class DashboardBean implements Serializable {
 								usuario.getEmpresa());
 						if (listaDeContas.size() == 0) {
 							totalVendasPagasDataValor = (totalVendasPagasDataValor.doubleValue()
-									+ ((BigDecimal) object[2]).doubleValue() + ((BigDecimal) object[4]).doubleValue())
-									+ ((BigDecimal) object[5]).doubleValue();// taxa de entrega
+									+ ((BigDecimal) object[2]).doubleValue() + ((BigDecimal) object[4]).doubleValue());
+								
+							if(object[5] != null) {
+								totalVendasPagasDataValor = totalVendasPagasDataValor.doubleValue() + ((BigDecimal) object[5]).doubleValue();// taxa de entrega
+							}
 						}
 					}
 
