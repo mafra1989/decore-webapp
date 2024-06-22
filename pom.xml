@@ -65,12 +65,13 @@
 		</dependency>
 
 		<!-- Driver JDBC do Postgre -->
+		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
 		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>9.4-1201-jdbc4</version>
-			<scope>compile</scope>
+		    <groupId>org.postgresql</groupId>
+		    <artifactId>postgresql</artifactId>
+		    <version>42.7.3</version>
 		</dependency>
+
 
 		<!-- Weld (implementação do CDI) -->
 		<dependency>
