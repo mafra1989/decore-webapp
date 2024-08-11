@@ -326,6 +326,12 @@
 							onclick="deleteItem(#{consultaComprasBean.compraSelecionada.id});" />
 					</p:menuButton>
 
+					<p:commandButton icon="fa fa-fw fa-download"
+						disabled="#{consultaComprasBean.comprasFiltradasSize eq 0}"
+						style="width: 38px;float: right;margin-right: 93px;margin-top: -40px;" process="@this" ajax="false">
+	                    <p:dataExporter type="xls" target="comprasTable" fileName="Compras"/>
+	                </p:commandButton>
+	                
 					<p:panelGrid columns="1" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-12">
@@ -378,9 +384,15 @@
 								<h:outputText value="#{compra.quantidadeItens}" />
 							</p:column>
 
-							<p:column headerText="Valor Total" width="15%">
+							<p:column headerText="Valor Total" width="15%" exportable="false">
 								<h:outputText value="#{compra.valorTotal}">
 									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Valor Total" width="15%" styleClass="font-column" visible="false">
+								<h:outputText value="#{compra.valorTotal}">
+									<f:convertNumber maxFractionDigits="2" />
 								</h:outputText>
 							</p:column>
 							
@@ -390,9 +402,16 @@
 								</h:outputText>
 							</p:column>
 							
-							<p:column headerText="Total Pago" width="15%">
+							<p:column headerText="Total Pago" width="15%" exportable="false">
 								<h:outputText value="#{compra.totalPago != null ? compra.totalPago : '-'}">
 									<f:convertNumber type="currency" />
+								</h:outputText>
+							</p:column>
+			
+							<p:column headerText="Total Pago" width="15%" visible="false">
+								<h:outputText value="0" rendered="#{compra.totalPago == null}" />
+								<h:outputText value="#{compra.totalPago}" rendered="#{compra.totalPago != null}">
+									<f:convertNumber maxFractionDigits="2" />
 								</h:outputText>
 							</p:column>
 							
