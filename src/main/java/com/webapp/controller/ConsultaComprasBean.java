@@ -1,15 +1,20 @@
 package com.webapp.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
@@ -20,6 +25,7 @@ import org.primefaces.PrimeFaces;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
+import com.google.common.io.ByteSource;
 import com.webapp.model.Caixa;
 import com.webapp.model.CategoriaLancamento;
 import com.webapp.model.CategoriaProduto;
@@ -27,9 +33,15 @@ import com.webapp.model.Compra;
 import com.webapp.model.Conta;
 import com.webapp.model.Devolucao;
 import com.webapp.model.Entrega;
+import com.webapp.model.EspelhoCompra;
 import com.webapp.model.ItemCaixa;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemDevolucao;
+import com.webapp.model.ItemEspelhoCompraPagamento;
+import com.webapp.model.ItemEspelhoCompraPagamentos;
+import com.webapp.model.ItemEspelhoCompraParcelamentos;
+import com.webapp.model.ItemEspelhoCompraProdutos;
+import com.webapp.model.ItemEspelhoVendaPagamentos;
 import com.webapp.model.ItemVenda;
 import com.webapp.model.ItemVendaCompra;
 import com.webapp.model.Lancamento;
@@ -39,8 +51,10 @@ import com.webapp.model.PagamentoConta;
 import com.webapp.model.Produto;
 import com.webapp.model.TipoAtividade;
 import com.webapp.model.TipoDataLancamento;
+import com.webapp.model.TipoPagamento;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
+import com.webapp.report.Relatorio;
 import com.webapp.repository.Caixas;
 import com.webapp.repository.CategoriasLancamentos;
 import com.webapp.repository.CategoriasProdutos;
@@ -166,6 +180,7 @@ public class ConsultaComprasBean implements Serializable {
 	private PagamentosContas pagamentosContas;
 	
 	private TipoDataLancamento tipoData = TipoDataLancamento.PAGAMENTO;
+
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -712,5 +727,145 @@ public class ConsultaComprasBean implements Serializable {
 	public void setTipoData(TipoDataLancamento tipoData) {
 		this.tipoData = tipoData;
 	}
+	
+	public void emitirPedido() {
+
+		compraSelecionada = compras.porId(compraSelecionada.getId());
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+		EspelhoCompra pedido = new EspelhoCompra();
+		pedido.setCompraNum(compraSelecionada.getNumeroCompra() + "");	
+		pedido.setDataCompra(sdf.format(compraSelecionada.getDataCompra()));
+		
+		String funcionario = compraSelecionada.getUsuario().getNome().split(" ")[0].toUpperCase();
+		pedido.setFuncionario(funcionario);
+
+		NumberFormat nf_ = new DecimalFormat("###,##0.000", REAL);
+		NumberFormat nf__ = new DecimalFormat("###,##0", REAL);
+		
+		List<ItemCompra> itensCompra = itensCompras.porCompra(compraSelecionada);
+		for (ItemCompra itemCompra : itensCompra) {
+			
+			ItemEspelhoCompraProdutos itemPedido = new ItemEspelhoCompraProdutos();
+			itemPedido.setCodigo(itemCompra.getProduto().getCodigo());
+			itemPedido.setDescricao(itemCompra.getProduto().getDescricao().trim());
+			itemPedido.setValorUnitario(nf.format(itemCompra.getValorUnitario().doubleValue()));
+			
+			String quantidade = "0";
+			if(itemCompra.getProduto().getUnidadeMedida().equals("Kg") || itemCompra.getProduto().getUnidadeMedida().equals("Lt"))  {
+				quantidade = nf_.format(itemCompra.getQuantidade().doubleValue());
+			} else {
+				quantidade = nf__.format(itemCompra.getQuantidade());
+			}
+			
+			itemPedido.setQuantidade(quantidade);
+			
+			itemPedido.setUN(itemCompra.getProduto().getUnidadeMedida());
+			itemPedido.setSubTotal(nf.format(itemCompra.getTotal()));
+			
+			pedido.getItensPedidos().add(itemPedido);
+		}
+		
+		Double troco = 0D;
+		
+		pedido.setConta(false);
+		List<Conta> listaDeContas = contas.porCodigoOperacao(compraSelecionada.getNumeroCompra(), "COMPRA", usuario_.getEmpresa());
+		if(listaDeContas.size() > 0) {
+			pedido.setConta(true);
+		}
+		
+		if(troco == 0D) {
+			
+			if(pedido.getConta() && compraSelecionada.getTipoPagamento() == TipoPagamento.AVISTA) {
+				List<Conta> listaContas = contas.porCodigoOperacao(compraSelecionada.getNumeroCompra(), "COMPRA", usuario_.getEmpresa());
+				
+				Optional<Conta> conta = listaContas.stream().findFirst();
+				
+				ItemEspelhoCompraPagamento pagamentosPedido = new ItemEspelhoCompraPagamento();
+				pagamentosPedido.setValorPagar(nf.format(conta.get().getValor().doubleValue()));
+				pagamentosPedido.setVencimento(sdf.format(conta.get().getVencimento()));
+				
+				if(conta.isPresent()) {
+					if(conta.get().isStatus()) {
+						pagamentosPedido.setStatus("PAGO");
+					}
+				}
+				
+				pedido.getItensPagamento().add(pagamentosPedido);
+				
+			} else if(pedido.getConta() && compraSelecionada.getTipoPagamento() == TipoPagamento.PARCELADO) {
+				List<Conta> listaContas = contas.porCodigoOperacao(compraSelecionada.getNumeroCompra(), "COMPRA", usuario_.getEmpresa());
+				
+				listaContas.forEach(f -> {
+					ItemEspelhoCompraParcelamentos parcelamentosPedido = new ItemEspelhoCompraParcelamentos();
+					parcelamentosPedido.setParcela(f.getParcela());
+					parcelamentosPedido.setValor(nf.format(f.getValor().doubleValue()));
+					parcelamentosPedido.setVencimento(sdf.format(f.getVencimento()));
+					
+					if(f.isStatus()) {
+						parcelamentosPedido.setStatus("PAGO");
+					}
+					//if(f.getParcela().equals("Entrada")) { parcelamentosPedido.setStatus("✓"); }
+		            
+		            pedido.getItensParcelamentos().add(parcelamentosPedido);
+		        });
+				
+			} else if(!pedido.getConta() && compraSelecionada.getTipoPagamento() == TipoPagamento.AVISTA) {
+				
+				ItemEspelhoCompraPagamentos pagamentosPedido = new ItemEspelhoCompraPagamentos();
+				pagamentosPedido.setFormaPagamento(compraSelecionada.getTipoPagamento().getDescricao());
+				pagamentosPedido.setValor(nf.format(compraSelecionada.getValorTotal().doubleValue()));
+				
+				pedido.getItensPagamentos().add(pagamentosPedido);
+			}
+		}	
+		
+		pedido.setTipoPagamento(compraSelecionada.getTipoPagamento().name());
+				
+		pedido.setTroco(nf.format(troco.doubleValue()));
+		
+		if(usuario_.getEmpresa().getLogoRelatorio() != null) {
+			
+			InputStream targetStream;
+			try {
+				targetStream = ByteSource.wrap(usuario_.getEmpresa().getLogoRelatorio()).openStream();
+				pedido.setLogo(targetStream);
+				
+			} catch (IOException e1) {
+			}	
+		}
+		
+		pedido.setxNome(usuario_.getEmpresa().getNome() != null ? usuario_.getEmpresa().getNome() : "");
+		pedido.setCNPJ(usuario_.getEmpresa().getCnpj() != null ? usuario_.getEmpresa().getCnpj() : "");
+		pedido.setxLgr(usuario_.getEmpresa().getEndereco() != null ? usuario_.getEmpresa().getEndereco().trim() : "");
+		pedido.setNro(usuario_.getEmpresa().getNumero() != null ? usuario_.getEmpresa().getNumero().trim() : "");
+		pedido.setxBairro(usuario_.getEmpresa().getBairro() != null ? usuario_.getEmpresa().getBairro().trim() : "");
+		pedido.setxMun(usuario_.getEmpresa().getCidade() != null ? usuario_.getEmpresa().getCidade() : "");
+		pedido.setUF(usuario_.getEmpresa().getUf() != null ? usuario_.getEmpresa().getUf() : "");
+		pedido.setContato(usuario_.getEmpresa().getContato() != null ? usuario_.getEmpresa().getContato() : "");
+		
+		pedido.setObservacoes(compraSelecionada.getObservacao());
+		
+		pedido.setTotalVenda(nf.format(new BigDecimal(compraSelecionada.getValorTotal().doubleValue())));
+		
+		pedido.setSubTotal(nf.format(compraSelecionada.getValorTotal().doubleValue()));
+
+		List<EspelhoCompra> pedidos = new ArrayList<>();
+		pedidos.add(pedido);
+
+		Relatorio<EspelhoCompra> report = new Relatorio<EspelhoCompra>();
+		try {
+			
+			String path = "/relatorios/nova-decore-vendas_RECIBO_COMPRA.jasper";
+			
+			report.getRelatorio_(pedidos, "Compra-N" + compraSelecionada.getNumeroCompra().longValue(), path);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 
 }

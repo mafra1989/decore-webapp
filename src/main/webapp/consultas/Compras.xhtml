@@ -324,6 +324,10 @@
 						<p:menuitem icon="fa fa-fw fa-trash" id="btn-trash" 
 							value="Excluir" process="@this" disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
 							onclick="deleteItem(#{consultaComprasBean.compraSelecionada.id});" />
+						<p:menuitem value="Baixar PDF" icon="fa fa-fw fa-cloud-download"
+							action="#{consultaComprasBean.emitirPedido}"
+							ajax="false" target="_blank" disabled="#{seguranca.usuarioLogado.usuario.empresa eq 'Havaianas'}">
+						</p:menuitem>
 					</p:menuButton>
 
 					<p:commandButton icon="fa fa-fw fa-download"

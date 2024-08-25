@@ -300,6 +300,9 @@ public class Compra implements Serializable {
 	@Transient
 	@Digits(integer = 10 /* precision */, fraction = 4 /* scale */)
 	private BigDecimal totalPago;
+	
+	@Column
+	private String observacao;
 
 	public String getDataCompraFormatada() {
 		return dataCompraFormatada;
@@ -335,6 +338,14 @@ public class Compra implements Serializable {
 
 	public void setTotalPago(BigDecimal totalPago) {
 		this.totalPago = totalPago;
+	}
+
+	public String getObservacao() {
+		return observacao;
+	}
+
+	public void setObservacao(String observacao) {
+		this.observacao = observacao;
 	}
 
 }

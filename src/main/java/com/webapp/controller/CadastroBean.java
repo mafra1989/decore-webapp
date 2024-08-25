@@ -473,6 +473,13 @@ public class CadastroBean implements Serializable {
 			categoriaLancamento.setEmpresa(empresa);
 			categoriasLancamentos.save(categoriaLancamento);
 			
+			categoriaLancamento = new CategoriaLancamento();
+			categoriaLancamento.setNome("Comissões Pagas");
+			categoriaLancamento.setDestinoLancamento(destinoLancamento);
+			categoriaLancamento.setTipoLancamento(tipoLancamento);
+			categoriaLancamento.setEmpresa(empresa);
+			categoriasLancamentos.save(categoriaLancamento);
+			
 			tipoLancamento = new TipoLancamento();
 			tipoLancamento.setDescricao("Investimentos");
 			tipoLancamento.setOrigem(OrigemLancamento.DEBITO);

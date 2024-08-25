@@ -1158,7 +1158,7 @@ public class EstoqueBean implements Serializable {
 		venda.setEmpresa(usuario.getEmpresa());
 		
 		String tipoDeVenda = "Não Informado";
-		if(usuario.getEmpresa().getId() == 74553) {
+		if(usuario.getEmpresa().getId() == 74553 || usuario.getEmpresa().getId() == 135499) {
 			tipoDeVenda = "Nao Informado";
 		}
 		

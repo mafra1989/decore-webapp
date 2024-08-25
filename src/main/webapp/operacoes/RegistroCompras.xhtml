@@ -346,6 +346,17 @@
 									var="vendedor" itemLabel="#{vendedor.nome}"
 									itemValue="#{vendedor}" />
 							</p:selectOneMenu>
+							
+							<p:outputLabel value="Lote" for="lote" />
+							<p:inputText id="lote" value="#{registroComprasBean.compra.lote}"/>
+						</p:panelGrid>
+						
+						<p:panelGrid columns="1" layout="grid"
+									styleClass="panelgrid-noborder disabled disabled">
+									
+							<p:outputLabel value="Observações" for="obervacao-compra" />
+							<p:inputTextarea maxlength="200" id="obervacao-compra" placeholder="Descreva suas observações aqui."
+								value="#{registroComprasBean.compra.observacao}" />
 						</p:panelGrid>
 						
 						<p:panelGrid style="display:none;" columns="2" layout="grid" id="panel-ajuste" rendered="#{seguranca.acessoAdministrador() or seguranca.acessoUsuarioAvancado()}"
@@ -719,7 +730,7 @@
 								disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado() or registroComprasBean.itemCompra.id != null}"
 								update="msg confirmDialog panel-ajuste data-compra comprador panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:quantidade_ form:quantidade__ form:valor-total"
 								action="#{registroComprasBean.salvar}"
-								process="@this panel-table data-compra comprador"
+								process="@this panel-table data-compra comprador lote obervacao-compra"
 								style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;" />
 						</p:panelGrid>
 
