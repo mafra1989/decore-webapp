@@ -31,7 +31,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		jsfLoginEntry.setRedirectStrategy(new JsfRedirectStrategy());
 		
 		JsfAccessDeniedHandler jsfDeniedEntry = new JsfAccessDeniedHandler();
-		jsfDeniedEntry.setLoginPath("/403.xhtml");
+		jsfDeniedEntry.setLoginPath("/500.xhtml");
 		jsfDeniedEntry.setContextRelative(true);
 		
 		http
