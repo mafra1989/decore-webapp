@@ -423,6 +423,10 @@
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{bairroCliente}]]></textFieldExpression>
 			</textField>
+			<image scaleImage="RealSize" onErrorType="Blank">
+				<reportElement uuid="425b6d9a-1b97-4950-ab37-dde6c8e3e2e3" style="Column header" x="0" y="12" width="163" height="43"/>
+				<imageExpression><![CDATA["/relatorios/new-decore-logo.jpg"]]></imageExpression>
+			</image>
 		</band>
 	</pageHeader>
 	<columnHeader>
@@ -589,7 +593,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[NOVA DECORE]]></text>
+				<text><![CDATA[New Decor]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="b0e2f6b0-42d6-438e-ab45-aeffc7ae8e85" style="Detail" positionType="Float" x="0" y="4" width="534" height="20" forecolor="#333333"/>
@@ -613,7 +617,7 @@
 				<textElement verticalAlignment="Middle" markup="none">
 					<font size="8" isBold="true"/>
 				</textElement>
-				<text><![CDATA[NOVA DECORE]]></text>
+				<text><![CDATA[New Decor]]></text>
 			</staticText>
 			<textField>
 				<reportElement uuid="1de88a96-1cea-4c2f-af18-90731aabd783" x="278" y="126" width="250" height="14"/>
