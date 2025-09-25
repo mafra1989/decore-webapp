@@ -295,7 +295,7 @@
 			</textField>
 			<image scaleImage="RealSize" onErrorType="Blank">
 				<reportElement uuid="425b6d9a-1b97-4950-ab37-dde6c8e3e2e3" style="Column header" x="1" y="12" width="163" height="43"/>
-				<imageExpression><![CDATA["/relatorios/new-decore-logo.jpg"]]></imageExpression>
+				<imageExpression><![CDATA["/relatorios/new-decore-logo-v2.png"]]></imageExpression>
 			</image>
 		</band>
 	</pageHeader>
