@@ -476,7 +476,7 @@ public class RelatorioLancamentosBean implements Serializable {
 									}
 								}
 								
-							} else {
+							} else {						
 								valor += new BigDecimal(object[5].toString()).doubleValue();
 							}
 						}
@@ -544,10 +544,16 @@ public class RelatorioLancamentosBean implements Serializable {
 			}
 
 			if (object[4].toString().equals("DEBITO")) {
-				values.add((Number) object[5]);
+				Number totalContasDespesasPagasParcialmenteDia = contas.totalContasDespesasPagasDia(Long.parseLong(object[0].toString()), 
+						Long.parseLong(object[1].toString()), Long.parseLong(object[2].toString()), usuario.getEmpresa());
+				
+				values.add(((Number) object[5]).doubleValue() + totalContasDespesasPagasParcialmenteDia.doubleValue());
 
 			} else if (object[4].toString().equals("CREDITO")) {
-				values2.add((Number) object[5]);
+				Number totalContasReceitasPagasParcialmenteDia = contas.totalContasReceitasPagasDia(Long.parseLong(object[0].toString()), 
+						Long.parseLong(object[1].toString()), Long.parseLong(object[2].toString()), usuario.getEmpresa());
+				
+				values2.add(((Number) object[5]).doubleValue() + totalContasReceitasPagasParcialmenteDia.doubleValue());
 
 			} else if (object[4].toString().equals("")) {
 				values.add((Number) object[5]);
@@ -806,12 +812,18 @@ public class RelatorioLancamentosBean implements Serializable {
 				week = weekTemp;
 				values3.add(targetSemanal);
 			}
-
+			
 			if (object[3].toString().equals("DEBITO")) {
-				values.add((Number) object[4]);
+				Number totalContasDespesasPagasParcialmenteSemana = contas.totalContasDespesasPagasSemana(Long.parseLong(object[0].toString()), 
+						Long.parseLong(object[1].toString()), usuario.getEmpresa());
+				
+				values.add(((Number) object[4]).doubleValue() + totalContasDespesasPagasParcialmenteSemana.doubleValue());
 
 			} else if (object[3].toString().equals("CREDITO")) {
-				values2.add((Number) object[4]);
+				Number totalContasReceitasPagasParcialmenteSemana = contas.totalContasReceitasPagasSemana(Long.parseLong(object[0].toString()), 
+						Long.parseLong(object[1].toString()), usuario.getEmpresa());
+				
+				values2.add(((Number) object[4]).doubleValue() + totalContasReceitasPagasParcialmenteSemana.doubleValue());
 
 			} else if (object[3].toString().equals("")) {
 				values.add((Number) object[4]);
@@ -1128,12 +1140,18 @@ public class RelatorioLancamentosBean implements Serializable {
 				month = monthTemp;
 				values3.add(targetMensal);
 			}
-
+			
 			if (object[3].toString().equals("DEBITO")) {
-				values.add((Number) object[4]);
+				Number totalContasDespesasPagasParcialmenteSemana = contas.totalContasDespesasPagasMensal(Long.parseLong(object[0].toString()), 
+						Long.parseLong(object[1].toString()), usuario.getEmpresa());
+				
+				values.add(((Number) object[4]).doubleValue() + totalContasDespesasPagasParcialmenteSemana.doubleValue());
 
 			} else if (object[3].toString().equals("CREDITO")) {
-				values2.add((Number) object[4]);
+				Number totalContasReceitasPagasParcialmenteSemana = contas.totalContasReceitasPagasMensal(Long.parseLong(object[0].toString()), 
+						Long.parseLong(object[1].toString()), usuario.getEmpresa());
+				
+				values2.add(((Number) object[4]).doubleValue() + totalContasReceitasPagasParcialmenteSemana.doubleValue());
 
 			} else if (object[3].toString().equals("")) {
 				values.add((Number) object[4]);
@@ -1374,12 +1392,18 @@ public class RelatorioLancamentosBean implements Serializable {
 				year = yearTemp;
 				values3.add(targetAnual);
 			}
-
+			
 			if (object[2].toString().equals("DEBITO")) {
-				values.add((Number) object[3]);
+				Number totalContasDespesasPagasParcialmenteAnual = contas.totalContasDespesasPagasAnual(Long.parseLong(object[0].toString()), 
+						usuario.getEmpresa());
+				
+				values.add(((Number) object[3]).doubleValue() + totalContasDespesasPagasParcialmenteAnual.doubleValue());
 
 			} else if (object[2].toString().equals("CREDITO")) {
-				values2.add((Number) object[3]);
+				Number totalContasReceitasPagasParcialmenteAnual = contas.totalContasReceitasPagasAnual(Long.parseLong(object[0].toString()), 
+						usuario.getEmpresa());
+				
+				values2.add(((Number) object[3]).doubleValue() + totalContasReceitasPagasParcialmenteAnual.doubleValue());
 
 			} else if (object[2].toString().equals("")) {
 				values.add((Number) object[3]);

@@ -1057,7 +1057,7 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 							<div class="overview-box-content">
 								<div class="overview-box-title">Total de despesas <span style="font-size:9px;">Hoje (<h:outputText value="#{consultaContasBean.hoje}" />)</span></div>
 								<div class="overview-box-stats"><h:outputText value="#{consultaContasBean.totalDespesasHojeValor}"><f:convertNumber type="currency" /></h:outputText></div>
-								<div class="overview-box-details"><h:outputText value="#{consultaContasBean.totalLancamentosDespesasHojeValor}"><f:convertNumber type="currency" /></h:outputText> em pagtos à vista</div>
+								<div class="overview-box-details"><h:outputText value="#{consultaContasBean.totalLancamentosDespesasHojeValorJoinConta}"><f:convertNumber type="currency" /></h:outputText> em pagtos à vista</div>
 							</div>
 						</div>
 					</div>

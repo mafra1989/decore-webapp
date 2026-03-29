@@ -95,7 +95,7 @@ public class Lancamentos implements Serializable {
 	public List<Lancamento> lancamentosFiltrados(Long numeroLancamento, Date dateStart, Date dateStop,
 			OrigemLancamento[] origemLancamento, CategoriaLancamento categoriaLancamento,
 			DestinoLancamento destinoLancamento, Usuario usuario, String[] categorias, 
-			String lancamentosPagos, Empresa empresa, Usuario vendedor, TipoDataLancamento tipoData, String gerouContas) {
+			String lancamentosPagos, boolean lancamentosPessoais, Empresa empresa, Usuario vendedor, TipoDataLancamento tipoData, String gerouContas) {
 
 		String conditionOrigem = "";
 		String conditionCategoria = "";
@@ -111,7 +111,13 @@ public class Lancamentos implements Serializable {
 		} else if(lancamentosPagos.equals("2")) {
 			conditionLancamentosPagos = "AND i.lancamentoPago = 'N' ";
 		}
-
+		
+		String conditionLancamentosPessoais = "";
+		if(lancamentosPessoais) {
+			conditionLancamentosPessoais = "AND i.pessoal = 'Y' ";
+		} else {
+			conditionLancamentosPessoais = "AND (i.pessoal = 'N' OR i.pessoal is null) ";
+		}
 
 		if (origemLancamento.length > 0) {
 			conditionOrigem = "AND i.categoriaLancamento.tipoLancamento.origem in (:origemLancamento) ";
@@ -161,7 +167,7 @@ public class Lancamentos implements Serializable {
 		
 		String jpql = "SELECT i FROM Lancamento i WHERE i.empresa.id = :empresa " + data + " between :dateStart and :dateStop "
 				+ conditionOrigem + conditionCategoria + conditionUsuario + conditionVendedor
-				+ conditionDestino + conditionNumeroLancamento + conditionLancamentosPagos + conditionContas
+				+ conditionDestino + conditionNumeroLancamento + conditionLancamentosPagos + conditionLancamentosPessoais + conditionContas
 				+ "order by i.numeroLancamento desc";
 
 		System.out.println(jpql);
@@ -1042,6 +1048,30 @@ public class Lancamentos implements Serializable {
 		String jpql = "SELECT sum(i.valor) FROM Lancamento i "
 				+ "WHERE i.empresa.id = :empresa AND i.dataPagamento BETWEEN :dataInicio AND :dataFim "
 				+ "AND i.categoriaLancamento.nome != 'Retirada de lucro' AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.conta = 'N' AND i.ajuste = 'N'";
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
+				calendarStop.getTime()).setParameter("origemLancamento", OrigemLancamento.DEBITO);
+
+		Number count = 0;
+		try {
+			count = (Number) q.getSingleResult();
+
+		} catch (NoResultException e) {
+
+		}
+
+		if (count == null) {
+			count = 0;
+		}
+
+		return count;
+	}
+	
+	public Number totalLancamentosDespesasPorDiaValorJoinConta(Calendar calendarStart, Calendar calendarStop, Empresa empresa) {
+
+		String jpql = "SELECT sum(i.valor) FROM Lancamento i "
+				+ "WHERE i.empresa.id = :empresa AND i.dataPagamento BETWEEN :dataInicio AND :dataFim "
+				+ "AND i.categoriaLancamento.nome != 'Retirada de lucro' AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.conta = 'N' AND i.ajuste = 'N' "
+				+ "and not exists (select c from Conta c WHERE c.codigoOperacao = i.numeroLancamento and c.empresa.id = i.empresa.id and c.operacao = 'LANCAMENTO')";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
 				calendarStop.getTime()).setParameter("origemLancamento", OrigemLancamento.DEBITO);
 

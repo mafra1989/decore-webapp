@@ -333,6 +333,17 @@
 						<p:outputLabel value="Lançamentos Pagos" for="lancamentosPagas" />
 						<p:triStateCheckbox id="lancamentosPagas" value="#{consultaLancamentosBean.lancamentosPagos}"/> 
 					</p:panelGrid>
+					
+					<p:panelGrid columns="2" layout="grid" style="margin-top:5px;"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3"
+						rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 135437 or seguranca.usuarioLogado.usuario.empresa.id == 135499}">
+
+						<p:outputLabel value="Lançamentos Pessoais" for="lanc-pessoal" />
+						<p:inputSwitch offLabel="Não" onLabel="Sim" id="lanc-pessoal"
+							value="#{consultaLancamentosBean.lancamentosPessoais}">
+						</p:inputSwitch>
+					</p:panelGrid>
 
 				</p:panel>
 

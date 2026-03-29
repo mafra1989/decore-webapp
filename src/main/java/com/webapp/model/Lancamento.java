@@ -53,6 +53,10 @@ public class Lancamento implements Serializable {
 	@ManyToOne
 	@JoinColumn
 	private CategoriaLancamento categoriaLancamento = new CategoriaLancamento();
+	
+	@Type(type = "yes_no")
+	@Column(nullable = true)
+	private Boolean pessoal;
 
 	/*@NotNull*/
 	@ManyToOne
@@ -248,6 +252,14 @@ public class Lancamento implements Serializable {
 		this.tipoPagamento = tipoPagamento;
 	}
 	
+	public Boolean getPessoal() {
+		return pessoal != null ? pessoal : false;
+	}
+
+	public void setPessoal(Boolean pessoal) {
+	    this.pessoal = pessoal;
+	}
+
 	public boolean isLancamentoPago() {
 		return lancamentoPago;
 	}

@@ -152,10 +152,14 @@ public class ConsultaContasBean implements Serializable {
 	
 	private Number totalLancamentosDespesasHojeValor;
 	
+	private Number totalLancamentosDespesasHojeValorJoinConta;
+	
 	private Number totalDespesasHojeValor;
 	
 	
 	private Number totalDespesasPagasHojeValor;
+	
+	private Number totalDespesasPagasHojeValorJoinLancamento;
 	
 	private Number totalComprasPagasHojeValor;
 	
@@ -289,14 +293,17 @@ public class ConsultaContasBean implements Serializable {
 			
 			totalComprasPagasHojeValor = contas.totalComprasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());			
 			totalDespesasPagasHojeValor = contas.totalDespesasPagasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
+			setTotalDespesasPagasHojeValorJoinLancamento(contas.totalDespesasPagasPorDiaValorJoinLancamento(calendarStart, calendarStop, usuario.getEmpresa()));
 			
 			
 			Number totalDespesasPagasParcialmenteHojeValor = contas.totalDespesasPagasParcialmente(usuario.getEmpresa(), null, null);
 			
 			totalLancamentosDespesasHojeValor = lancamentos.totalLancamentosDespesasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());
 			
-			totalDespesasHojeValor = totalDespesasPagasHojeValor.doubleValue() + totalLancamentosDespesasHojeValor.doubleValue() + totalDespesasPagasParcialmenteHojeValor.doubleValue();
+			totalDespesasHojeValor = totalDespesasPagasHojeValorJoinLancamento.doubleValue() + totalLancamentosDespesasHojeValor.doubleValue() + totalDespesasPagasParcialmenteHojeValor.doubleValue();
 			
+			
+			setTotalLancamentosDespesasHojeValorJoinConta(lancamentos.totalLancamentosDespesasPorDiaValorJoinConta(calendarStart, calendarStop, usuario.getEmpresa()));
 			
 			
 			//totalPagamentosParcialComprasHojeValor  = contas.totalPagamentosParcialComprasPorDiaValor(calendarStart, calendarStop, usuario.getEmpresa());		
@@ -2124,10 +2131,30 @@ public class ConsultaContasBean implements Serializable {
 		return totalLancamentosDespesasHojeValor;
 	}
 
+	public Number getTotalLancamentosDespesasHojeValorJoinConta() {
+		return totalLancamentosDespesasHojeValorJoinConta;
+	}
+
+
+	public void setTotalLancamentosDespesasHojeValorJoinConta(Number totalLancamentosDespesasHojeValorJoinConta) {
+		this.totalLancamentosDespesasHojeValorJoinConta = totalLancamentosDespesasHojeValorJoinConta;
+	}
+
+
 	public Number getTotalDespesasHojeValor() {
 		return totalDespesasHojeValor;
 	}
 	
+	public Number getTotalDespesasPagasHojeValorJoinLancamento() {
+		return totalDespesasPagasHojeValorJoinLancamento;
+	}
+
+
+	public void setTotalDespesasPagasHojeValorJoinLancamento(Number totalDespesasPagasHojeValorJoinLancamento) {
+		this.totalDespesasPagasHojeValorJoinLancamento = totalDespesasPagasHojeValorJoinLancamento;
+	}
+
+
 	public Number getTotalPagoHojeContasAReceberEmAtrasoValor() {
 		return totalPagoHojeContasAReceberEmAtrasoValor;
 	}

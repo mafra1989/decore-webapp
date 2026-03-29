@@ -1273,6 +1273,12 @@ public class RelatorioLucrosBean implements Serializable {
 			if (categoriasPorMes == null || categoriasPorMes.length == 0 && (usuarioPorMes == null || usuarioPorMes.getId() == null)) {
 
 				/* Contas de Receitas e Vendas Pagas */
+				Number totalContasReceitasPagasParcialmenteMensal = contas_.totalContasReceitasPagasMensal(Long.parseLong(object[0].toString()),
+						Long.parseLong(object[1].toString()), usuario.getEmpresa());
+				
+				Number totalContasVendasPagasParcialmenteMensal = contas_.totalContasVendasPagasMensal(Long.parseLong(object[0].toString()),
+						Long.parseLong(object[1].toString()), usuario.getEmpresa());
+				
 				totalDeReceitas = contas.totalDeReceitasPorMes(Long.parseLong(object[0].toString()),
 						Long.parseLong(object[1].toString()), usuario.getEmpresa()).doubleValue();
 				
@@ -1301,6 +1307,12 @@ public class RelatorioLucrosBean implements Serializable {
 */
 								
 				/* Contas de Despesas e Compras Pagas */
+				Number totalContasDespesasPagasParcialmenteMensal = contas_.totalContasDespesasPagasMensal(Long.parseLong(object[0].toString()),
+						Long.parseLong(object[1].toString()), usuario.getEmpresa());
+				
+				Number totalContasComprasPagasParcialmenteMensal = contas_.totalContasComprasPagasMensal(Long.parseLong(object[0].toString()),
+						Long.parseLong(object[1].toString()), usuario.getEmpresa());
+				
 				totalDeDespesas = contas
 						.totalDespesasPorMes(Long.parseLong(object[0].toString()),
 								Long.parseLong(object[1].toString()), 
@@ -1311,7 +1323,7 @@ public class RelatorioLucrosBean implements Serializable {
 				Number totalComprasPagas = compras.totalComprasPorMes(Long.parseLong(object[0].toString()),
 						Long.parseLong(object[1].toString()), null, null, true, usuario.getEmpresa());
 
-				values.add(((/*totalTaxasEntrega.doubleValue() + totalTaxasEntregaVendaParcelada.doubleValue()*/ + totalVendasPagas.doubleValue() + totalDeReceitas + receitas.doubleValue()) - (/*totalDescontosVendaParcelada.doubleValue() + totalDescontos.doubleValue() + */totalDeDebitos.doubleValue() + totalDeDespesas.doubleValue() + totalComprasPagas.doubleValue())));
+				values.add(((/*totalTaxasEntrega.doubleValue() + totalTaxasEntregaVendaParcelada.doubleValue()*/ + totalVendasPagas.doubleValue() + totalDeReceitas + receitas.doubleValue() + totalContasReceitasPagasParcialmenteMensal.doubleValue() + totalContasVendasPagasParcialmenteMensal.doubleValue()) - (/*totalDescontosVendaParcelada.doubleValue() + totalDescontos.doubleValue() + */totalDeDebitos.doubleValue() + totalDeDespesas.doubleValue() + totalComprasPagas.doubleValue() + totalContasDespesasPagasParcialmenteMensal.doubleValue() + totalContasComprasPagasParcialmenteMensal.doubleValue())));
 
 				/*
 				if (((totalDeVendas + totalDeReceitas) - totalDeDespesas) == 0 && totalDeDespesas > 0) {
@@ -1352,6 +1364,9 @@ public class RelatorioLucrosBean implements Serializable {
 									usuario.getEmpresa())
 							.doubleValue();
 					
+					Number totalContasDespesasPagasParcialmenteMensal = contas_.totalContasDespesasPagasMensal(Long.parseLong(object[0].toString()),
+							Long.parseLong(object[1].toString()), usuario.getEmpresa());
+					
 					/* Lançamentos de despesas pagas */
 					Number despesas = lancamentos.totalDespesasPorMes(Long.parseLong(object[0].toString()),
 							Long.parseLong(object[1].toString()), usuario.getEmpresa());
@@ -1359,7 +1374,7 @@ public class RelatorioLucrosBean implements Serializable {
 					/*Number totalDescontos = vendas.totalDescontosPorMes(object[1].toString(), object[0].toString(),
 							object[0].toString(), usuario.getEmpresa());*/
 					
-					despesasTotais = totalDeDespesas.doubleValue() + despesas.doubleValue()/* + totalDescontos.doubleValue()*/;
+					despesasTotais = totalDeDespesas.doubleValue() + despesas.doubleValue() + totalContasDespesasPagasParcialmenteMensal.doubleValue()/* + totalDescontos.doubleValue()*/;
 				}
 				
 				percentualMensal = true;			
@@ -1380,9 +1395,12 @@ public class RelatorioLucrosBean implements Serializable {
 				}
 			}
 			
+			Number totalContasDespesasPagasParcialmenteMensal = contas_.totalContasDespesasPagasMensal(Long.parseLong(object[0].toString()), 
+					Long.parseLong(object[1].toString()), usuario.getEmpresa());
+			
 			if(true) {			
 				totalDeDebitos = totalDeDebitos(object);
-				values4.add(totalDeDebitos);
+				values4.add(totalDeDebitos.doubleValue() + totalContasDespesasPagasParcialmenteMensal.doubleValue());
 			}
 
 			values3.add(targetMensal);

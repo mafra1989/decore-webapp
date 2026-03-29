@@ -339,7 +339,9 @@ public class Contas implements Serializable {
 	}
 
 	public Number totalDeReceitasPorMes(Long mes, Long ano, Empresa empresa) {// i.operacao = 'LANCAMENTO' AND
-		String jpql = "SELECT sum(i.valor) FROM Conta i WHERE i.empresa.id = :empresa AND i.tipo = 'CREDITO' AND i.status = 'Y' AND i.mes = :mes AND i.ano = :ano AND i.ajuste = 'N' and i.exclusao = 'N'";
+		String jpql = "SELECT sum(i.valor) FROM Conta i WHERE i.empresa.id = :empresa AND i.tipo = 'CREDITO' AND i.status = 'Y' AND i.mes = :mes AND i.ano = :ano AND i.ajuste = 'N' and i.exclusao = 'N' "
+				+ "and (exists (select v from Venda v WHERE v.numeroVenda = i.codigoOperacao and v.empresa.id = i.empresa.id and v.vendaPaga = 'N') "
+				+ "or exists (select l from Lancamento l WHERE l.numeroLancamento = i.codigoOperacao and l.empresa.id = i.empresa.id and l.lancamentoPago = 'N')) ";
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("mes", mes).setParameter("ano", ano);
 		Number count = (Number) q.getSingleResult();
 
@@ -366,6 +368,7 @@ public class Contas implements Serializable {
 		// i.operacao = 'LANCAMENTO' AND
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i WHERE i.empresa.id = :empresa AND i.mes = :mes "
 				+ "AND i.ano = :ano AND i.tipo = 'DEBITO' AND i.status = 'Y' AND i.ajuste = 'N' and i.exclusao = 'N' "
+				+ "and exists (select l from Lancamento l WHERE l.numeroLancamento = i.codigoOperacao and l.empresa.id = i.empresa.id and l.lancamentoPago = 'N') "
 				+ condition + "group by " + groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("mes", Long.parseLong(String.valueOf(mes))).setParameter("ano",
 				Long.parseLong(String.valueOf(ano)));
@@ -400,6 +403,7 @@ public class Contas implements Serializable {
 		
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Conta i WHERE i.operacao = 'LANCAMENTO' AND i.empresa.id = :empresa AND i.mes = :mes "
 				+ "AND i.ano = :ano AND i.tipo = 'DEBITO' AND i.status = 'Y' AND i.ajuste = 'N' and i.exclusao = 'N' "
+				+ "and exists (select l from Lancamento l WHERE l.numeroLancamento = i.codigoOperacao and l.empresa.id = i.empresa.id and l.lancamentoPago = 'N') "
 				+ condition + "group by " + groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("mes", Long.parseLong(String.valueOf(mes))).setParameter("ano",
 				Long.parseLong(String.valueOf(ano)));

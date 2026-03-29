@@ -458,6 +458,19 @@
 										value="#{registroLancamentosBean.despesa.categoriaLancamento.tipoLancamento.descricao}" />
 
 								</p:panelGrid>
+								
+								<p:panelGrid columns="2" layout="grid" 
+									styleClass="panelgrid-noborder disabled disabled"
+									columnClasses="ui-grid-col-4, ui-grid-col-6"
+									rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 135437 or seguranca.usuarioLogado.usuario.empresa.id == 135499}">
+									
+									<p:outputLabel 
+										value="Despesa pessoal" />
+		
+									<p:inputSwitch onLabel="Sim" offLabel="Não"
+										value="#{registroLancamentosBean.despesa.pessoal}">
+									</p:inputSwitch>
+								</p:panelGrid>
 
 								<p:panelGrid columns="2" layout="grid" 
 									styleClass="panelgrid-noborder disabled disabled"
