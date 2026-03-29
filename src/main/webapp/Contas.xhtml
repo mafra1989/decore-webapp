@@ -304,6 +304,8 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 							value="#{consultaContasBean_.tipoOperacao}">
 
 							<f:selectItem itemLabel="Selecione" />
+							
+							<p:ajax update="@form" />
 
 							<f:selectItems value="#{consultaContasBean_.tiposOperacoes}"
 								var="tipoOperacao" itemLabel="#{tipoOperacao.descricao}"
@@ -376,7 +378,7 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 						</p:selectOneMenu>
 					</p:panelGrid>
 					
-					<p:panelGrid columns="2" id="painel" layout="grid" 
+					<p:panelGrid columns="2" id="painel" layout="grid" style="margin-top:5px;"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-2, ui-grid-col-3">
 
@@ -390,13 +392,23 @@ body #pagamentos-dialog .ui-panel .ui-panel-content, body #pagamentos-hoje-dialo
 						
 					</p:panelGrid>
 					
-
-					<p:panelGrid columns="2" layout="grid"
+					<p:panelGrid columns="2" layout="grid" style="margin-top:5px;"
 						styleClass="panelgrid-noborder disabled disabled"
 						columnClasses="ui-grid-col-2, ui-grid-col-3">
 
 						<p:outputLabel value="Contas Pagas" for="contasPagas_" />
 						<p:triStateCheckbox id="contasPagas_" value="#{consultaContasBean_.fitrarContasPagas}"/> 
+					</p:panelGrid>
+					
+					<p:panelGrid columns="2" layout="grid" style="margin-top:5px;"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-2, ui-grid-col-3"
+						rendered="#{consultaContasBean_.tipoOperacao == 'LANCAMENTO' and (seguranca.usuarioLogado.usuario.empresa.id == 135437 or seguranca.usuarioLogado.usuario.empresa.id == 135499)}">
+
+						<p:outputLabel value="Contas Pessoais" />
+						<p:inputSwitch offLabel="Não" onLabel="Sim"
+							value="#{consultaContasBean_.contasPessoais}">
+						</p:inputSwitch>
 					</p:panelGrid>
 
 				</p:panel>

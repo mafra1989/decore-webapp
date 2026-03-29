@@ -238,6 +238,7 @@ public class ConsultaContasBean_ implements Serializable {
 	
 	private String totalPago = "0,00";
 	
+	private boolean contasPessoais;
 
 	public void inicializar() {
 		if (FacesUtil.isNotPostback()) {
@@ -337,10 +338,14 @@ public class ConsultaContasBean_ implements Serializable {
 		calendarStop.set(Calendar.HOUR, 23);
 		calendarStop.set(Calendar.MINUTE, 59);
 		calendarStop.set(Calendar.SECOND, 59);	
+		
+		if(tipoOperacao != TipoOperacao.LANCAMENTO) {
+			contasPessoais = false;
+		}
 
 		contasFiltradas = new ArrayList<>();
-		contasFiltradas = contas.contasFiltradas(codigo, tipoOperacao, calendarStart.getTime(), calendarStop.getTime(), origemConta,
-				fitrarContasPagas, cliente, usuario_, usuario.getEmpresa());
+		contasFiltradas = contas.contasFiltradasComOuSemContasPessoais(codigo, tipoOperacao, calendarStart.getTime(), calendarStop.getTime(), origemConta,
+				fitrarContasPagas, contasPessoais, cliente, usuario_, usuario.getEmpresa());
 
 		double totalContasTemp = 0;
 		totalContasTemp = getValorTotalAndSettingDescricaoAndVendedor(totalContasTemp);
@@ -2221,6 +2226,14 @@ public class ConsultaContasBean_ implements Serializable {
 
 	public String getTotalPago() {
 		return totalPago;
+	}
+	
+	public boolean isContasPessoais() {
+		return contasPessoais;
+	}
+
+	public void setContasPessoais(boolean contasPessoais) {
+		this.contasPessoais = contasPessoais;
 	}
 
 }

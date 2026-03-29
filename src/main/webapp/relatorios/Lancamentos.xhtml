@@ -397,6 +397,22 @@
 								var="usuario" itemLabel="#{usuario.nome}" itemValue="#{usuario}" />
 						</p:selectOneMenu>
 					</p:panelGrid>
+					
+					<p:panelGrid columns="2" id="panel-lanc-pessoais-dia" layout="grid" style="margin-top:5px;"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-3, ui-grid-col-6"
+						rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 135437 or seguranca.usuarioLogado.usuario.empresa.id == 135499}">
+
+						<p:outputLabel value="Lançamentos Pessoais" />
+						<p:inputSwitch offLabel="Não" onLabel="Sim"
+							value="#{relatorioLancamentosBean.lancamentosPessoaisDia}">
+							
+							<p:ajax event="change"
+								listener="#{relatorioLancamentosBean.createMixedModelPorDia}"
+								process="@this panel-lanc-pessoais-dia"
+								update="barChart-despesasPorDia" />
+						</p:inputSwitch>
+					</p:panelGrid>
 
 					<p:commandButton rendered="false" icon="fa fa-pie-chart"
 						actionListener="#{relatorioLancamentosBean.prepareDonutModelPorDia}"
@@ -513,6 +529,22 @@
 							<f:selectItems value="#{relatorioLancamentosBean.todosUsuarios}"
 								var="usuario" itemLabel="#{usuario.nome}" itemValue="#{usuario}" />
 						</p:selectOneMenu>
+					</p:panelGrid>
+					
+					<p:panelGrid columns="2" id="panel-lanc-pessoais-semana" layout="grid" style="margin-top:5px;"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-3, ui-grid-col-6"
+						rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 135437 or seguranca.usuarioLogado.usuario.empresa.id == 135499}">
+
+						<p:outputLabel value="Lançamentos Pessoais" />
+						<p:inputSwitch offLabel="Não" onLabel="Sim"
+							value="#{relatorioLancamentosBean.lancamentosPessoaisSemana}">
+							
+							<p:ajax event="change"
+								listener="#{relatorioLancamentosBean.createMixedModelPorSemana}"
+								process="@this panel-lanc-pessoais-semana"
+								update="barChart-despesasPorSemana" />
+						</p:inputSwitch>
 					</p:panelGrid>
 
 					<p:commandButton rendered="false" icon="fa fa-pie-chart"
@@ -642,6 +674,22 @@
 								var="usuario" itemLabel="#{usuario.nome}" itemValue="#{usuario}" />
 						</p:selectOneMenu>
 					</p:panelGrid>
+					
+					<p:panelGrid columns="2" id="panel-lanc-pessoais-mes" layout="grid" style="margin-top:5px;"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-3, ui-grid-col-6"
+						rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 135437 or seguranca.usuarioLogado.usuario.empresa.id == 135499}">
+
+						<p:outputLabel value="Lançamentos Pessoais" />
+						<p:inputSwitch offLabel="Não" onLabel="Sim"
+							value="#{relatorioLancamentosBean.lancamentosPessoaisMes}">
+							
+							<p:ajax event="change"
+								listener="#{relatorioLancamentosBean.createMixedModelPorMes}"
+								process="@this panel-lanc-pessoais-mes"
+								update="barChart-despesasPorMes" />
+						</p:inputSwitch>
+					</p:panelGrid>
 
 
 					<p:commandButton rendered="false" icon="fa fa-pie-chart"
@@ -738,6 +786,22 @@
 							<f:selectItems value="#{relatorioLancamentosBean.todosUsuarios}"
 								var="usuario" itemLabel="#{usuario.nome}" itemValue="#{usuario}" />
 						</p:selectOneMenu>
+					</p:panelGrid>
+					
+					<p:panelGrid columns="2" id="panel-lanc-pessoais-ano" layout="grid" style="margin-top:5px;"
+						styleClass="panelgrid-noborder disabled disabled"
+						columnClasses="ui-grid-col-3, ui-grid-col-6"
+						rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 135437 or seguranca.usuarioLogado.usuario.empresa.id == 135499}">
+
+						<p:outputLabel value="Lançamentos Pessoais" />
+						<p:inputSwitch offLabel="Não" onLabel="Sim"
+							value="#{relatorioLancamentosBean.lancamentosPessoaisAno}">
+							
+							<p:ajax event="change"
+								listener="#{relatorioLancamentosBean.createMixedModelPorAno}"
+								process="@this panel-lanc-pessoais-ano"
+								update="barChart-despesasPorAno" />
+						</p:inputSwitch>
 					</p:panelGrid>
 
 					<p:commandButton rendered="false" icon="fa fa-pie-chart"

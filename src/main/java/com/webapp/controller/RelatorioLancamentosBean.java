@@ -173,6 +173,14 @@ public class RelatorioLancamentosBean implements Serializable {
 	@Inject
 	private Usuario usuario;
 	
+	private boolean lancamentosPessoaisDia;
+	
+	private boolean lancamentosPessoaisSemana;
+	
+	private boolean lancamentosPessoaisMes;
+	
+	private boolean lancamentosPessoaisAno;
+	
 	@PostConstruct
 	public void init() {
 		
@@ -390,11 +398,11 @@ public class RelatorioLancamentosBean implements Serializable {
 				//List<Object[]> resultTemp = contas.totalLancamentosPorData(calendarStartTemp, calendarStopTemp, usuario.getEmpresa());
 				
 				List<Object[]> resultTemp = new ArrayList<>();
-				List<Object[]> resultDespesasPagas = contas.totalDespesasPagasPorData(calendarStartTemp, calendarStopTemp, usuario.getEmpresa());
-				List<Object[]> resultReceitasPagas = contas.totalReceitasPagasPorData(calendarStartTemp, calendarStopTemp, usuario.getEmpresa());
+				List<Object[]> resultDespesasPagas = contas.totalDespesasPagasPorDataComOuSemLancamentosPessoais(calendarStartTemp, calendarStopTemp, lancamentosPessoaisDia, usuario.getEmpresa());
+				List<Object[]> resultReceitasPagas = contas.totalReceitasPagasPorDataComOuSemLancamentosPessoais(calendarStartTemp, calendarStopTemp, lancamentosPessoaisDia, usuario.getEmpresa());
 				
-				List<Object[]> resultLancamentoDespesas = lancamentos.totalLancamentosDespesasPorData(calendarStartTemp, calendarStopTemp, usuario.getEmpresa());
-				List<Object[]> resultLancamentoReceitas = lancamentos.totalLancamentosReceitasPorData(calendarStartTemp, calendarStopTemp, usuario.getEmpresa());
+				List<Object[]> resultLancamentoDespesas = lancamentos.totalLancamentosDespesasPorDataComOuSemLancamentosPessoais(calendarStartTemp, calendarStopTemp, lancamentosPessoaisDia, usuario.getEmpresa());
+				List<Object[]> resultLancamentoReceitas = lancamentos.totalLancamentosReceitasPorDataComOuSemLancamentosPessoais(calendarStartTemp, calendarStopTemp, lancamentosPessoaisDia, usuario.getEmpresa());
 					
 				resultTemp.addAll(resultDespesasPagas);
 				resultTemp.addAll(resultLancamentoDespesas);
@@ -544,14 +552,14 @@ public class RelatorioLancamentosBean implements Serializable {
 			}
 
 			if (object[4].toString().equals("DEBITO")) {
-				Number totalContasDespesasPagasParcialmenteDia = contas.totalContasDespesasPagasDia(Long.parseLong(object[0].toString()), 
-						Long.parseLong(object[1].toString()), Long.parseLong(object[2].toString()), usuario.getEmpresa());
+				Number totalContasDespesasPagasParcialmenteDia = contas.totalContasDespesasPagasDiaComOuSemLancamentosPessoais(Long.parseLong(object[0].toString()), 
+						Long.parseLong(object[1].toString()), Long.parseLong(object[2].toString()), lancamentosPessoaisDia , usuario.getEmpresa());
 				
 				values.add(((Number) object[5]).doubleValue() + totalContasDespesasPagasParcialmenteDia.doubleValue());
 
 			} else if (object[4].toString().equals("CREDITO")) {
-				Number totalContasReceitasPagasParcialmenteDia = contas.totalContasReceitasPagasDia(Long.parseLong(object[0].toString()), 
-						Long.parseLong(object[1].toString()), Long.parseLong(object[2].toString()), usuario.getEmpresa());
+				Number totalContasReceitasPagasParcialmenteDia = contas.totalContasReceitasPagasDiaComOuSemLancamentosPessoais(Long.parseLong(object[0].toString()), 
+						Long.parseLong(object[1].toString()), Long.parseLong(object[2].toString()), lancamentosPessoaisDia, usuario.getEmpresa());
 				
 				values2.add(((Number) object[5]).doubleValue() + totalContasReceitasPagasParcialmenteDia.doubleValue());
 
@@ -681,9 +689,9 @@ public class RelatorioLancamentosBean implements Serializable {
 
 				System.out.println(semana01);
 
-				List<Object[]> resultTemp = contas.totalLancamentosPorSemana(ano01, semana01, semana01, true, usuario.getEmpresa());
+				List<Object[]> resultTemp = contas.totalLancamentosPorSemanaComOuSemLancamentosPessoais(ano01, semana01, semana01, true, lancamentosPessoaisSemana, usuario.getEmpresa());
 				
-				List<Object[]> resultLancamento = lancamentos.totalLancamentosPorSemana(ano01, semana01, semana01, true, usuario.getEmpresa());
+				List<Object[]> resultLancamento = lancamentos.totalLancamentosPorSemanaComOuSemLancamentosPessoais(ano01, semana01, semana01, true, lancamentosPessoaisSemana, usuario.getEmpresa());
 				resultTemp.addAll(resultLancamento);
 
 				if (resultTemp.size() == 0) {
@@ -814,14 +822,14 @@ public class RelatorioLancamentosBean implements Serializable {
 			}
 			
 			if (object[3].toString().equals("DEBITO")) {
-				Number totalContasDespesasPagasParcialmenteSemana = contas.totalContasDespesasPagasSemana(Long.parseLong(object[0].toString()), 
-						Long.parseLong(object[1].toString()), usuario.getEmpresa());
+				Number totalContasDespesasPagasParcialmenteSemana = contas.totalContasDespesasPagasSemanaComOuSemLancamentosPessoais(Long.parseLong(object[0].toString()), 
+						Long.parseLong(object[1].toString()), lancamentosPessoaisSemana, usuario.getEmpresa());
 				
 				values.add(((Number) object[4]).doubleValue() + totalContasDespesasPagasParcialmenteSemana.doubleValue());
 
 			} else if (object[3].toString().equals("CREDITO")) {
-				Number totalContasReceitasPagasParcialmenteSemana = contas.totalContasReceitasPagasSemana(Long.parseLong(object[0].toString()), 
-						Long.parseLong(object[1].toString()), usuario.getEmpresa());
+				Number totalContasReceitasPagasParcialmenteSemana = contas.totalContasReceitasPagasSemanaComOuSemLancamentosPessoais(Long.parseLong(object[0].toString()), 
+						Long.parseLong(object[1].toString()), lancamentosPessoaisSemana, usuario.getEmpresa());
 				
 				values2.add(((Number) object[4]).doubleValue() + totalContasReceitasPagasParcialmenteSemana.doubleValue());
 
@@ -1011,9 +1019,9 @@ public class RelatorioLancamentosBean implements Serializable {
 					mes01 = "0" + i;
 				}
 
-				List<Object[]> resultTemp = contas.totalLancamentosPorMes(ano02, mes01, mes01, true, usuario.getEmpresa());
+				List<Object[]> resultTemp = contas.totalLancamentosPorMesComOuSemLancamentosPessoais(ano02, mes01, mes01, true, lancamentosPessoaisMes, usuario.getEmpresa());
 				
-				List<Object[]> resultLancamento = lancamentos.totalLancamentosPorMes(ano02, mes01, mes01, true, usuario.getEmpresa());
+				List<Object[]> resultLancamento = lancamentos.totalLancamentosPorMesComOuSemLancamentosPessoais(ano02, mes01, mes01, true, lancamentosPessoaisMes, usuario.getEmpresa());
 				resultTemp.addAll(resultLancamento);
 
 				if (resultTemp.size() == 0) {
@@ -1142,14 +1150,14 @@ public class RelatorioLancamentosBean implements Serializable {
 			}
 			
 			if (object[3].toString().equals("DEBITO")) {
-				Number totalContasDespesasPagasParcialmenteSemana = contas.totalContasDespesasPagasMensal(Long.parseLong(object[0].toString()), 
-						Long.parseLong(object[1].toString()), usuario.getEmpresa());
+				Number totalContasDespesasPagasParcialmenteSemana = contas.totalContasDespesasPagasMensalComOuSemLancamentosPessoais(Long.parseLong(object[0].toString()), 
+						Long.parseLong(object[1].toString()), lancamentosPessoaisMes, usuario.getEmpresa());
 				
 				values.add(((Number) object[4]).doubleValue() + totalContasDespesasPagasParcialmenteSemana.doubleValue());
 
 			} else if (object[3].toString().equals("CREDITO")) {
-				Number totalContasReceitasPagasParcialmenteSemana = contas.totalContasReceitasPagasMensal(Long.parseLong(object[0].toString()), 
-						Long.parseLong(object[1].toString()), usuario.getEmpresa());
+				Number totalContasReceitasPagasParcialmenteSemana = contas.totalContasReceitasPagasMensalComOuSemLancamentosPessoais(Long.parseLong(object[0].toString()), 
+						Long.parseLong(object[1].toString()), lancamentosPessoaisMes, usuario.getEmpresa());
 				
 				values2.add(((Number) object[4]).doubleValue() + totalContasReceitasPagasParcialmenteSemana.doubleValue());
 
@@ -1274,9 +1282,9 @@ public class RelatorioLancamentosBean implements Serializable {
 				
 				String ano03 = String.valueOf(i);
 				
-				List<Object[]> resultTemp = contas.totalLancamentosPorAno(ano03, ano03, true, usuario.getEmpresa());
+				List<Object[]> resultTemp = contas.totalLancamentosPorAnoComOuSemLancamentosPessoais(ano03, ano03, true, lancamentosPessoaisAno, usuario.getEmpresa());
 				
-				List<Object[]> resultLancamento = lancamentos.totalLancamentosPorAno(ano03, ano03, true, usuario.getEmpresa());
+				List<Object[]> resultLancamento = lancamentos.totalLancamentosPorAnoComOuSemLancamentosPessoais(ano03, ano03, true, lancamentosPessoaisAno, usuario.getEmpresa());
 				resultTemp.addAll(resultLancamento);
 				
 				if (resultTemp.size() == 0) {
@@ -1394,14 +1402,14 @@ public class RelatorioLancamentosBean implements Serializable {
 			}
 			
 			if (object[2].toString().equals("DEBITO")) {
-				Number totalContasDespesasPagasParcialmenteAnual = contas.totalContasDespesasPagasAnual(Long.parseLong(object[0].toString()), 
-						usuario.getEmpresa());
+				Number totalContasDespesasPagasParcialmenteAnual = contas.totalContasDespesasPagasAnualComOuSemLancamentosPessoais(Long.parseLong(object[0].toString()), 
+						lancamentosPessoaisAno, usuario.getEmpresa());
 				
 				values.add(((Number) object[3]).doubleValue() + totalContasDespesasPagasParcialmenteAnual.doubleValue());
 
 			} else if (object[2].toString().equals("CREDITO")) {
-				Number totalContasReceitasPagasParcialmenteAnual = contas.totalContasReceitasPagasAnual(Long.parseLong(object[0].toString()), 
-						usuario.getEmpresa());
+				Number totalContasReceitasPagasParcialmenteAnual = contas.totalContasReceitasPagasAnualComOuSemLancamentosPessoais(Long.parseLong(object[0].toString()), 
+						lancamentosPessoaisAno, usuario.getEmpresa());
 				
 				values2.add(((Number) object[3]).doubleValue() + totalContasReceitasPagasParcialmenteAnual.doubleValue());
 
@@ -1992,5 +2000,37 @@ public class RelatorioLancamentosBean implements Serializable {
 
 	public List<Usuario> getTodosUsuarios() {
 		return todosUsuarios;
+	}
+	
+	public boolean isLancamentosPessoaisDia() {
+		return lancamentosPessoaisDia;
+	}
+
+	public void setLancamentosPessoaisDia(boolean lancamentosPessoaisDia) {
+		this.lancamentosPessoaisDia = lancamentosPessoaisDia;
+	}
+	
+	public boolean isLancamentosPessoaisSemana() {
+		return lancamentosPessoaisSemana;
+	}
+
+	public void setLancamentosPessoaisSemana(boolean lancamentosPessoaisSemana) {
+		this.lancamentosPessoaisSemana = lancamentosPessoaisSemana;
+	}
+	
+	public boolean isLancamentosPessoaisMes() {
+		return lancamentosPessoaisMes;
+	}
+
+	public void setLancamentosPessoaisMes(boolean lancamentosPessoaisMes) {
+		this.lancamentosPessoaisMes = lancamentosPessoaisMes;
+	}
+	
+	public boolean isLancamentosPessoaisAno() {
+		return lancamentosPessoaisAno;
+	}
+
+	public void setLancamentosPessoaisAno(boolean lancamentosPessoaisAno) {
+		this.lancamentosPessoaisAno = lancamentosPessoaisAno;
 	}
 }

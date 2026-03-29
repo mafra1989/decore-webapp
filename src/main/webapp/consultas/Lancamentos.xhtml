@@ -339,8 +339,8 @@
 						columnClasses="ui-grid-col-2, ui-grid-col-3"
 						rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 135437 or seguranca.usuarioLogado.usuario.empresa.id == 135499}">
 
-						<p:outputLabel value="Lançamentos Pessoais" for="lanc-pessoal" />
-						<p:inputSwitch offLabel="Não" onLabel="Sim" id="lanc-pessoal"
+						<p:outputLabel value="Lançamentos Pessoais" />
+						<p:inputSwitch offLabel="Não" onLabel="Sim"
 							value="#{consultaLancamentosBean.lancamentosPessoais}">
 						</p:inputSwitch>
 					</p:panelGrid>
@@ -370,6 +370,12 @@
 							value="Excluir" process="@this" disabled="#{not seguranca.acessoAdministrador() and not seguranca.acessoUsuarioAvancado()}"
 							onclick="deleteItem(#{consultaLancamentosBean.lancamentoSelecionado.id});" />
 					</p:menuButton>
+					
+					<p:commandButton icon="fa fa-fw fa-download"
+						disabled="#{consultaLancamentosBean.lancamentosFiltradosSize eq 0}"
+						style="width: 38px;float: right;margin-right: 93px;margin-top: -40px;" process="@this" ajax="false">
+	                    <p:dataExporter type="xls" target="lancamentosTable" fileName="Lançamentos"/>
+	                </p:commandButton>
 
 					<p:panelGrid columns="1" layout="grid"
 						styleClass="panelgrid-noborder disabled disabled"

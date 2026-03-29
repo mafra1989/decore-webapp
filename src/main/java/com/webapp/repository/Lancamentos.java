@@ -709,6 +709,49 @@ public class Lancamentos implements Serializable {
 		return result;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalLancamentosPorSemanaComOuSemLancamentosPessoais(String ano, String semana01, String semana02,
+			boolean chartCondition, boolean lancamentosPessoais, Empresa empresa) {
+
+		String condition = "AND i.conta = 'N' AND i.ajuste = 'N' AND i.empresa.id = :empresa AND i.categoriaLancamento.nome != 'Retirada de lucro' ";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+		
+		String condition_LancamentosPessoais = "";
+		if(lancamentosPessoais) {
+			condition_LancamentosPessoais = "AND i.pessoal = 'Y' ";
+		} else {
+			condition_LancamentosPessoais = "AND (i.pessoal = 'N' OR i.pessoal is null) ";
+		}
+
+		if (chartCondition != false) {
+			select_Condition = "i.semana, i.ano, i.numeroLancamento, i.categoriaLancamento.tipoLancamento.origem, ";
+			sum_Condition = "sum(i.valor)";
+			groupBy_Condition = "i.semana, i.ano, i.numeroLancamento, i.categoriaLancamento.tipoLancamento.origem ";
+			orderBy_Condition = "i.semana asc, i.ano asc, i.categoriaLancamento.tipoLancamento.origem";
+		} else {
+			select_Condition = "i.categoriaLancamento.tipoLancamento.descricao, ";
+			sum_Condition = "count(i.categoriaLancamento.tipoLancamento.descricao)";
+			groupBy_Condition = "i.categoriaLancamento.tipoLancamento.descricao ";
+			orderBy_Condition = "count(i.categoriaLancamento.tipoLancamento.descricao) asc";
+		}
+
+		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Lancamento i "
+				+ "WHERE i.semana BETWEEN :semanaInicio AND :semanaFim " + "AND i.ano = :ano "
+				+ condition_LancamentosPessoais
+				+ condition + "group by "
+				+ groupBy_Condition + " order by " + orderBy_Condition;
+		Query q = manager.createQuery(jpql).setParameter("semanaInicio", Long.parseLong(semana01.replace("W", "")))
+				.setParameter("semanaFim", Long.parseLong(semana02.replace("W", "")))
+				.setParameter("ano", Long.parseLong(ano)).setParameter("empresa", empresa.getId());
+
+		List<Object[]> result = q.getResultList();
+
+		return result;
+	}
+	
 
 	/* DEPRECIADO */
 	@SuppressWarnings("unchecked")
@@ -788,6 +831,50 @@ public class Lancamentos implements Serializable {
 		return result;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalLancamentosPorMesComOuSemLancamentosPessoais(String ano, String mes01, String mes02, boolean chartCondition, 
+			boolean lancamentosPessoais, Empresa empresa) {
+
+		String condition_LancamentosPessoais = "";
+		if(lancamentosPessoais) {
+			condition_LancamentosPessoais = "AND i.pessoal = 'Y' ";
+		} else {
+			condition_LancamentosPessoais = "AND (i.pessoal = 'N' OR i.pessoal is null) ";
+		}
+		
+		
+		String condition = "AND i.conta = 'N' AND i.ajuste = 'N' AND i.empresa.id = :empresa AND i.categoriaLancamento.nome != 'Retirada de lucro' ";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+
+		if (chartCondition != false) {
+			select_Condition = "i.mes, i.ano, i.numeroLancamento, i.categoriaLancamento.tipoLancamento.origem, ";
+			sum_Condition = "sum(i.valor)";
+			groupBy_Condition = "i.mes, i.ano, i.numeroLancamento, i.categoriaLancamento.tipoLancamento.origem ";
+			orderBy_Condition = "i.mes asc, i.ano asc, i.categoriaLancamento.tipoLancamento.origem";
+			
+		} else {
+			select_Condition = "i.categoriaLancamento.tipoLancamento.descricao, ";
+			sum_Condition = "count(i.categoriaLancamento.tipoLancamento.descricao)";
+			groupBy_Condition = "i.categoriaLancamento.tipoLancamento.descricao ";
+			orderBy_Condition = "count(i.categoriaLancamento.tipoLancamento.descricao) asc";
+		}
+
+		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Lancamento i "
+				+ "WHERE i.mes BETWEEN :mesInicio AND :mesFim " + "AND i.ano = :ano "
+				+ condition_LancamentosPessoais
+				+ condition + "group by "
+				+ groupBy_Condition + " order by " + orderBy_Condition;
+		Query q = manager.createQuery(jpql).setParameter("mesInicio", Long.parseLong(mes01))
+				.setParameter("mesFim", Long.parseLong(mes02)).setParameter("ano", Long.parseLong(ano))
+				.setParameter("empresa", empresa.getId());
+
+		List<Object[]> result = q.getResultList();
+
+		return result;
+	}
 
 	/* DEPRECIADO */
 	@SuppressWarnings("unchecked")
@@ -857,6 +944,50 @@ public class Lancamentos implements Serializable {
 
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Lancamento i "
 				+ "WHERE i.ano BETWEEN :anoInicio AND :anoFim "
+				+ condition + "group by "
+				+ groupBy_Condition + " order by " + orderBy_Condition;
+		Query q = manager.createQuery(jpql).setParameter("anoInicio", Long.parseLong(ano01))
+				.setParameter("anoFim", Long.parseLong(ano02)).setParameter("empresa", empresa.getId());
+
+
+		List<Object[]> result = q.getResultList();
+
+		return result;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalLancamentosPorAnoComOuSemLancamentosPessoais(String ano01, String ano02, boolean chartCondition, 
+			boolean lancamentosPessoais, Empresa empresa) {
+		
+		String condition_LancamentosPessoais = "";
+		if(lancamentosPessoais) {
+			condition_LancamentosPessoais = "AND i.pessoal = 'Y' ";
+		} else {
+			condition_LancamentosPessoais = "AND (i.pessoal = 'N' OR i.pessoal is null) ";
+		}
+		
+		String condition = "AND i.conta = 'N' AND i.ajuste = 'N' AND i.empresa.id = :empresa AND i.categoriaLancamento.nome != 'Retirada de lucro' ";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+
+		if (chartCondition != false) {
+			select_Condition = "i.ano, i.numeroLancamento, i.categoriaLancamento.tipoLancamento.origem, ";
+			sum_Condition = "sum(i.valor)";
+			groupBy_Condition = "i.ano, i.numeroLancamento, i.categoriaLancamento.tipoLancamento.origem";
+			orderBy_Condition = "i.ano asc, i.categoriaLancamento.tipoLancamento.origem";
+			
+		} else {
+			select_Condition = "i.categoriaLancamento.tipoLancamento.descricao, ";
+			sum_Condition = "count(i.categoriaLancamento.tipoLancamento.descricao)";
+			groupBy_Condition = "i.categoriaLancamento.tipoLancamento.descricao ";
+			orderBy_Condition = "count(i.categoriaLancamento.tipoLancamento.descricao) asc";
+		}
+
+		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Lancamento i "
+				+ "WHERE i.ano BETWEEN :anoInicio AND :anoFim "
+				+ condition_LancamentosPessoais
 				+ condition + "group by "
 				+ groupBy_Condition + " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("anoInicio", Long.parseLong(ano01))
@@ -1125,6 +1256,49 @@ public class Lancamentos implements Serializable {
 	}
 	
 	@SuppressWarnings("unchecked")
+	public List<Object[]> totalLancamentosDespesasPorDataComOuSemLancamentosPessoais(Calendar calendarStart, Calendar calendarStop, boolean lancamentosPessoais, Empresa empresa) {
+
+		String condition = "";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+		
+		String condition_LancamentosPessoais = "";
+		if(lancamentosPessoais) {
+			condition_LancamentosPessoais = "AND i.pessoal = 'Y' ";
+		} else {
+			condition_LancamentosPessoais = "AND (i.pessoal = 'N' OR i.pessoal is null) ";
+		}
+
+		select_Condition = "i.dia, i.mes, i.ano, i.numeroLancamento, i.categoriaLancamento.tipoLancamento.origem, ";
+		sum_Condition = "sum(i.valor)";
+		groupBy_Condition = "i.dia, i.mes, i.ano, i.numeroLancamento, i.categoriaLancamento.tipoLancamento.origem ";
+		orderBy_Condition = "i.dia asc, i.mes asc, i.ano asc, i.categoriaLancamento.tipoLancamento.origem";
+
+		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Lancamento i "
+				+ "WHERE i.empresa.id = :empresa AND i.dataLancamento BETWEEN :dataInicio AND :dataFim "
+				+ "AND i.categoriaLancamento.nome != 'Retirada de lucro' AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.conta = 'N' AND i.ajuste = 'N' " 
+				+ condition_LancamentosPessoais
+				+ condition + "group by " + groupBy_Condition
+				+ " order by " + orderBy_Condition;
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
+				calendarStop.getTime()).setParameter("origemLancamento", OrigemLancamento.DEBITO);
+		
+		List<Object[]> result = q.getResultList();
+		
+		for (Object[] object : result) {
+			if ((OrigemLancamento) object[4] == OrigemLancamento.CREDITO) {
+				object[4] = "CREDITO";
+			} else {
+				object[4] = "DEBITO";
+			}
+		}
+
+		return result;
+	}
+	
+	@SuppressWarnings("unchecked")
 	public List<Object[]> totalLancamentosReceitasPorData(Calendar calendarStart, Calendar calendarStop, Empresa empresa) {
 
 		String condition = "";
@@ -1141,6 +1315,49 @@ public class Lancamentos implements Serializable {
 		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Lancamento i "
 				+ "WHERE i.empresa.id = :empresa AND i.dataLancamento BETWEEN :dataInicio AND :dataFim "
 				+ "AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.conta = 'N' AND i.ajuste = 'N' " + condition + "group by " + groupBy_Condition
+				+ " order by " + orderBy_Condition;
+		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
+				calendarStop.getTime()).setParameter("origemLancamento", OrigemLancamento.CREDITO);
+		
+		List<Object[]> result = q.getResultList();
+		
+		for (Object[] object : result) {
+			if ((OrigemLancamento) object[4] == OrigemLancamento.CREDITO) {
+				object[4] = "CREDITO";
+			} else {
+				object[4] = "DEBITO";
+			}
+		}
+
+		return result;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalLancamentosReceitasPorDataComOuSemLancamentosPessoais(Calendar calendarStart, Calendar calendarStop, boolean lancamentosPessoais, Empresa empresa) {
+
+		String condition = "";
+		String select_Condition = "";
+		String sum_Condition = "";
+		String groupBy_Condition = "";
+		String orderBy_Condition = "";
+
+		String condition_LancamentosPessoais = "";
+		if(lancamentosPessoais) {
+			condition_LancamentosPessoais = "AND i.pessoal = 'Y' ";
+		} else {
+			condition_LancamentosPessoais = "AND (i.pessoal = 'N' OR i.pessoal is null) ";
+		}
+		
+		select_Condition = "i.dia, i.mes, i.ano, i.numeroLancamento, i.categoriaLancamento.tipoLancamento.origem, ";
+		sum_Condition = "sum(i.valor)";
+		groupBy_Condition = "i.dia, i.mes, i.ano, i.numeroLancamento, i.categoriaLancamento.tipoLancamento.origem ";
+		orderBy_Condition = "i.dia asc, i.mes asc, i.ano asc, i.categoriaLancamento.tipoLancamento.origem";
+
+		String jpql = "SELECT " + select_Condition + sum_Condition + " FROM Lancamento i "
+				+ "WHERE i.empresa.id = :empresa AND i.dataLancamento BETWEEN :dataInicio AND :dataFim "
+				+ "AND i.categoriaLancamento.tipoLancamento.origem = :origemLancamento AND i.conta = 'N' AND i.ajuste = 'N' " 
+				+ condition_LancamentosPessoais
+				+ condition + "group by " + groupBy_Condition
 				+ " order by " + orderBy_Condition;
 		Query q = manager.createQuery(jpql).setParameter("empresa", empresa.getId()).setParameter("dataInicio", calendarStart.getTime()).setParameter("dataFim",
 				calendarStop.getTime()).setParameter("origemLancamento", OrigemLancamento.CREDITO);

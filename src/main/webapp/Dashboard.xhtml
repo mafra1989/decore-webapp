@@ -2203,6 +2203,20 @@ body .ui-datatable .ui-datatable-data>tr td {
 								value="#{registroLancamentosBean.despesa.categoriaLancamento.tipoLancamento.descricao}" />
 
 						</p:panelGrid>
+						
+						<p:panelGrid columns="2" layout="grid" 
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-5, ui-grid-col-7"
+							rendered="#{seguranca.usuarioLogado.usuario.empresa.id == 135437 or seguranca.usuarioLogado.usuario.empresa.id == 135499}">
+							
+							<p:outputLabel style="font-weight:bold;"
+								value="Despesa pessoal" />
+
+							<p:inputSwitch onLabel="Sim" offLabel="Não"
+								value="#{registroLancamentosBean.despesa.pessoal}">
+								<p:ajax process="@this" update="@parent" />
+							</p:inputSwitch>
+						</p:panelGrid>
 
 						<p:panelGrid columns="2" layout="grid" rendered="false"
 							styleClass="panelgrid-noborder disabled disabled"
