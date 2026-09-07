@@ -648,9 +648,9 @@ public class OrcamentoPdfService {
             float y,
             String texto) throws IOException {
 
-        if (texto == null || texto.isBlank()) {
-            return;
-        }
+    	if (texto == null || texto.trim().isEmpty()) {
+    	    return;
+    	}
 
         content.beginText();
 
@@ -718,22 +718,29 @@ public class OrcamentoPdfService {
                 .encodeToString(bytes);
     }
 
-    private byte[] carregarImagemBytes(
-            String classpath) {
+    private byte[] carregarImagemBytes(String classpath) {
 
         try (
                 InputStream input =
-                        new ClassPathResource(
-                                classpath
-                        ).getInputStream()
+                        new ClassPathResource(classpath).getInputStream();
+
+                ByteArrayOutputStream buffer =
+                        new ByteArrayOutputStream()
         ) {
 
-            return input.readAllBytes();
+            byte[] data = new byte[4096];
+            int bytesRead;
+
+            while ((bytesRead = input.read(data)) != -1) {
+                buffer.write(data, 0, bytesRead);
+            }
+
+            return buffer.toByteArray();
 
         } catch (Exception e) {
+
             throw new RuntimeException(
-                    "Erro ao carregar imagem: "
-                            + classpath,
+                    "Erro ao carregar imagem: " + classpath,
                     e
             );
         }
