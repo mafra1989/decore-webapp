@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Orçamento</title>
+
+    <style>
+        @page {
+            size: A4;
+
+            /*
+             * Medidas afinadas contra o PDF original.
+             * A margem lateral anterior deixava o conteúdo ~1,4 mm
+             * mais estreito de cada lado.
+             */
+            margin: 7mm 20mm 14mm 20mm;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 8pt;
+            color: #000;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        /* ============================================================
+           ÍCONES
+           ============================================================ */
+
+        .icon {
+            width: 10pt;
+            height: 10pt;
+            vertical-align: middle;
+            margin-right: 4pt;
+        }
+
+        .icon-email {
+            width: 10pt;
+            height: 8pt;
+        }
+
+        .icon-calendar {
+            width: 9pt;
+            height: 10pt;
+        }
+
+        /* ============================================================
+           CABEÇALHO
+           ============================================================ */
+
+        .header {
+            table-layout: fixed;
+        }
+
+        .header td {
+            vertical-align: top;
+            padding: 0;
+        }
+
+        .logo-cell {
+            width: 84pt;
+        }
+
+        .company-cell {
+            width: 169pt;
+            padding-left: 4pt !important;
+        }
+
+        .contact-cell {
+            width: auto;
+            padding-left: 7pt !important;
+        }
+
+        .logo {
+            width: 80pt;
+            height: auto;
+        }
+
+        .company-title {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12pt;
+            line-height: 1.02;
+            font-weight: bold;
+            margin: 0 0 4pt 0;
+        }
+
+        .line {
+            font-size: 8pt;
+            line-height: 12pt;
+            margin: 0;
+        }
+
+        .contact {
+            font-size: 8pt;
+            line-height: 13pt;
+            white-space: nowrap;
+        }
+
+        .contact img,
+        .social-item img,
+        .client-phone img,
+        .date-box img {
+            vertical-align: middle;
+        }
+
+        .date-wrapper {
+            text-align: right;
+            margin-bottom: 1pt;
+        }
+
+        .date-box {
+            display: inline-block;
+            background: #f3f3f3;
+            padding: 3pt 5pt;
+            border-radius: 5pt;
+            font-size: 8pt;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .slogan {
+            font-size: 9pt;
+            line-height: 10.5pt;
+            margin-top: 2.5pt;
+        }
+
+        .social-bar {
+            margin-top: 4.5pt;
+            padding: 4.5pt 5pt;
+            min-height: 17pt;
+            background: #f3f3f3;
+        }
+
+        .social-item {
+            display: inline-block;
+            margin-right: 18pt;
+            font-size: 8pt;
+            white-space: nowrap;
+        }
+
+        .budget-title {
+            margin-top: 7.5pt;
+            background: #000;
+            color: #fff;
+            padding: 4.5pt 5pt;
+            min-height: 23pt;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14pt;
+            line-height: 14.5pt;
+            font-weight: bold;
+        }
+
+        .client-block {
+            padding: 7pt 5pt 4pt 5pt;
+            line-height: 11.5pt;
+        }
+
+        .client-name {
+            font-size: 9pt;
+            font-weight: bold;
+        }
+
+        .client-phone {
+            margin-top: 2pt;
+            font-size: 8pt;
+        }
+
+        /* ============================================================
+           SEÇÕES
+           ============================================================ */
+
+        .section {
+            margin-top: 8pt;
+        }
+
+        .section-header,
+        .payment-header {
+            background: #f3f3f3;
+            padding: 5pt 5pt;
+            min-height: 22.5pt;
+            font-size: 12pt;
+            line-height: 13pt;
+            font-weight: bold;
+
+            /*
+             * O título não deve ficar sozinho na página anterior.
+             */
+            page-break-after: avoid;
+            break-after: avoid;
+        }
+
+        /*
+         * Não coloque borda/background no container que pode atravessar
+         * páginas. O visual fica somente nos filhos.
+         */
+        .section,
+        .payment-section {
+            border: 0;
+            background: transparent;
+        }
+
+        /* ============================================================
+           ITENS
+           ============================================================ */
+
+        .items {
+            table-layout: fixed;
+        }
+
+        .items thead {
+            display: table-header-group;
+        }
+
+        .items th {
+            font-size: 8pt;
+            line-height: 9.3pt;
+            color: #5f5f5f;
+            padding: 7.5pt 5pt 4.5pt 5pt;
+            font-weight: bold;
+            vertical-align: bottom;
+
+            page-break-after: avoid;
+            break-after: avoid;
+        }
+
+        .items td {
+            padding: 4pt 5pt 5.5pt 5pt;
+            vertical-align: top;
+        }
+
+        .items.materiais td {
+            border-bottom: 0.35pt solid #ededed;
+        }
+
+        /*
+         * Mesmas classes no TH e TD para garantir alinhamento.
+         */
+        .description {
+            width: 51%;
+            text-align: left;
+        }
+
+        .unit {
+            width: 10%;
+            text-align: center;
+        }
+
+        .money {
+            width: 16%;
+            text-align: right;
+        }
+
+        .qty {
+            width: 7%;
+            text-align: right;
+        }
+
+        .total {
+            width: 16%;
+            text-align: right;
+        }
+
+        .item-row {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .item-title {
+            font-size: 9pt;
+            line-height: 10.3pt;
+            font-weight: bold;
+            margin-bottom: 2pt;
+        }
+
+        .item-detail {
+            font-size: 8pt;
+            line-height: 9.4pt;
+            white-space: pre-line;
+        }
+
+        .item-value {
+            font-size: 9pt;
+            line-height: 10.3pt;
+            white-space: nowrap;
+        }
+
+        /* ============================================================
+           TOTAIS
+           ============================================================ */
+
+        .totals-wrap {
+            width: 50%;
+            margin-left: auto;
+            margin-top: 9pt;
+
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .totals td {
+            padding: 5pt 5pt;
+            height: 18pt;
+            font-size: 9pt;
+        }
+
+        .totals-row {
+            background: #f3f3f3;
+        }
+
+        .totals-final {
+            background: #000;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        /* ============================================================
+           PAGAMENTO
+           ============================================================ */
+
+        .payment-section {
+            margin: 9pt 0 0 0;
+            padding: 0;
+        }
+
+        /*
+         * Pagamento + Meios de pagamento + PIX ficam juntos.
+         * Isso evita a faixa cinza órfã no fim da página.
+         */
+        .payment-first-block {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .payment-subsection {
+            padding: 8pt 5pt 0 5pt;
+
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .payment {
+            table-layout: fixed;
+        }
+
+        .payment td {
+            width: 50%;
+            vertical-align: top;
+            padding: 0 7pt 0 0;
+            font-size: 9pt;
+            line-height: 10pt;
+        }
+
+        .payment-label {
+            font-size: 9pt;
+            line-height: 10pt;
+            font-weight: bold;
+            margin-bottom: 3pt;
+        }
+
+        .bank-block {
+            margin-top: 8pt;
+        }
+
+        .bank-row {
+            font-size: 9pt;
+            line-height: 10pt;
+            margin: 0;
+        }
+
+        /* ============================================================
+           BLOCO FINAL / ASSINATURAS
+           ============================================================ */
+
+        /*
+         * A mensagem final pode permanecer no fim da página anterior.
+         * Apenas "Obrigado" + data ficam juntos.
+         */
+        .final-message {
+            margin-top: 14pt;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .thanks {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 8pt;
+            line-height: 9pt;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .city-date {
+            margin-top: 8pt;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 9pt;
+            line-height: 10pt;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /*
+         * A assinatura vem imediatamente depois da mensagem quando houver
+         * espaço. Caso contrário, este bloco inteiro vai para a próxima página.
+         *
+         * O padding inferior pertence somente ao último bloco do documento e
+         * protege a área onde o PDFBox desenha o rodapé na última página.
+         */
+        .signature-final-wrap {
+            margin-top: 18pt;
+            page-break-inside: avoid;
+            break-inside: avoid;
+            padding-bottom: 30mm;
+        }
+
+        .signature-block {
+            margin-top: 0;
+        }
+
+        .signature {
+            table-layout: fixed;
+        }
+
+        .signature td {
+            width: 50%;
+            vertical-align: top;
+            text-align: center;
+            padding: 0 15pt;
+        }
+
+        /*
+         * Mesma área nas duas colunas: mantém as duas linhas niveladas.
+         */
+        .signature-area {
+            height: 36pt;
+            line-height: 36pt;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .signature-image {
+            max-height: 34pt;
+            max-width: 120pt;
+            width: auto;
+            vertical-align: middle;
+        }
+
+        .signature-line {
+            border-top: 1pt solid #000;
+            padding-top: 2pt;
+        }
+
+        .signature-name {
+            font-size: 9pt;
+            line-height: 10pt;
+            font-weight: bold;
+        }
+
+        .signature-detail {
+            font-size: 9pt;
+            line-height: 10pt;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ============================================================
+     CABEÇALHO
+     ============================================================ -->
+
+<table class="header">
+    <tr>
+        <td class="logo-cell">
+            <img class="logo"
+                 th:src="${logo}"
+                 alt="New Decor Portas"/>
+        </td>
+
+        <td class="company-cell">
+            <div class="company-title"
+                 th:text="${empresa.nomeFantasia}">
+                New Decor Portas
+            </div>
+
+            <div class="line"
+                 th:text="${empresa.razaoSocial}">
+            </div>
+
+            <div class="line">
+                CNPJ:
+                <span th:text="${empresa.cnpj}"></span>
+            </div>
+
+            <div class="line"
+                 th:text="${empresa.endereco}">
+            </div>
+
+            <div class="line"
+                 th:text="${empresa.bairroCidade}">
+            </div>
+
+            <div class="line">
+                CEP
+                <span th:text="${empresa.cep}"></span>
+            </div>
+        </td>
+
+        <td class="contact-cell">
+
+            <div class="date-wrapper">
+                <div class="date-box">
+                    <img class="icon icon-calendar"
+                         th:src="${iconCalendar}"
+                         alt=""/>
+                    <span th:text="${#temporals.format(orcamento.data, 'dd/MM/yyyy')}"></span>
+                </div>
+            </div>
+
+            <div class="contact">
+                <img class="icon icon-email"
+                     th:src="${iconEmail}"
+                     alt=""/>
+                <span th:text="${empresa.email}"></span>
+            </div>
+
+            <div class="contact">
+                <img class="icon"
+                     th:src="${iconPhone}"
+                     alt=""/>
+                <span th:text="${empresa.telefone1}"></span>
+            </div>
+
+            <div class="contact">
+                <img class="icon"
+                     th:src="${iconPhone}"
+                     alt=""/>
+                <span th:text="${empresa.telefone2}"></span>
+            </div>
+
+            <div class="contact">
+                <img class="icon"
+                     th:src="${iconWhatsapp}"
+                     alt=""/>
+                <span th:text="${empresa.whatsapp}"></span>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div class="slogan">
+    New Decor Portas "Realizando Sonhos"!!
+</div>
+
+<div class="social-bar">
+    <span class="social-item">
+        <img class="icon"
+             th:src="${iconInstagram}"
+             alt=""/>
+        <span th:text="${empresa.instagram}"></span>
+    </span>
+
+    <span class="social-item">
+        <img class="icon"
+             th:src="${iconFacebook}"
+             alt=""/>
+        <span th:text="${empresa.facebook}"></span>
+    </span>
+</div>
+
+<div class="budget-title">
+    Orçamento <span th:text="${orcamento.numero}"></span>
+</div>
+
+<div class="client-block">
+    <div class="client-name">
+        Cliente:
+        <span th:text="${orcamento.cliente.nome}"></span>
+    </div>
+
+    <div class="client-phone">
+        <img class="icon"
+             th:src="${iconPhone}"
+             alt=""/>
+        <span th:text="${orcamento.cliente.telefone}"></span>
+    </div>
+</div>
+
+<!-- ============================================================
+     SERVIÇOS
+     ============================================================ -->
+
+<div class="section servicos">
+    <div class="section-header">Serviços</div>
+
+    <table class="items">
+        <thead>
+        <tr>
+            <th class="description">Descrição</th>
+            <th class="unit">Unidade</th>
+            <th class="money">Preço unitário</th>
+            <th class="qty">Qtd.</th>
+            <th class="total">Preço</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr class="item-row"
+            th:each="item : ${orcamento.servicos}">
+
+            <td class="description">
+                <div class="item-title"
+                     th:text="${item.titulo}">
+                </div>
+
+                <div class="item-detail"
+                     th:if="${item.detalhe != null and !#strings.isEmpty(item.detalhe)}"
+                     th:text="${item.detalhe}">
+                </div>
+            </td>
+
+            <td class="unit item-value"
+                th:text="${item.unidade}">
+            </td>
+
+            <td class="money item-value">
+                R$
+                <span th:text="${#numbers.formatDecimal(item.valorUnitario, 1, 'POINT', 2, 'COMMA')}"></span>
+            </td>
+
+            <td class="qty item-value"
+                th:text="${item.quantidade}">
+            </td>
+
+            <td class="total item-value">
+                R$
+                <span th:text="${#numbers.formatDecimal(item.valorTotal, 1, 'POINT', 2, 'COMMA')}"></span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- ============================================================
+     MATERIAIS
+     ============================================================ -->
+
+<div class="section">
+    <div class="section-header">Materiais</div>
+
+    <table class="items materiais">
+        <thead>
+        <tr>
+            <th class="description">Descrição</th>
+            <th class="unit">Unidade</th>
+            <th class="money">Preço unitário</th>
+            <th class="qty">Qtd.</th>
+            <th class="total">Preço</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr class="item-row"
+            th:each="item : ${orcamento.materiais}">
+
+            <td class="description">
+                <div class="item-title"
+                     th:text="${item.titulo}">
+                </div>
+
+                <div class="item-detail"
+                     th:if="${item.detalhe != null and !#strings.isEmpty(item.detalhe)}"
+                     th:text="${item.detalhe}">
+                </div>
+            </td>
+
+            <td class="unit item-value"
+                th:text="${item.unidade}">
+            </td>
+
+            <td class="money item-value">
+                R$
+                <span th:text="${#numbers.formatDecimal(item.valorUnitario, 1, 'POINT', 2, 'COMMA')}"></span>
+            </td>
+
+            <td class="qty item-value"
+                th:text="${item.quantidade}">
+            </td>
+
+            <td class="total item-value">
+                R$
+                <span th:text="${#numbers.formatDecimal(item.valorTotal, 1, 'POINT', 2, 'COMMA')}"></span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- ============================================================
+     TOTAIS
+     ============================================================ -->
+
+<div class="totals-wrap">
+    <table class="totals">
+        <tr class="totals-row">
+            <td>Serviços</td>
+            <td class="text-right">
+                R$
+                <span th:text="${#numbers.formatDecimal(orcamento.totalServicos, 1, 'POINT', 2, 'COMMA')}"></span>
+            </td>
+        </tr>
+
+        <tr class="totals-row">
+            <td>Materiais</td>
+            <td class="text-right">
+                R$
+                <span th:text="${#numbers.formatDecimal(orcamento.totalMateriais, 1, 'POINT', 2, 'COMMA')}"></span>
+            </td>
+        </tr>
+
+        <tr class="totals-final">
+            <td>Total</td>
+            <td class="text-right">
+                R$
+                <span th:text="${#numbers.formatDecimal(orcamento.total, 1, 'POINT', 2, 'COMMA')}"></span>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- ============================================================
+     PAGAMENTO
+     ============================================================ -->
+
+<div class="payment-section">
+
+    <div class="payment-first-block">
+
+        <div class="payment-header">
+            Pagamento
+        </div>
+
+        <div class="payment-subsection">
+            <table class="payment">
+                <tr>
+                    <td>
+                        <div class="payment-label">
+                            Meios de pagamento
+                        </div>
+
+                        <div th:text="${orcamento.formasPagamento}"></div>
+                    </td>
+
+                    <td>
+                        <div class="payment-label">
+                            PIX
+                        </div>
+
+                        <div th:text="${empresa.pix}"></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="payment-subsection bank-block">
+
+        <div class="payment-label">
+            Dados bancários
+        </div>
+
+        <div class="bank-row">
+            Banco:
+            <span th:text="${empresa.banco}"></span>
+        </div>
+
+        <div class="bank-row">
+            Agência:
+            <span th:text="${empresa.agencia}"></span>
+        </div>
+
+        <div class="bank-row">
+            Conta:
+            <span th:text="${empresa.conta}"></span>
+        </div>
+
+        <div class="bank-row">
+            Tipo de conta:
+            <span th:text="${empresa.tipoConta}"></span>
+        </div>
+
+        <div class="bank-row">
+            Titular da conta (CPF/CNPJ):
+            <span th:text="${empresa.titularConta}"></span>
+        </div>
+    </div>
+
+</div>
+
+<!-- ============================================================
+     AGRADECIMENTO + ASSINATURAS
+     ============================================================ -->
+
+<div class="final-message">
+
+    <div class="thanks">
+        Obrigado por nos escolher.
+    </div>
+
+    <div class="city-date">
+        <span th:text="${orcamento.cidade}"></span>,
+        <span th:text="${#temporals.format(orcamento.data, 'dd/MM/yyyy')}"></span>
+    </div>
+
+</div>
+
+<div class="signature-final-wrap">
+
+    <div class="signature-block">
+        <table class="signature">
+            <tr>
+
+                <td>
+                    <div class="signature-area">
+                        <img class="signature-image"
+                             th:src="${assinatura}"
+                             alt="Assinatura"/>
+                    </div>
+
+                    <div class="signature-line">
+                        <div class="signature-name"
+                             th:text="${empresa.nomeFantasia}">
+                        </div>
+
+                        <div class="signature-detail"
+                             th:text="${empresa.titular}">
+                        </div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="signature-area"></div>
+
+                    <div class="signature-line">
+                        <div class="signature-name"
+                             th:text="${orcamento.cliente.nome}">
+                        </div>
+                    </div>
+                </td>
+
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+<!--
+    O rodapé não fica no HTML.
+    PDFBox o adiciona SOMENTE à última página.
+-->
+
+</body>
+</html>

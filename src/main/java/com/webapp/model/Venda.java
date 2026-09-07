@@ -251,7 +251,19 @@ public class Venda implements Serializable {
 	@Column(nullable = true)
 	private boolean prevenda = true;
 	
+	
+	@Column
+	private String descricaoServico;
+	
+	@Column
+	@Digits(integer = 10 /* precision */, fraction = 2 /* scale */)
+	private BigDecimal valorServico = BigDecimal.ZERO;
+	
+	@Column
+	@Digits(integer = 10 /* precision */, fraction = 0 /* scale */)
+	private BigDecimal quantidadeServico = BigDecimal.ZERO;
 
+	
 	public Long getId() {
 		return id;
 	}
@@ -749,8 +761,35 @@ public class Venda implements Serializable {
 	public BigDecimal getValorTotalExport() {
 		return valorTotalExport;
 	}
+	
+	/* NOVOS CAMPOS PARA SERVIÇOS - TEMPORÁRIO */
 
 	public void setValorTotalExport(BigDecimal valorTotalExport) {
 		this.valorTotalExport = valorTotalExport;
 	}
+
+	public String getDescricaoServico() {
+		return descricaoServico;
+	}
+
+	public void setDescricaoServico(String descricaoServico) {
+		this.descricaoServico = descricaoServico;
+	}
+
+	public BigDecimal getValorServico() {
+		return valorServico;
+	}
+
+	public void setValorServico(BigDecimal valorServico) {
+		this.valorServico = valorServico;
+	}
+
+	public BigDecimal getQuantidadeServico() {
+		return quantidadeServico;
+	}
+
+	public void setQuantidadeServico(BigDecimal quantidadeServico) {
+		this.quantidadeServico = quantidadeServico;
+	}
+	
 }

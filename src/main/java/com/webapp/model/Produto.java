@@ -42,7 +42,7 @@ public class Produto implements Serializable {
 	private String nome;
 
 	@NotBlank
-	@Column(nullable = false, length = 120)
+	@Column(nullable = false)
 	private String descricao;
 	
 

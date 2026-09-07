@@ -253,7 +253,21 @@
 									<p:datePicker value="#{registroOrcamentosBean.venda.dataVenda}" touchUI="true"
 										readonlyInput="true" id="data-venda" pattern="dd/MM/yyyy"
 										locale="pt" showIcon="true" />
+										
+									<p:outputLabel value="Cliente" for="cliente" />
+									<p:selectOneMenu id="cliente" styleClass="cliente"
+										value="#{registroOrcamentosBean.venda.cliente}"
+										placeholder="selecione">
 		
+										<f:selectItem itemLabel="Selecione" />
+										
+										<p:ajax event="change" process="@this" />
+		
+										<f:selectItems value="#{registroOrcamentosBean.todosClientes}"
+											var="cliente" itemLabel="#{cliente.nome}"
+											itemValue="#{cliente}" />
+									</p:selectOneMenu>
+										
 									<p:outputLabel value="Bairro" for="bairro" />
 									<p:autoComplete id="bairro" forceSelection="true" dropdown="true" scrollHeight="210"
 										value="#{registroOrcamentosBean.venda.bairro}"
@@ -374,7 +388,8 @@
 						
 						<p:panelGrid columns="2" layout="grid" style="margin-top:-4px"
 							styleClass="panelgrid-noborder disabled disabled"
-							columnClasses="ui-grid-col-4, ui-grid-col-4">
+							columnClasses="ui-grid-col-4, ui-grid-col-4"
+							rendered="false">
 
 							<p:outputLabel value="Custo Médio Un." for="fornecedor" />
 							<p:inputNumber id="fornecedor" readonly="true" decimalPlaces="4" placeholder="R$ 0,0000" symbol="R$ "
@@ -389,9 +404,9 @@
 
 							<p:outputLabel value="Qtd. Disponível / Lote" for="lote" />
 							<p:selectOneMenu id="lote"
-								value="#{registroOrcamentosBean.itemCompra}" placeholder="selecione">
+								value="#{registroOrcamentosBean.itemCompra}" placeholder="Clique para visualizar">
 
-								<f:selectItem itemLabel="Selecione" />
+								<f:selectItem itemLabel="Clique para visualizar" />
 
 								<p:ajax event="change" process="@this" />
 
@@ -540,13 +555,13 @@
 								</p:column>
 								
 
-								<p:column headerText="Lucro" width="20%">
+								<p:column headerText="Lucro" width="20%" rendered="false">
 									<h:outputText value="#{item.lucro}">
 										<f:convertNumber type="currency" />
 									</h:outputText>
 								</p:column>
 
-								<p:column headerText="Perc." width="20%">
+								<p:column headerText="Perc." width="20%" rendered="false">
 									<h:outputText value="#{item.percentualLucro}%">
 										<f:convertNumber pattern="#0.00" />
 									</h:outputText>
@@ -570,8 +585,48 @@
 								oncomplete="stop();" icon="fa fa-fw fa-edit"
 								disabled="#{registroOrcamentosBean.itensVendaSize eq 0}" />
 						</p:contextMenu>
+						
+						<h3 style="font-weight: bold">Serviços</h3>
+						
+						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 0px"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-4, ui-grid-col-6">
 
-						<p:panelGrid columns="2"
+							<p:outputLabel value="Descrição" for="descricao-servico" />
+							<p:inputText id="descricao-servico"
+								value="#{registroOrcamentosBean.venda.descricaoServico}">
+								
+								<p:ajax event="change" process="@this" update="@this" />
+							</p:inputText>
+						</p:panelGrid>
+						
+						<p:panelGrid columns="2" layout="grid" 
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-4, ui-grid-col-4">
+
+							<p:outputLabel value="Preço Unitário" for="preco-servico" />
+							<p:inputNumber id="preco-servico" decimalPlaces="2" placeholder="R$ 0,00" symbol="R$ "
+								value="#{registroOrcamentosBean.venda.valorServico}">
+								
+								<p:ajax event="change" process="@this" update="panel-total-venda"
+									listener="#{registroOrcamentosBean.aplicarServico}" />
+							</p:inputNumber>
+						</p:panelGrid>
+								
+						<p:panelGrid columns="2" layout="grid" style="margin-bottom: 0px"
+							styleClass="panelgrid-noborder disabled disabled"
+							columnClasses="ui-grid-col-4, ui-grid-col-4">
+
+							<p:outputLabel value="Quantidade" for="quantidade-servico" />
+							<p:inputNumber id="quantidade-servico" decimalPlaces="0" placeholder="0"
+								value="#{registroOrcamentosBean.venda.quantidadeServico}">
+								
+								<p:ajax event="change" process="@this" update="panel-total-venda"
+									listener="#{registroOrcamentosBean.aplicarServico}" />
+							</p:inputNumber>
+						</p:panelGrid>
+
+						<p:panelGrid columns="2" id="panel-total-venda"
 							style="margin-top: 5px;float: right; margin-right: 10px;margin-bottom: 10px;"
 							styleClass="panelgrid-noborder disabled disabled">
 							<p:outputLabel value="Total: " />
@@ -586,9 +641,9 @@
 						<div
 							style="width: 80%; margin-left: 10%; margin-top: 18px; margin-bottom: 10px; border-top: 1px solid #ccc"></div>
 
-						<p:panelGrid columns="2" layout="grid"
+						<p:panelGrid columns="3" layout="grid"
 							styleClass="panelgrid-noborder disabled disabled"
-							columnClasses="ui-grid-col-4, ui-grid-col-3">
+							columnClasses="ui-grid-col-4, ui-grid-col-4, ui-grid-col-4">
 
 							<p:commandButton id="btn-calcular" value="Salvar Orçamento"
 								onstart="PF('downloadLoading').show();" icon="fa fa-save"
@@ -597,7 +652,27 @@
 								update="msg accordion-panel panel-table form:id form:codigo form:descricao form:fornecedor form:valor-unitario form:quantidade form:valor-total form:lote"
 								action="#{registroOrcamentosBean.salvar}"
 								process="@this panel-table accordion-panel"
-								style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;" />
+								style="font-weight: bold; margin-bottom: 10px;background-color: #0d8819b5;" />						
+							
+							<p:commandButton
+							    id="btn-emitir-orcamento"
+							    value="Baixar Orçamento"
+							    action="#{registroOrcamentosBean.emitirOrcamento}"
+							    ajax="false"
+							    immediate="true"
+							    process="@this"
+							    icon="fa fa-fw fa-cloud-download"
+							    onstart="PF('downloadLoading').show();"
+								onsuccess="PF('downloadLoading').hide();"
+							    style="font-weight: bold;"
+							    rendered="#{registroOrcamentosBean.venda.id != null}" />
+									
+							<p:button value="Novo Orçamento" outcome="/operacoes/RegistroOrcamentos.xhtml"
+								onclick="PF('downloadLoading').show();" icon="fa fa-fw fa-file-text-o"
+								disabled="#{not seguranca.acessoAdministrador()}"
+								styleClass="btn-novo" onsuccess="stop();" 
+								style="font-weight: bold;">							
+							</p:button>
 						</p:panelGrid>
 
 					</p:panel>

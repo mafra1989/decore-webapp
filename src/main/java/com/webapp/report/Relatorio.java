@@ -9,7 +9,9 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -185,6 +187,74 @@ public class Relatorio<T> {
 			throw new SQLException("Erro ao executar relatório", e);
 		}
 
+	}
+	
+	public void getOrcamento_(byte[] pdf, String filename) throws SQLException {
+		try {
+
+			response.reset();
+
+			response.setContentType("application/pdf");
+
+			response.setContentLength(pdf.length);
+
+			response.setHeader("Content-disposition", "inline; filename=" + filename + ".pdf");
+
+			response.getOutputStream().write(pdf);
+
+			response.getOutputStream().flush();
+
+			response.getOutputStream().close();
+
+			context.responseComplete();
+			
+
+		} catch (Exception e) {
+			throw new SQLException("Erro ao executar relatório", e);
+		}
+
+	}
+	
+	public void getOrcamento__(byte[] pdf, String filename)
+	        throws SQLException {
+
+	    try {
+
+	        FacesContext context =
+	                FacesContext.getCurrentInstance();
+
+	        ExternalContext externalContext =
+	                context.getExternalContext();
+
+	        HttpServletResponse response =
+	                (HttpServletResponse) externalContext.getResponse();
+
+	        response.reset();
+
+	        response.setContentType("application/pdf");
+
+	        response.setContentLength(pdf.length);
+
+	        response.setHeader(
+	                "Content-Disposition",
+	                "attachment; filename=\"" + filename + ".pdf\""
+	        );
+
+	        ServletOutputStream output =
+	                response.getOutputStream();
+
+	        output.write(pdf);
+	        output.flush();
+
+	        context.responseComplete();
+
+	    } catch (Exception e) {
+
+	        throw new SQLException(
+	                "Erro ao executar relatório",
+	                e
+	        );
+	    }
 	}
 	
 	public byte[] getRelatorio__(List<T> lista, String filename) throws SQLException {

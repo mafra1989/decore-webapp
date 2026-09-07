@@ -243,9 +243,8 @@
 								value="#{cadastroClienteBean.cliente.documento}" />
 
 							<p:outputLabel value="Contato" for="contato" />
-							<p:inputMask id="contato" autocomplete="off"
-										value="#{cadastroClienteBean.cliente.contato}"
-										mask="(99) 9-9999-9999" />
+							<p:inputText id="contato" autocomplete="off"
+								value="#{cadastroClienteBean.cliente.contato}" />
 
 							<p:outputLabel value="Endereço" for="endereco" />
 							<p:inputTextarea id="endereco" rows="2" autocomplete="off"

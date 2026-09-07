@@ -100,7 +100,8 @@
 									icon="fa fa-list-ol" outcome="/consultas/Lancamentos.xhtml" />
 									
 								<p:menuitem id="pm_orcamento" styleClass="pm_orcamento"
-									value="Orçamentos" icon="fa fa-edit" rendered="#{not seguranca.acessoVendedor()}"
+									value="Orçamentos" icon="fa fa-edit" 
+									rendered="#{not seguranca.acessoVendedor() and (seguranca.usuarioLogado.usuario.empresa.id == 135437 or seguranca.usuarioLogado.usuario.empresa.id == 135499)}"
 									outcome="/consultas/Orcamentos.xhtml" />
 
 							</p:submenu>
@@ -180,8 +181,11 @@
 									rendered="#{not seguranca.acessoVendedor()}" />
 								
 								<p:menuitem id="pm_orcamentos" styleClass="pm_orcamentos"
-									value="Orçamentos" icon="fa fa-edit" rendered="#{not seguranca.acessoVendedor()}"
+									value="Orçamentos" icon="fa fa-edit" 
+									rendered="#{not seguranca.acessoVendedor() and (seguranca.usuarioLogado.usuario.empresa.id == 135437 or seguranca.usuarioLogado.usuario.empresa.id == 135499)}"
 									outcome="/operacoes/RegistroOrcamentos.xhtml" />
+									
+									
 							</p:submenu>
 
 							<p:submenu id="pm_relatorio" styleClass="pm_relatorio"

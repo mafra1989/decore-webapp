@@ -21,6 +21,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang3.StringUtils;
 import org.primefaces.PrimeFaces;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -47,6 +48,7 @@ import com.webapp.model.TipoAtividade;
 import com.webapp.model.TipoOperacao;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
+import com.webapp.report.OrcamentoPdfService;
 import com.webapp.report.Relatorio;
 import com.webapp.repository.Caixas;
 import com.webapp.repository.Clientes;
@@ -120,6 +122,9 @@ public class ConsultaOrcamentosBean implements Serializable {
 
 	@Inject
 	private ItensCompras itensCompras;
+	
+	@Inject
+	private OrcamentoPdfService orcamentoPdfService;
 
 	private Venda vendaSelecionada;
 
@@ -496,6 +501,17 @@ public class ConsultaOrcamentosBean implements Serializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void baixarOrcamento() throws Exception {
+		List<ItemVenda> itensVenda = itensVendas.porVenda(vendaSelecionada);
+		
+		byte[] pdf = orcamentoPdfService.gerarPdf(vendaSelecionada, itensVenda);
+		
+		String filename = StringUtils.leftPad(String.valueOf(vendaSelecionada.getNumeroVenda()), 4, "0") + "-" + String.valueOf(vendaSelecionada.getAno());
+		
+		Relatorio<EspelhoVenda> report = new Relatorio<EspelhoVenda>();
+		report.getOrcamento_(pdf, filename);
 	}
 
 	public void excluir() {

@@ -1,5 +1,6 @@
 package com.webapp.controller;
 
+import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -17,13 +18,17 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.StringUtils;
 import org.primefaces.PrimeFaces;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
 import com.webapp.model.Bairro;
 import com.webapp.model.Cliente;
 import com.webapp.model.Entrega;
+import com.webapp.model.EspelhoVenda;
 import com.webapp.model.FormaPagamento;
 import com.webapp.model.ItemCompra;
 import com.webapp.model.ItemVenda;
@@ -34,6 +39,8 @@ import com.webapp.model.TipoPagamento;
 import com.webapp.model.TipoVenda;
 import com.webapp.model.Usuario;
 import com.webapp.model.Venda;
+import com.webapp.report.OrcamentoPdfService;
+import com.webapp.report.Relatorio;
 import com.webapp.repository.Bairros;
 import com.webapp.repository.Clientes;
 import com.webapp.repository.Entregas;
@@ -85,6 +92,8 @@ public class RegistroOrcamentosBean implements Serializable {
 	private List<Usuario> todosUsuarios;
 
 	private List<Bairro> todosBairros;
+	
+	private List<Cliente> todosClientes = new ArrayList<Cliente>();
 
 	private List<TipoVenda> todosTiposVendas;
 
@@ -95,6 +104,9 @@ public class RegistroOrcamentosBean implements Serializable {
 
 	@Inject
 	private ItemCompra itemCompra;
+	
+	@Inject
+	private OrcamentoPdfService orcamentoPdfService;
 
 	private List<ItemVenda> itensVenda = new ArrayList<ItemVenda>();
 
@@ -143,9 +155,12 @@ public class RegistroOrcamentosBean implements Serializable {
 			todosUsuarios = usuarios.todos(usuario.getEmpresa());
 			todosTiposVendas = tiposVendas.todos(usuario.getEmpresa());
 			todosBairros = bairros.todos(usuario.getEmpresa());
+			todosClientes = clientes.todos(usuario.getEmpresa());
 			
 			venda.setUsuario(usuario);
 			venda.setStatusMesa("PAGO");
+			
+			venda.setDescricaoServico("Serviço Instalação");
 			
 			Cliente cliente = clientes.porNome("Nao Informado", usuario.getEmpresa());
 			venda.setCliente(cliente);
@@ -255,18 +270,18 @@ public class RegistroOrcamentosBean implements Serializable {
 			if (venda.getId() != null) {
 				edit = true;
 
-/*
+
 				List<ItemVenda> itemVendaTemp = itensVendas.porVenda(venda);
 
 				for (ItemVenda itemVenda : itemVendaTemp) {
-					Produto produto = produtos.porId(itemVenda.getProduto().getId());
-					produto.setQuantidadeAtual(produto.getQuantidadeAtual() + itemVenda.getQuantidade());
-					produtos.save(produto);
+//					Produto produto = produtos.porId(itemVenda.getProduto().getId());
+//					produto.setQuantidadeAtual(produto.getQuantidadeAtual() + itemVenda.getQuantidade());
+//					produtos.save(produto);
 
 					itensVendas.remove(itemVenda);
 
 				}
-
+/*
 				for (ItemVenda itemVenda : itensVenda) {
 
 					List<ItemCompra> itensCompraTemp = itensCompras.porProduto(itemVenda.getProduto());
@@ -500,6 +515,8 @@ public class RegistroOrcamentosBean implements Serializable {
 				venda.setQuantidadeItens(totalDeItens);
 				venda.setLucro(BigDecimal.valueOf(lucro));
 				
+				aplicarServico();
+				
 				//venda.setPercentualLucro(BigDecimal.valueOf(percentualLucro / itensVenda.size()));				
 				venda.setPercentualLucro(new BigDecimal(((venda.getValorTotal().doubleValue() - venda.getValorCompra().doubleValue())/venda.getValorTotal().doubleValue())*100));
 				venda = vendas.save(venda);
@@ -507,11 +524,7 @@ public class RegistroOrcamentosBean implements Serializable {
 				PrimeFaces.current().executeScript("swal({ type: 'success', title: 'Concluído!', text: 'Orçamento N."
 						+ venda.getNumeroVenda() + " registrado com sucesso!' });");
 				
-				
-				
-				
-				
-				
+
 				Log log = new Log();
 				log.setDataLog(new Date());
 				log.setCodigoOperacao(String.valueOf(venda.getNumeroVenda()));
@@ -522,30 +535,8 @@ public class RegistroOrcamentosBean implements Serializable {
 				log.setDescricao("Registrou orçamento, Nº " + venda.getNumeroVenda() + ", quantidade de itens " + venda.getQuantidadeItens() + ", valor total R$ " + nf.format(venda.getValorTotal()));
 				log.setUsuario(usuario);		
 				logs.save(log);
-				
-				
 
-				Venda vendaTemp_ = new Venda();
-				vendaTemp_.setNumeroVenda(null);
-				vendaTemp_.setTipoVenda(venda.getTipoVenda());
-				vendaTemp_.setBairro(venda.getBairro());
-				vendaTemp_.setUsuario(venda.getUsuario());	
-				vendaTemp_.setStatusMesa("PAGO");
-				Cliente cliente = clientes.porNome("Nao Informado", usuario.getEmpresa());
-				vendaTemp_.setCliente(cliente);
-				
-				venda = new Venda();
-				itensVenda = new ArrayList<ItemVenda>();
-				itemVenda = new ItemVenda();
-				itemSelecionado = null;
-
-				itensCompra = new ArrayList<>();
-				itemCompra = new ItemCompra();
-
-				entregaVenda = new Entrega();
-				entrega = false;
-				
-				venda = vendaTemp_;
+				//novoOrcamento();
 
 			} else {
 
@@ -569,10 +560,29 @@ public class RegistroOrcamentosBean implements Serializable {
 						venda.setVendaPaga(!entrega);
 					}
 				}
+				
+				for (ItemVenda itemVenda : itensVenda) {
+					
+					itemVenda.setVenda(venda);
+					itensVendas.save(itemVenda);
+					
+					Produto produto = produtos.porId(itemVenda.getProduto().getId());
+					
+					if(!produto.getUnidadeMedida().equals("Kg") && !produto.getUnidadeMedida().equals("Lt") && !produto.getUnidadeMedida().equals("Pt")) {
+						totalDeItens += itemVenda.getQuantidade().doubleValue();				
+					} else {
+						totalDeItens += 1;
+					}
+					
+					valorTotal += itemVenda.getTotal().doubleValue();
+				}
 
 				//venda.setValorCompra(BigDecimal.valueOf(valorCompra));
-				//venda.setValorTotal(BigDecimal.valueOf(valorTotal));
-				//venda.setQuantidadeItens(totalDeItens);
+				venda.setValorTotal(BigDecimal.valueOf(valorTotal));
+				
+				aplicarServico();
+				
+				venda.setQuantidadeItens(totalDeItens);
 				//venda.setLucro(BigDecimal.valueOf(lucro));
 				//venda.setPercentualLucro(BigDecimal.valueOf(percentualLucro / itensVenda.size()));
 				venda = vendas.save(venda);
@@ -598,6 +608,31 @@ public class RegistroOrcamentosBean implements Serializable {
 					"swal({ type: 'warning', title: 'Atenção!', text: 'Adicione pelo menos um item ao Orçamento!' });");
 		}
 
+	}
+
+	private void novoOrcamento() {
+		
+		Venda vendaTemp_ = new Venda();
+		vendaTemp_.setNumeroVenda(null);
+		vendaTemp_.setTipoVenda(venda.getTipoVenda());
+		vendaTemp_.setBairro(venda.getBairro());
+		vendaTemp_.setUsuario(venda.getUsuario());	
+		vendaTemp_.setStatusMesa("PAGO");
+		Cliente cliente = clientes.porNome("Nao Informado", usuario.getEmpresa());
+		vendaTemp_.setCliente(cliente);
+		
+		venda = new Venda();
+		itensVenda = new ArrayList<ItemVenda>();
+		itemVenda = new ItemVenda();
+		itemSelecionado = null;
+
+		itensCompra = new ArrayList<>();
+		itemCompra = new ItemCompra();
+
+		entregaVenda = new Entrega();
+		entrega = false;
+		
+		venda = vendaTemp_;
 	}
 
 	public void selecionarProduto(Produto produto) {
@@ -744,9 +779,11 @@ public class RegistroOrcamentosBean implements Serializable {
 		
 							venda.setValorTotal(BigDecimal
 									.valueOf(venda.getValorTotal().doubleValue() + itemVenda.getTotal().doubleValue()));
-		
+							
 							itemVenda.setCode(itemVenda.getProduto().getCodigo().concat("_" + new Date().getTime()));
 							itensVenda.add(itemVenda);
+							
+							aplicarServico();
 		
 							String code = itemVenda.getCode();
 							Produto produto = itemVenda.getProduto();
@@ -926,6 +963,8 @@ public class RegistroOrcamentosBean implements Serializable {
 			*/
 
 			itemSelecionado = null;
+			
+			aplicarServico();
 
 			// itemVenda = new ItemVenda();
 			// itemCompra = new ItemCompra();
@@ -945,6 +984,8 @@ public class RegistroOrcamentosBean implements Serializable {
 			venda.setValorTotal(
 					BigDecimal.valueOf(venda.getValorTotal().doubleValue() - itemSelecionado.getTotal().doubleValue()));
 			itensVenda.remove(itemSelecionado);
+			
+			aplicarServico();
 
 			//List<ItemCompra> itensCompraTemp = itensCompras.porProduto(itemVenda.getProduto());
 
@@ -1027,6 +1068,43 @@ public class RegistroOrcamentosBean implements Serializable {
 		*/
 
 	}
+	
+	public void aplicarServico() {
+		
+		if(venda.getValorServico() == null) {
+			venda.setValorServico(BigDecimal.ZERO);
+		}
+		
+		if(venda.getQuantidadeServico() == null) {
+			venda.setQuantidadeServico(BigDecimal.ZERO);
+		}
+		
+		if(itensVenda.size() == 0) {
+			venda.setValorTotal(BigDecimal.ZERO);
+		}
+		
+		Double totalSemServico = 0D;
+		for (ItemVenda itemVenda : itensVenda) {
+			totalSemServico += itemVenda.getTotal().doubleValue();
+		}
+		
+		BigDecimal totalComServico = BigDecimal.valueOf(
+				totalSemServico
+				+ (venda.getValorServico().doubleValue() * venda.getQuantidadeServico().doubleValue()));
+		
+		venda.setValorTotal(totalComServico);
+		
+	}
+	
+	public void emitirOrcamento() throws Exception {
+		byte[] pdf = orcamentoPdfService.gerarPdf(venda, itensVenda);
+		
+		String filename = StringUtils.leftPad(String.valueOf(venda.getNumeroVenda()), 4, "0") + "-" + String.valueOf(venda.getAno());
+		
+		Relatorio<EspelhoVenda> report = new Relatorio<EspelhoVenda>();
+		report.getOrcamento__(pdf, filename);
+	}
+
 
 	public List<Usuario> getTodosUsuarios() {
 		return todosUsuarios;
@@ -1034,6 +1112,10 @@ public class RegistroOrcamentosBean implements Serializable {
 
 	public List<Bairro> getTodosBairros() {
 		return todosBairros;
+	}
+
+	public List<Cliente> getTodosClientes() {
+		return todosClientes;
 	}
 
 	public List<ItemVenda> getItensVenda() {
